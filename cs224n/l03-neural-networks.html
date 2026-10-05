@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture 3: Neural Net Learning: Gradients by Hand and Algorithmically — Stanford Frontier AI</title>
+<meta name="description" content="Matrix calculus and backpropagation for the NER network. The delta error signal, the shape convention, and why frameworks can automate the rest.">
+<link rel="stylesheet" href="assets/vendor/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="cs224n-l03">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="cs224n/l01-word-vectors-1.html" data-page="cs224n-l01">L01 · Introduction, Word Vectors</a></li>
+<li><a href="cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors, GloVe, Evaluation</a></li>
+<li><a href="cs224n/l03-neural-networks.html" data-page="cs224n-l03" class="active">L03 · Neural Networks, Backprop</a></li>
+<li><a href="cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="cs224n/l05-rnns.html" data-page="cs224n-l05">L05 · Recurrent neural networks</a></li>
+<li><a href="cs224n/l06-seq2seq-attention.html" data-page="cs224n-l06">L06 · LSTMs, seq2seq, machine translation</a></li>
+<li><a href="cs224n/l07-attention-llm-intro.html" data-page="cs224n-l07">L07 · Attention and the road to LLMs</a></li>
+<li><a href="cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Self-Attention, Transformers</a></li>
+<li><a href="cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="cs224n/l10-post-training.html" data-page="cs224n-l10">L10 · Post-Training</a></li>
+<li><a href="cs224n/l11-benchmarking.html" data-page="cs224n-l11">L11 · Benchmarking</a></li>
+<li><a href="cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="cs224n/l13-bci.html" data-page="cs224n-l13">L13 · Brain-Computer Interfaces</a></li>
+<li><a href="cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="cs224n/l15-after-dpo.html" data-page="cs224n-l15">L15 · After DPO</a></li>
+</ul>
+<h3></h3><ul>
+<li><a href="cs224n/index.html" data-page="cs224n/index.html">CS224N: NLP with Deep Learning</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 3: Neural Net Learning: Gradients by Hand and Algorithmically</nav>
+      <h1>Lecture 3: Neural Net Learning: Gradients by Hand and Algorithmically</h1>
+      <p class="meta-line">Instructor: Chris Manning · 1:13:18 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/HnliVHU2g9U" title="Stanford CS224N Spring 2024 Lecture 3: Neural net learning: Gradients by hand (matrix calculus) and algorithmically (the backpropagation algorithm)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><p class="video-cap">Original lecture. Timestamps link to exact moments.</p><div class="callout"><span class="co-label">Key idea</span><p>Backpropagation is the chain rule with a memory. Compute each shared piece once, call it δ, and reuse it for every parameter below.</p></div>
+<h2 id="the-one-hard-week">The one hard week</h2>
+<p>Manning frames the week directly. Assignment 2 requires real understanding of neural network math, and then the course lets the software do it. This is the quarter&rsquo;s heaviest math week. Thursday brings linguistics (dependency parsing, Lecture 4), which he warns is the other hard day. The Friday PyTorch tutorial is the off-ramp: learn the math now, let the framework differentiate later.</p>
+<p>For the general derivation of gradient descent and the multivariate chain rule, see <a href="../../foundations/cs229/l08-neural-networks-2.html">CS229 Lesson 8</a>. That lesson is the canonical treatment. This lesson is the NLP-specific version: by-hand gradients for the named entity network, in the notation the assignments use.</p>
+<h2 id="the-running-example">The running example</h2>
+<p>The named entity recognizer from Lecture 2 carries over. The input is a window of five words, each a one-hot vector:</p>
+<p>[ x = [x_{\text{museums}}, x_{\text{in}}, x_{\text{Paris}}}, x_{\text{are}}, x_{\text{amazing}}] ]</p>
+<p>Each one-hot selects its word vector from the embedding matrix, so x ∈ R^5d for d-dimensional vectors. The network computes z = Wx + b, then h = f(z) with f an elementwise nonlinearity, then a score s = uᵀh, then the predicted probability P(location) = σ(s) <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=412s" target="_blank" rel="noopener">06:52 <span class="ts">⏱06:52</span></a>. The hidden layer re-represents the input so a final linear classifier can separate it. Everything is learnable, including the word vectors: in deep learning, θ includes the data representation.</p>
+<p>A neural network is a cascade of logistic regressions. The difference from a statistics class: nobody specifies what the middle regressions compute. The final loss directs them, and they discover useful intermediate functions on their own <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=244s" target="_blank" rel="noopener">04:04 <span class="ts">⏱04:04</span></a>.</p>
+<div class="mermaid">flowchart LR
+    X[x, 5d concatenated<br/>word vectors] --> Z[z = Wx + b]
+    Z --> H[h = f(z)<br/>hidden layer]
+    H --> S[s = uᵀh<br/>score]
+    S --> P[P = σ(s)<br/>probability]
+</div>
+<h2 id="activation-functions">Activation functions</h2>
+<p>The original McCulloch and Pitts (1943) unit was a threshold: output 1 if Wx &gt; θ, else 0. A step function has no slope, so gradient-based learning is impossible <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=518s" target="_blank" rel="noopener">08:38 <span class="ts">⏱08:38</span></a>. The field moved to smooth activations with slopes. The logistic (sigmoid) came first, partly because it maps outputs to probabilities.</p>
+<p>The lecture&rsquo;s inventory:</p>
+<ul>
+<li><strong>logistic (sigmoid):</strong> σ(z) = 1/(1+e⁻ᶻ), output in (0, 1). Still used to produce probabilities.</li>
+<li><strong>tanh:</strong> a rescaled sigmoid, tanh(z) = 2·logistic(2z) − 1, output in (−1, 1), twice as steep <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=637s" target="_blank" rel="noopener">10:37 <span class="ts">⏱10:37</span></a>.</li>
+<li><strong>hard tanh:</strong> a piecewise linear clip of tanh.</li>
+<li><strong>ReLU:</strong> max(z, 0). The default for deep networks. It trains quickly and lets gradients flow well. Its negative dead zone kills some units. Leaky and parametric ReLU mitigate that.</li>
+<li><strong>Swish:</strong> z·logistic(z). <strong>GELU:</strong> used in BERT and RoBERTa, approximately x·σ(1.702x).</li>
+</ul>
+<p>Why nonlinearities are needed at all: without them, extra layers collapse. W₁(W₂x) = (W₁W₂)x = Wx. Any stack of linear layers is a single linear transform, no matter how deep. Nonlinearities are what let depth approximate complex functions <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=1011s" target="_blank" rel="noopener">16:51 <span class="ts">⏱16:51</span></a>.</p>
+<h2 id="matrix-calculus">Matrix calculus</h2>
+<p>Multivariable calculus behaves like single-variable calculus once everything is a matrix. Three facts carry the lecture <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=1244s" target="_blank" rel="noopener">20:44 <span class="ts">⏱20:44</span></a>:</p>
+<ol>
+<li>A function with 1 output and n inputs has a gradient: the vector of partial derivatives.</li>
+<li>A function with m outputs and n inputs has a Jacobian: the m×n matrix of partial derivatives. The gradient is the special case m = 1 <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=1447s" target="_blank" rel="noopener">24:07 <span class="ts">⏱24:07</span></a>.</li>
+<li>The chain rule: compose one-variable functions by multiplying derivatives. Compose multivariable functions by multiplying Jacobians.</li>
+</ol>
+<p>The Jacobian of an elementwise activation h = f(z) is diagonal and n×n. Output i depends only on input i, so every off-diagonal partial derivative is zero <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=1641s" target="_blank" rel="noopener">27:21 <span class="ts">⏱27:21</span></a>.</p>
+<h2 id="gradients-by-hand-for-the-ner-network">Gradients by hand for the NER network</h2>
+<p>Manning&rsquo;s method has three steps. Break the equations into small pieces and track every variable&rsquo;s dimensionality. Apply the chain rule. Write out the Jacobians.</p>
+<p>The worked derivation computes the gradient of the score s (the logistic on top is left to the assignment). Two quantities share most of their chain: ∂s/∂b and ∂s/∂W. Rather than recompute the shared product ∂s/∂h · ∂h/∂z twice, compute it once and name it δ. Manning calls δ the upstream gradient, or the error signal: everything above has already decided how much the loss cares about z <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=2165s" target="_blank" rel="noopener">36:05 <span class="ts">⏱36:05</span></a>.</p>
+<p>Then ∂s/∂b = δ, since ∂z/∂b is the identity, and</p>
+<p>[ \frac{\partial s}{\partial W} = \delta^T x^T ]</p>
+<p>an outer product of the upstream gradient and the local input <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=2412s" target="_blank" rel="noopener">40:12 <span class="ts">⏱40:12</span></a>. Each input reaches each output, so the gradient must pair every component of δ with every component of x. When the transposes feel arbitrary, they are the shape convention at work.</p>
+<div class="mermaid">flowchart TD
+    S[s, score] --> D[δ = ∂s/∂h · ∂h/∂z<br/>upstream gradient, computed once]
+    D --> DB[∂s/∂b = δ]
+    D --> DW[∂s/∂W = δᵀxᵀ<br/>outer product]
+</div>
+<h2 id="the-shape-convention">The shape convention</h2>
+<p>Pure Jacobian math says ∂s/∂W is a 1×nm row vector. That is useless for SGD, which wants to subtract the gradient from the parameter matrix directly. So the course adopts the shape convention: the gradient of a scalar with respect to a parameter has the same shape as the parameter. Reshape or transpose the Jacobian answer to fit <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=2360s" target="_blank" rel="noopener">39:20 <span class="ts">⏱39:20</span></a>.</p>
+<p>Two working styles both pass the assignments. Work everything in Jacobian form, where the chain rule is just matrix multiplication, and reshape to the parameter shape at the end. Or keep the shape convention at every step and insert transposes wherever dimensions demand it. The error signal δ arriving at a hidden layer always has that layer&rsquo;s dimensionality. That is the check that the algebra is right <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=2576s" target="_blank" rel="noopener">42:56 <span class="ts">⏱42:56</span></a>.</p>
+<div class="callout"><span class="co-label">Warning</span><p>The two conventions disagree on paper and both appear in the literature. Jacobian form makes the chain rule easy. The shape convention makes SGD easy. Know which one a derivation is using before comparing formulas.</p></div>
+<h2 id="backpropagation">Backpropagation</h2>
+<p>Everything so far was backpropagation in disguise. The algorithm generalizes it to any computation:</p>
+<ol>
+<li>Represent the equations as a graph. Source nodes are inputs, interior nodes are operations, edges carry values.</li>
+<li>Forward propagation: visit nodes in topological order, compute each value, save the intermediates.</li>
+<li>Backward propagation: start with output gradient 1, visit nodes in reverse order. Each node receives an upstream gradient, multiplies it by its local gradient (the derivative of its output with respect to its input), and passes the product downstream <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=2930s" target="_blank" rel="noopener">48:50 <span class="ts">⏱48:50</span></a>.</li>
+</ol>
+<p>Downstream gradient = upstream gradient × local gradient. That is the whole algorithm.</p>
+<p>The lecture&rsquo;s worked example: F(x, y, z) = (x + y) · max(y, z), evaluated at (1, 2, 0). Forward: x + y = 3, max(2, 0) = 2, product = 6. Backward from gradient 1 at the output: the multiply node switches, sending 2 to the addition branch and 3 to the max branch. The max node routes: y gets 3, z gets 0. The addition node distributes: x gets 2, y gets 2. The y branch fans out to two nodes, so its gradients sum: 3 + 2 = 5 <a href="https://www.youtube.com/watch?v=HnliVHU2g9U&amp;t=3036s" target="_blank" rel="noopener">50:36 <span class="ts">⏱50:36</span></a>.</p>
+<div class="mermaid">flowchart LR
+    X[x=1] --> ADD["+ = 3"]
+    Y[y=2] --> ADD
+    Y --> MAX["max = 2"]
+    Z[z=0] --> MAX
+    ADD --> MUL["* = 6"]
+    MAX --> MUL
+</div>
+<p>Node intuitions to memorize:</p>
+<ul>
+<li><strong>+</strong> distributes the upstream gradient to each summand.</li>
+<li><strong>max</strong> routes the upstream gradient to the winning input (1 for the larger, 0 for the smaller).</li>
+<li><strong>*</strong> switches: each input&rsquo;s local gradient is the other input&rsquo;s value.</li>
+<li>When a variable fans out to several nodes, its gradients sum.</li>
+</ul>
+<h2 id="efficiency-and-automation">Efficiency and automation</h2>
+<p>The naive approach computes ∂s/∂W and ∂s/∂b independently and duplicates the shared chain. The correct approach computes δ once and reuses it. Done right, the backward pass costs the same order of work as the forward pass. This reuse is the reason backpropagation is an algorithm and not just notation.</p>
+<p>Automatic differentiation builds on this. Frameworks like PyTorch and TensorFlow infer the full backward pass from the forward expression. Each node type only needs to know its local derivative. The user never writes chain rule code.</p>
+<p>Manual gradient checking still has a place. The numeric gradient</p>
+<p>[ \frac{f(x+h) - f(x-h)}{2h}, \quad h \approx 10^{-4} ]</p>
+<p>is easy to implement and correct in the limit, but it needs a full forward pass per parameter, so it is far too slow for training. Use it to verify a hand-written or custom layer, never to train.</p>
+<h2 id="why-learn-this-at-all">Why learn this at all</h2>
+<p>Manning&rsquo;s answer: frameworks compute gradients, but understanding the machinery matters for debugging. Backpropagation does not always work out of the box. The classic failure modes are exploding and vanishing gradients, covered in the RNN lecture. The syllabus points to Karpathy&rsquo;s &ldquo;Yes, you should understand backprop&rdquo; as the canonical argument.</p>
+<p>Assignment 2 is built on this contract: derive the gradients by hand first, prove you understand the math, then let PyTorch do it for the parser you build in the second half.</p>
+<div class="callout"><span class="co-label">Interview signal</span><p>&ldquo;Explain backprop in one minute&rdquo;: the forward pass computes and caches values in topological order. The backward pass starts with gradient 1 at the output and applies downstream = upstream × local at each node. Shared sub-chains are computed once as the error signal δ. Then the follow-up: why does the backward pass cost the same as the forward pass? Because every edge is traversed once in each direction.</p></div>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Video: <a href="https://www.youtube.com/watch?v=HnliVHU2g9U">Lecture 3: Neural net learning: Gradients by hand (matrix calculus) and algorithmically (the backpropagation algorithm)</a> (1:13:18)</li>
+<li>Slides: <a href="https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1246/slides/cs224n-spr2024-lecture03-neuralnets.pdf">cs224n-spr2024-lecture03-neuralnets.pdf</a></li>
+<li>Karpathy, &ldquo;Yes you should understand backprop&rdquo;</li>
+</ul>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=HnliVHU2g9U" target="_blank" rel="noopener">Lecture 3 video, Stanford Online YouTube</a></li><li><span class="src-tag">SLIDES</span><a href="https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1246/slides/cs224n-spr2024-lecture03-neuralnets.pdf" target="_blank" rel="noopener">cs224n-spr2024-lecture03-neuralnets.pdf (official slides)</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript (en)</li><li><span class="src-tag">SUPPLEMENT</span><a href="https://medium.com/@karpathy/yes-you-should-understand-backprop-e2f06eab496b" target="_blank" rel="noopener">Karpathy, &#x27;Yes you should understand backprop&#x27;</a></li></ul></section>
+      <nav class="pager"><a href="cs224n/l02-word-vectors-2.html"><span class="lbl">← Previous</span>Lecture 2: Word Vectors, Word Senses, and Neural Classifiers</a><a href="cs224n/l04-dependency-parsing.html"><span class="lbl">Next →</span>Lecture 4: Dependency Parsing</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/vendor/katex.min.js"></script>
+<script src="assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "";</script>
+<script src="assets/app.js"></script>
+</body>
+</html>

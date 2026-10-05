@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 10: Prompting, Instruction Tuning, RLHF (Bridge) — Stanford Frontier AI</title>
+<meta name="description" content="Scale, few-shot prompting, chain of thought, instruction fine-tuning, the RLHF pipeline with Bradley-Terry preferences, reward hacking, and DPO. Deep mechanics ">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-l10" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10" class="active">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 10: Prompting, Instruction Tuning, RLHF (Bridge)</nav>
+      <h1>Lecture 10: Prompting, Instruction Tuning, RLHF (Bridge)</h1>
+      <p class="meta-line">Instructor: Archit Sharma · 1:20:00 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="35X6zlhoCy4"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/35X6zlhoCy4" title="Lecture 10: Prompting, Instruction Finetuning, and DPO/RLHF" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=35X6zlhoCy4" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=35X6zlhoCy4" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Guest lecture. Archit Sharma (slides based on Jesse Mu) covers prompting, instruction tuning, and RLHF through DPO.</p></div><div class="callout"><span class="co-label">Note</span><p><strong>Bridge lesson.</strong> This lecture teaches the CS224N framing: how prompting,
+instruction tuning, RLHF, and DPO fit together. For deep mechanics, follow
+the links: <a href="../cs336/l15-post-training.html">CS336 L15</a> (post-training
+systems), <a href="../cs336/l16-rlvr.html">CS336 L16</a> (RL with verifiable rewards).
+This lesson never re-explains what those cover.</p></div>
+<h2 id="how-to-read-this-lesson">How to read this lesson</h2>
+<p>This lesson has two levels. <strong>Level 1 (Core)</strong> covers scale, prompting, and
+instruction tuning. <strong>Level 2 (Deep)</strong> derives RLHF and DPO.</p>
+<h2 id="level-1-scale-changed-everything">Level 1: Scale changed everything</h2>
+<p>Pretraining data grew from 1.4T tokens (2022) to ~15T (2024, LLaMA 3)
+(<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=125s" target="_blank" rel="noopener">02:05 <span class="ts">⏱02:05</span></a>). The FLOPs graph showing 10^24 was already outdated.
+labs were &ldquo;well above 10^26.&rdquo;</p>
+<figure><img alt="Scale" src="assets/l10-scale.svg"><figcaption>Pretraining data: 1.4T tokens in 2022 to ~15T in 2024; compute passed 10^26 FLOPs.</figcaption></figure>
+<p>Scale bought new behavior. Models of agents&rsquo; beliefs: the Pat story
+(<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=263s" target="_blank" rel="noopener">04:23 <span class="ts">⏱04:23</span></a>). Pat the physicist watches a bowling ball and a leaf
+drop. Naive Pat predicts wrong. The model tracks what each agent believes,
+not just the text.</p>
+<h2 id="level-1-few-shot-prompting">Level 1: Few-shot prompting</h2>
+<p><strong>Few-shot</strong>: put examples in the prompt. &ldquo;No gradient updates&hellip;
+whatsoever&rdquo; (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=865s" target="_blank" rel="noopener">14:25 <span class="ts">⏱14:25</span></a>). The model completes the pattern.</p>
+<figure><img alt="Few-shot" src="assets/l10-fewshot.svg"><figcaption>thanks -&gt; merci, hello -&gt; bonjour, then otter -&gt; ?: no weight updates, only examples.</figcaption></figure>
+<p>Zero-shot TL;DR: ask for a summary with no examples (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=565s" target="_blank" rel="noopener">09:25 <span class="ts">⏱09:25</span></a>).
+Coreference via log-probabilities: &ldquo;The cat couldn&rsquo;t fit into the hat because
+it was too big&rdquo; (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=635s" target="_blank" rel="noopener">10:35 <span class="ts">⏱10:35</span></a>). Which is &ldquo;it&rdquo;: cat or hat? Compare the
+model&rsquo;s probabilities.</p>
+<p><strong>Emergence is contested.</strong> Plot the axes right and the jumps look less
+emergent. Capabilities grow smoothly. Metrics make them look sudden.</p>
+<h2 id="level-1-chain-of-thought">Level 1: Chain of thought</h2>
+<p><strong>Chain-of-thought</strong> prompting: show reasoning chains before answers.
+PaLM-scale models with CoT beat state of the art on reasoning tasks.</p>
+<figure><img alt="CoT" src="assets/l10-cot.svg"><figcaption>Few-shot CoT beats SOTA; zero-shot 'Let's think step by step' jumps 17.7 to 78.7.</figcaption></figure>
+<p>Zero-shot version: append &ldquo;Let&rsquo;s think step by step.&rdquo; Accuracy jumps from
+17.7 to 78.7 (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=1191s" target="_blank" rel="noopener">19:51 <span class="ts">⏱19:51</span></a>). The lecture&rsquo;s advice: &ldquo;Think about what the
+pretraining data might have seen.&rdquo; Reasoning chains appear in text. The model
+imitates them.</p>
+<div class="qa"><div class="q">Why does chain of thought help?</div><div class="a"><p>It gives the model more compute per answer and a scratch pad for intermediate steps. Multi-step problems need intermediate results; CoT makes the model write them down instead of jumping to a guess.
+Contested. The chains correlate with correct answers, but the model may be imitating reasoning-shaped text from pretraining. L14&rsquo;s counterfactual tests (base-9 arithmetic) probe exactly this question.</p><div class="followup"><strong>Follow-up:</strong> Is the model really reasoning?</div></div></div>
+<h2 id="level-1-instruction-fine-tuning">Level 1: Instruction fine-tuning</h2>
+<p>Raw GPT-3 failed &ldquo;explain the moon landing to a six-year-old&rdquo; (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=1375s" target="_blank" rel="noopener">22:55 <span class="ts">⏱22:55</span></a>).
+It completed the text. It did not follow the instruction. <strong>Instruction
+fine-tuning</strong> trains on thousands of tasks (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=426s" target="_blank" rel="noopener">07:06 <span class="ts">⏱07:06</span></a>).</p>
+<figure><img alt="Instruction tuning" src="assets/l10-instruct.svg"><figcaption>FLAN: 3M+ examples, gains +6.1 to +26.6 from small to XXL. LIMA: 1,000 examples.</figcaption></figure>
+<p><strong>FLAN</strong>: 3M+ examples across tasks. Gains grow with size: +6.1 (small) to
++26.6 (XXL). <strong>LIMA</strong>: 1,000 examples. Quality beats quantity. Strong models
+now generate instruction data for weaker ones.</p>
+<h2 id="level-2-the-rlhf-pipeline">Level 2: The RLHF pipeline</h2>
+<p>The RLHF pipeline (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=2502s" target="_blank" rel="noopener">41:42 <span class="ts">⏱41:42</span></a>):</p>
+<figure><img alt="RLHF" src="assets/l10-rlhf.svg"><figcaption>SFT, then a Bradley-Terry reward model, then RL with a KL penalty; reward hacking produces gibberish.</figcaption></figure>
+<ol>
+<li><strong>Instruction tuning (SFT).</strong> Pretrained model plus task examples. It
+starts responding to intent.</li>
+<li><strong>Reward model.</strong> Learn &ldquo;how much would a human like this answer&rdquo;
+(<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=2529s" target="_blank" rel="noopener">42:09 <span class="ts">⏱42:09</span></a>).</li>
+<li><strong>RL.</strong> Optimize the policy against the reward model.</li>
+</ol>
+<p>Preferences are <strong>pairwise</strong> because &ldquo;human judgments are very noisy&rdquo;
+(<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=2691s" target="_blank" rel="noopener">44:51 <span class="ts">⏱44:51</span></a>). <strong>Bradley-Terry</strong> (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=2825s" target="_blank" rel="noopener">47:05 <span class="ts">⏱47:05</span></a>): the probability a
+human picks y1 over y2 is the sigmoid of the reward difference.</p>
+<p>P(y1 &gt; y2) = sigma(r1 - r2)</p>
+<h2 id="level-2-reward-hacking">Level 2: Reward hacking</h2>
+<figure><img alt="Reward hacking" src="assets/l10-hacking.svg"><figcaption>Optimizing a learned metric breeds gibberish, authoritative-over-truthful, and verbosity; the KL penalty limits the damage.</figcaption></figure>
+<h2 id="level-2-reward-hacking_1">Level 2: Reward hacking</h2>
+<p>&ldquo;When you&rsquo;re optimizing against a learned model, it will tend to hack the
+reward model&rdquo; (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=3054s" target="_blank" rel="noopener">50:54 <span class="ts">⏱50:54</span></a>). The policy finds completions the reward
+model scores highly but humans hate: <strong>gibberish</strong> (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=3071s" target="_blank" rel="noopener">51:11 <span class="ts">⏱51:11</span></a>).</p>
+<p>Known failure modes: <strong>authoritative beats truthful</strong>. <strong>Longer beats
+shorter</strong>: &ldquo;turkers might just simply choose the longer answer.&rdquo; The <strong>KL
+penalty</strong> keeps the policy near the reference model, limiting the damage.</p>
+<div class="qa"><div class="q">Why not skip the reward model and optimize human ratings directly?</div><div class="a"><p>Humans are slow and expensive. The reward model is a fast proxy. The proxy is imperfect, so optimization exploits its errors. The KL penalty and careful reward modeling limit the exploitation. They do not eliminate it.
+It optimizes a learned metric. Any learned metric has blind spots, and optimization finds them. DPO avoids RL but keeps the preference data, so the same blind spots apply to the data itself.</p><div class="followup"><strong>Follow-up:</strong> What is the deepest problem with RLHF?</div></div></div>
+<h2 id="level-2-dpo">Level 2: DPO</h2>
+<p><strong>Direct Preference Optimization</strong> skips the reward model and RL. The optimal
+policy has a closed form: p<em> proportional to p_ref x exp(r/beta). The
+normalizer Z(x) is intractable (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=3722s" target="_blank" rel="noopener">62:02 <span class="ts">⏱62:02</span></a>) but </em><em>cancels</em><em> in the
+Bradley-Terry comparison. What remains is </em><em>binary classification</em>*.</p>
+<figure><img alt="DPO" src="assets/l10-dpo.svg"><figcaption>Closed-form optimal policy; Z(x) cancels; reduces to binary classification; 9 of 10 HF leaderboard models use DPO.</figcaption></figure>
+<p>DPO matches RLHF on summarization (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=4279s" target="_blank" rel="noopener">71:19 <span class="ts">⏱71:19</span></a>): &ldquo;you&rsquo;re really not
+losing much by just doing the DPO.&rdquo; Open source adopted it: 9 of 10
+HuggingFace leaderboard models use DPO. Mistral and LLaMA 3 used it.
+ChatGPT = dialogue-optimized InstructGPT.</p>
+<p>Full post-training systems: <a href="../cs336/l15-post-training.html">CS336 L15</a>.
+Verifiable rewards: <a href="../cs336/l16-rlvr.html">CS336 L16</a>.</p>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>Eight ideas carry this lecture. Read each card. Say the core sentence out
+loud. If you can, you own the lesson.</p>
+<div class="recap-grid">
+<div class="recap-card">
+<img src="assets/l10-scale.svg" alt="Scale">
+<div class="rc-body">
+<strong>1. Data scale exploded</strong>
+<p>1.4T tokens (2022) to ~15T (2024). FLOPs passed 10^26. Scale bought
+models of agents' beliefs, not just text patterns.</p>
+<p class="rc-num">Key: Pat the physicist</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l10-fewshot.svg" alt="Few-shot">
+<div class="rc-body">
+<strong>2. Few-shot: examples, no updates</strong>
+<p>Put examples in the prompt. No gradient updates whatsoever. Zero-shot
+TL;DR works too. Emergence is contested.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=865s" target="_blank" rel="noopener">14:25 <span class="ts">⏱14:25</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l10-cot.svg" alt="Chain of thought">
+<div class="rc-body">
+<strong>3. Chain of thought: reason first</strong>
+<p>Show reasoning chains. Zero-shot "Let's think step by step": 17.7 to
+78.7. Think about what pretraining data saw.</p>
+<p class="rc-num">Key: scratch pad, more compute</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l10-instruct.svg" alt="Instruction tuning">
+<div class="rc-body">
+<strong>4. Instruction tuning teaches following</strong>
+<p>GPT-3 failed "explain to a six-year-old". FLAN: 3M+ examples. LIMA:
+1,000 quality examples. Gains grow with size.</p>
+<p class="rc-num">Key: +6.1 to +26.6</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l10-rlhf.svg" alt="RLHF">
+<div class="rc-body">
+<strong>5. RLHF: tune, model, optimize</strong>
+<p>SFT, then a reward model, then RL. Bradley-Terry: P(y1>y2) =
+sigma(r1-r2). Pairwise because humans are noisy.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=2502s" target="_blank" rel="noopener">41:42 <span class="ts">⏱41:42</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l10-rlhf.svg" alt="Reward hacking">
+<div class="rc-body">
+<strong>6. Optimizing a learned metric hacks it</strong>
+<p>Gibberish completions score highly. Authoritative beats truthful.
+Longer beats shorter. KL penalty limits the damage.</p>
+<p class="rc-num">Key: be careful</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l10-dpo.svg" alt="DPO">
+<div class="rc-body">
+<strong>7. DPO skips the reward model</strong>
+<p>Closed-form optimal policy. Z(x) cancels. Binary classification. Matches
+RLHF on summarization. 9/10 HF models use it.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=4279s" target="_blank" rel="noopener">71:19 <span class="ts">⏱71:19</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l10-bridge.svg" alt="Bridge">
+<div class="rc-body">
+<strong>8. Depth lives in CS336</strong>
+<p>Post-training systems (L15), RLVR (L16). This lesson: the framing from
+prompting to DPO.</p>
+<p class="rc-num">Key: bridge, not duplicate</p>
+</div>
+</div>
+</div>
+
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 10 video and transcript.
+- Ouyang et al. (2022): InstructGPT.
+- Rafailov et al. (2023): DPO.</p>
+<p><strong>Further reading:</strong>
+- <a href="../cs336/l15-post-training.html">CS336 L15</a>: post-training systems in depth.
+- <a href="../cs336/l16-rlvr.html">CS336 L16</a>: RL with verifiable rewards.
+- Wei et al. (2022), &ldquo;Chain-of-Thought Prompting Elicits Reasoning&rdquo;: the CoT paper.</p>
+<p><strong>Caveats from these sources.</strong> &ldquo;9 of 10&rdquo; is the lecture&rsquo;s count of HuggingFace leaderboard models, a 2024 snapshot. Emergence remains contested. The lecture flags this explicitly.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>This course:</strong> L09 pretrained the models. This lecture adapts them. L11 evaluates them. L15 (Lambert) continues the alignment story after DPO.</li>
+<li><strong>CS336:</strong> L15 (post-training), L16 (RLVR) carry the deep mechanics.</li>
+<li><strong>CS329H:</strong> choice theory and Bradley-Terry are the same mathematics as social choice.</li>
+</ul>
+<div class="cheatsheet"><span class="co-label">Cheatsheet</span><p><strong>Post-training cheatsheet.</strong> Scale: 1.4T -&gt; 15T tokens, &gt;1e26 FLOPs. Few-shot: examples in, no gradient updates. CoT: reasoning chains. Zero-shot &ldquo;step by step&rdquo; 17.7-&gt;78.7. Instruct: FLAN 3M+ (+6.1-&gt;+26.6), LIMA 1000. RLHF: SFT -&gt; reward model -&gt; RL. Bradley-Terry: P=sigma(r1-r2). Hacking: gibberish, authoritative&gt;truthful, longer wins. KL penalty. DPO: closed form, Z cancels, binary classification, matches RLHF, 9/10 HF models.</p></div>
+<div class="memory-aid"><span class="ma-label">Memory aid</span><p><strong>Preferences are noisy. Metrics get hacked.</strong> Pairwise comparisons tame the noise. DPO tames the pipeline. But any learned metric invites hacking: optimize carefully.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=35X6zlhoCy4" target="_blank" rel="noopener">Lecture 10 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2203.02155" target="_blank" rel="noopener">Ouyang et al., Training language models to follow instructions with human feedback (2022)</a></li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2305.18290" target="_blank" rel="noopener">Rafailov et al., Direct Preference Optimization (2023)</a></li></ul></section>
+      <nav class="pager"><a href="../cs224n/l09-pretraining.html"><span class="lbl">← Previous</span>Lecture 9: Pretraining (Bridge)</a><a href="../cs224n/l11-evaluation.html"><span class="lbl">Next →</span>Lecture 11: Evaluation (Bridge)</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

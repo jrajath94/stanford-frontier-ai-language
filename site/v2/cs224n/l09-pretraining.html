@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 9: Pretraining (Bridge) — Stanford Frontier AI</title>
+<meta name="description" content="Pretraining as reconstructing the input, what it teaches, BERT and GPT, in-context learning, and the three-stage training recipe. Deep mechanics live in CS336.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-l09" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09" class="active">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 9: Pretraining (Bridge)</nav>
+      <h1>Lecture 9: Pretraining (Bridge)</h1>
+      <p class="meta-line">Instructor: Christopher Manning · 1:19:00 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="DGfCRXuNA2w"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/DGfCRXuNA2w" title="Lecture 9: Pretraining" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=DGfCRXuNA2w" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=DGfCRXuNA2w" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. Christopher Manning covers masked pretraining, BERT, GPT, and in-context learning.</p></div><div class="callout"><span class="co-label">Note</span><p><strong>Bridge lesson.</strong> This lecture teaches the CS224N framing: what
+pretraining teaches and how BERT and GPT use it. For deep mechanics,
+follow the links: <a href="../cs336/l09-scaling-laws.html">CS336 L09</a> (scaling
+laws, Chinchilla), <a href="../cs336/l13-training-data.html">CS336 L13</a> (training
+data), <a href="../cs336/l14-data-pipeline.html">CS336 L14</a> (the data pipeline).
+This lesson never re-explains what those cover.</p></div>
+<h2 id="how-to-read-this-lesson">How to read this lesson</h2>
+<p>This lesson has two levels. <strong>Level 1 (Core)</strong> defines pretraining and shows
+what it teaches. <strong>Level 2 (Deep)</strong> covers BERT, GPT, adaptation methods, and
+the three-stage recipe.</p>
+<h2 id="level-1-pretraining-reconstructs-the-input">Level 1: Pretraining reconstructs the input</h2>
+<p><strong>Pretraining</strong> trains on unlabeled text by <strong>reconstructing the input</strong>
+(<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=1183s" target="_blank" rel="noopener">19:43 <span class="ts">⏱19:43</span></a>). Mask part of a sentence (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=1193s" target="_blank" rel="noopener">19:53 <span class="ts">⏱19:53</span></a>). Predict it
+back.</p>
+<figure><img alt="Reconstruct" src="assets/l09-reconstruct.svg"><figcaption>'Stanford University is located in [MASK] Alto' -&gt; predict 'Palo'. Trillions of words, no labels.</figcaption></figure>
+<p>&ldquo;Stanford University is located in [MASK] Alto&rdquo; (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=1215s" target="_blank" rel="noopener">20:15 <span class="ts">⏱20:15</span></a>). The
+label is &ldquo;Palo&rdquo;. No human annotator needed. The data is free: at least five
+trillion words on the internet (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=1987s" target="_blank" rel="noopener">33:07 <span class="ts">⏱33:07</span></a>), against roughly a million
+labeled examples.</p>
+<h2 id="level-1-what-one-objective-teaches">Level 1: What one objective teaches</h2>
+<p>One reconstruction objective teaches many things:</p>
+<figure><img alt="What pretraining teaches" src="assets/l09-teaches.svg"><figcaption>Trivia, syntax, coreference, semantics, sentiment, world models, and surprises like Fibonacci.</figcaption></figure>
+<ul>
+<li><strong>Trivia.</strong> Stanford is in Palo Alto.</li>
+<li><strong>Syntax.</strong> &ldquo;put ____ fork&rdquo;: the blank takes a preposition.</li>
+<li><strong>Coreference.</strong> &ldquo;over ____ shoulder&rdquo;: whose shoulder.</li>
+<li><strong>Semantics.</strong> Ocean words cluster together.</li>
+<li><strong>Sentiment.</strong> &ldquo;the movie was ____&rdquo;: positive or negative.</li>
+<li><strong>World models.</strong> Zuko in the kitchen: who is where.</li>
+<li><strong>Surprises.</strong> Fibonacci sequences. The model learns more than the
+objective asks.</li>
+</ul>
+<div class="qa"><div class="q">Why does reconstruction teach so much?</div><div class="a"><p>To fill blanks reliably across trillions of words, the model must learn grammar, facts, and reasoning patterns. The objective is simple. The data is rich. Rich data plus a hard prediction task forces broad knowledge.
+Grounding. The model learns word patterns, not the world. Its answers &ldquo;always look very fluent&rdquo; but are &ldquo;frequently wrong&rdquo; (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=3738s" target="_blank" rel="noopener">62:18 <span class="ts">⏱62:18</span></a>): a warning that survives into ChatGPT.</p><div class="followup"><strong>Follow-up:</strong> What does it not teach?</div></div></div>
+<h2 id="level-2-bert">Level 2: BERT</h2>
+<p><strong>BERT</strong> masks 15% of tokens (80/10/10 rule) and predicts them. It adds
+<strong>segment embeddings</strong> for sentence pairs (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=2602s" target="_blank" rel="noopener">43:22 <span class="ts">⏱43:22</span></a>) and a <strong>CLS
+token</strong> as an aggregate readout. Base: 110M parameters. Large: 340M. Trained
+on a few billion words.</p>
+<figure><img alt="BERT" src="assets/l09-bert.svg"><figcaption>15% masking, segment embeddings, CLS token; NSP was not necessary; GLUE was a sea change.</figcaption></figure>
+<p>The <strong>next-sentence prediction</strong> (NSP) task turned out to be &ldquo;not really
+necessary&rdquo; (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=2709s" target="_blank" rel="noopener">45:09 <span class="ts">⏱45:09</span></a>): it halves the effective context, and later
+work showed models were bad at it anyway. <strong>Span masking</strong> works better.
+RoBERTa removed NSP.</p>
+<p>On GLUE, BERT was a shock: &ldquo;the field was taken aback in a way that&rsquo;s hard
+to describe&hellip; sea change&rdquo; (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=2975s" target="_blank" rel="noopener">49:35 <span class="ts">⏱49:35</span></a>).</p>
+<p><strong>Fine-tuning stays close</strong> to the pretrained weights. <strong>PEFT</strong> methods adapt
+cheaply: prefix tuning, prompt tuning, low-rank updates (LoRA)
+(<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=3388s" target="_blank" rel="noopener">56:28 <span class="ts">⏱56:28</span></a>).</p>
+<h2 id="level-2-gpt-and-in-context-learning">Level 2: GPT and in-context learning</h2>
+<p>The GPT line scales the same idea autoregressively:</p>
+<figure><img alt="GPT scale" src="assets/l09-gpt-scale.svg"><figcaption>GPT 117M on BooksCorpus, GPT-2 1.5B on ~9B words, GPT-3 175B on 300B words; Chinchilla corrected the sizing.</figcaption></figure>
+<ul>
+<li><strong>GPT:</strong> 117M parameters, 768 hidden, BooksCorpus (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=3851s" target="_blank" rel="noopener">64:11 <span class="ts">⏱64:11</span></a>).</li>
+<li><strong>GPT-2:</strong> 1.5B parameters, ~9B words.</li>
+<li><strong>GPT-3:</strong> 175B parameters, 300B words.</li>
+</ul>
+<p><strong>In-context learning</strong>: give examples in the prompt, no weight updates.
+thanks -&gt; merci, hello -&gt; bonjour, otter -&gt; ? (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=4075s" target="_blank" rel="noopener">67:55 <span class="ts">⏱67:55</span></a>).
+<strong>Chain of thought</strong> is a scratch pad: more compute at inference time
+(<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=4312s" target="_blank" rel="noopener">71:52 <span class="ts">⏱71:52</span></a>).</p>
+<p><strong>Chinchilla</strong> corrected the sizing: GPT-3 was &ldquo;comically oversized&rdquo;
+(<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=4282s" target="_blank" rel="noopener">71:22 <span class="ts">⏱71:22</span></a>). Smaller models on more data win. Cost is roughly params
+times tokens. Full treatment: <a href="../cs336/l09-scaling-laws.html">CS336 L09</a>.</p>
+<h2 id="level-2-the-three-stage-recipe">Level 2: The three-stage recipe</h2>
+<figure><img alt="Three stages" src="assets/l09-three-part.svg"><figcaption>Pretrain on trillions of words, continue pretraining on unlabeled task data, then fine-tune.</figcaption></figure>
+<ol>
+<li><strong>Pretrain</strong> on trillions of general words.</li>
+<li><strong>Continue pretraining</strong> on unlabeled task data (&ldquo;Don&rsquo;t Stop
+Pretraining&rdquo;).</li>
+<li><strong>Fine-tune</strong> on labeled task data (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=1562s" target="_blank" rel="noopener">26:02 <span class="ts">⏱26:02</span></a>).</li>
+</ol>
+<p>Each stage narrows the distribution. Fine-tuning starts near the pretrained
+solution and stays close to it.</p>
+<div class="qa"><div class="q">Why continue pretraining instead of fine-tuning directly?</div><div class="a"><p>The pretrained model knows general text, not your domain&rsquo;s vocabulary and style. Continued pretraining on unlabeled domain text adapts the representations cheaply. Fine-tuning then needs fewer labels and generalizes better.
+When the task needs knowledge absent from the pretraining data, or when the fine-tuning data contradicts pretraining strongly. Also: fluent but wrong answers. Pretraining teaches form. It does not guarantee truth.</p><div class="followup"><strong>Follow-up:</strong> When does pretraining fail to help?</div></div></div>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>Eight ideas carry this lecture. Read each card. Say the core sentence out
+loud. If you can, you own the lesson.</p>
+<div class="recap-grid">
+<div class="recap-card">
+<img src="assets/l09-reconstruct.svg" alt="Reconstruct">
+<div class="rc-body">
+<strong>1. Pretraining reconstructs the input</strong>
+<p>Mask part of a sentence. Predict it back. Trillions of unlabeled words
+versus a million labeled. The data is free.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=1183s" target="_blank" rel="noopener">19:43 <span class="ts">⏱19:43</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l09-teaches.svg" alt="What it teaches">
+<div class="rc-body">
+<strong>2. One objective teaches many things</strong>
+<p>Trivia, syntax, coreference, semantics, sentiment, world models. Plus
+surprises like Fibonacci.</p>
+<p class="rc-num">Key: rich data, hard task</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l09-bert.svg" alt="BERT">
+<div class="rc-body">
+<strong>3. BERT: mask, segments, CLS</strong>
+<p>15% masking, segment embeddings, CLS readout. Base 110M, large 340M.
+NSP was not necessary. GLUE was a sea change.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=2975s" target="_blank" rel="noopener">49:35 <span class="ts">⏱49:35</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l09-gpt-scale.svg" alt="GPT scale">
+<div class="rc-body">
+<strong>4. GPT scales autoregressively</strong>
+<p>117M to 1.5B to 175B. In-context learning: examples in the prompt, no
+weight updates. Chinchilla: smaller plus more data.</p>
+<p class="rc-num">Key: comically oversized</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l09-three-part.svg" alt="Three stages">
+<div class="rc-body">
+<strong>5. Pretrain, continue, fine-tune</strong>
+<p>General text, then unlabeled task text ("Don't Stop Pretraining"), then
+labels. Fine-tuning stays close to the start.</p>
+<p class="rc-num">Key: narrow the distribution</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l09-bert.svg" alt="PEFT">
+<div class="rc-body">
+<strong>6. Adapt cheaply with PEFT</strong>
+<p>Prefix tuning, prompt tuning, LoRA: low-rank updates. Full fine-tuning
+is the slider's far end.</p>
+<p class="rc-num">Key: adapt, do not retrain</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l09-teaches.svg" alt="Fluent but wrong">
+<div class="rc-body">
+<strong>7. Fluent is not true</strong>
+<p>Answers "always look very fluent" and are "frequently wrong". Still true
+of ChatGPT. Pretraining teaches form, not truth.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=3738s" target="_blank" rel="noopener">62:18 <span class="ts">⏱62:18</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l09-bridge.svg" alt="Bridge">
+<div class="rc-body">
+<strong>8. Depth lives in CS336</strong>
+<p>Scaling laws (L09), training data (L13), data pipeline (L14). This
+lesson: the framing. CS336: the mechanics.</p>
+<p class="rc-num">Key: bridge, not duplicate</p>
+</div>
+</div>
+</div>
+
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 9 video and transcript.
+- Devlin et al. (2019): BERT.
+- Brown et al. (2020): GPT-3 and in-context learning.</p>
+<p><strong>Further reading:</strong>
+- <a href="../cs336/l09-scaling-laws.html">CS336 L09</a>: Chinchilla and scaling laws in full.
+- <a href="../cs336/l13-training-data.html">CS336 L13</a>: what goes into pretraining data.
+- Gururangan et al. (2020), &ldquo;Don&rsquo;t Stop Pretraining&rdquo;: the continue-pretraining result.</p>
+<p><strong>Caveats from these sources.</strong> &ldquo;Five trillion words&rdquo; is the lecture&rsquo;s estimate of internet text, not a measured count. &ldquo;Frequently wrong&rdquo; is an observed failure mode, not a rate.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>This course:</strong> L08 provides the architecture. L10 adapts pretrained models (prompting, instruction tuning, RLHF). L12 trains them efficiently.</li>
+<li><strong>CS336:</strong> L09 (scaling), L13 (data), L14 (pipeline) carry the deep mechanics.</li>
+<li><strong>CS329H:</strong> preference modeling theory underlies the post-training of L10.</li>
+</ul>
+<div class="cheatsheet"><span class="co-label">Cheatsheet</span><p><strong>Pretraining cheatsheet.</strong> Objective: reconstruct masked input. Data: ~5T words vs ~1M labeled. Teaches: trivia, syntax, coreference, semantics, sentiment, world models. BERT: 15% mask, 80/10/10, segments, CLS, 110M/340M; NSP unnecessary; GLUE sea change. PEFT: prefix/prompt/LoRA. GPT: 117M -&gt; 1.5B -&gt; 175B. In-context: examples, no updates; CoT: scratch pad. Chinchilla: smaller + more data. Cost ~ params x tokens. Recipe: pretrain -&gt; continue -&gt; fine-tune. Warning: fluent but frequently wrong.</p></div>
+<div class="memory-aid"><span class="ma-label">Memory aid</span><p><strong>Reconstruct to learn.</strong> Mask, predict, repeat over trillions of words. One simple objective, many kinds of knowledge. Form is learned. Truth is not guaranteed.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=DGfCRXuNA2w" target="_blank" rel="noopener">Lecture 9 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/1810.04805" target="_blank" rel="noopener">Devlin et al., BERT: Pre-training of Deep Bidirectional Transformers (2019)</a></li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener">Brown et al., Language Models are Few-Shot Learners (2020)</a></li></ul></section>
+      <nav class="pager"><a href="../cs224n/l08-transformers.html"><span class="lbl">← Previous</span>Lecture 8: Transformers (Bridge)</a><a href="../cs224n/l10-prompting-post-training.html"><span class="lbl">Next →</span>Lecture 10: Prompting, Instruction Tuning, RLHF (Bridge)</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

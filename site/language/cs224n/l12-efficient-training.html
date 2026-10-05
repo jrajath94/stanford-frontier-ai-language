@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L12: Efficient Training — Stanford Frontier AI</title>
+<meta name="description" content="How large language models actually get trained: mixed-precision arithmetic (fp16, bf16, loss scaling), the GPU memory budget, data-parallel training with DDP, m">
+<link rel="stylesheet" href="assets/vendor/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="cs224n-l12">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="cs224n/l01-word-vectors-1.html" data-page="cs224n-l01">L01 · Introduction, Word Vectors</a></li>
+<li><a href="cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors, GloVe, Evaluation</a></li>
+<li><a href="cs224n/l03-neural-networks.html" data-page="cs224n-l03">L03 · Neural Networks, Backprop</a></li>
+<li><a href="cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="cs224n/l05-rnns.html" data-page="cs224n-l05">L05 · Recurrent neural networks</a></li>
+<li><a href="cs224n/l06-seq2seq-attention.html" data-page="cs224n-l06">L06 · LSTMs, seq2seq, machine translation</a></li>
+<li><a href="cs224n/l07-attention-llm-intro.html" data-page="cs224n-l07">L07 · Attention and the road to LLMs</a></li>
+<li><a href="cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Self-Attention, Transformers</a></li>
+<li><a href="cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="cs224n/l10-post-training.html" data-page="cs224n-l10">L10 · Post-Training</a></li>
+<li><a href="cs224n/l11-benchmarking.html" data-page="cs224n-l11">L11 · Benchmarking</a></li>
+<li><a href="cs224n/l12-efficient-training.html" data-page="cs224n-l12" class="active">L12 · Efficient Training</a></li>
+<li><a href="cs224n/l13-bci.html" data-page="cs224n-l13">L13 · Brain-Computer Interfaces</a></li>
+<li><a href="cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="cs224n/l15-after-dpo.html" data-page="cs224n-l15">L15 · After DPO</a></li>
+</ul>
+<h3></h3><ul>
+<li><a href="cs224n/index.html" data-page="cs224n/index.html">CS224N: NLP with Deep Learning</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="index.html">Home</a> / <a href="#">CS224N: Natural Language Processing with Deep Learning</a> / L12: Efficient Training</nav>
+      <h1>L12: Efficient Training</h1>
+      <p class="meta-line">Instructor: Chris Manning · 1:02:24 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/UVX7SYGCKkA" title="L12: Efficient Training" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><p class="video-cap">Original lecture. Timestamps link to exact moments.</p><p>Training a model and understanding a model are different skills. This lecture covers the first: what happens on the GPUs when you train a large network, where memory goes, and which tricks let you fit bigger models on fixed hardware. The three topics are mixed precision training, multi-GPU training (DDP and FSDP), and parameter-efficient fine-tuning with LoRA. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=51s" target="_blank" rel="noopener">00:51 <span class="ts">⏱0:51</span></a></p>
+<p>As taught in <a href="../../foundations/cs229s/l03-transformer-performance.html">CS229S L03</a>, a training step costs about 3x a forward pass, and the backward pass must store activations. This lesson takes those facts as given and asks the practical question: how do you run that computation without running out of memory?</p>
+<h2 id="how-numbers-are-stored-and-why-half-precision-hurts">How numbers are stored, and why half precision hurts</h2>
+<p>A floating point number has three parts: a sign bit, an exponent field, and a mantissa field. The exponent bits decide the range (how small and how large a number can be). The mantissa bits decide the precision (how finely values are spaced). <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=132s" target="_blank" rel="noopener">02:12 <span class="ts">⏱2:12</span></a></p>
+<p>FP32 uses 1 sign bit, 8 exponent bits, and 23 mantissa bits, costing 4 bytes per parameter. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=158s" target="_blank" rel="noopener">02:38 <span class="ts">⏱2:38</span></a> FP16 cuts the fields to 1 sign bit, 5 exponent bits, and 10 mantissa bits, costing 2 bytes. That halves memory but cuts range and precision at the same time. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=218s" target="_blank" rel="noopener">03:38 <span class="ts">⏱3:38</span></a></p>
+<p>Two failure modes follow. First, underflow. Gradients during training are often tiny, and FP16 cannot represent numbers below about (6 \times 10^{-5}). They get rounded to exactly zero. The lecture shows a gradient histogram from an NVIDIA blog post: more than half the gradients would become zero in FP16. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=360s" target="_blank" rel="noopener">06:00 <span class="ts">⏱6:00</span></a> A network cannot learn if most of its gradients vanish. Second, imprecise updates. With fewer mantissa bits, small weight updates get rounded away, so the parameters drift from where they should be. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=289s" target="_blank" rel="noopener">04:49 <span class="ts">⏱4:49</span></a></p>
+<h2 id="mixed-precision-training-the-recipe">Mixed precision training: the recipe</h2>
+<p>The fix uses both formats at once. Keep a full-precision copy of the parameters in FP32. Call these the master weights. Run the forward and backward pass in FP16 for speed and memory, then upcast the gradients to FP32 and update the master weights there, where updates stay precise. Copy the updated weights back into the FP16 model. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=393s" target="_blank" rel="noopener">06:33 <span class="ts">⏱6:33</span></a></p>
+<p>This fixes the imprecise-update problem but not the underflow problem: gradients still become zero while they are in FP16. The lecture adds one more step. Scale the loss by a large value (say 10,000) before the backward pass. That scales every gradient up by the same factor, shifting them into the range FP16 can represent. After computing the gradient, divide it by the scale factor in FP32 and update the master weights. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=540s" target="_blank" rel="noopener">09:00 <span class="ts">⏱9:00</span></a></p>
+<div class="callout"><span class="co-label">Key idea</span><p>Mixed precision training means: master weights in FP32, forward and backward in FP16, loss scaled up before the backward pass and divided back down before the update. In PyTorch, <code>GradScaler</code> and <code>autocast</code> implement it.</p></div>
+<p>A scale that is too large overflows to NaN, and a scale that is too small leaves gradients underflowed. PyTorch&rsquo;s <code>GradScaler</code> adjusts the scale dynamically across iterations, but the mechanism is fiddly. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=604s" target="_blank" rel="noopener">10:04 <span class="ts">⏱10:04</span></a></p>
+<h2 id="bfloat16-removes-the-scaler">BFloat16 removes the scaler</h2>
+<p>Recall why scaling was needed: FP16 has fewer exponent bits, so it lacks dynamic range. The move is to keep the 8 exponent bits and sacrifice precision bits instead. That is exactly BFloat16 (bf16): 1 sign bit, 8 exponent bits (the same range as FP32), 7 mantissa bits. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=709s" target="_blank" rel="noopener">11:49 <span class="ts">⏱11:49</span></a></p>
+<p>Because bf16 covers the full FP32 range, small gradients no longer underflow to zero, so no loss scaling is needed. Wrap the forward and backward pass in an <code>autocast</code> context and you are done. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=731s" target="_blank" rel="noopener">12:11 <span class="ts">⏱12:11</span></a></p>
+<div class="callout"><span class="co-label">Caveat</span><p>BFloat16 needs Ampere-generation or newer NVIDIA hardware (A100, H100, A6000). On older GPUs the format is unavailable. The lecture says to check <code>torch.cuda.is_bf16_supported()</code>. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=742s" target="_blank" rel="noopener">12:22 <span class="ts">⏱12:22</span></a></p></div>
+<p>The lecture shows results from fine-tuning DistilBERT for sentiment classification on a single A100. FP64 takes about 25 minutes and reaches high accuracy. Mixed precision with bf16 cuts training time by roughly a third, matches or slightly beats that accuracy, and uses much less memory. The speedup comes from matrix multiplies running faster in half precision. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=785s" target="_blank" rel="noopener">13:05 <span class="ts">⏱13:05</span></a></p>
+<div class="mermaid">flowchart LR
+    A[Master weights W in FP32] --> B[Downcast to FP16 or bf16]
+    B --> C[Forward pass in low precision]
+    C --> D[Backward pass: gradients in low precision]
+    D --> E[Upcast gradients to FP32]
+    E --> F[Update master weights W in FP32]
+    F --> A
+    D -.-> G[FP16 only: scale loss up first,<br/>divide gradient back down]
+</div>
+<h2 id="what-lives-in-gpu-memory">What lives in GPU memory</h2>
+<p>Before distributing training, the lecture writes down the full memory budget for one GPU. With Adam and mixed precision, every parameter costs:</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Format</th>
+<th>Bytes per parameter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model parameters</td>
+<td>FP16</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Gradients</td>
+<td>FP16</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Master weights</td>
+<td>FP32</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Adam momentum</td>
+<td>FP32</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Adam variance</td>
+<td>FP32</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p>That is 16 bytes per parameter. A 7B model needs 112 GB, more than one GPU can hold, before you even count activations. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=872s" target="_blank" rel="noopener">14:32 <span class="ts">⏱14:32</span></a> Two facts here surprise beginners. First, the optimizer itself needs memory: Adam stores a momentum term and a variance term per parameter and updates them every step. Second, all of this is multiplied by the number of GPUs in naive multi-GPU training, because every GPU holds everything. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=906s" target="_blank" rel="noopener">15:06 <span class="ts">⏱15:06</span></a></p>
+<h2 id="distributed-data-parallel-ddp">Distributed data parallel (DDP)</h2>
+<p>With multiple GPUs, the simplest scheme is data parallelism. Split the dataset across the GPUs, keep a synchronized copy of the model on each one, run the forward pass on each GPU&rsquo;s own data slice, and run the backward pass while communicating gradients. The communication step is an <strong>all-reduce</strong>: each GPU contributes its gradient, the gradients are summed, and every GPU receives the full sum. The cost is 2 bytes per parameter because the gradients are in FP16. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=991s" target="_blank" rel="noopener">16:31 <span class="ts">⏱16:31</span></a></p>
+<div class="mermaid">flowchart LR
+    A[4 GPUs, same model copy] --> B[Forward on each GPU's<br/>own data slice]
+    B --> C[Backward: different gradients per GPU]
+    C --> D[all-reduce gradients<br/>2 bytes per parameter]
+    D --> E[Each optimizer now holds<br/>the full gradient]
+    E --> F[Each GPU updates its copy<br/>independently, stays in sync]
+</div>
+<p>Once gradients are synchronized, every GPU holds the accumulated gradient and applies the same update to its own copy of the parameters, so the copies stay in sync. That is DDP. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=1055s" target="_blank" rel="noopener">17:35 <span class="ts">⏱17:35</span></a></p>
+<p>The problem is memory scaling. DDP divides only the data. Every GPU still holds all 16 bytes per parameter. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=1099s" target="_blank" rel="noopener">18:19 <span class="ts">⏱18:19</span></a></p>
+<h2 id="zero-shard-the-state-you-are-not-using">ZeRO: shard the state you are not using</h2>
+<p>ZeRO (Zero Redundancy Optimizer, from Microsoft&rsquo;s DeepSpeed project) removes the redundancy: not every GPU needs its own full copy of everything. It adds three stages of sharding. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=1134s" target="_blank" rel="noopener">18:54 <span class="ts">⏱18:54</span></a></p>
+<p><strong>Stage 1: shard the optimizer state.</strong> Every GPU keeps the full FP16 parameters and computes its own gradient, but holds only a shard of the optimizer state, and each GPU updates only its own parameter shard. The protocol: compute gradients on your data, run a <strong>reduce-scatter</strong> so each GPU gets the full gradient for its shard, update your shard, then run an <strong>all-gather</strong> so every GPU collects the updated parameters. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=1173s" target="_blank" rel="noopener">19:33 <span class="ts">⏱19:33</span></a></p>
+<p>Here is the elegant part. An all-reduce is exactly equivalent to a reduce-scatter followed by an all-gather, so stage 1 moves precisely the same bytes as DDP while using less memory per GPU. The lecture says to always use this: memory savings for free. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=1471s" target="_blank" rel="noopener">24:31 <span class="ts">⏱24:31</span></a></p>
+<p><strong>Stage 2: also shard the gradients.</strong> The complication: each GPU still needs the full gradient for its data slice during the backward pass. The trick is to never instantiate the full gradient vector. The backward pass runs layer by layer. As soon as a GPU computes one layer&rsquo;s gradient, it sends it to the GPU in charge of that shard and deallocates the memory. At the end, each GPU updates its shard from the gradients it received, then all-gathers to synchronize. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=1533s" target="_blank" rel="noopener">25:33 <span class="ts">⏱25:33</span></a> Again this is effectively free compared to DDP: a reduce plus an all-gather costs the same as an all-reduce. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=1692s" target="_blank" rel="noopener">28:12 <span class="ts">⏱28:12</span></a></p>
+<p><strong>Stage 3 (full FSDP): shard the model parameters too.</strong> When even the parameters do not fit on one GPU, shard those as well. No GPU holds a full layer&rsquo;s parameters, so the forward pass must all-gather each unit&rsquo;s parameters before computing and discard them after. The backward pass must all-gather the parameters again, compute gradients, then reduce-scatter the gradients to the right owners. Total overhead per unit: two all-gathers plus one reduce-scatter. But if the model cannot load onto a GPU at all, this is the only option. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=1732s" target="_blank" rel="noopener">28:52 <span class="ts">⏱28:52</span></a></p>
+<table>
+<thead>
+<tr>
+<th>Setup</th>
+<th>Bytes per parameter per GPU (P params, N GPUs)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DDP</td>
+<td>(16P)</td>
+</tr>
+<tr>
+<td>ZeRO stage 1</td>
+<td>(4P + 12P/N)</td>
+</tr>
+<tr>
+<td>ZeRO stage 2</td>
+<td>(4P + 14P/N)</td>
+</tr>
+<tr>
+<td>ZeRO stage 3 (FSDP)</td>
+<td>(16P/N)</td>
+</tr>
+</tbody>
+</table>
+<div class="callout"><span class="co-label">Interview signal</span><p>A frontier-lab interview may ask why ZeRO stage 1 is &ldquo;free&rdquo;. The answer to have ready: an all-reduce moves the same bytes as a reduce-scatter followed by an all-gather, so sharding the optimizer state cuts memory per GPU without moving any extra bytes. Stage 3 costs more because parameters must be re-collected before every layer&rsquo;s forward and backward pass.</p></div>
+<h2 id="the-missing-term-activations">The missing term: activations</h2>
+<p>The lecture admits the memory table was a lie by omission. It left out <strong>model activations</strong>: the intermediate tensors stored during the forward pass for reuse in the backward pass. Activations scale linearly with batch size, and they are what the CUDA out-of-memory error usually points at when you grow the batch. None of the ZeRO stages help with them, because every GPU needs its own activations for its own data slice. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2114s" target="_blank" rel="noopener">35:14 <span class="ts">⏱35:14</span></a></p>
+<p>The tool for activations is <strong>activation checkpointing</strong> (also called gradient checkpointing): discard most activations during the forward pass and recompute them during the backward pass. You trade extra computation for less memory. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2253s" target="_blank" rel="noopener">37:33 <span class="ts">⏱37:33</span></a></p>
+<h2 id="the-decision-flowchart">The decision flowchart</h2>
+<p>The lecture reduces everything to one procedure for fine-tuning on multiple GPUs: <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2178s" target="_blank" rel="noopener">36:18 <span class="ts">⏱36:18</span></a></p>
+<div class="mermaid">flowchart TD
+    A[Start: fine-tune a large model] --> B[Always use mixed precision.<br/>Use bf16 on Ampere+]
+    B --> C{Does batch size 1<br/>fit on one GPU?}
+    C -->|Yes| D[Grow the batch size.<br/>Always use ZeRO stage 2.]
+    C -->|No| E[Try ZeRO stage 3 / FSDP]
+    E --> F{Still out of memory?}
+    F -->|No| D
+    F -->|Yes| G[Try activation checkpointing]
+    G --> H{Still out of memory?}
+    H -->|No| D
+    H -->|Yes| I[Use LoRA: freeze the base model,<br/>train small adapters]
+</div>
+<p>The lecturer adds one scope note: the above assumes multiple GPUs. On a single GPU you need heavier measures like quantization, and very large models may simply not fit. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=3225s" target="_blank" rel="noopener">53:45 <span class="ts">⏱53:45</span></a></p>
+<h2 id="fsdp-in-practice-overlap-and-sharding-policy">FSDP in practice: overlap and sharding policy</h2>
+<p>Two engineering details make FSDP usable despite the extra communication. First, <strong>overlap</strong>. The model is divided into FSDP units, and communication is pipelined with computation: while a GPU runs the forward pass on one unit, it prefetches the next unit&rsquo;s parameters with an all-gather. After finishing a unit, it frees that unit&rsquo;s memory. The backward pass overlaps the all-gather plus reduce-scatter sequence the same way. If the network is deep enough, communication hides behind compute. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=3403s" target="_blank" rel="noopener">56:43 <span class="ts">⏱56:43</span></a></p>
+<p>Second, <strong>sharding policy</strong>. How you cut the model into units controls communication volume. Consecutive layers belong in the same unit, so one all-gather feeds several layers of compute. PyTorch&rsquo;s FSDP wrapper takes a sharding policy, and hand-tuned policies exist for transformers. A new architecture (the lecture gives sub-quadratic attention as an example) may lack a good policy and train less efficiently. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=3633s" target="_blank" rel="noopener">60:33 <span class="ts">⏱60:33</span></a></p>
+<p>A question from the audience asked whether weights are discarded after each layer&rsquo;s forward pass or cached. The answer: from the user&rsquo;s perspective they are thrown away and streamed back in during the backward pass. That is exactly why the sharding policy matters. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=3686s" target="_blank" rel="noopener">61:26 <span class="ts">⏱61:26</span></a></p>
+<h2 id="why-bother-with-efficiency-at-all">Why bother with efficiency at all</h2>
+<p>The lecture pauses to justify the topic. Training compute for the largest models has grown roughly 2x every 3.4 months, while global compute capacity grows about 2x every 1.5 years. That gap concentrates model building in a few well-funded organizations. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2389s" target="_blank" rel="noopener">39:49 <span class="ts">⏱39:49</span></a> Most papers still optimize accuracy rather than efficiency (the slides cite Green AI statistics and Ang et al., 2022). <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2467s" target="_blank" rel="noopener">41:07 <span class="ts">⏱41:07</span></a> Cornell scientists estimated in 2021 that training GPT-3 emitted as much carbon as running a coal power plant for 10 hours straight. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2531s" target="_blank" rel="noopener">42:11 <span class="ts">⏱42:11</span></a> A class anecdote makes the same point: in a Stanford RL course, choosing the more efficient of two equally good algorithms across all students would have saved about 880 kWh, roughly a month of an American household&rsquo;s electricity. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2568s" target="_blank" rel="noopener">42:48 <span class="ts">⏱42:48</span></a></p>
+<h2 id="lora-low-rank-adaptation">LoRA: low-rank adaptation</h2>
+<p>Full fine-tuning updates every parameter. GPT-3 has 175 billion parameters, and each downstream task would need its own full copy. When full fine-tuning does not fit, the fallback is <strong>parameter-efficient fine-tuning (PEFT)</strong>: update only a small subset of parameters and search over a much smaller space. Overparameterized models often adapt well with small updates, sometimes generalizing better than full fine-tuning. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2643s" target="_blank" rel="noopener">44:03 <span class="ts">⏱44:03</span></a></p>
+<p>LoRA (low-rank adaptation, Hu et al. 2021) builds on one observation: during adaptation, weight updates have low intrinsic rank (Aghajanyan et al. 2020). Instead of learning an arbitrary update (\Delta W) for a pretrained weight matrix (W), constrain it to a low-rank product:</p>
+<p>[ W + \Delta W = W + \alpha B A ]</p>
+<p>where (A \in \mathbb{R}^{r \times k}), (B \in \mathbb{R}^{d \times r}), and the rank (r) is much smaller than either dimension. Only (A) and (B) are trainable and the base weights stay frozen. The scalar (\alpha) trades off pretrained knowledge against task-specific knowledge: (\alpha = 0) changes nothing, and (\alpha = 1) is the usual starting point. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2825s" target="_blank" rel="noopener">47:05 <span class="ts">⏱47:05</span></a></p>
+<p>Two properties make LoRA practical. First, as (r) grows, LoRA converges toward full fine-tuning, so (r) is a dial between efficiency and capacity. Second, there is no extra inference latency: after training, merge (BA) into (W), and when switching tasks, subtract one task&rsquo;s update and add another&rsquo;s. The per-task storage is the small pair of matrices, not a full model copy. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2891s" target="_blank" rel="noopener">48:11 <span class="ts">⏱48:11</span></a></p>
+<p>In code the change is small. Run the normal forward pass through the frozen weights to get the hidden state, then add the trainable offset (BAx). Apply it to every weight matrix in every layer, though in practice the query and value matrices of self-attention give the best results. <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2960s" target="_blank" rel="noopener">49:20 <span class="ts">⏱49:20</span></a></p>
+<p>The empirical case: on GPT-2 medium and large, LoRA beats adapter and BitFit baselines with comparable or fewer trainable parameters, and matches or exceeds full fine-tuning while storing far less per task. Even a very small rank works well. The lecture&rsquo;s recommended starting point: LoRA on the query and value matrices, rank 8, (\alpha = 1). <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=3138s" target="_blank" rel="noopener">52:18 <span class="ts">⏱52:18</span></a> <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=3270s" target="_blank" rel="noopener">54:30 <span class="ts">⏱54:30</span></a></p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Lecture video: <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA">Lecture 12 video, Stanford Online YouTube</a></li>
+<li>Slides: cs224n-spr2024-lecture12-training-shikhar.pdf (CS224N Spring 2024)</li>
+<li><a href="https://pytorch.org/docs/stable/notes/amp_examples.html">PyTorch AMP examples (GradScaler and autocast)</a>, linked in the lecture slides</li>
+<li><a href="https://sebastianraschka.com/blog/2023/llm-mixed-precision-copy.html">Sebastian Raschka, LLM mixed-precision benchmarks (DistilBERT on A100)</a>, source for the lecture&rsquo;s timing table</li>
+<li><a href="https://engineering.fb.com/2021/07/15/open-source/fsdp/">Meta Engineering, FSDP</a>, source for the lecture&rsquo;s FSDP communication diagram</li>
+<li>Micikevicius et al., <a href="https://arxiv.org/abs/1710.03740">Mixed Precision Training, 2018</a></li>
+<li>Rajbhandari et al., <a href="https://arxiv.org/abs/1910.02054">ZeRO: Memory Optimizations Toward Training Trillion Parameter Models, 2020</a></li>
+<li>Hu et al., <a href="https://arxiv.org/abs/2106.09685">LoRA: Low-Rank Adaptation of Large Language Models, 2021</a></li>
+</ul>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=UVX7SYGCKkA" target="_blank" rel="noopener">Lecture 12 video, Stanford Online YouTube</a></li><li><span class="src-tag">SLIDES</span>cs224n-spr2024-lecture12-training-shikhar.pdf (CS224N Spring 2024)</li><li><span class="src-tag">SUPPLEMENT</span><a href="https://pytorch.org/docs/stable/notes/amp_examples.html" target="_blank" rel="noopener">PyTorch AMP examples (GradScaler and autocast), linked in the lecture slides</a></li><li><span class="src-tag">SUPPLEMENT</span><a href="https://sebastianraschka.com/blog/2023/llm-mixed-precision-copy.html" target="_blank" rel="noopener">Sebastian Raschka, LLM mixed-precision benchmarks (DistilBERT on A100), source for the lecture&#x27;s timing table</a></li><li><span class="src-tag">SUPPLEMENT</span><a href="https://engineering.fb.com/2021/07/15/open-source/fsdp/" target="_blank" rel="noopener">Meta Engineering, FSDP (source for the lecture&#x27;s FSDP communication diagram)</a></li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener">Hu et al., LoRA: Low-Rank Adaptation of Large Language Models, 2021</a></li></ul></section>
+      <nav class="pager"><a href="cs224n/l11-benchmarking.html"><span class="lbl">← Previous</span>L11: Benchmarking</a><a href="cs224n/l13-bci.html"><span class="lbl">Next →</span>L13: Brain-Computer Interfaces</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/vendor/katex.min.js"></script>
+<script src="assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "";</script>
+<script src="assets/app.js"></script>
+</body>
+</html>

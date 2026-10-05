@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 7: Attention — Stanford Frontier AI</title>
+<meta name="description" content="MT evaluation with BLEU, the seq2seq bottleneck, and Bahdanau attention: the decoder queries the encoder states, scores, weights, and averages.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-l07" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07" class="active">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 7: Attention</nav>
+      <h1>Lecture 7: Attention</h1>
+      <p class="meta-line">Instructor: Christopher Manning · 1:17:30 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="J7ruSOIzhrE"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/J7ruSOIzhrE" title="Lecture 7: Attention and Final Projects; Practical Tips" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=J7ruSOIzhrE" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=J7ruSOIzhrE" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. Christopher Manning introduces BLEU evaluation and Bahdanau attention for neural machine translation.</p></div><h2 id="how-to-read-this-lesson">How to read this lesson</h2>
+<p>This lesson has two levels. <strong>Level 1 (Core)</strong> covers BLEU and the attention
+mechanism. <strong>Level 2 (Deep)</strong> generalizes attention and explains why it helps
+gradients.</p>
+<h2 id="level-1-bleu-evaluates-translations">Level 1: BLEU evaluates translations</h2>
+<p>Before attention, the lecture covers <strong>BLEU</strong> (<a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=26s" target="_blank" rel="noopener">00:26 <span class="ts">⏱00:26</span></a>): the
+standard automatic metric for machine translation. BLEU compares n-gram
+overlap between the model&rsquo;s output and reference translations.</p>
+<figure><img alt="BLEU" src="assets/l07-bleu.svg"><figcaption>BLEU counts matching n-grams against references and penalizes brevity.</figcaption></figure>
+<p>Automatic metrics are cheap and reproducible. They are also crude: they count</p>
+<p>Automatic metrics are cheap and reproducible. They are also crude: they count
+word overlap, not meaning.</p>
+<h2 id="level-1-the-bottleneck">Level 1: The bottleneck</h2>
+<p>Seq2seq stuffs the whole source sentence into <strong>one fixed vector</strong>. &ldquo;It
+still seems a very questionable thing to do,&rdquo; says the lecture
+(<a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=849s" target="_blank" rel="noopener">14:09 <span class="ts">⏱14:09</span></a>). &ldquo;It is certainly not like what a human being does.&rdquo;</p>
+<figure><img alt="Bottleneck" src="assets/l07-bottleneck.svg"><figcaption>Many source words compress into one fixed vector; detail is lost.</figcaption></figure>
+<p>A human translator reads the sentence, holds its meaning, then <strong>looks back</strong>
+at earlier parts while translating (<a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=854s" target="_blank" rel="noopener">14:14 <span class="ts">⏱14:14</span></a>). The network should do
+the same: attend to different source words as needed.</p>
+<h2 id="level-1-attention-step-by-step">Level 1: Attention, step by step</h2>
+<p>On each decoder step, insert direct connections to the encoder
+(<a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=891s" target="_blank" rel="noopener">14:51 <span class="ts">⏱14:51</span></a>):</p>
+<figure><img alt="Attention steps" src="assets/l07-attention-steps.svg"><figcaption>Query, compare, softmax scores, weighted average, concatenate and predict; Bahdanau et al., 2015.</figcaption></figure>
+<ol>
+<li>Use the decoder&rsquo;s hidden state as a <strong>query</strong> to look back
+(<a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=920s" target="_blank" rel="noopener">15:20 <span class="ts">⏱15:20</span></a>).</li>
+<li>Compare it with every encoder hidden state. Compute <strong>attention scores</strong>:
+where to look (<a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=950s" target="_blank" rel="noopener">15:50 <span class="ts">⏱15:50</span></a>).</li>
+<li>Softmax the scores into an <strong>attention distribution</strong>.</li>
+<li>Take the <strong>weighted average</strong> of the encoder states (<a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=985s" target="_blank" rel="noopener">16:25 <span class="ts">⏱16:25</span></a>).</li>
+<li>Concatenate with the decoder state and predict.</li>
+</ol>
+<p>Each step gets its own context vector. The model reads what it needs, when
+it needs it. &ldquo;More human-like.&rdquo;</p>
+<figure><img alt="Attention scores" src="assets/l07-scores.svg"><figcaption>Attention weights over 'he hit me with a pie': the context vector is the weighted average of encoder states.</figcaption></figure>
+<h2 id="level-2-the-general-form">Level 2: The general form</h2>
+<p>Attention generalizes beyond translation. The general form (<a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=1520s" target="_blank" rel="noopener">25:20 <span class="ts">⏱25:20</span></a>):</p>
+<ul>
+<li>A set of <strong>values</strong> H(1)..H(n).</li>
+<li>A <strong>query</strong> vector.</li>
+<li>Scores between query and values, softmaxed into weights.</li>
+<li>Output = weighted average of values.</li>
+</ul>
+<p>Any problem with &ldquo;look at the relevant parts&rdquo; fits this shape.</p>
+<pre class="ascii">values:   H_1   H_2   H_3  ...  H_n
+query:    q
+scores:   s_i = score(q, H_i)
+weights:  a = softmax(s)
+output:   sum over i of a_i * H_i
+</pre>
+<h2 id="level-2-why-attention-helps-gradients">Level 2: Why attention helps gradients</h2>
+<figure><img alt="Shorter paths" src="assets/l07-paths.svg"><figcaption>Direct decoder-to-encoder connections shorten the paths gradients travel.</figcaption></figure>
+<p>Attention solves the bottleneck: &ldquo;you now no longer&rdquo; compress everything
+into one vector (<a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=1386s" target="_blank" rel="noopener">23:06 <span class="ts">⏱23:06</span></a>). It also helps the <strong>vanishing gradient</strong>
+problem (<a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=1402s" target="_blank" rel="noopener">23:22 <span class="ts">⏱23:22</span></a>): direct connections from decoder to each encoder
+state shorten the paths gradients travel. Shorter paths, healthier gradients.</p>
+<div class="qa"><div class="q">Why is attention &quot;more human-like&quot;?</div><div class="a"><p>Humans translating look back at the source sentence as they write. Seq2seq forces the model to memorize the sentence in one vector and never look again. Attention restores the looking-back behavior.
+Computation per step. Each decoder step now compares against every encoder state: quadratic in sequence length for self-attention. The transformer (L08) pays this cost everywhere and wins anyway.</p><div class="followup"><strong>Follow-up:</strong> What did attention cost?</div></div></div>
+<div class="qa"><div class="q">Is attention the same as alignment?</div><div class="a"><p>Related, not identical. Classical alignment maps source words to target words as a hard preprocessing step. Attention learns soft weights jointly with translation. The weights often look like alignments, but they are learned for the task, not imposed.
+Cautiously. High weight means the model used that state, not that the word caused the output. The weights are one factor in a large computation. Treat them as hints, not proofs.</p><div class="followup"><strong>Follow-up:</strong> Can attention weights be read as explanations?</div></div></div>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>Eight ideas carry this lecture. Read each card. Say the core sentence out
+loud. If you can, you own the lesson.</p>
+<div class="recap-grid">
+<div class="recap-card">
+<img src="assets/l07-bottleneck.svg" alt="Bottleneck">
+<div class="rc-body">
+<strong>1. One fixed vector cannot hold a sentence</strong>
+<p>Seq2seq compresses everything into one vector. Detail is lost. Humans
+look back. Models should too.</p>
+<p class="rc-num">Key: the bottleneck is implausible</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l07-attention-steps.svg" alt="Attention steps">
+<div class="rc-body">
+<strong>2. Query, score, weight, average</strong>
+<p>Decoder state as query. Compare with encoder states. Softmax scores.
+Weighted average. Concatenate and predict.</p>
+<p class="rc-num">Key: Bahdanau et al., 2015</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l07-scores.svg" alt="Attention scores">
+<div class="rc-body">
+<strong>3. Scores become a distribution</strong>
+<p>Softmax turns raw scores into weights. The context vector is the weighted
+average of encoder states.</p>
+<p class="rc-num">Key: one context per step</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l07-attention-steps.svg" alt="Human-like">
+<div class="rc-body">
+<strong>4. Attention is more human-like</strong>
+<p>A human translator looks back at the source. Attention gives the network
+the same ability: read what it needs, when it needs it.</p>
+<p class="rc-num">Key: look back while translating</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l07-attention-steps.svg" alt="General form">
+<div class="rc-body">
+<strong>5. The general form: values plus query</strong>
+<p>Values H(1)..H(n), a query, scores, softmax, weighted average. Any
+"look at the relevant parts" problem fits.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=1520s" target="_blank" rel="noopener">25:20 <span class="ts">⏱25:20</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l07-bottleneck.svg" alt="Gradients">
+<div class="rc-body">
+<strong>6. Shorter paths help gradients</strong>
+<p>Direct decoder-to-encoder connections shorten gradient paths. Healthier
+gradients, less vanishing.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=J7ruSOIzhrE&amp;t=1402s" target="_blank" rel="noopener">23:22 <span class="ts">⏱23:22</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l07-scores.svg" alt="BLEU">
+<div class="rc-body">
+<strong>7. BLEU measures n-gram overlap</strong>
+<p>Automatic, cheap, reproducible. Counts word overlap against references,
+not meaning. Standard for MT of this era.</p>
+<p class="rc-num">Key: cheap and crude</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l07-attention-steps.svg" alt="What is next">
+<div class="rc-body">
+<strong>8. Attention is the bridge to transformers</strong>
+<p>L08 removes recurrence entirely: attention everywhere, all at once.
+This lecture's mechanism becomes the whole architecture.</p>
+<p class="rc-num">Key: attention is all you need, next</p>
+</div>
+</div>
+</div>
+
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 7 video and transcript.
+- Bahdanau, Cho, Bengio (2015): attention for NMT.
+- Papineni et al. (2002): BLEU.</p>
+<p><strong>Further reading:</strong>
+- Luong, Pham, Manning (2015), &ldquo;Effective Approaches to Attention-based Neural Machine Translation&rdquo;: the local/global attention variants.
+- Vaswani et al. (2017): the transformer. Covered in L08.</p>
+<p><strong>Caveats from these sources.</strong> BLEU correlates imperfectly with human judgment. The lecture&rsquo;s evaluation lecture (L11) revisits this. Attention weights are hints, not explanations.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>This course:</strong> L06&rsquo;s bottleneck is this lecture&rsquo;s motivation. L08 turns attention into the transformer.</li>
+<li><strong>CS336:</strong> L03 builds the transformer architecture. L12 evaluation: BLEU&rsquo;s limits generalize to all automatic metrics.</li>
+<li><strong>CS229S:</strong> alignment algorithms are the classical predecessor of attention.</li>
+</ul>
+<div class="cheatsheet"><span class="co-label">Cheatsheet</span><p><strong>Attention cheatsheet.</strong> BLEU: n-gram overlap vs references. Bottleneck: one fixed vector, implausible. Fix: decoder queries encoder states. Steps: query -&gt; scores -&gt; softmax -&gt; weighted average -&gt; concat -&gt; predict. General: values + query -&gt; weights -&gt; output. Bahdanau 2015. Bonus: shorter gradient paths. Cost: per-step comparison.</p></div>
+<div class="memory-aid"><span class="ma-label">Memory aid</span><p><strong>Look back.</strong> Humans look back at the source. Attention lets networks look back too. One mechanism, two wins: better context, healthier gradients.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=J7ruSOIzhrE" target="_blank" rel="noopener">Lecture 7 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/1409.0473" target="_blank" rel="noopener">Bahdanau, Cho, Bengio, Neural Machine Translation by Jointly Learning to Align and Translate (2015)</a></li><li><span class="src-tag">PAPER</span><a href="https://aclanthology.org/P02-1040/" target="_blank" rel="noopener">Papineni et al., BLEU: a Method for Automatic Evaluation of Machine Translation (2002)</a></li></ul></section>
+      <nav class="pager"><a href="../cs224n/l06-lstms-nmt.html"><span class="lbl">← Previous</span>Lecture 6: LSTMs and Neural Machine Translation</a><a href="../cs224n/l08-transformers.html"><span class="lbl">Next →</span>Lecture 8: Transformers (Bridge)</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

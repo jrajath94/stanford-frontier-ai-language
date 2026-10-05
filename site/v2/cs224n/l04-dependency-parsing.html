@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 4: Dependency Parsing — Stanford Frontier AI</title>
+<meta name="description" content="Why sentences are ambiguous, dependency structure, transition-based parsing with SHIFT/LEFT-ARC/RIGHT-ARC, the failure of sparse indicator features, and the neu">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-l04" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04" class="active">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 4: Dependency Parsing</nav>
+      <h1>Lecture 4: Dependency Parsing</h1>
+      <p class="meta-line">Instructor: Christopher Manning · 1:19:00 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="KVKvde-_MYc"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/KVKvde-_MYc" title="Lecture 4: Dependency Parsing" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=KVKvde-_MYc" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=KVKvde-_MYc" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. Christopher Manning covers ambiguity, dependency structure, transition-based parsing, and neural parsers.</p></div><h2 id="how-to-read-this-lesson">How to read this lesson</h2>
+<p>This lesson has two levels. <strong>Level 1 (Core)</strong> explains why parsing is hard
+and how transition-based parsing works. <strong>Level 2 (Deep)</strong> covers evaluation,
+the feature problem, and the neural parser.</p>
+<h2 id="level-1-sentences-are-ambiguous">Level 1: Sentences are ambiguous</h2>
+<p>Human language is <strong>globally ambiguous</strong>. Programming languages have only
+local ambiguity. Consider the newspaper headline (<a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=929s" target="_blank" rel="noopener">15:29 <span class="ts">⏱15:29</span></a>):</p>
+<figure><img alt="Ambiguity" src="assets/l04-ambiguity.svg"><figcaption>Two readings of 'Scientists count whales from space': the counting happens from space, or the whales are from space.</figcaption></figure>
+<p>&ldquo;Scientists count whales from space&rdquo; has two readings. Either the counting
+happens from space, or the whales are from space (space whales). The
+prepositional phrase &ldquo;from space&rdquo; can attach to &ldquo;count&rdquo; or to &ldquo;whales&rdquo;.</p>
+<p>Prepositional phrases are common in English. Each new one multiplies the
+ambiguity: &ldquo;look in the large crate in the kitchen by the door&rdquo; (<a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=620s" target="_blank" rel="noopener">10:20 <span class="ts">⏱10:20</span></a>)
+stacks attachment choices. The reader resolves them by world knowledge. The
+parser must resolve them by computation.</p>
+<h2 id="level-1-dependency-structure">Level 1: Dependency structure</h2>
+<p>A <strong>dependency parse</strong> represents grammar as directed arcs from a <strong>head</strong>
+word to its <strong>dependent</strong> words. Each word has exactly one head (except the
+root).</p>
+<figure><img alt="Dependency arcs" src="assets/l04-dependency.svg"><figcaption>Arcs for 'the big cat sat': det and amod point to 'cat', nsubj points from 'cat' to 'sat'.</figcaption></figure>
+<p>Arcs carry labels: det (determiner), amod (adjective modifier), nsubj
+(nominal subject). The structure says what modifies what, which is what
+interpretation needs.</p>
+<h2 id="level-1-transition-based-parsing">Level 1: Transition-based parsing</h2>
+<p>Transition-based parsing builds the tree bottom-up with a <strong>stack</strong> (partial
+tree) and a <strong>buffer</strong> (remaining words). Three actions (<a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3331s" target="_blank" rel="noopener">55:31 <span class="ts">⏱55:31</span></a>):</p>
+<figure><img alt="Transitions" src="assets/l04-transitions.svg"><figcaption>SHIFT pushes the buffer word; LEFT-ARC and RIGHT-ARC add arcs between the stack top and the buffer word.</figcaption></figure>
+<ul>
+<li><strong>SHIFT</strong>: push the first buffer word onto the stack.</li>
+<li><strong>LEFT-ARC</strong>: add an arc between the top two stack words, left-headed.</li>
+<li><strong>RIGHT-ARC</strong>: add an arc, right-headed.</li>
+</ul>
+<p>This is <strong>shift-reduce parsing</strong> (<a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3285s" target="_blank" rel="noopener">54:45 <span class="ts">⏱54:45</span></a>). The greedy version picks
+the best action at each step. It runs in <strong>linear time</strong>. Training uses an
+<strong>oracle</strong>: a teacher that always knows the correct next action.</p>
+<p>The central result (Nivre&rsquo;s arc-standard system, <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3632s" target="_blank" rel="noopener">60:32 <span class="ts">⏱60:32</span></a>): greedy
+transition parsing is fast and surprisingly accurate.</p>
+<div class="qa"><div class="q">Why is transition-based parsing linear time?</div><div class="a"><p>Each word is shifted exactly once and each arc action removes one word from the stack. The total number of actions is bounded by twice the sentence length. No search, no backtracking.
+Early mistakes cannot be undone. Beam search keeps several hypotheses and recovers some accuracy. Google&rsquo;s Parsey McParseface added beam search on top of the greedy neural parser.</p><div class="followup"><strong>Follow-up:</strong> What does the greedy choice cost?</div></div></div>
+<h2 id="level-2-how-you-evaluate-a-parse">Level 2: How you evaluate a parse</h2>
+<p>Evaluation counts arcs. The gold parse of &ldquo;She saw the video lecture&rdquo;
+(<a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3893s" target="_blank" rel="noopener">64:53 <span class="ts">⏱64:53</span></a>): word 1&rsquo;s head is 2, word 2&rsquo;s head is 0 (root), words 3
+and 4 head to 5, word 5 heads to 2.</p>
+<figure><img alt="Parse evaluation" src="assets/l04-eval.svg"><figcaption>4 of 5 arcs right gives 80% unlabeled accuracy; 2 of 5 labels right gives 40% labeled accuracy.</figcaption></figure>
+<p>A proposed parse gets 4 of 5 arcs right: <strong>80% unlabeled accuracy</strong>. Only 2 of
+5 labels right: <strong>40% labeled accuracy</strong>. Report both. Labels are harder.</p>
+<h2 id="level-2-the-old-approach-millions-of-sparse-features">Level 2: The old approach: millions of sparse features</h2>
+<p>Before neural nets, parsers predicted transitions from <strong>indicator features</strong>:
+conjunctions of words, tags, and arc labels (<a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3822s" target="_blank" rel="noopener">63:42 <span class="ts">⏱63:42</span></a>). Millions of
+features. Each one <strong>exceedingly sparse</strong>: a feature might appear 10 times in
+a million sentences. Three problems:</p>
+<ol>
+<li>Sparse: almost never seen, so barely learned.</li>
+<li>Incomplete: unseen combinations have no features.</li>
+<li>Expensive: most parser runtime went to <strong>computing</strong> the features, not the
+machine learning decisions (<a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=4020s" target="_blank" rel="noopener">67:00 <span class="ts">⏱67:00</span></a>).</li>
+</ol>
+<figure><img alt="Sparse versus dense" src="assets/l04-features.svg"><figcaption>Indicator features: millions, sparse, expensive. Dense embeddings: compact, shared signal, fast.</figcaption></figure>
+<h2 id="level-2-chen-and-mannings-neural-parser">Level 2: Chen and Manning&rsquo;s neural parser</h2>
+<p>Danqi Chen (then a PhD student) replaced indicators with <strong>dense</strong>
+representations (<a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=4054s" target="_blank" rel="noopener">67:34 <span class="ts">⏱67:34</span></a>). Words, parts of speech, and dependency
+labels each get embeddings. Similar words sit near each other, so unseen
+combinations still get signal.</p>
+<figure><img alt="Neural parser" src="assets/l04-neural-parser.svg"><figcaption>Concatenate word, POS, and label embeddings; hidden layer with ReLU; softmax over the three actions.</figcaption></figure>
+<p>For each parser state, take the key stack and buffer elements (the first
+buffer word, the top two stack words). Concatenate their word, POS, and label
+embeddings into one big vector, exactly like L02&rsquo;s five-word window.
+Pass it through a hidden layer with ReLU. Softmax over SHIFT, LEFT-ARC,
+RIGHT-ARC.</p>
+<p>Two wins. <strong>Speed</strong>: dense vectors beat symbolic feature computation, so the
+neural parser was faster than the symbolic ones despite the matrices.
+<strong>Accuracy</strong>: a nonlinear network beat linear SVMs and logistic regressions.
+Result: about 92 UAS, as good as the best graph-based parsers, at
+transition-parser speed.</p>
+<p>Google extended it: deeper network, bigger vectors, tuned hyperparameters,
+beam search. <strong>Parsey McParseface</strong> hit 94.6 UAS (<a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=4445s" target="_blank" rel="noopener">74:05 <span class="ts">⏱74:05</span></a>).</p>
+<h2 id="level-2-graph-based-parsing-and-stanza">Level 2: Graph-based parsing and Stanza</h2>
+<p>The other family: <strong>graph-based</strong> parsers score all n-squared possible
+dependency arcs, then find the maximum spanning tree. Slightly more accurate.
+About <strong>50 times slower</strong> than transition parsers.</p>
+<p>Neural graph parsers later won about 1% more accuracy. The production
+descendant is <strong>Stanza</strong> (2017), the Stanford NLP library.</p>
+<figure><img alt="Parsing history" src="assets/l04-history.svg"><figcaption>Nivre's fast arc-standard parser, Chen and Manning 2014 at 92 UAS, Parsey McParseface at 94.6, Stanza in production.</figcaption></figure>
+<div class="qa"><div class="q">Why did dense features beat millions of indicator features?</div><div class="a"><p>Sharing. An indicator for the exact word pair never fires on unseen pairs. An embedding fires for any word near the trained ones. Similar words share gradient updates, so rare configurations still get trained.
+When accuracy matters more than speed and sentences are short. The spanning-tree search finds the global optimum. Greedy transitions can lock in early mistakes. In production, neural transition parsers won on speed.</p><div class="followup"><strong>Follow-up:</strong> When would you still use a graph-based parser?</div></div></div>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>Eight ideas carry this lecture. Read each card. Say the core sentence out
+loud. If you can, you own the lesson.</p>
+<div class="recap-grid">
+<div class="recap-card">
+<img src="assets/l04-ambiguity.svg" alt="Ambiguity">
+<div class="rc-body">
+<strong>1. Language is globally ambiguous</strong>
+<p>"Scientists count whales from space": counting from space, or space
+whales. Each prepositional phrase multiplies attachment choices.</p>
+<p class="rc-num">Key: PP attachment is the classic ambiguity</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l04-dependency.svg" alt="Dependency arcs">
+<div class="rc-body">
+<strong>2. Dependencies are head-to-dependent arcs</strong>
+<p>Each word has one head. Arcs carry labels: det, amod, nsubj. The root's
+head is 0. Structure says what modifies what.</p>
+<p class="rc-num">Key: the big cat sat</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l04-transitions.svg" alt="Transitions">
+<div class="rc-body">
+<strong>3. Three actions build the tree</strong>
+<p>SHIFT, LEFT-ARC, RIGHT-ARC. Stack plus buffer. Greedy, linear time,
+trained by an oracle. Nivre's arc-standard system.</p>
+<p class="rc-num">Key: shift-reduce, linear time</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l04-eval.svg" alt="Parse evaluation">
+<div class="rc-body">
+<strong>4. Count arcs, then labels</strong>
+<p>"She saw the video lecture": 80% unlabeled, 40% labeled. Labels are
+harder. Report both numbers.</p>
+<p class="rc-num">Key: UAS and LAS</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l04-features.svg" alt="Sparse versus dense">
+<div class="rc-body">
+<strong>5. Indicator features were sparse and slow</strong>
+<p>Millions of features, each seen ~10 times in a million sentences.
+Feature computation dominated runtime. Incomplete by construction.</p>
+<p class="rc-num">Key: sparse, incomplete, expensive</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l04-neural-parser.svg" alt="Neural parser">
+<div class="rc-body">
+<strong>6. Chen and Manning went dense</strong>
+<p>Embeddings for words, POS tags, labels. Concatenate, ReLU, softmax over
+actions. 92 UAS at transition-parser speed.</p>
+<p class="rc-num">Key: dense beats sparse</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l04-history.svg" alt="Parsing history">
+<div class="rc-body">
+<strong>7. Google scaled it to Parsey McParseface</strong>
+<p>Deeper network, bigger vectors, beam search: 94.6 UAS. Fast enough to
+parse the entire web. Graph-based was 50x slower.</p>
+<p class="rc-num">Key: 92 to 94.6</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l04-history.svg" alt="Stanza">
+<div class="rc-body">
+<strong>8. Neural graph parsers won 1% more</strong>
+<p>Score all arcs, take the max spanning tree. The production descendant is
+Stanza (2017). Transition parsers won on speed.</p>
+<p class="rc-num">Key: accuracy versus speed</p>
+</div>
+</div>
+</div>
+
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 4 video and transcript.
+- Chen and Manning (2014): the neural transition parser.</p>
+<p><strong>Further reading:</strong>
+- Nivre (2003), &ldquo;An efficient algorithm for projective dependency parsing&rdquo;: the arc-standard system.
+- Andor et al. (2016), &ldquo;Globally Normalized Transition-Based Neural Networks&rdquo;: Google&rsquo;s Parsey McParseface paper.
+- Qi et al. (2020), Stanza: the production library.</p>
+<p><strong>Caveats from these sources.</strong> The lecture&rsquo;s 92 and 94.6 UAS numbers are on the lecture&rsquo;s reported benchmarks. Exact numbers depend on the treebank and evaluation setup. &ldquo;50 times slower&rdquo; is the lecture&rsquo;s figure for graph-based versus transition parsers of that era.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>This course:</strong> L02&rsquo;s window classifier becomes the parser&rsquo;s state encoder. L05&rsquo;s RNNs replace fixed windows with recurrence. Transformers (L08) learn dependency-like structure implicitly.</li>
+<li><strong>CS336:</strong> L12 evaluation: UAS/LAS are task-specific metrics, like the lecture&rsquo;s intrinsic versus extrinsic distinction.</li>
+<li><strong>CS229S:</strong> maximum spanning tree algorithms underlie graph-based parsing.</li>
+</ul>
+<div class="cheatsheet"><span class="co-label">Cheatsheet</span><p><strong>Dependency parsing cheatsheet.</strong> Ambiguity: PP attachment, global. Structure: head-dependent arcs + labels. Transitions: SHIFT, LEFT-ARC, RIGHT-ARC. Stack + buffer. Greedy. Linear. Oracle. Eval: unlabeled (arcs), labeled (arcs + labels). Old: millions of sparse indicators, 10x in 1M sentences, feature cost dominated. New: dense word/POS/label embeddings, concatenate, ReLU, softmax. Chen&amp;Manning 92 UAS; Parsey 94.6 with beam search. Graph-based: n-squared scores, MST, 50x slower, +1% later. Stanza 2017.</p></div>
+<div class="memory-aid"><span class="ma-label">Memory aid</span><p><strong>Dense beats sparse.</strong> Sharing is the win. Similar words train each other. The parser that generalized parsed the web.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=KVKvde-_MYc" target="_blank" rel="noopener">Lecture 4 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">PAPER</span><a href="https://aclanthology.org/D14-1082/" target="_blank" rel="noopener">Chen and Manning, A Fast and Accurate Dependency Parser using Neural Networks (2014)</a></li><li><span class="src-tag">SUPPLEMENT</span><a href="https://stanfordnlp.github.io/stanza/" target="_blank" rel="noopener">Stanza: Python NLP library (Stanford)</a></li></ul></section>
+      <nav class="pager"><a href="../cs224n/l03-neural-networks-backprop.html"><span class="lbl">← Previous</span>Lecture 3: Neural Networks and Backpropagation</a><a href="../cs224n/l05-language-modeling-rnns.html"><span class="lbl">Next →</span>Lecture 5: Language Modeling and RNNs</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

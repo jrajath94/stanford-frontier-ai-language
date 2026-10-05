@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 8: Transformers (Bridge) — Stanford Frontier AI</title>
+<meta name="description" content="Why attention beat recurrence, self-attention as a set operation, positional encoding, masking, multi-head attention, and the minimal transformer block. Deep me">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-l08" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08" class="active">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 8: Transformers (Bridge)</nav>
+      <h1>Lecture 8: Transformers (Bridge)</h1>
+      <p class="meta-line">Instructor: Anna Goldie · 1:17:00 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="LWMzyfvuehA"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/LWMzyfvuehA" title="Lecture 8: Transformers" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=LWMzyfvuehA" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=LWMzyfvuehA" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Guest lecture. Anna Goldie derives the transformer from the failures of recurrence.</p></div><div class="callout"><span class="co-label">Note</span><p><strong>Bridge lesson.</strong> This lecture teaches the CS224N framing: why attention
+beat recurrence and what the transformer block contains. For deep
+mechanics, follow the links: <a href="../cs336/l03-architecture.html">CS336 L03</a>
+(the modern architecture: prenorm, RoPE, GQA), <a href="../cs336/l04-linear-attention-moe.html">CS336 L04</a>
+(linear attention and MoE), <a href="../cs336/l10-inference.html">CS336 L10</a>
+(inference and the KV cache). This lesson never re-explains what those
+cover.</p></div>
+<h2 id="how-to-read-this-lesson">How to read this lesson</h2>
+<p>This lesson has two levels. <strong>Level 1 (Core)</strong> derives the transformer from
+the two failures of RNNs. <strong>Level 2 (Deep)</strong> covers multi-head attention,
+scaling, residuals, normalization, and the full block.</p>
+<h2 id="level-1-two-problems-attention-solves">Level 1: Two problems attention solves</h2>
+<p>RNNs fail twice (<a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=280s" target="_blank" rel="noopener">04:40 <span class="ts">⏱04:40</span></a>):</p>
+<figure><img alt="Two problems" src="assets/l08-two-problems.svg"><figcaption>Linear interaction distance: 'The chef who went to the stores ... was' separates subject and verb. O(n) sequential: GPUs cannot parallelize.</figcaption></figure>
+<ol>
+<li><strong>Linear interaction distance.</strong> &ldquo;The chef who went to the stores &hellip;
+was.&rdquo; Subject and verb sit far apart. RNN memory fades across the gap.</li>
+<li><strong>O(n) sequential steps.</strong> Each step waits for the last. GPUs cannot
+parallelize.</li>
+</ol>
+<p>Attention connects every pair of positions directly: constant interaction
+distance, fully parallel.</p>
+<h2 id="level-1-attention-as-fuzzy-key-value-lookup">Level 1: Attention as fuzzy key-value lookup</h2>
+<p>Think of attention as a <strong>fuzzy key-value lookup</strong> (<a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=723s" target="_blank" rel="noopener">12:03 <span class="ts">⏱12:03</span></a>). The
+query says what you need. Keys say what each position offers. Values are
+what you get back.</p>
+<figure><img alt="Key-value lookup" src="assets/l08-kv-lookup.svg"><figcaption>Query: what I need. Keys: what I offer. Values: what I return.</figcaption></figure>
+<p><strong>Separate Q and K</strong> is a design choice with a reason: it is a low-rank
+approximation of a bilinear form. Fewer parameters, same comparison power.
+Efficiency first.</p>
+<h2 id="level-1-self-attention-is-a-set-operation">Level 1: Self-attention is a set operation</h2>
+<p><strong>Self-attention</strong> applies attention within one sequence: every word queries
+every word. It is a <strong>SET operation</strong>. &ldquo;Zuko made his uncle&rdquo; and &ldquo;his uncle
+made Zuko&rdquo; contain the same words (<a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=888s" target="_blank" rel="noopener">14:48 <span class="ts">⏱14:48</span></a>, <a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=1321s" target="_blank" rel="noopener">22:01 <span class="ts">⏱22:01</span></a>).
+Without order information, self-attention cannot tell them apart.</p>
+<figure><img alt="Set operation" src="assets/l08-set-op.svg"><figcaption>Both sentences contain the same words; self-attention treats them as the same set.</figcaption></figure>
+<p>Hence <strong>positional encoding</strong>: inject order back in. Two options:</p>
+<ul>
+<li><strong>Sinusoidal.</strong> Fixed waves per position. Elegant. Extrapolation &ldquo;doesn&rsquo;t
+work in practice.&rdquo;</li>
+<li><strong>Learned.</strong> A d-by-n embedding matrix. Works, but crashes beyond the
+trained length n. It works because the position index correlates across
+examples.</li>
+</ul>
+<h2 id="level-1-masking-hides-the-future">Level 1: Masking hides the future</h2>
+<p>Training must not reveal the answer. The model sees the full n-by-n score
+matrix. For future positions, set scores to <strong>minus infinity</strong>. Softmax turns
+them to zero (<a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=2238s" target="_blank" rel="noopener">37:18 <span class="ts">⏱37:18</span></a>).</p>
+<figure><img alt="Masking" src="assets/l08-masking.svg"><figcaption>Future positions get minus infinity; softmax turns them to zero. Decoders mask; encoders do not.</figcaption></figure>
+<p>The <strong>decoder masks</strong>. The <strong>encoder does not</strong>: it may see the whole
+sentence. Padding is masked like the future.</p>
+<div class="qa"><div class="q">What breaks if you forget the causal mask?</div><div class="a"><p>The model reads the answer during training. &ldquo;It is just too easy&rdquo;: loss falls to zero, and the model learns nothing about prediction. Every generated token would cheat.
+Encoders do not predict the next token. They build representations of a complete input (translation source, classification text). No prediction means no cheating.</p><div class="followup"><strong>Follow-up:</strong> Why does the encoder get to see everything?</div></div></div>
+<h2 id="level-2-scaled-dot-product-and-multi-head-attention">Level 2: Scaled dot-product and multi-head attention</h2>
+<p>Raw dot products grow with dimension. Large dots flatten the softmax
+gradient. Fix: <strong>divide by sqrt(d_k)</strong>. Scaled dot-product attention.</p>
+<p><strong>Multi-head</strong> attention runs several attentions in parallel: 8 heads, each
+on d/H dimensions (<a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=2551s" target="_blank" rel="noopener">42:31 <span class="ts">⏱42:31</span></a>). Heuristic: at least 64 dimensions per
+head. Heads &ldquo;hopefully specialize&rdquo; in different relations. Not guaranteed.
+You can zero out some heads after training with little loss.</p>
+<p>In matrix form: XQ times XK-transpose gives the n-by-n score matrix. Softmax
+rows. Multiply by XV.</p>
+<h2 id="level-2-residuals-and-normalization">Level 2: Residuals and normalization</h2>
+<p><strong>Residual connections</strong> add the input back: gradient 1 flows through the
+identity path. Deep stacks stay trainable.</p>
+<p><strong>LayerNorm</strong> normalizes <strong>per word</strong>, not across the sequence or batch
+(<a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=3661s" target="_blank" rel="noopener">61:01 <span class="ts">⏱61:01</span></a>): subtract the mean mu, divide by sqrt(sigma) (<a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=3802s" target="_blank" rel="noopener">63:22 <span class="ts">⏱63:22</span></a>),
+then scale by gamma and shift by beta (<a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=3816s" target="_blank" rel="noopener">63:36 <span class="ts">⏱63:36</span></a>). Gamma and beta
+&ldquo;maybe isn&rsquo;t actually that important.&rdquo;</p>
+<p>The block: self-attention, add and norm, feedforward, add and norm. Repeat.
+<strong>Cross-attention</strong> (encoder-decoder): queries come from the decoder, keys
+and values from the encoder.</p>
+<figure><img alt="Minimal block" src="assets/l08-block.svg"><figcaption>Embed plus position, masked self-attention, MLP, with residuals and normalization; repeat.</figcaption></figure>
+<p>The lecturer&rsquo;s &ldquo;personal opinion&rdquo; of the minimal thing: embed + position +
+self-attention + MLP + masking, repeated.</p>
+<h2 id="level-2-results-and-limits">Level 2: Results and limits</h2>
+<figure><img alt="Quadratic cost" src="assets/l08-quadratic.svg"><figcaption>Attention costs n-squared: n=30 is fine, n=50000 is infeasible.</figcaption></figure>
+<h2 id="level-2-results-and-limits_1">Level 2: Results and limits</h2>
+<p>Attention delivered: faster MT training, document generation, and the
+pretraining revolution. The quadratic cost is the limit: n=30 is fine, n=50000
+is infeasible (<a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=1687s" target="_blank" rel="noopener">28:07 <span class="ts">⏱28:07</span></a>). The verdict: &ldquo;the original Transformer plus
+a couple of modifications is still the best.&rdquo;</p>
+<p>For the modifications: <a href="../cs336/l03-architecture.html">CS336 L03</a> covers
+prenorm, RoPE, GQA, and SwiGLU. <a href="../cs336/l04-linear-attention-moe.html">CS336 L04</a>
+covers sub-quadratic attention. <a href="../cs336/l10-inference.html">CS336 L10</a>
+covers the KV cache that makes decoding affordable.</p>
+<div class="qa"><div class="q">Why did the transformer win over the LSTM?</div><div class="a"><p>Two wins at once. Constant interaction distance: every word reaches every other word directly, so long dependencies survive. Full parallelization: all positions compute at once, so GPUs stay busy. The LSTM had neither.
+Order and efficiency. Self-attention is a set operation, so position must be injected artificially. And the n-by-n score matrix costs quadratic time and memory, which caps context length.</p><div class="followup"><strong>Follow-up:</strong> What did it lose?</div></div></div>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>Eight ideas carry this lecture. Read each card. Say the core sentence out
+loud. If you can, you own the lesson.</p>
+<div class="recap-grid">
+<div class="recap-card">
+<img src="assets/l08-two-problems.svg" alt="Two problems">
+<div class="rc-body">
+<strong>1. Attention fixes two RNN failures</strong>
+<p>Linear interaction distance ("the chef ... was") and O(n) sequential
+steps. Attention connects every pair directly, all in parallel.</p>
+<p class="rc-num">Key: constant distance, full parallelism</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l08-kv-lookup.svg" alt="Key-value lookup">
+<div class="rc-body">
+<strong>2. Fuzzy key-value lookup</strong>
+<p>Query: what I need. Keys: what I offer. Values: what I return. Separate
+Q/K is a low-rank bilinear approximation: efficiency first.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=723s" target="_blank" rel="noopener">12:03 <span class="ts">⏱12:03</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l08-set-op.svg" alt="Set operation">
+<div class="rc-body">
+<strong>3. Self-attention is a set operation</strong>
+<p>"Zuko made his uncle" versus "his uncle made Zuko": same set, same
+output. Positional encoding injects order back in.</p>
+<p class="rc-num">Key: order must be injected</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l08-masking.svg" alt="Masking">
+<div class="rc-body">
+<strong>4. Mask the future</strong>
+<p>Minus infinity for future positions; softmax turns them to zero.
+Otherwise training is "just too easy". Encoders do not mask.</p>
+<p class="rc-num">Key: no peeking</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l08-block.svg" alt="Minimal block">
+<div class="rc-body">
+<strong>5. The minimal block, repeated</strong>
+<p>Embed + position + masked self-attention + MLP. Residuals and per-word
+LayerNorm around each part. Repeat.</p>
+<p class="rc-num">Key: the whole architecture</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l08-kv-lookup.svg" alt="Multi-head">
+<div class="rc-body">
+<strong>6. Multi-head: 8 heads, 64+ dims each</strong>
+<p>Heads hopefully specialize; not guaranteed. Divide dots by sqrt(d_k).
+Zero out useless heads after training.</p>
+<p class="rc-num">Key: divide by sqrt(d_k)</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l08-block.svg" alt="Cross-attention">
+<div class="rc-body">
+<strong>7. Cross-attention links encoder and decoder</strong>
+<p>Queries from the decoder, keys and values from the encoder. Residuals
+carry gradient 1 through the identity.</p>
+<p class="rc-num">Key: Q from decoder, K/V from encoder</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l08-bridge.svg" alt="Bridge">
+<div class="rc-body">
+<strong>8. Depth lives in CS336</strong>
+<p>This lesson: the framing. CS336 L03: prenorm, RoPE, GQA. L04: linear
+attention. L10: KV cache. Never re-explained here.</p>
+<p class="rc-num">Key: bridge, not duplicate</p>
+</div>
+</div>
+</div>
+
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 8 video and transcript.
+- Vaswani et al. (2017): the transformer paper.</p>
+<p><strong>Further reading:</strong>
+- <a href="../cs336/l03-architecture.html">CS336 L03</a>: the modern transformer architecture, the direct continuation.
+- <a href="../cs336/l10-inference.html">CS336 L10</a>: KV cache and inference.
+- The Annotated Transformer (Harvard NLP): line-by-line implementation.</p>
+<p><strong>Caveats from these sources.</strong> &ldquo;Extrapolation doesn&rsquo;t work in practice&rdquo; is the lecturer&rsquo;s verdict on sinusoidal encodings, not a theorem. &ldquo;Original Transformer plus a couple modifications is still the best&rdquo; is a 2024 opinion. Later work (L04 of CS336) challenges parts of it.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>This course:</strong> L05-L07 built the RNN-to-attention arc. L09 uses the transformer for pretraining. L12 trains it efficiently.</li>
+<li><strong>CS336:</strong> L03 (architecture), L04 (linear attention, MoE), L10 (inference) carry the deep mechanics.</li>
+<li><strong>CS229S:</strong> the low-rank Q/K approximation is matrix factorization in disguise.</li>
+</ul>
+<div class="cheatsheet"><span class="co-label">Cheatsheet</span><p><strong>Transformers cheatsheet.</strong> Fixes: linear interaction distance, O(n) sequential. Attention: fuzzy key-value lookup. Separate Q/K = low-rank bilinear. Self-attention: set op. Needs position. Position: sinusoidal (no extrapolation) vs learned d-by-n (crashes past n). Mask: -inf future, softmax 0. Decoder masks, encoder does not. Scale: divide by sqrt(d_k). Heads: 8, d/H each, 64+ dims. Residual: gradient 1. LayerNorm: per word, mu/sigma, gamma/beta optional-ish. Block: attn -&gt; add&amp;norm -&gt; FFN -&gt; add&amp;norm. Cross-attn: Q decoder, K/V encoder. Cost: quadratic. N=30 fine, n=50000 not.</p></div>
+<div class="memory-aid"><span class="ma-label">Memory aid</span><p><strong>Sets need order. Futures need masks.</strong> Self-attention ignores order, so inject position. Training must not see answers, so mask the future. Two fixes, one architecture.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=LWMzyfvuehA" target="_blank" rel="noopener">Lecture 8 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Vaswani et al., Attention Is All You Need (2017)</a></li></ul></section>
+      <nav class="pager"><a href="../cs224n/l07-attention.html"><span class="lbl">← Previous</span>Lecture 7: Attention</a><a href="../cs224n/l09-pretraining.html"><span class="lbl">Next →</span>Lecture 9: Pretraining (Bridge)</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

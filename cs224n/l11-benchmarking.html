@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L11: Benchmarking — Stanford Frontier AI</title>
+<meta name="description" content="There is no single way to evaluate. Yan maps each instrument to the decision it serves, from close-ended accuracy to chatbot arenas, then shows how benchmarks b">
+<link rel="stylesheet" href="assets/vendor/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="cs224n-l11">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="cs224n/l01-word-vectors-1.html" data-page="cs224n-l01">L01 · Introduction, Word Vectors</a></li>
+<li><a href="cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors, GloVe, Evaluation</a></li>
+<li><a href="cs224n/l03-neural-networks.html" data-page="cs224n-l03">L03 · Neural Networks, Backprop</a></li>
+<li><a href="cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="cs224n/l05-rnns.html" data-page="cs224n-l05">L05 · Recurrent neural networks</a></li>
+<li><a href="cs224n/l06-seq2seq-attention.html" data-page="cs224n-l06">L06 · LSTMs, seq2seq, machine translation</a></li>
+<li><a href="cs224n/l07-attention-llm-intro.html" data-page="cs224n-l07">L07 · Attention and the road to LLMs</a></li>
+<li><a href="cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Self-Attention, Transformers</a></li>
+<li><a href="cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="cs224n/l10-post-training.html" data-page="cs224n-l10">L10 · Post-Training</a></li>
+<li><a href="cs224n/l11-benchmarking.html" data-page="cs224n-l11" class="active">L11 · Benchmarking</a></li>
+<li><a href="cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="cs224n/l13-bci.html" data-page="cs224n-l13">L13 · Brain-Computer Interfaces</a></li>
+<li><a href="cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="cs224n/l15-after-dpo.html" data-page="cs224n-l15">L15 · After DPO</a></li>
+</ul>
+<h3></h3><ul>
+<li><a href="cs224n/index.html" data-page="cs224n/index.html">CS224N: NLP with Deep Learning</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="index.html">Home</a> / <a href="#">CS224N: Natural Language Processing with Deep Learning</a> / L11: Benchmarking</nav>
+      <h1>L11: Benchmarking</h1>
+      <p class="meta-line">Instructor: Chris Manning · 1:24:09 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/TO0CqzqiArM" title="L11: Benchmarking" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><p class="video-cap">Original lecture. Timestamps link to exact moments.</p><p>This lecture is taught by Yan, a third-year PhD student advised by Tatsunori Hashimoto and Percy Liang. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=11s" target="_blank" rel="noopener">00:11 <span class="ts">⏱0:11</span></a> [uncertain: the slide deck title page reads &ldquo;Yann Dubois&rdquo;, but no surname is stated in the video.] His thesis: evaluation is not one thing. You measure performance at every step of building a model, but each step demands a different instrument.</p>
+<h2 id="one-pipeline-many-instruments">One pipeline, many instruments</h2>
+<p>Yan describes model development as five stages. Each stage needs measurement, with different requirements. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=65s" target="_blank" rel="noopener">01:05 <span class="ts">⏱1:05</span></a></p>
+<ul>
+<li><strong>Train.</strong> You need a loss to backpropagate through, so the instrument must be super fast, super cheap, differentiable, and free of shortcuts. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=181s" target="_blank" rel="noopener">03:01 <span class="ts">⏱3:01</span></a></li>
+<li><strong>Develop.</strong> For hyperparameter tuning and early stopping, the instrument must stay fast, cheap, and shortcut-proof, since tuning optimizes against it.</li>
+<li><strong>Model selection.</strong> You compare trained models. Speed and cost can relax, but you repeat this many times.</li>
+<li><strong>Deploy.</strong> The stakes are real. The instrument must be trustworthy and task-specific. It must also be absolute, so a threshold like 95 percent accuracy can gate the launch.</li>
+<li><strong>Publish.</strong> Academic benchmarking communicates quality across groups. It must be reproducible and standardized. Crude metrics are acceptable: what matters is the direction of progress over a decade.</li>
+</ul>
+<div class="mermaid">flowchart LR
+    A[Train] --> B[Develop] --> C[Model selection] --> D[Publish] --> E[Deploy]
+    A -.-> F["fast, cheap, differentiable, no shortcuts"]
+    B -.-> G["fast, cheap, shortcut-proof"]
+    C -.-> H["repeatable, comparable"]
+    D -.-> I["reproducible, standardized, crude OK"]
+    E -.-> J["trustworthy, task-specific, absolute"]
+</div>
+<div class="callout"><span class="co-label">Key idea</span><p>Never ask &ldquo;how good is my model&rdquo; in the abstract. Ask what decision the number will drive, then pick the instrument that fits that decision.</p></div>
+<p>Benchmarks drive the field forward. The MMLU plot shows accuracy rising from 25 percent, random guessing on four choices, to around 90 percent in about four years. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=437s" target="_blank" rel="noopener">07:17 <span class="ts">⏱7:17</span></a></p>
+<h2 id="close-ended-evaluation">Close-ended evaluation</h2>
+<p>A close-ended task has a limited number of potential answers, fewer than ten, and often exactly one correct answer. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=542s" target="_blank" rel="noopener">09:02 <span class="ts">⏱9:02</span></a> This is standard machine learning: accuracy, precision, recall, F1, ROC curves. Examples: sentiment analysis (SST, IMDB), entailment (SNLI), named entity recognition (CoNLL-2003), part of speech (PTB), coreference resolution (WSC), question answering (SQuAD 2).</p>
+<p>Metric choice is the real work. Spam example: if 90 percent of email is not spam, a classifier that always predicts &ldquo;not spam&rdquo; scores 90 percent accuracy while classifying nothing. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=855s" target="_blank" rel="noopener">14:15 <span class="ts">⏱14:15</span></a> That is why you look at precision and recall, not accuracy alone.</p>
+<p>Multi-task benchmarks try to measure general capability by averaging many close-ended tasks. SuperGLUE is the classic example. It covers reading, entailment, cause and effect, QA with reasoning, word meaning, and coreference. You average the columns and rank the models.</p>
+<p>Averaging is broken in practice. The columns mean different things: some are accuracy, some are F1, some are correlations. One benchmark even averaged a lower-is-better column with higher-is-better columns until someone noticed.</p>
+<p>Then ask where the labels come from. SNLI looks hard, but Gururangan et al. (2019) found that a classifier reading only the hypothesis, never the premise, performs well. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1017s" target="_blank" rel="noopener">16:57 <span class="ts">⏱16:57</span></a> Human annotators wrote contradictions by adding negations, so a negation in the hypothesis predicts contradiction by itself. That is a spurious correlation: a data shortcut that lets the model skip the task.</p>
+<h2 id="open-ended-evaluation">Open-ended evaluation</h2>
+<p>An open-ended task has too many possible correct answers to enumerate. Answers differ in quality, not in rightness. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1158s" target="_blank" rel="noopener">19:18 <span class="ts">⏱19:18</span></a> Classic examples: summarization (CNN-DailyMail, where the reference summaries are the bullet points at the top of news articles <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1129s" target="_blank" rel="noopener">18:49 <span class="ts">⏱18:49</span></a>, and Gigaword) and translation (WMT). The current default is instruction following, which Yan calls the mother of all tasks. Any task can be phrased as a question to a chatbot.</p>
+<div class="mermaid">flowchart TB
+    A[Open-ended task] --> B[Content overlap metrics]
+    A --> C[Model-based metrics]
+    A --> D[Human evaluation]
+    B --> E["BLEU, ROUGE"]
+    C --> F["BERTScore, BLEURT"]
+    D --> G["Gold standard, slow and costly"]
+    D --> H[Reference-free LLM judge]
+    H --> I["AlpacaEval, MT-Bench"]
+</div>
+<p>Three families of methods exist: content overlap metrics, model-based metrics, and human evaluation.</p>
+<h2 id="content-overlap-metrics">Content overlap metrics</h2>
+<p>These compare generated text against a human-written reference, word by word, fast and efficiently. The usual tools are n-gram overlap metrics. BLEU behaves like precision, ROUGE behaves like recall. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1309s" target="_blank" rel="noopener">21:49 <span class="ts">⏱21:49</span></a> BLEU adds a length penalty so that generating only the word &ldquo;the&rdquo; cannot score high.</p>
+<p>They have no concept of semantic relatedness. Candidate scores against the reference &ldquo;Heck yes!&rdquo;: &ldquo;yes&rdquo; gets 0.67, &ldquo;you know it!&rdquo; gets 0.25, &ldquo;yep&rdquo; gets 0, and &ldquo;Heck no!&rdquo; gets 0.67. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1479s" target="_blank" rel="noopener">24:39 <span class="ts">⏱24:39</span></a> &ldquo;Yep&rdquo; is a false negative: identical meaning, zero score. &ldquo;Heck no!&rdquo; is a false positive: opposite meaning, high score. These metrics were the standard for translation and summarization until a few years ago. Papers still report them because reviewers demand them.</p>
+<h2 id="model-based-metrics">Model-based metrics</h2>
+<p>BERTScore passes the generation and the reference through BERT and matches words by cosine similarity of contextual embeddings (Zhang et al., 2020). <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1609s" target="_blank" rel="noopener">26:49 <span class="ts">⏱26:49</span></a> BLEURT continues pretraining BERT to predict BLEU and other metrics on unlabeled pairs, then finetunes on human quality judgments (Sellam et al., 2020). <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1644s" target="_blank" rel="noopener">27:24 <span class="ts">⏱27:24</span></a> BLEU serves only as the unsupervised multitask objective. Human annotations supply the supervision.</p>
+<p>References bound all of this. Reference-based measures are only as good as their references. On CNN-DailyMail, ROUGE-L shows essentially no correlation with human judgments when the references are the original bullet points. With expert-written references, the correlation rises substantially. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1837s" target="_blank" rel="noopener">30:37 <span class="ts">⏱30:37</span></a> The references were bad. That motivates reference-free evaluation: no human reference, just a model that scores the output. With GPT-4 as the scorer it works surprisingly well, and AlpacaEval and MT-Bench made it standard. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2785s" target="_blank" rel="noopener">46:25 <span class="ts">⏱46:25</span></a></p>
+<h2 id="human-evaluation">Human evaluation</h2>
+<p>Humans remain the gold standard for open-ended generation and for validating every automatic metric. Annotators rate overall quality or specific dimensions: fluency, coherence, factuality, commonsense, style, grammaticality, redundancy. Never compare scores across differently conducted studies: different humans and instructions produce incomparable numbers.</p>
+<p>The problems are severe. Human judgment is slow and expensive. Inter-annotator disagreement is high. Five AlpacaFarm researchers wrote extremely detailed rubrics and discussed them for hours, yet agreed only 67 percent of the time. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2209s" target="_blank" rel="noopener">36:49 <span class="ts">⏱36:49</span></a> The same person also drifts: ratings change after dinner. Reproducibility is poor. Only 5 percent of 128 published human evaluations were repeatable from the papers alone, rising to about 20 percent with author help. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2332s" target="_blank" rel="noopener">38:52 <span class="ts">⏱38:52</span></a> [uncertain: Yan could not recall the paper year in the lecture.] Humans judge precision, not recall. They rate the one generation shown, never the space of generations the model could have produced. Incentives misalign: crowd workers maximize dollars per hour and find shortcuts. The team paid 1.5 times California minimum wage by their own estimates. Workers annotated two to three times faster and earned two to three times that. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2414s" target="_blank" rel="noopener">40:14 <span class="ts">⏱40:14</span></a></p>
+<p>Running it well is its own discipline: write rubrics, control order, screen and monitor annotators. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2558s" target="_blank" rel="noopener">42:38 <span class="ts">⏱42:38</span></a></p>
+<h2 id="chatbot-arena-and-elo">Chatbot Arena and Elo</h2>
+<p>To evaluate chatbots, the field converged on side-by-side comparison. Show two models the same prompt and ask a human which response is better. Chatbot Arena lets anyone play with top models for free and vote. At around 200,000 votes the results feed a leaderboard computed with Elo ratings. Chess uses the same system to rank players without every player facing every other. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2643s" target="_blank" rel="noopener">44:03 <span class="ts">⏱44:03</span></a> <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2663s" target="_blank" rel="noopener">44:23 <span class="ts">⏱44:23</span></a></p>
+<p>This is the current gold standard, but it has holes. Random visitors typing random questions may not represent real use. Cost is the bigger hole: it takes a huge community effort, new models wait long for enough votes, and only notable models ever get benchmarked. No lab can run this loop at development speed.</p>
+<h2 id="llm-as-judge">LLM as judge</h2>
+<p>Replace the human voter with a strong model. The AlpacaFarm finding: GPT-4 evaluation is about 100 times cheaper and 100 times faster than human evaluation. Its agreement with humans exceeds the agreement of humans with each other. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2804s" target="_blank" rel="noopener">46:44 <span class="ts">⏱46:44</span></a> The mechanism is bias versus variance. Humans have high variance in judgment. The model has substantial bias, around 32 percent [uncertain: stated from the plot in the lecture], but very low variance. That lets it predict the majority human preference more reliably. Consistency helps iteration, but bias is the real danger.</p>
+<p>The same spurious correlations appear here. Length and lists get preferred: humans prefer longer outputs about 70 percent of the time, and models show the same bias. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2984s" target="_blank" rel="noopener">49:44 <span class="ts">⏱49:44</span></a> Position matters, though randomizing the order controls for it. GPT-4 self-bias is real but smaller than expected. A model rating itself scores itself higher, yet the overall ranking stays the same no matter which model judges. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3255s" target="_blank" rel="noopener">54:15 <span class="ts">⏱54:15</span></a></p>
+<p>AlpacaEval operationalizes this. It began as an internal development benchmark for the Alpaca project, because the team did not trust existing instruction-following benchmarks for tuning. It correlates 98 percent with Chatbot Arena rankings, and a full run takes under 3 minutes and under 10 dollars. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3084s" target="_blank" rel="noopener">51:24 <span class="ts">⏱51:24</span></a> The procedure: for each instruction, generate outputs from the model and a baseline. Ask GPT-4 for the probability that the model output is better. Average the probabilities into a win rate. A striking result forced the fix. Prompting GPT-4 to be more verbose moved its win rate from 50 percent to 64.3. Asking for conciseness dropped it to 22.9. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3203s" target="_blank" rel="noopener">53:23 <span class="ts">⏱53:23</span></a> A benchmark whose rankings swing on a verbosity tweak is measuring the wrong thing.</p>
+<div class="callout"><span class="co-label">Interview signal</span><p>When asked how you would evaluate a model, start by asking what decision the evaluation serves. Training wants fast, cheap, differentiable. Deployment wants trustworthy, task-specific, absolute. Then name the three failure modes. Inconsistency across implementations of the same benchmark. Contamination of test data into pretraining. Judge biases such as length, position, and self-bias in LLM evaluators. Frontier labs test whether you treat a benchmark as an instrument with error bars, not as a score.</p></div>
+<h2 id="how-llms-are-evaluated-today">How LLMs are evaluated today</h2>
+<p>Yan sees three lanes. First, perplexity: training or validation loss. Second, average everything: HELM and the HuggingFace Open LLM Leaderboard collect many automatically evaluable benchmarks and average across them. Third, arena-like pairwise comparison by humans or models. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3306s" target="_blank" rel="noopener">55:06 <span class="ts">⏱55:06</span></a> Pretrained base models mostly report perplexity. Finetuned models report the other two, because finetuning leaves log-likelihoods uncalibrated for the eval datasets. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3345s" target="_blank" rel="noopener">55:45 <span class="ts">⏱55:45</span></a></p>
+<p>The &ldquo;everything&rdquo; mix spans capabilities. GSM-8K for grade-school math. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3397s" target="_blank" rel="noopener">56:37 <span class="ts">⏱56:37</span></a> MMLU: 57 multiple-choice tasks across formal logic, conceptual physics, econometrics, and more (Hendrycks et al., 2021). LegalBench for law, MedQA for medical licensing exams. Code gets special treatment through HumanEval. Pass at 1 means at least one of k generated programs passes the tests, with GPT-4 around 67 percent. Code is easy to score against test cases, and code performance correlates with reasoning. Evaluating an agent that uses a terminal or writes email requires a sandbox for every application it touches. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3659s" target="_blank" rel="noopener">60:59 <span class="ts">⏱60:59</span></a></p>
+<p>Perplexity is extremely highly correlated with downstream averages, so teams use it as a quick development signal. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3311s" target="_blank" rel="noopener">55:11 <span class="ts">⏱55:11</span></a> But perplexity is not comparable across datasets or across tokenizers. Vocabulary size bounds the entropy, so a smaller vocabulary trivially lowers perplexity. The mechanics of perplexity were taught in <a href="../../foundations/cs336/l12-evaluation.html">CS336 L12</a>. This lesson takes them as given.</p>
+<h2 id="issues-consistency">Issues: consistency</h2>
+<p>Multiple-choice evaluation is implementation-dependent. For about a year, MMLU had three main implementations and people compared scores across them unknowingly. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3894s" target="_blank" rel="noopener">64:54 <span class="ts">⏱64:54</span></a> They differed in prompts and in answer extraction. The options: constrained decoding over A through D, free generation where an unconstrained token wins, or scoring the log-likelihood of the answer text. The numbers diverged wildly. Llama 65B scored 63.7 on HELM, 63.6 on the original implementation, and 48.8 on the HuggingFace harness. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3991s" target="_blank" rel="noopener">66:31 <span class="ts">⏱66:31</span></a> A related study (Alzahrani et al., 2024) found that replacing ABCD with random symbols changes generations and reshuffles model rankings. If the harness changes the answer, you are not measuring the model.</p>
+<h2 id="issues-contamination-and-overfitting">Issues: contamination and overfitting</h2>
+<p>Closed models train on enormous data, and nobody can check whether a benchmark leaked into pretraining. One researcher found GPT-4 scoring 10 out of 10 on pre-2021 Codeforces problems but 0 out of 10 on recent ones. That suggests the older problems were in the training data. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4053s" target="_blank" rel="noopener">67:33 <span class="ts">⏱67:33</span></a> Relatedly, datasets now reach claimed human-level performance in under six months. Nobody knows how much is contamination and how much is hyperparameter tuning against the test set.</p>
+<div class="mermaid">flowchart TB
+    A[Test set leaks into pretraining] --> B["Closed models: no data access"]
+    A --> C["Massive data: auditing is infeasible"]
+    B --> D[Mitigations]
+    C --> D
+    D --> E["Private test sets, e.g. GSM-1K"]
+    D --> F["Dynamic test sets, e.g. Dynabench, Chatbot Arena"]
+    D --> G["Detectors: min-k prob, exchangeability test, ordering signatures"]
+</div>
+<p>Private test sets: GSM-1K recollected the GSM-8K math dataset from scratch. Open models scored much worse on the fresh set than on the tunable one. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4157s" target="_blank" rel="noopener">69:17 <span class="ts">⏱69:17</span></a> Dynamic test sets refresh continuously. Dynabench and Chatbot Arena work this way. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4192s" target="_blank" rel="noopener">69:52 <span class="ts">⏱69:52</span></a> Detectors estimate whether a model saw the test data. Check whether token probabilities are suspiciously high (min-k prob), run an exchangeability test, or look for ordering signatures. If swapping examples one and two drops log-likelihood, the model likely memorized their order.</p>
+<h2 id="issues-monoculture">Issues: monoculture</h2>
+<p>Most papers evaluate English and accuracy only. Of 461 ACL 2021 oral papers, 70 percent evaluated English only and 40 percent evaluated accuracy only. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4300s" target="_blank" rel="noopener">71:40 <span class="ts">⏱71:40</span></a> A similar analysis of a 2008 conference found the same pattern, and the problem is not improving. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4273s" target="_blank" rel="noopener">71:13 <span class="ts">⏱71:13</span></a> Multilingual benchmarks exist: MEGA (16 datasets, 70 languages), GlobalBench (966, 190), XTREME (9 tasks, 40), and multilingual MMLU, ARC, and HellaSwag (26 languages). <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4334s" target="_blank" rel="noopener">72:14 <span class="ts">⏱72:14</span></a> The benchmarks are not the bottleneck. Academic incentives are.</p>
+<p>Reducing everything to one number has further costs. Performance is not all we care about: efficiency and bias matter too. Averaging across examples gives every example equal weight, which is unfair to minoritized groups and ignores that examples carry different value. MLPerf instead measures time to reach a quality target, combining accuracy with speed. DiscrimEval, from Anthropic, uses templates that vary race or gender and checks whether the model decision changes. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4491s" target="_blank" rel="noopener">74:51 <span class="ts">⏱74:51</span></a> Metrics themselves carry bias. BLEU and ROUGE assume clean tokenization, which fails for morphologically rich languages or languages like Thai with no word spaces. LLM-based evaluation concentrates bias further. One judge with a fixed bias, used by the whole community, becomes a monoculture. OpinionQA (Santurkar et al., 2023) compares model output distributions against public opinion surveys. Base models reflect a mix of groups, but after finetuning the models reflect mostly white and Southeast Asian highly educated views. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4563s" target="_blank" rel="noopener">76:03 <span class="ts">⏱76:03</span></a> [uncertain: Yan suggests this is because SFT and RLHF labelers were largely in Southeast Asia, stated as his hypothesis.]</p>
+<p>The meta-problem is incentives. Between 2019 and 2020, 82 percent of machine translation papers evaluated only on BLEU, despite the existence of better-correlated metrics. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4676s" target="_blank" rel="noopener">77:56 <span class="ts">⏱77:56</span></a> Reviewers demand BLEU for comparability with past work, so the field cannot move. That trap is specific to academia. In the real world, if your metric is bad, just switch.</p>
+<h2 id="takeaways">Takeaways</h2>
+<p>The summary: match the instrument to the stage. Close-ended tasks are standard ML but demand care with metrics, labels, and spurious correlations. Open-ended tasks use content overlap metrics, model-based metrics, or human evaluation. Chatbot evaluation is genuinely hard and an open problem. The challenges are consistency, contamination, and bias. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4717s" target="_blank" rel="noopener">78:37 <span class="ts">⏱78:37</span></a></p>
+<p>The closing line to remember: the best judge of output quality is you. Look at your model generations. Do not just rely on numbers. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4809s" target="_blank" rel="noopener">80:09 <span class="ts">⏱80:09</span></a> The Alpaca team believed their AlpacaEval numbers, but playing with the model is what convinced them it was actually good. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4792s" target="_blank" rel="noopener">79:52 <span class="ts">⏱79:52</span></a></p>
+<div class="callout"><span class="co-label">Professor note</span><p>On using GPT-4 as an evaluator, here is the answer Yan gave to a student question. Do not ask &ldquo;how good is this summary, out of five.&rdquo; Write a detailed rubric of everything a good answer must contain. Then have the model apply it. Professors do exactly this with TAs. They do not trust the TA blindly, they write the rubric and trust the application. That is how LLM judging should work, and it is not how the field currently does it. <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=5030s" target="_blank" rel="noopener">83:50 <span class="ts">⏱83:50</span></a></p></div>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Video: <a href="https://www.youtube.com/watch?v=TO0CqzqiArM">Lecture 11: Benchmarking and Evaluation</a> (1:24:09)</li>
+<li>Slides: cs224n-spr2024-lecture11-evaluation-yann.pdf (CS224N Spring 2024)</li>
+<li>Perplexity and eval-set mechanics: <a href="../../foundations/cs336/l12-evaluation.html">CS336 L12</a></li>
+<li>Gururangan et al., <a href="https://arxiv.org/abs/1808.08614">Annotation Artifacts in Natural Language Inference Data</a>, 2019</li>
+<li>Zhang et al., <a href="https://arxiv.org/abs/1904.09675">BERTScore: Evaluating Text Generation with BERT</a>, 2020</li>
+<li>Sellam et al., <a href="https://arxiv.org/abs/2004.04696">BLEURT</a>, 2020</li>
+<li>Hendrycks et al., <a href="https://arxiv.org/abs/2009.03300">MMLU: Measuring Massive Multitask Language Understanding</a>, 2021</li>
+<li>Santurkar et al., <a href="https://arxiv.org/abs/2303.17548">OpinionQA: Whose Opinions Do Language Models Reflect?</a>, 2023</li>
+</ul>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=TO0CqzqiArM" target="_blank" rel="noopener">Lecture 11 video, Stanford Online YouTube</a></li><li><span class="src-tag">SLIDES</span>cs224n-spr2024-lecture11-evaluation-yann.pdf (CS224N Spring 2024)</li></ul></section>
+      <nav class="pager"><a href="cs224n/l10-post-training.html"><span class="lbl">← Previous</span>Lecture 10: Post-Training: Prompting, Instruction Tuning, RLHF, DPO</a><a href="cs224n/l12-efficient-training.html"><span class="lbl">Next →</span>L12: Efficient Training</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/vendor/katex.min.js"></script>
+<script src="assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "";</script>
+<script src="assets/app.js"></script>
+</body>
+</html>

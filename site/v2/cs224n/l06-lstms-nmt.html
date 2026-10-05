@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 6: LSTMs and Neural Machine Translation — Stanford Frontier AI</title>
+<meta name="description" content="Vanishing and exploding gradients, gradient clipping, the LSTM&#x27;s three gates, bidirectional and stacked RNNs, and seq2seq for machine translation.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-l06" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06" class="active">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 6: LSTMs and Neural Machine Translation</nav>
+      <h1>Lecture 6: LSTMs and Neural Machine Translation</h1>
+      <p class="meta-line">Instructor: Christopher Manning · 1:17:00 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="Ba6Fn1-Jsfw"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/Ba6Fn1-Jsfw" title="Lecture 6: LSTM RNNs and Neural Machine Translation" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. Christopher Manning covers vanishing gradients, LSTMs, and neural machine translation.</p></div><h2 id="how-to-read-this-lesson">How to read this lesson</h2>
+<p>This lesson has two levels. <strong>Level 1 (Core)</strong> diagnoses the gradient
+disease and prescribes the LSTM. <strong>Level 2 (Deep)</strong> applies sequence models
+to machine translation.</p>
+<h2 id="level-1-vanishing-and-exploding-gradients">Level 1: Vanishing and exploding gradients</h2>
+<p>Backprop through 30 time steps multiplies 30 copies of the local Jacobian
+(<a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw&amp;t=565s" target="_blank" rel="noopener">09:25 <span class="ts">⏱09:25</span></a>). With a linear activation, that is the 30th power of the
+weight matrix. The eigenvalues decide everything:</p>
+<figure><img alt="Vanishing versus exploding" src="assets/l06-vanish-explode.svg"><figcaption>Eigenvalues below 1 shrink the gradient to zero across 30 steps; above 1 it blows up.</figcaption></figure>
+<ul>
+<li>Eigenvalues below 1: the gradient <strong>vanishes</strong>. Thirty multiplications
+shrink the signal to nothing. Distant words cannot train.</li>
+<li>Eigenvalues above 1: the gradient <strong>explodes</strong>. Thirty multiplications blow
+the update up. Training diverges.</li>
+</ul>
+<p><strong>Vanishing is worse.</strong> An exploded gradient is visible: the loss jumps. A
+vanished gradient is silent: nothing learns.</p>
+<div class="qa"><div class="q">Why do eigenvalues control the gradient?</div><div class="a"><p>Repeated multiplication by a matrix scales each eigendirection by its eigenvalue, raised to the number of steps. Below 1 shrinks to zero, above 1 blows up. Thirty steps make even small deviations extreme.
+Exploding is loud: NaN losses, obvious divergence, and clipping fixes it. Vanishing is quiet: the model trains, the loss falls a little, but long-range dependencies never get learned. You cannot fix what you cannot see.</p><div class="followup"><strong>Follow-up:</strong> Why is vanishing worse than exploding?</div></div></div>
+<h2 id="level-1-gradient-clipping">Level 1: Gradient clipping</h2>
+<p>The exploding fix is <strong>gradient clipping</strong> (<a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw&amp;t=1155s" target="_blank" rel="noopener">19:15 <span class="ts">⏱19:15</span></a>). Before the
+update, cap the gradient norm at 5, 10, or 20 (<a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw&amp;t=1177s" target="_blank" rel="noopener">19:37 <span class="ts">⏱19:37</span></a>):</p>
+<figure><img alt="Gradient clipping" src="assets/l06-clipping.svg"><figcaption>Cap the gradient norm at 5, 10, or 20; keep the direction, limit the size.</figcaption></figure>
+<p>g = g x limit / ||g||, when ||g|| exceeds the limit.</p>
+<p>Keep the direction. Cap the size. The lecture calls it &ldquo;a crude hack that
+works really well.&rdquo; It fixes exploding gradients. It does nothing for
+vanishing.</p>
+<h2 id="level-1-the-lstm">Level 1: The LSTM</h2>
+<p>The <strong>LSTM</strong> (Hochreiter and Schmidhuber, 1997, <a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw&amp;t=1495s" target="_blank" rel="noopener">24:55 <span class="ts">⏱24:55</span></a>) fixes
+vanishing with a <strong>cell state</strong>: a protected memory highway. Three gates, each
+outputting 0-to-1 probabilities, guard it (<a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw&amp;t=1805s" target="_blank" rel="noopener">30:05 <span class="ts">⏱30:05</span></a>):</p>
+<figure><img alt="LSTM" src="assets/l06-lstm.svg"><figcaption>Forget, input, and output gates guard the cell; the cell update is additive so gradients flow.</figcaption></figure>
+<ul>
+<li><strong>Forget gate.</strong> &ldquo;Wrongly named,&rdquo; says the lecture (<a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw&amp;t=1813s" target="_blank" rel="noopener">30:13 <span class="ts">⏱30:13</span></a>).
+Think of it as a <strong>remember gate</strong>: how much of the old cell to keep.</li>
+<li><strong>Input gate.</strong> How much of the new candidate to write.</li>
+<li><strong>Output gate.</strong> How much of the cell to reveal as the hidden state.</li>
+</ul>
+<p>cell = old x forget + candidate x input
+hidden = output x tanh(cell)</p>
+<p>The update is <strong>additive</strong>, not multiplicative. Gradients flow down the cell
+unchanged when the forget gate is near 1. That is the whole trick.</p>
+<p>Google shipped LSTMs in its 2014 keyboard (<a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw&amp;t=1680s" target="_blank" rel="noopener">28:00 <span class="ts">⏱28:00</span></a>). They worked.</p>
+<h2 id="level-1-bidirectional-and-stacked">Level 1: Bidirectional and stacked</h2>
+<p>One direction only sees the past. A <strong>bidirectional LSTM</strong> runs one LSTM
+left-to-right and one right-to-left, then concatenates both (<a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw&amp;t=3115s" target="_blank" rel="noopener">51:55 <span class="ts">⏱51:55</span></a>).
+Each position gets past and future context.</p>
+<p><strong>Stacked RNNs</strong> pile cells in layers: deeper memory, more abstraction.</p>
+<figure><img alt="Bidirectional" src="assets/l06-bilstm.svg"><figcaption>Left-to-right and right-to-left passes concatenate; stacking adds depth.</figcaption></figure>
+<h2 id="level-2-machine-translation-rules-to-statistics-to-neural">Level 2: Machine translation: rules to statistics to neural</h2>
+<p>&ldquo;Machine translation is where NLP started&rdquo; (1950s). Rule-based systems gave
+way to statistical phrase-based systems, which &ldquo;never really worked all that
+great.&rdquo; The <strong>2014 neural breakthrough</strong> (<a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw&amp;t=3915s" target="_blank" rel="noopener">65:15 <span class="ts">⏱65:15</span></a>) replaced decades
+of engineering with two LSTMs.</p>
+<figure><img alt="MT history" src="assets/l06-mt-history.svg"><figcaption>1950s rule-based, 1990s-2010s phrase-based, 2014 neural seq2seq.</figcaption></figure>
+<h2 id="level-2-seq2seq">Level 2: Seq2seq</h2>
+<p><strong>Seq2seq</strong> = two LSTMs. The <strong>encoder</strong> reads the source sentence. Its final
+hidden state seeds the <strong>decoder</strong>, which writes the target. A start token
+begins generation. One end-to-end loss trains both.</p>
+<figure><img alt="Seq2seq" src="assets/l06-seq2seq.svg"><figcaption>Encoder reads the source; its final state seeds the decoder; a start token begins generation.</figcaption></figure>
+<p>The lecture&rsquo;s example: &ldquo;he hit me with a pie&rdquo; (<a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw&amp;t=4072s" target="_blank" rel="noopener">67:52 <span class="ts">⏱67:52</span></a>). The
+encoder-decoder pattern generalizes: summarization, text-to-speech, any
+sequence-to-sequence task.</p>
+<div class="qa"><div class="q">Why did seq2seq beat phrase-based translation?</div><div class="a"><p>End-to-end learning. Phrase-based systems chained hand-built components: alignment, phrase tables, reordering rules. Each component&rsquo;s errors compounded. Seq2seq learned the whole mapping from data with one loss, so the components co-adapted.
+The fixed-size final state. The entire source sentence must fit in one vector. Long sentences lose detail. Attention (L07) fixes exactly this bottleneck.</p><div class="followup"><strong>Follow-up:</strong> What is the bottleneck in seq2seq?</div></div></div>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>Eight ideas carry this lecture. Read each card. Say the core sentence out
+loud. If you can, you own the lesson.</p>
+<div class="recap-grid">
+<div class="recap-card">
+<img src="assets/l06-vanish-explode.svg" alt="Vanishing versus exploding">
+<div class="rc-body">
+<strong>1. Eigenvalues decide the gradient's fate</strong>
+<p>30 steps multiply the Jacobian 30 times. Below 1: vanish. Above 1:
+explode. Vanishing is worse because it is silent.</p>
+<p class="rc-num">Key: powers of W_h</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l06-clipping.svg" alt="Gradient clipping">
+<div class="rc-body">
+<strong>2. Clip the norm to stop explosions</strong>
+<p>Cap ||g|| at 5, 10, or 20. Keep the direction. "A crude hack that works
+really well." No help for vanishing.</p>
+<p class="rc-num">Key: limit 5, 10, 20</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l06-lstm.svg" alt="LSTM">
+<div class="rc-body">
+<strong>3. The LSTM protects a cell</strong>
+<p>Three gates as 0-to-1 probabilities. Forget is really "remember". The
+cell update is additive, so gradients flow.</p>
+<p class="rc-num">Key: Hochreiter and Schmidhuber, 1997</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l06-lstm.svg" alt="Cell update">
+<div class="rc-body">
+<strong>4. cell = old x forget + candidate x input</strong>
+<p>hidden = output x tanh(cell). Additive beats multiplicative. Google
+keyboard shipped it in 2014.</p>
+<p class="rc-num">Key: additive update</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l06-bilstm.svg" alt="Bidirectional">
+<div class="rc-body">
+<strong>5. Bidirectional reads both ways</strong>
+<p>Left-to-right plus right-to-left, concatenated. Each position sees past
+and future. Stack for depth.</p>
+<p class="rc-num">Key: concatenate both directions</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l06-mt-history.svg" alt="MT history">
+<div class="rc-body">
+<strong>6. MT went neural in 2014</strong>
+<p>1950s rules, then phrase-based statistics ("never really worked all that
+great"), then the seq2seq breakthrough.</p>
+<p class="rc-num">Key: where NLP started</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l06-seq2seq.svg" alt="Seq2seq">
+<div class="rc-body">
+<strong>7. Seq2seq: encode, then decode</strong>
+<p>Two LSTMs. The encoder's final state seeds the decoder. Start token
+begins generation. One end-to-end loss.</p>
+<p class="rc-num">Key: he hit me with a pie</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l06-seq2seq.svg" alt="Bottleneck">
+<div class="rc-body">
+<strong>8. The bottleneck is one fixed vector</strong>
+<p>The whole source sentence must fit in the final state. Long sentences
+lose detail. Attention (L07) is the fix.</p>
+<p class="rc-num">Key: one vector is not enough</p>
+</div>
+</div>
+</div>
+
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 6 video and transcript.
+- Hochreiter and Schmidhuber (1997): the LSTM paper.
+- Sutskever, Vinyals, Le (2014): seq2seq.</p>
+<p><strong>Further reading:</strong>
+- Pascanu, Mikolov, Bengio (2013), &ldquo;On the difficulty of training recurrent neural networks&rdquo;: the vanishing/exploding analysis the lecture cites.
+- Bahdanau, Cho, Bengio (2015): attention, the fix for the seq2seq bottleneck. Covered in L07.</p>
+<p><strong>Caveats from these sources.</strong> Clipping thresholds (5, 10, 20) are heuristics, not derived values. &ldquo;Never really worked all that great&rdquo; is the lecture&rsquo;s verdict on phrase-based MT, not a measured claim.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>This course:</strong> L05 introduced the RNN&rsquo;s two problems. L07 fixes the bottleneck with attention. L08 replaces recurrence entirely.</li>
+<li><strong>CS336:</strong> L09 scaling laws: LSTMs scaled with data and compute before transformers did.</li>
+<li><strong>CS229:</strong> eigenvalues and matrix powers appear in the optimization theory.</li>
+</ul>
+<div class="cheatsheet"><span class="co-label">Cheatsheet</span><p><strong>LSTM cheatsheet.</strong> Vanish: eigenvalues &lt;1, 30 steps -&gt; 0. Explode: &gt;1 -&gt; infinity. Vanishing worse (silent). Clip: norm cap 5/10/20, keep direction. LSTM 1997: cell + hidden, 3 gates (forget=remember, input, output). cell = old x forget + candidate x input. hidden = output x tanh(cell). Additive -&gt; gradients flow. BiLSTM: concat both directions. Stacked: deeper. MT: rules -&gt; phrase-based -&gt; 2014 NMT. Seq2seq: encoder -&gt; final state -&gt; decoder + start token, one loss. Bottleneck: fixed vector.</p></div>
+<div class="memory-aid"><span class="ma-label">Memory aid</span><p><strong>Add, do not multiply.</strong> The LSTM&rsquo;s cell adds. Addition preserves gradients. Multiplication destroys them. One design choice, one era of NLP.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=Ba6Fn1-Jsfw" target="_blank" rel="noopener">Lecture 6 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">PAPER</span><a href="https://www.bioinf.jku.at/publications/older/2604.pdf" target="_blank" rel="noopener">Hochreiter and Schmidhuber, Long Short-Term Memory (1997)</a></li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/1409.3215" target="_blank" rel="noopener">Sutskever, Vinyals, Le, Sequence to Sequence Learning with Neural Networks (2014)</a></li></ul></section>
+      <nav class="pager"><a href="../cs224n/l05-language-modeling-rnns.html"><span class="lbl">← Previous</span>Lecture 5: Language Modeling and RNNs</a><a href="../cs224n/l07-attention.html"><span class="lbl">Next →</span>Lecture 7: Attention</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

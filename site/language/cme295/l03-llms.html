@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture 3: Large Language Models — Stanford Frontier AI</title>
+<meta name="description" content="What makes a model large, mixture of experts, decoding and sampling strategies, prompting and in-context learning, and the inference tricks that make LLMs usabl">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-l03">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/l01-word-vectors-1.html" data-page="cs224n-l01">L01 · Introduction, Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors, GloVe, Evaluation</a></li>
+<li><a href="../cs224n/l03-neural-networks.html" data-page="cs224n-l03">L03 · Neural Networks, Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-rnns.html" data-page="cs224n-l05">L05 · Recurrent neural networks</a></li>
+<li><a href="../cs224n/l06-seq2seq-attention.html" data-page="cs224n-l06">L06 · LSTMs, seq2seq, machine translation</a></li>
+<li><a href="../cs224n/l07-attention-llm-intro.html" data-page="cs224n-l07">L07 · Attention and the road to LLMs</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Self-Attention, Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-post-training.html" data-page="cs224n-l10">L10 · Post-Training</a></li>
+<li><a href="../cs224n/l11-benchmarking.html" data-page="cs224n-l11">L11 · Benchmarking</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-bci.html" data-page="cs224n-l13">L13 · Brain-Computer Interfaces</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-after-dpo.html" data-page="cs224n-l15">L15 · After DPO</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/l01-transformers.html" data-page="cme295-l01">L01 · Transformers</a></li>
+<li><a href="../cme295/l02-models-tricks.html" data-page="cme295-l02">L02 · Transformer Models, Tricks</a></li>
+<li><a href="../cme295/l03-llms.html" data-page="cme295-l03" class="active">L03 · Large Language Models</a></li>
+<li><a href="../cme295/l04-training.html" data-page="cme295-l04">L04 · LLM Training</a></li>
+<li><a href="../cme295/l05-tuning.html" data-page="cme295-l05">L05 · LLM Tuning</a></li>
+<li><a href="../cme295/l06-reasoning.html" data-page="cme295-l06">L06 · LLM Reasoning</a></li>
+<li><a href="../cme295/l07-agents.html" data-page="cme295-l07">L07 · Agentic LLMs</a></li>
+<li><a href="../cme295/l08-evaluation.html" data-page="cme295-l08">L08 · LLM Evaluation</a></li>
+<li><a href="../cme295/l09-trends.html" data-page="cme295-l09">L09 · Recap, Current Trends</a></li>
+</ul>
+<h3></h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295/index.html">CME295: Transformers and Large Language Models</a></li>
+<li><a href="../cs224n/index.html" data-page="cs224n/index.html">CS224N: NLP with Deep Learning</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / Lecture 3: Large Language Models</nav>
+      <h1>Lecture 3: Large Language Models</h1>
+      <p class="meta-line">Instructor: Afshine Amidi, Shervine Amidi · 1:48:45 · Autumn 2025</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/Q5baLehv5So" title="Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 3 - Transformers &amp; Large Language Models" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><p class="video-cap">Original lecture. Timestamps link to exact moments.</p><p>An LLM is a language model that is large in three independent senses <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=226s" target="_blank" rel="noopener">03:46 <span class="ts">⏱03:46</span></a>. A language model assigns probabilities to token sequences, predicting the next token. Large means: parameters in the hundreds of billions (at least a billion to qualify), training data in the hundreds of billions to tens of trillions of tokens, and compute in the many-GPU regime. The term itself is young. In 2018 nobody said &ldquo;LLM&rdquo;, and by the current definition BERT does not qualify because it generates no text <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=351s" target="_blank" rel="noopener">05:51 <span class="ts">⏱05:51</span></a>.</p>
+<p>The backbone is the decoder-only transformer from Lecture 2: encoder removed, cross-attention removed, masked self-attention plus FFN plus normalization. GPT, Llama, Gemma, DeepSeek, Mistral all follow it <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=401s" target="_blank" rel="noopener">06:41 <span class="ts">⏱06:41</span></a>. Deep MoE mechanics are taught in <a href="../../foundations/cs336/l04-attention-alternatives-moe.html">CS336 L04</a>; this lesson keeps the Amidi treatment.</p>
+<h2 id="mixture-of-experts-ask-only-the-mathematician">Mixture of experts: ask only the mathematician</h2>
+<p>A dense model activates every parameter for every token. The lecture&rsquo;s metaphor: you walk into a room with a mathematician, a physicist, a chemist, and a historian, and you have a math question. Asking everyone is wasteful. Ask the mathematician <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=499s" target="_blank" rel="noopener">08:19 <span class="ts">⏱08:19</span></a>.</p>
+<p>Formally, with (n) experts (E_i) and a gating network (g) (also called the router):</p>
+<p>[ \hat{y} = \sum_{i=1}^{n} g_i(x) \, E_i(x) ]</p>
+<p>Two regimes <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=765s" target="_blank" rel="noopener">12:45 <span class="ts">⏱12:45</span></a>. A <strong>dense MoE</strong> weights all experts, (g_i(x)) forming a distribution. A <strong>sparse MoE</strong> activates only the top-(K) experts, typically (K = 1) or (2), and the sum runs over those. Sparse is the point: fewer FLOPs per forward pass for the same parameter count.</p>
+<p>Where do the experts live? The FFN holds most of a transformer&rsquo;s parameters (order (d_{model} \times d_{ff}), with (d_{ff}) several times (d_{model})), far more than the attention projections. So each expert is an FFN, replacing the single FFN of a decoder block, with routing done per token <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=964s" target="_blank" rel="noopener">16:04 <span class="ts">⏱16:04</span></a>.</p>
+<div class="mermaid">flowchart LR
+    A[Token x] --> B[Router g]
+    B --> C[Expert 1 FFN]
+    B --> D[Expert 2 FFN]
+    B --> E[Expert n FFN]
+    C --> F["Weighted sum<br/>top-K only"]
+    D --> F
+    E --> F
+</div>
+<p>The failure mode is routing collapse: the router sends every token to the same one or two experts and the rest atrophy <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=1273s" target="_blank" rel="noopener">21:13 <span class="ts">⏱21:13</span></a>. The fix is a load-balancing term added to the loss, (\alpha \cdot n \sum_i f_i p_i), where (f_i) is the fraction of tokens routed to expert (i) and (p_i) its average routing probability. It pushes usage toward uniform across experts <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=1297s" target="_blank" rel="noopener">21:37 <span class="ts">⏱21:37</span></a>.</p>
+<p>Training the router and experts is joint: one forward pass, one loss, one backward pass. Nothing about MoE changes the training loop. The router is just another differentiable module whose gradients flow from the same objective <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=699s" target="_blank" rel="noopener">11:39 <span class="ts">⏱11:39</span></a>.</p>
+<p>A detail from the Q&amp;A: the experts are not shared across layers. Each decoder block has its own set of experts and its own router, so routing decisions are made fresh at every layer for every token <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=2108s" target="_blank" rel="noopener">35:08 <span class="ts">⏱35:08</span></a>.</p>
+<h2 id="decoding-from-greedy-to-beam-search">Decoding: from greedy to beam search</h2>
+<p>Next-token prediction outputs a distribution. The simplest choice is greedy decoding: take the argmax at each step <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=2471s" target="_blank" rel="noopener">41:11 <span class="ts">⏱41:11</span></a>. It is fast and myopic; one locally optimal token can doom the sequence.</p>
+<p>Beam search keeps (B) candidate sequences alive, expanding each and pruning to the top (B) by cumulative probability <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=2714s" target="_blank" rel="noopener">45:14 <span class="ts">⏱45:14</span></a>. Its known bias: shorter sequences score higher because probabilities multiply, so the search favors brevity unless corrected with length normalization.</p>
+<h2 id="sampling-temperature-top-k-top-p">Sampling: temperature, top-k, top-p</h2>
+<p>Instead of maximizing, sample from the distribution, reshaped first. Temperature (T) divides the logits before softmax <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=3322s" target="_blank" rel="noopener">55:22 <span class="ts">⏱55:22</span></a>:</p>
+<ul>
+<li>(T \to 0): the distribution sharpens toward the argmax. Deterministic, factual, boring.</li>
+<li>(T = 1): the model&rsquo;s raw distribution.</li>
+<li>(T) high: the distribution flattens toward uniform. Creative, incoherent.</li>
+</ul>
+<p>Two truncation tricks cut off the tail before sampling. Top-(k) keeps only the (k) most likely tokens. Top-(p) (nucleus sampling) keeps the smallest set whose cumulative probability reaches (p) <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=3002s" target="_blank" rel="noopener">50:02 <span class="ts">⏱50:02</span></a>. Both are routinely combined with temperature.</p>
+<div class="callout"><span class="co-label">Caveat</span><p>Temperature zero does not guarantee determinism. The lecture cites recent work on defeating non-determinism in LMs: floating-point summation order across parallel hardware can still flip the argmax between runs <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=3840s" target="_blank" rel="noopener">64:00 <span class="ts">⏱64:00</span></a>. Bitwise reproducibility needs pinned hardware and kernels, not just (T = 0).</p></div>
+<p>When the output must obey a format, say JSON, guided decoding constrains generation to a finite-state machine over valid tokens, guaranteeing syntactic validity by construction <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=3941s" target="_blank" rel="noopener">65:41 <span class="ts">⏱65:41</span></a>.</p>
+<h2 id="context-length-and-prompting">Context length and prompting</h2>
+<p>Modern context windows reach tens of thousands of tokens, but length is not free: attention cost grows with it, and models exhibit the &ldquo;lost in the middle&rdquo; effect, burying the answer in long inputs degrades retrieval of it <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=4173s" target="_blank" rel="noopener">69:33 <span class="ts">⏱69:33</span></a>. More context is not automatically better. The lecture&rsquo;s guidance: long context helps when the task genuinely needs the full document, and hurts through distraction and cost when it does not <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=4140s" target="_blank" rel="noopener">69:00 <span class="ts">⏱69:00</span></a>.</p>
+<p>The lecture groups every inference optimization into two families [slide 89]. Exact methods remove redundancy without changing the math: KV caching, memory management, reformulating the computation. Approximations change the model or the math: architectural changes like GQA and MLA, compressed representations, and predicting several tokens at once. The first family is free accuracy-wise. The second trades accuracy for speed, and each trick needs its own evaluation.</p>
+<p>The lecture decomposes a prompt into three parts <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=4321s" target="_blank" rel="noopener">72:01 <span class="ts">⏱72:01</span></a>: the <strong>context</strong> (background the model needs), the <strong>task</strong> (what to produce), and <strong>constraints</strong> (format, tone, hidden system instructions the user never sees).</p>
+<p>In-context learning, Brown et al. 2020, is the observation that examples in the prompt teach the task without weight updates <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=4514s" target="_blank" rel="noopener">75:14 <span class="ts">⏱75:14</span></a>. Zero-shot asks bare. Few-shot adds input/output pairs, which usually performs better at the cost of tokens and latency. Chain-of-thought, Wei et al. 2022, adds reasoning steps to the examples; the model then reasons before answering, gaining accuracy and interpretability for more tokens <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=4800s" target="_blank" rel="noopener">80:00 <span class="ts">⏱80:00</span></a>. Self-consistency, Wang et al. 2022, samples several reasoning paths and takes the majority answer, trading compute for accuracy <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=4936s" target="_blank" rel="noopener">82:16 <span class="ts">⏱82:16</span></a>.</p>
+<div class="mermaid">flowchart LR
+    A[Zero-shot<br/>question only] --> B[Few-shot<br/>+ examples]
+    B --> C[Chain-of-thought<br/>+ reasoning steps]
+    C --> D[Self-consistency<br/>+ majority vote]
+</div>
+<h2 id="inference-optimizations">Inference optimizations</h2>
+<p>Generating token (t+1) recomputes keys and values for tokens (1..t) unless they are cached. The KV cache stores them, turning each decode step from quadratic recomputation into a linear read <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=5344s" target="_blank" rel="noopener">89:04 <span class="ts">⏱89:04</span></a>. (During training, teacher forcing feeds all inputs at once, so no cache is needed <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=5401s" target="_blank" rel="noopener">90:01 <span class="ts">⏱90:01</span></a>.) The cache is also the reason Lecture 2&rsquo;s GQA matters: fewer KV projections mean a smaller cache.</p>
+<p>Three further tricks from the slides:</p>
+<ul>
+<li><strong>MLA, multi-head latent attention</strong> (DeepSeek-V2): store compressed latent representations of K and V instead of the full matrices, shrinking cache memory <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=5832s" target="_blank" rel="noopener">97:12 <span class="ts">⏱97:12</span></a>.</li>
+<li><strong>Speculative decoding</strong> (Chen et al., 2023): a small draft model proposes tokens, the large target model validates them in parallel. Accepted tokens cost a fraction of a full forward pass <a href="https://www.youtube.com/watch?v=Q5baLehv5So&amp;t=6097s" target="_blank" rel="noopener">101:37 <span class="ts">⏱101:37</span></a>.</li>
+<li><strong>MTP, multi-token prediction</strong> (Gloeckle et al., 2024): train (k) extra prediction heads so the model emits several future tokens per step [slide 121].</li>
+</ul>
+<p>Decoding and KV-cache mechanics are covered in depth in <a href="../../foundations/cs336/l10-inference.html">CS336 L10</a>.</p>
+<div class="callout"><span class="co-label">Interview signal</span><p>The MoE questions that recur: dense vs sparse, where experts sit (the FFN, because that is where the parameters are), and routing collapse with the load-balancing fix. On sampling: state the temperature intuition precisely, and know that top-(p) adapts the cutoff to the distribution while top-(k) is fixed. Self-consistency is a cheap &ldquo;reasoning upgrade&rdquo; to mention when asked how to improve CoT without retraining.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=Q5baLehv5So" target="_blank" rel="noopener">Lecture 3 video, Stanford Online YouTube</a></li><li><span class="src-tag">SLIDES</span><a href="https://cme295.stanford.edu/slides/fall25-cme295-lecture3.pdf" target="_blank" rel="noopener">fall25-cme295-lecture3.pdf (official slides)</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript (en)</li></ul></section>
+      <nav class="pager"><a href="../cme295/l02-models-tricks.html"><span class="lbl">← Previous</span>Lecture 2: Transformer-Based Models and Tricks</a><a href="../cme295/l04-training.html"><span class="lbl">Next →</span>Lecture 4: LLM Training</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

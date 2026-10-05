@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>CS224N Crash Course — Stanford Frontier AI</title>
+<meta name="description" content="Interview-speed review of CS224N: the full story in 30 minutes, with images and links into the deep lessons.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-crash" class="page-crash">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash" class="active">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / CS224N Crash Course</nav>
+      <h1>CS224N Crash Course</h1>
+      
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><p><span class="crash-timer">30 minutes · interview speed</span></p>
+<p>This page tells the whole story fast. Each section gives you the working
+version: enough to answer interview questions with confidence. Links at
+the end of each section take you into the full lesson when you want the
+derivations, the timestamps, and the follow-ups.</p>
+<div class="crash-section">
+<h3 id="1-word-meaning-is-a-vector">1. Word meaning is a vector</h3>
+<p>The astounding result that opens the course: word meaning can be represented
+well by a high-dimensional vector of real numbers. Before 2013, meaning lived
+in hand-built lists like WordNet: synonyms, hypernyms, human labor. Lists
+miss nuance (&ldquo;proficient&rdquo; is not always &ldquo;good&rdquo;), miss new senses (&ldquo;ninja&rdquo;),
+and give no graded similarity.</p>
+<p>The old encoding was one-hot: one 1, the rest 0s, dimension 500,000+. Every
+pair is orthogonal. &ldquo;Seattle motel&rdquo; never matches &ldquo;Seattle hotel.&rdquo;</p>
+<figure class="crash-fig"><img src="assets/l01-onehot.svg" alt="One-hot vectors"><figcaption>One-hot: orthogonal, no similarity. 500,000+ dimensions.</figcaption></figure>
+<p>The fix: learn dense vectors so similar words get high dot products.</p>
+<ul class="crash-links">
+<li><a href="l01-intro-word-vectors.html">Lecture 1: introduction and word vectors</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="2-know-a-word-by-the-company-it-keeps">2. Know a word by the company it keeps</h3>
+<p>Distributional semantics (Firth, 1957): a word&rsquo;s meaning comes from the words
+that appear nearby. Word2vec&rsquo;s skip-gram slides a window over the corpus and
+predicts context words from the center word. The objective is the average
+negative log likelihood. Softmax turns dot products into probabilities:
+exponentiate, normalize over the vocabulary.</p>
+<p>Training is stochastic gradient descent on sampled windows. The noise helps.
+Two vectors per word (center v, outside u), averaged at the end.</p>
+<figure class="crash-fig"><img src="assets/l01-skipgram.svg" alt="Skip-gram"><figcaption>Predict context words from the center word, window size m.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l01-intro-word-vectors.html">Lecture 1: introduction and word vectors</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="3-the-vectors-work-and-the-softmax-is-too-expensive">3. The vectors work, and the softmax is too expensive</h3>
+<p>Neighbors prove the geometry: &ldquo;bread&rdquo; and &ldquo;croissant&rdquo; share sign patterns.
+&ldquo;USA&rdquo; sits near Canada, America, U.S.A. Analogies demo the offsets:
+king - man + woman = queen. Cherry-picked, the lecturer admits, and nobody
+uses analogies in production.</p>
+<p>The naive softmax costs 400,000 dot products per prediction. Negative
+sampling fixes it: train k+1 logistic regressions, one real pair against k
+negatives. GloVe takes the counting route: ratios of co-occurrence
+probabilities carry the signal (ice vs steam isolates the solid-gas axis),
+and the dot product approximates log co-occurrence plus biases.</p>
+<figure class="crash-fig"><img src="assets/l02-negsampling.svg" alt="Negative sampling"><figcaption>Skip the 400K-word softmax: train a few logistic regressions.</figcaption></figure>
+<p>Evaluate intrinsic (analogies, similarity ratings) for speed, extrinsic
+(downstream NER) for truth. One vector per word is a superposition of its
+senses.</p>
+<ul class="crash-links">
+<li><a href="l02-word-vectors-2.html">Lecture 2: word vectors 2 and word senses</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="4-backprop-is-the-chain-rule-applied-efficiently">4. Backprop is the chain rule, applied efficiently</h3>
+<p>A layer is an affine map plus an activation: z = Wx + b, h = sigma(z). Stack
+them. The chain rule multiplies local Jacobians: ds/dz = ds/dh x dh/dz.
+Forward is function application. Backward is the chain rule applied
+efficiently. Store every intermediate on the way down, reuse on the way up,
+never recompute. Autograd packages each operation&rsquo;s backward rule as Lego.
+verify new layers with numeric gradient checking.</p>
+<figure class="crash-fig"><img src="assets/l03-forward-backward.svg" alt="Forward versus backward"><figcaption>Forward applies and stores; backward reuses. Never recompute.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l03-neural-networks-backprop.html">Lecture 3: neural networks and backpropagation</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="5-parsing-dense-beats-sparse">5. Parsing: dense beats sparse</h3>
+<p>&ldquo;Scientists count whales from space&rdquo;: space whales, or counting from space.
+Prepositional-phrase attachment makes human language globally ambiguous.
+Dependency parsing represents grammar as head-to-dependent arcs with labels.</p>
+<p>Transition-based parsing uses three actions (SHIFT, LEFT-ARC, RIGHT-ARC) on a
+stack and buffer: greedy, linear time, trained by an oracle. The old approach
+used millions of sparse indicator features, each seen ~10 times in a million
+sentences. Feature computation dominated runtime. Chen and Manning (2014)
+replaced them with dense embeddings of words, POS tags, and labels:
+concatenate, ReLU, softmax over actions. 92 UAS at transition-parser speed.
+Google&rsquo;s Parsey McParseface pushed it to 94.6 with depth and beam search.</p>
+<figure class="crash-fig"><img src="assets/l04-neural-parser.svg" alt="Neural parser"><figcaption>Concatenate embeddings, ReLU, softmax over SHIFT/LEFT-ARC/RIGHT-ARC.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l04-dependency-parsing.html">Lecture 4: dependency parsing</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="6-language-models-and-rnns">6. Language models and RNNs</h3>
+<p>A language model assigns a probability to every next word: &ldquo;the most
+important concept in the class.&rdquo; N-grams count trigrams, but sparsity kills
+them (unseen gets 0, seen-once gets 1) and the tables are huge.</p>
+<p>RNNs apply one weight set at every step: h(t) = tanh(W_h h(t-1) + W_e x(t) +
+b). The hidden state is memory. Each step outputs a vocabulary distribution.
+sample to generate. Two fatal problems: the strict t=1..T order cannot be
+parallelized, and distant context fades.</p>
+<figure class="crash-fig"><img src="assets/l05-rnn-cell.svg" alt="RNN cell"><figcaption>One weight set, reused every step. The hidden state is memory.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l05-language-modeling-rnns.html">Lecture 5: language modeling and RNNs</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="7-lstms-protect-memory-seq2seq-translates">7. LSTMs protect memory; seq2seq translates</h3>
+<p>Backprop through 30 steps multiplies the Jacobian 30 times. Eigenvalues below
+1 vanish the gradient. Above 1 explode it. Vanishing is worse: it is silent.
+Clip exploding norms at 5, 10, or 20.</p>
+<p>The LSTM (1997) guards a cell state with three gates. Forget is really
+&ldquo;remember.&rdquo; The cell update is additive, so gradients flow. Bidirectional
+LSTMs concatenate both directions. Seq2seq wires two LSTMs for translation:
+the encoder&rsquo;s final state seeds the decoder. The bottleneck: one fixed vector
+must hold the whole sentence.</p>
+<figure class="crash-fig"><img src="assets/l06-lstm.svg" alt="LSTM"><figcaption>Three gates guard the cell; the additive update preserves gradients.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l06-lstms-nmt.html">Lecture 6: LSTMs and neural machine translation</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="8-attention-look-back-like-a-human">8. Attention: look back like a human</h3>
+<p>Seq2seq stuffs a sentence into one vector. A human translator looks back at
+the source while writing. Attention (Bahdanau, 2015) gives the network the
+same ability: on each decoder step, query the encoder states, score them,
+softmax into weights, take the weighted average, concatenate, predict. Bonus:
+shorter gradient paths fight vanishing.</p>
+<figure class="crash-fig"><img src="assets/l07-attention-steps.svg" alt="Attention steps"><figcaption>Query, score, weight, average, predict. Bahdanau et al., 2015.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l07-attention.html">Lecture 7: attention</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="9-transformers-attention-everywhere">9. Transformers: attention everywhere</h3>
+<p>RNNs fail twice: linear interaction distance (&ldquo;the chef who went to the
+stores &hellip; was&rdquo;) and O(n) sequential steps. Attention fixes both: constant
+distance, full parallelism. Self-attention is a set operation, so positional
+encoding injects order (sinusoidal or learned). Mask the future with minus
+infinity or training cheats. Scale dots by sqrt(d_k). Multi-head: 8 heads,
+64+ dims each. Residuals carry gradient 1. LayerNorm normalizes per word. The
+block repeats: attention, add-and-norm, feedforward, add-and-norm.</p>
+<p>This is a bridge lesson: the CS224N framing lives here, deep mechanics in
+CS336 (architecture, linear attention, KV cache).</p>
+<figure class="crash-fig"><img src="assets/l08-block.svg" alt="Transformer block"><figcaption>Embed plus position, masked self-attention, MLP, residuals, repeat.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l08-transformers.html">Lecture 8: transformers (bridge)</a></li>
+<li><a href="../cs336/l03-architecture.html">CS336 L03: the modern architecture</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="10-pretraining-reconstructs-the-input">10. Pretraining reconstructs the input</h3>
+<p>Mask part of a sentence, predict it back, repeat over trillions of words.
+One objective teaches trivia, syntax, coreference, semantics, sentiment, and
+world models. BERT: 15% masking, segment embeddings, CLS token, 110M/340M
+params. GLUE was a sea change. GPT scales the same idea: 117M to 1.5B to
+175B, with in-context learning (examples in the prompt, no weight updates).
+Chinchilla corrected the sizing: smaller models on more data win. Recipe:
+pretrain, continue pretraining on task data, fine-tune. Warning: fluent but
+frequently wrong.</p>
+<figure class="crash-fig"><img src="assets/l09-reconstruct.svg" alt="Pretraining"><figcaption>Mask the input, predict it back. Trillions of words, no labels.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l09-pretraining.html">Lecture 9: pretraining (bridge)</a></li>
+<li><a href="../cs336/l09-scaling-laws.html">CS336 L09: scaling laws</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="11-post-training-from-prompting-to-dpo">11. Post-training: from prompting to DPO</h3>
+<p>Few-shot prompting needs no gradient updates. Chain of thought adds a scratch
+pad: zero-shot &ldquo;let&rsquo;s think step by step&rdquo; jumps 17.7 to 78.7. Instruction
+tuning (FLAN&rsquo;s 3M+ examples, LIMA&rsquo;s 1,000) teaches models to follow
+instructions. RLHF: instruction-tune, learn a reward model from pairwise
+preferences (Bradley-Terry: P = sigma(r1-r2)), optimize with a KL leash.
+Optimizing a learned metric invites reward hacking: gibberish, verbosity,
+authoritative-over-truthful. DPO skips the reward model: the normalizer
+cancels, leaving binary classification. 9 of 10 open leaderboard models use
+it.</p>
+<figure class="crash-fig"><img src="assets/l10-rlhf.svg" alt="RLHF pipeline"><figcaption>SFT, reward model, RL with KL penalty. Hacking is the failure mode.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l10-prompting-post-training.html">Lecture 10: prompting and post-training (bridge)</a></li>
+<li><a href="../cs336/l15-post-training.html">CS336 L15: post-training</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="12-evaluation-never-just-believe-numbers">12. Evaluation: never just believe numbers</h3>
+<p>BLEU counts n-gram overlap plus a brevity penalty. ROUGE counts recall. Both
+fail: &ldquo;yep&rdquo; scores 0 against &ldquo;heck yes&rdquo; (false negative), &ldquo;heck no&rdquo; matches
+words while meaning the opposite (false positive). Human eval is the gold
+standard and it is noisy: 67% agreement after hours of rubrics. Chatbot Arena
+collects 200,000 pairwise votes into Elo ratings. LLM judges are 100x faster
+and cheaper, with 98% rank correlation, but length bias (~70%) and monoculture
+lurk. The harness moves the number: LLaMA 65B MMLU reads 63.7, 63.6, or 48.8
+depending on setup. Never just believe numbers.</p>
+<figure class="crash-fig"><img src="assets/l11-heckyes.svg" alt="BLEU failures"><figcaption>Overlap is not meaning: false negatives and false positives.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l11-evaluation.html">Lecture 11: evaluation (bridge)</a></li>
+<li><a href="../cs336/l12-evaluation.html">CS336 L12: evaluation</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="13-train-it-efficiently">13. Train it efficiently</h3>
+<p>bf16 is the sweet spot: 2 bytes, 8 exponent bits, fp32 range, no gradient
+scalers, needs Ampere+. Mixed-precision training costs 16 bytes per parameter
+per GPU: 2 params, 2 grads, 4 master, 4 momentum, 4 variance. DDP replicates
+and all-reduces. ZeRO shards (optimizer, then gradients, then parameters).
+LoRA trains a low-rank delta W + (alpha/r)BA on attention matrices and merges
+it at inference: no latency. The sustainability warning: training demand
+outruns global compute capacity.</p>
+<figure class="crash-fig"><img src="assets/l12-memory.svg" alt="Memory budget"><figcaption>16 bytes per parameter per GPU. Optimizer states dominate.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l12-efficient-training.html">Lecture 12: efficient training (bridge)</a></li>
+<li><a href="../cs336/l02-resource-accounting.html">CS336 L02: resource accounting</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="14-speech-from-the-brain">14. Speech from the brain</h3>
+<p>Locked-in patients have working brains and unresponsive bodies. Letter boards
+take minutes per sentence. Eye-tracking tires. In 2017, imagined movement
+drove a virtual keyboard at ~40 chars/min peak. Participant T12&rsquo;s four
+implanted arrays (two in motor cortex, two in Broca&rsquo;s area) decode speech in
+real time: motor cortex carries the signal. Word error rate ~25% here, near
+zero at UC Davis after continuous training. Speed: 60-70 wpm against 150
+natural. Frontier: decode inner speech, and drive 3D avatars from phonemes
+plus articulation.</p>
+<figure class="crash-fig"><img src="assets/l13-speed.svg" alt="BCI speed"><figcaption>60-70 wpm decoded versus 150 natural. Far ahead of every alternative.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l13-speech-bci.html">Lecture 13: speech brain-computer interfaces</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="15-reasoning-agents-and-life-after-dpo">15. Reasoning, agents, and life after DPO</h3>
+<p>Reasoning comes in three flavors: deductive, inductive, abductive. Prompt it
+with chain of thought. Stabilize it with self-consistency (sample, majority
+vote). Test it with counterfactuals: base-9 arithmetic separates memorization
+from reasoning. An agent is a network in a loop: observation, action, goal.
+2024&rsquo;s reframing is trajectory modeling: &ldquo;chain of thought prompting in a
+loop.&rdquo; Benchmarks (MiniWoB, WebArena, WebLinx) show a huge human-model gap.
+models make trivial unrecoverable mistakes.</p>
+<p>After DPO, alignment&rsquo;s questions are: online versus offline (fresh data and
+fresh labels win), self-rewarding loops, beyond-pairwise methods (KTO,
+Starling, SteerLM), and whether reward models just match distributions. Data
+is a moat: Meta bought 1.5M comparisons for LLaMA 2.</p>
+<figure class="crash-fig"><img src="assets/l14-agent-loop.svg" alt="Agent loop"><figcaption>Instruction plus history predicts the next action. Repeat.</figcaption></figure>
+<ul class="crash-links">
+<li><a href="l14-reasoning-agents.html">Lecture 14: reasoning and agents</a></li>
+<li><a href="l15-life-after-dpo.html">Lecture 15: life after DPO (bridge)</a></li>
+<li><a href="../cs336/l16-rlvr.html">CS336 L16: RLVR</a></li>
+</ul>
+</div>
+<div class="crash-section">
+<h3 id="rapid-fire-qa">Rapid-fire Q&amp;A</h3>
+<p><strong>Q: Why did word2vec need negative sampling?</strong>
+A: The softmax normalizes over 400,000 words per prediction. Negative
+sampling trains k+1 logistic regressions instead.</p>
+<p><strong>Q: What is backpropagation in one sentence?</strong>
+A: The chain rule applied efficiently: one backward sweep reusing stored
+intermediates.</p>
+<p><strong>Q: Why is vanishing worse than exploding?</strong>
+A: Exploding is visible and clippable. Vanishing is silent: nothing learns.</p>
+<p><strong>Q: Why did attention beat recurrence?</strong>
+A: Constant interaction distance plus full parallelization. The LSTM had
+neither.</p>
+<p><strong>Q: Why mask the future?</strong>
+A: Otherwise the model reads the answer during training and learns nothing.</p>
+<p><strong>Q: What does pretraining teach?</strong>
+A: Trivia, syntax, coreference, semantics, sentiment, world models. Form, not
+truth: fluent but frequently wrong.</p>
+<p><strong>Q: What is DPO&rsquo;s trick?</strong>
+A: The intractable normalizer cancels in Bradley-Terry, leaving binary
+classification. No reward model, no RL.</p>
+<p><strong>Q: Why not trust BLEU?</strong>
+A: Overlap is not meaning. &ldquo;yep&rdquo; scores 0. &ldquo;heck no&rdquo; scores well.</p>
+<p><strong>Q: What costs 16 bytes per parameter?</strong>
+A: Mixed-precision Adam training: 2 params + 2 grads + 4 master + 4 momentum
++ 4 variance, per GPU.</p>
+<p><strong>Q: Online or offline alignment?</strong>
+A: Online: fresh data from the policy, refreshed labels. April-May 2024
+papers agree it matters.</p>
+</div>
+      
+      <nav class="pager"><a href="../cs224n/cheatsheet.html"><span class="lbl">← Previous</span>CS224N Cheatsheet</a><span></span></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

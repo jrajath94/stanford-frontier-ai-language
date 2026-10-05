@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 15: Life After DPO (Bridge) — Stanford Frontier AI</title>
+<meta name="description" content="The alignment moment after DPO: lab-scale preference data, online versus offline, self-rewarding models, beyond-pairwise methods, and the open questions. Deep m">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-l15" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15" class="active">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 15: Life After DPO (Bridge)</nav>
+      <h1>Lecture 15: Life After DPO (Bridge)</h1>
+      <p class="meta-line">Instructor: Nathan Lambert · 1:09:00 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="dnF463_Ar9I"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/dnF463_Ar9I" title="Lecture 15: Life After DPO" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=dnF463_Ar9I" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=dnF463_Ar9I" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Invited talk. Nathan Lambert (AI2) on the state of alignment research after DPO.</p></div><div class="callout"><span class="co-label">Note</span><p><strong>Bridge lesson.</strong> This invited talk frames the alignment moment after
+DPO. For deep mechanics, follow the links:
+<a href="../cs336/l15-post-training.html">CS336 L15</a> (post-training systems),
+<a href="../cs336/l16-rlvr.html">CS336 L16</a> (RL with verifiable rewards). This
+lesson never re-explains what those cover.</p></div>
+<h2 id="how-to-read-this-lesson">How to read this lesson</h2>
+<p>This lesson has two levels. <strong>Level 1 (Core)</strong> sets the scene: the speaker,
+the data scale, and the online/offline distinction. <strong>Level 2 (Deep)</strong> covers
+self-rewarding models, beyond-pairwise methods, and the open questions.</p>
+<h2 id="level-1-the-moment-after-dpo">Level 1: The moment after DPO</h2>
+<p><strong>Nathan Lambert</strong>: PhD at UC Berkeley, then HuggingFace, now AI2
+(<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=26s" target="_blank" rel="noopener">00:26 <span class="ts">⏱00:26</span></a>). RL background: robots first, language models after.
+His talk: &ldquo;Life after DPO.&rdquo; DPO was &ldquo;the story of last year&rdquo; (2023). The
+question: what is the field interested in now?</p>
+<figure><img alt="Speaker" src="assets/l15-speaker.svg"><figcaption>Nathan Lambert: Berkeley PhD, HuggingFace, AI2. DPO was the 2023 story; the talk asks what comes next.</figcaption></figure>
+<p>The premise: more and more of the labs&rsquo; action moved from pretraining to
+<strong>post-training</strong>. Alignment research is now the main event.</p>
+<h2 id="level-1-preference-data-at-lab-scale">Level 1: Preference data at lab scale</h2>
+<figure><img alt="Data scale" src="assets/l15-data-scale.svg"><figcaption>Chatbot Arena: 800,000 public data points. Meta bought ~1.5M comparisons for LLaMA 2. Labs buy far more.</figcaption></figure>
+<ul>
+<li><strong>Chatbot Arena</strong>: ~800,000 public data points (<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=169s" target="_blank" rel="noopener">02:49 <span class="ts">⏱02:49</span></a>).</li>
+<li><strong>Meta&rsquo;s LLaMA 2 paper</strong>: ~1.5M comparisons bought (<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=173s" target="_blank" rel="noopener">02:53 <span class="ts">⏱02:53</span></a>).
+Both &ldquo;years outdated.&rdquo; OpenAI and Anthropic buy far more.</li>
+</ul>
+<p>Researchers cannot match that scale. The talk&rsquo;s challenge: what can research
+do without lab resources?</p>
+<div class="qa"><div class="q">Why does preference data scale matter so much?</div><div class="a"><p>Post-training is preference learning. More comparisons mean better reward models and better policies. Labs treat preference data as a moat: a great open reward model &ldquo;would help people catch up in alignment.&rdquo;
+Methods that need less data: DPO variants, self-rewarding loops, synthetic preferences, and better use of small high-quality sets. The talk&rsquo;s research agenda is efficiency, not scale.</p><div class="followup"><strong>Follow-up:</strong> What can researchers do instead?</div></div></div>
+<h2 id="level-1-online-versus-offline">Level 1: Online versus offline</h2>
+<p>The central distinction (<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=2867s" target="_blank" rel="noopener">47:47 <span class="ts">⏱47:47</span></a>):</p>
+<figure><img alt="Online versus offline" src="assets/l15-online.svg"><figcaption>Offline (DPO): static dataset, fixed labels. Online (PPO): fresh data from the policy, refreshed labels.</figcaption></figure>
+<ul>
+<li><strong>Offline (DPO).</strong> A static dataset. Labels fixed once. UltraFeedback
+distills generations from many models (Alpaca, Vicuna, GPT-3.5, GPT-4,
+LLaMA) into one policy.</li>
+<li><strong>Online (PPO).</strong> Fresh data generated from the current policy. Labels
+refreshed over time. The distribution shifts as the model improves.</li>
+</ul>
+<p>Two axes: <strong>what the text is</strong> and <strong>when the label was given</strong>. RL&rsquo;s
+on/off-policy distinction is related but &ldquo;more definitional&rdquo; (<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=2841s" target="_blank" rel="noopener">47:21 <span class="ts">⏱47:21</span></a>).
+alignment cares about fresh data and fresh labels. April-May 2024 papers
+agree: <strong>online is important</strong>.</p>
+<p>Note: DPO &ldquo;still has a reward model&rdquo; in the math (<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=797s" target="_blank" rel="noopener">13:17 <span class="ts">⏱13:17</span></a>): the
+reference policy plays the reward&rsquo;s role. Skipping the explicit reward model
+does not skip the concept.</p>
+<h2 id="level-2-self-rewarding-models">Level 2: Self-rewarding models</h2>
+<p><strong>Self-Rewarding LMs</strong> (Meta): the DPO model judges its own generations as
+an LLM judge, relabels the data, and iterates DPO (<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=2995s" target="_blank" rel="noopener">49:55 <span class="ts">⏱49:55</span></a>).</p>
+<figure><img alt="Self-rewarding" src="assets/l15-selfreward.svg"><figcaption>The DPO model judges its own generations, relabels, and iterates; strong scores across rounds.</figcaption></figure>
+<p>Strong scores across rounds. Variations: batched DPO with data refreshes,
+<strong>discriminator-guided DPO</strong> (reward models plus DPO training). The pattern:
+close the loop between generation and judgment.</p>
+<h2 id="level-2-beyond-pairwise">Level 2: Beyond pairwise</h2>
+<p>Pairwise preferences are not the only signal (<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=3681s" target="_blank" rel="noopener">61:21 <span class="ts">⏱61:21</span></a>):</p>
+<figure><img alt="Beyond pairwise" src="assets/l15-beyond-pairwise.svg"><figcaption>KTO: one-sided yes/no. Starling: k-wise ranking over 5-9 answers. SteerLM: fine-grained conciseness, helpfulness, honesty.</figcaption></figure>
+<ul>
+<li><strong>KTO</strong> (Stanford): <strong>one-sided</strong> preferences. Customer apps already
+collect &ldquo;was this helpful: yes/no.&rdquo; Different loss, same idea.</li>
+<li><strong>Starling</strong>: <strong>k-wise</strong> preferences. Five or nine answers per prompt, a
+ranking loss. One of the few open models that &ldquo;broke through.&rdquo;</li>
+<li><strong>SteerLM</strong> (Nvidia): <strong>fine-grained</strong> labels per completion:
+conciseness, helpfulness, honesty.</li>
+</ul>
+<p>&ldquo;All of social choice needs to get condensed into these things&rdquo;
+(<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=3770s" target="_blank" rel="noopener">62:50 <span class="ts">⏱62:50</span></a>). Preference learning is voting theory with gradients.</p>
+<div class="qa"><div class="q">When is one-sided feedback better than pairwise?</div><div class="a"><p>When pairwise data does not exist. Products collect thumbs up/down, not A/B comparisons. KTO uses the abundant signal instead of demanding the scarce one. Use pairwise where you can afford it. Use one-sided where you must.
+One reward conflates qualities: a long answer can be helpful but not concise. Separate labels let you steer each axis independently. The cost is annotation complexity.</p><div class="followup"><strong>Follow-up:</strong> Why fine-grained labels?</div></div></div>
+<h2 id="level-2-open-questions">Level 2: Open questions</h2>
+<figure><img alt="Open questions" src="assets/l15-frontier-q.svg"><figcaption>Is the reward model mostly distribution matching? Can search plus synthetic data exceed humans? Are good reward models a moat?</figcaption></figure>
+<ol>
+<li><strong>What do reward models actually learn?</strong> &ldquo;Mostly distribution matching,&rdquo;
+the speaker guesses (<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=3608s" target="_blank" rel="noopener">60:08 <span class="ts">⏱60:08</span></a>). Grading PPO answers with a reward
+model trained on the same prompts is circular.</li>
+<li><strong>How do we exceed human performance?</strong> Old CS ideas return: <strong>search</strong>
+as exploration in RL, generating new data (<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=3821s" target="_blank" rel="noopener">63:41 <span class="ts">⏱63:41</span></a>). Humans get it
+&ldquo;across the line&rdquo; where search cannot.</li>
+<li><strong>Why are good reward models closed?</strong> Because they are a moat. Opening
+one would help everyone catch up.</li>
+</ol>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>Eight ideas carry this lecture. Read each card. Say the core sentence out
+loud. If you can, you own the lesson.</p>
+<div class="recap-grid">
+<div class="recap-card">
+<img src="assets/l15-speaker.svg" alt="Speaker">
+<div class="rc-body">
+<strong>1. DPO was the 2023 story</strong>
+<p>Lambert (Berkeley, HF, AI2): post-training is where the action moved.
+The question is what comes after DPO.</p>
+<p class="rc-num">Key: alignment is the main event</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l15-data-scale.svg" alt="Data scale">
+<div class="rc-body">
+<strong>2. Labs buy preference data at scale</strong>
+<p>Arena: 800k public. Meta: 1.5M for LLaMA 2. Both outdated. Researchers
+cannot match it. Research must be efficient.</p>
+<p class="rc-num">Key: data is a moat</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l15-online.svg" alt="Online versus offline">
+<div class="rc-body">
+<strong>3. Online versus offline</strong>
+<p>Offline: static data, fixed labels. Online: fresh data from the policy,
+refreshed labels. Two axes: text and label timing.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=2867s" target="_blank" rel="noopener">47:47 <span class="ts">⏱47:47</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l15-selfreward.svg" alt="Self-rewarding">
+<div class="rc-body">
+<strong>4. Judge your own generations</strong>
+<p>Self-Rewarding LMs: LLM-as-judge relabels, iterate DPO. Close the loop
+between generation and judgment.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=2995s" target="_blank" rel="noopener">49:55 <span class="ts">⏱49:55</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l15-beyond-pairwise.svg" alt="Beyond pairwise">
+<div class="rc-body">
+<strong>5. Beyond pairwise</strong>
+<p>KTO: one-sided yes/no. Starling: k-wise ranking. SteerLM: fine-grained
+axes. Social choice with gradients.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=3681s" target="_blank" rel="noopener">61:21 <span class="ts">⏱61:21</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l15-frontier-q.svg" alt="Open questions">
+<div class="rc-body">
+<strong>6. Reward models may just match distributions</strong>
+<p>Grading with a model trained on the same prompts is circular. What do
+reward models really learn?</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=3608s" target="_blank" rel="noopener">60:08 <span class="ts">⏱60:08</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l15-frontier-q.svg" alt="Exceeding humans">
+<div class="rc-body">
+<strong>7. Search plus synthetic data to exceed humans</strong>
+<p>Old CS ideas return: search as exploration. Humans get it across the
+line where search cannot.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=3821s" target="_blank" rel="noopener">63:41 <span class="ts">⏱63:41</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l15-bridge.svg" alt="Bridge">
+<div class="rc-body">
+<strong>8. Depth lives in CS336</strong>
+<p>Post-training systems (L15), RLVR (L16). This talk: the framing of the
+moment after DPO.</p>
+<p class="rc-num">Key: bridge, not duplicate</p>
+</div>
+</div>
+</div>
+
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 15 video and transcript.
+- Rafailov et al. (2023): DPO.</p>
+<p><strong>Further reading:</strong>
+- <a href="../cs336/l15-post-training.html">CS336 L15</a>: post-training systems in depth.
+- <a href="../cs336/l16-rlvr.html">CS336 L16</a>: RL with verifiable rewards.
+- Yuan et al. (2024), &ldquo;Self-Rewarding Language Models&rdquo;: the Meta paper.
+- Ethayarajh et al. (2024), KTO: the one-sided method.</p>
+<p><strong>Caveats from these sources.</strong> Data counts (800k, 1.5M) are the talk&rsquo;s 2024 figures. &ldquo;Online is important&rdquo; summarizes April-May 2024 papers, not a settled theorem.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>This course:</strong> L10 built RLHF and DPO. This talk asks what follows. L11 evaluates the results.</li>
+<li><strong>CS336:</strong> L15 (post-training), L16 (RLVR) carry the deep mechanics.</li>
+<li><strong>CS329H:</strong> social choice theory is the formal home of preference aggregation.</li>
+</ul>
+<div class="cheatsheet"><span class="co-label">Cheatsheet</span><p><strong>Life after DPO cheatsheet.</strong> Speaker: Lambert, Berkeley/HF/AI2, RL background. Moment: post-training is the action. Data: Arena 800k, Meta 1.5M, labs more. Researchers priced out. Online vs offline: fresh data + fresh labels vs static. UltraFeedback: many models distilled. Self-rewarding: judge own data, iterate DPO. Beyond pairwise: KTO one-sided, Starling k-wise, SteerLM fine-grained. Open Qs: distribution matching? search + synthetic to exceed humans? reward models as moat?</p></div>
+<div class="memory-aid"><span class="ma-label">Memory aid</span><p><strong>Fresh data, fresh labels.</strong> Static datasets go stale as the policy improves. Online methods close the loop. The frontier is efficiency: do more with less preference data.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=dnF463_Ar9I" target="_blank" rel="noopener">Lecture 15 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2305.18290" target="_blank" rel="noopener">Rafailov et al., Direct Preference Optimization (2023)</a></li></ul></section>
+      <nav class="pager"><a href="../cs224n/l14-reasoning-agents.html"><span class="lbl">← Previous</span>Lecture 14: Reasoning and Agents</a><a href="../cs224n/cheatsheet.html"><span class="lbl">Next →</span>CS224N Cheatsheet</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

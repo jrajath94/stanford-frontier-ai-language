@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture 4: Dependency Parsing — Stanford Frontier AI</title>
+<meta name="description" content="Syntactic structure as dependency trees. Transition-based parsing with stack and buffer, and the neural parser that made it fast and accurate.">
+<link rel="stylesheet" href="assets/vendor/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="cs224n-l04">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="cs224n/l01-word-vectors-1.html" data-page="cs224n-l01">L01 · Introduction, Word Vectors</a></li>
+<li><a href="cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors, GloVe, Evaluation</a></li>
+<li><a href="cs224n/l03-neural-networks.html" data-page="cs224n-l03">L03 · Neural Networks, Backprop</a></li>
+<li><a href="cs224n/l04-dependency-parsing.html" data-page="cs224n-l04" class="active">L04 · Dependency Parsing</a></li>
+<li><a href="cs224n/l05-rnns.html" data-page="cs224n-l05">L05 · Recurrent neural networks</a></li>
+<li><a href="cs224n/l06-seq2seq-attention.html" data-page="cs224n-l06">L06 · LSTMs, seq2seq, machine translation</a></li>
+<li><a href="cs224n/l07-attention-llm-intro.html" data-page="cs224n-l07">L07 · Attention and the road to LLMs</a></li>
+<li><a href="cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Self-Attention, Transformers</a></li>
+<li><a href="cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="cs224n/l10-post-training.html" data-page="cs224n-l10">L10 · Post-Training</a></li>
+<li><a href="cs224n/l11-benchmarking.html" data-page="cs224n-l11">L11 · Benchmarking</a></li>
+<li><a href="cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="cs224n/l13-bci.html" data-page="cs224n-l13">L13 · Brain-Computer Interfaces</a></li>
+<li><a href="cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="cs224n/l15-after-dpo.html" data-page="cs224n-l15">L15 · After DPO</a></li>
+</ul>
+<h3></h3><ul>
+<li><a href="cs224n/index.html" data-page="cs224n/index.html">CS224N: NLP with Deep Learning</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 4: Dependency Parsing</nav>
+      <h1>Lecture 4: Dependency Parsing</h1>
+      <p class="meta-line">Instructor: Chris Manning · 1:18:49 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/KVKvde-_MYc" title="Stanford CS224N Spring 2024 Lecture 4: Dependency Parsing" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><p class="video-cap">Original lecture. Timestamps link to exact moments.</p><div class="callout"><span class="co-label">Key idea</span><p>A dependency parse chooses, for each word, which other word it depends on. The result is a tree that says what modifies what.</p></div>
+<h2 id="two-views-of-sentence-structure">Two views of sentence structure</h2>
+<p>Linguists describe sentence structure two ways. Phrase structure (constituency) groups words into nested constituents. &ldquo;the cuddly cat&rdquo; is a noun phrase. &ldquo;by the door&rdquo; is a prepositional phrase containing the noun phrase &ldquo;the door&rdquo;. Together they build the bigger noun phrase &ldquo;the cuddly cat by the door&rdquo; <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=300s" target="_blank" rel="noopener">05:00 <span class="ts">⏱05:00</span></a>.</p>
+<p>A context-free grammar writes the rules: NP → Det (Adj)<em> N (PP)</em>, PP → P NP, plus part-of-speech rules like Det → &ldquo;the&rdquo; and Adj → &ldquo;large&rdquo;. The Kleene star covers &ldquo;the large cuddly green cat&rdquo; <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=344s" target="_blank" rel="noopener">05:44 <span class="ts">⏱05:44</span></a>. Manning builds &ldquo;talk to the large cuddly dog by the door&rdquo; this way, then notes this view is not the course&rsquo;s main one <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=493s" target="_blank" rel="noopener">08:13 <span class="ts">⏱08:13</span></a>.</p>
+<p>The main view is dependency structure. Every word has a head it depends on. In &ldquo;Look in the large crate in the kitchen by the door&rdquo;, the head of the sentence is &ldquo;look&rdquo;. &ldquo;crate&rdquo; is what you look in. &ldquo;large&rdquo; and &ldquo;the&rdquo; modify &ldquo;crate&rdquo;. &ldquo;in the kitchen&rdquo; and &ldquo;by the door&rdquo; also modify &ldquo;crate&rdquo;, each a prepositional phrase attached to the noun <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=620s" target="_blank" rel="noopener">10:20 <span class="ts">⏱10:20</span></a>. No phrase nodes exist. The structure is arrows between words.</p>
+<p>The motivation: humans communicate in a linear stream of words but understand hierarchical modification. A model needs the same recovery of what modifies what to interpret language <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=823s" target="_blank" rel="noopener">13:43 <span class="ts">⏱13:43</span></a>. Manning even catches his own constituency diagram misattaching &ldquo;by the door&rdquo; and fixes it live <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=689s" target="_blank" rel="noopener">11:29 <span class="ts">⏱11:29</span></a>.</p>
+<h2 id="ambiguity-is-the-norm">Ambiguity is the norm</h2>
+<p>&ldquo;Scientists count whales from space.&rdquo; Two readings: the counting happens from space, or the whales are from space. The prepositional phrase can attach to the verb or to the noun <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=929s" target="_blank" rel="noopener">15:29 <span class="ts">⏱15:29</span></a>. This is the characteristic ambiguity of English. A prepositional phrase after a noun phrase can attach to any earlier head, and with more such phrases the readings multiply. &ldquo;The board approved its acquisition by Royal Trustco Limited of Toronto for $27 a share at its monthly meeting&rdquo; has four PPs in a row. Manning counts 13 readings for four PPs and 27 for five: an exponentially growing series given by the Catalan numbers, C_n = (2n)!/((n+1)!n!) <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=1169s" target="_blank" rel="noopener">19:29 <span class="ts">⏱19:29</span></a>. Crossing attachments are forbidden, which is why the count is Catalan-like rather than factorial <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=1279s" target="_blank" rel="noopener">21:19 <span class="ts">⏱21:19</span></a>.</p>
+<div class="mermaid">flowchart LR
+    count --> Scientists
+    count --> whales
+    whales -.->|reading 1| FS1[from space]
+    count -.->|reading 2| FS2[from space]
+</div>
+<p>More exhibits. Coordination scope: &ldquo;Shuttle veteran and longtime NASA executive Fred Gregory appointed to board&rdquo; is one person or two <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=1355s" target="_blank" rel="noopener">22:35 <span class="ts">⏱22:35</span></a>. The lesson for parsing: grammar alone cannot choose between readings. Only statistics over who modifies whom can.</p>
+<p>Structure also pays off practically. In biomedical text, the pattern &ldquo;KaiC interacts with SasA&rdquo; yields a protein-protein interaction fact: &ldquo;interacts&rdquo; takes &ldquo;KaiC&rdquo; as its subject and &ldquo;SasA&rdquo; as its prepositional argument, and coordination extends the fact to KaiA and KaiB <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=1655s" target="_blank" rel="noopener">27:35 <span class="ts">⏱27:35</span></a>.</p>
+<h2 id="dependency-grammar">Dependency grammar</h2>
+<p>Dependency syntax says structure is binary asymmetric relations: arrows from heads to dependents. The arrows are typed with grammatical relation names: nsubj (nominal subject), obj, obl (oblique), nmod, case, det, aux, conj, cc, appos, flat. In &ldquo;Bills on ports and immigration were submitted by Senator Brownback, Republican of Kansas&rdquo;, &ldquo;submitted&rdquo; is the root, &ldquo;Bills&rdquo; its subject, &ldquo;Brownback&rdquo; the oblique agent <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=1772s" target="_blank" rel="noopener">29:32 <span class="ts">⏱29:32</span></a>. Vocabulary: head is also called governor, dependent is also called modifier. Dependencies form a tree: connected, acyclic, one root. A fake ROOT node is added so every word depends on exactly one node <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=1963s" target="_blank" rel="noopener">32:43 <span class="ts">⏱32:43</span></a>.</p>
+<p>Arrow direction is a convention, not a fact. Tesnière drew head → dependent, which Manning follows. Others draw dependent → head. Both appear in the literature <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=2281s" target="_blank" rel="noopener">38:01 <span class="ts">⏱38:01</span></a>.</p>
+<p>The history Manning gives the computer scientists: dependency grammar is ancient, constituency grammar is new. Pāṇini&rsquo;s Sanskrit grammar, composed around the 5th century BCE and transmitted orally for centuries, was a dependency grammar <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=2018s" target="_blank" rel="noopener">33:38 <span class="ts">⏱33:38</span></a>. First-millennium Arabic grammarians used dependencies. Phrase structure is a 20th-century invention (Wells 1947, Chomsky 1950s). The Chomsky hierarchy itself was invented to argue about human language: Chomsky wanted to show finite-state grammars could not capture language&rsquo;s complexity <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=2117s" target="_blank" rel="noopener">35:17 <span class="ts">⏱35:17</span></a>.</p>
+<h2 id="treebanks">Treebanks</h2>
+<p>Hand-written grammars failed twice over. Language has a long tail of creative usage no rule set covers, and ambiguity leaves a bare grammar with no way to choose <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=2402s" target="_blank" rel="noopener">40:02 <span class="ts">⏱40:02</span></a>. The field&rsquo;s answer, starting in the late 1980s, was annotated data. Treebanks give reusable labor, broad coverage, frequency statistics for machine learning, and, crucially, a way to evaluate parsers at all. Before treebanks, a &ldquo;good parser&rdquo; was a demo that looked right <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=2707s" target="_blank" rel="noopener">45:07 <span class="ts">⏱45:07</span></a>.</p>
+<p>The Universal Dependencies project now covers 100+ languages with one uniform dependency formalism. Assignment 2 trains on UD-style data: human-annotated dependency trees used as supervision <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=2581s" target="_blank" rel="noopener">43:01 <span class="ts">⏱43:01</span></a>.</p>
+<h2 id="what-a-parser-needs-to-know">What a parser needs to know</h2>
+<p>Four information sources drive parsing decisions <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=2792s" target="_blank" rel="noopener">46:32 <span class="ts">⏱46:32</span></a>:</p>
+<ol>
+<li><strong>Bilexical affinities.</strong> &ldquo;discussion of issues&rdquo; is plausible. &ldquo;the&rdquo; depending on &ldquo;completed&rdquo; is not.</li>
+<li><strong>Dependency distance.</strong> Most dependencies are short. Long ones exist but are rare.</li>
+<li><strong>Intervening material.</strong> Dependencies rarely span verbs or punctuation.</li>
+<li><strong>Valency of heads.</strong> &ldquo;broke&rdquo; expects a breaker on the left and optionally a thing broken on the right, but not an arbitrary number of arguments.</li>
+</ol>
+<p>One structural caveat: dependencies usually nest, but not always. &ldquo;I&rsquo;ll give a talk tomorrow on neural networks&rdquo; has &ldquo;on neural networks&rdquo; modifying &ldquo;talk&rdquo; while &ldquo;tomorrow&rdquo; modifies &ldquo;give&rdquo;: crossing arcs. So does &ldquo;Who did Bill buy the coffee from yesterday?&rdquo; Such nonprojective dependencies are real, but the parser in this lecture only builds projective trees <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3162s" target="_blank" rel="noopener">52:42 <span class="ts">⏱52:42</span></a>.</p>
+<h2 id="transition-based-parsing">Transition-based parsing</h2>
+<p>The parsing method for the assignment is transition-based parsing (Nivre 2003), the greedy descendant of shift-reduce parsing from compilers courses. The parser state is a stack σ (top written to the right, starts with ROOT), a buffer β (top written to the left, starts with the sentence), and a set of arcs A (starts empty). Three actions <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3262s" target="_blank" rel="noopener">54:22 <span class="ts">⏱54:22</span></a>:</p>
+<ol>
+<li><strong>Shift:</strong> move the top buffer word onto the stack.</li>
+<li><strong>Left-Arc_r:</strong> make the top stack word a dependent of the second, with relation r. Pop the dependent.</li>
+<li><strong>Right-Arc_r:</strong> make the second stack word a dependent of the top, with relation r. Pop the dependent.</li>
+</ol>
+<p>Parsing &ldquo;I ate fish&rdquo;: shift &ldquo;I&rdquo;, shift &ldquo;ate&rdquo;, left-arc (&ldquo;I&rdquo; becomes an nsubj dependent of &ldquo;ate&rdquo;, popped), shift &ldquo;fish&rdquo;, right-arc (&ldquo;fish&rdquo; becomes an obj dependent of &ldquo;ate&rdquo;), right-arc (&ldquo;ate&rdquo; becomes a dependent of ROOT). The buffer empties and only ROOT remains: done. Each choice of action builds a different tree. The sequence of choices is the parse <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3416s" target="_blank" rel="noopener">56:56 <span class="ts">⏱56:56</span></a>.</p>
+<div class="mermaid">flowchart TD
+    R[ROOT] --> A[ate]
+    A --> I[I, nsubj]
+    A --> F[fish, obj]
+</div>
+<div class="mermaid">flowchart LR
+    S0["stack: ROOT / buffer: I ate fish"] -->|shift| S1["stack: ROOT I / buffer: ate fish"]
+    S1 -->|shift| S2["stack: ROOT I ate / buffer: fish"]
+    S2 -->|left-arc| S3["stack: ROOT ate / buffer: fish / arc: nsubj ate to I"]
+    S3 -->|shift| S4["stack: ROOT ate fish / buffer: empty"]
+    S4 -->|right-arc| S5["stack: ROOT ate / arc: obj ate to fish"]
+    S5 -->|right-arc| S6["stack: ROOT / arc: root ROOT to ate / DONE"]
+</div>
+<p>The algorithm runs in linear time: a fixed number of actions per word, no search, no cubic chart parsing. Nivre&rsquo;s result was that machine learning is good enough to choose each action greedily and still parse accurately <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3686s" target="_blank" rel="noopener">61:26 <span class="ts">⏱61:26</span></a>. Beam search over action sequences can improve accuracy at some cost, but the basic form does no search at all <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3766s" target="_blank" rel="noopener">62:46 <span class="ts">⏱62:46</span></a>.</p>
+<h2 id="from-indicator-features-to-neural-nets">From indicator features to neural nets</h2>
+<p>MaltParser, Nivre&rsquo;s system, chose actions with a discriminative classifier over indicator features: &ldquo;top of stack is &lsquo;good&rsquo; and its POS is adjective&rdquo;, &ldquo;second on stack is the verb &lsquo;has&rsquo;&rdquo;, and conjunctions of such facts <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3785s" target="_blank" rel="noopener">63:05 <span class="ts">⏱63:05</span></a>. Conjunctions exploded into millions of features, each seen a handful of times in a million sentences: sparse, incomplete, and expensive. Feature computation, not the classifier, consumed over 95% of parsing time <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=4020s" target="_blank" rel="noopener">67:00 <span class="ts">⏱67:00</span></a>.</p>
+<p>Evaluation is arc accuracy on gold trees. For &ldquo;She saw the video lecture&rdquo;: unlabeled attachment score (UAS) counts correct heads (4/5 = 80%). Labeled attachment score (LAS) requires the relation label too (2/5 = 40%) <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=3874s" target="_blank" rel="noopener">64:34 <span class="ts">⏱64:34</span></a>.</p>
+<p>Chen and Manning (2014) replaced the sparse features with a neural network. Chen was Manning&rsquo;s PhD student and a two-time head TA of the course. The wins are twofold <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=4024s" target="_blank" rel="noopener">67:04 <span class="ts">⏱67:04</span></a>:</p>
+<ol>
+<li><strong>Distributed representations.</strong> Words, POS tags, and dependency labels each get dense vectors, so &ldquo;NNS&rdquo; (plural noun) sits near &ldquo;NN&rdquo; (singular noun) and unseen configurations generalize from similar ones.</li>
+<li><strong>A nonlinear classifier.</strong> The old linear classifiers (SVM, logistic regression) give linear decision boundaries. The hidden layer re-represents the input so the final softmax can separate what a linear model cannot.</li>
+</ol>
+<p>The parser state becomes one concatenated vector. From the stack and buffer positions s1, s2, b1 and the leftmost and rightmost children lc(s1), rc(s1), lc(s2), rc(s2), take each token&rsquo;s word, POS, and label embeddings and concatenate them. Then:</p>
+<p>[ h = \text{ReLU}(Wx + b_1), \qquad y = \text{softmax}(Uh + b_2) ]</p>
+<p>y is a distribution over {Shift, Left-Arc_r, Right-Arc_r}. Cross-entropy loss on the correct action backpropagates all the way into the embeddings <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=4305s" target="_blank" rel="noopener">71:45 <span class="ts">⏱71:45</span></a>.</p>
+<div class="mermaid">flowchart LR
+    E[concatenated embeddings<br/>words + POS + labels<br/>from stack and buffer] --> H[h = ReLU Wx + b1<br/>hidden layer]
+    H --> Y[y = softmax Uh + b2]
+    Y --> A2["Shift / Left-Arc / Right-Arc"]
+</div>
+<p>Results on English (Stanford Dependencies): Chen and Manning 2014 reaches 92.0 UAS and 89.7 LAS, matching the best graph-based parsers (MSTParser 91.4/88.1, TurboParser 92.3/89.6) while parsing 654 sentences per second. MaltParser manages 89.8/87.2 at 469 sentences per second. The graph parsers do 8 to 10. Dense math beat sparse features on speed too, because the symbolic systems drowned in feature computation.</p>
+<p>Google scaled the idea up: deeper networks, tuned hyperparameters, beam search, and CRF-style global inference over the action sequence. The result was SyntaxNet and Parsey McParseface (2016), announced as &ldquo;the world&rsquo;s most accurate parser&rdquo;: 94.61 UAS and 92.79 LAS <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=4396s" target="_blank" rel="noopener">73:16 <span class="ts">⏱73:16</span></a>.</p>
+<p>The competing family is graph-based parsing: score every possible dependency (n² of them) and find the best tree with a minimum spanning tree algorithm (McDonald et al. 2005). The neural revival, Dozat and Manning (2017), uses a biaffine scorer over contextual word representations: 95.74 UAS and 94.08 LAS, the most accurate of the era, but slower than greedy transition-based parsing. It ships in Stanza <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=4523s" target="_blank" rel="noopener">75:23 <span class="ts">⏱75:23</span></a>.</p>
+<div class="callout"><span class="co-label">Caveat</span><p>The arc-standard transition system in this lecture builds projective trees only. Real languages have nonprojective dependencies. The assignment stays projective. Full systems handle the rest with extra transitions or graph-based methods.</p></div>
+<p>Assignment connection: the second half of assignment 2 has you build exactly the Chen and Manning classifier in PyTorch. The transition machinery is provided. You implement the decision network <a href="https://www.youtube.com/watch?v=KVKvde-_MYc&amp;t=64s" target="_blank" rel="noopener">01:04 <span class="ts">⏱01:04</span></a>.</p>
+<div class="callout"><span class="co-label">Interview signal</span><p>&ldquo;How does transition-based parsing work?&rdquo; Stack, buffer, three actions (shift, left-arc, right-arc), one greedy classification per step, linear time. &ldquo;Why did neural parsers win?&rdquo; Dense embeddings killed the sparse indicator-feature bottleneck, which ate 95% of runtime, and the nonlinear hidden layer beat linear classifiers. Know UAS versus LAS.</p></div>
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Video: <a href="https://www.youtube.com/watch?v=KVKvde-_MYc">Lecture 4: Dependency Parsing</a> (1:18:49)</li>
+<li>Slides: <a href="https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1246/slides/cs224n-spr2024-lecture04-dep-parsing.pdf">cs224n-spr2024-lecture04-dep-parsing.pdf</a></li>
+<li>Nivre (2003), transition-based dependency parsing</li>
+<li>Nivre et al. (2008), MaltParser</li>
+<li>Chen and Manning (2014), &ldquo;A Fast and Accurate Dependency Parser using Neural Networks&rdquo;</li>
+<li>Dozat and Manning (2017), &ldquo;Deep Biaffine Attention for Neural Dependency Parsing&rdquo;</li>
+</ul>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=KVKvde-_MYc" target="_blank" rel="noopener">Lecture 4 video, Stanford Online YouTube</a></li><li><span class="src-tag">SLIDES</span><a href="https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1246/slides/cs224n-spr2024-lecture04-dep-parsing.pdf" target="_blank" rel="noopener">cs224n-spr2024-lecture04-dep-parsing.pdf (official slides)</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript (en)</li><li><span class="src-tag">PAPER</span>Chen and Manning (2014), A Fast and Accurate Dependency Parser using Neural Networks</li><li><span class="src-tag">PAPER</span>Dozat and Manning (2017), Deep Biaffine Attention for Neural Dependency Parsing</li></ul></section>
+      <nav class="pager"><a href="cs224n/l03-neural-networks.html"><span class="lbl">← Previous</span>Lecture 3: Neural Net Learning: Gradients by Hand and Algorithmically</a><a href="cs224n/l05-rnns.html"><span class="lbl">Next →</span>Lecture 5: Recurrent Neural Networks</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/vendor/katex.min.js"></script>
+<script src="assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "";</script>
+<script src="assets/app.js"></script>
+</body>
+</html>

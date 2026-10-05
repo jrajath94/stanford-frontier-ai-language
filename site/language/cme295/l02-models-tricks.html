@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture 2: Transformer-Based Models and Tricks — Stanford Frontier AI</title>
+<meta name="description" content="What changed in the transformer since 2017: position embeddings from sinusoids to RoPE, pre-norm and RMSNorm, sliding-window and grouped-query attention, and th">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-l02">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/l01-word-vectors-1.html" data-page="cs224n-l01">L01 · Introduction, Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors, GloVe, Evaluation</a></li>
+<li><a href="../cs224n/l03-neural-networks.html" data-page="cs224n-l03">L03 · Neural Networks, Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-rnns.html" data-page="cs224n-l05">L05 · Recurrent neural networks</a></li>
+<li><a href="../cs224n/l06-seq2seq-attention.html" data-page="cs224n-l06">L06 · LSTMs, seq2seq, machine translation</a></li>
+<li><a href="../cs224n/l07-attention-llm-intro.html" data-page="cs224n-l07">L07 · Attention and the road to LLMs</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Self-Attention, Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-post-training.html" data-page="cs224n-l10">L10 · Post-Training</a></li>
+<li><a href="../cs224n/l11-benchmarking.html" data-page="cs224n-l11">L11 · Benchmarking</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-bci.html" data-page="cs224n-l13">L13 · Brain-Computer Interfaces</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-after-dpo.html" data-page="cs224n-l15">L15 · After DPO</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/l01-transformers.html" data-page="cme295-l01">L01 · Transformers</a></li>
+<li><a href="../cme295/l02-models-tricks.html" data-page="cme295-l02" class="active">L02 · Transformer Models, Tricks</a></li>
+<li><a href="../cme295/l03-llms.html" data-page="cme295-l03">L03 · Large Language Models</a></li>
+<li><a href="../cme295/l04-training.html" data-page="cme295-l04">L04 · LLM Training</a></li>
+<li><a href="../cme295/l05-tuning.html" data-page="cme295-l05">L05 · LLM Tuning</a></li>
+<li><a href="../cme295/l06-reasoning.html" data-page="cme295-l06">L06 · LLM Reasoning</a></li>
+<li><a href="../cme295/l07-agents.html" data-page="cme295-l07">L07 · Agentic LLMs</a></li>
+<li><a href="../cme295/l08-evaluation.html" data-page="cme295-l08">L08 · LLM Evaluation</a></li>
+<li><a href="../cme295/l09-trends.html" data-page="cme295-l09">L09 · Recap, Current Trends</a></li>
+</ul>
+<h3></h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295/index.html">CME295: Transformers and Large Language Models</a></li>
+<li><a href="../cs224n/index.html" data-page="cs224n/index.html">CS224N: NLP with Deep Learning</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / Lecture 2: Transformer-Based Models and Tricks</nav>
+      <h1>Lecture 2: Transformer-Based Models and Tricks</h1>
+      <p class="meta-line">Instructor: Afshine Amidi, Shervine Amidi · 1:47:20 · Autumn 2025</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/yT84Y5zCnaA" title="Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><p class="video-cap">Original lecture. Timestamps link to exact moments.</p><p>Lecture 1 built the transformer. Lecture 2 asks what survived. The 2017 architecture is still the skeleton of every modern model, but three components changed: position information, normalization, and attention itself. Then the lecture tours the model families that grew from the skeleton.</p>
+<p>The self-attention formula from Lecture 1 is assumed known: (\text{softmax}(QK^T/\sqrt{d_k})V), computed with one projection matrix per head per Q, K, V, concatenated and projected. The mechanics are taught in <a href="../../foundations/cs336/l04-attention-alternatives-moe.html">CS336 L04</a>. What is new here is the Amidi walkthrough of each head as a learned projection, visualized through attention maps: in &ldquo;Attention Is All You Need&rdquo;, the query for <em>its</em> attends most strongly to the keys for <em>law</em> and <em>application</em>, exactly the coreference a reader would resolve <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=286s" target="_blank" rel="noopener">04:46 <span class="ts">⏱04:46</span></a>.</p>
+<h2 id="position-embeddings-from-addition-to-rotation">Position embeddings: from addition to rotation</h2>
+<p>Self-attention lets every token interact with every other token directly. Unlike an RNN, nothing is processed before anything else, so position information is lost. It must be injected back <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=644s" target="_blank" rel="noopener">10:44 <span class="ts">⏱10:44</span></a>.</p>
+<p>The original paper tried two methods. Method one: a learned embedding per position, added to the token embedding. Position 1 gets one vector, position 2 another, all learned by gradient descent. Two limitations. The learned vectors absorb biases of the training set, and no embedding exists for positions beyond the longest training sequence <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=786s" target="_blank" rel="noopener">13:06 <span class="ts">⏱13:06</span></a>.</p>
+<p>Method two: a fixed sinusoidal formula. For position (m) and dimension pair (i):</p>
+<p>[ PE_{(m,2i)} = \sin(\omega_i m), \quad PE_{(m,2i+1)} = \cos(\omega_i m), \quad \omega_i = 10000^{-2i/d_{model}} ]</p>
+<p>The lecture derives why this works <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=1126s" target="_blank" rel="noopener">18:46 <span class="ts">⏱18:46</span></a>. The dot product of the embeddings at positions (m) and (n) expands, via the identity (\cos(a-b) = \cos a \cos b + \sin a \sin b), into a sum of cosines of (\omega_i(m-n)). The similarity is a function of relative distance only, and it is maximal when (m = n). Low dimensions oscillate fast, high dimensions slow, because (\omega_i) shrinks with (i). The decisive advantage: it extends to any sequence length, never seen or not <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=1510s" target="_blank" rel="noopener">25:10 <span class="ts">⏱25:10</span></a>.</p>
+<p>Modern models moved the position signal from the input into the attention layer itself, because similarity is quantified inside the softmax <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=1615s" target="_blank" rel="noopener">26:55 <span class="ts">⏱26:55</span></a>. Three approaches:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Idea</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T5 relative bias</td>
+<td>Learn a bias per distance bucket ((m-n)), add inside softmax</td>
+<td>Raffel et al., 2019</td>
+</tr>
+<tr>
+<td>ALiBi</td>
+<td>Fixed linear penalty proportional to distance, no learned parameters</td>
+<td>&ldquo;Train Short, Test Long&rdquo;, 2021</td>
+</tr>
+<tr>
+<td>RoPE</td>
+<td>Rotate Q by (\theta(m)) and K by (\theta(n)). The dot product becomes a function of (n-m)</td>
+<td>Su et al., 2021</td>
+</tr>
+</tbody>
+</table>
+<p>RoPE, Rotary Position Embedding, is the default choice today <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=2246s" target="_blank" rel="noopener">37:26 <span class="ts">⏱37:26</span></a>. The lecture builds the intuition from scratch: a 2x2 rotation matrix rotates a vector by angle (\theta), and in (d) dimensions the method applies one rotation per 2D block with frequencies (\theta_i \approx \omega_i). The RoFormer paper proves the attention weight has a long-term decaying upper bound in (|n-m|), which is exactly the desired bias toward nearby tokens <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=2388s" target="_blank" rel="noopener">39:48 <span class="ts">⏱39:48</span></a>.</p>
+<div class="mermaid">flowchart LR
+    A[Learned absolute<br/>added at input] --> B[Sinusoidal absolute<br/>added at input]
+    B --> C[Relative bias<br/>inside softmax]
+    C --> D[RoPE<br/>rotate Q, K]
+    style D fill:#d4edda
+</div>
+<h2 id="normalization-post-norm-to-pre-norm-to-rmsnorm">Normalization: post-norm to pre-norm to RMSNorm</h2>
+<p>The transformer block ends each sublayer with &ldquo;add and norm&rdquo;: add the sublayer input to its output, then normalize <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=2642s" target="_blank" rel="noopener">44:02 <span class="ts">⏱44:02</span></a>. Normalization rescales each activation vector by its mean and standard deviation, then applies learned scale (\gamma) and shift (\beta). The intuition is internal covariate shift: activations swing across wide ranges from layer to layer, and the optimizer struggles when they do <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=2951s" target="_blank" rel="noopener">49:11 <span class="ts">⏱49:11</span></a>.</p>
+<p>Two changes since 2017. First, position: the original paper normalized after the residual addition (post-norm). Modern models normalize before the sublayer (pre-norm), which trains more stably <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=2764s" target="_blank" rel="noopener">46:04 <span class="ts">⏱46:04</span></a>. Second, formula: LayerNorm is largely replaced by RMSNorm, which divides by the root mean square only and learns just (\gamma). Comparable convergence, fewer parameters <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=2820s" target="_blank" rel="noopener">47:00 <span class="ts">⏱47:00</span></a>.</p>
+<p>A student asked why not BatchNorm. BatchNorm normalizes across the batch dimension, which couples training examples and creates a train/inference mismatch. LayerNorm normalizes across features of one example, which is self-contained <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=2968s" target="_blank" rel="noopener">49:28 <span class="ts">⏱49:28</span></a>.</p>
+<h2 id="attention-variations-cheaper-and-leaner">Attention variations: cheaper and leaner</h2>
+<p>Full self-attention costs (O(n^2)) in sequence length. Longformer (2020) restricts each token to a neighborhood: sliding-window attention. Modern models interleave local and global layers, and stacking local layers grows an effective receptive field, the same concept as in CNNs. Mistral uses sliding windows at every layer <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=3192s" target="_blank" rel="noopener">53:12 <span class="ts">⏱53:12</span></a>.</p>
+<p>The second variation shares key and value projections across heads <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=3351s" target="_blank" rel="noopener">55:51 <span class="ts">⏱55:51</span></a>:</p>
+<ul>
+<li><strong>MHA</strong>: every head has its own Q, K, V projections. The 2017 default.</li>
+<li><strong>MQA</strong> (multi-query): all heads share one K and one V projection.</li>
+<li><strong>GQA</strong> (grouped-query): (g) groups share K, V projections.</li>
+</ul>
+<p>Why share K and V but not Q? During decoding, keys and values of all past tokens are recomputed at every step unless cached, the KV cache of Lecture 3. Sharing projections shrinks that cache directly <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=3438s" target="_blank" rel="noopener">57:18 <span class="ts">⏱57:18</span></a>. GQA is the common compromise in recent models <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=3741s" target="_blank" rel="noopener">62:21 <span class="ts">⏱62:21</span></a>.</p>
+<h2 id="the-model-zoo-three-architectures">The model zoo: three architectures</h2>
+<p>Shervine Amidi then maps every transformer variant to one of three skeletons <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=3785s" target="_blank" rel="noopener">63:05 <span class="ts">⏱63:05</span></a>.</p>
+<p><strong>Encoder-decoder.</strong> The full 2017 architecture, kept alive by the T5 family: T5 (Transfer Text-to-Text Transformer), mT5 (multilingual data and vocabulary), ByT5 (byte-level, vocabulary of 256, no tokenizer). T5 replaced next-token prediction with span corruption: mask spans of the input, mark them with sentinel tokens, and train the decoder to reconstruct each span <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=3915s" target="_blank" rel="noopener">65:15 <span class="ts">⏱65:15</span></a>. CS224N covers this family from the NLP side in <a href="../cs224n/l09-pretraining.html">CS224N L09</a>.</p>
+<div class="mermaid">flowchart TB
+    A[Original transformer<br/>encoder + decoder] --> B[T5 family<br/>span corruption]
+    A --> C[BERT family<br/>encoder only]
+    A --> D[GPT family<br/>decoder only]
+</div>
+<p><strong>Encoder-only.</strong> Drop the decoder and generation becomes impossible, but the encoder&rsquo;s unmasked self-attention gives every token a representation of the full context. BERT, Bidirectional Encoder Representations from Transformers, is the canonical example <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=4305s" target="_blank" rel="noopener">71:45 <span class="ts">⏱71:45</span></a>. Its recipe:</p>
+<ul>
+<li><strong>Input</strong>: WordPiece tokens (~30k vocabulary) plus [CLS] at the start, [SEP] between sentences, [PAD] for batching. Token, position, and segment embeddings added together. Segment A marks sentence one, segment B sentence two.</li>
+<li><strong>Pretraining</strong>: masked language modeling (mask 15% of tokens, and of those, 80% become [MASK], 10% stay, 10% randomize) plus next-sentence prediction (are A and B consecutive, 50/50) <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=5342s" target="_blank" rel="noopener">89:02 <span class="ts">⏱89:02</span></a>.</li>
+<li><strong>Fine-tuning</strong>: attach a linear head to the [CLS] output for classification, or per-token heads for span tasks like question answering. Freeze the encoder or retrain everything, depending on data and task distance.</li>
+</ul>
+<p>Two limitations drove the variants. BERT-base has 110M parameters and a 512-token context, and the MLM+NSP recipe was questioned. DistilBERT used knowledge distillation (Hinton et al.): train a smaller student to match the teacher&rsquo;s soft output distribution via KL divergence, halving the layers with little performance loss <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=6221s" target="_blank" rel="noopener">103:41 <span class="ts">⏱103:41</span></a>. RoBERTa showed NSP adds nothing, dropped it, masked dynamically per epoch, and trained on far more data <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=6387s" target="_blank" rel="noopener">106:27 <span class="ts">⏱106:27</span></a>.</p>
+<p><strong>Decoder-only.</strong> Remove the encoder and the cross-attention, keep masked self-attention plus FFN. Compute goes into next-word prediction, the simplest scalable objective, and it aligned perfectly with the chatbot era. Over 90% of modern LLMs are decoder-only <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=4257s" target="_blank" rel="noopener">70:57 <span class="ts">⏱70:57</span></a>. This is where Lecture 3 begins.</p>
+<div class="callout"><span class="co-label">Interview signal</span><p>Expect &ldquo;why RoPE instead of learned positions&rdquo; and &ldquo;MQA vs GQA vs MHA, and why share K/V&rdquo;. The answers are one sentence each. RoPE gives relative-distance bias with no length limit. Sharing K/V shrinks the KV cache at decode time. BERT questions still appear in NLP-heavy loops: MLM 80/10/10, the [CLS] convention, and why RoBERTa dropped NSP.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=yT84Y5zCnaA" target="_blank" rel="noopener">Lecture 2 video, Stanford Online YouTube</a></li><li><span class="src-tag">SLIDES</span><a href="https://cme295.stanford.edu/slides/fall25-cme295-lecture2.pdf" target="_blank" rel="noopener">fall25-cme295-lecture2.pdf (official slides)</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript (en)</li></ul></section>
+      <nav class="pager"><a href="../cme295/l01-transformers.html"><span class="lbl">← Previous</span>Lecture 1: Transformers</a><a href="../cme295/l03-llms.html"><span class="lbl">Next →</span>Lecture 3: Large Language Models</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

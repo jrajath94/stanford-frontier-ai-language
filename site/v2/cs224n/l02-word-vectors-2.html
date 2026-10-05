@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 2: Word Vectors 2 and Word Senses — Stanford Frontier AI</title>
+<meta name="description" content="Optimization details, why the vectors work (neighbors, analogies), negative sampling, GloVe, evaluation, word senses, and the first neural classifier.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-l02" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02" class="active">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 2: Word Vectors 2 and Word Senses</nav>
+      <h1>Lecture 2: Word Vectors 2 and Word Senses</h1>
+      <p class="meta-line">Instructor: Christopher Manning · 1:19:00 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="nBor4jfWetQ"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/nBor4jfWetQ" title="Lecture 2: Word Vectors, Word Senses, and Neural Classifiers" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=nBor4jfWetQ" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=nBor4jfWetQ" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. Christopher Manning continues word vectors: optimization, evaluation, negative sampling, GloVe, senses, and neural classifiers.</p></div><h2 id="how-to-read-this-lesson">How to read this lesson</h2>
+<p>This lesson has two levels. <strong>Level 1 (Core)</strong> finishes the word2vec story:
+how to train, why the vectors work, and how to fix the expensive softmax.
+<strong>Level 2 (Deep)</strong> covers evaluation, word senses, and the first neural
+classifier.</p>
+<h2 id="level-1-learning-rates-and-initialization">Level 1: Learning rates and initialization</h2>
+<p>The learning rate alpha sets the step size. Typical values: 1e-3, 1e-4, 1e-5
+(<a href="https://www.youtube.com/watch?v=nBor4jfWetQ&amp;t=299s" target="_blank" rel="noopener">04:59 <span class="ts">⏱04:59</span></a>). A step that is too big overshoots the minimum and the
+loss diverges.</p>
+<figure><img alt="Learning rate" src="assets/l02-lr-overshoot.svg"><figcaption>Small steps converge steadily; oversized steps overshoot and diverge.</figcaption></figure>
+<p>Initialization matters too. Start with random <strong>small</strong> numbers. Zeros create
+false symmetries (<a href="https://www.youtube.com/watch?v=nBor4jfWetQ&amp;t=523s" target="_blank" rel="noopener">08:43 <span class="ts">⏱08:43</span></a>): every neuron computes the same thing and
+no learning happens. Randomness breaks the symmetry.</p>
+<p>Plain gradient descent uses the whole corpus per step. The lecture is blunt:
+&ldquo;we never use&rdquo; it. SGD with mini-batches of 16 or 32 is the default. The noise
+in the gradient helps: it jiggles the optimizer out of bad spots.</p>
+<div class="qa"><div class="q">What goes wrong with a learning rate that is too large?</div><div class="a"><p>The step overshoots the minimum. The loss oscillates or diverges instead of decreasing. The lecture gives 1e-3 down to 1e-5 as sane starting values.
+The noise jiggles parameters out of sharp, poor local minima. A clean gradient descends into the nearest minimum, which may be bad. A noisy gradient explores and often lands in flatter minima that generalize better.</p><div class="followup"><strong>Follow-up:</strong> Why does SGD noise help instead of hurting?</div></div></div>
+<h2 id="level-1-the-vectors-work">Level 1: The vectors work</h2>
+<p>Do the trained vectors capture meaning? Yes, in three ways.</p>
+<p><strong>Neighbors.</strong> GloVe 100-dim vectors (built at Stanford, <a href="https://www.youtube.com/watch?v=nBor4jfWetQ&amp;t=730s" target="_blank" rel="noopener">12:10 <span class="ts">⏱12:10</span></a>)
+show matching sign patterns across dimensions for &ldquo;bread&rdquo; and &ldquo;croissant&rdquo;.
+Nearest neighbors of &ldquo;USA&rdquo;: Canada, America, U.S.A.</p>
+<figure><img alt="Bread versus croissant" src="assets/l02-bread.svg"><figcaption>The sign patterns of 'bread' and 'croissant' align across dimensions; nearest neighbors of 'USA' are Canada, America, U.S.A.</figcaption></figure>
+<p><strong>Analogies.</strong> Vector arithmetic captures relations:
+king - man + woman = queen (<a href="https://www.youtube.com/watch?v=nBor4jfWetQ&amp;t=1004s" target="_blank" rel="noopener">16:44 <span class="ts">⏱16:44</span></a>).
+<img alt="Analogy parallelogram" src="assets/l02-analogy.svg" title="king minus man plus woman lands on queen; the offset encodes the relation." /></p>
+<p>Also: Australia:beer :: France:champagne (the audience guessed wine. The
+answer was &ldquo;close&rdquo; with champagne), Russia:vodka,
+pencil:sketching :: camera:photographing, Obama:Clinton :: Reagan:Nixon,
+tall:tallest :: long:longest.</p>
+<p><strong>The honesty note.</strong> &ldquo;I cheated. I only showed you ones that work.&rdquo;
+Analogies are cherry-picked. And &ldquo;no one uses this stuff anymore&rdquo;: analogies
+were a demo of the geometry, not a production technique.</p>
+<h2 id="level-1-negative-sampling">Level 1: Negative sampling</h2>
+<p>Naive softmax normalizes over the whole vocabulary: 400,000 words times
+100- or 300-dimensional dot products per prediction (<a href="https://www.youtube.com/watch?v=nBor4jfWetQ&amp;t=1694s" target="_blank" rel="noopener">28:14 <span class="ts">⏱28:14</span></a>). Too
+expensive.</p>
+<figure><img alt="Negative sampling" src="assets/l02-negsampling.svg"><figcaption>Naive softmax costs 400,000 dot products per prediction; negative sampling trains a few logistic regressions instead.</figcaption></figure>
+<p><strong>Negative sampling</strong> reframes training: &ldquo;train simple logistic regressions.&rdquo;
+For each real (center, context) pair, sample k negative pairs from a noise
+distribution. Train k+1 binary classifiers: is this pair real or noise?</p>
+<p>The <strong>sigmoid</strong> (S-shaped) function turns a score into a probability
+(<a href="https://www.youtube.com/watch?v=nBor4jfWetQ&amp;t=1810s" target="_blank" rel="noopener">30:10 <span class="ts">⏱30:10</span></a>). A sign-symmetry trick keeps the math consistent without
+the full vocabulary sum.</p>
+<h2 id="level-1-glove-counts-ratios">Level 1: GloVe counts ratios</h2>
+<p>GloVe (Jeffrey Pennington, Stanford) starts from co-occurrence counts, not
+predictions. The key insight: <strong>ratios of co-occurrence probabilities</strong> expose
+meaning (<a href="https://www.youtube.com/watch?v=nBor4jfWetQ&amp;t=2600s" target="_blank" rel="noopener">43:20 <span class="ts">⏱43:20</span></a>).</p>
+<figure><img alt="GloVe ratios" src="assets/l02-glove.svg"><figcaption>P(solid|ice)/P(solid|steam) is large, P(gas|ice)/P(gas|steam) is small, water and fashion sit near 1.</figcaption></figure>
+<p>Ice and steam both co-occur with &ldquo;water&rdquo; and &ldquo;fashion&rdquo; at similar rates.
+Ratios near 1: noise. But &ldquo;solid&rdquo; is much more likely near ice than steam:
+ratio 8.5. &ldquo;Gas&rdquo; flips: 0.085. The ratio isolates the solid-gas dimension of
+physics.</p>
+<p>GloVe fits a <strong>log-bilinear</strong> model: the dot product of two word vectors
+approximates the log co-occurrence probability, plus learned biases.</p>
+<div class="qa"><div class="q">When would you prefer GloVe over word2vec?</div><div class="a"><p>When you want a model that uses global count statistics directly and trains fast on aggregated co-occurrence matrices. Both produce dense vectors with similar geometry. In practice the choice rarely decides downstream results.
+Word2vec predicts context words online, one window at a time. GloVe regresses on the full co-occurrence matrix. Prediction versus counting. The ratio table shows why counting works: ratios of probabilities carry the semantic signal.</p><div class="followup"><strong>Follow-up:</strong> What is the core difference between the two objectives?</div></div></div>
+<h2 id="level-2-why-two-vectors-averaged-at-the-end">Level 2: Why two vectors, averaged at the end</h2>
+<p>Lecture 1 gave each word two vectors: v (center) and u (outside). Why keep
+both? It is a <strong>math convenience</strong>. If one vector served both roles, the dot
+product of a word with itself would be a square, which distorts training. The
+octopus example in the slides shows a word appearing as its own context.</p>
+<figure><img alt="Two vectors per word" src="assets/l01-two-vectors.svg"><figcaption>v(w) for center use, u(w) for context use; the final vector averages both.</figcaption></figure>
+<p>At the end, <strong>average the two vectors</strong>.</p>
+<p>At the end, <strong>average the two vectors</strong>. One final vector per word.</p>
+<h2 id="level-2-intrinsic-versus-extrinsic-evaluation">Level 2: Intrinsic versus extrinsic evaluation</h2>
+<figure><img alt="Evaluation" src="assets/l02-eval.svg"><figcaption>Intrinsic: analogies and similarity ratings. Extrinsic: downstream tasks like NER. Plain SVD on the same counts works terribly.</figcaption></figure>
+<p><strong>Intrinsic</strong> tests probe the vectors directly. Word analogies. Word
+similarity: human ratings on a 0-10 scale (tiger-tiger: 10, book-paper: 7.46,
+plane-car: 5.77, stock-phone: 1.62, stock-jaguar: 0.92). Plain SVD on the same
+counts &ldquo;works terribly&rdquo;: learning matters, not just counting.</p>
+<p><strong>Extrinsic</strong> tests plug the vectors into a real task and measure end-to-end
+performance. Example: named entity recognition on &ldquo;Chris Manning lives in
+Palo Alto&rdquo;. Extrinsic is slower but honest: it measures what you actually care
+about.</p>
+<div class="qa"><div class="q">Which evaluation should you trust?</div><div class="a"><p>Extrinsic, for decisions that matter. Intrinsic tests are fast proxies and they can mislead: a vector can ace analogies and still fail on your task. Use intrinsic during development, extrinsic before you ship.
+Both factorize counts, but GloVe&rsquo;s log-bilinear objective with biases and a weighted loss emphasizes the informative ratios. Raw SVD treats all counts equally, so frequent-word noise drowns the signal.</p><div class="followup"><strong>Follow-up:</strong> Why does plain SVD fail while GloVe succeeds?</div></div></div>
+<h2 id="level-2-word-senses-and-superposition">Level 2: Word senses and superposition</h2>
+<p>Words have senses. &ldquo;Pike&rdquo; is a weapon (noun), a verb, Australian slang for
+&ldquo;chicken out&rdquo;, and &ldquo;coming down the pike&rdquo;. In 2012, researchers trained
+<strong>sense vectors</strong>: bank 1 (money), bank 2 (river). Jaguar 1 (car, luxury,
+convertible), jaguar 2 (Mac OS X 10.3, Microsoft), jaguar 3 (guitar,
+keyboard, music), jaguar 4 (animal, hunter).</p>
+<p>Modern word2vec gives <strong>one vector per word</strong>. That single vector is a
+<strong>superposition</strong> of the senses (<a href="https://www.youtube.com/watch?v=nBor4jfWetQ&amp;t=3470s" target="_blank" rel="noopener">57:50 <span class="ts">⏱57:50</span></a>): all senses mixed together.
+&ldquo;Field&rdquo; (crop, rock, ice, sporting, math) behaves like a probability-density
+distribution over its senses.</p>
+<figure><img alt="Senses" src="assets/l02-senses.svg"><figcaption>Sense vectors split bank and jaguar into separate vectors; modern word vectors keep one vector as a superposition of all senses.</figcaption></figure>
+<h2 id="level-2-the-neural-classifier">Level 2: The neural classifier</h2>
+<p>The first neural NLP model in the course: named entity recognition over a
+word window.</p>
+<figure><img alt="NER window classifier" src="assets/l02-ner-window.svg"><figcaption>Five words times 100 dims form a 500-dim input; an 8 by 500 matrix plus bias and nonlinearity feeds a logistic classifier.</figcaption></figure>
+<p>Five words times 100 dimensions = a 500-dim input. An 8x500 matrix plus a
+bias plus a nonlinearity re-represents the input. A logistic classifier reads
+the new representation: PERSON, LOCATION, or neither.</p>
+<p>Classic classifiers had fixed inputs and a linear decision boundary. The
+neural version learns the representation <strong>and</strong> the boundary. The model is
+linear in the re-represented space.</p>
+<p><strong>Cross-entropy</strong> H(p, q) measures the cost (<a href="https://www.youtube.com/watch?v=nBor4jfWetQ&amp;t=4346s" target="_blank" rel="noopener">72:26 <span class="ts">⏱72:26</span></a>). With gold
+labels (one correct class), it reduces to negative log likelihood.</p>
+<p>The lecture ends with neurons. A human neuron has one axon and fires spikes.
+the firing rate is the signal. A logistic unit approximates one neuron. &ldquo;The
+magic is the intermediate layers.&rdquo; More layers, more magic.</p>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>Eight ideas carry this lecture. Read each card. Say the core sentence out
+loud. If you can, you own the lesson.</p>
+<div class="recap-grid">
+<div class="recap-card">
+<img src="assets/l02-lr-overshoot.svg" alt="Learning rate">
+<div class="rc-body">
+<strong>1. Learning rates and initialization</strong>
+<p>Start alpha at 1e-3 to 1e-5. Too big overshoots. Initialize with random
+small numbers. Zeros create false symmetries. SGD with batches of 16 or 32
+is the default. The noise helps.</p>
+<p class="rc-num">Key: noise is a feature, not a bug</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l02-bread.svg" alt="Bread versus croissant">
+<div class="rc-body">
+<strong>2. The vectors capture meaning</strong>
+<p>Bread and croissant share sign patterns. USA sits near Canada, America,
+U.S.A. The geometry encodes semantics as dot products.</p>
+<p class="rc-num">Key: neighbors prove the geometry works</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l02-analogy.svg" alt="Analogy parallelogram">
+<div class="rc-body">
+<strong>3. Analogies are cherry-picked demos</strong>
+<p>king - man + woman = queen. The offsets encode relations. "I cheated. I
+only showed you ones that work." Nobody uses analogies in production.</p>
+<p class="rc-num">Key: parallelogram of relations</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l02-negsampling.svg" alt="Negative sampling">
+<div class="rc-body">
+<strong>4. Negative sampling fixes the softmax cost</strong>
+<p>400,000 dot products per prediction is too expensive. Train k+1 logistic
+regressions: one real pair, k negatives. Sigmoid. Done.</p>
+<p class="rc-num">Key: cheap binary classifiers replace the full sum</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l02-glove.svg" alt="GloVe ratios">
+<div class="rc-body">
+<strong>5. Ratios carry the signal</strong>
+<p>Ice versus steam: solid/steam ratio 8.5, gas ratio 0.085, water and fashion
+near 1. Dot product approximates log co-occurrence plus biases.</p>
+<p class="rc-num">Key: log-bilinear regression on counts</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l02-eval.svg" alt="Evaluation">
+<div class="rc-body">
+<strong>6. Evaluate intrinsic fast, extrinsic honestly</strong>
+<p>Intrinsic: analogies, similarity ratings. Extrinsic: downstream NER.
+Plain SVD works terribly. Trust extrinsic before shipping.</p>
+<p class="rc-num">Key: stock-jaguar rated 0.92 similarity</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l02-senses.svg" alt="Senses">
+<div class="rc-body">
+<strong>7. One vector is a superposition of senses</strong>
+<p>2012 trained separate sense vectors. Modern word2vec keeps one vector per
+word. That vector mixes all senses, like a probability density.</p>
+<p class="rc-num">Key: superposition, not separate slots</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l02-ner-window.svg" alt="NER classifier">
+<div class="rc-body">
+<strong>8. The first neural classifier</strong>
+<p>5 words x 100 dims = 500-dim input. 8x500 matrix, bias, nonlinearity,
+logistic output. Linear in the learned space. Cross-entropy loss.</p>
+<p class="rc-num">Key: magic = intermediate layers</p>
+</div>
+</div>
+</div>
+
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 2 video and transcript.
+- GloVe paper (Pennington, Socher, Manning 2014): the ratio argument and the log-bilinear objective.</p>
+<p><strong>Further reading:</strong>
+- Mikolov et al. (2013), &ldquo;Distributed Representations of Words and Phrases and their Compositionality&rdquo;: negative sampling.
+- Reisinger and Mooney (2010) and Huang et al. (2012): multi-prototype sense vectors, the 2012 approach the lecture contrasts with.</p>
+<p><strong>Caveats from these sources.</strong> Analogy demos are cherry-picked. The lecture says so explicitly. Word vectors were built on word tokens. Lecture 9 shows modern models use subwords. Similarity ratings are human judgments with annotator disagreement.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>CS336:</strong> L01 tokenization changed the input from words to subwords. The dense-vector embedding interface survived. L09 scaling laws subsume the &ldquo;more data&rdquo; intuition.</li>
+<li><strong>This course:</strong> L03 derives backpropagation, which trains the NER classifier. L04 replaces the window classifier with a parser.</li>
+<li><strong>CS229S:</strong> matrix factorization theory explains why SVD variants behave differently from GloVe.</li>
+</ul>
+<div class="cheatsheet"><span class="co-label">Cheatsheet</span><p><strong>Word vectors 2 cheatsheet.</strong> LR: 1e-3/1e-4/1e-5. Init: random small, never zeros. SGD: batch 16/32, noise helps. Analogy: king-man+woman=queen, cherry-picked. Negative sampling: 1 real + k negatives, sigmoid, skip full softmax. GloVe: ratios of co-occurrence, dot ~ log prob + biases. Intrinsic: analogies, ratings 0-10. Extrinsic: NER &ldquo;Chris Manning lives in Palo Alto&rdquo;. Senses: one vector = superposition. NER: 5x100=500 input, 8x500 matrix, cross-entropy.</p></div>
+<div class="memory-aid"><span class="ma-label">Memory aid</span><p><strong>Ratio is the signal.</strong> Ice/steam ratios isolate physics. Vectors encode it as geometry. Counting is not enough. The objective decides what the counts mean.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=nBor4jfWetQ" target="_blank" rel="noopener">Lecture 2 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/1310.4546" target="_blank" rel="noopener">Mikolov et al., Distributed Representations of Words and Phrases and their Compositionality (2013)</a></li><li><span class="src-tag">PAPER</span><a href="https://aclanthology.org/D14-1162/" target="_blank" rel="noopener">Pennington, Socher, Manning, GloVe: Global Vectors for Word Representation (2014)</a></li><li><span class="src-tag">SUPPLEMENT</span><a href="https://web.stanford.edu/class/cs224n/" target="_blank" rel="noopener">Stanford CS224N course site</a></li></ul></section>
+      <nav class="pager"><a href="../cs224n/l01-intro-word-vectors.html"><span class="lbl">← Previous</span>Lecture 1: Introduction and Word Vectors</a><a href="../cs224n/l03-neural-networks-backprop.html"><span class="lbl">Next →</span>Lecture 3: Neural Networks and Backpropagation</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

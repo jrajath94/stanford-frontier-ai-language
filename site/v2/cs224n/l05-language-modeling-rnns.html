@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 5: Language Modeling and RNNs — Stanford Frontier AI</title>
+<meta name="description" content="Language models as the course&#x27;s central concept, n-gram counting with its sparsity and storage problems, and recurrent neural networks: one weight set, hidden m">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-l05" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05" class="active">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 5: Language Modeling and RNNs</nav>
+      <h1>Lecture 5: Language Modeling and RNNs</h1>
+      <p class="meta-line">Instructor: Christopher Manning · 1:19:00 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="fyc0Jzr74y4"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/fyc0Jzr74y4" title="Lecture 5: Language Modeling and RNNs" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=fyc0Jzr74y4" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=fyc0Jzr74y4" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. Christopher Manning introduces language modeling, n-grams, and recurrent neural networks.</p></div><h2 id="how-to-read-this-lesson">How to read this lesson</h2>
+<p>This lesson has two levels. <strong>Level 1 (Core)</strong> defines language modeling,
+builds the n-gram model, and derives the RNN. <strong>Level 2 (Deep)</strong> trains the
+RNN as a language model and explains its two fatal problems.</p>
+<h2 id="level-1-language-modeling-is-the-central-concept">Level 1: Language modeling is the central concept</h2>
+<p>A <strong>language model</strong> assigns a probability to every possible next word. The
+lecture calls it &ldquo;the most important concept in the class&rdquo;. It leads to BERT,
+GPT-3, and ChatGPT.</p>
+<figure><img alt="Language model" src="assets/l05-lm-def.svg"><figcaption>A language model assigns a probability to every possible next word.</figcaption></figure>
+<p>Everything downstream is language modeling: translation, question answering,</p>
+<p>Everything downstream is language modeling: translation, question answering,
+summarization. Learn this well.</p>
+<h2 id="level-1-n-gram-language-models">Level 1: N-gram language models</h2>
+<p>The classical approach: <strong>count</strong>. A trigram model over 1.7 million Reuters
+words (<a href="https://www.youtube.com/watch?v=fyc0Jzr74y4&amp;t=1746s" target="_blank" rel="noopener">29:06 <span class="ts">⏱29:06</span></a>) estimates P(word | previous two words) from
+frequencies.</p>
+<figure><img alt="N-gram probabilities" src="assets/l05-ngram.svg"><figcaption>Trigram probabilities for 'today the ____': company 0.153, bank 0.153, price 0.077, italian 0.039, emirate 0.039.</figcaption></figure>
+<p>Given &ldquo;today the&rdquo;, the model outputs a distribution: company 0.153, bank
+0.153, price 0.077, italian 0.039, emirate 0.039. Sample from it to generate
+text.</p>
+<p>Two problems kill n-grams.</p>
+<figure><img alt="Sparsity" src="assets/l05-sparsity.svg"><figcaption>Unseen n-grams get probability 0; n-grams seen once get probability 1. Both are absurd.</figcaption></figure>
+<ol>
+<li><strong>Sparsity.</strong> Unseen n-grams get probability 0. N-grams seen once get
+probability 1. The distribution has no granularity.</li>
+<li><strong>Storage.</strong> Every n-gram needs a count. The table grows with the corpus.</li>
+</ol>
+<div class="qa"><div class="q">Why do n-grams fail on unseen word sequences?</div><div class="a"><p>They only know what they counted. An unseen trigram gets probability zero, which kills any sentence containing it. Smoothing redistributes mass, but it is a patch on a fundamentally discrete representation.
+Neural models. An RNN learns continuous representations, so unseen sequences still get sensible probabilities through similarity to seen ones. The representation generalizes where the table cannot.</p><div class="followup"><strong>Follow-up:</strong> What replaced counting?</div></div></div>
+<h2 id="level-1-recurrent-neural-networks">Level 1: Recurrent neural networks</h2>
+<p>A <strong>recurrent neural network</strong> applies <strong>one set of weights</strong> at every time
+step (<a href="https://www.youtube.com/watch?v=fyc0Jzr74y4&amp;t=3103s" target="_blank" rel="noopener">51:43 <span class="ts">⏱51:43</span></a>). The network keeps a <strong>hidden state</strong>: a vector that
+carries memory forward.</p>
+<figure><img alt="RNN cell" src="assets/l05-rnn-cell.svg"><figcaption>h_t = tanh(W_h h_{t-1} + W_e x_t + b): the same weights combine the old memory with the new word.</figcaption></figure>
+<p>h(t) = tanh(W(h) h(t-1) + W(e) x(t) + b)</p>
+<ul>
+<li>x(t): the current word&rsquo;s vector.</li>
+<li>h(t-1): the memory from the previous step.</li>
+<li>The same matrices W(h), W(e) apply at every step.</li>
+</ul>
+<p>h(0) starts as zeros. Each step updates the memory. The hidden state is the
+model&rsquo;s memory of everything it has read.</p>
+<h2 id="level-2-the-rnn-as-a-language-model">Level 2: The RNN as a language model</h2>
+<p>Unroll the RNN across the sequence. At each position, the hidden state feeds
+a <strong>softmax over the vocabulary</strong>: one probability distribution per step.
+Sample a word from it to generate text.</p>
+<figure><img alt="Unrolled RNN" src="assets/l05-rnn-lm.svg"><figcaption>Memory flows left to right through shared cells; each step outputs a vocabulary distribution.</figcaption></figure>
+<p>The <strong>loss</strong> is the average negative log likelihood per position: at each
+step, penalize the model for the probability it assigned to the actual next
+word.</p>
+<h2 id="level-2-two-problems-killed-rnns">Level 2: Two problems killed RNNs</h2>
+<figure><img alt="RNN problems" src="assets/l05-problems.svg"><figcaption>Sequential: a for loop from 1 to T that cannot parallelize. Forgetting: distant context fades.</figcaption></figure>
+<ol>
+<li><strong>Sequential.</strong> Step t needs step t-1. This is a for loop from t=1 to T.
+It cannot be parallelized (<a href="https://www.youtube.com/watch?v=fyc0Jzr74y4&amp;t=3416s" target="_blank" rel="noopener">56:56 <span class="ts">⏱56:56</span></a>). GPUs sit idle. This problem
+&ldquo;led them to fall out of favor.&rdquo;</li>
+<li><strong>Forgetting.</strong> &ldquo;They tend to forget stuff from further back as well&rdquo;
+(<a href="https://www.youtube.com/watch?v=fyc0Jzr74y4&amp;t=3488s" target="_blank" rel="noopener">58:08 <span class="ts">⏱58:08</span></a>). Distant context fades too quickly. The memory is a
+leaky summary.</li>
+</ol>
+<div class="qa"><div class="q">Why did sequentiality kill RNNs at scale?</div><div class="a"><p>Training speed. A GPU computes thousands of operations in parallel, but the RNN forces a strict order: step 1000 waits for step 999. Long sequences train slowly no matter how much hardware you add. The transformer (L07-L08) fixed this by removing the order entirely.
+Related but not identical. Forgetting is about the forward pass: the hidden state is a fixed-size summary, so old information gets overwritten. Vanishing gradients (L06) are about the backward pass: gradients shrink through long chains. The LSTM fixes both with the same mechanism.</p><div class="followup"><strong>Follow-up:</strong> Is forgetting the same as the vanishing gradient?</div></div></div>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>Eight ideas carry this lecture. Read each card. Say the core sentence out
+loud. If you can, you own the lesson.</p>
+<div class="recap-grid">
+<div class="recap-card">
+<img src="assets/l05-ngram.svg" alt="N-gram probabilities">
+<div class="rc-body">
+<strong>1. Language modeling is the central concept</strong>
+<p>Assign a probability to every next word. It leads to BERT, GPT-3,
+ChatGPT. Everything downstream is language modeling.</p>
+<p class="rc-num">Key: the most important concept in the class</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l05-ngram.svg" alt="N-gram">
+<div class="rc-body">
+<strong>2. N-grams count</strong>
+<p>Trigram on 1.7M Reuters words: "today the" gives company 0.153, bank
+0.153, price 0.077. Sample from the distribution to generate.</p>
+<p class="rc-num">Key: count, normalize, sample</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l05-sparsity.svg" alt="Sparsity">
+<div class="rc-body">
+<strong>3. Sparsity and storage kill n-grams</strong>
+<p>Unseen gets 0, seen-once gets 1. No granularity. The count table grows
+with the corpus. Smoothing is a patch.</p>
+<p class="rc-num">Key: 0 and 1 are both absurd</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l05-rnn-cell.svg" alt="RNN cell">
+<div class="rc-body">
+<strong>4. One weight set, reused every step</strong>
+<p>h(t) = tanh(W(h) h(t-1) + W(e) x(t) + b). Same matrices at every
+position. h(0) is zeros. The hidden state is memory.</p>
+<p class="rc-num">Key: recurrence shares parameters</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l05-rnn-lm.svg" alt="Unrolled RNN">
+<div class="rc-body">
+<strong>5. Each step outputs a distribution</strong>
+<p>Unroll across the sequence. Softmax per step. Sample to generate. Loss:
+average negative log likelihood per position.</p>
+<p class="rc-num">Key: one softmax per step</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l05-problems.svg" alt="RNN problems">
+<div class="rc-body">
+<strong>6. Sequential: the for loop kills scale</strong>
+<p>Step t needs step t-1. No parallelization. GPUs idle. This problem ended
+the RNN era at scale.</p>
+<p class="rc-num">Key: t=1..T, strictly ordered</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l05-problems.svg" alt="Forgetting">
+<div class="rc-body">
+<strong>7. Forgetting: memory is leaky</strong>
+<p>Distant context fades too quickly. The fixed-size hidden state
+overwrites old information. LSTMs protect it.</p>
+<p class="rc-num">Key: leaky summary</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l05-rnn-cell.svg" alt="Memory">
+<div class="rc-body">
+<strong>8. Architecture families so far</strong>
+<p>Word2vec (simple encoder), feedforward nets (L03), RNNs (this lecture),
+transformers (L08). Each family fixes the last one's flaw.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=fyc0Jzr74y4&amp;t=3069s" target="_blank" rel="noopener">51:09 <span class="ts">⏱51:09</span></a></p>
+</div>
+</div>
+</div>
+
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 5 video and transcript.</p>
+<p><strong>Further reading:</strong>
+- Mikolov et al. (2010), &ldquo;Recurrent neural network based language model&rdquo;: the RNNLM that scaled n-grams to continuous representations.
+- Jozefowicz et al. (2016), &ldquo;Exploring the Limits of Language Modeling&rdquo;: large-scale RNN LMs and their limits.</p>
+<p><strong>Caveats from these sources.</strong> The sparsity numbers (0, 1) describe raw unsmoothed counts. Real n-gram systems always smooth. RNNs remain useful for short sequences and streaming. The lecture&rsquo;s &ldquo;fell out of favor&rdquo; refers to large-scale training.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>This course:</strong> L06 fixes the two problems (LSTM for forgetting, and the gradient story). L07-L08 remove sequentiality with attention.</li>
+<li><strong>CS336:</strong> L03 builds the transformer that replaced the RNN. L10 inference: the KV cache is the transformer&rsquo;s answer to the hidden state.</li>
+<li><strong>CS229:</strong> maximum likelihood estimation is the same objective in both courses.</li>
+</ul>
+<div class="cheatsheet"><span class="co-label">Cheatsheet</span><p><strong>Language modeling cheatsheet.</strong> LM: P(next word | history). N-gram: count trigrams, P = count/total. &ldquo;today the&rdquo;: company/bank 0.153, price 0.077. Sparsity: unseen 0, seen-once 1. Storage: table grows with corpus. RNN: one weight set, h(t)=tanh(W(h)h(t-1)+W(e)x(t)+b), h(0)=zeros. Output: softmax per step. Loss: avg NLL. Problems: sequential for-loop (unparallelizable), forgetting distant context.</p></div>
+<div class="memory-aid"><span class="ma-label">Memory aid</span><p><strong>Count, then recur, then attend.</strong> N-grams count. RNNs share weights across time. Both hit walls: sparsity for n-grams, order for RNNs. Attention removes the order.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=fyc0Jzr74y4" target="_blank" rel="noopener">Lecture 5 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">SUPPLEMENT</span><a href="https://web.stanford.edu/class/cs224n/" target="_blank" rel="noopener">Stanford CS224N course site</a></li></ul></section>
+      <nav class="pager"><a href="../cs224n/l04-dependency-parsing.html"><span class="lbl">← Previous</span>Lecture 4: Dependency Parsing</a><a href="../cs224n/l06-lstms-nmt.html"><span class="lbl">Next →</span>Lecture 6: LSTMs and Neural Machine Translation</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

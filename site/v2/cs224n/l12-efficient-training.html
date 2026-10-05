@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 12: Efficient Training (Bridge) — Stanford Frontier AI</title>
+<meta name="description" content="Precision formats, the 16-bytes-per-parameter memory budget, data parallelism with ZeRO sharding, gradient checkpointing, LoRA, and the sustainability question.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-l12" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12" class="active">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 12: Efficient Training (Bridge)</nav>
+      <h1>Lecture 12: Efficient Training (Bridge)</h1>
+      <p class="meta-line">Instructor: Shikhar Murty · 1:02:00 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="UVX7SYGCKkA"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/UVX7SYGCKkA" title="Lecture 12: Efficient Neural Network Training" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=UVX7SYGCKkA" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Guest lecture. Shikhar Murty covers precision, distributed training, and parameter-efficient fine-tuning.</p></div><div class="callout"><span class="co-label">Note</span><p><strong>Bridge lesson.</strong> This lecture teaches the CS224N framing: what costs
+memory and how to cut it. For deep systems, follow the links:
+<a href="../cs336/l02-resource-accounting.html">CS336 L02</a> (FLOPs, bytes, roofline),
+<a href="../cs336/l05-gpus.html">CS336 L05</a> (GPUs), <a href="../cs336/l07-parallelism.html">CS336 L07</a>
+and <a href="../cs336/l08-4d-parallelism.html">L08</a> (parallelism at scale),
+<a href="../cs336/l06-triton-kernels.html">CS336 L06</a> (kernels). This lesson never
+re-explains what those cover.</p></div>
+<h2 id="how-to-read-this-lesson">How to read this lesson</h2>
+<p>This lesson has two levels. <strong>Level 1 (Core)</strong> covers precision and the
+memory budget. <strong>Level 2 (Deep)</strong> covers distributed training, LoRA, and
+sustainability.</p>
+<h2 id="level-1-precision-formats">Level 1: Precision formats</h2>
+<p>Three formats:</p>
+<figure><img alt="Precision" src="assets/l12-precision.svg"><figcaption>fp32: 4 bytes, full range. fp16: 2 bytes, narrow range, needs grad scalers. bf16: 2 bytes, 8 exponent bits, fp32 range, no scalers.</figcaption></figure>
+<ul>
+<li><strong>fp32</strong>: 4 bytes per parameter. Full dynamic range.</li>
+<li><strong>fp16</strong>: 2 bytes. Narrow range: tiny gradients underflow to zero, so
+training needs <strong>gradient scalers</strong>.</li>
+<li><strong>bf16</strong> (&ldquo;brain float 16&rdquo;, <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=699s" target="_blank" rel="noopener">11:39 <span class="ts">⏱11:39</span></a>): 2 bytes, <strong>8 exponent
+bits</strong>. Same range as fp32, less precision. No scalers needed (<a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=722s" target="_blank" rel="noopener">12:02 <span class="ts">⏱12:02</span></a>).
+Needs Ampere or newer: H100, A100, A6000 (<a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=742s" target="_blank" rel="noopener">12:22 <span class="ts">⏱12:22</span></a>).</li>
+</ul>
+<h2 id="level-1-the-memory-budget">Level 1: The memory budget</h2>
+<p>Mixed-precision training keeps several copies per parameter:</p>
+<figure><img alt="Memory" src="assets/l12-memory.svg"><figcaption>params fp16 2B + grads fp16 2B + master fp32 4B + momentum 4B + variance 4B = 16 bytes per parameter on every GPU.</figcaption></figure>
+<ul>
+<li>Parameters (fp16): 2 bytes.</li>
+<li>Gradients (fp16): 2 bytes.</li>
+<li>Master weights (fp32): 4 bytes.</li>
+<li>Momentum (fp32): 4 bytes.</li>
+<li>Variance (fp32): 4 bytes.</li>
+</ul>
+<p><strong>16 bytes per parameter, on every GPU.</strong> Optimizer states dominate.
+Activations add more, scaling with batch size: <strong>gradient checkpointing</strong>
+trades recompute for activation memory (<a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2278s" target="_blank" rel="noopener">37:58 <span class="ts">⏱37:58</span></a>).</p>
+<div class="qa"><div class="q">Why keep fp32 master weights if everything else is fp16?</div><div class="a"><p>fp16 cannot represent tiny updates: they round to zero and training stalls. The fp32 master accumulates the small steps exactly. The fp16 copy is for fast math. Precision where it matters, speed where it counts.
+The optimizer states: 12 of the 16 bytes. ZeRO stage 1 shards them across GPUs. Parameters are last, because sharding them costs communication on every forward pass.</p><div class="followup"><strong>Follow-up:</strong> What is the first thing to shard when memory runs out?</div></div></div>
+<h2 id="level-2-data-parallel-and-zero">Level 2: Data parallel and ZeRO</h2>
+<p><strong>DDP</strong> (distributed data parallel): each GPU holds a full copy, runs forward
+and backward on different data, then synchronizes gradients with <strong>all-reduce</strong>
+(<a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=985s" target="_blank" rel="noopener">16:25 <span class="ts">⏱16:25</span></a>). Communication: 2 bytes per parameter (<a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=1007s" target="_blank" rel="noopener">16:47 <span class="ts">⏱16:47</span></a>).</p>
+<figure><img alt="DDP and ZeRO" src="assets/l12-ddp-zero.svg"><figcaption>DDP: full copies, all-reduce 2B/param. ZeRO: stage 1 shards optimizer, stage 2 adds gradients, stage 3 adds parameters.</figcaption></figure>
+<p><strong>ZeRO</strong> (Microsoft DeepSpeed) shards instead of replicating:</p>
+<ul>
+<li>Stage 1: shard optimizer states.</li>
+<li>Stage 2: add gradients.</li>
+<li>Stage 3: add parameters.</li>
+</ul>
+<p><strong>Reduce-scatter</strong> replaces all-reduce under sharding. <strong>FSDP</strong> is PyTorch&rsquo;s
+ZeRO-3. When even batch-1 does not fit, shard first, checkpoint second.</p>
+<h2 id="level-2-lora">Level 2: LoRA</h2>
+<p><strong>PEFT</strong> (parameter-efficient fine-tuning) exists for two reasons: (1) the
+model does not fit even at batch size 1, (2) small data plus an
+overparameterized model generalizes better with fewer trained parameters.</p>
+<p><strong>LoRA</strong>: gradients have <strong>low intrinsic rank</strong> (<a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2738s" target="_blank" rel="noopener">45:38 <span class="ts">⏱45:38</span></a>). Freeze W.
+Train a low-rank delta:</p>
+<figure><img alt="LoRA" src="assets/l12-lora.svg"><figcaption>W + (alpha/r)BA: train only A and B; apply to attention matrices; r is a slider to full fine-tuning; merge at inference.</figcaption></figure>
+<p>W + (alpha/r) x B x A</p>
+<ul>
+<li>B is d-by-r, A is r-by-k. Train only A and B.</li>
+<li>Apply to attention matrices.</li>
+<li>r is a slider: larger r approaches full fine-tuning.</li>
+<li><strong>Merge at inference</strong>: fold BA into W. No extra latency.</li>
+</ul>
+<p>Alternatives: adapters, BitFit. LoRA won on the merge property.</p>
+<div class="qa"><div class="q">Why does a low-rank update suffice?</div><div class="a"><p>Fine-tuning gradients live in a low-dimensional subspace: the task needs only a few directions of change. LoRA parameterizes exactly those directions. The rank r trades expressivity for parameters.
+When the task needs large changes everywhere: a new language, a new modality, or pretraining-scale shifts. Then the low-rank assumption breaks and full fine-tuning (or continued pretraining) wins.</p><div class="followup"><strong>Follow-up:</strong> When does LoRA fail?</div></div></div>
+<h2 id="level-2-sustainability">Level 2: Sustainability</h2>
+<p>The lecture&rsquo;s closing chart: largest-model training compute (red) versus
+global compute capacity (blue). &ldquo;Not sustainable&rdquo; (<a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2396s" target="_blank" rel="noopener">39:56 <span class="ts">⏱39:56</span></a>).
+Training demand outruns capacity. Concentration follows: few organizations
+can train frontier models.</p>
+<figure><img alt="Sustainability" src="assets/l12-sustain.svg"><figcaption>Largest-model training compute outruns global capacity: not sustainable; training concentrates in few organizations.</figcaption></figure>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>Eight ideas carry this lecture. Read each card. Say the core sentence out
+loud. If you can, you own the lesson.</p>
+<div class="recap-grid">
+<div class="recap-card">
+<img src="assets/l12-precision.svg" alt="Precision">
+<div class="rc-body">
+<strong>1. bf16 is the sweet spot</strong>
+<p>fp32: 4 bytes. fp16: 2 bytes, needs grad scalers. bf16: 2 bytes, 8
+exponent bits, fp32 range, no scalers. Needs Ampere+.</p>
+<p class="rc-num">Key: brain float 16</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l12-memory.svg" alt="Memory">
+<div class="rc-body">
+<strong>2. 16 bytes per parameter</strong>
+<p>2 + 2 + 4 + 4 + 4: params, grads, master, momentum, variance. Optimizer
+states dominate. Checkpoint activations.</p>
+<p class="rc-num">Key: 16B/param per GPU</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l12-ddp-zero.svg" alt="DDP">
+<div class="rc-body">
+<strong>3. DDP: copy everywhere, all-reduce</strong>
+<p>Full copy per GPU. Different data. All-reduce gradients: 2 bytes per
+parameter of communication.</p>
+<p class="rc-num">Key: synchronize gradients</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l12-ddp-zero.svg" alt="ZeRO">
+<div class="rc-body">
+<strong>4. ZeRO: shard, do not replicate</strong>
+<p>Stage 1: optimizer. Stage 2: + gradients. Stage 3: + parameters.
+Reduce-scatter. FSDP in PyTorch.</p>
+<p class="rc-num">Key: shard the 12 bytes first</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l12-lora.svg" alt="LoRA">
+<div class="rc-body">
+<strong>5. LoRA: low-rank deltas</strong>
+<p>W + (alpha/r)BA. Train A and B only. Attention matrices. r slides to
+full fine-tuning. Merge at inference.</p>
+<p class="rc-num">Key: low intrinsic rank</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l12-lora.svg" alt="PEFT">
+<div class="rc-body">
+<strong>6. PEFT for two reasons</strong>
+<p>Batch-1 does not fit. Small data plus overparameterization: fewer
+trained parameters generalize better.</p>
+<p class="rc-num">Key: fit and generalize</p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l12-sustain.svg" alt="Sustainability">
+<div class="rc-body">
+<strong>7. Training compute is not sustainable</strong>
+<p>Largest-model demand outruns global capacity. Concentration: few
+organizations can train frontier models.</p>
+<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2396s" target="_blank" rel="noopener">39:56 <span class="ts">⏱39:56</span></a></p>
+</div>
+</div>
+<div class="recap-card">
+<img src="assets/l12-bridge.svg" alt="Bridge">
+<div class="rc-body">
+<strong>8. Depth lives in CS336</strong>
+<p>Resource accounting (L02), GPUs (L05), parallelism (L07, L08), Triton
+(L06). This lesson: the framing.</p>
+<p class="rc-num">Key: bridge, not duplicate</p>
+</div>
+</div>
+</div>
+
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 12 video and transcript.
+- Hu et al. (2021): LoRA.
+- Rajbhandari et al. (2020): ZeRO.</p>
+<p><strong>Further reading:</strong>
+- <a href="../cs336/l02-resource-accounting.html">CS336 L02</a>: the full memory and FLOPs accounting.
+- <a href="../cs336/l08-4d-parallelism.html">CS336 L08</a>: 4D parallelism at scale.
+- Micikevicius et al. (2018), &ldquo;Mixed Precision Training&rdquo;: the fp16 recipe with grad scalers.</p>
+<p><strong>Caveats from these sources.</strong> &ldquo;16 bytes per parameter&rdquo; is the Adam mixed-precision budget. Other optimizers differ. The sustainability chart is the lecture&rsquo;s illustration, not a measured forecast.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>This course:</strong> L08-L10 built the models. This lecture trains them affordably. L15 continues the alignment-efficiency story.</li>
+<li><strong>CS336:</strong> L02 (accounting), L05 (GPUs), L06 (kernels), L07-L08 (parallelism) carry the deep systems.</li>
+<li><strong>CS229S:</strong> low-rank updates are the same mathematics as matrix approximation.</li>
+</ul>
+<div class="cheatsheet"><span class="co-label">Cheatsheet</span><p><strong>Efficient training cheatsheet.</strong> fp32 4B. Fp16 2B + scalers. Bf16 2B, 8 exp bits, no scalers, Ampere+. Memory: 2+2+4+4+4 = 16B/param/GPU. DDP: full copies, all-reduce 2B/param. ZeRO: 1 optimizer, 2 +grads, 3 +params. Reduce-scatter; FSDP. Checkpointing: trade compute for activation memory. LoRA: W+(a/r)BA, train A/B, attention matrices, r slider, merge at inference. PEFT: fit batch-1, small-data generalization. Sustainability: demand &gt; capacity, concentration.</p></div>
+<div class="memory-aid"><span class="ma-label">Memory aid</span><p><strong>Shard the states, rank the updates.</strong> Optimizer states are 12 of 16 bytes: shard them first. Fine-tuning needs few directions: train a low-rank delta.</p></div>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=UVX7SYGCKkA" target="_blank" rel="noopener">Lecture 12 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener">Hu et al., LoRA: Low-Rank Adaptation of Large Language Models (2021)</a></li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/1910.02054" target="_blank" rel="noopener">Rajbhandari et al., ZeRO: Memory Optimizations Toward Training Trillion Parameter Models (2020)</a></li></ul></section>
+      <nav class="pager"><a href="../cs224n/l11-evaluation.html"><span class="lbl">← Previous</span>Lecture 11: Evaluation (Bridge)</a><a href="../cs224n/l13-speech-bci.html"><span class="lbl">Next →</span>Lecture 13: Speech Brain-Computer Interfaces</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>CS224N Cheatsheet — Stanford Frontier AI</title>
+<meta name="description" content="Every key fact from CS224N on one dense page: definitions, formulas, numbers, decisions, mistakes, interview lines.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-cheatsheet" class="page-cheatsheet">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet" class="active">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / CS224N Cheatsheet</nav>
+      <h1>CS224N Cheatsheet</h1>
+      
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="cheat-cols">
+<div class="cheat-block">
+<h3 id="core-formulas">Core formulas</h3>
+<p><strong>Skip-gram:</strong> P(w(t+j) | w(t)) for j in window, j != 0.</p>
+<p><strong>Objective:</strong> J(theta) = -(1/T) sum over t, sum over j of log P(w(t+j) | w(t)).</p>
+<p><strong>Softmax:</strong> P(o|c) = exp(u_o . v_c) / sum over w of exp(u_w . v_c).</p>
+<p><strong>RNN:</strong> h(t) = tanh(W_h h(t-1) + W_e x(t) + b). h(0) = zeros.</p>
+<p><strong>LSTM:</strong> cell = old x forget + candidate x input. hidden = output x tanh(cell).</p>
+<p><strong>Attention:</strong> scores = QK^T / sqrt(d_k). weights = softmax(scores). output = weights x V.</p>
+<p><strong>Bradley-Terry:</strong> P(y1 &gt; y2) = sigma(r1 - r2).</p>
+<p><strong>LoRA:</strong> W + (alpha/r) x B x A. B: d x r. A: r x k.</p>
+</div>
+<div class="cheat-block">
+<h3 id="numbers-to-memorize">Numbers to memorize</h3>
+<ul>
+<li>Learning rates: 1e-3, 1e-4, 1e-5.</li>
+<li>SGD mini-batch: 16 or 32.</li>
+<li>Naive softmax: 400K vocab x 100/300-dim dots per prediction.</li>
+<li>N-gram demo: company/bank 0.153, price 0.077 (Reuters trigram).</li>
+<li>UAS: Chen and Manning 92, Parsey McParseface 94.6.</li>
+<li>BERT: 110M base, 340M large, 15% masking.</li>
+<li>GPT: 117M -&gt; 1.5B -&gt; 175B. Data: 1.4T (2022) -&gt; ~15T tokens (2024).</li>
+<li>CoT zero-shot: 17.7 -&gt; 78.7.</li>
+<li>FLAN: 3M+ examples. LIMA: 1,000.</li>
+<li>DPO: 9 of 10 HF leaderboard models.</li>
+<li>Memory: 16 bytes per param per GPU (2+2+4+4+4).</li>
+<li>Clip norm: 5, 10, 20.</li>
+<li>BCI: 60-70 wpm vs 150 natural. WER 25% -&gt; ~0 (UC Davis).</li>
+<li>AlpacaFarm agreement: 67% (50% random). AlpacaEval: 98% rank correlation.</li>
+<li>Chatbot Arena: 200k votes. Meta bought 1.5M comparisons.</li>
+</ul>
+</div>
+<div class="cheat-block">
+<h3 id="decisions">Decisions</h3>
+<p><strong>Word2vec or GloVe?</strong> Prediction versus counting. Similar geometry. Rarely decides results.</p>
+<p><strong>Greedy or beam parsing?</strong> Greedy is linear and fast. Beam recovers accuracy. Google added beam to reach 94.6.</p>
+<p><strong>RNN or transformer?</strong> RNN for streaming short sequences. Transformer for everything at scale: constant interaction distance, full parallelism.</p>
+<p><strong>Sinusoidal or learned positions?</strong> Sinusoidal extrapolates in theory, not in practice. Learned works within length n, crashes beyond.</p>
+<p><strong>Full fine-tune or LoRA?</strong> LoRA when batch-1 barely fits or data is small. Full when the task needs large global changes.</p>
+<p><strong>Human or LLM judges?</strong> LLM for iteration (100x faster/cheaper). Humans for final claims. Detailed rubrics either way.</p>
+<p><strong>Online or offline alignment?</strong> Offline is cheap and stable. Online is better: fresh data from the policy, refreshed labels.</p>
+</div>
+<div class="cheat-block">
+<h3 id="common-mistakes">Common mistakes</h3>
+<ul>
+<li>Initializing with zeros. False symmetries: nothing learns.</li>
+<li>Oversized learning rate. Overshoot and diverge.</li>
+<li>Reading analogies as proof. Cherry-picked demos, not production.</li>
+<li>Forgetting the causal mask. The model reads the answer. Training is &ldquo;too easy.&rdquo;</li>
+<li>Normalizing LayerNorm across the batch. It is per word.</li>
+<li>Trusting BLEU on open-ended tasks. Overlap is not meaning.</li>
+<li>Comparing human evals across papers. Different rubrics, different numbers.</li>
+<li>Citing a metric without its harness. LLaMA 65B MMLU: 63.7, 63.6, or 48.8.</li>
+<li>Optimizing a learned reward without a KL leash. Reward hacking breeds gibberish.</li>
+<li>Assuming one vector = one sense. Modern vectors are superpositions.</li>
+</ul>
+</div>
+<div class="cheat-block">
+<h3 id="interview-one-liners">Interview one-liners</h3>
+<ul>
+<li>&ldquo;Word meaning is a vector: know a word by the company it keeps.&rdquo;</li>
+<li>&ldquo;Negative sampling replaces the 400K-word softmax with k+1 logistic regressions.&rdquo;</li>
+<li>&ldquo;Backprop is the chain rule applied efficiently: store, never recompute.&rdquo;</li>
+<li>&ldquo;Vanishing is worse than exploding: it is silent.&rdquo;</li>
+<li>&ldquo;The LSTM adds instead of multiplying: cell = old x forget + candidate x input.&rdquo;</li>
+<li>&ldquo;Attention is more human-like: the decoder looks back at the source.&rdquo;</li>
+<li>&ldquo;Self-attention is a set operation: position must be injected.&rdquo;</li>
+<li>&ldquo;Pretraining reconstructs the input: mask, predict, repeat over trillions of words.&rdquo;</li>
+<li>&ldquo;RLHF: tune, model preferences with Bradley-Terry, optimize with a KL leash.&rdquo;</li>
+<li>&ldquo;DPO skips the reward model: Z(x) cancels, binary classification remains.&rdquo;</li>
+<li>&ldquo;Never just believe numbers: the harness is half the score.&rdquo;</li>
+</ul>
+</div>
+<div class="cheat-block">
+<h3 id="word-vectors-l01-l02">Word Vectors (L01-L02)</h3>
+<p>One-hot: orthogonal, no similarity. Distributional hypothesis (Firth 1957).
+Skip-gram: P(context | center). Softmax over vocab. Two vectors per word (v, u).
+average at end. SGD: sample windows, noise helps. Negative sampling: 1 real + k
+negatives, sigmoid. GloVe: ratios of co-occurrence. Dot ~ log prob + biases.
+Intrinsic: analogies (cherry-picked), similarity ratings. Extrinsic: NER.
+Senses: one vector = superposition. NER: 5x100=500 input, 8x500 matrix, cross-entropy.</p>
+</div>
+<div class="cheat-block">
+<h3 id="neural-nets-and-parsing-l03-l04">Neural Nets and Parsing (L03-L04)</h3>
+<p>Layer: z = Wx + b, h = sigma(z). Chain rule: ds/dz = ds/dh x dh/dz.
+Jacobian: matrix of partials. Forward: apply and store. Backward: reuse.
+Ambiguity: PP attachment (&ldquo;space whales&rdquo;). Dependency: head-dependent arcs.
+Transitions: SHIFT, LEFT-ARC, RIGHT-ARC. Stack + buffer. Greedy. Linear. Oracle.
+Eval: unlabeled arcs, labeled arcs+labels. Old: millions of sparse indicators.
+New: dense word/POS/label embeddings, concat, ReLU, softmax. Graph-based: n^2 scores,
+MST, 50x slower. Stanza (2017) in production.</p>
+</div>
+<div class="cheat-block">
+<h3 id="rnns-lstms-attention-l05-l07">RNNs, LSTMs, Attention (L05-L07)</h3>
+<p>LM: P(next word | history). N-gram: count, sparsity (0/1), storage.
+RNN: one weight set, h(t) = tanh(&hellip;), h(0) = zeros. Loss: avg NLL per position.
+Problems: sequential for-loop (unparallelizable), forgetting. Gradients: eigenvalues
+&lt;1 vanish, &gt;1 explode. Clip norm at 5/10/20. LSTM 1997: 3 gates (forget = remember).
+BiLSTM: concat both directions. Seq2seq: encoder -&gt; final state -&gt; decoder + start
+token. Bottleneck = one fixed vector. MT: rules -&gt; phrase-based -&gt; 2014 NMT.
+Attention (Bahdanau 2015): decoder queries encoder, scores, softmax, weighted average,
+concat, predict. Shorter gradient paths. BLEU: n-gram precision + brevity penalty.</p>
+</div>
+<div class="cheat-block">
+<h3 id="transformers-l08-bridge">Transformers (L08, bridge)</h3>
+<p>Fixes: linear interaction distance, O(n) sequential. Fuzzy key-value lookup.
+separate Q/K = low-rank bilinear. Self-attention: set op. Needs position.
+Sinusoidal vs learned d-by-n. Mask: -inf future, softmax 0. Decoder masks.
+Scale: /sqrt(d_k). Heads: 8, d/H each, 64+ dims. Residual: gradient 1.
+LayerNorm: per word. Mu, sigma, gamma, beta. Block: attn -&gt; add&amp;norm -&gt; FFN -&gt; add&amp;norm.
+Cross-attention: Q decoder, K/V encoder. Cost: quadratic. N=30 fine, n=50000 not.
+Depth: CS336 L03 (architecture), L04 (linear attn), L10 (inference).</p>
+</div>
+<div class="cheat-block">
+<h3 id="pretraining-l09-bridge">Pretraining (L09, bridge)</h3>
+<p>Objective: reconstruct masked input. Data: ~5T words vs ~1M labeled.
+Teaches: trivia, syntax, coreference, semantics, sentiment, world models.
+BERT: 15% mask, 80/10/10, segments, CLS, 110M/340M. NSP unnecessary. GLUE sea change.
+PEFT: prefix, prompt, LoRA. GPT: 117M -&gt; 1.5B -&gt; 175B. In-context: examples, no updates.
+CoT: scratch pad. Chinchilla: smaller + more data. Cost ~ params x tokens.
+Recipe: pretrain -&gt; continue -&gt; fine-tune. Warning: fluent but frequently wrong.
+Depth: CS336 L09 (scaling), L13 (data), L14 (pipeline).</p>
+</div>
+<div class="cheat-block">
+<h3 id="post-training-l10-bridge">Post-Training (L10, bridge)</h3>
+<p>Few-shot: examples in, no gradient updates. CoT: 17.7 -&gt; 78.7 zero-shot.
+Instruct: FLAN 3M+ (+6.1 -&gt; +26.6), LIMA 1000. RLHF: SFT -&gt; reward model -&gt; RL.
+Bradley-Terry: P = sigma(r1-r2). Pairwise because humans are noisy.
+Hacking: gibberish, authoritative &gt; truthful, longer wins. KL penalty.
+DPO: closed form, Z cancels, binary classification. Matches RLHF. 9/10 HF models.
+ChatGPT = dialogue InstructGPT. Depth: CS336 L15 (post-training), L16 (RLVR).</p>
+</div>
+<div class="cheat-block">
+<h3 id="evaluation-l11-bridge">Evaluation (L11, bridge)</h3>
+<p>Purposes: train, dev, deploy, publish. Closed &lt;10 answers. Open-ended.
+MMLU 25% -&gt; 90% in ~4y. BLEU: precision + brevity. ROUGE: recall.
+&ldquo;heck yes&rdquo;: yes = 67%, yep = 0 (false negative), heck no ~7x (false positive).
+Human: gold but noisy. 67% agreement. Never cross-compare.
+Arena: 200k votes, Elo. LLM judge: 100x faster/cheaper. GPT-4 &gt; human-human.
+98% rank correlation. Length bias ~70%. Monoculture risk. HELM: look at everything.
+Harness moves numbers: 63.7 / 63.6 / 48.8. Rule: never just believe numbers.
+Depth: CS336 L12.</p>
+</div>
+<div class="cheat-block">
+<h3 id="efficient-training-l12-bridge">Efficient Training (L12, bridge)</h3>
+<p>fp32 4B. Fp16 2B + scalers. Bf16 2B, 8 exp bits, no scalers, Ampere+.
+Memory: 2+2+4+4+4 = 16B/param/GPU. DDP: full copies, all-reduce 2B/param.
+ZeRO: 1 optimizer, 2 +grads, 3 +params. Reduce-scatter. FSDP.
+Checkpointing: trade compute for activation memory.
+LoRA: W + (a/r)BA. Train A/B. Attention matrices. R slider. Merge at inference.
+PEFT: fit batch-1. Small-data generalization. Sustainability: demand &gt; capacity.
+Depth: CS336 L02 (accounting), L05 (GPUs), L06 (kernels), L07-L08 (parallelism).</p>
+</div>
+<div class="cheat-block">
+<h3 id="speech-bci-l13">Speech BCI (L13)</h3>
+<p>Locked-in: brain works, body does not. Letter board: minutes/sentence.
+Eye-tracking: tiring. 2017: imagined movement, 40/20 chars/min.
+T12: 4 arrays (2 motor cortex, 2 Broca&rsquo;s). Motor cortex carries signal.
+WER: 25% (25/100 wrong). UC Davis near zero with continuous training.
+Daily use with family. Speed: 60-70 wpm vs 150 natural. Handwriting 13-14.
+eye-track ~5. Frontier: inner speech (no ground truth). UCSF avatar
+(phonemes + articulation -&gt; 3D avatar).</p>
+</div>
+<div class="cheat-block">
+<h3 id="reasoning-and-agents-l14">Reasoning and Agents (L14)</h3>
+<p>Deductive: certain. Inductive: probable. Abductive: best explanation.
+CoT: steps first. Self-consistency: sample, majority vote.
+Distill rationales. Iterate on own (beats human ones).
+Counterfactual: base-9 vs base-10 separates memory from reasoning.
+Agent: network + environment + observation + action + goal G.
+Pre-LM: semantic parsers, plan inference, RL. 2024: trajectory modeling.
+CoT in a loop. Train: synthetic demos, hindsight relabeling.
+Benchmarks: MiniWoB (&lt;3 actions, far from perfect), WebArena (sandbox web),
+WebLinx (real web, human action). Failures: email in password field.
+repeated searches. No recovery.</p>
+</div>
+<div class="cheat-block">
+<h3 id="life-after-dpo-l15-bridge">Life After DPO (L15, bridge)</h3>
+<p>Lambert: Berkeley PhD, HF, AI2. RL background. Moment: post-training is the action.
+Data: Arena 800k. Meta 1.5M. Labs more. Online vs offline: fresh data + fresh
+labels vs static. UltraFeedback distills many models. Self-rewarding: judge own
+data, iterate DPO. Beyond pairwise: KTO one-sided. Starling k-wise. SteerLM
+fine-grained. Open Qs: distribution matching? search + synthetic to exceed humans?
+reward models as moat? Depth: CS336 L15, L16.</p>
+</div>
+</div>
+      
+      <nav class="pager"><a href="../cs224n/l15-life-after-dpo.html"><span class="lbl">← Previous</span>Lecture 15: Life After DPO (Bridge)</a><a href="../cs224n/crash-course.html"><span class="lbl">Next →</span>CS224N Crash Course</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -138,6 +138,8 @@ for course, lst in by_course.items():
 def sidebar(active_url):
     parts = []
     courses = {}
+    depth = active_url.count("/")
+    root = "../" * max(depth, 0)
     for p in pages:
         c = p["fm"].get("course_slug", "")
         courses.setdefault(c, {"name": p["fm"].get("course_name", c), "items": []})
@@ -147,13 +149,15 @@ def sidebar(active_url):
         for p in c["items"]:
             act = ' class="active"' if p["url"] == active_url else ""
             pid = p["fm"].get("page_id", p["url"])
-            parts.append(f'<li><a href="{p["url"]}" data-page="{htmlmod.escape(pid)}"{act}>{htmlmod.escape(p["fm"].get("nav", p["fm"].get("title","")))}</a></li>')
+            parts.append(f'<li><a href="{root}{p["url"]}" data-page="{htmlmod.escape(pid)}"{act}>{htmlmod.escape(p["fm"].get("nav", p["fm"].get("title","")))}</a></li>')
         parts.append("</ul>")
     return "\n".join(parts)
 
 def breadcrumb(p):
     fm = p["fm"]
-    return (f'<nav class="breadcrumb"><a href="index.html">Home</a> / '
+    depth = p["url"].count("/")
+    root = "../" * max(depth, 0)
+    return (f'<nav class="breadcrumb"><a href="{root}index.html">Home</a> / '
             f'<a href="#">{htmlmod.escape(fm.get("course_name",""))}</a> / '
             f'{htmlmod.escape(fm.get("title",""))}</nav>')
 
@@ -167,15 +171,17 @@ def meta_line(p):
     return f'<p class="meta-line">{" · ".join(bits)}</p>' if bits else ""
 
 def pager(p):
+    depth = p["url"].count("/")
+    root = "../" * max(depth, 0)
     out = ['<nav class="pager">']
     if p.get("prev"):
         q = p["prev"]
-        out.append(f'<a href="{q["url"]}"><span class="lbl">← Previous</span>{htmlmod.escape(q["fm"].get("title",""))}</a>')
+        out.append(f'<a href="{root}{q["url"]}"><span class="lbl">← Previous</span>{htmlmod.escape(q["fm"].get("title",""))}</a>')
     else:
         out.append("<span></span>")
     if p.get("next"):
         q = p["next"]
-        out.append(f'<a href="{q["url"]}"><span class="lbl">Next →</span>{htmlmod.escape(q["fm"].get("title",""))}</a>')
+        out.append(f'<a href="{root}{q["url"]}"><span class="lbl">Next →</span>{htmlmod.escape(q["fm"].get("title",""))}</a>')
     else:
         out.append("<span></span>")
     out.append("</nav>")
@@ -190,7 +196,7 @@ os.makedirs(OUT, exist_ok=True)
 search_idx = []
 for p in pages:
     fm, body_md = p["fm"], p["body"]
-    depth = p["url"].count("/") - 1
+    depth = p["url"].count("/")
     root = "../" * max(depth, 0)
     body_html = render_body(body_md, fm.get("video_id"))
     body_html = video_embed(fm) + body_html

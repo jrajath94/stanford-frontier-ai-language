@@ -283,7 +283,7 @@ the cure.
   Public history.
 - **Transformers.** GPT, Gemini, Llama, Mistral, DeepSeek: every frontier
   model is a transformer language model (Lectures 8-9). The RNN lost the
-  training race; the n-gram lost the quality race.
+  training race. The n-gram lost the quality race.
 - **Sampling knobs.** Temperature and top-p are the user-facing controls
   on every chat product. Defaults vary by product and are [uncertain]
   unless the vendor documents them.

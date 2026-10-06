@@ -263,6 +263,10 @@ covers both.
 
 ### Subchapter: the retrieval decision table
 
+HyDE (Hypothetical Document Embeddings) handles the case where the
+query looks nothing like the documents: generate a fake answer
+document with an LLM and embed that instead.
+
 | Query type | Winner | Why |
 |---|---|---|
 | Exact names, IDs, codes | BM25 | Keywords must match literally |
@@ -305,10 +309,9 @@ borrowed from search. Work them on a toy ranking of three chunks
 with true relevance scores [3, 0, 2], ideal ranking [3, 2, 0]:
 
 ```ascii
-DCG = 3 + 0/log2(2)... use the standard form:
-DCG = 3 + 0/1 + 2/log2(3) = 3 + 0 + 1.262 = 4.262
-ideal DCG = 3 + 2/1 + 0 = 5.0
-NDCG = 4.262 / 5.0 = 0.852
+DCG = 3/log2(2) + 0/log2(3) + 2/log2(4) = 3 + 0 + 1.0 = 4.0
+ideal DCG = 3/log2(2) + 2/log2(3) + 0 = 3 + 1.262 = 4.262
+NDCG = 4.0 / 4.262 = 0.939
 ```
 
 - **NDCG**
@@ -444,8 +447,8 @@ dependency, so the model emits both and the runtime runs them
 concurrently. Latency falls from 2x to 1x. Dependent calls
 serialize: the second call's arguments come from the first
 call's result. The model must learn the difference: emit
-independent calls together, wait on dependencies. The harness
-enforces it: results return tagged per call, and the model
+independent calls together, wait on dependencies. The tool-call
+runtime enforces it: results return tagged per call, and the model
 continues when all resolve.
 
 ## The problem: one preamble cannot hold every tool
@@ -509,8 +512,8 @@ goal is met.
 **ReAct**
 ([93:43](https://www.youtube.com/watch?v=h-7S6HNq0Vg&t=5623s),
 reason + act) decomposes the loop into observe, plan, act
-([94:34](https://www.youtube.com/watch?v=h-7S6HNq0Vg&t=5674s); the
-paper says think/observe/act, wording varies). Trace the thermostat
+([94:34](https://www.youtube.com/watch?v=h-7S6HNq0Vg&t=5674s)). The
+paper says think/observe/act. Wording varies. Trace the thermostat
 example, "my teddy bear is cold":
 
 ```ascii
@@ -654,7 +657,7 @@ intelligence. Fix the tools before blaming the model.
 | Millions of chunks to search | Two-stage funnel | Bi-encoder recall to 100, cross-encoder precision to top k |
 | Semantic search misses exact names | BM25 / hybrid | "Cuddly" must match "Cuddly": keyword guarantees plus meaning |
 | Queries look nothing like documents | HyDE | Embed a fake answer document. Query and corpus finally look alike |
-| Is the retriever any good | NDCG et al. | The toy ranking scores 0.852 against the ideal |
+| Is the retriever any good | NDCG et al. | The toy ranking scores 0.939 against the ideal |
 | Text lookup is not enough | Tool calling | Predict arguments, execute, respond: the model sees the interface |
 | Too many tools for one preamble | Tool selection + MCP | Route to 2 of 50. Standardize once, use everywhere |
 | One call is not enough | ReAct | Observe, plan, act, check the goal, repeat |
@@ -691,7 +694,7 @@ The story in eight steps. Each step answers the one before it.
 5. **Semantic plus keyword.** Pure embeddings return Huggy for
    Cuddly. Hybrid (0.5/0.5) scores B at 0.80 over A at 0.475.
    HyDE embeds a fake answer doc to bridge the gap.
-6. **Measure the ranker.** NDCG on the toy: 4.262 / 5.0 = 0.852.
+6. **Measure the ranker.** NDCG on the toy: 4.0 / 4.262 = 0.939.
    Reciprocal rank, precision@k, recall@k cover the rest. MTEB is
    the benchmark.
 7. **Tool calling is three stages.** Predict arguments from API plus

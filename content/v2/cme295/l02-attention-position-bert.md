@@ -65,6 +65,29 @@ different relations, which is why the architecture uses many of them.
 
 ![Attention map](assets/l02-attention-map.svg "The query 'it' attends most strongly to 'animal'. Attention maps make coreference visible. Stanford Frontier AI.")
 
+### Subchapter: how to read an attention map
+
+Read a map like a spreadsheet. Rows are queries (the token doing the
+looking). Columns are keys (the tokens being looked at). Cell (i, j)
+is the weight token i gives token j. Each row sums to 1. Bright
+cells are large weights. The diagonal is often bright: tokens attend
+to themselves. To check coreference, find the pronoun's row and scan
+for the brightest noun column. The lecture's toy: row "it", column
+"animal" = 0.72. One head, one row, one claim. Read maps one row at
+a time, never the whole matrix at a glance.
+
+### Subchapter: attention as explanation: the limits
+
+The map shows weight, not cause. Three limits. First, a bright cell
+means "token A read token B's vector". It does not mean the model
+used that information for its decision. Second, values carry the
+content: two tokens can have identical attention patterns but
+different values, hence different outputs. Third, later layers remix
+everything: layer 1's map is diluted by layers 2-12. Use maps to
+debug (wrong coreference suggests a broken head). Do not use them to
+prove the model "understands". The research literature argues about
+exactly this, and the lecture takes the cautious side.
+
 > [!QA]
 > Q: Do attention maps explain the model's decision?
 > A: They show information flow, not reasoning. A bright cell says
@@ -136,6 +159,79 @@ product, where it belongs. RoPE is the default choice in current
 models: no extra parameters, relative by construction, clean long
 context extension.
 
+### Subchapter: the sinusoid toy, worked
+
+Take d = 2, one frequency omega = 1/100. Positions p = 3 and q = 5:
+
+```ascii
+PE(3) = [sin(0.03), cos(0.03)] = [0.030, 0.9996]
+PE(5) = [sin(0.05), cos(0.05)] = [0.050, 0.9988]
+dot = 0.030*0.050 + 0.9996*0.9988 = 0.0015 + 0.9984 = 0.9999
+cos((5-3)*0.01) = cos(0.02) = 0.9998  (same, up to rounding)
+```
+
+The dot product recovers cos of the distance. Shift both positions
+by 100: PE(103).PE(105) = cos(2*0.01) again. Distance, not
+address. That is the whole trick, and it survives because sin and
+cos are periodic: p-q is all that matters.
+
+### Subchapter: ALiBi arithmetic, worked
+
+ALiBi subtracts m * distance from each attention score, with a fixed
+slope m per head (e.g. m = 1/2, 1/4, 1/8, ... across 8 heads). Work
+head 1 with m = 0.5 on scores [3.0, 2.0, 4.0] at distances [1, 2, 4]:
+
+```ascii
+before:  [3.0, 2.0, 4.0]
+penalty: [0.5, 1.0, 2.0]
+after:   [2.5, 1.0, 2.0]
+```
+
+The distance-4 token lost 2.0 points before softmax even ran. At
+test time with a 3,000-token sequence (trained on 2,048), distance
+2,500 gets penalty 0.5 * 2500 = 1250: crushed. No learned vector
+for position 2,500 was ever needed, so extrapolation works by
+construction. The cost: the penalty is fixed. If a far token
+matters, the model cannot un-penalize it. Heads with small slopes
+(m = 1/256) specialize in long range to compensate.
+
+### Subchapter: RoPE in 2D, worked
+
+Rotate in 2D by angle alpha: [x, y] becomes [x cos alpha - y sin
+alpha, x sin alpha + y cos alpha]. RoPE rotates q at position p by
+p*theta and k at position q by q*theta. Their dot product:
+
+```ascii
+q_p = R(p*theta) q,   k_q = R(q*theta) k
+q_p . k_q = q . R((q-p)*theta) k
+```
+
+Only (q-p) survives: relative distance, baked into the score. The
+theta values decay across dimension pairs (theta_i = 10000^(-2i/d)),
+so early pairs rotate fast (local order) and late pairs rotate slow
+(long range). This is why RoPE extends to long context cleanly:
+distances the model never saw are just larger angles, and the slow
+pairs still resolve them. Every current frontier model (GPT-6,
+Gemini 3, DeepSeek V4.1, Llama 4) uses RoPE or a RoPE variant
+[positions schemes for closed models inferred from public
+documentation and papers. Exact variants unknown].
+
+### Subchapter: T5 buckets, worked
+
+T5's relative bias is a lookup: distance d maps to a bucket, each
+bucket holds one learned scalar added to the score. The bucketing is
+logarithmic: distances 0-3 get their own buckets, then buckets grow
+(distance 4-7, 8-15, 16-31, ...). The toy: score("bear", "teddy")
+at distance 1 reads bucket 1, bias +0.8. score("bear", "street") at
+distance 5 reads bucket 4, bias +0.1. Beyond the last bucket,
+everything shares one bias: no extrapolation beyond training range.
+Logarithmic buckets spend precision where it matters (nearby) and
+save it where it does not (far). Compared to ALiBi: learned vs
+fixed. Compared to RoPE: additive bias vs rotation inside the dot
+product.
+
+![Sinusoid toy](assets/l02-sinusoid-toy.svg "PE(3).PE(5) = cos(2*omega). Distance only. Shell 2. Source: original toy. Project: Stanford Frontier AI.")
+
 ![Position embeddings](assets/l02-pos-embeddings.svg "Learned vs sinusoidal. Dot products encode relative distance. Stanford Frontier AI.")
 ![RoPE](assets/l02-rope.svg "Rotate Q and K by position. Their dot product keeps only relative distance. Stanford Frontier AI.")
 
@@ -182,6 +278,41 @@ RMSNorm:     x ->  x / rms(x)
 Fewer parameters, same stability in practice, cheaper to compute.
 Pre-norm plus RMSNorm is the current stack.
 
+### Subchapter: layer norm vs RMSNorm, worked numbers
+
+Take x = [2, 4, 6]. Layer norm first:
+
+```ascii
+mean = 4.  variance = ((2-4)^2 + (4-4)^2 + (6-4)^2)/3 = 8/3 = 2.67
+std = 1.63
+layer norm: [(2-4)/1.63, (4-4)/1.63, (6-4)/1.63] = [-1.22, 0, 1.22]
+
+rms = sqrt((4 + 16 + 36)/3) = sqrt(18.67) = 4.32
+RMSNorm: [2/4.32, 4/4.32, 6/4.32] = [0.46, 0.93, 1.39]
+```
+
+Layer norm centers then scales: mean 0, variance 1. RMSNorm scales
+only: cheaper, and the mean carries a signal RMSNorm keeps. Then
+each multiplies by a learned per-dimension gain (and layer norm
+adds a learned bias). In practice the centering rarely matters for
+transformers: the residual stream already carries the mean
+information. Dropping it saves one pass over the vector per
+normalization, and normalizations run 2 per layer times 96 layers.
+
+### Subchapter: why pre-norm trains deeper
+
+Picture the gradient's trip home through 96 layers. With post-norm,
+each layer's output passes through a layer norm before reaching
+the residual highway: the gradient crosses 96 normalizations, each
+rescaling and recentering. Small rescalings compound. With
+pre-norm, the highway is untouched: layer l's output flows straight
+into layer l+1's input, and the sublayer's contribution adds on the
+side. The gradient travels down the bare highway, full strength.
+The cost: pre-norm stacks can underperform post-norm at shallow
+depths (the sublayer inputs are normalized, which slightly weakens
+early layers). The decision rule: below ~24 layers, try both.
+Above ~48, pre-norm is the safe default.
+
 ![Pre-norm and RMSNorm](assets/l02-norm.svg "Post-norm (2017) normalizes after the sublayer. Pre-norm normalizes before it. RMSNorm drops the mean. Stanford Frontier AI.")
 
 ## The problem: full attention costs O(n^2)
@@ -208,6 +339,50 @@ attention where it matters, approximate elsewhere.
 
 ![Attention approximations](assets/l02-attention-approx.svg "Full, sliding window, and stacked windows with growing receptive field. Stanford Frontier AI.")
 
+### Subchapter: Longformer global tokens, worked
+
+Longformer keeps the sliding window and adds **global tokens**:
+special positions that attend to everything and that everything
+attends to. On a 4,096-token document with window w = 512, give
+global status to 16 tokens (the question tokens, or [CLS]-style
+markers). Cost: 4,096 * 512 window scores + 16 * 4,096 * 2 global
+scores = 2.1M + 131K. The global tokens are the relays: any token
+reaches any other token in two hops (token -> global -> token).
+The design rule: globals go where the task's question lives. For
+QA, the question tokens are global. For classification, one global
+[CLS]. No globals and the window is a relay race with no
+baton-passer.
+
+### Subchapter: the sliding-window receptive field
+
+One sliding-window layer sees w back. Stack them and the reach
+grows. With w = 4,096 and 32 layers (Mistral 7B's shape): layer 1
+sees 4K back, layer 2 sees 8K through layer 1's windows, layer L
+sees L*w back in principle. In practice the signal dilutes: each
+hop remixes through attention weights, so distant context arrives
+faded. The effective reach is shorter than L*w. The interview
+point: sliding windows trade exact long-range links for cheap
+approximate ones, and depth is the recovery mechanism. It works
+well enough that Mistral 7B shipped 32K context on this trick.
+
+> [!QA]
+> Q: Walk me through RoPE on the 2D toy, start to finish.
+> A: Take q = [1, 0] at position 3 and k = [1, 0] at position 5.
+> Rotate q by 3*theta, k by 5*theta. A 2D rotation by angle alpha
+> maps [x, y] to [x cos alpha - y sin alpha, x sin alpha + y cos
+> alpha]. The dot product of the rotated vectors equals the dot
+> product of the unrotated vectors with one relative rotation
+> between them: q_p . k_q = q . R((5-3)*theta) k = cos(2*theta).
+> Only the distance 2 survives. Absolute positions 3 and 5
+> disappeared. That is the whole mechanism: rotate by position,
+> let the dot product cancel the absolute part.
+> Follow-up: Why does RoPE extend to long context?
+> A: Distances the model never saw are just larger angles, and the
+> slow-rotating dimension pairs still resolve them. Nothing in the
+> formula references a maximum position. It extrapolates by
+> construction, like ALiBi, but with learned-distance semantics
+> instead of a fixed penalty.
+
 ## The problem: the KV cache eats inference memory
 
 **Multi-head attention** gives every head its own key and value
@@ -230,6 +405,55 @@ MQA (multi-query attention): 32 query heads -> 1 KV head.   Cache = 1 unit (32x 
 
 Fewer KV heads means a smaller cache and faster decoding, at a small
 quality cost. Most current models ship GQA as the compromise.
+
+### Subchapter: the KV cache byte math
+
+Count the cache for one request. Per token per layer: 2 (key +
+value) * KV heads * d_head * bytes per number. For a Llama-3-style
+70B model: 80 layers, 8 KV heads (GQA), d_head = 128, fp16 (2
+bytes):
+
+```ascii
+per token per layer: 2 * 8 * 128 * 2 = 4,096 bytes
+per token, 80 layers: 327,680 bytes = 320 KB
+32K-token context:  32,768 * 320 KB = 10.5 GB per request
+```
+
+With MHA (64 KV heads): 8x more, 84 GB per request. With MQA (1 KV
+head): 8x less than GQA, 1.3 GB. The cache is per request, so 100
+concurrent 32K requests need 1 TB with GQA. This is the number
+that ends serving designs. Every cache-shrinking idea (GQA, MQA,
+MLA in Lecture 3, DeepSeek V4.1's 890-bytes-per-token cache) is a
+direct attack on this multiplication.
+
+### Subchapter: MQA vs GQA, the quality tradeoff
+
+MQA forces all 32 query heads to read one shared key and value.
+GQA gives each group of 4 query heads its own KV pair (8 groups).
+The quality question: do heads need different keys? Empirically,
+mostly no: trained heads in MHA learn correlated keys, so sharing
+loses little. MQA's single head is a coarser cut: at 70B+ scale the
+quality drop shows on hard tasks, which is why the field settled on
+GQA (Llama 3, Mistral, most 2024-2026 models) and MQA survives
+mainly in small fast models. The decision rule: serve throughput
+first, MQA. Balanced quality, GQA. Research flexibility, MHA.
+
+![KV cache bytes](assets/l02-kv-bytes.svg "320 KB per token for a 70B GQA model. 10.5 GB per 32K request. Shell 2. Source: original byte count. Project: Stanford Frontier AI.")
+
+> [!QA]
+> Q: How do you pick the GQA group size?
+> A: From the byte math. Fix your memory budget per request and
+> your target context length, then solve: KV heads = budget / (2 *
+> layers * d_head * bytes * tokens). The toy 70B: 8 KV heads give
+> 10.5 GB per 32K request. Halve to 4 heads and it is 5.25 GB.
+> Quality drops slowly with fewer heads (heads learn correlated
+> keys), so pick the smallest head count your evals tolerate. The
+> interview signal: show the division, not just the answer.
+> Follow-up: Why not always use MQA then?
+> A: At small scale, nothing stops you. At 70B+ the single shared
+> KV pair becomes a bottleneck on hard tasks: every head reads the
+> same keys, and the diversity multi-head was bought for is gone.
+> GQA is the measured compromise.
 
 ![MQA GQA MHA](assets/l02-mqa-gqa.svg "MHA: h KV heads. GQA: groups share. MQA: one shared head. The cache shrinks left to right. Stanford Frontier AI.")
 
@@ -325,6 +549,56 @@ Two descendants close the lecture:
   instead of one fixed mask), trains longer on much more data, with
   bigger batches. Same architecture, better training, better results.
 
+### Subchapter: DistilBERT's distillation loss, worked
+
+The student learns two losses. First, the standard MLM loss on hard
+labels. Second, the distillation loss: KL divergence between the
+teacher's soft distribution and the student's. The toy: teacher
+outputs [0.7, 0.2, 0.1] over three classes, student outputs [0.5,
+0.3, 0.2]. The hard label says class 1. The teacher's 0.2 on class
+2 says "class 2 is plausible here": information the hard label
+destroys. KL(teacher || student) = 0.7*log(0.7/0.5) +
+0.2*log(0.2/0.3) + 0.1*log(0.1/0.2) = 0.236 - 0.081 - 0.069 = 0.086.
+Small when the student matches, large when it diverges. With a
+temperature on the softmax, the distribution softens further and
+the similarity signal strengthens. DistilBERT keeps ~97% of BERT's
+GLUE score at 60% of the size and 60% faster inference.
+
+### Subchapter: RoBERTa's changes, one by one
+
+RoBERTa changed training, not architecture. Four changes:
+
+1. **Drop NSP.** Follow-up studies showed NSP was too easy: the
+   model solved it from topic overlap, and longer contiguous
+   sequences trained without it did as well or better.
+2. **Dynamic masking.** BERT masks once during preprocessing: the
+   same tokens are masked every epoch. RoBERTa re-masks every
+   epoch, so the model sees each sentence under many different
+   masks.
+3. **More data, longer, bigger batches.** 160 GB of text (vs 16
+   GB), 500K steps, batches of 8K sequences.
+4. **Longer sequences.** Train on full 512-token blocks instead of
+   short segments.
+
+Same transformer. Better numbers. The lesson: training recipes are
+part of the model, not an afterthought.
+
+![The BERT family](assets/l02-bert-family.svg "BERT, DistilBERT, RoBERTa: same block, different training. Shell 3. Source: the three papers. Project: Stanford Frontier AI.")
+
+> [!QA]
+> Q: Why did RoBERTa's dynamic masking help?
+> A: BERT's static mask wastes data: each sentence shows the model
+> one fixed mask pattern across all epochs. Dynamic masking shows a
+> fresh pattern per epoch, so 10 epochs mean 10 different prediction
+> tasks on the same sentence. More effective data, same corpus. The
+> general principle: preprocessing choices that look fixed are
+> usually leaving signal on the table.
+> Follow-up: When would you still use NSP-style objectives?
+> A: When sentence relationships are the product: entailment,
+> retrieval, QA. But the modern answer is a harder objective (SOP:
+> sentence order prediction, or contrastive losses), not NSP. The
+> 50/50 coin flip taught too little.
+
 > [!QA]
 > Q: Why mask only 15% of tokens, and why the 80/10/10 split?
 > A: 15% keeps most of the context intact so prediction stays
@@ -392,15 +666,26 @@ The story in eight steps. Each step answers the one before it.
    with a small head. DistilBERT distills. RoBERTa trains harder and
    drops NSP.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/yT84Y5zCnaA" title="CME295 Lecture 2, Autumn 2025" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+- Lecture 2 recording (the timestamps above point into it): https://www.youtube.com/watch?v=yT84Y5zCnaA
+- The Illustrated BERT (Jay Alammar): https://jalammar.github.io/illustrated-bert/
+- Attention in transformers, step-by-step (3Blue1Brown): https://www.youtube.com/watch?v=eMlx5fFNoYc
+- Su et al., RoFormer (RoPE paper): https://arxiv.org/abs/2104.09864
+
 ## Official sources and further reading
 
 **Official:**
 - Lecture 2 recording (YouTube): timestamped above.
 - Lecture 2 slides (PDF), CME295 Autumn 2025.
 - Devlin et al., "BERT" (2018):
-  https://arxiv.org/abs/1810.04805 — the encoder-only landmark.
+  - [the encoder-only landmark.](https://arxiv.org/abs/1810.04805)
 - Su et al., "RoFormer: Rotary Position Embedding" (2021):
-  https://arxiv.org/abs/2104.09864 — RoPE.
+  - [RoPE.](https://arxiv.org/abs/2104.09864)
 
 **Further reading:**
 - Raffel et al., "Exploring the Limits of Transfer Learning with T5"

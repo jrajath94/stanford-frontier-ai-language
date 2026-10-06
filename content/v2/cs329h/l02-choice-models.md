@@ -98,8 +98,8 @@ probabilities take a closed form, the **softmax**:
 p(j chosen from set S) = e^{V_j} / sum_{k in S} e^{V_k}
 
 The Gumbel distribution is the unique noise, up to regularity
-conditions, that yields this form and the IIA property of Lecture
-3. Other noises give other models: Gaussian noise gives the probit
+conditions, that yields this form and the IIA (independence
+of irrelevant alternatives) property of Lecture 3. Other noises give other models: Gaussian noise gives the probit
 (see the end of this chapter). Gumbel wins on tractability:
 closed-form probabilities and easy gradients.
 
@@ -166,7 +166,7 @@ which reading they mean. The number cannot tell you.
 ## Bradley-Terry: the two-item case
 
 Take the softmax with two items. It reduces to a **sigmoid** of
-the gap. This is the **Bradley-Terry model** (Bradley and Terry,
+the gap. This is the **Bradley-Terry (BT) model** (Bradley and Terry,
 1952), the most used equation in this course.
 
 p(j beats k) = sigma(V_j - V_k) = 1 / (1 + e^{-(V_j - V_k)})
@@ -196,16 +196,80 @@ Elo's expected score is exactly this sigmoid.
 
 > [!QA]
 > Q: Derive Bradley-Terry from the random utility model in one paragraph.
-> A: Start with H_j = V_j + noise_j with i.i.d. Gumbel noise. Item j beats k when H_j > H_k. Condition on noise_j = t: then k loses when noise_k < V_j - V_k + t, which has Gumbel CDF probability. Integrate over t with the Gumbel density. The integral collapses to e^{V_j} / (e^{V_j} + e^{V_k}), which equals sigma(V_j - V_k). The full derivation is an exercise in the textbook.
+> A: Start with H_j = V_j + noise_j with i.i.d. Gumbel noise. Item j beats k when H_j > H_k. Condition on noise_j = t: then k loses when noise_k < V_j - V_k + t, which has Gumbel CDF probability. Integrate over t with the Gumbel density. The integral collapses to e^{V_j} / (e^{V_j} + e^{V_k}), which equals sigma(V_j - V_k). The subchapter below shows every step.
 > Follow-up: Why is this the same math as logistic regression?
 > A: It is logistic regression. The log-loss on a pair (j, k) with label y is -[y log sigma(V_j - V_k) + (1-y) log(1 - sigma(V_j - V_k))]. Fitting Bradley-Terry by maximum likelihood is exactly logistic regression on pair differences. Lecture 4 builds on this.
+
+### Subchapter: the derivation, shown in full
+
+The lesson asserted that i.i.d. Gumbel noise gives the sigmoid.
+Here is the proof, every step. It is the one derivation this
+course cannot leave as an exercise, because everything downstream
+stands on it.
+
+Setup. Two items, j and k. Mean utilities V_j and V_k. Write d
+for the gap V_j - V_k. The noises e_j and e_k are independent
+draws from the standard Gumbel distribution. Item j wins when
+V_j + e_j > V_k + e_k, which rearranges to e_k - e_j < d.
+
+The standard Gumbel has CDF F(t) = exp(-exp(-t)) and density
+f(t) = exp(-t) exp(-exp(-t)). These are definitions, not
+results. Check the density integrates to 1: substitute u =
+exp(-t) and the integral becomes the integral of exp(-u) from 0
+to infinity, which is 1.
+
+Step 1: condition on e_j. Fix e_j = t. Then j wins exactly when
+e_k < d + t. Since e_k is Gumbel, this happens with probability
+F(d + t) = exp(-exp(-(d + t))).
+
+Step 2: average over e_j. The unconditional win probability is
+the integral over t of f(t) times F(d + t):
+
+p = integral of exp(-t) exp(-exp(-t)) exp(-exp(-(d+t))) dt
+
+Step 3: substitute u = exp(-t). Then du = -exp(-t) dt, so
+-exp(-t) dt becomes du with flipped limits, and exp(-(d+t)) =
+exp(-d) exp(-t) = u exp(-d). The integral becomes:
+
+p = integral from 0 to infinity of exp(-u) exp(-u exp(-d)) du
+  = integral from 0 to infinity of exp(-u (1 + exp(-d))) du
+
+Step 4: evaluate. The integral of exp(-a u) from 0 to infinity
+is 1/a. Here a = 1 + exp(-d). So:
+
+p = 1 / (1 + exp(-d)) = sigma(d)
+
+That is Bradley-Terry. The sigmoid is not a modeling choice
+layered on top. It is what falls out of Gumbel noise.
+
+Verify by simulation, not just algebra. Draw 400,000 Gumbel
+pairs per gap using the inverse CDF, -log(-log(u)) for uniform
+u. Count how often d + e_j exceeds e_k.
+
+```ascii
+gap 0.0:  Monte Carlo 0.5007,  theory sigma(0) = 0.5000
+gap 1.0:  Monte Carlo 0.7304,  theory sigma(1) = 0.7311
+gap 2.0:  Monte Carlo 0.8800,  theory sigma(2) = 0.8808
+```
+
+All three agree within 0.001. The integral and the simulation
+say the same thing.
+
+Two things the proof reveals. First, the difference of two
+independent Gumbels follows the logistic distribution. That is
+the real content: Gumbel minus Gumbel is logistic, and the
+logistic CDF is the sigmoid. Second, the proof used
+independence at exactly one point: e_k < d + t has probability
+F(d + t) only if e_k is independent of e_j. Correlated noise
+breaks this step, which is why Lecture 3's red-bus problem
+needs a different model. The derivation shows its own exit.
+
+![The preference pair](assets/l02-pref-pair.svg "Prompt x, chosen response y_w, rejected response y_l. The update widens the reward gap. Defined in CS329H, reused by later courses. Source: original figure for Stanford Frontier AI.")
 
 ## The preference pair: the atom of the course
 
 One object powers everything downstream. Define it carefully now,
 because every later lesson reuses it.
-
-![The preference pair](assets/l02-pref-pair.svg "Prompt x, chosen response y_w, rejected response y_l. The update widens the reward gap. Defined in CS329H, reused by later courses. Source: original figure for Stanford Frontier AI.")
 
 A **preference pair** is a triple (x, y_w, y_l). The prompt x. The
 chosen response y_w, the winner. The rejected response y_l, the
@@ -319,7 +383,7 @@ The matched probit uses Phi(gap / 1.81). Work both at two gaps.
 
 ```ascii
 gap 1.0:  logit sigma(1) = 0.731     probit Phi(0.55) = 0.709
-gap 2.0:  logit sigma(2) = 0.881     probit Phi(1.10) = 0.865
+gap 2.0:  logit sigma(2) = 0.881     probit Phi(1.10) = 0.864
 ```
 
 The curves differ by about 0.02 across the practical range. No
@@ -389,13 +453,23 @@ The story in eight steps. Each step answers the one before it.
 8. **The price is IIA.** The odds ignore the rest of the set.
    Tractable and strong. Clones break it. Lecture 3 shows how.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/inXUp5j107I" title="The Elo Rating System: Bradley-Terry derivation, j3m" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+- The Elo Rating System (Bradley-Terry derivation): https://www.youtube.com/watch?v=inXUp5j107I
+- Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
+- Bradley and Terry, Rank Analysis of Incomplete Block Designs (1952): via the textbook bibliography.
+- Train (2009), Discrete Choice Methods with Simulation: the logit/probit reference.
+
 ## Official sources and further reading
 
 **Official:**
 - The Elo Rating System (external explainer, video id inXUp5j107I):
   derives Bradley-Terry for a two-player game, builds the Elo update
   from Zermelo's model, and notes the Thurstone alternative.
-- Course textbook, chapters 2.x: random utility, Gumbel, BT,
+- Course textbook, chapter 1.7: random utility, Gumbel, BT,
   Plackett-Luce, the worked chess example.
 
 **Further reading:**

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 8: Evaluating LLMs — Stanford Frontier AI</title>
+<meta name="description" content="Why free-form output resists measurement, told as a ladder: human ratings with the chance-agreement arithmetic that breaks them, rule metrics on a worked BLEU t">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-l08" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive, Search, RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Attention, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech Brain-Computer Interfaces</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../cme295/l01-transformers-overview.html" data-page="cme295-l01">L01 · Transformers overview</a></li>
+<li><a href="../cme295/l02-attention-position-bert.html" data-page="cme295-l02">L02 · Attention and BERT</a></li>
+<li><a href="../cme295/l03-llms-decoding-inference.html" data-page="cme295-l03">L03 · LLMs and decoding</a></li>
+<li><a href="../cme295/l04-pretraining-scaling-finetuning.html" data-page="cme295-l04">L04 · Training at scale</a></li>
+<li><a href="../cme295/l05-preference-tuning.html" data-page="cme295-l05">L05 · Preference tuning</a></li>
+<li><a href="../cme295/l06-reasoning-models-grpo.html" data-page="cme295-l06">L06 · Reasoning models</a></li>
+<li><a href="../cme295/l07-rag-tool-calling-agents.html" data-page="cme295-l07">L07 · RAG and agents</a></li>
+<li><a href="../cme295/l08-evaluation.html" data-page="cme295-l08" class="active">L08 · Evaluation</a></li>
+<li><a href="../cme295/l09-course-recap-frontiers.html" data-page="cme295-l09">L09 · Recap and frontiers</a></li>
+<li><a href="../cme295/cheatsheet.html" data-page="cme295-cheatsheet">CME295 · Cheatsheet</a></li>
+<li><a href="../cme295/crash-course.html" data-page="cme295-crash">CME295 · Crash course</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../cs329h/l01-preference-foundations.html" data-page="cs329h-l01">L01 · Preference Foundations</a></li>
+<li><a href="../cs329h/l02-choice-models.html" data-page="cs329h-l02">L02 · Choice Models</a></li>
+<li><a href="../cs329h/l03-iia-identification.html" data-page="cs329h-l03">L03 · IIA and Identification</a></li>
+<li><a href="../cs329h/l04-learning-rewards.html" data-page="cs329h-l04">L04 · Learning Rewards</a></li>
+<li><a href="../cs329h/l05-metric-elicitation.html" data-page="cs329h-l05">L05 · Metric Elicitation</a></li>
+<li><a href="../cs329h/l06-bandits-exploration.html" data-page="cs329h-l06">L06 · Bandits and Exploration</a></li>
+<li><a href="../cs329h/l07-rlhf.html" data-page="cs329h-l07">L07 · RLHF</a></li>
+<li><a href="../cs329h/l08-social-choice.html" data-page="cs329h-l08">L08 · Social Choice</a></li>
+<li><a href="../cs329h/l09-mechanism-design.html" data-page="cs329h-l09">L09 · Mechanism Design</a></li>
+<li><a href="../cs329h/l10-alignment-practice.html" data-page="cs329h-l10">L10 · Alignment in Practice</a></li>
+<li><a href="../cs329h/cheatsheet.html" data-page="cs329h-cheatsheet">CS329H · Cheatsheet</a></li>
+<li><a href="../cs329h/crash-course.html" data-page="cs329h-crash">CS329H · Crash course</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+<li><a href="../cs329z/l01-intro-agentic-systems.html" data-page="cs329z-l01">L01 · Intro to Agentic Systems</a></li>
+<li><a href="../cs329z/l02-compound-ai-systems.html" data-page="cs329z-l02">L02 · Compound AI Systems</a></li>
+<li><a href="../cs329z/l03-llms-for-builders.html" data-page="cs329z-l03">L03 · LLMs for Builders</a></li>
+<li><a href="../cs329z/l04-reasoning-and-context.html" data-page="cs329z-l04">L04 · Reasoning and Context</a></li>
+<li><a href="../cs329z/l05-rag-pipeline.html" data-page="cs329z-l05">L05 · RAG Pipeline</a></li>
+<li><a href="../cs329z/l06-retrieval-methods.html" data-page="cs329z-l06">L06 · Retrieval Methods</a></li>
+<li><a href="../cs329z/l07-agentic-retrieval-failure-modes.html" data-page="cs329z-l07">L07 · Agentic Retrieval</a></li>
+<li><a href="../cs329z/l08-evaluating-agents.html" data-page="cs329z-l08">L08 · Evaluating Agents</a></li>
+<li><a href="../cs329z/cheatsheet.html" data-page="cs329z-cheatsheet">CS329Z · Cheatsheet</a></li>
+<li><a href="../cs329z/crash-course.html" data-page="cs329z-crash">CS329Z · Crash course</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
+<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
+<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
+<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
+<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
+<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
+<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
+<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
+<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
+<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+<li><a href="../mse435/l01-electrons-to-tokens.html" data-page="mse435-l01">L01 · From Electrons to Tokens</a></li>
+<li><a href="../mse435/l02-sixty-million-megawatt.html" data-page="mse435-l02">L02 · The $60M Megawatt</a></li>
+<li><a href="../mse435/l03-how-models-get-smarter.html" data-page="mse435-l03">L03 · How Models Get Smarter</a></li>
+<li><a href="../mse435/l04-evals-rlvr-enterprise.html" data-page="mse435-l04">L04 · Evals and Enterprise AI</a></li>
+<li><a href="../mse435/l05-software-is-dead.html" data-page="mse435-l05">L05 · The SaaS Reckoning</a></li>
+<li><a href="../mse435/l06-where-value-accrues.html" data-page="mse435-l06">L06 · Where Value Accrues</a></li>
+<li><a href="../mse435/cheatsheet.html" data-page="mse435-cheatsheet">MS&amp;E 435 · Cheatsheet</a></li>
+<li><a href="../mse435/crash-course.html" data-page="mse435-crash">MS&amp;E 435 · Crash course</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">MATH-ML · Overview</a></li>
+<li><a href="../math-ml/l01-vectors-as-data.html" data-page="math-ml-l01">L01 · Vectors as Data</a></li>
+<li><a href="../math-ml/l02-matrices-as-machines.html" data-page="math-ml-l02">L02 · Matrices as Machines</a></li>
+<li><a href="../math-ml/l03-eigendecomposition-pca.html" data-page="math-ml-l03">L03 · Eigen-decomposition</a></li>
+<li><a href="../math-ml/l04-svd-low-rank.html" data-page="math-ml-l04">L04 · SVD and Low Rank</a></li>
+<li><a href="../math-ml/l05-probability-bayes.html" data-page="math-ml-l05">L05 · Probability and Bayes</a></li>
+<li><a href="../math-ml/l06-distributions-covariance.html" data-page="math-ml-l06">L06 · Distributions and Covariance</a></li>
+<li><a href="../math-ml/l07-calculus-gradients-chainrule.html" data-page="math-ml-l07">L07 · Calculus for ML</a></li>
+<li><a href="../math-ml/l08-convexity-gradient-descent.html" data-page="math-ml-l08">L08 · Convexity and Gradient Descent</a></li>
+<li><a href="../math-ml/l09-least-squares-regression.html" data-page="math-ml-l09">L09 · Least Squares</a></li>
+<li><a href="../math-ml/l10-information-theory.html" data-page="math-ml-l10">L10 · Information Theory</a></li>
+<li><a href="../math-ml/cheatsheet.html" data-page="math-ml-cheatsheet">MATH-ML · Cheatsheet</a></li>
+<li><a href="../math-ml/crash-course.html" data-page="math-ml-crash-course">MATH-ML · Crash Course</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+<li><a href="../math-genai/l01-the-job.html" data-page="math-genai-l01">L01 · The Job</a></li>
+<li><a href="../math-genai/l02-kl-and-mle.html" data-page="math-genai-l02">L02 · KL Divergence and MLE</a></li>
+<li><a href="../math-genai/l03-f-divergences.html" data-page="math-genai-l03">L03 · f-Divergences</a></li>
+<li><a href="../math-genai/l04-gans.html" data-page="math-genai-l04">L04 · GANs</a></li>
+<li><a href="../math-genai/l05-wgan-evaluation.html" data-page="math-genai-l05">L05 · WGAN and Evaluation</a></li>
+<li><a href="../math-genai/l06-latent-variables-elbo.html" data-page="math-genai-l06">L06 · ELBO</a></li>
+<li><a href="../math-genai/l07-vae.html" data-page="math-genai-l07">L07 · VAE</a></li>
+<li><a href="../math-genai/l08-ddpm-forward.html" data-page="math-genai-l08">L08 · DDPM Forward</a></li>
+<li><a href="../math-genai/l09-ddpm-loss.html" data-page="math-genai-l09">L09 · DDPM Loss</a></li>
+<li><a href="../math-genai/l10-score-ddim-ar.html" data-page="math-genai-l10">L10 · Score, DDIM, AR</a></li>
+<li><a href="../math-genai/cheatsheet.html" data-page="math-genai-cheatsheet">Cheatsheet</a></li>
+<li><a href="../math-genai/crash-course.html" data-page="math-genai-crash-course">Crash course</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Math · Generative Models · Overview</a></li>
+<li><a href="../math-genmodels/l01-the-one-question.html" data-page="math-genmodels-l01">L01 · The One Question</a></li>
+<li><a href="../math-genmodels/l02-autoregressive-models.html" data-page="math-genmodels-l02">L02 · Autoregressive Models</a></li>
+<li><a href="../math-genmodels/l03-variational-autoencoders.html" data-page="math-genmodels-l03">L03 · Variational Autoencoders</a></li>
+<li><a href="../math-genmodels/l04-normalizing-flows.html" data-page="math-genmodels-l04">L04 · Normalizing Flows</a></li>
+<li><a href="../math-genmodels/l05-diffusion-ddpm.html" data-page="math-genmodels-l05">L05 · Diffusion I: DDPM</a></li>
+<li><a href="../math-genmodels/l06-score-matching-ddim.html" data-page="math-genmodels-l06">L06 · Score Matching &amp; Fast Diffusion</a></li>
+<li><a href="../math-genmodels/l07-energy-based-models.html" data-page="math-genmodels-l07">L07 · Energy-Based Models</a></li>
+<li><a href="../math-genmodels/l08-judging-a-creator.html" data-page="math-genmodels-l08">L08 · Judging a Creator</a></li>
+<li><a href="../math-genmodels/cheatsheet.html" data-page="math-genmodels-cheatsheet">Math · Generative Models · Cheatsheet</a></li>
+<li><a href="../math-genmodels/crash-course.html" data-page="math-genmodels-crash">Math · Generative Models · Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / Lecture 8: Evaluating LLMs</nav>
+      <h1>Lecture 8: Evaluating LLMs</h1>
+      <p class="meta-line">2025-11-21 · Instructor: Afshine Amidi, Shervine Amidi · 1:49:14 · Autumn 2025</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="8fNP4N46RRo"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/8fNP4N46RRo" title="CME295 Lecture 8, Autumn 2025" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=8fNP4N46RRo" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=8fNP4N46RRo" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. Human ratings, rule-based metrics, LLM-as-a-judge, benchmarks, and agent evaluation.</p></div><h2 id="the-problem-what-does-evaluate-the-llm-mean">The problem: what does &ldquo;evaluate the LLM&rdquo; mean</h2>
+<p>&ldquo;Evaluate the LLM&rdquo; can mean latency, price, or uptime. This lecture
+means one thing: <strong>output quality</strong>. How good is the actual
+response?</p>
+<p>The difficulty is structural. The LLM outputs free-form text:
+natural language, code, math. No universal metric covers all of it.
+The lecture climbs a ladder of approximations. Each rung fixes the
+previous rung&rsquo;s flaw and introduces a new one.</p>
+<figure><img alt="Eval scope" src="assets/l08-eval-scope.svg"><figcaption>This lecture: output quality. Three rungs: humans, rules, judges. Stanford Frontier AI.</figcaption></figure>
+<h2 id="the-key-question">The key question</h2>
+<p>Text has no single right answer. How do you score a model when the
+output space is infinite and every answer differs?</p>
+<h2 id="rung-1-human-ratings-the-unaffordable-ideal">Rung 1: human ratings, the unaffordable ideal</h2>
+<p>The ideal: a human rates every output. Collect the ratings, quantify
+the model. Two problems kill it.</p>
+<p><strong>Subjectivity.</strong> &ldquo;What birthday gift should I get?&rdquo; answered with &ldquo;a
+teddy bear is almost always a sweet gift&rdquo; splits raters: one calls it
+useful, another calls it vague
+(<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=502s">08:22</a>). The fix
+is <strong>inter-rater agreement</strong>: measure how consistently raters judge,
+with clear guidelines and alignment sessions when they drift.</p>
+<p><strong>Cost and speed.</strong> Rating a thousand outputs takes days and real
+money. The ideal does not scale.</p>
+<p>The naive agreement metric is the <strong>agreement rate</strong>: the fraction of
+times two raters give the same verdict
+(<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=558s">09:18</a>). Watch
+it lie. If rater A says &ldquo;good&rdquo; with probability P_A and rater B with
+P_B, independently, chance agreement is:</p>
+<p><strong>P(agree) = P_A * P_B + (1 - P_A) * (1 - P_B)</strong></p>
+<p>Two scenarios on the same observed 85% agreement:</p>
+<pre class="ascii">scenario 1: P_A = P_B = 0.5 (balanced)
+  chance agreement = 0.25 + 0.25 = 0.50
+  observed 0.85 vs chance 0.50: real signal.
+
+scenario 2: P_A = P_B = 0.9 (almost everything is &quot;good&quot;)
+  chance agreement = 0.81 + 0.01 = 0.82
+  observed 0.85 vs chance 0.82: barely above random guessing.
+</pre>
+<p>Same 85%, opposite conclusions. A raw percentage cannot tell them
+apart. The fix is chance-corrected metrics: <strong>Cohen&rsquo;s kappa</strong> for two
+raters
+(<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=896s">14:56</a>),
+<strong>Fleiss&rsquo;s kappa</strong> for many, <strong>Krippendorff&rsquo;s alpha</strong> when data is
+missing (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=990s">16:30</a>).
+Cohen&rsquo;s kappa is (observed - chance) / (1 - chance): scenario 1 gives
+(0.85 - 0.50) / 0.50 = 0.70. Scenario 2 gives (0.85 - 0.82) / 0.18 =
+0.17. Positive means better than chance. That is the health metric to
+track. Low kappa usually means the rubric is ambiguous, not that the
+raters are careless: hold an agreement session and fix the rubric.</p>
+<p><img alt="Human ratings" src="assets/l08-human.svg" title="Ideal but slow, subjective, drifty. Stanford Frontier AI." />
+<img alt="Kappa" src="assets/l08-kappa.svg" title="Agreement rate lies. Chance-corrected metrics tell the truth. Stanford Frontier AI." /></p>
+<div class="qa"><div class="q">Why is chance agreement not zero?</div><div class="a"><p>Because agreement has two paths: both say yes or both say no.
+Even coin-flip raters land on the same side half the time. Any
+agreement metric must subtract this baseline, or it rewards raters
+for the base rate instead of their judgment.
+Hold an agreement session: raters discuss disagreements and
+align on the guidelines. Low kappa usually means the rubric is
+ambiguous, not that the raters are careless. Fix the rubric.</p><div class="followup"><strong>Follow-up:</strong> What do you do when kappa is low?</div></div></div>
+<h2 id="rung-2-rule-based-metrics">Rung 2: rule-based metrics</h2>
+<p>Humans write reference outputs once. A metric compares model outputs
+to the reference forever. The metric should tolerate paraphrase: the
+same content in different words should still score well. Three
+classics:</p>
+<ul>
+<li><strong>BLEU</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=1516s">25:16</a>,
+  bilingual evaluation understudy): precision over n-gram matches,
+  with a brevity penalty so tiny outputs cannot game it.
+  Translation&rsquo;s workhorse.</li>
+<li><strong>ROUGE</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=1577s">26:17</a>):
+  recall-flavored overlap, many variants. Summarization&rsquo;s workhorse.</li>
+<li><strong>METEOR</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=1266s">21:06</a>): an
+  F-score over unigram matches times (1 - penalty), where the
+  penalty punishes word-order differences via the ratio of
+  contiguous matched chunks to matched unigrams. Handles synonyms
+  and stems. Carries arbitrary hyperparameters.</li>
+</ul>
+<p>Work BLEU on a toy. Reference: &ldquo;the teddy bear is cute and soft&rdquo;.
+Candidate: &ldquo;the bear is cute&rdquo;.</p>
+<pre class="ascii">unigram precision: &quot;the&quot;, &quot;bear&quot;, &quot;is&quot;, &quot;cute&quot; all in reference = 4/4 = 1.0
+bigram precision:  &quot;the bear&quot; (no), &quot;bear is&quot; (yes), &quot;is cute&quot; (yes) = 2/3 = 0.67
+brevity penalty:   candidate length 4 &lt; reference length 7
+                   BP = exp(1 - 7/4) = exp(-0.75) = 0.47
+BLEU-ish score:    0.47 * (1.0 * 0.67)^(1/2) = 0.47 * 0.82 = 0.39
+</pre>
+<p>The candidate dropped &ldquo;teddy&rdquo; and &ldquo;soft&rdquo; and the brevity penalty
+punishes it: 0.39 despite perfect unigram precision. Now the real
+problem: a candidate with identical meaning but different words
+(&ldquo;the stuffed animal is adorable and cuddly&rdquo;) scores near zero on
+n-gram overlap. All three metrics share the flaws: paraphrases score
+badly, correlation with human judgment is weak, and you still need
+human-written references to start. The teddy-bear comfort sentence
+in three different wordings defeats all of them.</p>
+<figure><img alt="Rule metrics" src="assets/l08-rule-metrics.svg"><figcaption>BLEU, ROUGE, METEOR. Compare to a reference. Punish paraphrase by accident. Stanford Frontier AI.</figcaption></figure>
+<h2 id="rung-3-llm-as-a-judge">Rung 3: LLM-as-a-judge</h2>
+<p>The lecture&rsquo;s key method
+(<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=1688s">28:08</a>): use an
+LLM to grade outputs. Inputs: the prompt, the model response, and the
+grading criteria. Outputs: a <strong>rationale</strong> and a <strong>score</strong>. Two
+design choices matter:</p>
+<ul>
+<li><strong>Rationale before score</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=1935s">32:15</a>).
+  Like chain-of-thought, externalizing the reasoning first
+  empirically improves the judgment.</li>
+<li><strong>Binary scale</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=1776s">29:36</a>).
+  Pass/fail beats fine-grained scales: easier for the judge, easier
+  for humans to agree on, less noise.</li>
+</ul>
+<p>No reference text is needed: the judge brings pretraining knowledge.
+Parsing is guaranteed with <strong>structured output</strong>
+(<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=2080s">34:40</a>):
+constrained decoding (Lecture 3) forces the rationale-plus-score
+shape. Two modes exist: single-response grading (good or bad?) and
+pairwise (A better or B?), the latter generating synthetic
+preference labels for reward-model training (Lecture 5&rsquo;s data, made
+by machines).</p>
+<figure><img alt="Judge" src="assets/l08-judge.svg"><figcaption>Prompt plus response plus criteria in. Rationale, then score, out. Stanford Frontier AI.</figcaption></figure>
+<p>Three biases to watch, none exhaustive. Each demonstrated:</p>
+<ul>
+<li><strong>Position bias</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=2328s">38:48</a>).
+  The judge prefers whichever answer came first. The toy: A and B
+  graded as (A, B) gives &ldquo;A wins&rdquo;. Graded as (B, A) gives &ldquo;B wins&rdquo;.
+  Same answers, opposite verdicts. Fix: ask both orders, take the
+  majority.</li>
+<li><strong>Verbosity bias</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=2431s">40:31</a>).
+  The judge prefers longer answers. The toy: a 40-word correct-ish
+  answer beats a 10-word correct answer, because length reads as
+  thoroughness. Fix: say so in the guidelines, show counter-examples,
+  or penalize length.</li>
+<li><strong>Self-enhancement bias</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=2549s">42:29</a>).
+  The judge prefers its own outputs: they look like what it would
+  produce, which it already believes is good. Fix: use a different
+  model as judge, ideally a bigger one with strong reasoning.</li>
+</ul>
+<p>Best practices: crisp guidelines, binary scale, rationale first,
+bias mitigations, low temperature (0.1-0.2) for reproducibility
+(<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=3084s">51:24</a>), and
+calibration against human ratings. The judge is a proxy for human
+judgment: do not overoptimize the proxy until it diverges from the
+truth.</p>
+<figure><img alt="Biases" src="assets/l08-biases.svg"><figcaption>Position, verbosity, self-enhancement. Each has a fix. Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">Why must the judge differ from the generator?</div><div class="a"><p>Self-enhancement bias: a model rates its own outputs higher
+because they look like what it would produce, which it already
+believes is good. A separate judge breaks the loop. Bigger and
+stronger-reasoning judges resist being fooled by fluent-but-wrong
+answers.
+Cost. The judge screens everything cheaply. Humans audit a
+sample and calibrate the judge. The pipeline is judge-at-scale
+plus human-at-the-margin, not either alone.</p><div class="followup"><strong>Follow-up:</strong> If the judge is imperfect, why not skip to human ratings?</div></div></div>
+<h2 id="factuality-fact-by-fact">Factuality, fact by fact</h2>
+<p>Factuality resists binary grading: a paragraph can be mostly right
+with two errors. The lecture&rsquo;s method: decompose, check, aggregate.</p>
+<ol>
+<li><strong>Extract.</strong> One LLM call turns the text into a list of atomic
+   facts
+   (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=3383s">56:23</a>).</li>
+<li><strong>Check each.</strong> Binary verdict per fact, using RAG or web search
+   against a knowledge base (Lecture 7&rsquo;s machinery, reused).</li>
+<li><strong>Aggregate.</strong> Weighted mean over facts. Weights alpha_i capture
+   importance.</li>
+</ol>
+<p>The example
+(<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=3263s">54:23</a>):
+&ldquo;Teddy bears, first created in the 1920s, were named after President
+Theodore Roosevelt after he proudly wanted to shoot a captured bear.&rdquo;
+Work it:</p>
+<pre class="ascii">fact 1: teddy bears were first created in the 1920s        -&gt; FALSE (it was the 1900s)
+fact 2: named after President Theodore Roosevelt           -&gt; TRUE
+fact 3: after an incident with a captured bear             -&gt; TRUE
+fact 4: he proudly wanted to shoot it                      -&gt; FALSE (he refused)
+
+weights: [0.2, 0.3, 0.2, 0.3]
+score = (0*0.2 + 1*0.3 + 1*0.2 + 0*0.3) / (0.2+0.3+0.2+0.3) = 0.5 / 1.0 = 0.5
+</pre>
+<p>The lecture&rsquo;s worked score on this passage is 0.6 with its own
+weighting. The mechanism is the same either way: nuance without
+hand-waving, two of four facts wrong, caught individually.</p>
+<figure><img alt="Factuality" src="assets/l08-factuality.svg"><figcaption>Extract facts, check each, weighted aggregate. The example scores 0.6. Stanford Frontier AI.</figcaption></figure>
+<h2 id="evaluating-agents">Evaluating agents</h2>
+<p>Agents fail at three stages, seven ways (Lecture 7&rsquo;s taxonomy,
+applied as an evaluation lens):</p>
+<p><strong>Prediction:</strong> the punt (needed a tool, did not call one,
+<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=3799s">63:19</a>), tool
+hallucination (called <code>find_bear</code> instead of <code>find_teddy_bear</code>,
+<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=3997s">66:37</a>), wrong
+tool, wrong arguments. <strong>Execution:</strong> buggy tool output, or no output
+at all: for actions, silence invites false confirmation, so return
+even an empty JSON
+(<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=4677s">77:57</a>) rather
+than nothing. <strong>Synthesis:</strong> the model fails to use a good tool
+result.</p>
+<p>The evaluation lesson: categorize failures methodically and fix them
+in groups. One-off debugging does not scale. Taxonomies do.</p>
+<figure><img alt="Failure taxonomy" src="assets/l08-agent-failures.svg"><figcaption>Seven ways agents fail. Categorize in groups, fix in groups. Stanford Frontier AI.</figcaption></figure>
+<h2 id="the-benchmark-families">The benchmark families</h2>
+<p>Five families cover what benchmarks actually test:</p>
+<ul>
+<li><strong>Knowledge: MMLU</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=5112s">85:12</a>,
+  Massive Multitask Language Understanding). ~60 tasks across law,
+  medicine, and everyday topics, four-choice questions. Measures how
+  well pretraining stuck. Answer extraction is hard-coded: output the
+  letter.</li>
+<li><strong>Reasoning: AIME and PIQA.</strong> AIME
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=5381s">89:41</a>):
+  hard high-school math with integer answers, LLM-friendly by
+  construction. PIQA
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=5466s">91:06</a>,
+  Physical Interaction QA): 20k two-choice common-sense questions
+  about the physical world (the hairnet vacuum example).</li>
+<li><strong>Coding: SWE-bench</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=5652s">94:12</a>).
+  Real GitHub issues from popular Python repos, with the tests from
+  the fixing PR. The model writes a patch. Tests before and after
+  decide. Test-driven development as a benchmark.</li>
+<li><strong>Safety: HarmBench</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=5887s">98:07</a>).
+  Standard, copyright, contextual, and multimodal harm categories. A
+  trained classifier judges attempts, and an attempt counts if the
+  model tries, even if it fails from low capability. Provider
+  policies differ, so safety numbers do not compare across labs the
+  way accuracy does.</li>
+<li><strong>Agents: tau-bench</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=6071s">101:11</a>,
+  tool-agent-user). Airline and retail domains with tools, policies,
+  and tasks. An LLM simulates the user. Success is measured on
+  database state. The metric is <strong>pass-hat@k</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=6226s">103:46</a>):
+  the probability that all k attempts succeed, because automation
+  needs reliability, not luck.</li>
+</ul>
+<figure><img alt="Benchmarks" src="assets/l08-benchmarks.svg"><figcaption>Knowledge, reasoning, coding, safety, agents. Five families, five designs. Stanford Frontier AI.</figcaption></figure>
+<p>Constrained formats dominate: multiple choice, integer answers, test
+suites. Free-form plus LLM-judge adds a second error layer, so
+benchmark designers avoid it where they can.</p>
+<div class="qa"><div class="q">Why do benchmarks use constrained formats instead of free-form</div><div class="a"><p>To remove the judge as an error source. An LLM judge is itself
+imperfect and biased, so free-form benchmarks stack two
+uncertainties: the model&rsquo;s and the judge&rsquo;s. Multiple choice,
+exact integers, and test suites give hard-coded extraction and
+deterministic scoring.
+Yes, deliberately. Benchmarks trade realism for comparability.
+That is why the lecture pairs them with Chatbot Arena (realistic,
+noisy) and personal testing (realistic, specific). One leg never
+stands.</p><div class="followup"><strong>Follow-up:</strong> Does that make benchmarks less realistic?</div></div></div>
+<h2 id="reading-results-like-an-adult">Reading results like an adult</h2>
+<p>Benchmarks profile a model. They do not crown one. Four cautions:</p>
+<ul>
+<li><strong>Pareto frontier</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=6456s">107:36</a>).
+  Plot performance against price (or safety, or context length). The
+  toy: model A scores 80 at $1 per million tokens. Model B scores 76
+  at $0.10 per million. B is 10x cheaper for 95% of the quality: B
+  sits on the frontier, A does not, for cost-sensitive use. The
+  frontier is the set of best-per-dollar models. The lecturer&rsquo;s
+  personal picks (Sonnet for code, Gemini Flash for cheap-and-fast)
+  are personal, not universal.</li>
+<li><strong>Contamination</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=6469s">107:49</a>).
+  Benchmarks leak into training data. Defenses: hashes, blocklists,
+  fresh tests the model cannot have seen.</li>
+<li><strong>Goodhart&rsquo;s law</strong>
+  (<a href="https://www.youtube.com/watch?v=8fNP4N46RRo&amp;t=6506s">108:26</a>).
+  &ldquo;When a measure becomes a target, it ceases to be a good measure.&rdquo;
+  Optimized benchmarks stop measuring.</li>
+<li><strong>Try it yourself.</strong> Chatbot Arena adds real-usage signal, but the
+  final test is your own tasks on your own data.</li>
+</ul>
+<figure><img alt="Pareto" src="assets/l08-pareto.svg"><figcaption>Pareto, contamination, Goodhart. Then try the models yourself. Stanford Frontier AI.</figcaption></figure>
+<h2 id="mapping-back-each-rung-answers-the-previous-rungs-flaw">Mapping back: each rung answers the previous rung&rsquo;s flaw</h2>
+<table>
+<thead>
+<tr>
+<th>Rung</th>
+<th>Fixes</th>
+<th>Introduces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Human ratings</td>
+<td>Ground truth, the ideal</td>
+<td>Subjectivity and cost. Agreement rate lies (0.85 can be 0.70 or 0.17 kappa)</td>
+</tr>
+<tr>
+<td>Rule metrics</td>
+<td>Cheap, deterministic</td>
+<td>Paraphrase blindness: the BLEU toy scores 0.39 on a good answer. Perfect paraphrases score near zero</td>
+</tr>
+<tr>
+<td>LLM-as-a-judge</td>
+<td>Scales, no references</td>
+<td>Position, verbosity, self-enhancement biases. Each demonstrated, each with a fix</td>
+</tr>
+<tr>
+<td>Factuality decomposition</td>
+<td>Binary grading is too blunt</td>
+<td>Extraction and checking are themselves LLM steps with error</td>
+</tr>
+<tr>
+<td>Benchmark families</td>
+<td>Comparability</td>
+<td>Constrained formats trade realism for determinism</td>
+</tr>
+<tr>
+<td>Adult reading</td>
+<td>Numbers that crown</td>
+<td>Pareto, contamination, Goodhart: profile, do not crown</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-honest-price">The honest price</h2>
+<p>Every rung is a proxy, and every proxy has a price. Humans are
+truthful and unaffordable. Rules are cheap and blind. Judges scale
+and are biased. Benchmarks compare and distort. The lecture&rsquo;s
+honest position: use all of them, trust none of them alone, and keep
+a human at the margin calibrating the judge. The moment you
+overoptimize any proxy, Goodhart collects.</p>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>The story in eight steps. Each step answers the one before it.</p>
+<ol>
+<li><strong>Evaluation means output quality.</strong> Free-form text resists
+   measurement. The lecture climbs a ladder of approximations.</li>
+<li><strong>Humans are ideal but unaffordable.</strong> Subjective and slow. The
+   agreement rate lies: observed 0.85 is kappa 0.70 at balanced
+   base rates and 0.17 at 90/10. Chance-correct with kappa, Fleiss,
+   Krippendorff. Fix the rubric when kappa drops.</li>
+<li><strong>Rule metrics compare to a reference.</strong> BLEU: precision plus
+   brevity penalty (the toy scores 0.39). ROUGE: recall-flavored.
+   METEOR: F-score with ordering penalty. All punish paraphrase and
+   correlate weakly with humans.</li>
+<li><strong>Let an LLM grade.</strong> Prompt plus response plus criteria in.
+   rationale then score out. Binary pass/fail. Structured output
+   guarantees the parse. Pairwise mode makes synthetic preference
+   labels.</li>
+<li><strong>Judges are biased. Correct them.</strong> Position: both orders, take
+   the majority. Verbosity: guidelines, counter-examples, length
+   penalty. Self-enhancement: a different, bigger judge. Low
+   temperature (0.1-0.2). Calibrate against humans.</li>
+<li><strong>Check factuality fact by fact.</strong> Extract atomic facts, verify
+   each binary with RAG or search, aggregate with importance
+   weights. Two of four facts wrong, caught individually.</li>
+<li><strong>Five benchmark families.</strong> MMLU for knowledge, AIME/PIQA for
+   reasoning, SWE-bench for coding, HarmBench for safety, tau-bench
+   for agents with pass-hat@k (all k must succeed).</li>
+<li><strong>Read numbers like an adult.</strong> Pareto: best per dollar. 10x
+   cheaper at 95% quality sits on the frontier. Contamination:
+   hashes, blocklists, fresh tests. Goodhart: optimized measures
+   stop measuring. Then try the models yourself.</li>
+</ol>
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 8 recording (YouTube): timestamped above.
+- Lecture 8 slides (PDF), CME295 Autumn 2025.
+- Zheng et al., &ldquo;LLM-as-a-Judge&rdquo; (2023):
+  https://arxiv.org/abs/2306.05685 — MT-Bench and Chatbot Arena.
+- Jimenez et al., &ldquo;SWE-bench&rdquo; (2023):
+  https://arxiv.org/abs/2310.06770 — issues plus tests.</p>
+<p><strong>Further reading:</strong>
+- Banerjee and Lavie, &ldquo;METEOR&rdquo; (2005).
+- Papineni et al., &ldquo;BLEU&rdquo;
+  (2002). Lin, &ldquo;ROUGE&rdquo; (2004).
+- Cohen (1960): kappa.
+- Fleiss (1971)
+- Krippendorff (2004).
+- Mazeika et al., &ldquo;HarmBench&rdquo; (2024).
+- Tau-bench authors (2024).
+- Min et al., &ldquo;FActScore&rdquo; (2023): atomic-fact factuality checking.</p>
+<p><strong>Caveats from these sources.</strong> Judge biases listed are not
+exhaustive. The lecture says so explicitly. HarmBench&rsquo;s classifier
+judge can itself err. Safety benchmarks encode provider policies, so
+cross-lab comparison is limited. tau-bench&rsquo;s simulated user is
+itself an LLM.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>CS336 L12:</strong> evaluation: perplexity, benchmarks, and
+  contamination at systems depth.</li>
+<li><strong>CS224N L11:</strong> evaluation from the NLP side.</li>
+<li><strong>CME295 L05:</strong> pairwise judging as synthetic preference data.</li>
+<li><strong>CME295 L06:</strong> reasoning benchmarks (AIME, HumanEval) as
+  verifiable rewards.</li>
+<li><strong>CME295 L07:</strong> agent failure modes meet their evaluation here.</li>
+</ul>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span>Lecture 8 slides (PDF), CME295 Autumn 2025</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2306.05685" target="_blank" rel="noopener">Zheng et al., Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena (2023)</a></li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2310.06770" target="_blank" rel="noopener">Jimenez et al., SWE-bench: Can Language Models Resolve Real-World GitHub Issues? (2023)</a></li></ul></section>
+      <nav class="pager"><a href="../cme295/l07-rag-tool-calling-agents.html"><span class="lbl">← Previous</span>Lecture 7: RAG, Tool Calling, and Agents</a><a href="../cme295/l09-course-recap-frontiers.html"><span class="lbl">Next →</span>Lecture 9: Course Recap and 2025 Frontiers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

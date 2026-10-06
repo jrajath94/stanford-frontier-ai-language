@@ -162,7 +162,7 @@ just re-elects the bias.
 > often deployed with sampling plus selection (best-of-N, majority
 > vote), so the k-try behavior is the operational quantity. A model
 > with pass@1 of 0.3 and pass@32 of 0.9 is very usable with the
-> right harness.
+> right sampling-and-selection code.
 
 ## Verifiable rewards: the checker is free
 
@@ -410,7 +410,8 @@ strategies.
 ![R1 pipeline](assets/l06-r1-pipeline.svg "R1-Zero proves RL works. R1 adds cold-start SFT, staged RL, rejection sampling, distillation. Stanford Frontier AI.")
 
 > [!QA]
-> Q: Design the RLVR dataset for a new reasoning model. What goes in?
+> Q: Design the RLVR (reinforcement learning from verifiable
+> rewards) dataset for a new reasoning model. What goes in?
 > A: Problems with verifiable answers, graded difficulty, and no
 > leakage. Verifiable: math with parseable answers (AIME-style),
 > code with hidden tests (not the public ones). Difficulty: a

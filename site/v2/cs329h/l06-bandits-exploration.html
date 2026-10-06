@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -317,6 +314,34 @@ achieve logarithmic regret. UCB needs no prior but needs the
 bonus tuned to the reward scale. Thompson needs a prior but no
 bonus knob. In practice, Thompson usually wins on real problems
 and UCB wins on whiteboards.</p>
+<h3 id="subchapter-the-regret-bound-worked">Subchapter: the regret bound, worked</h3>
+<p>&ldquo;Logarithmic regret&rdquo; is a bound with numbers inside. The
+standard UCB bound for one suboptimal arm with gap Delta says
+the expected number of pulls of that arm is at most
+(8 ln n) / Delta^2, plus a constant. Multiply by Delta to get
+regret: at most 8 ln n / Delta, plus (1 + pi^2/3) Delta.</p>
+<p>Work it. Two arms, true means 0.8 and 0.5, gap Delta = 0.3.</p>
+<pre class="ascii">n = 100:      regret &lt;= 8 x 4.61 / 0.3 + 1.29  = 124.1
+n = 10,000:   regret &lt;= 8 x 9.21 / 0.3 + 1.29  = 246.9
+n = 100,000:  regret &lt;= 8 x 11.51 / 0.3 + 1.29 = 308.3
+</pre>
+<p>Read the column. Multiplying the horizon by 100, from 100 to
+10,000 rounds, roughly doubles the bound: 124 to 247. Another
+factor of 10 adds only 61. That is what logarithmic means in
+practice. The algorithm&rsquo;s total mistakes grow with the log of
+time, so the per-round mistake rate falls toward zero.</p>
+<p>Two preconditions the bound needs. Rewards are bounded, the
+[0, 1] click case qualifies, and the arm means are stationary.
+Break stationarity and the bound is void: the proof counts how
+often a fixed suboptimal arm gets pulled, and a drifting best
+arm is a different problem. The constant 8 comes from the bonus
+coefficient sqrt(2 ln t / n): change the bonus, change the
+constant. The shape, ln n over the gap, survives.</p>
+<p>The interview reading: when someone says &ldquo;UCB has logarithmic
+regret,&rdquo; ask for the gap dependence. Small gaps are expensive:
+halve Delta from 0.3 to 0.15 and the bound doubles, because
+near-tied arms need many pulls to separate. The bound is
+honest about where the difficulty lives.</p>
 <h2 id="dueling-bandits-no-scores-only-winners">Dueling bandits: no scores, only winners</h2>
 <p>Sometimes absolute rewards are unavailable but pairwise
 comparisons are easy. Which robot gait looks more natural? Which
@@ -354,7 +379,7 @@ reliable, standard BO needs fewer queries: one number constrains
 the function more than one comparison bit.</p>
 <div class="qa"><div class="q">When is pairwise feedback better than scalar feedback for optimization?</div><div class="a"><p>When humans judge differences better than magnitudes. Rating a robot trajectory 7.3 out of 10 is unanchored: one evaluator&rsquo;s 7 is another&rsquo;s 9. Saying trajectory A looks more natural than B is stable across evaluators. Preferential BO wins when the rating scale is the problem. It loses when good scalars exist, because each scalar carries more information than one comparison bit.
 Flexibility about the reward shape. A linear model peaks at corners of the feasible region. A GP with an RBF kernel can express &ldquo;the moderate middle is best,&rdquo; which is the common human preference for tuned parameters like speed and angle. The cost is O(n^3) scaling without approximations.</p><div class="followup"><strong>Follow-up:</strong> What does the GP buy over a parametric model here?</div></div></div>
-<h2 id="the-strategic-human-cirl">The strategic human: CIRL</h2>
+<h2 id="the-strategic-human-cirl-cooperative-inverse-reinforcement-learning">The strategic human: CIRL (cooperative inverse reinforcement learning)</h2>
 <p>Every algorithm so far treats the human as a passive oracle: it
 answers queries but does not strategize. Real humans do. An
 annotator may pick the harder example deliberately to teach the
@@ -384,8 +409,8 @@ The bandit does not produce one, and that is fine. Report the posterior probabil
 It scales with the number of arms and the inverse squared gaps, like standard bandits, but counts duels instead of pulls. The textbook&rsquo;s treatment keeps the comparison structure: Bradley-Terry models the duel outcomes, the posterior over utilities drives selection, and the same heterogeneity warnings from Lecture 3 apply. A mixed judge population produces compromise winners, so check who is judging before trusting the crown.</p><div class="followup"><strong>Follow-up:</strong> What is the sample complexity of finding the Condorcet winner?</div></div></div>
 <h2 id="rl-in-one-paragraph">RL in one paragraph</h2>
 <p>Bandits are single-step. Full reinforcement learning adds
-states: early actions influence later states. The MDP tuple is
-states, actions, transitions, rewards, discount, and the initial
+states: early actions influence later states. The MDP (Markov
+decision process) tuple is states, actions, transitions, rewards, discount, and the initial
 distribution. The objective maximizes expected discounted return.
 Policy gradients climb it.</p>
 <p>This stays brief on purpose. The deep mechanics, PPO, KL
@@ -464,9 +489,19 @@ are maximizing.</p>
 <li><strong>The price is drift.</strong> Stationarity fails in the wild.
    Discount old data. Regret grows slowly but never stops.</li>
 </ol>
+<h2 id="go-deeper">Go deeper</h2>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/dPSEIrlJizc" title="Understanding Bayesian A/B Testing, Practical stats" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<ul>
+<li>Bayesian A/B Testing (Thompson sampling in production): https://www.youtube.com/watch?v=dPSEIrlJizc</li>
+<li>Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf</li>
+<li>Thompson (1933): the original sampling paper.</li>
+<li>Hadfield-Menell et al. (2016): cooperative inverse reinforcement learning.</li>
+</ul>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
-- Course textbook, chapters 6.x: bandits, Thompson sampling,
+- Course textbook, chapter 3.x: bandits, Thompson sampling,
   dueling bandits, preferential BO, CIRL, the GRPO connection.</p>
 <p><strong>Further reading:</strong>
 - Thompson (1933): the original sampling paper.

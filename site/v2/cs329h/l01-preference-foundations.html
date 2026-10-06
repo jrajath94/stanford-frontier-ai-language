@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -303,6 +300,40 @@ performance 8.3 out of 10. The win is the data.</p>
 <p>All five share one mathematical structure. Comparisons or choices
 from sets reveal underlying preferences. One framework covers them
 all. The rest of this chapter builds it.</p>
+<h3 id="subchapter-the-five-settings-in-production">Subchapter: the five settings in production</h3>
+<p>Each setting has a deployed system running the comparison
+machinery. Facts below are verified against public sources,
+current as of October 2026.</p>
+<p><strong>Recommenders: implicit feedback.</strong> Production recommenders
+train on implicit comparisons: a click on item A over item B is
+a revealed pairwise preference. The Bayesian Personalized
+Ranking paper (Rendle et al., 2009) made the pairwise log-loss
+on implicit feedback the standard objective. No star ratings
+needed.</p>
+<p><strong>Information retrieval: click models.</strong> Search engines fit
+click models that treat a click on the third result as evidence
+it beat the first two for that query. The absolute relevance is
+never observed. Only the choice is.</p>
+<p><strong>Robotics: trajectory comparisons.</strong> Christiano et al. (2017)
+trained robot policies from human comparisons of trajectory
+pairs: &ldquo;which clip looks better?&rdquo; The paper&rsquo;s arXiv page is
+linked in Go deeper. No reward function was written by hand.
+The comparisons were the reward.</p>
+<p><strong>LLM alignment: the pair datasets.</strong> Two public datasets
+anchor the field. The Stanford Human Preferences (SHP) dataset
+collects Reddit preference pairs. The Anthropic HH-RLHF dataset,
+built with reinforcement learning from human feedback (RLHF),
+collects helpfulness and harmlessness comparisons. Both are
+linked live in Go deeper. Every open preference-tuning run
+starts from pairs shaped like these.</p>
+<p><strong>Games: Elo and Bradley-Terry.</strong> Chess federations publish Elo
+ratings: each game is a pairwise comparison, and the update is
+the online Bradley-Terry rule from Lecture 4. LLM evaluation
+moved the same way. LMArena&rsquo;s public leaderboard post, dated
+December 2023, says the team adopted the Bradley-Terry model
+fitted by maximum likelihood on pairwise votes, replacing the
+raw online Elo update. The link is in Go deeper. Same atom,
+from chess clocks to chatbot arenas.</p>
 <div class="qa"><div class="q">What is preference learning?</div><div class="a"><p>Learning a model of what humans want from observed choices. The data are comparisons: A beat B, item j was chosen from a set, user i accepted item j. The model is usually a utility function: each item gets a number, and higher numbers win more often. Recommenders, search, robotics, LLM alignment, and Elo ratings all reduce to this shape.
 Absolute scores are poorly calibrated. One person&rsquo;s 7 is another&rsquo;s 9, as the two-annotator toy shows. Relative judgments (A beats B) are easier for humans and more consistent across people. The textbook cites Kahneman and Tversky (1979): humans evaluate differences better than magnitudes.</p><div class="followup"><strong>Follow-up:</strong> Why not just ask people for scores?</div></div></div>
 <h2 id="the-key-question">The key question</h2>
@@ -417,7 +448,7 @@ that. They only tell you the order.</p>
 <p>Return to the opening problem with the new machinery. Post-training
 an LLM by human preference runs in three steps (Christiano et al.,
 2017. Ouyang et al., 2022).</p>
-<figure><img alt="The preference learning pipeline" src="assets/l01-pipeline.svg"><figcaption>Three stages. Collect preference pairs, train a reward model, optimize the policy. DPO skips the middle stage. Source: original figure for Stanford Frontier AI.</figcaption></figure>
+<figure><img alt="The preference learning pipeline" src="assets/l01-pipeline.svg"><figcaption>Three stages. Collect preference pairs, train a reward model, optimize the policy. Direct preference optimization (DPO) skips the middle stage. Source: original figure for Stanford Frontier AI.</figcaption></figure>
 <ol>
 <li><strong>Collect preference data.</strong> Sample two responses to a prompt.
    Ask a human which is better. This produces preference pairs.</li>
@@ -511,6 +542,21 @@ acting on what you learn (Lecture 6), and aggregating many voices
    The U_i terms subtract away. Pairs reveal order, free of
    personal baselines. The price: no levels, no personalization.</li>
 </ol>
+<h2 id="go-deeper">Go deeper</h2>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/ApF2OenMgfc" title="Stanford CS329H Autumn 2024: Introduction, Sanmi Koyejo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/inXUp5j107I" title="The Elo Rating System: Bradley-Terry derivation, j3m" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<ul>
+<li>Course lecture: https://www.youtube.com/watch?v=ApF2OenMgfc</li>
+<li>The Elo Rating System (Bradley-Terry derivation): https://www.youtube.com/watch?v=inXUp5j107I</li>
+<li>Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf</li>
+<li>Christiano et al., Deep RL from Human Preferences (2017): https://arxiv.org/abs/1706.03741</li>
+<li>Ouyang et al., InstructGPT (2022): https://arxiv.org/abs/2203.02155</li>
+<li>Rafailov et al., DPO (2023): https://arxiv.org/abs/2305.18290</li>
+</ul>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
 - Course textbook, chapters 1.1-1.6 (Truong, Haupt, Koyejo): the
@@ -525,7 +571,7 @@ acting on what you learn (Lecture 6), and aggregating many voices
 - Ouyang et al., Training Language Models to Follow Instructions
   with Human Feedback (2022): https://arxiv.org/abs/2203.02155,
   RLHF at LLM scale.
-- Rafailov et al., Direct Preference Optimization (2023): [paper](https://arxiv.org/abs/2305.18290, skipping the reward model.</p>
+- Rafailov et al., Direct Preference Optimization (2023): <a href="https://arxiv.org/abs/2305.18290">paper</a>, skipping the reward model.</p>
 <p><strong>Caveats from these sources.</strong> The textbook&rsquo;s lecture plan maps
 chapters 1.1-1.6 to Lecture 1, but the actual lecture content is
 unverified. The Kahneman and Tversky (1979) citation is the

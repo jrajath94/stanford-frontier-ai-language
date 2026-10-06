@@ -43,6 +43,40 @@ Architecturally, the field converged: over 90% of large models are
 next token), no encoder-decoder plumbing. The decoder-only pattern
 won because it is simple and it scales.
 
+### Subchapter: why decoder-only won
+
+Three reasons, in order of importance. First, **one objective
+scales**: next-token prediction needs no labeled pairs, so every
+byte of text is training data. Encoder-decoder needs structured
+pairs. Second, **one stack is simpler to scale**: no cross-attention
+plumbing, no encoder/decoder balance to tune, pipeline parallelism
+maps cleanly onto a single stack. Third, **generation subsumes the
+rest**: classification and QA become "generate the answer", so one
+model serves all tasks. The cost: bidirectionality. Decoder-only
+models read left to right, so they make worse embeddings than
+bidirectional encoders. The market decided generation matters more.
+
+### Subchapter: what is used where: the October 2026 lineup
+
+| Model | Shape | Attention / sparsity | Position | Context |
+|---|---|---|---|---|
+| GPT-6 Astra (OpenAI) | decoder-only | closed details | unknown | unknown (not public) |
+| Gemini 3.8 Flash (Google) | decoder-only | closed details | unknown | 1M (reported) |
+| DeepSeek V4.1 Flash | decoder-only MoE, 552B, 8B/16B active | MLA-class latent cache (890 B/token) | RoPE-class | 1M |
+| Llama 4 Maverick (Meta) | decoder-only MoE, 17B active, 128 experts | GQA-class | RoPE-class | 1M |
+| Claude Sonnet 5.5 (Anthropic) | decoder-only | closed details | unknown | unknown (not public) |
+| Kimi K3 (Moonshot) | decoder-only MoE | closed details | unknown | unknown |
+
+Two honest notes. Closed labs publish almost no architecture
+details: GPT-6, Gemini 3, and Claude entries above are "decoder-only
+by behavior", not by disclosed design. And the open-weight rows
+(DeepSeek V4.1, Llama 4) are where the verifiable mechanism
+knowledge lives: MoE routing, GQA, RoPE, latent caches. When this
+course says "what is used where", the evidence comes from the open
+models.
+
+![The October 2026 lineup](assets/l03-lineup.svg "Decoder-only everywhere. Open weights carry the verifiable mechanisms. Shell 3. Source: public model cards. Project: Stanford Frontier AI.")
+
 ![LLM definition](assets/l03-llm-def.svg "Next-token probabilities at scale: parameters, tokens, decoder-only. Stanford Frontier AI.")
 
 ## The problem: every token runs the full model
@@ -104,6 +138,41 @@ Three details matter:
   The recommended read: top-1 routing pushed to about 1.6 trillion
   parameters. It proved sparse models scale.
 
+### Subchapter: the gating math, written out
+
+The gating network is a linear layer plus softmax over experts:
+g = softmax(W_g x). On the toy: W_g x gives logits [2.0, 1.0, 0.0,
+-1.0]. Softmax: exp = [7.39, 2.72, 1.0, 0.37], total 11.48. g =
+[0.64, 0.24, 0.09, 0.03]. Top-2 keeps experts 1 and 2. Renormalize
+over the chosen: 0.64/(0.64+0.24) = 0.73, 0.24/0.88 = 0.27. Output
+= 0.73 * E1(x) + 0.27 * E2(x). Experts 3 and 4 never run. The
+renormalization matters: without it, the dropped experts' weight
+would leak out of the sum and the scale would drift.
+
+### Subchapter: expert parallelism and the all-to-all
+
+Tokens scatter across GPUs by expert assignment. GPU 0 holds
+experts 1-2, GPU 1 holds experts 3-4. A token routed to expert 3
+must travel to GPU 1, get processed, and return. That exchange is
+an **all-to-all** communication: every GPU sends tokens to every
+other GPU. At 256 experts across 64 GPUs, the all-to-all is the
+dominant cost of the MoE layer, often bigger than the expert
+compute itself. Two consequences: experts are sized to fill GPUs
+evenly, and capacity limits (max tokens per expert per batch)
+prevent one expert from drowning its GPU. Overflow tokens skip the
+expert: a correctness tradeoff for throughput.
+
+### Subchapter: MoE in production, October 2026
+
+Sparse MoE is the default for open frontier models. DeepSeek V4.1
+Flash: 552B total, 8B active on input, 16B on output. Llama 4
+Maverick: 17B active over 128 experts. Kimi K3: MoE (details not
+public). The pattern: total parameters measure capacity, active
+parameters measure cost. The interview line: "MoE decouples the
+two." Dense models are the exception now, kept where latency
+predictability beats capacity (small fast models) or where the lab
+never published the design (the closed labs).
+
 ![MoE](assets/l03-moe.svg "Token-level routing to top-2 experts per layer. Experts are FFNs. Stanford Frontier AI.")
 
 > [!QA]
@@ -152,6 +221,36 @@ vocabulary:  "lit" 0.50,  "read" 0.30,  "slept" 0.12,  "ate" 0.08
   It adapts automatically: sharp distributions give small sets, flat
   distributions give large ones.
 
+### Subchapter: beam search, worked by hand
+
+Beam width B = 2 on the toy. Step 1: candidates "lit" (log prob
+log 0.5 = -0.69) and "read" (log 0.3 = -1.20). Keep both. Step 2:
+extend "lit" with its top two next tokens, say "well" (log -0.5)
+and "again" (log -1.0). Extend "read" with "books" (log -0.4) and
+"more" (log -0.9). Four hypotheses, scores: lit+well = -1.19,
+lit+again = -1.69, read+books = -1.60, read+more = -2.10. Keep the
+two best: "lit well" (-1.19) and "read books" (-1.60). Extend
+again. Length normalization divides each score by (length^alpha),
+alpha ~ 0.6-1.0: without it, the 2-token hypotheses always beat
+3-token ones because every log prob is negative.
+
+![Beam search, worked](assets/l03-beam.svg "B = 2: extend, score by summed log-probs, keep the best two, repeat. Shell 2. Source: original toy. Project: Stanford Frontier AI.")
+
+### Subchapter: top-K vs top-P on the same distribution
+
+On the toy (lit 0.50, read 0.30, slept 0.12, ate 0.08): top-K with
+K = 2 fixes the set at {lit, read} regardless of shape. Top-P with
+P = 0.9 gives {lit, read, slept}: it adapts. Now sharpen the
+distribution (lit 0.95, rest 0.05): top-K still gives 2 tokens,
+top-P gives {lit} alone. Top-P is the better default because it
+follows the distribution's entropy. Top-K survives as a guardrail:
+it caps the set when the distribution goes flat and top-P would
+admit hundreds of junk tokens. Production default: top-P ~ 0.9-0.95
+with a top-K cap of a few hundred. The decision rule: sample with
+top-P when you want quality, top-K cap when you fear the tail.
+
+![Top-P adapts](assets/l03-topp.svg "Sharp distribution: top-P picks one token. Flat distribution: it picks many. Top-K cannot adapt. Shell 3. Source: original toy. Project: Stanford Frontier AI.")
+
 ![Decoding](assets/l03-decoding.svg "Greedy, beam search, sampling, top-K, top-P. Stanford Frontier AI.")
 
 ## Temperature reshapes the distribution
@@ -179,7 +278,45 @@ sample. Second, T = 0 is deterministic in theory but not always in
 practice: GPU floating-point nondeterminism can still change outputs
 between runs.
 
+### Subchapter: the softmax with temperature, derived
+
+Start from logits z = [3, 2, 1]. The softmax with temperature T is
+p_i = exp(z_i / T) / sum(exp(z_j / T)). At T = 1: the trained
+distribution [0.67, 0.24, 0.09]. Divide by T = 0.5 first: z/T =
+[6, 4, 2], exp = [403, 55, 7], p = [0.87, 0.12, 0.02]. The gaps
+widened: exp amplifies differences. Divide by T = 2: z/T = [1.5, 1,
+0.5], exp = [4.5, 2.7, 1.6], p = [0.51, 0.31, 0.19]. The gaps
+shrank. Temperature is a gap amplifier (T < 1) or gap flattener
+(T > 1). It never changes the ranking: argmax is temperature-proof.
+
+### Subchapter: why T = 0 is not deterministic on GPUs
+
+T = 0 means argmax: pick the highest logit. Deterministic on paper.
+On GPUs, floating-point addition is not associative: (a + b) + c
+differs from a + (b + c) in the last bits. Parallel reductions sum
+logits in orders that vary with thread scheduling. Two runs can
+produce logits that differ by 1e-7. If the top two logits are within
+1e-7 of each other, the argmax flips. Rare, but real: close calls
+flip, ties flip. For reproducible evals, fix the seed, fix the
+hardware, and accept that "deterministic" has an asterisk.
+
 ![Temperature](assets/l03-temperature.svg "T to 0: spiky. T = 1: trained. T to infinity: uniform. Stanford Frontier AI.")
+
+> [!QA]
+> Q: Top-P or top-K for a production chatbot?
+> A: Top-P at 0.9-0.95, with a top-K cap of a few hundred. Top-P
+> adapts to the distribution's entropy: sharp distributions get
+> small sets, flat ones get large ones. Top-K alone is blind to
+> shape: K = 50 on a sharp distribution admits 49 junk tokens.
+> The cap handles the reverse failure: on a flat distribution
+> top-P would admit hundreds of tokens, so the cap bounds the
+> worst case. Greedy for facts, sampling for variety, always with
+> the cap.
+> Follow-up: What breaks if you set top-P = 1.0?
+> A: Nothing mechanically: the set is the whole vocabulary, so it
+> is plain sampling. The failure is quality: the tail contains
+> thousands of near-zero-probability tokens that occasionally get
+> drawn. One weird token can derail a whole response.
 
 > [!QA]
 > Q: When would you use greedy decoding over sampling?
@@ -210,6 +347,38 @@ three, renormalize: "{" gets 1.0. The output always parses because
 invalid tokens had zero probability.
 
 ![Guided decoding](assets/l03-guided-decoding.svg "Mask invalid tokens at each step. The output always parses. Stanford Frontier AI.")
+
+### Subchapter: the grammar as a finite state machine
+
+Model the JSON schema as states and transitions. States: expect-key,
+expect-colon, expect-value, expect-comma-or-close. At each state,
+only some tokens are legal: in expect-key, only `"` starts a key.
+The mask zeroes everything else before sampling. The FSM advances
+on each emitted token. Two failure modes. First, the model can
+paint itself into a corner: legal tokens at step t can still lead
+to a state with no legal continuation at step t+5. Good
+implementations backtrack or constrain lookahead. Second, the
+grammar cannot fix semantics: `{"temp": 9999}` parses and is
+nonsense. Guided decoding guarantees syntax, never sense.
+
+> [!QA]
+> Q: Walk me through speculative decoding, start to finish.
+> A: A 70B target and a 4B draft. The draft generates k = 3 tokens
+> fast: "the bear is". The target runs one forward pass over the
+> prefix plus the 3 drafts, computing its own probabilities at each
+> position. Accept tokens left to right while the target agrees:
+> it accepts "the" and "bear", rejects "is". Keep the accepted
+> prefix, resample the rejected position from the target's
+> distribution, continue. Cost: 2 memory moves (draft + verify)
+> produced 3 tokens instead of 3 moves. The output distribution is
+> exactly the target's: the acceptance rule corrects for the
+> draft's bias. Speedup follows the acceptance rate.
+> Follow-up: When does it stop helping?
+> A: Two cases. The draft disagrees too often (acceptance rate
+> collapses, verification is wasted). Or batches are large: with
+> many requests the GPU is compute-bound, not memory-bound, and
+> the extra draft compute costs more than the saved memory moves.
+> Speculative decoding is a latency trick for small batches.
 
 ## The problem: steer the model without retraining
 
@@ -249,6 +418,52 @@ named in the transcript]. And repeated prompt prefixes can be cached:
 cutting cost and latency for repeated scaffolding.
 
 ![Prompting](assets/l03-prompting.svg "Anatomy plus the four techniques. CoT spends tokens as compute. Stanford Frontier AI.")
+
+### Subchapter: chain-of-thought token economics
+
+CoT trades tokens for accuracy. The toy: a math problem answered
+directly costs 50 output tokens. With CoT it costs 50 reasoning
+tokens plus 50 answer tokens: 2x the tokens, billed at output
+rates. The lecture's claim: more tokens means more compute spent on
+the problem, and intermediate steps catch errors. The economics:
+CoT is worth it when the accuracy gain beats the 2-10x token
+multiplier. For easy questions it is pure waste: the model writes
+a chain it did not need. Production systems route: easy questions
+skip CoT, hard ones use it (Lecture 6's dynamic budgets). The
+interview line: "CoT converts a hard one-shot problem into easy
+multi-shot problems, priced per token."
+
+### Subchapter: self-consistency majority math
+
+Sample N = 5 reasoning paths: answers [A, B, A, A, C]. Majority:
+A with 3 of 5. Why it works: each path's error is roughly
+independent, so the modal answer concentrates on the careful
+reasoning while noise spreads across options. The math is the
+Condorcet intuition: if each path is right with probability 0.6
+independently, the majority of 5 is right with probability ~0.68.
+It fails when errors correlate: if all 5 paths share the same
+misreading of the question, the majority is confidently wrong.
+Cost: 5x the tokens of one path. Use it where answers are
+checkable or stakes are high.
+
+> [!QA]
+> Q: How many experts should an MoE layer have?
+> A: From two constraints. Memory: experts must fit the GPUs you
+> own (DeepSeek V4.1: 552B total across its fleet. Llama 4
+> Maverick: 128 experts). Communication: the all-to-all cost grows
+> with expert count, so more experts means more network traffic
+> per layer. Quality: more experts mean more capacity at fixed
+> active cost. The observed frontier: 16 experts (Llama 4 Scout)
+> to 256 (DeepSeek V3). The decision rule: experts = (GPU memory
+> for the layer) / (memory per expert), then check the all-to-all
+> does not dominate. Top-1 vs top-2 routing then sets the active
+> cost.
+> Follow-up: Why do fine-grained experts (many small) beat few
+> large ones?
+> A: Specialization. 256 small experts can each own a narrow skill.
+> 8 large experts must each cover broad territory. The routing
+> gets more precise with more, smaller targets. The cost is the
+> all-to-all: finer experts mean more cross-GPU traffic.
 
 ## The problem: serving is where the bills land
 
@@ -290,6 +505,54 @@ into small latent vectors instead of storing full heads. Less memory
 per token, same information.
 
 ![KV cache and paging](assets/l03-kv-paged.svg "Cache the KVs. Page them. Or compress them with MLA. Stanford Frontier AI.")
+
+### Subchapter: the memory-bound proof
+
+Arithmetic intensity decides: FLOPs per byte moved. A 70B decode
+step does ~140 GFLOP (2 FLOPs per parameter per token) and moves
+140 GB of weights. Intensity: 1 FLOP per byte. An H100 does ~989
+TFLOPS (fp16 dense) at ~3.35 TB/s memory bandwidth. To be
+compute-bound, the step would need intensity above ~300 FLOPs per
+byte. It has 1. The GPU is 300x underfed: it finishes the math
+instantly and waits on memory. This is why batching helps (one
+weight move serves B tokens: intensity x B) and why every trick in
+this section either moves fewer bytes (quantization, MLA, GQA) or
+amortizes one move over more tokens (speculation, MTP, batching).
+
+![The memory-bound proof](assets/l03-amortize.svg "1 FLOP per byte vs 300 needed. Batching, speculation, and compression attack the gap. Shell 3. Source: original arithmetic. Project: Stanford Frontier AI.")
+
+### Subchapter: paged attention block math
+
+The toy: a request reserves 256 contiguous slots but uses 137. 119
+slots (46%) sit idle inside the reservation. Across 1,000 requests
+the waste is 119K slots of KV memory doing nothing. Paging splits
+the cache into fixed blocks of 16 tokens: the request holds 9
+blocks (144 slots) for 137 tokens, wasting 7 slots (5%). The block
+table maps logical positions to physical blocks, like OS virtual
+memory. Fragmentation falls from ~46% to ~5%. Throughput rises
+because the same GPU memory now holds ~40% more concurrent
+requests. The cost: one indirection per access. The paper's
+setting uses block size 16. Larger blocks waste more per request.
+Smaller blocks add table overhead.
+
+![Speculative decoding](assets/l03-speculative.svg "Draft fast, verify in one pass, keep the accepted prefix. Stanford Frontier AI.")
+
+> [!QA]
+> Q: When does prompt caching hurt?
+> A: When the prefix is almost but not quite shared. The cache
+> keys on exact prefix match: change one system-prompt word and
+> the whole cache misses, but you paid the complexity of routing
+> for the cache. Worse, teams freeze prompts to preserve hit
+> rates and stop improving them: the cache becomes a tax on
+> iteration. The decision rule: cache prefixes that are truly
+> static (system prompts, tool definitions, few-shot blocks) and
+> keep the dynamic parts (user input, retrieved chunks) at the
+> end where they do not break the prefix.
+> Follow-up: How much does it actually save?
+> A: Providers price cached input tokens around 1/10 of uncached.
+> A 10K-token system prompt cached across 1,000 requests: 10M
+> tokens at 1/10 price. The savings are real exactly when the
+> prefix is long and the request count is high.
 
 **Speculative decoding**
 ([101:37](https://www.youtube.com/watch?v=Q5baLehv5So&t=6097s)). A
@@ -381,15 +644,31 @@ The story in eight steps. Each step answers the one before it.
    verify in one pass, keep the accepted prefix. Multi-token
    prediction learns it into the model.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/Q5baLehv5So" title="CME295 Lecture 3, Autumn 2025" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/YFwsSaWerDY" title="Speculative Decoding: How a Dumb Model Makes LLMs 3x Faster" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+- Lecture 3 recording: https://www.youtube.com/watch?v=Q5baLehv5So
+- Speculative decoding, draft to verify (Devsplainers): https://www.youtube.com/watch?v=YFwsSaWerDY
+- Fedus et al., Switch Transformers: https://arxiv.org/abs/2101.03961
+- Kwon et al., PagedAttention: https://arxiv.org/abs/2309.06180
+- Leviathan et al., speculative decoding: https://arxiv.org/abs/2211.17192
+
 ## Official sources and further reading
 
 **Official:**
 - Lecture 3 recording (YouTube): timestamped above.
 - Lecture 3 slides (PDF), CME295 Autumn 2025.
 - Fedus et al., "Switch Transformers" (2021):
-  https://arxiv.org/abs/2101.03961 — top-1 MoE at 1.6T parameters.
+  - [top-1 MoE at 1.6T parameters.](https://arxiv.org/abs/2101.03961)
 - Kwon et al., "PagedAttention" (2023):
-  https://arxiv.org/abs/2309.06180 — paged KV cache management.
+  - [paged KV cache management.](https://arxiv.org/abs/2309.06180)
 
 **Further reading:**
 - Holtzman et al., "The Curious Case of Neural Text Degeneration"

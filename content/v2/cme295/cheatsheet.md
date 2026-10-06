@@ -236,7 +236,7 @@ top k.
 scores B 0.80 over A 0.475. HyDE: embed a fake answer doc. Prompt
 caching: ~1/10 price on repeated prefixes.
 
-**Metrics.** NDCG on the toy: 4.262/5.0 = 0.852. Reciprocal rank,
+**Metrics.** NDCG on the toy: 4.0/4.262 = 0.939. Reciprocal rank,
 precision@k, recall@k. MTEB is the benchmark.
 
 **Tool calling.** API + docs in. Arguments out. Execute. Respond.

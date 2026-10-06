@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -233,7 +230,7 @@
 <p>Lecture 7&rsquo;s attention fixed the bottleneck but kept the decoder&rsquo;s for loop.
 The key question: what if attention was the <em>whole</em> architecture, with no
 recurrence at all?</p>
-<p><strong>On this page:</strong> <a href="#subchapter-mha-mqa-gqa-the-kv-sharing-family">MHA, MQA, GQA</a> · <a href="#subchapter-rope-rotation-as-position">RoPE</a> · <a href="#subchapter-flashattention-the-exact-speedup">FlashAttention</a> · <a href="#what-is-used-where-transformers-in-production-october-2026">Transformers in production, Oct 2026</a> · <a href="#watch-and-go-deeper">Watch and go deeper</a></p>
+<p><strong>On this page:</strong> <a href="#subchapter-mha-mqa-gqa-the-kv-sharing-family">MHA, MQA, GQA</a> · <a href="#subchapter-rope-rotation-as-position">RoPE</a> · <a href="#subchapter-flashattention-the-exact-speedup">FlashAttention</a> · <a href="#subchapter-sliding-window-attention-pay-for-w-not-n">Sliding-window attention</a> · <a href="#what-is-used-where-transformers-in-production-october-2026">Transformers in production, Oct 2026</a> · <a href="#watch-and-go-deeper">Watch and go deeper</a></p>
 <h2 id="self-attention-every-word-queries-every-word">Self-attention: every word queries every word</h2>
 <p>Think of attention as a <strong>fuzzy key-value lookup</strong> (<a href="https://www.youtube.com/watch?v=LWMzyfvuehA&amp;t=723s" target="_blank" rel="noopener">12:03 <span class="ts">⏱12:03</span></a>). The
 <strong>query</strong> says what you need. The <strong>keys</strong> say what each position offers.
@@ -379,6 +376,25 @@ through SRAM and recomputes instead of storing. Same outputs, bit for bit.
 tuned the tiling further. The lesson: the algorithm was fine, the memory
 traffic was the bottleneck. Modern training stacks all run some variant
 of this.</p>
+<h3 id="subchapter-sliding-window-attention-pay-for-w-not-n">Subchapter: sliding-window attention, pay for w not n</h3>
+<p>FlashAttention speeds up the n-by-n matrix. <strong>Sliding-window attention</strong>
+(Mistral 7B, 2023) shrinks it: each token attends only to the previous w
+tokens, not to all n. The score matrix becomes a band of width w around
+the diagonal. Cost per layer drops from n^2 to n x w.</p>
+<p>Watch it at n = 50,000, w = 4,096:</p>
+<pre class="ascii">full attention:      50,000^2        = 2.50B scores per layer per head
+sliding window:      50,000 x 4,096 = 204.8M scores per layer per head
+ratio: 12.2x cheaper
+</pre>
+<p>The KV cache shrinks too: each layer keeps only the last w keys and
+values, not the full history. The bet is locality: for most text, the
+information a token needs sits within a few thousand positions. Stacked
+layers recover longer range for free: layer 2&rsquo;s window reaches w tokens
+back, each of which already mixed its own w-token window, so the
+effective receptive field grows with depth. Mistral pairs the window with
+GQA: fewer KV heads, and each head looks at a band instead of the full
+matrix. Two orthogonal cuts to the same n-by-n bill.</p>
+<figure><img alt="Sliding-window attention" src="assets/plate-l08-sliding-window.webp"><figcaption>Sliding-window attention: each token attends to the previous w = 4096 tokens. At n = 50,000, scores drop from 2.5B to 204.8M per layer per head: 12.2x cheaper. Shell 3. Source: original diagram for sliding-window attention. Project: Stanford Frontier AI.</figcaption></figure>
 <h2 id="the-block-residuals-normalization-repeat">The block: residuals, normalization, repeat</h2>
 <p>Attention alone is not a network. The transformer block wraps it:</p>
 <p><strong>Residual connections</strong> add the input back: output = x + Attention(x).
@@ -445,21 +461,21 @@ this chapter&rsquo;s questions: who sees whom, where is position, who pays.</p>
 </tr>
 <tr>
 <td>Llama 4 Maverick/Scout (Apr 2025)</td>
-<td>[uncertain]</td>
-<td>[uncertain]</td>
-<td>Meta announced MoE and open weights. Attention internals not public</td>
+<td>MoE (mixture of experts), GQA-family KV sharing, iRoPE</td>
+<td>Public: Meta announcement and model cards. Scout: 17B active/109B total, 10M context. Maverick: 17B active/400B total, 1M context. iRoPE: interleaved local/global attention layers with RoPE on local layers only, for long-context efficiency</td>
+<td></td>
 </tr>
 <tr>
 <td>DeepSeek-V3 (Dec 2024)</td>
-<td>MLA</td>
+<td>MLA (multi-head latent attention)</td>
 <td>decoupled RoPE</td>
 <td>Public paper. Latent KV cache: 512-dim per token</td>
 </tr>
 <tr>
 <td>DeepSeek-V4 (Apr 2026)</td>
-<td>MLA + sparse attention</td>
-<td>[uncertain]</td>
-<td>MIT license, MoE, 1M context. R2 never shipped</td>
+<td>CSA/HCA hybrid attention</td>
+<td>[uncertain] on positions</td>
+<td>Public: DeepSeek release notes. V4-Pro: 1.6T total/49B active MoE, V4-Flash: 284B/13B active, both 1M context, MIT license. Compressed sparse attention plus heavily compressed attention: V4-Pro inference FLOPs at 1M context are 27% of V3.2&rsquo;s, KV cache 10%</td>
 </tr>
 <tr>
 <td>GPT-5.x (2025-26)</td>
@@ -569,9 +585,16 @@ Order and efficiency. Self-attention is a set operation, so position must be inj
 <h2 id="watch-and-go-deeper">Watch and go deeper</h2>
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/LWMzyfvuehA" title="CS224N Spring 2024 Lecture 8: Transformers" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 8: Transformers</strong> (Anna Goldie, Spring 2024). The guest lecture: from recurrence to attention-based models, the full transformer. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=LWMzyfvuehA</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/kCc8FmEb1nY" title="Let's build GPT: from scratch, in code, spelled out" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>Build GPT from scratch</strong> (Karpathy). The transformer block in code: attention, heads, residuals, LayerNorm.</p>
+</div>
 </div>
 
 <h3 id="go-deeper">Go deeper</h3>

@@ -200,6 +200,189 @@ intractable. The ADPO algorithm approximates the policy locally
 and selects pairs by approximate information gain. The principle
 is unchanged. The computation is approximate.
 
+### Subchapter: the GP acquisition, worked with numbers
+
+The formula has two terms. Work them on three candidate queries
+so the rule becomes mechanical. All entropies use the natural
+log. The posterior over the reward gap g = r_A - r_B is Gaussian
+in each case, and the expected conditional entropy is computed
+by Monte Carlo over that Gaussian.
+
+**Query 1.** The model says p(A beats B) = 0.6. The gap
+posterior is Normal(0.4, 0.5^2): the human is fairly reliable.
+
+```ascii
+predictive entropy:  H = -0.6 ln 0.6 - 0.4 ln 0.4 = 0.673
+expected conditional: E_r[H(sigma(g))]            = 0.648
+acquisition: a(Q) = 0.673 - 0.648                 = 0.025
+```
+
+**Query 2.** The model says p = 0.5, maximally uncertain. The
+gap posterior is Normal(0, 1.5^2): the human is noisier, but
+still informative.
+
+```ascii
+predictive entropy:  H = 0.693 (the binary maximum)
+expected conditional:                             = 0.528
+acquisition: a(Q) = 0.693 - 0.528                 = 0.165
+```
+
+**Query 3.** The model says p = 0.95, nearly certain. The gap
+posterior is Normal(3.0, 0.3^2): the human is reliable.
+
+```ascii
+predictive entropy:  H = 0.199
+expected conditional:                             = 0.194
+acquisition: a(Q) = 0.199 - 0.194                 = 0.004
+```
+
+Query 2 wins at 0.165. Read why. Query 3 is wasted: the model
+already knows the answer, so even a perfectly reliable human
+adds 0.004. Query 1 is middling: the model is somewhat
+uncertain, but the human's answer was largely predictable given
+the gap posterior, so little is gained. Query 2 is where the
+model is maximally uncertain and the human still carries
+signal. The two terms pull in opposite directions and the
+difference picks the winner. That is the whole rule: uncertain
+model, answerable question.
+
+## The metric is the unknown
+
+Every section so far assumed the target is fixed. Fisher
+information, the 50/50 rule, D-optimality: all of them pick
+which questions to ask. None of them asks which metric the
+model should optimize. Yet every quoted metric encodes a
+tradeoff. Accuracy at prevalence pi is the linear metric with
+weights (pi, 1 - pi). The team that tunes to a quoted metric
+has guessed the tradeoff, usually without noticing.
+
+Make it concrete. An emergency department builds a sepsis
+classifier. A missed case can kill. A false alarm costs a nurse
+twenty minutes. Two candidate models finish tuning.
+
+```ascii
+C1:  TP = 0.98, TN = 0.30   (catches almost everything, alarms constantly)
+C2:  TP = 0.85, TN = 0.75   (balanced)
+```
+
+The team quotes a weighted metric with weights (0.9, 0.1). It
+is a guess, written down. C1 scores 0.9 x 0.98 + 0.1 x 0.30 =
+0.912. C2 scores 0.9 x 0.85 + 0.1 x 0.75 = 0.840. C1 ships.
+
+The doctors' true tradeoff is (0.8, 0.6): sensitivity matters
+more, but false alarms still cost. C1 scores 0.8 x 0.98 + 0.6 x
+0.30 = 0.964. C2 scores 0.8 x 0.85 + 0.6 x 0.75 = 1.130. The
+doctors would rather deploy C2. The quoted metric picked the
+wrong model. The failure is not bad tuning. It is a guessed
+metric.
+
+The key question, restated for this half: what if the metric
+itself is the unknown, and we elicit it from pairwise
+comparisons the way we elicit preferences?
+
+The textbook calls this **metric elicitation**. A **linear
+performance metric** (LPM) has the form:
+
+phi(C) = m_11 x TP + m_00 x TN + m_0
+
+The weights (m_11, m_00) encode the tradeoff between true
+positives and true negatives. Only their ratio matters:
+scaling all three weights by a positive constant keeps every
+ranking the same. So parametrize m = (cos theta, sin theta).
+One angle, theta, is the whole metric. For medical diagnosis,
+m_11 > m_00 weights sensitivity, catching disease, over
+specificity, avoiding false alarms. For spam filtering the
+reverse may hold. The practitioner's implicit metric m* is
+unknown. The task is to learn it from pairwise comparisons of
+classifiers.
+
+The structure that makes this tractable is
+**quasiconcavity**. The textbook's Proposition 2.3: for a
+quasiconcave LPM phi that is monotonically increasing in TP
+and TN, with rho^+(theta) a parametrization of the upper
+boundary of the confusion-matrix space, the composition phi o
+rho^+ is quasiconcave and unimodal on [0, pi/2]. Quasiconcave
+means a single peak. No local maxima can trap the search. That
+is what upgrades the problem from gradient descent to binary
+search.
+
+### Subchapter: the binary search, worked
+
+The textbook's algorithm searches theta on [0, pi/2] with an
+oracle that compares classifiers. Each iteration splits the
+interval into four equal parts with boundaries A, B, C, D, E,
+computes the confusion matrix of the classifier at each
+boundary, and asks the oracle to compare the adjacent pairs: 4
+queries. The peak's position decides which half to keep. Each
+iteration halves the interval. The query complexity is
+O(log(1/epsilon)): exponentially better than the O(1/epsilon^2)
+rate for general 2-D estimation.
+
+Work one iteration. The doctors' true metric is m* = (0.8,
+0.6). Check the angle: cos theta = 0.8 gives theta* = 0.6435
+rad = 36.87 degrees, and sin(0.6435) = 0.6. The five boundary
+classifiers, each tuned at its own theta, post these
+validation rates:
+
+```ascii
+boundary   theta    m = (cos, sin)   classifier (TP, TN)   oracle score 0.8xTP + 0.6xTN
+A          0        (1.0000, 0.0000)  (0.98, 0.30)          0.964
+B          0.3927   (0.9239, 0.3827)  (0.93, 0.50)          1.044
+C          0.7854   (0.7071, 0.7071)  (0.85, 0.75)          1.130
+D          1.1781   (0.3827, 0.9239)  (0.70, 0.88)          1.088
+E          1.5708   (0.0000, 1.0000)  (0.55, 0.96)          1.016
+```
+
+The 4 oracle queries compare adjacent pairs. A vs B goes to B:
+1.044 > 0.964. B vs C goes to C: 1.130 > 1.044. C vs D goes to
+C: 1.130 > 1.088. D vs E goes to D: 1.088 > 1.016. The peak
+sits at C, so the maximum lies in [B, D] = [0.3927, 1.1781]:
+half the original [0, 1.5708]. The true theta* = 0.6435 sits
+inside. The midpoint estimate after one iteration is theta-hat
+= 0.7854, within 0.14 rad of truth, at a cost of 4 queries.
+
+Count the queries to tolerance epsilon = 0.01 rad. The
+interval starts at pi/2 = 1.5708. log2(1.5708 / 0.01) = 7.3,
+so 8 iterations, 32 queries total. The general 2-D rate would
+need on the order of 1/epsilon^2 = 10,000. Thirty-two against
+ten thousand: the single peak is the whole saving.
+
+Map back. Each property answers a named pain.
+
+| Pain | Answer | How |
+|---|---|---|
+| The tradeoff is tacit, and nobody can state m_11, m_00 | Learn the weights from pairwise classifier comparisons | Doctors already compare A vs B, and the algorithm turns those comparisons into theta |
+| Metric search could stall in a local optimum | Quasiconcavity gives one peak | Binary search, no gradients, no traps |
+| Elicited weights are not a deployable model | The Bayes-optimal classifier falls out | h-bar(x) = 1[eta(x) >= m_00/(m_11 + m_00)], where eta(x) is the posterior probability that x is a positive case. At (0.8, 0.6) the threshold is 0.43, not 0.5 |
+
+The honest price. The oracle is expensive: each query is an
+expert comparing two classifiers on the same validation cases.
+Quasiconcavity is an assumption: the metric must increase
+monotonically in TP and TN, and the textbook's guarantee needs
+it. Only ratios are learned: the angle theta, never the
+absolute scale. That is enough for thresholds but not for
+absolute scores. Linear metrics have a ceiling: the F-beta
+score (the weighted harmonic mean of precision and recall,
+where precision is TP among predicted positives and recall
+is TP among actual positives) and Jaccard similarity (the
+intersection over union of predicted and actual positives)
+are linear-fractional, phi(C) =
+(p_11 x TP + p_00 x TN + p_0)/(q_11 x TP + q_00 x TN + q_0).
+The textbook's extension runs two binary searches, one for
+the maximizer and one for the minimizer of the implicit linear
+numerator, then solves for the fractional parameters, still
+O(log(1/epsilon)). Multiclass runs the binary search over each
+pair of classes: diagonal linear metrics psi(d) = sum_k a_k d_k
+cost O(K^2 log(1/epsilon)). Ten classes give C(10, 2) = 45
+pairs, and each pair costs the worked 32 queries, so about
+45 x 32 = 1,440 queries at epsilon = 0.01.
+
+> [!QA]
+> Q: Why binary search instead of gradient ascent on theta?
+> A: Pairwise comparisons give orderings, not gradients. The oracle says C beats B, never by how much in theta. Quasiconcavity turns orderings into interval halving: each adjacent comparison rules out one side of the peak. Four queries per iteration, and each iteration halves the interval. Gradient methods would need a differentiable oracle, which a human expert is not.
+> Follow-up: What breaks if the true metric is not quasiconcave?
+> A: The single-peak guarantee fails. Binary search can discard the half that holds the global maximum, and the returned theta-hat is wrong. The honest move is the same insurance as this lesson's random stream, a stream of unselected random comparisons kept as a reality check: keep some unselected comparisons, and re-examine the metric when they disagree with the elicited one.
+
 ## Mapping back: what active selection buys
 
 | Random-sampling pain | Active answer | How |
@@ -277,13 +460,22 @@ The story in eight steps. Each step answers the one before it.
    Keep a random stream. A wrong model teaches the wrong
    thing fast.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/eAtBuZHTl40" title="Active Learning and Iterative Improvement, Roboflow" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+- Active Learning and Iterative Improvement (Roboflow): https://www.youtube.com/watch?v=eAtBuZHTl40
+- Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
+- Chaloner and Verdinelli (1995): Bayesian experimental design, the information-gain reference.
+
 ## Official sources and further reading
 
 **Official:**
 - Active Learning and Iterative Improvement (external explainer,
   video id eAtBuZHTl40): the iterative active-learning loop in
   production.
-- Course textbook, chapters 5.x: Fisher information, the 50/50
+- Course textbook, chapters 2.17-2.20: Fisher information, the 50/50
   rule, the adaptive loop, D-optimality, GP acquisition, ADPO. [link](https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf)
 
 **Further reading:**

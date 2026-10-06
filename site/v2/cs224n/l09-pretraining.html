@@ -243,9 +243,7 @@ P(rest             = 0.05
 loss = -log(0.60) = 0.51
 </pre>
 <p>The gradient pushes &ldquo;Palo&rdquo; up and the rest down. Repeat over trillions of
-words. Every sentence becomes thousands of training examples, for free.
-That is the whole trick: a task that manufactures its own labels at
-internet scale.</p>
+words. Every sentence becomes thousands of training examples, for free.</p>
 <h2 id="what-one-objective-teaches">What one objective teaches</h2>
 <p>One reconstruction objective teaches many things. Each is a fill-in-the
 blank the model must solve:</p>
@@ -310,14 +308,12 @@ loss = -log(0.70) = 0.36
 mat&rdquo;) forces the model to distrust the observed word: it must predict
 &ldquo;sat&rdquo; even though &ldquo;zebra&rdquo; sits there. The 10% unchanged case forces it to
 build a good representation of the real word instead of leaning on the
-[MASK] token. Three small cases, one purpose: the model cannot cheat by
-memorizing what [MASK] looks like, because [MASK] never appears at
-fine-tuning time.</p>
+[MASK] token.</p>
 <figure><img alt="MLM vs CLM" src="assets/plate-l09-objectives.webp"><figcaption>MLM masks tokens and predicts them with both directions visible. CLM predicts the next token with only the past visible. Shell 3. Source: original comparison. Project: Stanford Frontier AI.</figcaption></figure>
 <h3 id="subchapter-clm-the-gpt-objective">Subchapter: CLM, the GPT objective</h3>
 <p><strong>Causal language modeling</strong> is the GPT objective: predict each token from
 the tokens before it. No masks. The same sentence: input &ldquo;The cat&rdquo;,
-predict &ldquo;sat&rdquo;; input &ldquo;The cat sat&rdquo;, predict &ldquo;on&rdquo;. Every position is a
+predict &ldquo;sat&rdquo;. Input &ldquo;The cat sat&rdquo;, predict &ldquo;on&rdquo;. Every position is a
 training example, and the causal mask (Lecture 8) keeps the future hidden.</p>
 <p>Compare the two objectives on what they buy. MLM sees both directions, so
 its representations suit understanding: classification, extraction, QA
@@ -345,9 +341,7 @@ mat&rdquo;). A discriminator reads the corrupted sentence and predicts, for
 touches 100%: each token gets a binary label. The discriminator learns
 from every token in every pass, which is why ELECTRA matches BERT&rsquo;s
 quality with far less compute. The price: two models to train (generator
-plus discriminator), and the generator&rsquo;s quality caps the signal. One
-idea, precisely stated: turn generation into detection, and stop wasting
-85% of the data.</p>
+plus discriminator), and the generator&rsquo;s quality caps the signal.</p>
 <figure><img alt="RTD" src="assets/plate-l09-rtd.webp"><figcaption>A generator replaces some tokens. The discriminator labels every token as original or replaced. All positions train. Shell 3. Source: original diagram for RTD. Project: Stanford Frontier AI.</figcaption></figure>
 <h2 id="gpt-the-autoregressive-line">GPT: the autoregressive line</h2>
 <p>The GPT line scales the same idea in the autoregressive direction: predict
@@ -367,8 +361,7 @@ inference time (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=4312s
 <p>Then <strong>Chinchilla</strong> corrected the sizing. GPT-3 was &ldquo;comically oversized&rdquo;
 (<a href="https://www.youtube.com/watch?v=DGfCRXuNA2w&amp;t=4282s" target="_blank" rel="noopener">71:22 <span class="ts">⏱71:22</span></a>): 175B parameters on only 300B words. Smaller models
 trained on more data win at fixed compute. Cost is roughly parameters times
-tokens, so the optimal split balances the two. The field had been
-over-investing in parameters and starving data.</p>
+tokens, so the optimal split balances the two.</p>
 <h2 id="the-three-stage-recipe">The three-stage recipe</h2>
 <figure><img alt="Three stages" src="assets/l09-three-part.svg"><figcaption>Stanford Frontier AI, CS224N L09. Pretrain on trillions of words, continue pretraining on unlabeled task data, then fine-tune.</figcaption></figure>
 <ol>
@@ -414,7 +407,7 @@ parameters on 10,000 examples memorizes the examples.</p>
   change the model, LoRA disappears into it. Lecture 12 derives it fully.</li>
 </ul>
 <p>The decision rule: full fine-tuning when the shift is large and the
-budget allows; LoRA when batch-1 barely fits or data is small; adapters
+budget allows. LoRA when batch-1 barely fits or data is small. Adapters
 when you must serve many tasks from one frozen backbone.</p>
 <div class="qa"><div class="q">Why continue pretraining instead of fine-tuning directly?</div><div class="a"><p>The pretrained model knows general text, not your domain&rsquo;s vocabulary and style. Continued pretraining on unlabeled domain text adapts the representations cheaply. Fine-tuning then needs fewer labels and generalizes better.
 When the task needs knowledge absent from the pretraining data, or when the fine-tuning data contradicts pretraining strongly. Also: fluent but wrong answers. Pretraining teaches form. It does not guarantee truth.</p><div class="followup"><strong>Follow-up:</strong> When does pretraining fail to help?</div></div></div>
@@ -465,11 +458,10 @@ When the task needs knowledge absent from the pretraining data, or when the fine
 </tr>
 </tbody>
 </table>
-<p>The pattern is total: by 2026 every frontier model pretrains
-decoder-only with a next-token objective. MLM survives in encoders for
-understanding tasks. RTD survives as the efficiency answer. Span
-corruption survives in encoder-decoder models. The objective follows the
-architecture, and the architecture converged.</p>
+<p>By 2026 every frontier model pretrains decoder-only with a next-token
+objective. MLM survives in encoders for understanding tasks. RTD survives
+as the efficiency answer. Span corruption survives in encoder-decoder
+models.</p>
 <div class="qa"><div class="q">Walk me through MLM on one sentence, naming every step.</div><div class="a"><p>Sentence: &ldquo;The cat sat on the mat&rdquo;, 6 tokens. Step 1: choose 15%, about 1 token: &ldquo;sat&rdquo;. Step 2: roll the 80/10/10 die. Say 80%: replace with [MASK]. Input: &ldquo;The cat [MASK] on the mat&rdquo;. Step 3: forward pass, read the distribution at the masked position: P(sat) = 0.70, P(stood) = 0.15, rest 0.15. Step 4: loss = -log(0.70) = 0.36. Step 5: backprop pushes the representation toward &ldquo;sat&rdquo;. If the die had said 10% random, the input would show &ldquo;zebra&rdquo; and the model must still predict &ldquo;sat&rdquo;: it learns not to trust the surface word.
 Context. Mask too much and the sentence has no context left to predict from: the task becomes impossible and the gradients are noise. 15% leaves 85% of the sentence as evidence. It is a tuned constant, not a theorem.</p><div class="followup"><strong>Follow-up:</strong> Why 15% and not 50%?</div></div></div>
 <div class="qa"><div class="q">You need a sentiment classifier for product reviews. MLM-pretrained encoder or CLM-pretrained decoder?</div><div class="a"><p>The MLM encoder (BERT-style). Classification reads the whole input: bidirectional context helps (&ldquo;not good&rdquo; needs both words). Fine-tune with a CLS head: cheap, fast, accurate. The decoder can do it too, but causally: each token sees only the past, which handicaps understanding. Use the architecture whose pretraining matches the task&rsquo;s information flow.
@@ -479,7 +471,7 @@ The generator. If the generator is too weak, its replacements are obvious and th
 <div class="qa"><div class="q">Walk me through the Chinchilla sizing correction.</div><div class="a"><p>GPT-3: 175B parameters, 300B training tokens. Chinchilla&rsquo;s finding: at fixed compute, loss is minimized when parameters and tokens scale together, roughly 20 tokens per parameter. For GPT-3&rsquo;s compute budget, the optimum was closer to 70B parameters on 1.4T tokens. GPT-3 was &ldquo;comically oversized&rdquo;: too many parameters, starved of data. The field had been buying parameters when it should have been buying tokens.
 No. It says balance wins at fixed training compute. Inference changes the math: a smaller model trained on more tokens costs less to serve per query, which is why the Chinchilla-optimal models also became the deployment favorites. Training-optimal and serving-cheap pointed the same way.</p><div class="followup"><strong>Follow-up:</strong> Does Chinchilla say small models always win?</div></div></div>
 <div class="qa"><div class="q">You have one A100 and a 7B model to adapt to legal contracts. Full fine-tuning or LoRA?</div><div class="a"><p>LoRA. Full fine-tuning of 7B needs the 16-bytes-per-parameter budget: 112 GB, which overflows one 80 GB A100 before batch 1. LoRA trains 65K to a few million numbers (rank 8-64 on attention matrices): it fits with room to spare. Legal contracts are a style and vocabulary shift, not a new modality: low-rank adaptation covers it. Go full only if LoRA&rsquo;s quality plateaus below your bar.
-Start at 16. Rank 8 is the lecture&rsquo;s example; 16-64 is the practical range. Higher rank approaches full fine-tuning&rsquo;s expressivity at higher cost. Tune it like any hyperparameter: raise until the dev metric stops moving.</p><div class="followup"><strong>Follow-up:</strong> What rank?</div></div></div>
+Start at 16. Rank 8 is the lecture&rsquo;s example. 16-64 is the practical range. Higher rank approaches full fine-tuning&rsquo;s expressivity at higher cost. Tune it like any hyperparameter: raise until the dev metric stops moving.</p><div class="followup"><strong>Follow-up:</strong> What rank?</div></div></div>
 <h2 id="watch-and-go-deeper">Watch and go deeper</h2>
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">

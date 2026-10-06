@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -438,6 +435,39 @@ Truth-telling maximizes shared information under the paradigm&rsquo;s
 conditions. It is mechanism design from Lecture 9 for the
 no-ground-truth case: pay for agreement that could only come
 from shared signal.</p>
+<h3 id="subchapter-peer-prediction-worked">Subchapter: peer prediction, worked</h3>
+<p>No gold labels exist. Two labelers mark items positive or
+negative. Pay each labeler by agreement with the other: a
+bonus whenever their labels match. Does honesty pay? Work the
+numbers. The true positive rate is 0.7. An honest labeler
+reports the truth with 90% accuracy, errors independent.</p>
+<p>If both report honestly, agreement needs both right or both
+wrong: 0.9^2 + 0.1^2 = 0.82. Now the lazy strategy: always
+report positive, no effort. The peer, still honest, reports
+positive with probability 0.7 x 0.9 + 0.3 x 0.1 = 0.66. The
+lazy labeler agrees 66% of the time. Honesty pays 0.82,
+laziness pays 0.66. Output agreement beats the lazy
+equilibrium.</p>
+<p>But watch the collusion equilibrium. If both labelers go lazy
+and always report positive, agreement is 1.0. Output agreement
+pays perfect scores for coordinated laziness. This is where
+the mutual information paradigm earns its name. Score by the
+mutual information between the two reports instead of raw
+agreement. Honest reports are correlated through the shared
+truth: their joint distribution is (0.57, 0.09, 0.09, 0.25)
+for (+,+) through (-,-), and the mutual information is 0.18
+nats, computed in natural log. Constant reports carry zero
+mutual information: a report that never varies shares nothing
+with anything. The lazy-lazy equilibrium scores 0 under MI and
+1.0 under raw agreement. MI kills exactly the equilibrium that
+raw agreement rewards.</p>
+<p>The precondition, stated honestly: the paradigm needs the
+honest equilibrium to be the best one, which holds when
+labelers&rsquo; signals are genuinely correlated through the truth
+and the MI estimator has enough data. With few shared items
+the MI estimate is noise, and the mechanism misfires. Peer
+prediction is Lecture 9&rsquo;s incentive compatibility for the
+case where the designer has no ground truth to check against.</p>
 <div class="qa"><div class="q">Walk me through the Polis factor model on a toy rating matrix, by hand.</div><div class="a"><p>Three raters, two notes. Rater 1 (left) rates note A 5 stars, note B 1 star. Rater 2 (right) rates note A 1 star, note B 5 stars. Rater 3 (left) rates note A 4 stars, note B 2 stars. Fit the model u = mu + alpha + beta + p^T q. mu, the global mean: (5+1+1+5+4+2)/6 = 3. Rater 1&rsquo;s alpha: his mean is 3, so alpha_1 = 0. Rater 2&rsquo;s mean is 3, alpha_2 = 0. Rater 3&rsquo;s mean is 3, alpha_3 = 0. Ideology: raters 1 and 3 lean left, rater 2 leans right. Note A&rsquo;s beta: after removing rater means and the ideology component, note A is loved by the left and hated by the right: high ideological loading, low beta. Note B: loved by the right, low beta too. Now add note C: all three raters give it 4 stars. Its beta is high, near 1 after centering, and its ideology loading is near zero. Note C is the bridge: selected, shown, trusted. Notes A and B are factional: suppressed. That is the whole mechanism in six numbers.
 Then alpha_1 absorbs it: his mean is 5, alpha_1 = +2, and his ratings contribute no ideology or quality signal beyond the mean shift. The factorization separates generosity from belief. This is why the model beats raw averages: raw averages let the loudest and most generous raters set the outcome.</p><div class="followup"><strong>Follow-up:</strong> What if rater 1 is just generous, rating everything 5?</div></div></div>
 <div class="qa"><div class="q">Design a value audit for a peer-review assistant. It drafts reviews for conference submissions.</div><div class="a"><p>Audit the four pipeline stages from the lesson. Elicitation: whose reviewing values are in the training pairs? If all pairs come from one subfield, the model encodes one subfield&rsquo;s taste. Sample pairs across subfields and seniority. Learning: check the fitted reward against held-out reviewer judgments, sliced by subfield, and publish the slices. Aggregation: the model aggregates its training population&rsquo;s preferences. If the population is 80% from two labs, say so in the model card. Decision: the deployment threshold, when a draft review ships without human edit, is the value choice. Set it where measured draft quality beats the human baseline on blind comparison, not where the demo looks good. Add the inversion check: run the pipeline backwards from model outputs to the implied reviewer values and ask whether any real reviewer would endorse them.
@@ -517,6 +547,22 @@ explicit.</p>
    Write the assumptions down. Weakest extrapolation that
    fixes the clear errors.</li>
 </ol>
+<h2 id="go-deeper">Go deeper</h2>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/VffFArrRSBE" title="Stanford CS329H Autumn 2024: Human-centered Design" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/HFrCySzH9QI" title="Stanford CS329H guest lecture: Joseph Jay Williams" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<ul>
+<li>Human-centered Design lecture: https://www.youtube.com/watch?v=VffFArrRSBE</li>
+<li>Guest lecture, Joseph Jay Williams: https://www.youtube.com/watch?v=HFrCySzH9QI</li>
+<li>Guest lecture, Daniel Webber on value alignment (embedded above): https://www.youtube.com/watch?v=-kdR_7dCcyI</li>
+<li>Voting lecture, Colin Megill (Polis) guest segment: https://www.youtube.com/watch?v=1QpNZXL35NM</li>
+<li>Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf</li>
+<li>Dwork et al. (2012): individual fairness.</li>
+<li>Polis, the open-source deliberation platform: https://pol.is</li>
+</ul>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
 - Guest lecture: Daniel Webber on value alignment (video id
@@ -528,7 +574,7 @@ explicit.</p>
 - Lecture on human-centered design (video id VffFArrRSBE).
 - Guest lecture: Joseph Jay Williams (video id HFrCySzH9QI)
   [uncertain: title from search-index evidence only].
-- Course textbook, chapters 10.x: the inversion problem, the
+- Course textbook, chapters 4/5.6-5.11: the inversion problem, the
   four-stage pipeline, fairness, paternalism, privacy, the
   mutual information paradigm. <a href="https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf">link</a></p>
 <p><strong>Further reading:</strong>

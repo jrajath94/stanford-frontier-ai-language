@@ -222,9 +222,7 @@
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="I0tj4Y7xaOQ"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/I0tj4Y7xaOQ" title="Lecture 14: Reasoning and Agents" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=I0tj4Y7xaOQ" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=I0tj4Y7xaOQ" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Guest lecture. Shikhar Murty covers reasoning: how to prompt it, how to test it, and how agents loop language models with the world.</p></div><h2 id="the-problem-reasoning-or-recall">The problem: reasoning or recall</h2>
 <p>A model answers a math question correctly. Did it reason, or did it
 remember? The training data holds billions of worked examples. A correct
-answer proves nothing about the method. This lecture asks the uncomfortable
-question and builds the machinery to answer it, then puts the model in a
-loop with the world.</p>
+answer proves nothing about the method.</p>
 <p>First, the vocabulary. Three kinds of reasoning:</p>
 <figure><img alt="Reasoning types" src="assets/l14-reasoning-types.svg"><figcaption>Stanford Frontier AI, CS224N L14. Deductive: all mammals have kidneys, all whales are mammals, so all whales have kidneys. Inductive: wings suggest a bird. Abductive: a puddle under a dead car suggests a radiator leak.</figcaption></figure>
 <ul>
@@ -256,8 +254,7 @@ not formal proofs.</p>
 fine-tune a small model on them (<strong>distillation</strong>): the small model
 inherits the big one&rsquo;s reasoning traces. Or fine-tune the big model on
 its <strong>own rationales iteratively</strong> (<a href="https://www.youtube.com/watch?v=I0tj4Y7xaOQ&amp;t=1055s" target="_blank" rel="noopener">17:35 <span class="ts">⏱17:35</span></a>): performance can
-keep improving and even beat human-provided rationales. The model becomes
-its own teacher.</p>
+keep improving and even beat human-provided rationales.</p>
 <h2 id="the-counterfactual-test-base-9-addition">The counterfactual test: base-9 addition</h2>
 <p>Are models reasoning, or recalling? <strong>Counterfactual evaluation</strong>: change
 the task so training data cannot explain success. Instead of base-10
@@ -274,8 +271,7 @@ counterfactual itself appears in training, the test is void.</p>
 <div class="qa"><div class="q">Why is base-9 a fair test?</div><div class="a"><p>The algorithm is identical. Only the symbols change. A reasoner applies the same algorithm to new symbols. A memorizer has no base-9 examples to recall. The gap between the two scores measures memorization.
 No. It proves this task&rsquo;s success came from data, not reasoning. The model might reason elsewhere. Counterfactuals falsify specific claims. They do not certify general inability.</p><div class="followup"><strong>Follow-up:</strong> Does failing base-9 prove the model cannot reason?</div></div></div>
 <h2 id="the-key-question">The key question</h2>
-<p>What happens when a model that can reason gets to act — to call tools,
-see the results, and try again?</p>
+<p>What happens when a model that can reason gets to act, to call tools, see the results, and try again?</p>
 <p><strong>On this page:</strong> <a href="#subchapter-react-reason-and-act-interleaved">ReAct</a> · <a href="#subchapter-tree-of-thought-search-over-thoughts">Tree of thought</a> · <a href="#subchapter-reflexion-the-critic-in-the-loop">Reflexion</a> · <a href="#what-is-used-where-agents-in-production-october-2026">Agents in production, Oct 2026</a> · <a href="#watch-and-go-deeper">Watch and go deeper</a></p>
 <h3 id="subchapter-react-reason-and-act-interleaved">Subchapter: ReAct, reason and act interleaved</h3>
 <p>Chain-of-thought reasons. Acting calls tools. <strong>ReAct</strong> (Yao et al., 2022)
@@ -365,8 +361,7 @@ environment:  returns the focused search box (observation)
 repeat until the goal is done
 </pre>
 <p>Each iteration is one forward pass. The world supplies the observations.
-the model supplies the actions. Reasoning and acting become the same
-operation.</p>
+the model supplies the actions.</p>
 <figure><img alt="Agent loop" src="assets/l14-agent-loop.svg"><figcaption>Stanford Frontier AI, CS224N L14. Instruction plus action space plus history predicts the next action. The environment responds. Repeat.</figcaption></figure>
 <p>Training data is the bottleneck. Human demonstrations as few-shot examples
 do not scale. The fix: <strong>synthetic demonstrations</strong>. Let the model explore
@@ -441,11 +436,11 @@ The lecture points at training: synthetic demonstrations with hindsight relabeli
 2026 products sell across it: the loop is the same, the reliability
 engineering is what changed. Anything about a specific product&rsquo;s
 internals is [uncertain] unless the vendor documented it.</p>
-<div class="qa"><div class="q">Walk me through one ReAct loop iteration, naming each part.</div><div class="a"><p>Goal: book a flight SF to NYC. Thought: &ldquo;I need options; I will search.&rdquo; This is chain-of-thought: reasoning about the next move. Action: type(&ldquo;SFO to JFK Friday&rdquo;) and click search. This touches the world. Observation: &ldquo;3 flights: $289, $340, $410.&rdquo; This grounds the next thought: no more reasoning in a vacuum. Next Thought: &ldquo;The $289 works; I will select it.&rdquo; Each iteration is one model call producing a thought plus an action, and the world replies with an observation. Reason, act, see, repeat.
+<div class="qa"><div class="q">Walk me through one ReAct loop iteration, naming each part.</div><div class="a"><p>Goal: book a flight SF to NYC. Thought: &ldquo;I need options. I will search.&rdquo; This is chain-of-thought: reasoning about the next move. Action: type(&ldquo;SFO to JFK Friday&rdquo;) and click search. This touches the world. Observation: &ldquo;3 flights: $289, $340, $410.&rdquo; This grounds the next thought: no more reasoning in a vacuum. Next Thought: &ldquo;The $289 works. I will select it.&rdquo; Each iteration is one model call producing a thought plus an action, and the world replies with an observation. Reason, act, see, repeat.
 You get act-only: the model calls tools with no plan. It searches, clicks, and wanders: the email-in-the-password-field failure. The Thoughts are the plan. Remove them and the loop has no memory of what it is trying to do.</p><div class="followup"><strong>Follow-up:</strong> What breaks if you remove the Thought steps?</div></div></div>
 <div class="qa"><div class="q">Build a flight-booking agent. What is the architecture?</div><div class="a"><p>Start with the lecture&rsquo;s loop: instruction + action space + history predicts the next action. Add ReAct: Thought steps between actions so the agent plans. Add tools: search_flights, select_flight, enter_payment, each with a typed schema. Add guardrails: never enter payment without explicit user confirmation (WebLinx&rsquo;s human-communication action). Add recovery: if a step fails, the Thought step replans instead of committing to the trajectory. Evaluate on WebArena-style tasks: success rate, steps to completion, and dollars booked wrong (the metric that matters).
-Confirmation gates on irreversible actions. The agent can search and compare freely; payment needs a human yes. And idempotency: the booking tool must tolerate retries without double-booking. The reliability is in the harness, not the model.</p><div class="followup"><strong>Follow-up:</strong> How do you stop it booking the wrong flight?</div></div></div>
-<div class="qa"><div class="q">Self-consistency or tree of thought for a math word problem?</div><div class="a"><p>Tree of thought if the problem branches: multiple plausible first steps, dead ends that waste full rollouts. Score partial paths and prune early. Self-consistency if the paths are mostly independent attempts at the same computation: sample fully, majority vote. The cost differs: ToT pays breadth times depth in scoring calls; self-consistency pays samples times full length. For a single-path arithmetic problem, self-consistency is cheaper. For a puzzle with real branch points, ToT earns its cost.
+Confirmation gates on irreversible actions. The agent can search and compare freely. Payment needs a human yes. And idempotency: the booking tool must tolerate retries without double-booking. The reliability is in the harness, not the model.</p><div class="followup"><strong>Follow-up:</strong> How do you stop it booking the wrong flight?</div></div></div>
+<div class="qa"><div class="q">Self-consistency or tree of thought for a math word problem?</div><div class="a"><p>Tree of thought if the problem branches: multiple plausible first steps, dead ends that waste full rollouts. Score partial paths and prune early. Self-consistency if the paths are mostly independent attempts at the same computation: sample fully, majority vote. The cost differs: ToT pays breadth times depth in scoring calls. Self-consistency pays samples times full length. For a single-path arithmetic problem, self-consistency is cheaper. For a puzzle with real branch points, ToT earns its cost.
 Yes: search with ToT, then self-consistency vote among the surviving branches. More compute, better answers. The combination is standard where accuracy beats cost.</p><div class="followup"><strong>Follow-up:</strong> Can you combine them?</div></div></div>
 <div class="qa"><div class="q">Walk me through hindsight relabeling on a failed trajectory.</div><div class="a"><p>Goal: &ldquo;book a flight to NYC&rdquo;. The agent explores randomly and books Boston. Original label: failure. Relabel: treat the trajectory as a demonstration of &ldquo;book a flight to Boston&rdquo;: success. The trajectory&rsquo;s actions (search, compare, select, pay) are correct for Boston: the only wrong thing was the goal string. Train on the relabeled pair. Every random walk becomes training data for whatever it actually achieved. Iterate: explore, relabel, train, explore better.
 The relabeled goals may be useless: &ldquo;click randomly for 20 steps&rdquo; is a valid relabeling of a wandering trajectory, and training on it teaches wandering. Filter: keep relabelings whose achieved goals resemble real tasks. The trick needs a curriculum, not just a trick.</p><div class="followup"><strong>Follow-up:</strong> What is the failure mode?</div></div></div>

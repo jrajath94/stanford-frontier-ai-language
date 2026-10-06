@@ -330,4 +330,44 @@ personalization, safety.
 
 </div>
 
+<div class="cheat-block" markdown="1">
+
+### Memory aids: never-confuse pairs
+
+| Pair | Distinction |
+|---|---|
+| FLOPs / FLOPS | Work vs rate. Capital S is speed. |
+| r (PPO) / reward | r is the ratio pi_new/pi_old. Never a reward. |
+| Top-K / top-P | K fixes count. P fixes probability mass. P adapts. |
+| pass@k / pass-hat@k | Any-of-k succeeds vs all-of-k succeed. Capability vs reliability. |
+| SFT / preference tuning | Imitate good vs also punish bad. Format vs taste. |
+| DPO / PPO | Closed-form on pairs vs online RL. Two models vs four. |
+| GRPO / PPO | Group z-score vs value function. Coarse vs fine credit. |
+| RAG / long context | Retrieve-then-read vs dump-everything. Cost vs simplicity. |
+| Agreement rate / kappa | Raw percent vs chance-corrected. 0.85 can be 0.70 or 0.17. |
+| BLEU / ROUGE | Precision-flavored vs recall-flavored. Translation vs summary. |
+| Pre-norm / post-norm | Norm before sublayer (deep stacks) vs after (2017 original). |
+| MQA / GQA / MHA | 1 KV head / 8 KV heads / 32 KV heads. Cache 32x / 4x / 1x smaller. |
+| Mask (BERT) / mask (diffusion) | Corrupt 15% to learn vs corrupt all to generate. |
+
+**Mnemonics.** "Retrieve, augment, generate" = RAG's three verbs in
+order. "Observe, plan, act" = ReAct's loop. "Extract, check,
+aggregate" = factuality's three steps. "Cold-start, RL, big SFT,
+final RL" = R1's four stages. "Punt, hallucinate, wrong tool, wrong
+args, bad output, no output, bad synthesis" = the seven failures,
+in pipeline order.
+
+**If this, then that.** If the distribution is sharp, top-P shrinks
+the set. If flat, it grows: use top-P with a top-K cap. If reward
+climbs but humans disagree, it is hacking: tighten beta, add
+punishing pairs. If all GRPO rewards tie, the group teaches
+nothing: filter it. If kappa drops below 0.6, fix the rubric, not
+the raters. If the corpus updates hourly, use HNSW for the hot
+shard. If the answer is verifiable, use RLVR. If not, preference
+tuning. If the tool returns silence, the agent will hallucinate:
+always return something. If the benchmark is older than the
+cutoff, assume contamination.
+
+</div>
+
 </div>

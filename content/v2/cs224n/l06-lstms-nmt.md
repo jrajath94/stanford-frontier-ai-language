@@ -11,7 +11,7 @@ instructor: "Christopher Manning"
 offering: "Spring 2024"
 duration: "1:17:00"
 video_id: Ba6Fn1-Jsfw
-video_title: "Lecture 6: LSTM RNNs and Neural Machine Translation"
+video_title: "Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 6 - Sequence to Sequence Models"
 video_caption: "Original lecture. Christopher Manning covers vanishing gradients, LSTMs, and neural machine translation."
 concepts: [vanishing-gradient, exploding-gradient, gradient-clipping, lstm, gates, bidirectional-rnn, stacked-rnn, seq2seq, nmt, machine-translation]
 sources:
@@ -361,9 +361,16 @@ sentences lengthen, then deletes the keyhole entirely.
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/Ba6Fn1-Jsfw" title="CS224N Spring 2024 Lecture 6: LSTM RNNs and Neural Machine Translation" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 6: LSTM RNNs and Neural Machine Translation</strong> (Christopher Manning, Spring 2024). The original lecture: vanishing gradients, LSTMs, and neural machine translation. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=Ba6Fn1-Jsfw</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/YCzL96nL7j0" title="Long Short-Term Memory (LSTM), Clearly Explained" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>LSTM, clearly explained</strong> (StatQuest, Josh Starmer). Gates, memory paths, and why gradients survive.</p>
+</div>
 </div>
 
 ### Go deeper

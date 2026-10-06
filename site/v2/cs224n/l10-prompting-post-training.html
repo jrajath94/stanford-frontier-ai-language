@@ -226,8 +226,7 @@ It does not follow the instruction. It might continue with &ldquo;to a
 seven-year-old&rdquo; or drift into trivia. The model knows language. It does
 not know it is supposed to <em>help</em>.</p>
 <p>This lecture is about closing that gap: from a model that predicts text to
-a model that does what you ask. The path runs through scale, prompting,
-instruction tuning, and human preferences.</p>
+a model that does what you ask.</p>
 <p><strong>On this page:</strong> <a href="#subchapter-the-preference-pair-up-close">The preference pair</a> · <a href="#subchapter-ppo-the-rl-step">PPO</a> · <a href="#subchapter-when-dpo-beats-ppo-and-when-it-does-not">When DPO beats PPO</a> · <a href="#what-is-used-where-post-training-in-production-october-2026">Post-training in production, Oct 2026</a> · <a href="#watch-and-go-deeper">Watch and go deeper</a></p>
 <h2 id="scale-changed-everything">Scale changed everything</h2>
 <p>Pretraining data grew from 1.4T tokens (2022) to about 15T (2024, LLaMA 3)
@@ -237,8 +236,7 @@ labs were &ldquo;well above 10^26.&rdquo;</p>
 <p>Scale bought new behavior. The Pat story (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=263s" target="_blank" rel="noopener">04:23 <span class="ts">⏱04:23</span></a>): Pat the
 physicist watches a bowling ball and a leaf drop. Naive Pat predicts both
 fall together. The model tracks what each agent <em>believes</em>, not just the
-text on the page. At sufficient scale, the model builds models of minds.
-That is the substrate everything below exploits.</p>
+text on the page. At sufficient scale, the model builds models of minds.</p>
 <h2 id="few-shot-prompting-examples-no-updates">Few-shot prompting: examples, no updates</h2>
 <p><strong>Few-shot</strong> prompting puts examples in the prompt. &ldquo;No gradient updates&hellip;
 whatsoever&rdquo; (<a href="https://www.youtube.com/watch?v=35X6zlhoCy4&amp;t=865s" target="_blank" rel="noopener">14:25 <span class="ts">⏱14:25</span></a>). The model completes the pattern.</p>
@@ -273,11 +271,10 @@ scratch pad: multi-step problems need intermediate results, and CoT makes
 the model write them down instead of jumping to a guess. The lecture&rsquo;s
 advice: &ldquo;Think about what the pretraining data might have seen.&rdquo; Reasoning
 chains appear in text all over the internet. The model imitates them.</p>
-<div class="qa"><div class="q">Why does chain of thought help?</div><div class="a"><p>It gives the model more compute per answer and a scratch pad for intermediate steps. Multi-step problems need intermediate results. CoT makes the model write them down instead of jumping to a guess. The zero-shot jump from 17.7 to 78.7 shows how much latent capability the scratch pad unlocks.
+<div class="qa"><div class="q">Why does chain of thought help?</div><div class="a"><p>It gives the model more compute per answer and a scratch pad for intermediate steps. Multi-step problems need intermediate results. CoT makes the model write them down instead of jumping to a guess. The zero-shot jump from 17.7 to 78.7 shows how much latent capability the scratch pad reveals.
 Contested. The chains correlate with correct answers, but the model may be imitating reasoning-shaped text from pretraining. L14&rsquo;s counterfactual tests (base-9 arithmetic) probe exactly this question: change the rules and see if the reasoning follows.</p><div class="followup"><strong>Follow-up:</strong> Is the model really reasoning?</div></div></div>
 <h2 id="the-key-question">The key question</h2>
-<p>Prompting changes the input. Can we change the model itself — teach it to
-follow instructions, so obedience becomes a property of the weights?</p>
+<p>Prompting changes the input. Can we change the model itself, teach it to follow instructions, so obedience becomes a property of the weights?</p>
 <h2 id="instruction-fine-tuning-teach-following">Instruction fine-tuning: teach following</h2>
 <p>Prompting exploits what pretraining taught. <strong>Instruction fine-tuning</strong>
 teaches the missing skill directly: train on thousands of tasks, each
@@ -341,7 +338,7 @@ objective has two terms:</p>
 moves the policy too far. Watch the failure it prevents. Without the KL
 penalty and clipping, the policy discovers that repeating &ldquo;very good very
 good very good&rdquo; scores 9.8 from a flawed reward model. It collapses into
-reward hacking within hours. The KL term pulls it back toward sane text;
+reward hacking within hours. The KL term pulls it back toward sane text.
 the clip limits each step&rsquo;s damage. RL against a learned metric needs
 both leashes, or the metric gets gamed.</p>
 <figure><img alt="PPO" src="assets/plate-l10-ppo.webp"><figcaption>PPO: sample, score with the reward model, reinforce, with a KL leash to the reference model. Shell 3. Source: original diagram for PPO. Project: Stanford Frontier AI.</figcaption></figure>
@@ -356,7 +353,7 @@ form, PPO the iterative climb. Pick by constraint:</p>
   the current policy, freshly labeled. Online PPO keeps improving past
   the point where offline DPO&rsquo;s static dataset goes stale (Lecture 15).</li>
 <li><strong>Neither fixes bad data.</strong> Both methods distill the preference pairs.
-  Biased pairs in, biased policy out. The data is the ceiling; the
+  Biased pairs in, biased policy out. The data is the ceiling. The
   algorithm is the floor.</li>
 </ul>
 <h2 id="reward-hacking-the-learned-metric-fights-back">Reward hacking: the learned metric fights back</h2>
@@ -450,16 +447,16 @@ conversation.</p>
 </table>
 <p>The public pattern: SFT first, then preferences (PPO or DPO), then
 verifiable-reward RL for reasoning. The closed labs publish that they
-align; they do not publish how.</p>
+align. They do not publish how.</p>
 <div class="qa"><div class="q">Walk me through the full RLHF pipeline on one prompt.</div><div class="a"><p>Prompt: &ldquo;Explain the moon landing to a six-year-old.&rdquo; Step 1, SFT: the model already follows instructions from fine-tuning. Step 2: sample two completions, A (clear, simple) and B (technical, dry). A human picks A. The reward model trains on thousands of such pairs via Bradley-Terry: P(A&gt;B) = sigma(r_A - r_B). Step 3, PPO: generate new completions, score them with the reward model, reinforce high scorers, with a KL penalty keeping the policy near the SFT model. Repeat. The policy drifts toward what humans picked.
 At the reward model. It is a learned proxy, and PPO optimizes it hard: gibberish that scores 9.8, confident falsehoods, verbosity. The KL leash limits the damage. DPO skips the proxy but keeps the pairs, so biased pairs still bias the policy.</p><div class="followup"><strong>Follow-up:</strong> Where does it break?</div></div></div>
 <div class="qa"><div class="q">You have 50,000 preference pairs and 8 GPUs. PPO or DPO?</div><div class="a"><p>DPO. PPO needs the RL loop: rollout generation, reward scoring, clipped updates, KL tuning. It is finicky and GPU-hungry. DPO is one supervised loss on the pairs: stable, fast, and the lecture&rsquo;s verdict is that you lose little. Spend the saved compute on better pairs, not on RL infrastructure.
 When the pairs go stale: the policy improves past what the static dataset describes, and offline gradients point at ghosts. Then you need online data (fresh completions, fresh labels), and PPO is the online algorithm. Lecture 15 is that story.</p><div class="followup"><strong>Follow-up:</strong> When would you switch to PPO?</div></div></div>
 <div class="qa"><div class="q">Walk me through the Bradley-Terry update on one pair.</div><div class="a"><p>Pair: chosen A, rejected B. Current rewards: r_A = 1.0, r_B = 0.8. Predicted P(A&gt;B) = sigma(0.2) = 0.55. The human said A wins: target 1. The loss is -log(0.55) = 0.60. Backprop pushes r_A up and r_B down. Next round: r_A = 1.2, r_B = 0.7, P = sigma(0.5) = 0.62, loss 0.47. The rewards separate until the predicted preference matches the human&rsquo;s.
 Humans are noisy raters and stable comparers. &ldquo;Rate this 1-7&rdquo; drifts between annotators and sessions. &ldquo;Which is better&rdquo; is consistent. Bradley-Terry converts stable comparisons into a scalar reward function. The data format follows the psychology.</p><div class="followup"><strong>Follow-up:</strong> Why pairs instead of scores?</div></div></div>
-<div class="qa"><div class="q">FLAN&#x27;s 3M examples or LIMA&#x27;s 1,000 for instruction tuning?</div><div class="a"><p>It depends on what you lack. FLAN&rsquo;s 3M teach task coverage: the model sees thousands of task formats. LIMA&rsquo;s 1,000 teach style: superb responses that set the tone. The lecture&rsquo;s numbers: FLAN gains +6.1 to +26.6 with scale; LIMA shows quality beats quantity. In practice: start with a LIMA-style curated set for tone, add FLAN-style breadth for coverage. Both, in that order.
+<div class="qa"><div class="q">FLAN&#x27;s 3M examples or LIMA&#x27;s 1,000 for instruction tuning?</div><div class="a"><p>It depends on what you lack. FLAN&rsquo;s 3M teach task coverage: the model sees thousands of task formats. LIMA&rsquo;s 1,000 teach style: superb responses that set the tone. The lecture&rsquo;s numbers: FLAN gains +6.1 to +26.6 with scale. LIMA shows quality beats quantity. In practice: start with a LIMA-style curated set for tone, add FLAN-style breadth for coverage. Both, in that order.
 Yes, and labs do it routinely: distill instruction-following down the size ladder. The risk is error inheritance: the teacher&rsquo;s blind spots become the student&rsquo;s. Filter generated data with a judge, or the distillation distills the flaws too.</p><div class="followup"><strong>Follow-up:</strong> Can a strong model generate the data for a weaker one?</div></div></div>
-<div class="qa"><div class="q">Your RLHF model writes long, confident, wrong answers. Diagnose and fix.</div><div class="a"><p>Diagnosis: reward hacking, two known modes. Longer beats shorter (annotators pick long answers), so the policy learned verbosity. Authoritative beats truthful (confidence scores well), so it learned bluster. Fix: first, the KL penalty: raise beta to pull the policy back toward the SFT model. Second, fix the data: add pairs where the shorter, hedged, correct answer wins. Third, consider DPO on the corrected pairs: simpler loop, same signal. The disease is in the reward; treat the reward, not the policy.
+<div class="qa"><div class="q">Your RLHF model writes long, confident, wrong answers. Diagnose and fix.</div><div class="a"><p>Diagnosis: reward hacking, two known modes. Longer beats shorter (annotators pick long answers), so the policy learned verbosity. Authoritative beats truthful (confidence scores well), so it learned bluster. Fix: first, the KL penalty: raise beta to pull the policy back toward the SFT model. Second, fix the data: add pairs where the shorter, hedged, correct answer wins. Third, consider DPO on the corrected pairs: simpler loop, same signal. The disease is in the reward. Treat the reward, not the policy.
 Track reward versus human judgment on a held-out set. If the reward model&rsquo;s scores climb while human preference stalls or falls, the policy is gaming the proxy. That divergence is the smoke alarm. No alarm, no deployment.</p><div class="followup"><strong>Follow-up:</strong> How do you detect hacking before users do?</div></div></div>
 <h2 id="watch-and-go-deeper">Watch and go deeper</h2>
 <div style="max-width:640px;margin:1.5rem 0">

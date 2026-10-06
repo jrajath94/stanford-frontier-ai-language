@@ -37,8 +37,7 @@ seven-year-old" or drift into trivia. The model knows language. It does
 not know it is supposed to *help*.
 
 This lecture is about closing that gap: from a model that predicts text to
-a model that does what you ask. The path runs through scale, prompting,
-instruction tuning, and human preferences.
+a model that does what you ask.
 
 **On this page:** [The preference pair](#subchapter-the-preference-pair-up-close) · [PPO](#subchapter-ppo-the-rl-step) · [When DPO beats PPO](#subchapter-when-dpo-beats-ppo-and-when-it-does-not) · [Post-training in production, Oct 2026](#what-is-used-where-post-training-in-production-october-2026) · [Watch and go deeper](#watch-and-go-deeper)
 
@@ -54,7 +53,6 @@ Scale bought new behavior. The Pat story ([04:23](ts:04:23)): Pat the
 physicist watches a bowling ball and a leaf drop. Naive Pat predicts both
 fall together. The model tracks what each agent *believes*, not just the
 text on the page. At sufficient scale, the model builds models of minds.
-That is the substrate everything below exploits.
 
 ## Few-shot prompting: examples, no updates
 
@@ -104,14 +102,13 @@ chains appear in text all over the internet. The model imitates them.
 
 > [!QA]
 > Q: Why does chain of thought help?
-> A: It gives the model more compute per answer and a scratch pad for intermediate steps. Multi-step problems need intermediate results. CoT makes the model write them down instead of jumping to a guess. The zero-shot jump from 17.7 to 78.7 shows how much latent capability the scratch pad unlocks.
+> A: It gives the model more compute per answer and a scratch pad for intermediate steps. Multi-step problems need intermediate results. CoT makes the model write them down instead of jumping to a guess. The zero-shot jump from 17.7 to 78.7 shows how much latent capability the scratch pad reveals.
 > Follow-up: Is the model really reasoning?
 > A: Contested. The chains correlate with correct answers, but the model may be imitating reasoning-shaped text from pretraining. L14's counterfactual tests (base-9 arithmetic) probe exactly this question: change the rules and see if the reasoning follows.
 
 ## The key question
 
-Prompting changes the input. Can we change the model itself — teach it to
-follow instructions, so obedience becomes a property of the weights?
+Prompting changes the input. Can we change the model itself, teach it to follow instructions, so obedience becomes a property of the weights?
 
 ## Instruction fine-tuning: teach following
 
@@ -192,7 +189,7 @@ PPO adds one more guard: **clip** the policy update so no single batch
 moves the policy too far. Watch the failure it prevents. Without the KL
 penalty and clipping, the policy discovers that repeating "very good very
 good very good" scores 9.8 from a flawed reward model. It collapses into
-reward hacking within hours. The KL term pulls it back toward sane text;
+reward hacking within hours. The KL term pulls it back toward sane text.
 the clip limits each step's damage. RL against a learned metric needs
 both leashes, or the metric gets gamed.
 
@@ -210,7 +207,7 @@ form, PPO the iterative climb. Pick by constraint:
   the current policy, freshly labeled. Online PPO keeps improving past
   the point where offline DPO's static dataset goes stale (Lecture 15).
 - **Neither fixes bad data.** Both methods distill the preference pairs.
-  Biased pairs in, biased policy out. The data is the ceiling; the
+  Biased pairs in, biased policy out. The data is the ceiling. The
   algorithm is the floor.
 
 ## Reward hacking: the learned metric fights back
@@ -280,7 +277,7 @@ conversation.
 
 The public pattern: SFT first, then preferences (PPO or DPO), then
 verifiable-reward RL for reasoning. The closed labs publish that they
-align; they do not publish how.
+align. They do not publish how.
 
 > [!QA]
 > Q: Walk me through the full RLHF pipeline on one prompt.
@@ -302,13 +299,13 @@ align; they do not publish how.
 
 > [!QA]
 > Q: FLAN's 3M examples or LIMA's 1,000 for instruction tuning?
-> A: It depends on what you lack. FLAN's 3M teach task coverage: the model sees thousands of task formats. LIMA's 1,000 teach style: superb responses that set the tone. The lecture's numbers: FLAN gains +6.1 to +26.6 with scale; LIMA shows quality beats quantity. In practice: start with a LIMA-style curated set for tone, add FLAN-style breadth for coverage. Both, in that order.
+> A: It depends on what you lack. FLAN's 3M teach task coverage: the model sees thousands of task formats. LIMA's 1,000 teach style: superb responses that set the tone. The lecture's numbers: FLAN gains +6.1 to +26.6 with scale. LIMA shows quality beats quantity. In practice: start with a LIMA-style curated set for tone, add FLAN-style breadth for coverage. Both, in that order.
 > Follow-up: Can a strong model generate the data for a weaker one?
 > A: Yes, and labs do it routinely: distill instruction-following down the size ladder. The risk is error inheritance: the teacher's blind spots become the student's. Filter generated data with a judge, or the distillation distills the flaws too.
 
 > [!QA]
 > Q: Your RLHF model writes long, confident, wrong answers. Diagnose and fix.
-> A: Diagnosis: reward hacking, two known modes. Longer beats shorter (annotators pick long answers), so the policy learned verbosity. Authoritative beats truthful (confidence scores well), so it learned bluster. Fix: first, the KL penalty: raise beta to pull the policy back toward the SFT model. Second, fix the data: add pairs where the shorter, hedged, correct answer wins. Third, consider DPO on the corrected pairs: simpler loop, same signal. The disease is in the reward; treat the reward, not the policy.
+> A: Diagnosis: reward hacking, two known modes. Longer beats shorter (annotators pick long answers), so the policy learned verbosity. Authoritative beats truthful (confidence scores well), so it learned bluster. Fix: first, the KL penalty: raise beta to pull the policy back toward the SFT model. Second, fix the data: add pairs where the shorter, hedged, correct answer wins. Third, consider DPO on the corrected pairs: simpler loop, same signal. The disease is in the reward. Treat the reward, not the policy.
 > Follow-up: How do you detect hacking before users do?
 > A: Track reward versus human judgment on a held-out set. If the reward model's scores climb while human preference stalls or falls, the policy is gaming the proxy. That divergence is the smoke alarm. No alarm, no deployment.
 

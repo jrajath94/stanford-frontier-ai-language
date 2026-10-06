@@ -11,7 +11,7 @@ instructor: "Christopher Manning"
 offering: "Spring 2024"
 duration: "1:19:00"
 video_id: fyc0Jzr74y4
-video_title: "Lecture 5: Language Modeling and RNNs"
+video_title: "Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 5 - Recurrent Neural Networks"
 video_caption: "Original lecture. Christopher Manning introduces language modeling, n-grams, and recurrent neural networks."
 concepts: [language-modeling, n-gram, sparsity, rnn, hidden-state, sampling, perplexity]
 sources:
@@ -149,12 +149,13 @@ cat (0.5) + dog (0.3) = 0.8 < 0.9, add zebra (0.2) = 1.0
 nucleus: {cat, dog, zebra}, renormalized to [0.5, 0.3, 0.2]
 ```
 
-Now sharpen the distribution first (T = 0.5 gives [0.66, 0.24, 0.10]):
-cat + dog = 0.90, which reaches p = 0.9. The nucleus is {cat, dog}:
-[0.73, 0.27]. "Zebra" can never be sampled. That is the point: cut the
-crazy tail. Top-p adapts where top-k cannot: a sharp distribution gets a
-small nucleus, a flat one gets a large nucleus, automatically. Temperature
-plus top-p is the standard recipe on every chatbot: reshape, then cut.
+Now sharpen the distribution first (T = 0.4 gives [0.725, 0.202, 0.073]):
+cat + dog = 0.927, which reaches p = 0.9. The nucleus is {cat, dog}:
+renormalized [0.782, 0.218]. "Zebra" can never be sampled. That is the
+point: cut the crazy tail. Top-p adapts where top-k cannot: a sharp
+distribution gets a small nucleus, a flat one gets a large nucleus,
+automatically. Temperature plus top-p is the standard recipe on every
+chatbot: reshape, then cut.
 
 ![Top-p](assets/plate-l05-topp.webp "Top-p keeps the smallest set of words whose probabilities sum to p. The tail is cut. Shell 2. Source: original toy for nucleus sampling. Project: Stanford Frontier AI.")
 
@@ -359,9 +360,16 @@ that worked: the LSTM. Lecture 7 asks whether the chain is needed at all.
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/fyc0Jzr74y4" title="CS224N Spring 2024 Lecture 5: Language Modeling and RNNs" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 5: Language Modeling and RNNs</strong> (Christopher Manning, Spring 2024). The original lecture: language modeling, n-grams, recurrent neural networks. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=fyc0Jzr74y4</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/PaCmpygFfXo" title="The spelled-out intro to language modeling: building makemore" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>Language modeling, spelled out</strong> (Karpathy). Build a bigram model by hand, then train it.</p>
+</div>
 </div>
 
 ### Go deeper

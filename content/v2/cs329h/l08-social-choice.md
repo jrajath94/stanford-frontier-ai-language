@@ -7,20 +7,21 @@ order: 8
 nav: "L08 · Social Choice"
 title: "Lecture 8: Social Choice, Voting Rules and Impossibility"
 summary: "Voting rules, the Condorcet paradox, Arrow's impossibility, the Borda count and its DPO connection, multi-issue voting, and Sen's liberal paradox."
-date: "[uncertain] Spring 2026"
+date: "[uncertain] Autumn 2024"
 instructor: "Sanmi Koyejo"
-offering: "Spring 2026"
+offering: "[uncertain]"
 duration: "[uncertain]"
-video_id: ""
-video_title: ""
-video_caption: "No dedicated lecture transcript. Built from the course textbook, chapters 5.2-5.5. Voting is discussed in the mechanism design lecture (L04 video)."
+video_id: "1QpNZXL35NM"
+video_title: "Stanford CS329H: Machine Learning from Human Preferences | Autumn 2024 | Voting"
+video_caption: "Course lecture (Stanford Online, Autumn 2024). Voting and social choice, with a guest segment by Colin Megill, CEO of Polis. Verified live on YouTube."
 concepts: [social-choice, voting-rules, condorcet, arrow-theorem, borda-count, dpo-borda, liberal-paradox, multi-issue-voting]
 sources:
+  - tag: video
+    label: "CS329H Autumn 2024: Voting (Stanford Online, Colin Megill guest segment)"
+    url: https://www.youtube.com/watch?v=1QpNZXL35NM
   - tag: notes
     label: "Course textbook, chapters 5.2-5.5 (Truong, Haupt, Koyejo, 2025)"
-  - tag: video
-    label: "Lecture 4 video (mechanism design), social choice segment"
-    url: https://www.youtube.com/watch?v=zkHTbb-0Gns
+    url: https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
   - tag: paper
     label: "Arrow, Social Choice and Individual Values (1951)"
   - tag: paper
@@ -65,11 +66,11 @@ with m = 3:
 
 ```ascii
 A: 2 + 2 + 0 + 0 = 4
-B: 1 + 1 + 2 + 2 = 6
-C: 0 + 0 + 1 + 1 = 2
+B: 1 + 1 + 2 + 1 = 5
+C: 0 + 0 + 1 + 2 = 3
 ```
 
-B wins with 6. Same ballots, different winner. Borda sees what
+B wins with 5. Same ballots, different winner. Borda sees what
 plurality missed: B is everyone's first or second choice.
 
 **Single transferable vote (STV).** Ranked ballots, counted in
@@ -89,9 +90,40 @@ which slice of the voters' will counts.
 
 > [!QA]
 > Q: Why do different voting rules pick different winners from the same ballots?
-> A: Each rule reads the ballots differently. Plurality sees only top choices: A wins 2-1-1. Borda weighs every rank position: B scores 6, A scores 4, C scores 2, so B wins. STV simulates sequential runoffs. Condorcet checks pairwise majorities. The ballot profile contains all of this information at once, and each rule extracts a different slice. There is no neutral extraction: choosing the rule chooses which slice counts.
+> A: Each rule reads the ballots differently. Plurality sees only top choices: A wins 2-1-1. Borda weighs every rank position: B scores 5, A scores 4, C scores 3, so B wins. STV simulates sequential runoffs. Condorcet checks pairwise majorities. The ballot profile contains all of this information at once, and each rule extracts a different slice. There is no neutral extraction: choosing the rule chooses which slice counts.
 > Follow-up: Which rule is "best"?
 > A: No rule dominates. That is Arrow's point, covered below. Plurality is simple but ignores depth. Borda uses depth but violates IIA. Condorcet is principled but the winner may not exist. Pick by which failure you can tolerate, and say so explicitly.
+
+### Subchapter: STV, worked round by round
+
+**Single transferable vote** counts in rounds. Each round, if
+someone has a majority, they win. Otherwise the weakest
+candidate is eliminated and their votes transfer to each
+ballot's next choice. Work it on a 5-voter variant of the
+chapter's toy, chosen so no tiebreak is needed:
+
+```ascii
+voters 1-2:  A > B > C
+voters 3-4:  B > C > A
+voter 5:     C > B > A
+```
+
+![STV eliminates and transfers](assets/plate-stv-rounds.webp "Round 1: no majority. C eliminated, its vote transfers to B. Round 2: B wins 3-2. Shell 3. Source: original figure for STV. Project: Stanford Frontier AI.")
+
+Round 1: first-place votes A = 2, B = 2, C = 1. Majority needs
+3. Nobody has it. Eliminate the weakest: C with 1 vote. Voter
+5's ballot reads C > B > A, so the vote transfers to B. Round
+2: A = 2, B = 3. B has the majority and wins.
+
+Compare with the other rules on the same ballots. Plurality:
+no majority either, A and B tie 2-2. Borda: A gets 2+2+0+0+0 =
+4, B gets 1+1+2+2+1 = 7, C gets 0+0+1+1+2 = 4. Borda crowns B
+with 7. STV also crowns B, but by a different route:
+sequential majority instead of point totals. The chapter's
+4-voter toy gives plurality to A and Borda to B. STV on the
+5-voter variant agrees with Borda here, but the agreement is
+contingent, not structural. Different elections, different
+splits.
 
 ## Where aggregation breaks: the cycle
 
@@ -205,6 +237,30 @@ and the distortion is rarely measured.
 > Follow-up: Why does the connection matter if the assumptions fail?
 > A: Because it tells you what DPO is approximating and how the approximation distorts. Non-uniform pair sampling changes the implicit electorate: oversampled response types get extra votes. BT misspecification changes what a "win" means. If you know DPO is a Borda count, you can audit the election: check the sampling, check the model, and interpret the winner accordingly.
 
+> [!QA]
+> Q: Walk me through the Borda count on the chapter's toy, by hand.
+> A: Four voters, three candidates, m = 3. Points: top = 2, second = 1, third = 0. Voter 1 (A>B>C): A=2, B=1, C=0. Voter 2 (A>B>C): A=2, B=1, C=0. Voter 3 (B>C>A): B=2, C=1, A=0. Voter 4 (C>B>A): C=2, B=1, A=0. Totals: A = 2+2+0+0 = 4. B = 1+1+2+1 = 5. C = 0+0+1+2 = 3. B wins with 5. Now read what happened: A won plurality with 2 first-place votes, but B was everyone's first or second choice, and Borda's point totals see that depth. Check the pairwise view too. B vs A: voters 3 and 4 prefer B, voters 1 and 2 prefer A, a 2-2 tie. B vs C: voters 1, 2, 3 prefer B, 3-1. The point count and the matchup count tell the same story two ways.
+> Follow-up: Why does the Borda score equal the pairwise win count?
+> A: With m candidates, each voter's ranking gives m-1 points to the top, m-2 to second, and so on. Candidate y's points from one voter equal the number of candidates ranked below y by that voter, which is the number of pairwise matchups y wins against that voter's ballot. Sum over voters: total points = total matchup wins. The Borda score is the head-to-head win count. That identity is what makes DPO a Borda election.
+
+> [!QA]
+> Q: Design the voting rule for an LLM eval leaderboard. 400 models, crowd pairwise votes, one ranking.
+> A: Use Bradley-Terry fitted by MLE, the statistical Borda count: each model's score is its latent strength, and the ranking is the fitted order. This is what LMArena does: since December 2023 its leaderboard runs a Bradley-Terry model on pairwise votes, not a raw Elo update. Add three components. First, bootstrap confidence intervals on the ranks: with sparse votes the #7 vs #8 gap is noise, and the interval says so. Second, style control: fit a verbosity term alongside model strengths so long answers do not buy rank, the lesson of Lecture 4's systematic noise. Third, a fraud model: detect and downweight coordinated voting blocs, because Gibbard-Satterthwaite says the rule is manipulable and someone will try. Publish the rule, the intervals, and the manipulation audit. The ranking is a value choice. The audit is what makes it defensible.
+> Follow-up: Why Bradley-Terry instead of raw win fraction?
+> A: Win fraction ignores strength of schedule: beating weak models 10-0 says less than splitting 5-5 with strong ones. BT adjusts for opponent strength through the likelihood, exactly like Elo. Raw win fractions also have no uncertainty model. BT gives standard errors from the Hessian, which the leaderboard needs to avoid crowning noise.
+
+> [!QA]
+> Q: Gibbard-Satterthwaite says every reasonable voting rule is manipulable. What does that mean, concretely?
+> A: With 3 or more outcomes, every non-dictatorial voting rule can be gamed: some voter can get a better outcome by misreporting their preferences. Concrete: under plurality, a voter's favorite is polling third, so they vote for their second choice to block their least favorite. That is strategic voting, and the theorem says no rule design removes the incentive. It is Arrow's impossibility wearing a mechanism-design costume: Arrow is about aggregating honestly reported preferences, Gibbard-Satterthwaite about eliciting them honestly. Both say the perfect rule does not exist.
+> Follow-up: How does this bite in preference data collection?
+> A: Annotators who know the aggregation rule can steer it. If labelers know the pipeline upweights majority-agreeing labels, contrarians misreport toward the expected majority. If they know verbosity is rewarded, they write long. Lecture 9's answer: design the elicitation mechanism so honesty is the best strategy, or model the strategy explicitly. You cannot assume sincerity and aggregate at the same time.
+
+> [!QA]
+> Q: For RLHF aggregation over many annotators, which Arrow axiom would you drop?
+> A: Drop IIA, like Borda does. Unrestricted domain must stay: annotators will submit any ranking, including cycles, and the pipeline must handle them. Pareto must stay: if every annotator prefers y over y', the policy should too. Dropping it means ignoring unanimity. Non-dictatorship must stay: no single annotator decides. IIA is the expensive one: it demands that the y-versus-y' verdict ignore all other responses, which fails the moment candidates are near-duplicates. Borda's IIA-prime is the workable substitute: the verdict may depend on how many alternatives sit between y and y', just not on their identities. DPO inherits this choice: it is a Borda election, so it violates IIA and keeps the other three.
+> Follow-up: What is the concrete cost of dropping IIA here?
+> A: Clones move outcomes. Add ten paraphrases of one response style and Borda/DPO upweights that style, because each paraphrase casts matchup votes. The mitigation is the deduplication from Lecture 3's applied answer: keep the candidate set diverse so the weakened axiom has little room to distort. The axiom you drop chooses the failure you must police.
+
 ## Nosy preferences: Sen's liberal paradox
 
 Classical social choice assumes private preferences: you care
@@ -271,7 +327,7 @@ The story in eight steps. Each step answers the one before it.
 1. **Whose preferences?** One policy, ten thousand
    annotators, real disagreement. Aggregation is unavoidable.
 2. **Four rules, four winners.** The toy ballots: plurality
-   crowns A 2-1-1. Borda crowns B 6-4-2. The rule is the value
+   crowns A 2-1-1. Borda crowns B 5-4-3. The rule is the value
    choice.
 3. **Majorities cycle.** A beats B, B beats C, C beats A,
    each 2-1. No Condorcet winner. Group rationality fails
@@ -294,9 +350,11 @@ The story in eight steps. Each step answers the one before it.
 ## Official sources and further reading
 
 **Official:**
+- CS329H Autumn 2024: Voting (video id 1QpNZXL35NM): voting and
+  social choice, with the Colin Megill (Polis) guest segment.
 - Course textbook, chapters 8.x: voting rules, Condorcet,
   Arrow, Borda, the DPO-Borda connection, Sen, multi-issue
-  voting.
+  voting. https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
 
 **Further reading:**
 - Arrow (1951), Social Choice and Individual Values: the
@@ -304,21 +362,21 @@ The story in eight steps. Each step answers the one before it.
 - Sen (1970): the liberal paradox.
 
 **Caveats from these sources.** The DPO-Borda proportionality
-needs uniform sampling and correct BT specification; the
+needs uniform sampling and correct BT specification. the
 textbook flags both as violated in practice. The ballot toys
 are worked here from the textbook's examples. Sen's example is
 the textbook's telling.
 
 ## Connections to the other courses
 
-- **CS329H L02:** the preference pair and BT; the matchup
+- **CS329H L02:** the preference pair and BT. the matchup
   unit Borda counts.
 - **CS329H L03:** IIA as a choice axiom, now as an
-  aggregation axiom; heterogeneity as the source of
+  aggregation axiom. heterogeneity as the source of
   disagreement.
-- **CS329H L07:** DPO as a Borda election; the assumption
+- **CS329H L07:** DPO as a Borda election. the assumption
   checklist's homogeneity item.
-- **CS329H L09:** voting rules are manipulable mechanisms;
+- **CS329H L09:** voting rules are manipulable mechanisms.
   Gibbard-Satterthwaite.
 - **CS329H L10:** bridging versus majority in deployed
-  systems; whose preferences count.
+  systems. whose preferences count.

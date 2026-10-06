@@ -79,6 +79,43 @@ regularization or a prior, covered below.
 > Follow-up: What breaks convexity?
 > A: Mixtures and latent user types. A mixture of two BT models has a non-convex likelihood with local optima. Neural reward models r_theta(x, y) are non-convex in theta. The convex case is the linear-utility, single-population BT model only.
 
+### Subchapter: standard errors from the Hessian, worked
+
+The lesson promised standard errors from the Hessian. Here they
+are, on a toy you can check. Two items, A and B. Ten pairs. A
+wins 7, B wins 3.
+
+Step 1: the MLE. The log-likelihood in the gap d = V_A - V_B
+is 7d - 10 log(1 + e^d). Differentiate and set to zero: 7 -
+10 sigma(d) = 0, so sigma(d) = 0.7 and d-hat = log(7/3) =
+0.847. Ten pairs, seven wins, gap 0.847.
+
+Step 2: the curvature. The second derivative of the
+log-likelihood at the MLE is -n p (1-p) = -10 x 0.7 x 0.3 =
+-2.1. Curvature is information: sharp peak, tight estimate.
+
+Step 3: the standard error. For a scalar parameter, SE =
+1 / sqrt(information) = 1 / sqrt(2.1) = 0.690.
+
+Step 4: the interval. The 95% Wald interval is d-hat +/-
+1.96 x SE = 0.847 +/- 1.35, which is (-0.51, 2.20).
+
+Read the interval honestly. Ten pairs cannot pin the gap: the
+data are consistent with B being better (gap -0.51) and with A
+dominating (gap 2.20). The point estimate 0.847 looks precise.
+The interval says otherwise. This is why Lecture 5's active
+learning and Lecture 6's Thompson sampling need the posterior,
+not the point: decisions made on d-hat alone ignore the 0.69
+of doubt.
+
+The general rule: with many items, the Hessian is the matrix
+H = -sum over pairs of p(1-p) x x^T, where x is the
+pair-difference indicator vector (+1 at the winner, -1 at the
+loser). Invert -H, take the diagonal, square-root it: those
+are the standard errors. The anchor from Lecture 3 makes -H
+invertible by removing the flat direction. No anchor, no
+inverse, no standard errors.
+
 ## Where MLE breaks: the undefeated item
 
 Ten games. Item j beats item k all ten times. What does MLE say
@@ -88,7 +125,7 @@ the numbers:
 
 ```ascii
 d = 3:   sigma = 0.953,  likelihood = 0.953^10 = 0.62
-d = 5:   sigma = 0.993,  likelihood = 0.993^10 = 0.93
+d = 5:   sigma = 0.99331,  likelihood = 0.99331^10 = 0.94
 d = 10:  sigma = 0.99995, likelihood = 0.99995^10 = 0.9995
 ```
 
@@ -324,10 +361,21 @@ The story in eight steps. Each step answers the one before it.
    cross-validation for care. Rashomon ties mean the data
    cannot choose. Choose by domain knowledge and say so.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/7i6WsIzZaeo" title="Stanford CS329H Autumn 2024: Model-based Preference Optimization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+- Course lecture: https://www.youtube.com/watch?v=7i6WsIzZaeo
+- Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
+- Stanford Human Preferences (SHP) dataset: https://huggingface.co/datasets/stanfordnlp/SHP
+- Anthropic HH-RLHF dataset: https://huggingface.co/datasets/Anthropic/hh-rlhf
+- Hunter (2004), MM algorithms for generalized Bradley-Terry.
+
 ## Official sources and further reading
 
 **Official:**
-- Course textbook, chapters 4.x: MLE on pairs, Bayesian BT,
+- Course textbook, chapter 2.x: MLE on pairs, Bayesian BT,
   Elo, label noise, the LLM simulation with 10% noise, the
   overfitting U-turn.
 

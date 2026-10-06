@@ -11,7 +11,7 @@ instructor: "Christopher Manning"
 offering: "Spring 2024"
 duration: "1:19:00"
 video_id: KVKvde-_MYc
-video_title: "Lecture 4: Dependency Parsing"
+video_title: "Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 4 - Dependency Parsing"
 video_caption: "Original lecture. Christopher Manning covers ambiguity, dependency structure, transition-based parsing, and neural parsers."
 concepts: [ambiguity, dependency-parsing, pp-attachment, transition-based-parsing, shift-reduce, oracle, indicator-features, chen-manning, graph-based-parsing, stanza]
 sources:
@@ -34,7 +34,8 @@ Read the newspaper headline: "Scientists count whales from space"
 ([15:29](ts:15:29)). Two readings. Either the counting happens from space,
 or the whales are from space: space whales. The prepositional phrase "from
 space" can attach to "count" or to "whales", and the meaning changes
-completely.
+completely. This is **PP attachment** (prepositional-phrase attachment):
+the classic ambiguity the parser must resolve.
 
 ![Ambiguity](assets/l04-ambiguity.svg "Stanford Frontier AI, CS224N L04. Two readings of 'Scientists count whales from space': the counting happens from space, or the whales are from space.")
 
@@ -85,8 +86,8 @@ stack          buffer              action          arc added
 [ROOT]         [the,big,cat,sat]   SHIFT
 [ROOT,the]     [big,cat,sat]       SHIFT
 [ROOT,the,big] [cat,sat]           SHIFT
-[ROOT,the,big,cat] [sat]           LEFT-ARC        cat -> the (det)
-[ROOT,big,cat] [sat]               LEFT-ARC        cat -> big (amod)
+[ROOT,the,big,cat] [sat]           LEFT-ARC        cat -> big (amod)
+[ROOT,the,cat] [sat]               LEFT-ARC        cat -> the (det)
 [ROOT,cat]     [sat]               SHIFT
 [ROOT,cat,sat] []                  LEFT-ARC        sat -> cat (nsubj)
 [ROOT,sat]     []                  RIGHT-ARC       ROOT -> sat (root)
@@ -350,9 +351,16 @@ structure without any treebank at all.
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/KVKvde-_MYc" title="CS224N Spring 2024 Lecture 4: Dependency Parsing" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 4: Dependency Parsing</strong> (Christopher Manning, Spring 2024). The original lecture: ambiguity, dependency structure, transition-based parsing, neural parsers. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=KVKvde-_MYc</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/PVShkZgXznc" title="CS224n Winter 2019: Dependency Parsing" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>Dependency parsing</strong> (CS224N Winter 2019). The earlier Stanford take on transition-based parsing.</p>
+</div>
 </div>
 
 ### Go deeper

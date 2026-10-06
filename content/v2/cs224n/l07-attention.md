@@ -252,7 +252,7 @@ step to each encoder state: the path is 1 or 2 multiplications.
 
 > [!QA]
 > Q: Additive or dot-product scoring for a new translation model?
-> A: Scaled dot-product, unless you have a reason. It has no parameters, costs one multiply per pair, and trains well: it is the default the field converged on. Pick additive only if the query and key spaces genuinely differ (cross-modal settings) and the extra expressivity pays for its cost. Measure on your dev set; the gap is usually small and the speed gap is not.
+> A: Scaled dot-product, unless you have a reason. It has no parameters, costs one multiply per pair, and trains well: it is the default the field converged on. Pick additive only if the query and key spaces genuinely differ (cross-modal settings) and the extra expressivity pays for its cost. Measure on your dev set. The gap is usually small and the speed gap is not.
 > Follow-up: What breaks with plain dot-product at large dimensions?
 > A: Saturation. Dot products grow with dimension, the softmax collapses onto one state, and gradients die. That is why the scaled variant divides by sqrt(d): Lecture 8's one-line fix.
 

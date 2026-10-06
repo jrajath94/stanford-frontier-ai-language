@@ -287,7 +287,7 @@ summarization, text-to-speech, any sequence-to-sequence task.
 
 > [!QA]
 > Q: Walk me through one GRU update, by hand.
-> A: Previous state h = [1.0, 0.5]. New input x arrives. The gates compute z = [0.9, 0.1] (update) and r = [1.0, 0.0] (reset). The candidate sees r * h = [1.0, 0.0] mixed with x: candidate = [0.2, 0.8]. Final: h_new = z * h + (1-z) * candidate = [0.9*1.0 + 0.1*0.2, 0.1*0.5 + 0.9*0.8] = [0.92, 0.77]. The first slot kept the past, the second took the candidate. One gate blended; the LSTM would have used two.
+> A: Previous state h = [1.0, 0.5]. New input x arrives. The gates compute z = [0.9, 0.1] (update) and r = [1.0, 0.0] (reset). The candidate sees r * h = [1.0, 0.0] mixed with x: candidate = [0.2, 0.8]. Final: h_new = z * h + (1-z) * candidate = [0.9*1.0 + 0.1*0.2, 0.1*0.5 + 0.9*0.8] = [0.92, 0.77]. The first slot kept the past, the second took the candidate. One gate blended. The LSTM would have used two.
 > Follow-up: When does the GRU lose to the LSTM?
 > A: On very long dependencies. The LSTM's separate cell with a forget gate near 1 is a cleaner highway than the GRU's blended state. In practice the gap is small, and both lose to attention past a few hundred tokens.
 
@@ -311,9 +311,9 @@ summarization, text-to-speech, any sequence-to-sequence task.
 
 > [!QA]
 > Q: Can the decoder in seq2seq be bidirectional?
-> A: No. The decoder generates left to right: at step t the words after t do not exist yet. Bidirectionality needs the full sequence, which only the encoder has. This is structural, not a choice: generation is causal, so the decoder is causal. The encoder reads both ways; the decoder writes one way.
+> A: No. The decoder generates left to right: at step t the words after t do not exist yet. Bidirectionality needs the full sequence, which only the encoder has. This is structural, not a choice: generation is causal, so the decoder is causal. The encoder reads both ways. The decoder writes one way.
 > Follow-up: What about non-autoregressive generation?
-> A: It exists: predict all target words at once, then refine. Faster, weaker: without left-to-right conditioning the model cannot use its own partial output, and quality drops. The field tried it for speed; autoregressive stayed the standard because conditioning is where the quality lives.
+> A: It exists: predict all target words at once, then refine. Faster, weaker: without left-to-right conditioning the model cannot use its own partial output, and quality drops. The field tried it for speed. Autoregressive stayed the standard because conditioning is where the quality lives.
 
 ## Mapping back: what the LSTM answers
 

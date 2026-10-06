@@ -398,6 +398,7 @@ in groups. One-off debugging does not scale. Taxonomies do.
 
 ### Subchapter: pass-hat@k, worked
 
+tau-bench (tool-agent-user) is a benchmark for tool-using agents.
 tau-bench's metric: the probability that *all* k attempts succeed.
 The toy: per-attempt success probability p = 0.8, independent.
 pass-hat@2 = 0.8^2 = 0.64. pass-hat@5 = 0.8^5 = 0.33. Compare

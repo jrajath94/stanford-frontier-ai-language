@@ -154,7 +154,7 @@ build a good representation of the real word instead of leaning on the
 
 **Causal language modeling** is the GPT objective: predict each token from
 the tokens before it. No masks. The same sentence: input "The cat",
-predict "sat"; input "The cat sat", predict "on". Every position is a
+predict "sat". Input "The cat sat", predict "on". Every position is a
 training example, and the causal mask (Lecture 8) keeps the future hidden.
 
 Compare the two objectives on what they buy. MLM sees both directions, so
@@ -265,7 +265,7 @@ parameters on 10,000 examples memorizes the examples.
   change the model, LoRA disappears into it. Lecture 12 derives it fully.
 
 The decision rule: full fine-tuning when the shift is large and the
-budget allows; LoRA when batch-1 barely fits or data is small; adapters
+budget allows. LoRA when batch-1 barely fits or data is small. Adapters
 when you must serve many tasks from one frozen backbone.
 
 > [!QA]
@@ -319,7 +319,7 @@ models.
 > Q: You have one A100 and a 7B model to adapt to legal contracts. Full fine-tuning or LoRA?
 > A: LoRA. Full fine-tuning of 7B needs the 16-bytes-per-parameter budget: 112 GB, which overflows one 80 GB A100 before batch 1. LoRA trains 65K to a few million numbers (rank 8-64 on attention matrices): it fits with room to spare. Legal contracts are a style and vocabulary shift, not a new modality: low-rank adaptation covers it. Go full only if LoRA's quality plateaus below your bar.
 > Follow-up: What rank?
-> A: Start at 16. Rank 8 is the lecture's example; 16-64 is the practical range. Higher rank approaches full fine-tuning's expressivity at higher cost. Tune it like any hyperparameter: raise until the dev metric stops moving.
+> A: Start at 16. Rank 8 is the lecture's example. 16-64 is the practical range. Higher rank approaches full fine-tuning's expressivity at higher cost. Tune it like any hyperparameter: raise until the dev metric stops moving.
 
 ## Watch and go deeper
 

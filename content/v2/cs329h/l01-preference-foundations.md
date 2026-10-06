@@ -7,17 +7,24 @@ order: 1
 nav: "L01 · Preference Foundations"
 title: "Lecture 1: Why Preferences, and the Language Model Running Example"
 summary: "Preference learning across machine learning, the LLM alignment running example, the three shapes of comparison data, and deterministic utility models from Rasch to Bradley-Terry."
-date: "[uncertain] Spring 2026"
+date: "[uncertain] Autumn 2024"
 instructor: "Sanmi Koyejo"
-offering: "Spring 2026"
-duration: "[uncertain]"
-video_id: ""
-video_title: ""
-video_caption: "No surviving transcript for Lecture 1. Built from the course textbook, chapters 1.1-1.6."
+offering: "[uncertain]"
+duration: "1:17:00 [uncertain]"
+video_id: "ApF2OenMgfc"
+video_title: "Stanford CS329H: ML from Human Preferences | Autumn 2024 | Introduction"
+video_caption: "Course introduction lecture (Stanford Online, Autumn 2024). Sanmi Koyejo sets up the preference learning problem. Verified live on YouTube."
 concepts: [preference-learning, rlhf, dpo, comparison-data, response-matrix, rasch-model, factor-models, bradley-terry]
 sources:
+  - tag: video
+    label: "CS329H Autumn 2024: Introduction (Stanford Online)"
+    url: https://www.youtube.com/watch?v=ApF2OenMgfc
+  - tag: video
+    label: "Full CS329H Autumn 2024 lecture playlist"
+    url: http://www.youtube.com/playlist?list=PLoROMvodv4rNm525zyAObP4al43WAifZz
   - tag: notes
     label: "Course textbook, chapter 1 (Truong, Haupt, Koyejo, 2025)"
+    url: https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
   - tag: paper
     label: "Christiano et al., Deep RL from Human Preferences (2017)"
     url: https://arxiv.org/abs/1706.03741
@@ -29,11 +36,11 @@ sources:
     url: https://arxiv.org/abs/2305.18290
 ---
 > [!WARN]
-> The Lecture 1 transcript is missing. This chapter is rebuilt from the
-> course textbook, chapters 1.1 through 1.6, which the textbook's own
-> lecture plan maps to its first lecture. No lecture-specific examples
-> or timestamps are claimed. Anything the textbook does not say is
-> marked [uncertain] or omitted.
+> The Autumn 2024 Introduction lecture video is embedded above. This
+> chapter follows the course textbook, chapters 1.1 through 1.6,
+> which the course plan maps to its opening lectures. Lecture-specific
+> examples or timestamps are not claimed. Anything the textbook does
+> not say is marked [uncertain] or omitted.
 
 ## The problem: prediction is not behavior
 
@@ -91,6 +98,21 @@ The textbook cites the psychology behind this: humans evaluate
 differences better than magnitudes (Kahneman and Tversky, 1979). The
 same response gets different scores. The same comparison gets the
 same answer. That asymmetry decides the whole design of the field.
+
+### Subchapter: the calibration toy, drawn
+
+Draw the two annotators' scales side by side. Annotator A places X
+at 7 and Y at 5. Annotator B places X at 9 and Y at 7. The absolute
+positions differ. The gap is 2 on both scales. Now ask what survives
+a change of annotator. The levels do not. The gap does.
+
+![Two annotators, one shared gap](assets/plate-annotator-scales.webp "A rates 7 and 5. B rates 9 and 7. Levels disagree. The gap of 2 survives. Shell 2. Source: original toy for the calibration problem. Project: Stanford Frontier AI.")
+
+This gives the design rule for the whole course. Never train on a
+number that moves when the annotator changes. Train on the thing
+that does not move: the comparison. Every model from here on takes
+comparisons as input. The sigmoid in the Rasch model below eats a
+difference for exactly this reason.
 
 ## Where scores break: five settings, one structure
 
@@ -223,6 +245,31 @@ explain the whole matrix up to noise. This separation, the person
 apart from the thing, is the founding idea of latent variable
 modeling.
 
+### Subchapter: factor models, when two numbers are not enough
+
+The Rasch model gives each user one number and each item one
+number. It assumes everyone agrees on the order of items, up to
+noise. Reality disagrees. A horror fan ranks The Shining above
+The Hangover. A comedy fan ranks them the opposite way. One
+appetite number cannot hold both.
+
+The fix: make the numbers vectors. Give user i an embedding
+vector U_i and item j an embedding vector V_j, each of dimension
+d. The acceptance probability becomes sigma(U_i^T V_j): the dot
+product replaces the sum. Users and items that point the same
+way match. The Rasch model is the special case d = 1, with the
+vectors reduced to scalars.
+
+![Factor model: vectors replace scalars](assets/plate-factor-model.webp "User and item embeddings point in taste space. The dot product decides the match. Rasch is the one-dimensional case. Shell 3. Source: original figure for the factor model. Project: Stanford Frontier AI.")
+
+Work a 2-D toy. Horror fan: U = [1.0, -1.0] (loves horror,
+dislikes comedy). Horror film: V = [1.0, -0.5]. Dot product =
+1.0 x 1.0 + (-1.0) x (-0.5) = 1.5. sigma(1.5) = 0.82. Comedy
+film: V = [-1.0, 1.0]. Dot = -1.0 + -1.0 = -2.0. sigma(-2.0) =
+0.12. One model, opposite predictions for opposite tastes. This
+is the machinery Polis runs at scale in Lecture 10: its factor
+model separates rater bias, ideology, and note quality.
+
 > [!QA]
 > Q: What do U_i and V_j mean in the Rasch model?
 > A: U_i is user appetite: a selective user has low U_i, an enthusiastic user has high U_i. V_j is item appeal: a niche item has low V_j, a crowd-pleaser has high V_j. The acceptance probability is the sigmoid of their sum. Two numbers explain the whole response matrix up to noise.
@@ -257,7 +304,7 @@ that. They only tell you the order.
 
 Return to the opening problem with the new machinery. Post-training
 an LLM by human preference runs in three steps (Christiano et al.,
-2017; Ouyang et al., 2022).
+2017. Ouyang et al., 2022).
 
 ![The preference learning pipeline](assets/l01-pipeline.svg "Three stages. Collect preference pairs, train a reward model, optimize the policy. DPO skips the middle stage. Source: original figure for Stanford Frontier AI.")
 
@@ -287,6 +334,24 @@ steer it.
 > A: Pretraining predicts the next token on a corpus, which builds capability and calibrated probabilities. Post-training aligns behavior with human preferences, which prediction alone cannot do. A pure predictor continues harmful prompts happily. RLHF adds the preference step: learn a reward from human comparisons, then optimize the policy against it.
 > Follow-up: What goes wrong if you skip the closeness constraint in step 3?
 > A: Reward hacking. The policy exploits errors in the learned reward, drifting far from sensible behavior while the proxy reward keeps rising. The constraint, usually a KL penalty to the reference model, keeps the policy in the region where the reward model is trustworthy.
+
+> [!QA]
+> Q: Walk me through the Rasch model from raw data to a prediction.
+> A: Start with the response matrix: rows are users, columns are items, entries are 0 or 1 for reject or accept. Sort rows by acceptance rate and columns by popularity. A diagonal band appears. Posit that each entry depends on two numbers: user appetite U_i and item appeal V_j. Set p(accept) = sigma(U_i + V_j). Fit U and V by maximum likelihood on the observed entries. To predict whether a new user accepts a new item, add their numbers and squash: sigma(1 + 1.5) = 0.92 for an enthusiastic user and a crowd-pleaser. The band in the sorted matrix is the visual check that the model fits.
+> Follow-up: What if the band does not appear?
+> A: Then the Rasch structure is wrong for the data. Users may disagree systematically about item order, which the one-dimensional model cannot express. Move to the factor model subchapter above: give users and items vectors instead of scalars, and let the dot product capture the disagreement.
+
+> [!QA]
+> Q: You have 500 annotator-hours to rank 10,000 candidate responses. Design the data collection.
+> A: Use binary pairs, not scores and not full rankings. A pair takes about 30 seconds, so 500 hours buys roughly 60,000 pairs. Do not cover all pairs: 10,000 items make 50 million pairs, which is hopeless. Sample pairs adaptively: start with random pairs to get rough utilities, then spend the remaining budget on pairs near 50/50 under the current fit, where Fisher information peaks (Lecture 5). Include an outside option, "neither is acceptable", so universally bad items are detected. Deduplicate near-identical responses first, or clones will distort the fit (Lecture 3). Hold out 20% of pairs for validation.
+> Follow-up: Why not ask each annotator to rank 10 responses at a time?
+> A: A ranking of 10 carries 9 staged choices, more information per query. But ranking is cognitively heavy and slow, and fatigue corrupts the later positions. For 10,000 items the ranking task also forces comparisons between items of wildly different quality, which wastes effort on predictable answers. Pairs keep each judgment quick and let you steer the budget toward the informative ones.
+
+> [!QA]
+> Q: What does the outside option buy you, and when does omitting it hurt?
+> A: The outside option, written 0, means "none of the above". It anchors the utility scale: V_j reads as value relative to opting out, which fixes the identification problem from Lecture 3. It also detects universal failure: if annotators pick the outside option over every response, the whole candidate set is bad. Omit it and two failures follow. First, the utility level floats free, so you cannot tell universal delight from universal mediocrity. Second, forced choice between two bad responses teaches the model that one bad response is "preferred", which poisons the reward.
+> Follow-up: How do you implement it in a pair interface?
+> A: Add a third button next to "A is better" and "B is better": "neither is acceptable". Model it as the item-versus-outside special case of Bradley-Terry: p(accept j) = sigma(V_j - V_0) with V_0 = 0. Pairs where the outside option wins carry the level information that winner-loser pairs cannot.
 
 ## Mapping back: what comparisons buy over scores
 
@@ -349,13 +414,12 @@ The story in eight steps. Each step answers the one before it.
 
 **Further reading:**
 - Christiano et al., Deep Reinforcement Learning from Human
-  Preferences (2017): https://arxiv.org/abs/1706.03741 — the
+  Preferences (2017): https://arxiv.org/abs/1706.03741, the
   three-stage RLHF loop.
 - Ouyang et al., Training Language Models to Follow Instructions
-  with Human Feedback (2022): https://arxiv.org/abs/2203.02155 —
+  with Human Feedback (2022): https://arxiv.org/abs/2203.02155,
   RLHF at LLM scale.
-- Rafailov et al., Direct Preference Optimization (2023):
-  https://arxiv.org/abs/2305.18290 — skipping the reward model.
+- Rafailov et al., Direct Preference Optimization (2023): [paper](https://arxiv.org/abs/2305.18290, skipping the reward model.
 
 **Caveats from these sources.** The textbook's lecture plan maps
 chapters 1.1-1.6 to Lecture 1, but the actual lecture content is

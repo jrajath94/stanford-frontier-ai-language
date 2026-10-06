@@ -94,6 +94,41 @@ raters are careless: hold an agreement session and fix the rubric.
 ![Human ratings](assets/l08-human.svg "Ideal but slow, subjective, drifty. Stanford Frontier AI.")
 ![Kappa](assets/l08-kappa.svg "Agreement rate lies. Chance-corrected metrics tell the truth. Stanford Frontier AI.")
 
+### Subchapter: the rater pipeline
+
+Good human ratings are manufactured, not collected:
+
+1. **Write the rubric.** One page: what counts as good, with
+   3-5 worked examples per grade. Ambiguity here becomes kappa
+   later.
+2. **Pilot.** 50 items, two raters, compute kappa. Below 0.6:
+   rewrite the rubric.
+3. **Align.** Raters discuss disagreements, converge on edge
+   cases. Repeat the pilot.
+4. **Scale.** Many raters, each item double-rated on a sample.
+   Track kappa weekly: drift means the rubric or the task
+   changed.
+5. **Audit.** A gold set with known answers, sprinkled in.
+   Raters who fail the gold set get retrained or cut.
+
+The cost driver is steps 2-4, not the ratings themselves. The
+decision rule: spend on the rubric until kappa clears 0.6, then
+spend on volume. Ratings without a pipeline are expensive noise.
+
+> [!QA]
+> Q: Walk me through building a human eval for a support chatbot.
+> A: Write the rubric first: helpfulness, correctness, tone, each
+> with worked examples. Pilot 50 conversations with two raters:
+> compute Cohen's kappa per dimension. Below 0.6, rewrite the
+> rubric and re-pilot. Align on disagreements. Scale to the full
+> set with 10% double-rating for ongoing kappa. Sprinkle gold
+> items with known verdicts to catch drift. Report kappa with
+> every result: a score without its agreement metric is a rumor.
+> Follow-up: When do you stop double-rating?
+> A: Never fully: drop to 5% once kappa is stable for a month.
+> The moment kappa drifts, the rubric or the task changed, and
+> you need the double ratings to see it.
+
 > [!QA]
 > Q: Why is chance agreement not zero?
 > A: Because agreement has two paths: both say yes or both say no.
@@ -146,6 +181,20 @@ n-gram overlap. All three metrics share the flaws: paraphrases score
 badly, correlation with human judgment is weak, and you still need
 human-written references to start. The teddy-bear comfort sentence
 in three different wordings defeats all of them.
+
+### Subchapter: BERTScore, embeddings fix paraphrase partly
+
+**BERTScore** replaces n-gram overlap with embedding similarity:
+align each candidate token to its most similar reference token
+(cosine of contextual embeddings), average the similarities.
+"The stuffed animal is adorable" now scores well against "the
+teddy bear is cute": similar embeddings, high score. The
+paraphrase blindness lifts. Two limits remain. **References are
+still required**: no reference, no score. **Correlation is still
+imperfect**: embedding similarity is not human judgment, and
+fluent nonsense with similar words scores fine. The rung's
+lesson: every rule metric trades one blindness for another. The
+ladder keeps climbing.
 
 ![Rule metrics](assets/l08-rule-metrics.svg "BLEU, ROUGE, METEOR. Compare to a reference. Punish paraphrase by accident. Stanford Frontier AI.")
 
@@ -206,6 +255,66 @@ truth.
 
 ![Biases](assets/l08-biases.svg "Position, verbosity, self-enhancement. Each has a fix. Stanford Frontier AI.")
 
+### Subchapter: the judge pipeline, end to end
+
+From rubric to calibrated score, the production pipeline:
+
+1. **Rubric.** Crisp guidelines with worked examples (same
+   discipline as human rating).
+2. **Prompt.** Prompt + response + criteria. Rationale before
+   score. Binary scale. Structured output for the parse.
+3. **Sampling.** Temperature 0.1-0.2 for reproducibility.
+   Multiple samples for close calls.
+4. **Bias controls.** Both orders for pairwise (position),
+   length guidance or penalty (verbosity), a different model
+   family as judge (self-enhancement).
+5. **Calibration.** Score 200-500 items with humans too.
+   Measure judge-human agreement (kappa on binary verdicts).
+   Below ~0.7: fix the rubric or the prompt.
+6. **Monitor.** Re-calibrate on a rolling sample. Judges drift
+   as models update: the judge is software, version it.
+
+The pipeline is judge-at-scale plus human-at-the-margin. The
+human sample is not optional: an uncalibrated judge is a random
+number generator with good grammar.
+
+![The judge pipeline](assets/l08-judge-pipeline.svg "Rubric, prompt, sample, de-bias, calibrate, monitor. Humans at the margin. Shell 3. Source: the lecture's best practices. Project: Stanford Frontier AI.")
+
+### Subchapter: pairwise judging and Elo, worked
+
+Pairwise judging (A vs B) generates win/loss data. **Elo** turns
+wins into ratings. The toy: model A rated 1200, model B rated
+1000. Expected score for A: 1/(1 + 10^((1000-1200)/400)) =
+1/(1 + 10^(-0.5)) = 1/1.316 = 0.76. A wins: new rating = 1200 +
+K*(1 - 0.76), K = 32: 1207.7. B falls symmetrically. A 200-point
+gap means ~76% expected win rate. **Bradley-Terry** is the
+statistical sibling: it models P(A beats B) = sigma(r_A - r_B)
+and fits the ratings by maximum likelihood. Chatbot Arena runs
+this at scale: millions of human pairwise votes, Elo/BT ratings,
+a live leaderboard. The interview line: "Elo converts votes to
+skill. Bradley-Terry is how you fit it."
+
+![Elo, worked](assets/l08-elo.svg "200 points means 76% expected wins. Bradley-Terry fits the ratings. Shell 2. Source: original arithmetic. Project: Stanford Frontier AI.")
+
+> [!QA]
+> Q: Walk me through LLM-as-a-judge on one response, start to finish.
+> A: Inputs: the user prompt, the model's response, and the
+> grading criteria (say: correctness, with two worked examples).
+> The judge prompt asks for rationale first, then a binary
+> pass/fail, as structured output. Sample at temperature 0.1.
+> The judge writes its reasoning, then the verdict. For
+> pairwise: run both orders (A,B) and (B,A) to kill position
+> bias, take the majority. Log the rationale: it is the audit
+> trail. Then calibrate: humans grade a sample, and judge-human
+> kappa must clear ~0.7 or the pipeline is decorative.
+> Follow-up: The judge disagrees with humans systematically on
+> one category. What now?
+> A: The rubric or the prompt is wrong for that category, not
+> the judge's intelligence. Add worked examples of the
+> disagreement cases to the criteria, re-run calibration. If it
+> persists, that category goes back to humans: judges have
+> blind spots, and the pipeline must admit it.
+
 > [!QA]
 > Q: Why must the judge differ from the generator?
 > A: Self-enhancement bias: a model rates its own outputs higher
@@ -252,6 +361,20 @@ The lecture's worked score on this passage is 0.6 with its own
 weighting. The mechanism is the same either way: nuance without
 hand-waving, two of four facts wrong, caught individually.
 
+### Subchapter: FActScore, the atomic-fact standard
+
+**FActScore** (Min et al., 2023) standardizes the lecture's
+method: decompose a long-form answer into atomic facts, verify
+each against Wikipedia, report the fraction supported. The design
+decisions: atomic means one claim per fact (no conjunctions to
+hide behind). Supported means the knowledge source entails it,
+judged by a model plus human audit. The metric punishes the two
+classic sins: long answers full of filler (more facts, more
+chances to err) and confident hallucinations. The limit: the
+knowledge source is the ceiling. Facts newer than Wikipedia, or
+outside it, cannot score. The interview line: "FActScore is
+precision over atomic facts, with Wikipedia as the ground truth."
+
 ![Factuality](assets/l08-factuality.svg "Extract facts, check each, weighted aggregate. The example scores 0.6. Stanford Frontier AI.")
 
 ## Evaluating agents
@@ -272,6 +395,19 @@ result.
 
 The evaluation lesson: categorize failures methodically and fix them
 in groups. One-off debugging does not scale. Taxonomies do.
+
+### Subchapter: pass-hat@k, worked
+
+tau-bench's metric: the probability that *all* k attempts succeed.
+The toy: per-attempt success probability p = 0.8, independent.
+pass-hat@2 = 0.8^2 = 0.64. pass-hat@5 = 0.8^5 = 0.33. Compare
+pass@k (Lecture 6): at least one success, 1 - 0.2^2 = 0.96 for
+k = 2. The two metrics answer different questions: pass@k for
+"can it ever succeed" (research), pass-hat@k for "does it succeed
+reliably" (automation). A 0.8 agent looks great on pass@5 (0.999)
+and unusable on pass-hat@5 (0.33). Automation needs the hat.
+The decision rule: report pass@k for capability, pass-hat@k for
+deployment. Never confuse them.
 
 ![Failure taxonomy](assets/l08-agent-failures.svg "Seven ways agents fail. Categorize in groups, fix in groups. Stanford Frontier AI.")
 
@@ -319,6 +455,44 @@ Constrained formats dominate: multiple choice, integer answers, test
 suites. Free-form plus LLM-judge adds a second error layer, so
 benchmark designers avoid it where they can.
 
+### Subchapter: SWE-bench, worked
+
+The task: a real GitHub issue from a popular Python repo. The
+model writes a patch. Grading is test-driven:
+
+1. **FAIL_TO_PASS**: tests that failed before the patch and must
+   pass after. The issue is fixed.
+2. **PASS_TO_PASS**: tests that passed before and must still
+   pass. Nothing broke.
+
+Both must hold. The toy: issue #452, "divide by zero on empty
+input". The model's patch adds a guard. FAIL_TO_PASS:
+test_empty_input now passes. PASS_TO_PASS: the other 47 tests
+still pass. Score: 1. The benchmark's hardness comes from
+reality: real issues, real repos, real test suites. The 2026
+reality: frontier models score 60-80% on SWE-bench Verified, and
+the benchmark is saturated enough that harder variants (SWE-bench
+Multimodal, SWE-Lancer) carry the signal now.
+
+![SWE-bench, worked](assets/l08-swebench.svg "Patch the issue. FAIL_TO_PASS and PASS_TO_PASS both hold. Shell 2. Source: the SWE-bench paper. Project: Stanford Frontier AI.")
+
+> [!QA]
+> Q: Design an eval for a code-review assistant. Which benchmark family, and what do you add?
+> A: Start from SWE-bench's design: real issues, test-driven
+> grading. But code review is not patch-writing: the output is
+> comments, not code. So: build a custom set of PRs with known
+> bugs, grade on bug-detection recall (did it flag the real
+> bug?) and false-positive rate (did it cry wolf?). Add an
+> LLM-judge rung for comment quality, calibrated against senior
+> engineers (kappa ~0.7). The decision rule: borrow the
+> benchmark's *grading discipline* (deterministic where
+> possible), not its task.
+> Follow-up: How do you stop the model from gaming it?
+> A: Hold out the test set, rotate fresh PRs quarterly, and
+> check for contamination (canary strings in the eval data,
+> searched in training corpora). A static eval is a future
+> training set.
+
 > [!QA]
 > Q: Why do benchmarks use constrained formats instead of free-form
 > grading?
@@ -357,7 +531,42 @@ Benchmarks profile a model. They do not crown one. Four cautions:
 - **Try it yourself.** Chatbot Arena adds real-usage signal, but the
   final test is your own tasks on your own data.
 
+### Subchapter: the contamination defense stack
+
+Four layers, cheapest first:
+
+1. **Canary strings.** Embed a unique hash in the benchmark.
+   Search training corpora for it. Found: contaminated.
+2. **Blocklists.** Exclude known benchmark URLs and datasets
+   from the crawl. Cheap, incomplete (paraphrases slip through).
+3. **Fresh tests.** Write the test set after the model's cutoff.
+   The model cannot have seen what did not exist. The gold
+   standard, and the reason benchmarks now version by date.
+4. **Dynamic benchmarks.** Generate fresh items per evaluation
+   (templates, paraphrase engines). Contamination becomes
+   impossible in principle, at the cost of comparability across
+   runs.
+
+The 2026 norm: any benchmark without a contamination report is
+decorative. Read the report before the score.
+
 ![Pareto](assets/l08-pareto.svg "Pareto, contamination, Goodhart. Then try the models yourself. Stanford Frontier AI.")
+
+> [!QA]
+> Q: A vendor reports 95% on a two-year-old benchmark. Audit it.
+> A: Ask four questions. One: contamination report? A two-year-old
+> benchmark postdates no frontier cutoff: assume leakage until
+> proven otherwise. Two: which split? Test, not validation.
+> Three: what changed vs the reference implementation? Decoding
+> settings, few-shot count, and cherry-picked subsets all inflate
+> scores. Four: what does your own task show? Run your data.
+> The decision rule: trust the vendor's number exactly as far as
+> the contamination report and your own replication.
+> Follow-up: The vendor has no contamination report. Now what?
+> A: Treat the number as an upper bound, not a measurement. Run
+> a fresh probe: new questions in the same style, written after
+> their cutoff. The gap between the reported 95% and your probe
+> is the contamination discount.
 
 ## Mapping back: each rung answers the previous rung's flaw
 
@@ -412,15 +621,31 @@ The story in eight steps. Each step answers the one before it.
    hashes, blocklists, fresh tests. Goodhart: optimized measures
    stop measuring. Then try the models yourself.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/8fNP4N46RRo" title="CME295 Lecture 8, Autumn 2025" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/DZf-ZrcmNcI" title="RLHF vs DPO (AI Engineer Masterclass)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+- Lecture 8 recording: https://www.youtube.com/watch?v=8fNP4N46RRo
+- RLHF vs DPO, LLM-as-judge biases (AI Engineer Masterclass): https://www.youtube.com/watch?v=DZf-ZrcmNcI
+- Zheng et al., LLM-as-a-Judge: https://arxiv.org/abs/2306.05685
+- Jimenez et al., SWE-bench: https://arxiv.org/abs/2310.06770
+- Min et al., FActScore: https://arxiv.org/abs/2305.14251
+
 ## Official sources and further reading
 
 **Official:**
 - Lecture 8 recording (YouTube): timestamped above.
 - Lecture 8 slides (PDF), CME295 Autumn 2025.
 - Zheng et al., "LLM-as-a-Judge" (2023):
-  https://arxiv.org/abs/2306.05685 — MT-Bench and Chatbot Arena.
+  - [MT-Bench and Chatbot Arena.](https://arxiv.org/abs/2306.05685)
 - Jimenez et al., "SWE-bench" (2023):
-  https://arxiv.org/abs/2310.06770 — issues plus tests.
+  - [issues plus tests.](https://arxiv.org/abs/2310.06770)
 
 **Further reading:**
 - Banerjee and Lavie, "METEOR" (2005).

@@ -313,6 +313,44 @@ conditions. It is mechanism design from Lecture 9 for the
 no-ground-truth case: pay for agreement that could only come
 from shared signal.
 
+### Subchapter: peer prediction, worked
+
+No gold labels exist. Two labelers mark items positive or
+negative. Pay each labeler by agreement with the other: a
+bonus whenever their labels match. Does honesty pay? Work the
+numbers. The true positive rate is 0.7. An honest labeler
+reports the truth with 90% accuracy, errors independent.
+
+If both report honestly, agreement needs both right or both
+wrong: 0.9^2 + 0.1^2 = 0.82. Now the lazy strategy: always
+report positive, no effort. The peer, still honest, reports
+positive with probability 0.7 x 0.9 + 0.3 x 0.1 = 0.66. The
+lazy labeler agrees 66% of the time. Honesty pays 0.82,
+laziness pays 0.66. Output agreement beats the lazy
+equilibrium.
+
+But watch the collusion equilibrium. If both labelers go lazy
+and always report positive, agreement is 1.0. Output agreement
+pays perfect scores for coordinated laziness. This is where
+the mutual information paradigm earns its name. Score by the
+mutual information between the two reports instead of raw
+agreement. Honest reports are correlated through the shared
+truth: their joint distribution is (0.57, 0.09, 0.09, 0.25)
+for (+,+) through (-,-), and the mutual information is 0.18
+nats, computed in natural log. Constant reports carry zero
+mutual information: a report that never varies shares nothing
+with anything. The lazy-lazy equilibrium scores 0 under MI and
+1.0 under raw agreement. MI kills exactly the equilibrium that
+raw agreement rewards.
+
+The precondition, stated honestly: the paradigm needs the
+honest equilibrium to be the best one, which holds when
+labelers' signals are genuinely correlated through the truth
+and the MI estimator has enough data. With few shared items
+the MI estimate is noise, and the mechanism misfires. Peer
+prediction is Lecture 9's incentive compatibility for the
+case where the designer has no ground truth to check against.
+
 > [!QA]
 > Q: Walk me through the Polis factor model on a toy rating matrix, by hand.
 > A: Three raters, two notes. Rater 1 (left) rates note A 5 stars, note B 1 star. Rater 2 (right) rates note A 1 star, note B 5 stars. Rater 3 (left) rates note A 4 stars, note B 2 stars. Fit the model u = mu + alpha + beta + p^T q. mu, the global mean: (5+1+1+5+4+2)/6 = 3. Rater 1's alpha: his mean is 3, so alpha_1 = 0. Rater 2's mean is 3, alpha_2 = 0. Rater 3's mean is 3, alpha_3 = 0. Ideology: raters 1 and 3 lean left, rater 2 leans right. Note A's beta: after removing rater means and the ideology component, note A is loved by the left and hated by the right: high ideological loading, low beta. Note B: loved by the right, low beta too. Now add note C: all three raters give it 4 stars. Its beta is high, near 1 after centering, and its ideology loading is near zero. Note C is the bridge: selected, shown, trusted. Notes A and B are factional: suppressed. That is the whole mechanism in six numbers.
@@ -388,6 +426,22 @@ The story in eight steps. Each step answers the one before it.
    Write the assumptions down. Weakest extrapolation that
    fixes the clear errors.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/VffFArrRSBE" title="Stanford CS329H Autumn 2024: Human-centered Design" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/HFrCySzH9QI" title="Stanford CS329H guest lecture: Joseph Jay Williams" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+- Human-centered Design lecture: https://www.youtube.com/watch?v=VffFArrRSBE
+- Guest lecture, Joseph Jay Williams: https://www.youtube.com/watch?v=HFrCySzH9QI
+- Guest lecture, Daniel Webber on value alignment (embedded above): https://www.youtube.com/watch?v=-kdR_7dCcyI
+- Voting lecture, Colin Megill (Polis) guest segment: https://www.youtube.com/watch?v=1QpNZXL35NM
+- Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
+- Dwork et al. (2012): individual fairness.
+- Polis, the open-source deliberation platform: https://pol.is
+
 ## Official sources and further reading
 
 **Official:**
@@ -400,7 +454,7 @@ The story in eight steps. Each step answers the one before it.
 - Lecture on human-centered design (video id VffFArrRSBE).
 - Guest lecture: Joseph Jay Williams (video id HFrCySzH9QI)
   [uncertain: title from search-index evidence only].
-- Course textbook, chapters 10.x: the inversion problem, the
+- Course textbook, chapters 4/5.6-5.11: the inversion problem, the
   four-stage pipeline, fairness, paternalism, privacy, the
   mutual information paradigm. [link](https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf)
 

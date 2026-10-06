@@ -11,7 +11,7 @@ instructor: "Yann Dubois"
 offering: "Spring 2024"
 duration: "1:24:00"
 video_id: TO0CqzqiArM
-video_title: "Lecture 11: Benchmarking and Evaluation"
+video_title: "Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 11 - Benchmarking by Yann Dubois"
 video_caption: "Original lecture. Yann Dubois covers benchmarking: automatic metrics, human evaluation, arenas, and LLM judges."
 concepts: [evaluation, bleu, rouge, human-evaluation, chatbot-arena, elo, llm-judge, length-bias, helm, benchmark-saturation]
 sources:
@@ -47,7 +47,8 @@ Four purposes:
 Tasks split into **closed** (fewer than 10 answers: multiple choice) and
 **open-ended** (summaries, dialogue). MMLU climbed from 25% to about 90%
 in roughly 4 years. Metrics saturate. The field moves on. A benchmark is a
-ruler, and rulers wear out.
+ruler, and rulers wear out. This wearing-out is **benchmark saturation**:
+the test stops distinguishing models because the scores bunch at the top.
 
 ## First attempt: count overlaps
 
@@ -75,9 +76,10 @@ in meaning-space instead of word-space.
 
 Reference: "heck yes" ([23:54](ts:23:54)). Three candidates:
 
-![Heck yes](assets/l11-heckyes.svg "Stanford Frontier AI, CS224N L11. 'yes' gets 67% BLEU. 'yep' gets 0 (false negative). 'heck no' matches ~7x words (false positive).")
+![Heck yes](assets/l11-heckyes.svg "Stanford Frontier AI, CS224N L11. 'yes' gets partial credit (brevity penalty 0.37). 'yep' gets 0 (false negative). 'heck no' matches ~7x words (false positive).")
 
-- "yes": 67% BLEU. Partial match, partial credit. Fine.
+- "yes": partial match, partial credit. Unigram precision 1/1 = 1.00, but
+  the brevity penalty bites: exp(1 - 2/1) = 0.37. Fine.
 - "yep": 0 BLEU. **False negative** ([24:39](ts:24:39)): means the same
   thing, scores zero. The metric punishes a correct answer.
 - "heck no": matches about 7x words. **False positive**: means the
@@ -220,15 +222,15 @@ But the judge has biases, and they are measured:
 **HELM** and the HuggingFace leaderboard "look at everything": many tasks,
 many metrics, no single number. And the deepest trap: **implementation
 decides the number**. LLaMA 65B on MMLU reads 63.7 (HELM), 63.6
-(original), 48.8 (harness). Same model, different harness, different
-number. Never compare numbers across papers or harnesses. Reproduce the
+(original), 48.8 (evaluation setup). Same model, different evaluation setup, different
+number. Never compare numbers across papers or evaluation setups. Reproduce the
 setup or do not cite the number.
 
 > [!QA]
 > Q: Should LLM judges replace human evaluation?
 > A: For iteration, yes: 100x faster and cheaper with 98% rank correlation to human arenas. For final claims, keep humans. LLM judges share one model's biases, and a monoculture of judgment is worse than noisy humans. Use detailed rubrics either way.
 > Follow-up: What is the biggest trap in reading eval numbers?
-> A: Implementation variance. The same model scores 63.7, 63.6, or 48.8 on MMLU depending on the harness. Never compare numbers across papers or harnesses. Reproduce the setup or do not cite the number.
+> A: Implementation variance. The same model scores 63.7, 63.6, or 48.8 on MMLU depending on the evaluation setup. Never compare numbers across papers or evaluation setups. Reproduce the setup or do not cite the number.
 
 ## What is used where: eval in production, October 2026
 
@@ -278,9 +280,16 @@ No frontier lab picks a model on public benchmarks alone.
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/TO0CqzqiArM" title="CS224N Spring 2024 Lecture 11: Benchmarking" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 11: Benchmarking</strong> (Yann Dubois, Spring 2024). The original lecture: automatic metrics, human evaluation, arenas, LLM judges. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=TO0CqzqiArM</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/7uy9vp_iDf0" title="What is BLEU Score?" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>What is BLEU score?</strong> (Standarity). N-gram precision and the brevity penalty.</p>
+</div>
 </div>
 
 ### Go deeper
@@ -298,7 +307,7 @@ No frontier lab picks a model on public benchmarks alone.
 | Overlap is not meaning ("yep" scores 0, "heck no" scores well) | Human judgment | AlpacaFarm, Chatbot Arena: 200,000 votes, Elo |
 | Humans are slow, expensive, 67% agreement | LLM judges | 100x faster/cheaper. GPT-4 beats human-human agreement |
 | One judge's bias everywhere | Detailed rubrics + HELM | Constrain the judge. Look at everything |
-| Numbers move with the harness (63.7/63.6/48.8) | Never compare across setups | Reproduce or do not cite |
+| Numbers move with the evaluation setup (63.7/63.6/48.8) | Never compare across setups | Reproduce or do not cite |
 
 ## The honest price
 
@@ -317,7 +326,7 @@ Believe the direction over 10 years. Verify the setup behind every number.
 2. **First attempt.** BLEU: n-gram precision plus brevity penalty. The toy:
    "the" alone scores 1.00 precision, killed to 0.0067 by the penalty.
    ROUGE uses recall.
-3. **Overlap breaks.** "heck yes": "yes" 67%, "yep" 0 (false negative),
+3. **Overlap breaks.** "heck yes": "yes" partial (penalty 0.37), "yep" 0 (false negative),
    "heck no" ~7x words (false positive). Overlap is not meaning, in both
    directions.
 4. **Humans: gold and noisy.** 67% agreement (50% is random) after 2-3
@@ -329,7 +338,7 @@ Believe the direction over 10 years. Verify the setup behind every number.
    agreement. AlpacaEval: 98% rank correlation. Length bias ~70%.
    Monoculture risk. Detailed rubrics.
 7. **Implementation decides.** LLaMA 65B MMLU: 63.7, 63.6, or 48.8 by
-   harness. Same model. Reproduce the setup or do not cite.
+   evaluation setup. Same model. Reproduce the setup or do not cite.
 8. **The rule.** Never just believe numbers. Believe the direction.
    Verify the setup.
 

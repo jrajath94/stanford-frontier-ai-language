@@ -407,6 +407,29 @@ learning, hallucination by design, personalization, safety.</p>
 <li><a href="l09-course-recap-frontiers.html">Lecture 9: recap and frontiers</a></li>
 </ul>
 </div>
+<h2 id="memory-aids">Memory aids</h2>
+<p><strong>Never-confuse pairs.</strong> FLOPs (work) vs FLOPS (rate). Top-K (fixed
+count) vs top-P (fixed mass). pass@k (any succeeds) vs pass-hat@k
+(all succeed). SFT (imitate good) vs preference tuning (punish
+bad). DPO (closed form, two models) vs PPO (online, four models).
+GRPO (group baseline) vs PPO (value baseline). RAG (retrieve)
+vs long context (dump). Kappa (chance-corrected) vs agreement rate
+(raw). BLEU (precision) vs ROUGE (recall). Pre-norm (deep) vs
+post-norm (2017). MQA (1 KV head) vs GQA (8) vs MHA (32).</p>
+<p><strong>Mnemonics.</strong> RAG: &ldquo;retrieve, augment, generate&rdquo;, three verbs in
+order. ReAct: &ldquo;observe, plan, act&rdquo;, the loop. Factuality:
+&ldquo;extract, check, aggregate&rdquo;. R1: &ldquo;cold-start, RL, big SFT, final
+RL&rdquo;, four stages. Agent failures in pipeline order: &ldquo;punt,
+hallucinate, wrong tool, wrong args, bad output, no output, bad
+synthesis&rdquo;.</p>
+<p><strong>If this, then that.</strong> If the distribution is sharp, top-P
+shrinks the set: use top-P with a top-K cap. If reward climbs but
+humans disagree, it is hacking: tighten beta. If all GRPO rewards
+tie, filter the group. If kappa is below 0.6, fix the rubric. If
+the answer is verifiable, use RLVR. If not, preference tuning. If
+the tool is silent, the agent hallucinates: always return
+something. If the benchmark predates the cutoff, assume
+contamination.</p>
 <h2 id="rapid-fire">Rapid fire</h2>
 <p><strong>What are Q, K, V?</strong> Query seeks, key advertises, value is the
 payload. Projections of each token, re-learned per layer.</p>

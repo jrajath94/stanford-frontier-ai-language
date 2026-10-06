@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>document.documentElement.classList.remove('no-js');</script>
-<title>Lecture 11: Evaluation (Bridge) — Stanford Frontier AI</title>
-<meta name="description" content="Why we evaluate, BLEU and ROUGE with their failure modes, human evaluation as a noisy gold standard, Chatbot Arena, and LLM judges. Deep mechanics live in CS336">
+<title>Lecture 11: Benchmarking and Evaluation — Stanford Frontier AI</title>
+<meta name="description" content="Why evaluation has four purposes, how BLEU and ROUGE fail, human evaluation as a noisy gold standard, and LLM judges with their biases.">
 <link rel="stylesheet" href="../assets/vendor/katex.min.css">
 <link rel="stylesheet" href="../assets/style.css">
 </head>
@@ -59,9 +59,9 @@
 <li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
 <li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
 <li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
-<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive Learning and RAG</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive, Search, RAG</a></li>
 <li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
-<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Transformers, ICL, SFT</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Attention, ICL, SFT</a></li>
 <li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
 <li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
 <li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
@@ -96,7 +96,7 @@
 <li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
 <li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11" class="active">L11 · Evaluation</a></li>
 <li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
-<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech BCI</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech Brain-Computer Interfaces</a></li>
 <li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
 <li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
 <li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
@@ -104,199 +104,436 @@
 </ul>
 <h3>CME295: Transformers and Large Language Models</h3><ul>
 <li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../cme295/l01-transformers-overview.html" data-page="cme295-l01">L01 · Transformers overview</a></li>
+<li><a href="../cme295/l02-attention-position-bert.html" data-page="cme295-l02">L02 · Attention and BERT</a></li>
+<li><a href="../cme295/l03-llms-decoding-inference.html" data-page="cme295-l03">L03 · LLMs and decoding</a></li>
+<li><a href="../cme295/l04-pretraining-scaling-finetuning.html" data-page="cme295-l04">L04 · Training at scale</a></li>
+<li><a href="../cme295/l05-preference-tuning.html" data-page="cme295-l05">L05 · Preference tuning</a></li>
+<li><a href="../cme295/l06-reasoning-models-grpo.html" data-page="cme295-l06">L06 · Reasoning models</a></li>
+<li><a href="../cme295/l07-rag-tool-calling-agents.html" data-page="cme295-l07">L07 · RAG and agents</a></li>
+<li><a href="../cme295/l08-evaluation.html" data-page="cme295-l08">L08 · Evaluation</a></li>
+<li><a href="../cme295/l09-course-recap-frontiers.html" data-page="cme295-l09">L09 · Recap and frontiers</a></li>
+<li><a href="../cme295/cheatsheet.html" data-page="cme295-cheatsheet">CME295 · Cheatsheet</a></li>
+<li><a href="../cme295/crash-course.html" data-page="cme295-crash">CME295 · Crash course</a></li>
 </ul>
 <h3>CS329H: Machine Learning from Human Preferences</h3><ul>
 <li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../cs329h/l01-preference-foundations.html" data-page="cs329h-l01">L01 · Preference Foundations</a></li>
+<li><a href="../cs329h/l02-choice-models.html" data-page="cs329h-l02">L02 · Choice Models</a></li>
+<li><a href="../cs329h/l03-iia-identification.html" data-page="cs329h-l03">L03 · IIA and Identification</a></li>
+<li><a href="../cs329h/l04-learning-rewards.html" data-page="cs329h-l04">L04 · Learning Rewards</a></li>
+<li><a href="../cs329h/l05-metric-elicitation.html" data-page="cs329h-l05">L05 · Metric Elicitation</a></li>
+<li><a href="../cs329h/l06-bandits-exploration.html" data-page="cs329h-l06">L06 · Bandits and Exploration</a></li>
+<li><a href="../cs329h/l07-rlhf.html" data-page="cs329h-l07">L07 · RLHF</a></li>
+<li><a href="../cs329h/l08-social-choice.html" data-page="cs329h-l08">L08 · Social Choice</a></li>
+<li><a href="../cs329h/l09-mechanism-design.html" data-page="cs329h-l09">L09 · Mechanism Design</a></li>
+<li><a href="../cs329h/l10-alignment-practice.html" data-page="cs329h-l10">L10 · Alignment in Practice</a></li>
+<li><a href="../cs329h/cheatsheet.html" data-page="cs329h-cheatsheet">CS329H · Cheatsheet</a></li>
+<li><a href="../cs329h/crash-course.html" data-page="cs329h-crash">CS329H · Crash course</a></li>
 </ul>
 <h3>CS329Z: Engineering AI Agents</h3><ul>
 <li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+<li><a href="../cs329z/l01-intro-agentic-systems.html" data-page="cs329z-l01">L01 · Intro to Agentic Systems</a></li>
+<li><a href="../cs329z/l02-compound-ai-systems.html" data-page="cs329z-l02">L02 · Compound AI Systems</a></li>
+<li><a href="../cs329z/l03-llms-for-builders.html" data-page="cs329z-l03">L03 · LLMs for Builders</a></li>
+<li><a href="../cs329z/l04-reasoning-and-context.html" data-page="cs329z-l04">L04 · Reasoning and Context</a></li>
+<li><a href="../cs329z/l05-rag-pipeline.html" data-page="cs329z-l05">L05 · RAG Pipeline</a></li>
+<li><a href="../cs329z/l06-retrieval-methods.html" data-page="cs329z-l06">L06 · Retrieval Methods</a></li>
+<li><a href="../cs329z/l07-agentic-retrieval-failure-modes.html" data-page="cs329z-l07">L07 · Agentic Retrieval</a></li>
+<li><a href="../cs329z/l08-evaluating-agents.html" data-page="cs329z-l08">L08 · Evaluating Agents</a></li>
+<li><a href="../cs329z/cheatsheet.html" data-page="cs329z-cheatsheet">CS329Z · Cheatsheet</a></li>
+<li><a href="../cs329z/crash-course.html" data-page="cs329z-crash">CS329Z · Crash course</a></li>
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
+<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
+<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
+<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
+<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
+<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
+<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
+<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
+<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
+<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+<li><a href="../mse435/l01-electrons-to-tokens.html" data-page="mse435-l01">L01 · From Electrons to Tokens</a></li>
+<li><a href="../mse435/l02-sixty-million-megawatt.html" data-page="mse435-l02">L02 · The $60M Megawatt</a></li>
+<li><a href="../mse435/l03-how-models-get-smarter.html" data-page="mse435-l03">L03 · How Models Get Smarter</a></li>
+<li><a href="../mse435/l04-evals-rlvr-enterprise.html" data-page="mse435-l04">L04 · Evals and Enterprise AI</a></li>
+<li><a href="../mse435/l05-software-is-dead.html" data-page="mse435-l05">L05 · The SaaS Reckoning</a></li>
+<li><a href="../mse435/l06-where-value-accrues.html" data-page="mse435-l06">L06 · Where Value Accrues</a></li>
+<li><a href="../mse435/cheatsheet.html" data-page="mse435-cheatsheet">MS&amp;E 435 · Cheatsheet</a></li>
+<li><a href="../mse435/crash-course.html" data-page="mse435-crash">MS&amp;E 435 · Crash course</a></li>
 </ul>
 <h3>Mathematical Foundations of Machine Learning</h3><ul>
-<li><a href="../math-ml/index.html" data-page="math-ml-index">Mathematical Foundations of Machine Learning · Overview</a></li>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">MATH-ML · Overview</a></li>
+<li><a href="../math-ml/l01-vectors-as-data.html" data-page="math-ml-l01">L01 · Vectors as Data</a></li>
+<li><a href="../math-ml/l02-matrices-as-machines.html" data-page="math-ml-l02">L02 · Matrices as Machines</a></li>
+<li><a href="../math-ml/l03-eigendecomposition-pca.html" data-page="math-ml-l03">L03 · Eigen-decomposition</a></li>
+<li><a href="../math-ml/l04-svd-low-rank.html" data-page="math-ml-l04">L04 · SVD and Low Rank</a></li>
+<li><a href="../math-ml/l05-probability-bayes.html" data-page="math-ml-l05">L05 · Probability and Bayes</a></li>
+<li><a href="../math-ml/l06-distributions-covariance.html" data-page="math-ml-l06">L06 · Distributions and Covariance</a></li>
+<li><a href="../math-ml/l07-calculus-gradients-chainrule.html" data-page="math-ml-l07">L07 · Calculus for ML</a></li>
+<li><a href="../math-ml/l08-convexity-gradient-descent.html" data-page="math-ml-l08">L08 · Convexity and Gradient Descent</a></li>
+<li><a href="../math-ml/l09-least-squares-regression.html" data-page="math-ml-l09">L09 · Least Squares</a></li>
+<li><a href="../math-ml/l10-information-theory.html" data-page="math-ml-l10">L10 · Information Theory</a></li>
+<li><a href="../math-ml/cheatsheet.html" data-page="math-ml-cheatsheet">MATH-ML · Cheatsheet</a></li>
+<li><a href="../math-ml/crash-course.html" data-page="math-ml-crash-course">MATH-ML · Crash Course</a></li>
 </ul>
 <h3>Mathematical Foundations of Generative AI</h3><ul>
 <li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+<li><a href="../math-genai/l01-the-job.html" data-page="math-genai-l01">L01 · The Job</a></li>
+<li><a href="../math-genai/l02-kl-and-mle.html" data-page="math-genai-l02">L02 · KL Divergence and MLE</a></li>
+<li><a href="../math-genai/l03-f-divergences.html" data-page="math-genai-l03">L03 · f-Divergences</a></li>
+<li><a href="../math-genai/l04-gans.html" data-page="math-genai-l04">L04 · GANs</a></li>
+<li><a href="../math-genai/l05-wgan-evaluation.html" data-page="math-genai-l05">L05 · WGAN and Evaluation</a></li>
+<li><a href="../math-genai/l06-latent-variables-elbo.html" data-page="math-genai-l06">L06 · ELBO</a></li>
+<li><a href="../math-genai/l07-vae.html" data-page="math-genai-l07">L07 · VAE</a></li>
+<li><a href="../math-genai/l08-ddpm-forward.html" data-page="math-genai-l08">L08 · DDPM Forward</a></li>
+<li><a href="../math-genai/l09-ddpm-loss.html" data-page="math-genai-l09">L09 · DDPM Loss</a></li>
+<li><a href="../math-genai/l10-score-ddim-ar.html" data-page="math-genai-l10">L10 · Score, DDIM, AR</a></li>
+<li><a href="../math-genai/cheatsheet.html" data-page="math-genai-cheatsheet">Cheatsheet</a></li>
+<li><a href="../math-genai/crash-course.html" data-page="math-genai-crash-course">Crash course</a></li>
 </ul>
 <h3>Mathematical Foundations of Generative Models</h3><ul>
-<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Mathematical Foundations of Generative Models · Overview</a></li>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Math · Generative Models · Overview</a></li>
+<li><a href="../math-genmodels/l01-the-one-question.html" data-page="math-genmodels-l01">L01 · The One Question</a></li>
+<li><a href="../math-genmodels/l02-autoregressive-models.html" data-page="math-genmodels-l02">L02 · Autoregressive Models</a></li>
+<li><a href="../math-genmodels/l03-variational-autoencoders.html" data-page="math-genmodels-l03">L03 · Variational Autoencoders</a></li>
+<li><a href="../math-genmodels/l04-normalizing-flows.html" data-page="math-genmodels-l04">L04 · Normalizing Flows</a></li>
+<li><a href="../math-genmodels/l05-diffusion-ddpm.html" data-page="math-genmodels-l05">L05 · Diffusion I: DDPM</a></li>
+<li><a href="../math-genmodels/l06-score-matching-ddim.html" data-page="math-genmodels-l06">L06 · Score Matching &amp; Fast Diffusion</a></li>
+<li><a href="../math-genmodels/l07-energy-based-models.html" data-page="math-genmodels-l07">L07 · Energy-Based Models</a></li>
+<li><a href="../math-genmodels/l08-judging-a-creator.html" data-page="math-genmodels-l08">L08 · Judging a Creator</a></li>
+<li><a href="../math-genmodels/cheatsheet.html" data-page="math-genmodels-cheatsheet">Math · Generative Models · Cheatsheet</a></li>
+<li><a href="../math-genmodels/crash-course.html" data-page="math-genmodels-crash">Math · Generative Models · Crash course</a></li>
 </ul>
   </nav>
   <main class="content" id="main">
     <article>
-      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 11: Evaluation (Bridge)</nav>
-      <h1>Lecture 11: Evaluation (Bridge)</h1>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 11: Benchmarking and Evaluation</nav>
+      <h1>Lecture 11: Benchmarking and Evaluation</h1>
       <p class="meta-line">Instructor: Yann Dubois · 1:24:00 · Spring 2024</p>
-      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="TO0CqzqiArM"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/TO0CqzqiArM" title="Lecture 11: Benchmarking and Evaluation" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=TO0CqzqiArM" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=TO0CqzqiArM" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Guest lecture. Yann Dubois covers evaluation from BLEU to LLM judges.</p></div><div class="callout"><span class="co-label">Note</span><p><strong>Bridge lesson.</strong> This lecture teaches the CS224N framing: the full
-evaluation story from BLEU to LLM judges. For deep mechanics, follow the
-link: <a href="../cs336/l12-evaluation.html">CS336 L12</a> (perplexity to agents,
-contamination, scaffolds). This lesson never re-explains what that covers.</p></div>
-<h2 id="how-to-read-this-lesson">How to read this lesson</h2>
-<p>This lesson has two levels. <strong>Level 1 (Core)</strong> covers why we evaluate and
-how n-gram metrics fail. <strong>Level 2 (Deep)</strong> covers human evaluation, arenas,
-and LLM judges.</p>
-<h2 id="level-1-why-evaluate">Level 1: Why evaluate</h2>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="TO0CqzqiArM"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/TO0CqzqiArM" title="Lecture 11: Benchmarking and Evaluation" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=TO0CqzqiArM" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=TO0CqzqiArM" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. Yann Dubois covers benchmarking: automatic metrics, human evaluation, arenas, and LLM judges.</p></div><h2 id="the-problem-which-model-is-better">The problem: which model is better</h2>
+<p>Two models. One scoreboard. The question sounds simple and decides
+everything: what to ship, what to publish, what to train next. But &ldquo;better&rdquo;
+depends on the purpose, and the purpose decides the metric.</p>
+<figure><img alt="Why evaluate" src="assets/l11-tasks.svg"><figcaption>Stanford Frontier AI, CS224N L11. Train: the loss guides optimization. Dev: early stopping picks the checkpoint. Deploy: does it work in the real world? Publish: reproducible, standardized, fast, cheap.</figcaption></figure>
 <p>Four purposes:</p>
-<figure><img alt="Why evaluate" src="assets/l11-tasks.svg"><figcaption>Train: loss. Dev: early stopping. Deploy: real world. Publish: reproducible, standardized, fast, cheap.</figcaption></figure>
 <ul>
-<li><strong>Train:</strong> the loss guides optimization.</li>
-<li><strong>Dev:</strong> early stopping picks the checkpoint.</li>
-<li><strong>Deploy:</strong> does it work in the real world?</li>
+<li><strong>Train:</strong> the loss guides optimization. It must be differentiable, not
+  truthful.</li>
+<li><strong>Dev:</strong> early stopping picks the checkpoint. It must rank models
+  correctly.</li>
+<li><strong>Deploy:</strong> does it work in the real world? It must measure what users
+  feel.</li>
 <li><strong>Publish:</strong> academic eval must be reproducible, standardized, fast, and
-cheap. What matters is the <strong>direction over 10 years</strong>, not one number.</li>
+  cheap. What matters is the <strong>direction over 10 years</strong>, not one number.</li>
 </ul>
-<p>Tasks split into <strong>closed</strong> (fewer than 10 answers) and <strong>open-ended</strong>.
-MMLU climbed from 25% to ~90% in about 4 years. Metrics saturate. The field
-moves on.</p>
-<h2 id="level-1-bleu-and-rouge">Level 1: BLEU and ROUGE</h2>
-<p><strong>BLEU</strong>: n-gram precision plus a <strong>brevity penalty</strong>. Without the penalty,
-predicting only &ldquo;the&rdquo; would game precision.</p>
-<figure><img alt="BLEU" src="assets/l11-bleu.svg"><figcaption>N-gram precision plus a brevity penalty; ROUGE uses recall instead.</figcaption></figure>
-<p><strong>ROUGE</strong> flips it: <strong>recall</strong> instead of precision. Semantic metrics
-(2016-2019) averaged embeddings and took cosines.</p>
-<h2 id="level-1-overlap-is-not-meaning">Level 1: Overlap is not meaning</h2>
-<p>Reference: &ldquo;heck yes&rdquo; (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1434s" target="_blank" rel="noopener">23:54 <span class="ts">⏱23:54</span></a>):</p>
-<figure><img alt="Heck yes" src="assets/l11-heckyes.svg"><figcaption>'yes' gets 67% BLEU; 'yep' gets 0 (false negative); 'heck no' matches ~7x words (false positive).</figcaption></figure>
+<p>Tasks split into <strong>closed</strong> (fewer than 10 answers: multiple choice) and
+<strong>open-ended</strong> (summaries, dialogue). MMLU climbed from 25% to about 90%
+in roughly 4 years. Metrics saturate. The field moves on. A benchmark is a
+ruler, and rulers wear out.</p>
+<h2 id="first-attempt-count-overlaps">First attempt: count overlaps</h2>
+<p>The cheapest automatic metrics count n-gram overlap against references.</p>
+<p><strong>BLEU</strong>: n-gram precision plus a <strong>brevity penalty</strong>. Watch why the
+penalty exists. Reference: &ldquo;the cat sat on the mat&rdquo; (6 words). Candidate:
+&ldquo;the&rdquo;.</p>
+<pre class="ascii">unigram precision: &quot;the&quot; appears (clipped) 1/1 = 1.00
+brevity penalty:   exp(1 - 6/1) = exp(-5) = 0.0067
+BLEU ≈ 0.0067
+</pre>
+<p>Without the penalty, predicting only &ldquo;the&rdquo; would game precision to 1.00.
+The penalty multiplies it by 0.0067. <strong>ROUGE</strong> flips the fraction: it uses
+<strong>recall</strong> instead of precision (how much of the reference did you cover).
+Semantic metrics (2016-2019) averaged embeddings and took cosines: overlap
+in meaning-space instead of word-space.</p>
+<figure><img alt="BLEU and ROUGE" src="assets/l11-bleu.svg"><figcaption>Stanford Frontier AI, CS224N L11. N-gram precision plus a brevity penalty. ROUGE uses recall instead.</figcaption></figure>
+<h2 id="where-overlap-breaks-heck-yes">Where overlap breaks: &ldquo;heck yes&rdquo;</h2>
+<p>Reference: &ldquo;heck yes&rdquo; (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1434s" target="_blank" rel="noopener">23:54 <span class="ts">⏱23:54</span></a>). Three candidates:</p>
+<figure><img alt="Heck yes" src="assets/l11-heckyes.svg"><figcaption>Stanford Frontier AI, CS224N L11. 'yes' gets 67% BLEU. 'yep' gets 0 (false negative). 'heck no' matches ~7x words (false positive).</figcaption></figure>
 <ul>
-<li>&ldquo;yes&rdquo;: 67% BLEU. Partial match.</li>
-<li>&ldquo;yep&rdquo;: 0 BLEU. <strong>False negative</strong> (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1479s" target="_blank" rel="noopener">24:39 <span class="ts">⏱24:39</span></a>): means the same,
-scores zero.</li>
-<li>&ldquo;heck no&rdquo;: matches ~7x words. <strong>False positive</strong>: means the opposite,
-scores well.</li>
+<li>&ldquo;yes&rdquo;: 67% BLEU. Partial match, partial credit. Fine.</li>
+<li>&ldquo;yep&rdquo;: 0 BLEU. <strong>False negative</strong> (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1479s" target="_blank" rel="noopener">24:39 <span class="ts">⏱24:39</span></a>): means the same
+  thing, scores zero. The metric punishes a correct answer.</li>
+<li>&ldquo;heck no&rdquo;: matches about 7x words. <strong>False positive</strong>: means the
+  opposite, scores well. The metric rewards a wrong answer.</li>
 </ul>
-<p>N-gram overlap is not meaning. ROUGE-L is uncorrelated with human judgments
-on standard references, though the lecture notes &ldquo;the references are usually
-not great&rdquo;: with expert-written summaries, correlation improves.</p>
-<div class="qa"><div class="q">When is BLEU still useful?</div><div class="a"><p>For fast iteration on similar systems. BLEU is cheap, reproducible, and directionally right when comparing close variants. It fails for open-ended generation, where many valid answers share no n-grams with the reference.
-Human evaluation first, then LLM judges. Reference-free evaluation asks a strong model (AlpacaEval, MT-Bench) to judge directly. No reference means no overlap gaming.</p><div class="followup"><strong>Follow-up:</strong> What replaced n-gram metrics for open-ended tasks?</div></div></div>
-<h2 id="level-2-human-evaluation-is-a-noisy-gold-standard">Level 2: Human evaluation is a noisy gold standard</h2>
-<p>Human eval is the <strong>gold standard</strong>. Axes: fluency, coherence, common sense,
-style, grammaticality, redundancy. And it is noisy:</p>
-<figure><img alt="Human eval" src="assets/l11-human.svg"><figcaption>AlpacaFarm: 5 researchers, 2-3 hours of rubric, 67% agreement. Never compare human evals across papers.</figcaption></figure>
-<p><strong>AlpacaFarm</strong>: 5 researchers, 2-3 hours writing rubrics, only <strong>67%
-agreement</strong> (50% is random). People even disagree with themselves
-(intra-annotator disagreement). <strong>Never compare human evals across papers</strong>:
-different rubrics, different annotators, different numbers.</p>
-<p><strong>Chatbot Arena</strong> (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2643s" target="_blank" rel="noopener">44:03 <span class="ts">⏱44:03</span></a>): 200,000 human votes, <strong>Elo ratings</strong>.
-Pairwise preferences, chess-style ranking, live leaderboard.</p>
-<figure><img alt="Arena" src="assets/l11-arena.svg"><figcaption>200,000 pairwise human votes feed Elo ratings on a live leaderboard.</figcaption></figure>
-<h2 id="level-2-llm-judges">Level 2: LLM judges</h2>
-<p><strong>LLM-as-judge</strong>: 100x faster and 100x cheaper than humans (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2802s" target="_blank" rel="noopener">46:42 <span class="ts">⏱46:42</span></a>).
-GPT-4&rsquo;s agreement with the human majority beats humans&rsquo; agreement with each
-other. AlpacaEval reaches <strong>98% rank correlation</strong> with Chatbot Arena
-(<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3084s" target="_blank" rel="noopener">51:24 <span class="ts">⏱51:24</span></a>).</p>
-<figure><img alt="LLM judge" src="assets/l11-llm-judge.svg"><figcaption>100x faster and cheaper; GPT-4 beats human-human agreement; length bias ~70%; monoculture risk; LLaMA 65B MMLU varies 63.7/63.6/48.8 by implementation.</figcaption></figure>
-<p>Biases: <strong>length bias</strong>, humans and models prefer longer outputs ~70%
-(<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2981s" target="_blank" rel="noopener">49:41 <span class="ts">⏱49:41</span></a>). <strong>Monoculture</strong>: one judge&rsquo;s bias applied to every model
-is worse than diverse human biases. Fix: <strong>detailed rubrics</strong> for LLM judges.</p>
-<p><strong>HELM</strong> and the HuggingFace leaderboard &ldquo;look at everything.&rdquo;
-Implementation matters: LLaMA 65B MMLU reads 63.7 (HELM), 63.6 (original),
-48.8 (harness). Same model, different harness, different number.</p>
-<p>The closing line: &ldquo;never just believe numbers&rdquo; (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4785s" target="_blank" rel="noopener">79:45 <span class="ts">⏱79:45</span></a>).</p>
-<div class="qa"><div class="q">Should LLM judges replace human evaluation?</div><div class="a"><p>For iteration, yes: they are 100x faster and cheaper with 98% rank correlation. For final claims, keep humans. LLM judges share one model&rsquo;s biases. A monoculture of judgment is worse than noisy humans. Use detailed rubrics either way.
+<p>N-gram overlap is not meaning. It fails in both directions at once.
+ROUGE-L is uncorrelated with human judgments on standard references,
+though the lecture notes &ldquo;the references are usually not great&rdquo;: with
+expert-written summaries, correlation improves. The metric is only as good
+as the reference it compares against.</p>
+<p><strong>On this page:</strong> <a href="#subchapter-rouge-recall-instead-of-precision">ROUGE</a> · <a href="#subchapter-bertscore-meaning-not-overlap">BERTScore</a> · <a href="#subchapter-elo-math-how-ratings-move">Elo math</a> · <a href="#subchapter-contamination-the-benchmark-killer">Contamination</a> · <a href="#what-is-used-where-eval-in-production-october-2026">Eval in production, Oct 2026</a> · <a href="#watch-and-go-deeper">Watch and go deeper</a></p>
+<h3 id="subchapter-rouge-recall-instead-of-precision">Subchapter: ROUGE, recall instead of precision</h3>
+<p>BLEU asks: of the words you wrote, how many were in the reference?
+<strong>ROUGE</strong> asks the reverse: of the reference&rsquo;s words, how many did you
+cover? Watch it on a toy. Reference: &ldquo;the cat sat on the mat&rdquo; (6 words).
+Candidate: &ldquo;the cat sat&rdquo; (3 words).</p>
+<pre class="ascii">ROUGE-1 recall: 3/6 = 0.50   (covered half the reference)
+BLEU precision: 3/3 = 1.00   (everything written was correct)
+</pre>
+<p>BLEU without the brevity penalty calls this perfect. ROUGE calls it half.
+Summarization wants recall: a summary that drops half the content fails
+even if every kept word is right. Translation wants precision: extra
+words are the sin. The metric follows the task. ROUGE-L uses the longest
+common subsequence instead of raw n-grams, which forgives reordering a
+little. All ROUGE variants still count words, not meaning.</p>
+<h3 id="subchapter-bertscore-meaning-not-overlap">Subchapter: BERTScore, meaning not overlap</h3>
+<p>&ldquo;The feline rested on the rug&rdquo; means the same as &ldquo;the cat sat on the
+mat&rdquo; and scores near zero on BLEU. <strong>BERTScore</strong> (Zhang et al., 2020)
+fixes the representation: embed each token with a pretrained model, then
+match candidate tokens to reference tokens by <strong>cosine similarity</strong>.</p>
+<p>Watch it on a toy. Reference tokens: {cat, sat}. Candidate: {feline,
+rested}. Cosine similarities: cat-feline 0.85, cat-rested 0.20,
+sat-feline 0.15, sat-rested 0.75. Greedy matching: feline to cat (0.85),
+rested to sat (0.75). BERTScore: (0.85 + 0.75) / 2 = 0.80. BLEU on the
+same pair: 0. Synonyms match because the embeddings know they are close.
+The price: BERTScore inherits the embedding model&rsquo;s blind spots, and it
+still needs a reference. It measures meaning better than overlap, not
+meaning itself.</p>
+<figure><img alt="BERTScore" src="assets/plate-l11-bertscore.webp"><figcaption>BERTScore matches tokens by embedding cosine similarity. Synonyms score high where BLEU scores zero. Shell 3. Source: original toy for BERTScore. Project: Stanford Frontier AI.</figcaption></figure>
+<h3 id="subchapter-elo-math-how-ratings-move">Subchapter: Elo math, how ratings move</h3>
+<p>Chatbot Arena ranks models with <strong>Elo</strong>, the chess rating. Two models,
+A at 1500, B at 1600. A user prefers A&rsquo;s answer. Watch the update, with
+K = 32:</p>
+<pre class="ascii">expected score of A = 1 / (1 + 10^((1600-1500)/400)) = 1 / (1 + 10^0.25)
+                   = 1 / (1 + 1.78) = 0.36
+actual score of A = 1 (it won)
+new rating of A = 1500 + 32 x (1 - 0.36) = 1500 + 20.5 = 1520.5
+new rating of B = 1600 - 20.5 = 1579.5
+</pre>
+<p>The upset moves 20.5 points: beating a stronger opponent pays more than
+beating a weaker one. Expected wins move almost nothing. That is the
+whole design: ratings converge to the true skill ordering as votes
+accumulate, and surprises teach the most. 200,000 votes make the
+leaderboard stable. The weakness: Elo assumes transitive skill (if A
+beats B and B beats C, A beats C), which fails when models have different
+strengths on different tasks.</p>
+<figure><img alt="Elo" src="assets/plate-l11-elo.webp"><figcaption>Elo update: expected score from the rating gap, then move K times the surprise. Upsets teach the most. Shell 2. Source: original toy for Elo. Project: Stanford Frontier AI.</figcaption></figure>
+<h3 id="subchapter-contamination-the-benchmark-killer">Subchapter: contamination, the benchmark killer</h3>
+<p>A benchmark measures generalization only if the model has not seen the
+test. <strong>Contamination</strong> is test data leaking into training. The web-scale
+corpora that train LLMs swallow benchmarks whole: MMLU questions appear
+in training text, and the model memorizes the answers. Watch the effect.
+A model scores 90% on a benchmark. Half the test items were in its
+training data (memorized: 100%), half were not (generalized: 80%). The
+reported 90% overstates true capability by 10 points.</p>
+<p>Detection is n-gram filtering: flag test items whose long n-grams appear
+in training. Prevention is canary strings and fresh test sets. The deep
+problem: at web scale, perfect decontamination is impossible, and every
+public benchmark decays as it gets absorbed into training. The lecture&rsquo;s
+rule generalizes: never just believe numbers, and believe public
+benchmark numbers least of all.</p>
+<figure><img alt="Contamination" src="assets/plate-l11-contamination.webp"><figcaption>Contamination: test items memorized from training inflate the score. N-gram filtering detects it. Shell 3. Source: original diagram for contamination. Project: Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">When is BLEU still useful?</div><div class="a"><p>For fast iteration on similar systems. BLEU is cheap, reproducible, and directionally right when comparing close variants: if your change adds 2 BLEU on the same test set, it probably helped. It fails for open-ended generation, where many valid answers share no n-grams with the reference.
+Human evaluation first, then LLM judges. Reference-free evaluation asks a strong model (AlpacaEval, MT-Bench) to judge directly. No reference means no overlap gaming. But the judge brings its own biases, covered below.</p><div class="followup"><strong>Follow-up:</strong> What replaced n-gram metrics for open-ended tasks?</div></div></div>
+<h2 id="the-key-question-what-if-humans-judge">The key question: what if humans judge</h2>
+<p>The gold standard is human evaluation. Axes: fluency, coherence, common
+sense, style, grammaticality, redundancy. And the gold standard is noisy:</p>
+<figure><img alt="Human eval" src="assets/l11-human.svg"><figcaption>Stanford Frontier AI, CS224N L11. AlpacaFarm: 5 researchers, 2-3 hours of rubric, 67% agreement. Never compare human evals across papers.</figcaption></figure>
+<p><strong>AlpacaFarm</strong>: 5 researchers, 2-3 hours writing rubrics, and annotators
+reached only <strong>67% agreement</strong>. Random guessing gives 50%. People even
+disagree with themselves: show the same annotator the same pair twice and
+the answers differ (<strong>intra-annotator disagreement</strong>). The rule: <strong>never
+compare human evals across papers</strong>. Different rubrics, different
+annotators, different numbers. A &ldquo;human eval&rdquo; score without its protocol is
+meaningless.</p>
+<p><strong>Chatbot Arena</strong> (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2643s" target="_blank" rel="noopener">44:03 <span class="ts">⏱44:03</span></a>) industrialized the idea: 200,000
+human votes, pairwise preferences, <strong>Elo ratings</strong> like chess, a live
+leaderboard. Pairwise is the right shape because humans are noisy:
+&ldquo;which is better&rdquo; is stable where &ldquo;rate 1-7&rdquo; is not.</p>
+<figure><img alt="Arena" src="assets/l11-arena.svg"><figcaption>Stanford Frontier AI, CS224N L11. 200,000 pairwise human votes feed Elo ratings on a live leaderboard.</figcaption></figure>
+<h2 id="llm-judges-100x-faster-with-biases">LLM judges: 100x faster, with biases</h2>
+<p><strong>LLM-as-judge</strong>: ask a strong model to judge. <strong>100x faster and 100x
+cheaper</strong> than humans (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2802s" target="_blank" rel="noopener">46:42 <span class="ts">⏱46:42</span></a>). GPT-4&rsquo;s agreement with the human
+majority beats humans&rsquo; agreement with each other. AlpacaEval reaches
+<strong>98% rank correlation</strong> with Chatbot Arena (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=3084s" target="_blank" rel="noopener">51:24 <span class="ts">⏱51:24</span></a>). For
+iteration, this is transformative: evaluate in minutes what took weeks.</p>
+<figure><img alt="LLM judge" src="assets/l11-llm-judge.svg"><figcaption>Stanford Frontier AI, CS224N L11. 100x faster and cheaper. GPT-4 beats human-human agreement. Length bias ~70%. Monoculture risk. LLaMA 65B MMLU varies 63.7/63.6/48.8 by implementation.</figcaption></figure>
+<p>But the judge has biases, and they are measured:</p>
+<ul>
+<li><strong>Length bias</strong>: humans and models prefer longer outputs about <strong>70%</strong>
+  of the time (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2981s" target="_blank" rel="noopener">49:41 <span class="ts">⏱49:41</span></a>), regardless of quality. Verbose wrong
+  answers beat concise right ones.</li>
+<li><strong>Monoculture</strong>: one judge&rsquo;s bias applied to every model is worse than
+  diverse human biases. Every model gets graded by the same prejudices.</li>
+<li>Fix: <strong>detailed rubrics</strong> for LLM judges. Vague instructions let biases
+  run free. Specific criteria constrain them.</li>
+</ul>
+<p><strong>HELM</strong> and the HuggingFace leaderboard &ldquo;look at everything&rdquo;: many tasks,
+many metrics, no single number. And the deepest trap: <strong>implementation
+decides the number</strong>. LLaMA 65B on MMLU reads 63.7 (HELM), 63.6
+(original), 48.8 (harness). Same model, different harness, different
+number. Never compare numbers across papers or harnesses. Reproduce the
+setup or do not cite the number.</p>
+<div class="qa"><div class="q">Should LLM judges replace human evaluation?</div><div class="a"><p>For iteration, yes: 100x faster and cheaper with 98% rank correlation to human arenas. For final claims, keep humans. LLM judges share one model&rsquo;s biases, and a monoculture of judgment is worse than noisy humans. Use detailed rubrics either way.
 Implementation variance. The same model scores 63.7, 63.6, or 48.8 on MMLU depending on the harness. Never compare numbers across papers or harnesses. Reproduce the setup or do not cite the number.</p><div class="followup"><strong>Follow-up:</strong> What is the biggest trap in reading eval numbers?</div></div></div>
-<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
-<p>Eight ideas carry this lecture. Read each card. Say the core sentence out
-loud. If you can, you own the lesson.</p>
-<div class="recap-grid">
-<div class="recap-card">
-<img src="assets/l11-tasks.svg" alt="Why evaluate">
-<div class="rc-body">
-<strong>1. Evaluate for a purpose</strong>
-<p>Train, dev, deploy, publish. Academic eval: reproducible, fast, cheap.
-Direction over 10 years matters.</p>
-<p class="rc-num">Key: purpose decides the metric</p>
+<h2 id="what-is-used-where-eval-in-production-october-2026">What is used where: eval in production, October 2026</h2>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>What it is</th>
+<th>Public facts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LMArena (Chatbot Arena)</td>
+<td>human pairwise votes, Elo</td>
+<td>Public. The live leaderboard the field watches</td>
+</tr>
+<tr>
+<td>AlpacaEval</td>
+<td>LLM judge vs reference</td>
+<td>Public. 98% rank correlation with Arena (2024 figure)</td>
+</tr>
+<tr>
+<td>HELM</td>
+<td>many tasks, many metrics</td>
+<td>Public (Stanford). No single number</td>
+</tr>
+<tr>
+<td>SWE-bench</td>
+<td>real GitHub issues, tests</td>
+<td>Public. The coding-eval standard</td>
+</tr>
+<tr>
+<td>MMLU / GPQA / ARC-AGI</td>
+<td>static benchmarks</td>
+<td>Public. Contamination-decayed; still cited</td>
+</tr>
+<tr>
+<td>Company-internal evals</td>
+<td>private task suites</td>
+<td>Not public. Every lab runs them; none publish the details</td>
+</tr>
+</tbody>
+</table>
+<p>The public stack is for comparison. The private stack is for shipping.
+No frontier lab picks a model on public benchmarks alone.</p>
+<div class="qa"><div class="q">Walk me through BLEU on the &quot;heck yes&quot; toy, naming every step.</div><div class="a"><p>Reference: &ldquo;heck yes&rdquo;. Candidate 1: &ldquo;yes&rdquo;. Step 1, clipped unigram precision: &ldquo;yes&rdquo; appears once in the candidate and once in the reference: 1/1 = 1.00. Bigrams: &ldquo;yes&rdquo; alone has no bigram: skip. Step 2, brevity penalty: candidate length 1, reference length 2: exp(1 - 2/1) = exp(-1) = 0.37. BLEU = 1.00 x 0.37 = 0.37. Candidate 2: &ldquo;yep&rdquo;. Unigram precision: 0/1 = 0. BLEU = 0. Same meaning, zero score: the false negative. Candidate 3: &ldquo;heck no&rdquo;. &ldquo;heck&rdquo; matches: unigram 1/2 = 0.50, no brevity penalty (same length). Opposite meaning, nonzero score: the false positive.
+Without clipping, &ldquo;the the the the&rdquo; scores 4/4 = 1.00 against any reference containing &ldquo;the&rdquo;. Clipping caps each word&rsquo;s matches at its reference count: &ldquo;the&rdquo; can match at most twice if the reference has it twice. Clipping stops pure repetition from gaming precision.</p><div class="followup"><strong>Follow-up:</strong> Why clip the counts?</div></div></div>
+<div class="qa"><div class="q">You need to evaluate a news summarizer. Design the eval.</div><div class="a"><p>Three rungs. Rung 1, automatic: ROUGE-L for iteration speed, BERTScore for meaning. Both need references: use expert-written summaries, because the lecture shows correlation improves with good references. Rung 2, LLM judge: pairwise against the current production model, with a detailed rubric (faithfulness, coverage, concision). Rung 3, human: a sample of 200 summaries, pairwise, blind. Ship on rung 3, iterate on rungs 1-2. Never ship on ROUGE alone: it rewards extractive copying over good abstraction.
+Enough for the comparison to be significant: a few hundred pairwise judgments typically separate close models. Fewer if the gap is large. Budget for annotator disagreement: 67% agreement means you need more pairs than the math suggests.</p><div class="followup"><strong>Follow-up:</strong> How many summaries do humans need to read?</div></div></div>
+<div class="qa"><div class="q">Walk me through one Elo update after an upset.</div><div class="a"><p>A at 1500, B at 1600, K = 32. Expected score of A: 1/(1 + 10^(100/400)) = 0.36. A wins: actual 1. Update: A gains 32 x (1 - 0.36) = 20.5 points, B loses 20.5. If the favorite had won, B would gain 32 x (1 - 0.64) = 11.5: expected wins pay less. The system learns most from surprises.
+K sets the learning rate of the ratings. Too high and one lucky vote swings the board: noise. Too low and real skill changes take thousands of votes to register: lag. 32 is the chess standard, tuned over decades. Arena-scale voting (200K votes) tolerates it.</p><div class="followup"><strong>Follow-up:</strong> Why K = 32 and not 320?</div></div></div>
+<div class="qa"><div class="q">LLM judge or human eval for your final model selection?</div><div class="a"><p>Both, in sequence. LLM judges for the shortlist: 100x faster and cheaper, 98% rank correlation, detailed rubrics to constrain bias. Humans for the final: the top 2-3 candidates, pairwise, blind, with a written rubric. The judge&rsquo;s monoculture (one model&rsquo;s biases grading everything) is the risk you pay a human panel to remove. Never let the judge pick the winner alone.
+Detailed rubrics first: vague instructions let length bias (70%) run free. Swap answer order to kill position bias. Use two different judge models and keep only agreements. And calibrate: measure the judge against human votes on a sample before trusting it.</p><div class="followup"><strong>Follow-up:</strong> How do you de-bias the LLM judge?</div></div></div>
+<div class="qa"><div class="q">Your model scores 92% on a public benchmark. How do you check for contamination?</div><div class="a"><p>N-gram filtering: take long n-grams (13-grams are standard) from the test items and search the training corpus. Matches mean the model may have memorized the item. Then run a clean split: score only the items with no matches. If the clean score drops far below 92%, the headline number was memorization. Also test on a fresh, private set: the gap between public and private scores is the contamination estimate.
+No. The web contains the benchmarks, their discussions, and their paraphrases. N-gram filters catch verbatim copies, not rewordings. Treat every public benchmark score as an upper bound on true capability, and build private evals for decisions that matter.</p><div class="followup"><strong>Follow-up:</strong> Can you ever fully decontaminate web-scale training?</div></div></div>
+<h2 id="watch-and-go-deeper">Watch and go deeper</h2>
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/7uy9vp_iDf0" title="What is BLEU Score?" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
-</div>
-<div class="recap-card">
-<img src="assets/l11-bleu.svg" alt="BLEU">
-<div class="rc-body">
-<strong>2. BLEU: precision plus brevity penalty</strong>
-<p>N-gram overlap against references. The penalty stops "the"-only gaming.
-ROUGE uses recall. Both are cheap and crude.</p>
-<p class="rc-num">Key: overlap, not meaning</p>
-</div>
-</div>
-<div class="recap-card">
-<img src="assets/l11-heckyes.svg" alt="Heck yes">
-<div class="rc-body">
-<strong>3. Overlap fails both ways</strong>
-<p>"yep": 0 BLEU, means the same. "heck no": matches words, means the
-opposite. False negatives and false positives.</p>
-<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=1434s" target="_blank" rel="noopener">23:54 <span class="ts">⏱23:54</span></a></p>
-</div>
-</div>
-<div class="recap-card">
-<img src="assets/l11-human.svg" alt="Human eval">
-<div class="rc-body">
-<strong>4. Humans are gold and noisy</strong>
-<p>67% agreement after hours of rubrics. People disagree with themselves.
-Never compare human evals across papers.</p>
-<p class="rc-num">Key: gold standard, noisy gold</p>
-</div>
-</div>
-<div class="recap-card">
-<img src="assets/l11-arena.svg" alt="Arena">
-<div class="rc-body">
-<strong>5. Chatbot Arena: 200,000 votes, Elo</strong>
-<p>Pairwise human preferences, chess-style ratings, live leaderboard. The
-human-eval standard of the era.</p>
-<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=2643s" target="_blank" rel="noopener">44:03 <span class="ts">⏱44:03</span></a></p>
-</div>
-</div>
-<div class="recap-card">
-<img src="assets/l11-llm-judge.svg" alt="LLM judge">
-<div class="rc-body">
-<strong>6. LLM judges: 100x faster, 100x cheaper</strong>
-<p>GPT-4 beats human-human agreement. AlpacaEval: 98% rank correlation.
-Length bias ~70%. Monoculture risk.</p>
-<p class="rc-num">Key: use detailed rubrics</p>
-</div>
-</div>
-<div class="recap-card">
-<img src="assets/l11-llm-judge.svg" alt="Implementation">
-<div class="rc-body">
-<strong>7. Implementation decides the number</strong>
-<p>LLaMA 65B MMLU: 63.7, 63.6, or 48.8 by harness. Same model. Never trust
-a number without its setup.</p>
-<p class="rc-num">Key: harness is half the score</p>
-</div>
-</div>
-<div class="recap-card">
-<img src="assets/l11-bridge.svg" alt="Bridge">
-<div class="rc-body">
-<strong>8. Depth lives in CS336</strong>
-<p>CS336 L12: perplexity to agents, contamination, scaffolds. "Never just
-believe numbers."</p>
-<p class="rc-num">Key: <a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4785s" target="_blank" rel="noopener">79:45 <span class="ts">⏱79:45</span></a></p>
-</div>
-</div>
+<p><strong>What is BLEU score?</strong> (Standarity). N-gram precision and the brevity penalty.</p>
 </div>
 
+<h3 id="go-deeper">Go deeper</h3>
+<ul>
+<li><a href="https://arxiv.org/abs/2211.09110">Holistic Evaluation of Language Models</a> (Liang et al., 2022). HELM: many tasks, many metrics.</li>
+<li><a href="https://aclanthology.org/P02-1040/">BLEU: a Method for Automatic Evaluation of Machine Translation</a> (Papineni et al., 2002). The original metric paper.</li>
+<li><a href="https://lmarena.ai">LMArena</a>. The live human-preference leaderboard.</li>
+<li><a href="https://web.stanford.edu/class/cs224n/">Stanford CS224N course site</a>. Slides, assignments, syllabus.</li>
+</ul>
+<h2 id="mapping-back-what-each-method-answers">Mapping back: what each method answers</h2>
+<table>
+<thead>
+<tr>
+<th>Measurement failure</th>
+<th>Answer</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Precision gaming (&ldquo;the&rdquo; scores 1.00)</td>
+<td>Brevity penalty</td>
+<td>exp(1 - 6/1) = 0.0067 kills the gaming</td>
+</tr>
+<tr>
+<td>Overlap is not meaning (&ldquo;yep&rdquo; scores 0, &ldquo;heck no&rdquo; scores well)</td>
+<td>Human judgment</td>
+<td>AlpacaFarm, Chatbot Arena: 200,000 votes, Elo</td>
+</tr>
+<tr>
+<td>Humans are slow, expensive, 67% agreement</td>
+<td>LLM judges</td>
+<td>100x faster/cheaper. GPT-4 beats human-human agreement</td>
+</tr>
+<tr>
+<td>One judge&rsquo;s bias everywhere</td>
+<td>Detailed rubrics + HELM</td>
+<td>Constrain the judge. Look at everything</td>
+</tr>
+<tr>
+<td>Numbers move with the harness (63.7/63.6/48.8)</td>
+<td>Never compare across setups</td>
+<td>Reproduce or do not cite</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-honest-price">The honest price</h2>
+<p>Every rung of the ladder has a cost. N-gram metrics are cheap and wrong
+about meaning. Humans are right and noisy: 67% agreement after hours of
+rubrics, and incomparable across papers. LLM judges are fast and biased:
+length wins 70%, and one judge&rsquo;s prejudice grades every model. The
+lecture&rsquo;s closing line: &ldquo;never just believe numbers&rdquo; (<a href="https://www.youtube.com/watch?v=TO0CqzqiArM&amp;t=4785s" target="_blank" rel="noopener">79:45 <span class="ts">⏱79:45</span></a>).
+Believe the direction over 10 years. Verify the setup behind every number.</p>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<ol>
+<li><strong>The problem.</strong> Which model is better? Four purposes: train, dev,
+   deploy, publish. Purpose decides the metric. Benchmarks saturate: MMLU
+   25% to ~90% in ~4 years.</li>
+<li><strong>First attempt.</strong> BLEU: n-gram precision plus brevity penalty. The toy:
+   &ldquo;the&rdquo; alone scores 1.00 precision, killed to 0.0067 by the penalty.
+   ROUGE uses recall.</li>
+<li><strong>Overlap breaks.</strong> &ldquo;heck yes&rdquo;: &ldquo;yes&rdquo; 67%, &ldquo;yep&rdquo; 0 (false negative),
+   &ldquo;heck no&rdquo; ~7x words (false positive). Overlap is not meaning, in both
+   directions.</li>
+<li><strong>Humans: gold and noisy.</strong> 67% agreement (50% is random) after 2-3
+   hours of rubrics. People disagree with themselves. Never compare across
+   papers.</li>
+<li><strong>Chatbot Arena.</strong> 200,000 pairwise votes, Elo ratings, live
+   leaderboard. Pairwise because humans are noisy.</li>
+<li><strong>LLM judges.</strong> 100x faster and cheaper. GPT-4 beats human-human
+   agreement. AlpacaEval: 98% rank correlation. Length bias ~70%.
+   Monoculture risk. Detailed rubrics.</li>
+<li><strong>Implementation decides.</strong> LLaMA 65B MMLU: 63.7, 63.6, or 48.8 by
+   harness. Same model. Reproduce the setup or do not cite.</li>
+<li><strong>The rule.</strong> Never just believe numbers. Believe the direction.
+   Verify the setup.</li>
+</ol>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
 - Lecture 11 video and transcript.
-- Liang et al. (2022): HELM.</p>
+- Liang et al. (2022), HELM: holistic evaluation.</p>
 <p><strong>Further reading:</strong>
-- <a href="../cs336/l12-evaluation.html">CS336 L12</a>: evaluation systems in depth.
 - Zheng et al. (2023), &ldquo;Judging LLM-as-a-Judge&rdquo;: the bias analysis.
-- Chatbot Arena (LMSYS): the live leaderboard.</p>
-<p><strong>Caveats from these sources.</strong> &ldquo;100x faster and cheaper&rdquo; is the lecture&rsquo;s price comparison at the time. Prices move. &ldquo;98% rank correlation&rdquo; is AlpacaEval versus Chatbot Arena specifically.</p>
+- Chatbot Arena (LMSYS): the live leaderboard.
+- Papineni et al. (2002), BLEU: the original metric paper.</p>
+<p><strong>Caveats from these sources.</strong> &ldquo;100x faster and cheaper&rdquo; is the lecture&rsquo;s
+price comparison at the time. Prices move. &ldquo;98% rank correlation&rdquo; is
+AlpacaEval versus Chatbot Arena specifically. The brevity-penalty toy above
+is an original teaching toy.</p>
 <h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
 <ul>
-<li><strong>This course:</strong> L10&rsquo;s models are what L11 evaluates. L07&rsquo;s BLEU section was the preview.</li>
-<li><strong>CS336:</strong> L12 (evaluation) carries the deep mechanics: perplexity, contamination, agent benchmarks.</li>
-<li><strong>CS329H:</strong> social choice theory explains why pairwise voting (Elo) aggregates preferences.</li>
+<li><strong>This course:</strong> L10&rsquo;s models are what L11 evaluates. L07&rsquo;s BLEU section
+  was the preview. L04&rsquo;s UAS/LAS are the same idea: task-specific metrics.</li>
+<li><strong>CS336:</strong> evaluation systems in depth: perplexity, contamination,
+  agent benchmarks.</li>
+<li><strong>CS329H:</strong> social choice theory explains why pairwise voting (Elo)
+  aggregates noisy preferences.</li>
 </ul>
-<div class="cheatsheet"><span class="co-label">Cheatsheet</span><p><strong>Evaluation cheatsheet.</strong> Purposes: train, dev, deploy, publish. Closed &lt;10 answers. Open-ended. MMLU 25%-&gt;90% in ~4y. BLEU: n-gram precision + brevity penalty. ROUGE: recall. &ldquo;heck yes&rdquo;: yes=67%, yep=0 (FN), heck no ~7x (FP). Human: gold, noisy; 67% agreement. Never cross-compare. Arena: 200k votes, Elo. LLM judge: 100x faster/cheaper, GPT-4 &gt; human-human; 98% rank corr. Length bias 70%. Monoculture. HELM: look at everything. Harness changes numbers: 63.7/63.6/48.8. Rule: never just believe numbers.</p></div>
-<div class="memory-aid"><span class="ma-label">Memory aid</span><p><strong>Overlap is not meaning. Numbers are not truth.</strong> BLEU counts n-grams. Humans disagree. Judges have biases. Harnesses move scores. Believe the direction, verify the setup.</p></div>
-      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=TO0CqzqiArM" target="_blank" rel="noopener">Lecture 11 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2211.09110" target="_blank" rel="noopener">Liang et al., Holistic Evaluation of Language Models (2022)</a></li></ul></section>
-      <nav class="pager"><a href="../cs224n/l10-prompting-post-training.html"><span class="lbl">← Previous</span>Lecture 10: Prompting, Instruction Tuning, RLHF (Bridge)</a><a href="../cs224n/l12-efficient-training.html"><span class="lbl">Next →</span>Lecture 12: Efficient Training (Bridge)</a></nav>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=TO0CqzqiArM" target="_blank" rel="noopener">Lecture 11 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2211.09110" target="_blank" rel="noopener">Liang et al., Holistic Evaluation of Language Models (HELM, 2022)</a></li></ul></section>
+      <nav class="pager"><a href="../cs224n/l10-prompting-post-training.html"><span class="lbl">← Previous</span>Lecture 10: Prompting, Instruction Tuning, and RLHF</a><a href="../cs224n/l12-efficient-training.html"><span class="lbl">Next →</span>Lecture 12: Efficient Neural Network Training</a></nav>
     </article>
     <footer class="pagefoot">
       <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>

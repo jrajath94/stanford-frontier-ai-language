@@ -41,7 +41,7 @@ lecture: count bytes honestly, then cut them.
 
 Three formats:
 
-![Precision](assets/l12-precision.svg ""Stanford Frontier AI, CS224N L12. Precision formats: fp32 at 4 bytes with full range. fp16 at 2 bytes with narrow range, needs grad scalers. bf16 at 2 bytes with 8 exponent bits, fp32 range, no scalers."")
+![Precision](assets/l12-precision.svg "Stanford Frontier AI, CS224N L12. Precision formats: fp32 at 4 bytes with full range. fp16 at 2 bytes with narrow range, needs grad scalers. bf16 at 2 bytes with 8 exponent bits, fp32 range, no scalers.")
 
 - **fp32**: 4 bytes per parameter. Full dynamic range.
 - **fp16**: 2 bytes. Narrow range: the smallest normal value is about
@@ -54,7 +54,8 @@ Three formats:
   A100, A6000 ([12:22](ts:12:22)).
 
 The demonstration: fp16's max is 65,504 and its min normal is 6.1e-5, a
-range of about 10^9. The fp32 and bf16 formats span about 10^79. Neural gradients live
+range of about 10^9 (65,504 / 6.1e-5). The fp32 and bf16 formats span about
+10^76 (3.4e38 / 1.2e-38): 67 orders of magnitude wider. Neural gradients live
 at 1e-6 and below. The fp16 format rounds them to zero, while bf16 keeps them. Range beats
 precision for training.
 
@@ -278,9 +279,16 @@ closed labs' advantage is scale and data, not secret parallelism math.
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/UVX7SYGCKkA" title="CS224N Spring 2024 Lecture 12: Efficient Neural Network Training" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 12: Efficient Neural Network Training</strong> (Shikhar Murty, Spring 2024). The original lecture: precision, distributed training, parameter-efficient fine-tuning. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=UVX7SYGCKkA</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/87GhCIQudEA" title="Mixed Precision Training - Explained" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>Mixed precision training, explained</strong>. Why fp16 breaks, and how the master copy and loss scaling fix it.</p>
+</div>
 </div>
 
 ### Go deeper

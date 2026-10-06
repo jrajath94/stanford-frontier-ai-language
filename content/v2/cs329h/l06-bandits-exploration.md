@@ -159,6 +159,42 @@ bonus tuned to the reward scale. Thompson needs a prior but no
 bonus knob. In practice, Thompson usually wins on real problems
 and UCB wins on whiteboards.
 
+### Subchapter: the regret bound, worked
+
+"Logarithmic regret" is a bound with numbers inside. The
+standard UCB bound for one suboptimal arm with gap Delta says
+the expected number of pulls of that arm is at most
+(8 ln n) / Delta^2, plus a constant. Multiply by Delta to get
+regret: at most 8 ln n / Delta, plus (1 + pi^2/3) Delta.
+
+Work it. Two arms, true means 0.8 and 0.5, gap Delta = 0.3.
+
+```ascii
+n = 100:      regret <= 8 x 4.61 / 0.3 + 1.29  = 124.1
+n = 10,000:   regret <= 8 x 9.21 / 0.3 + 1.29  = 246.9
+n = 100,000:  regret <= 8 x 11.51 / 0.3 + 1.29 = 308.3
+```
+
+Read the column. Multiplying the horizon by 100, from 100 to
+10,000 rounds, roughly doubles the bound: 124 to 247. Another
+factor of 10 adds only 61. That is what logarithmic means in
+practice. The algorithm's total mistakes grow with the log of
+time, so the per-round mistake rate falls toward zero.
+
+Two preconditions the bound needs. Rewards are bounded, the
+[0, 1] click case qualifies, and the arm means are stationary.
+Break stationarity and the bound is void: the proof counts how
+often a fixed suboptimal arm gets pulled, and a drifting best
+arm is a different problem. The constant 8 comes from the bonus
+coefficient sqrt(2 ln t / n): change the bonus, change the
+constant. The shape, ln n over the gap, survives.
+
+The interview reading: when someone says "UCB has logarithmic
+regret," ask for the gap dependence. Small gaps are expensive:
+halve Delta from 0.3 to 0.15 and the bound doubles, because
+near-tied arms need many pulls to separate. The bound is
+honest about where the difficulty lives.
+
 ## Dueling bandits: no scores, only winners
 
 Sometimes absolute rewards are unavailable but pairwise
@@ -209,7 +245,7 @@ the function more than one comparison bit.
 > Follow-up: What does the GP buy over a parametric model here?
 > A: Flexibility about the reward shape. A linear model peaks at corners of the feasible region. A GP with an RBF kernel can express "the moderate middle is best," which is the common human preference for tuned parameters like speed and angle. The cost is O(n^3) scaling without approximations.
 
-## The strategic human: CIRL
+## The strategic human: CIRL (cooperative inverse reinforcement learning)
 
 Every algorithm so far treats the human as a passive oracle: it
 answers queries but does not strategize. Real humans do. An
@@ -261,8 +297,8 @@ answer.
 ## RL in one paragraph
 
 Bandits are single-step. Full reinforcement learning adds
-states: early actions influence later states. The MDP tuple is
-states, actions, transitions, rewards, discount, and the initial
+states: early actions influence later states. The MDP (Markov
+decision process) tuple is states, actions, transitions, rewards, discount, and the initial
 distribution. The objective maximizes expected discounted return.
 Policy gradients climb it.
 
@@ -323,10 +359,20 @@ The story in eight steps. Each step answers the one before it.
 8. **The price is drift.** Stationarity fails in the wild.
    Discount old data. Regret grows slowly but never stops.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/dPSEIrlJizc" title="Understanding Bayesian A/B Testing, Practical stats" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+- Bayesian A/B Testing (Thompson sampling in production): https://www.youtube.com/watch?v=dPSEIrlJizc
+- Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
+- Thompson (1933): the original sampling paper.
+- Hadfield-Menell et al. (2016): cooperative inverse reinforcement learning.
+
 ## Official sources and further reading
 
 **Official:**
-- Course textbook, chapters 6.x: bandits, Thompson sampling,
+- Course textbook, chapter 3.x: bandits, Thompson sampling,
   dueling bandits, preferential BO, CIRL, the GRPO connection.
 
 **Further reading:**

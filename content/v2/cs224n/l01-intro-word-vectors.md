@@ -9,6 +9,10 @@ title: "Lecture 1: Introduction and Word Vectors"
 summary: "Course scope, why word meaning as a symbol fails, one-hot vectors, the distributional hypothesis, word2vec skip-gram setup, softmax, and optimization basics."
 instructor: "Christopher Manning"
 offering: "Spring 2024"
+duration: "1:20:00"
+video_id: DzpHeXVSC5I
+video_title: "Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 1 - Intro and Word Vectors"
+video_caption: "Original lecture. Christopher Manning introduces the course, word meaning, word2vec, gradients, and optimization."
 concepts: [word-vectors, distributional-semantics, one-hot, wordnet, word2vec, skip-gram, softmax, gradient-descent, stochastic-gradient-descent]
 sources:
   - tag: slides
@@ -36,7 +40,7 @@ a machine can compute with, without losing what the words mean.
 
 ![Course arc](assets/l01-course-map.svg "Stanford Frontier AI, CS224N L01. The course builds from word vectors through neural nets, RNNs, attention, transformers, pretraining, and post-training.")
 
-**On this page:** [CBOW, the mirror image](#subchapter-cbow-the-mirror-image) · [Hierarchical softmax](#subchapter-hierarchical-softmax-the-tree-instead-of-the-sum) · [Why the tree is Huffman-shaped](#subchapter-why-the-tree-is-huffman-shaped) · [Embeddings in production](#what-is-used-where-embeddings-in-production) · [Watch and go deeper](#watch-and-go-deeper)
+**On this page:** [CBOW, the mirror image](#subchapter-cbow-the-mirror-image) · [Hierarchical softmax](#subchapter-hierarchical-softmax-the-tree-instead-of-the-sum) · [Why the tree is Huffman-shaped](#subchapter-why-the-tree-is-huffman-shaped) · [One SGD step, by hand](#subchapter-one-sgd-step-by-hand) · [Embeddings in production](#what-is-used-where-embeddings-in-production) · [Watch and go deeper](#watch-and-go-deeper)
 
 > [!NOTE]
 > This lesson follows the official Lecture 1 slide deck and the lecture
@@ -338,6 +342,44 @@ gradient. The noise is a feature, not a bug. It jiggles the optimizer out of
 poor local minima. The objective is not convex, and life turns out to be
 okay anyway.
 
+### Subchapter: one SGD step, by hand
+
+The gradient has a shape worth seeing once, because it explains what
+training *does* to the vectors. For the loss -log P(o | c), the gradient
+with respect to the center vector v_c is:
+
+```ascii
+d/dv_c [-log P(o|c)] = E[u] - u_o
+```
+
+E[u] is the model's *expected* outside vector: each word's u vector
+weighted by the model's current probability. u_o is the *observed* word's
+u vector. The gradient is the gap between what the model expects and what
+it saw. Watch one step on the softmax toy. The observed pair is
+(banking, money). The model's probabilities were [0.46, 0.38, 0.10, 0.06]:
+
+```ascii
+E[u] = 0.46 x [1.0, 0.2] + 0.38 x [0.8, 0.6]
+     + 0.10 x [-0.5, 0.9] + 0.06 x [-1.0, -0.5]
+     = [0.654, 0.380]
+grad = E[u] - u_money = [0.654 - 1.0, 0.380 - 0.2] = [-0.346, 0.180]
+```
+
+SGD steps against the gradient with learning rate 0.1:
+
+```ascii
+v_banking = [1.0, 0.0] - 0.1 x [-0.346, 0.180] = [1.035, -0.018]
+```
+
+![One SGD step: expectation minus observation](assets/plate-l01-sgd-step.webp "One SGD step on the softmax toy. Gradient = E[u] - u_money = [-0.346, 0.180]. v_banking moves from [1.0, 0.0] to [1.035, -0.018]. Shell 2. Source: original toy for the skip-gram gradient. Project: Stanford Frontier AI.")
+
+Read the move. The x-component grew: v_banking stepped *toward*
+u_money's direction, because the observed word pulled it. E[u] is what
+the model predicted. u_o is what actually happened. Every SGD step drags
+the prediction toward reality, one window at a time. Billions of such
+drags, and "banking" ends up near "money". That is all training is:
+expectation minus observation, repeated until they agree.
+
 > [!QA]
 > Q: Why is plain gradient descent a bad idea here?
 > A: Each step needs a full pass over the corpus before a single parameter update. With roughly a billion windows, one update costs a billion units of work. SGD updates after every sample, so the same work buys a billion updates. Progress per unit of compute is enormously higher.
@@ -461,7 +503,7 @@ field later moved past static vectors entirely.
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/DzpHeXVSC5I" title="CS224N Spring 2024 Lecture 1: Intro and Word Vectors" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
-<p><strong>Lecture 1: Intro and Word Vectors</strong> (Christopher Manning, Spring 2024). The original lecture: the course, word meaning, word2vec, gradients, optimization.</p>
+<p><strong>Lecture 1: Intro and Word Vectors</strong> (Christopher Manning, Spring 2024). The original lecture: the course, word meaning, word2vec, gradients, optimization. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=DzpHeXVSC5I</p>
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">

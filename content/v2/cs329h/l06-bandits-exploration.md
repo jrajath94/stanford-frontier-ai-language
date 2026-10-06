@@ -7,17 +7,21 @@ order: 6
 nav: "L06 · Bandits and Exploration"
 title: "Lecture 6: Bandits, Dueling, and Learning to Act"
 summary: "Exploration versus exploitation, Thompson sampling, dueling bandits, preferential Bayesian optimization, and CIRL."
-date: "[uncertain] Spring 2026"
+date: "[uncertain]"
 instructor: "Sanmi Koyejo"
-offering: "Spring 2026"
+offering: "[uncertain]"
 duration: "[uncertain]"
-video_id: ""
-video_title: ""
-video_caption: "No dedicated lecture transcript. Built from the course textbook, chapter 3 (action under uncertainty)."
+video_id: "dPSEIrlJizc"
+video_title: "Understanding Bayesian A/B Testing: How Big Tech Makes Real Time Decisions"
+video_caption: "External explainer (not the course lecture): Thompson sampling, the Beta distribution, and the multi-armed bandit, with the Netflix/Airbnb experimentation framing. Verified live on YouTube."
 concepts: [bandits, exploration-exploitation, thompson-sampling, dueling-bandits, preferential-bo, cirl, regret]
 sources:
+  - tag: video
+    label: "Bayesian A/B Testing and Thompson Sampling (external explainer)"
+    url: https://www.youtube.com/watch?v=dPSEIrlJizc
   - tag: notes
     label: "Course textbook, chapter 3 (Truong, Haupt, Koyejo, 2025)"
+    url: https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
   - tag: supplement
     label: "Transcript L08: Thompson sampling applied to human experiments"
 ---
@@ -122,6 +126,39 @@ here. It is the engine.
 > Follow-up: When does Thompson sampling fail?
 > A: With a bad prior or a misspecified model. If the prior rules out the true best arm with zero mass, no amount of sampling finds it. With non-stationary rewards, the posterior concentrates on stale data. Both failures are prior problems, not algorithm problems: the method is only as good as its beliefs.
 
+### Subchapter: UCB, the bonus method
+
+Thompson sampling explores by sampling. **UCB** (upper confidence
+bound) explores by adding a bonus. Each round, pull the arm with
+the highest optimistic score:
+
+score = observed mean + sqrt(2 ln t / n)
+
+t is the total pulls so far, n is this arm's pulls. The bonus
+shrinks as the arm gets pulled: uncertainty falls with evidence.
+Pull an arm either because its mean is high (exploit) or because
+its bonus is high (explore). One formula, both motives.
+
+![UCB adds a bonus. Thompson samples a world](assets/plate-ucb-vs-thompson.webp "Same toy, two rules. UCB pulls B on the bonus. Thompson pulls B 10% of the time. Shell 3. Source: original comparison. Project: Stanford Frontier AI.")
+
+Work it on the toy. Twelve total pulls. A: 8/10, mean 0.80. B:
+1/2, mean 0.50. The exploration term: 2 ln 12 = 4.97.
+
+```ascii
+A: 0.80 + sqrt(4.97 / 10) = 0.80 + 0.705 = 1.505
+B: 0.50 + sqrt(4.97 / 2)  = 0.50 + 1.576 = 2.076
+```
+
+B wins and gets pulled. The bonus did its job: B's two pulls
+are thin evidence, so the algorithm stays curious. Compare with
+Thompson sampling on the same toy: B gets pulled about 10% of
+the time, the posterior probability it is best. UCB is
+deterministic optimism. Thompson is probabilistic matching. Both
+achieve logarithmic regret. UCB needs no prior but needs the
+bonus tuned to the reward scale. Thompson needs a prior but no
+bonus knob. In practice, Thompson usually wins on real problems
+and UCB wins on whiteboards.
+
 ## Dueling bandits: no scores, only winners
 
 Sometimes absolute rewards are unavailable but pairwise
@@ -203,6 +240,24 @@ answer.
 > Follow-up: How does CIRL change practice?
 > A: It pushes toward teaching-aware elicitation: queries designed so that even a strategic human reveals the most. It also justifies humility about learned rewards: if feedback was strategic, the reward model captures the strategy, not the preference. The inversion problem of Lecture 10 starts here.
 
+> [!QA]
+> Q: Walk me through three rounds of Thompson sampling on the layout toy.
+> A: Arms: A with posterior Beta(9,3), B with Beta(2,2). Round 1: sample A = 0.75, B = 0.62. A wins the sample, pull A. Visitor clicks. Posterior becomes Beta(10,3). Round 2: sample A = 0.71, B = 0.85. B wins the sample, pull B. No click. Posterior becomes Beta(2,3). Round 3: sample A = 0.78, B = 0.45. Pull A. Each round, the arm pulled is the best arm in one plausible world. B's wide posterior gave it a 10% chance per round. after the failure its posterior narrowed and its chances fell. No exploration parameter was set anywhere. The posterior's width is the exploration schedule.
+> Follow-up: What changes with a stronger prior on B, say Beta(20,20)?
+> A: B's posterior concentrates near 0.5 and samples high rarely. Exploration of B nearly stops. If B is truly better, the algorithm may never learn it. The prior is not a formality: it sets the exploration budget. This is why Thompson sampling fails with a bad prior, as the earlier follow-up notes.
+
+> [!QA]
+> Q: Design the homepage experiment. Two layouts, 10,000 visitors, minimize lost clicks.
+> A: Do not run a fixed 50/50 A/B test: it wastes half the visitors on the worse layout after the winner is clear. Run Thompson sampling. Model each layout's click rate with a Beta posterior, starting Beta(1,1). Each visitor sees the layout sampled as best from the posteriors. Early on, traffic splits near 50/50 while uncertainty is high. As evidence accumulates, traffic shifts toward the winner automatically. Expected regret grows logarithmically, not linearly. Add two guardrails: a minimum 5% traffic to each layout for the first 500 visitors so neither posterior starts from noise, and a stationarity check, because layout performance drifts with time of day and day of week. If drift is detected, discount old observations.
+> Follow-up: The product manager wants a p-value at the end. What do you say?
+> A: The bandit does not produce one, and that is fine. Report the posterior probability that each layout is best and the expected loss from choosing wrong. If they need a fixed-sample test for a launch decision, run the bandit for learning and a short confirmatory A/B after. Do not contaminate the learning phase with peeking at p-values: the video linked above explains why the peeking problem vanishes under the Bayesian framing.
+
+> [!QA]
+> Q: Dueling bandits or standard A/B testing: when does the duel win?
+> A: The duel wins when absolute scores are unanchored but pairwise judgments are stable. Which robot gait looks more natural, which summary reads better: ask for a score and you get one evaluator's 7 is another's 9. Ask for a winner and the answers agree. The duel also wins when the goal is finding the best arm rather than estimating all arms: duels eliminate losers directly. A/B testing wins when good scalars exist: revenue per visitor, click-through with calibrated tracking. One number constrains the estimate more than one comparison bit, so scalar feedback needs fewer samples for the same precision.
+> Follow-up: What is the sample complexity of finding the Condorcet winner?
+> A: It scales with the number of arms and the inverse squared gaps, like standard bandits, but counts duels instead of pulls. The textbook's treatment keeps the comparison structure: Bradley-Terry models the duel outcomes, the posterior over utilities drives selection, and the same heterogeneity warnings from Lecture 3 apply. A mixed judge population produces compromise winners, so check who is judging before trusting the crown.
+
 ## RL in one paragraph
 
 Bandits are single-step. Full reinforcement learning adds
@@ -225,10 +280,10 @@ responses play the role of pairwise comparisons.
 
 | Prediction-only pain | Bandit answer | How |
 |---|---|---|
-| Greedy locks onto the wrong arm | Thompson sampling | Pull each arm with P(it is best); the toy's 10% gets tested, then resolved |
-| Scores are unanchored | Dueling bandits | Two arms per round, one bit; BT models the duels |
+| Greedy locks onto the wrong arm | Thompson sampling | Pull each arm with P(it is best). the toy's 10% gets tested, then resolved |
+| Scores are unanchored | Dueling bandits | Two arms per round, one bit. BT models the duels |
 | Function values unqueryable | Preferential BO | GP prior, BT likelihood on duels, information gain picks the next pair |
-| Humans strategize | CIRL | Model the teacher, not just the oracle; design teaching-aware queries |
+| Humans strategize | CIRL | Model the teacher, not just the oracle. design teaching-aware queries |
 
 ## The honest price: the world moves
 
@@ -280,20 +335,20 @@ The story in eight steps. Each step answers the one before it.
   reinforcement learning.
 
 **Caveats from these sources.** The Beta(2,2) toy is worked here
-from the textbook's 8/10 and 1/2 example; the 0.104 figure is
+from the textbook's 8/10 and 1/2 example. the 0.104 figure is
 arithmetic, not a textbook quote. The logarithmic regret claim
-summarizes standard bandit bounds; constants depend on the
-algorithm and the gap. The RL section is intentionally brief;
+summarizes standard bandit bounds. constants depend on the
+algorithm and the gap. The RL section is intentionally brief.
 mechanics live in CS336 L15.
 
 ## Connections to the other courses
 
 - **CS329H L04:** the posterior that Thompson sampling samples
-  from; Elo as the online idea.
+  from. Elo as the online idea.
 - **CS329H L05:** the information-gain rule reused for duel
   selection in PBO.
-- **CS329H L07:** RLHF inherits every assumption here; the
+- **CS329H L07:** RLHF inherits every assumption here. the
   reward is learned, then optimized.
-- **CS329H L09:** strategic humans need mechanism design; CIRL
+- **CS329H L09:** strategic humans need mechanism design. CIRL
   is the cooperative half.
 - **CS336 L15:** PPO, KL control, and policy gradients in full.

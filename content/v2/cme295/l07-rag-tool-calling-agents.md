@@ -73,6 +73,33 @@ game: a bad retriever poisons the prompt.
 
 ![RAG pipeline](assets/l07-rag-pipeline.svg "Retrieve relevant chunks, augment the prompt, generate the answer. Stanford Frontier AI.")
 
+### Subchapter: RAG vs long context, the decision rule
+
+When context windows reach 1M tokens, why retrieve at all? Three
+reasons RAG survives. **Cost**: 1M input tokens cost ~$1 per query.
+retrieval plus 5K tokens costs cents. **Quality**: needle tests
+show facts buried in long prompts get lost. 5 relevant chunks beat
+500 pages of noise. **Freshness**: the index updates in minutes,
+the weights never do. The decision rule: use long context when the
+document set is small and fixed (one contract, one codebase). Use
+RAG when the corpus is large, changing, or bigger than the
+window. Most production systems use both: retrieve into a long
+window.
+
+> [!QA]
+> Q: Walk me through RAG on "who won the local election", start to finish.
+> A: The question embeds to a vector. Stage 1: cosine-similarity
+> against 2,000 chunk embeddings (the ANN index), top 100 by
+> recall. Stage 2: cross-encoder scores the 100 pairs, top 10 by
+> precision. Augment: the 10 chunks join the prompt after the
+> question. Generate: the model reads the results article in
+> context and answers. If the retriever missed the article, the
+> model hallucinates or refuses: retrieval is the whole game.
+> Follow-up: Where does it break first in production?
+> A: Chunking. The answer spans a chunk boundary, or the chunk is
+> too big for one embedding to represent. Fix chunking before
+> tuning the retriever.
+
 > [!QA]
 > Q: Why is retrieval "the whole game" rather than generation?
 > A: The generator is a reader. If the retrieved chunks contain the
@@ -124,6 +151,24 @@ chunk B (unrelated sports news)  = [0.1, 1.0]   cosine = 0.29
 Cosine similarity is the dot product normalized: A matches, B does
 not. The retriever returns A.
 
+### Subchapter: chunking strategies
+
+Three ways to cut documents:
+
+- **Fixed-size** (the lecture's default): every ~500 tokens with
+  overlap. Simple, predictable, occasionally cuts mid-thought.
+- **Semantic**: split where the topic shifts (embedding
+  similarity between adjacent sentences drops). Respects
+  meaning, costs an extra embedding pass, chunk sizes vary.
+- **Structural**: split on document structure (headings,
+  paragraphs, code blocks). Best when the corpus has real
+  structure (docs, wikis, repos). Fails on flat prose.
+
+The decision rule: structural for structured corpora, semantic
+for long prose, fixed-size as the baseline everything else
+compares against. Overlap (100-200 tokens) applies to all three:
+never let a cut strand a sentence.
+
 ![Chunks](assets/l07-kb-chunks.svg "Documents to chunks to vectors. Three knobs: size, overlap, dimension. Stanford Frontier AI.")
 
 ## The problem: searching millions of chunks
@@ -151,7 +196,44 @@ outputs one relevance score, with full attention between the two.
 Slower per pair, affordable on 100 candidates. Goal: precision. Keep
 the top k.
 
+### Subchapter: ANN indexes in one pass
+
+A linear scan over 1M chunks x 1,500 dims = 1.5B multiply-adds
+per query: too slow. Three index families:
+
+- **IVF** (inverted file): cluster chunks into ~1,000 cells.
+  Search the nearest ~10 cells. 100x fewer comparisons, misses
+  chunks near cell borders.
+- **HNSW** (hierarchical navigable small world): a graph where
+  each chunk links to neighbors, layered coarse-to-fine. Greedy
+  walk from the top layer down. The default choice: fast,
+  accurate, memory-hungry (the graph lives in RAM).
+- **PQ** (product quantization): compress each vector to ~100
+  bytes. 15x less memory, approximate distances. Pair with IVF
+  (IVF-PQ) for billion-scale on one machine.
+
+The decision rule: HNSW under ~100M vectors when RAM allows,
+IVF-PQ past that. Recall is the tuning knob: nprobe (IVF) or ef
+(HNSW) trades latency for recall. Measure recall@100 on your own
+labels: the index is only as good as its tuning.
+
+![ANN indexes](assets/l07-ann.svg "IVF clusters, HNSW graphs, PQ compression. One decision rule. Shell 3. Source: the three index papers. Project: Stanford Frontier AI.")
+
 ![Two-stage retrieval](assets/l07-two-stage.svg "Bi-encoder for recall, cross-encoder for precision. Stanford Frontier AI.")
+
+> [!QA]
+> Q: Design the vector index for 50M chunks on one machine.
+> A: IVF-PQ. 50M x 1,500 dims x 4 bytes = 300 GB raw: too big
+> for RAM comfort. PQ compresses to ~100 bytes per vector: 5 GB.
+> IVF with ~50K cells, nprobe ~100 for recall. HNSW would need
+> the full vectors plus the graph in RAM: ~350 GB, not viable.
+> Tune on labeled queries: raise nprobe until recall@100
+> plateaus, then stop. The decision rule: compress when RAM
+> binds, graph when it does not.
+> Follow-up: What breaks when the corpus updates hourly?
+> A: IVF centroids go stale and PQ codes drift. Rebuild
+> periodically, or use HNSW (incremental inserts are native)
+> for the hot shard and IVF-PQ for the frozen bulk.
 
 ## The problem: meaning is not enough
 
@@ -178,6 +260,21 @@ hybrid (0.5 * semantic + 0.5 * BM25): A = 0.475, B = 0.80 -> returns B
 
 Exact names favor BM25. Vague questions favor embeddings. Hybrid
 covers both.
+
+### Subchapter: the retrieval decision table
+
+| Query type | Winner | Why |
+|---|---|---|
+| Exact names, IDs, codes | BM25 | Keywords must match literally |
+| Vague, conceptual | Embeddings | Meaning matters, words vary |
+| Mixed (most real queries) | Hybrid | Both signals, weighted |
+| Short question, long docs | HyDE | Bridges the query-document gap |
+| Chunks lost their context | Contextual retrieval | Prepended blurbs restore it |
+
+The weights are tuned, not guessed: sweep the hybrid alpha on
+labeled queries, keep the NDCG winner. The never-confuse pair:
+hybrid combines scores (retrieval), the reranker re-scores pairs
+(a later stage). Different jobs.
 
 ![Semantic vs BM25](assets/l07-semantic-bm25.svg "Embeddings match meaning. BM25 matches words. Hybrid matches the use case. Stanford Frontier AI.")
 
@@ -237,6 +334,36 @@ metrics.
 
 ![Metrics](assets/l07-metrics.svg "NDCG, reciprocal rank, precision@k, recall@k. MTEB is the benchmark. Stanford Frontier AI.")
 
+### Subchapter: the reranker's cost arithmetic
+
+The cross-encoder runs full attention over query+chunk pairs:
+~100x slower per pair than the bi-encoder's dot product. The
+arithmetic: 100 candidates x 512 tokens x full attention. At
+~50ms per pair on a GPU, the rerank stage costs 5 seconds:
+unacceptable per query. Three controls. **Fewer candidates**:
+rerank 20, not 100: 1 second. **Smaller reranker**: a distilled
+cross-encoder at ~10ms per pair: 200ms for 20. **Async
+prefetch**: rerank while the user reads. The decision rule: the
+reranker buys precision, priced in latency. Spend it where the
+top-1 answer matters (QA, support), skip it where recall
+suffices (exploratory search).
+
+> [!QA]
+> Q: When is the cross-encoder reranker worth its latency?
+> A: When the top-1 answer is the product: question answering,
+> support bots, anything where the user reads one result. The
+> bi-encoder's recall gets the right chunk into the top 100.
+> the cross-encoder's precision puts it first. Skip the reranker
+> when users browse many results (exploratory search) or when
+> latency budgets are tight: a well-tuned hybrid bi-encoder
+> gets most of the gain. The decision rule: rerank when
+> position 1 pays, not when position 20 does.
+> Follow-up: How do you size the candidate set?
+> A: Sweep it: measure NDCG@10 against rerank latency for
+> candidate counts 20/50/100. The curve flattens fast: going
+> 20 to 100 usually buys <1 point of NDCG for 5x the latency.
+> Size at the knee.
+
 > [!QA]
 > Q: Why normalize DCG into NDCG?
 > A: Raw DCG depends on how many relevant docs exist for the query.
@@ -289,6 +416,38 @@ the answer), **actions** (send the email, hit send for real).
 
 ![Tool calling](assets/l07-toolcall.svg "API plus docs in, arguments out, execute, respond. The model never sees the implementation. Stanford Frontier AI.")
 
+### Subchapter: the JSON schema contract
+
+The model emits tool calls as structured JSON against the
+function's schema:
+
+```ascii
+{"name": "find_teddy_bear",
+ "arguments": {"loc": "Stanford", "radius_km": 5}}
+```
+
+The schema is the contract: types, required fields, enums, and
+descriptions per parameter. Three design rules. **Names are UX**:
+`find_teddy_bear` beats `fn_12`. The model reads names to choose.
+**Descriptions are the manual**: one line per parameter saying
+what it wants ("radius_km: search radius, default 5"). **Strict
+schemas**: reject malformed calls at parse time, before
+execution. The failure mode the schema prevents: the model emits
+`{"location": "Stanford"}` when the schema says `loc`. Strict
+validation catches it. The error message teaches the retry.
+
+### Subchapter: parallel tool calls
+
+Independent calls batch in one turn: `get_store_hours("Campus
+Toys")` and `get_store_hours("Palo Alto Kids")` have no
+dependency, so the model emits both and the runtime runs them
+concurrently. Latency falls from 2x to 1x. Dependent calls
+serialize: the second call's arguments come from the first
+call's result. The model must learn the difference: emit
+independent calls together, wait on dependencies. The harness
+enforces it: results return tagged per call, and the model
+continues when all resolve.
+
 ## The problem: one preamble cannot hold every tool
 
 Context is finite, APIs get lost in the haystack, conflicting APIs
@@ -313,6 +472,30 @@ standardizes: an MCP server serves tools (function implementations),
 prompts (usage templates), and resources (external databases), with
 a 1:1 connection to an MCP client in the LLM host. The book provider
 writes the book tools once. Every MCP client uses them.
+
+### Subchapter: MCP's architecture, spelled out
+
+Three parties, one protocol:
+
+```ascii
+MCP host (the app: Claude Desktop, an IDE)
+  └─ MCP client (1:1 connection, per server)
+       └─ MCP server (the tool provider)
+            ├─ tools: functions the model can call
+            ├─ resources: data the model can read
+            └─ prompts: templates for using the above
+```
+
+The server advertises capabilities at connect time. The client
+exposes them to the model as tool schemas. The 1:1
+client-per-server design isolates failures: one bad server cannot
+break the others. The 2026 reality: MCP won the standard war.
+Anthropic published it, OpenAI adopted it, every major host
+speaks it. Hand-rolled tool JSON still exists inside products,
+but cross-product tools are MCP now. The interview line: "MCP is
+USB for model tools."
+
+![MCP architecture](assets/l07-mcp-arch.svg "Host, client, server. Tools, resources, prompts. 1:1 connections isolate failures. Shell 3. Source: the MCP specification. Project: Stanford Frontier AI.")
 
 ![Router and MCP](assets/l07-router-mcp.svg "Select the few relevant tools, then call them through a standard protocol. Stanford Frontier AI.")
 
@@ -347,6 +530,24 @@ like **Agent2Agent** (Google,
 defined skills, execution status, and cancellation.
 
 ![ReAct](assets/l07-react.svg "Observe, plan, act, repeat. Exit when the goal is met. Stanford Frontier AI.")
+
+### Subchapter: ReAct vs plan-then-execute
+
+Two loop architectures:
+
+- **ReAct** (interleaved): think, act, observe, repeat. Each
+  step sees the last result. Adapts to surprises, compounds
+  errors (Lecture's seven failures).
+- **Plan-then-execute**: plan the full sequence up front, then
+  run it. Efficient when the plan is right, brittle when reality
+  deviates. Replanning on failure recovers some robustness.
+
+The tradeoff: ReAct pays per-step reasoning for adaptability,
+planning pays upfront for efficiency. The decision rule: ReAct
+for open-ended tasks with uncertain tools, plan-then-execute for
+known workflows (the plan is a cached ReAct trace). Production
+agents usually start ReAct and graduate to plans once the task
+distribution stabilizes.
 
 ## The problem: agents fail in seven ways
 
@@ -388,6 +589,49 @@ getting more sophisticated.
 The building advice: start small (one tool, one case), start with
 the most capable model to learn the headroom, then optimize latency
 and cost. Debug by reading the reasoning chains.
+
+### Subchapter: the debugging decision tree
+
+Read the chain, then branch:
+
+```ascii
+agent failed. Read the reasoning chain.
+├─ it never called a tool → PREDICT problem
+│   ├─ router did not surface the tool → fix router recall
+│   └─ model did not think to use tools → fix SFT/prompt
+├─ it called the wrong thing → PREDICT problem
+│   ├─ nonexistent tool → rename APIs / upgrade model
+│   ├─ wrong tool → disambiguate scopes
+│   └─ wrong args → check context / add finder tools
+├─ the tool misbehaved → EXECUTION problem
+│   ├─ buggy output → fix the implementation
+│   └─ silence → always return something, even empty JSON
+└─ the answer ignored the tool result → SYNTHESIS problem
+    └─ trim outputs, present meaningful objects
+```
+
+One rule governs the tree: the cheapest fix wins. Most failures
+are tool outputs (silent, bloated, or raw errors), not model
+intelligence. Fix the tools before blaming the model.
+
+![Debugging decision tree](assets/l07-debug-tree.svg "Read the chain, branch by stage, cheapest fix wins. Shell 3. Source: the lecture's debugging experience. Project: Stanford Frontier AI.")
+
+> [!QA]
+> Q: Your agent books the wrong flight twice. Debug it with the tree.
+> A: Read the chains. If it never called the booking tool: router
+> recall or prompt. If it called with wrong dates: wrong args:
+> check the context carried the dates, or the date format
+> confused the model (add a date-normalizer tool). If the tool
+> returned flights and the model picked wrong: bad synthesis:
+> the output was a wall of fields and the model mis-grounded.
+> Trim to airline, times, price. The decision rule: fix the
+> cheapest stage first. Do not upgrade the model until the tools
+> return clean, small, structured outputs.
+> Follow-up: It works in testing but fails for users.
+> A: Distribution shift in the queries: users phrase dates and
+> places differently than your tests. Log real failures, add
+> them to the eval set, and fix the router and schemas against
+> the real distribution.
 
 > [!QA]
 > Q: Why do agents diverge where single tool calls succeed?
@@ -457,15 +701,29 @@ The story in eight steps. Each step answers the one before it.
    goal. Seven failure modes. Two-layer safety. Error compounds per
    step.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/h-7S6HNq0Vg" title="CME295 Lecture 7, Autumn 2025" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/T-D1OfcDW1M" title="What is RAG? (IBM Technology)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+- Lecture 7 recording: https://www.youtube.com/watch?v=h-7S6HNq0Vg
+- IBM Technology, "What is RAG?": https://www.youtube.com/watch?v=T-D1OfcDW1M
+- Lewis et al., Retrieval-Augmented Generation: https://arxiv.org/abs/2005.11401
+- Yao et al., ReAct: https://arxiv.org/abs/2210.03629
+- MCP specification: https://modelcontextprotocol.io/
+
 ## Official sources and further reading
 
 **Official:**
 - Lecture 7 recording (YouTube): timestamped above.
 - Lecture 7 slides (PDF), CME295 Autumn 2025.
-- Lewis et al., "RAG" (2020): https://arxiv.org/abs/2005.11401 —
-  the original recipe.
-- Yao et al., "ReAct" (2022): https://arxiv.org/abs/2210.03629 —
-  the agent loop.
+- Lewis et al., "RAG" (2020): https://arxiv.org/abs/2005.11401 : the original recipe.
+- Yao et al., "ReAct" (2022): https://arxiv.org/abs/2210.03629 : the agent loop.
 
 **Further reading:**
 - Reimers and Gurevych, "Sentence-BERT" (2019).

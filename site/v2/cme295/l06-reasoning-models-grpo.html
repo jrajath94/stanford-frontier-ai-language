@@ -251,6 +251,31 @@ for the same user-visible words.</p>
 (<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=1398s">23:18</a>), then
 xAI, Anthropic, and Mistral entries. R1 mattered because it matched
 frontier performance with a published method.</p>
+<h3 id="subchapter-the-rl-training-curve-worked">Subchapter: the RL training curve, worked</h3>
+<p>The R1-Zero story, as reported: start from V3-Base, run GRPO with
+verifiable rewards on math and code. Early in training: short,
+mostly wrong answers. Mid-training: mean response length climbs
+and accuracy climbs with it. The famous &ldquo;Aha moment&rdquo;: the model
+spontaneously emits self-correction phrases (&ldquo;wait, let me
+recheck&rdquo;) with no such examples in training. Late: long chains,
+self-verification, AIME accuracy matching o1. The curve to
+memorize: length and accuracy rise <em>together</em>. The model does not
+learn to write longer: it learns that spending tokens on checking
+gets rewarded, and the chains grow as a consequence. Length is the
+symptom. Verification is the cause.</p>
+<h3 id="subchapter-why-long-chains-enable-self-correction">Subchapter: why long chains enable self-correction</h3>
+<p>A one-shot answer has no room to notice its own error. A chain
+does: token 200 can re-examine token 50&rsquo;s arithmetic, because both
+sit in context. Self-correction needs three ingredients. <strong>Room</strong>:
+enough tokens to re-derive. <strong>A critic</strong>: the model must have
+learned that checking pays (the RL reward). <strong>A restart point</strong>:
+the chain must be able to abandon a branch (&ldquo;that path is wrong,
+try again&rdquo;). Short chains fail the first ingredient. Models
+trained only on correct chains fail the second and third: they
+never practiced recovery. RL with verifiable rewards teaches all
+three, because only the final answer is graded and any path that
+reaches it wins.</p>
+<figure><img alt="Reasoning timeline" src="assets/l06-timeline.svg"><figcaption>o1 proved it. R1-Zero explored freely. R1 shipped in stages. Shell 2. Source: the DeepSeek R1 report. Project: Stanford Frontier AI.</figcaption></figure>
 <figure><img alt="Reasoning model" src="assets/l06-reasoning-model.svg"><figcaption>Prompt to hidden chain to answer. You pay for the chain. Stanford Frontier AI.</figcaption></figure>
 <h2 id="the-problem-one-sample-understates-the-model">The problem: one sample understates the model</h2>
 <p>A reasoning model may solve a problem on its third try after failing
@@ -279,6 +304,19 @@ The lecture&rsquo;s example peaks at 0.8
 Papers must report temperature or their pass@k numbers do not
 compare. <strong>consensus@k</strong> (majority vote over k samples, i.e.
 self-consistency) is the companion metric.</p>
+<h3 id="subchapter-consensusk-and-the-vote-math">Subchapter: consensus@k and the vote math</h3>
+<p>pass@k asks &ldquo;is any draw right&rdquo;. consensus@k asks &ldquo;is the
+majority right&rdquo;. The toy: k = 5 draws, answers [A, B, A, A, C].
+Majority: A, 3 of 5. When each draw is right with probability
+0.6 independently, the majority of 5 is right with probability
+~0.68: voting concentrates the signal. When errors correlate
+(the model misreads the question the same way every time), the
+majority is confidently wrong: consensus amplifies the shared
+bias. The decision rule: use pass@k when a verifier can pick the
+right answer from the k (math, code). Use consensus@k when no
+verifier exists and errors are roughly independent. Never use
+consensus where the model has a systematic blind spot: the vote
+just re-elects the bias.</p>
 <figure><img alt="pass@k" src="assets/l06-passk.svg"><figcaption>One minus the all-miss probability. Temperature tunes the diversity. Stanford Frontier AI.</figcaption></figure>
 <div class="qa"><div class="q">Why sample without replacement in the pass@k estimate?</div><div class="a"><p>Because the k attempts are k distinct draws from your n
 samples. Drawing the same sample twice would double-count one
@@ -303,13 +341,33 @@ without a human. Code runs tests. Math parses a final answer.</p>
   cleanly.</li>
 <li><strong>GSM-8K</strong>: grade-school word problems. Exact-match grading.</li>
 </ul>
-<p>Verifiable answers unlock <strong>verifiable rewards</strong>: the checker is
+<p>Verifiable answers make <strong>verifiable rewards</strong> possible: the checker is
 free, so RL can run without humans in the loop. That is the economic
 fact behind this entire lecture. SFT could teach reasoning chains,
 but the chains would have to be hand-written: expensive, and human
 reasoning patterns are not necessarily what helps a model. RL with
 verifiable rewards sidesteps both problems: reward correct answers
 and let the model discover its own chains.</p>
+<h3 id="subchapter-the-reward-trichotomy">Subchapter: the reward trichotomy</h3>
+<p>Three reward types, three tradeoffs:</p>
+<ul>
+<li><strong>Outcome reward.</strong> One number for the final answer: right or
+  wrong. Cheap, sparse, hackable only through correctness. The
+  R1 default.</li>
+<li><strong>Process reward.</strong> A reward per reasoning step: each step
+  graded. Dense signal, but someone must grade the steps (a
+  process reward model, itself trained on human step labels).
+  Expensive, and the grader&rsquo;s errors become the policy&rsquo;s
+  curriculum.</li>
+<li><strong>Verifiable reward.</strong> A special outcome reward where a program
+  checks the answer: tests run, answers parse. Free, exact, but
+  only defined where a checker exists.</li>
+</ul>
+<p>The frontier uses verifiable rewards wherever possible (math,
+code) and outcome rewards with learned judges elsewhere. Process
+rewards are the research direction: denser signal, harder to get
+right. The decision rule: verifiable &gt; outcome &gt; process, ordered
+by cost per unit of trust.</p>
 <figure><img alt="Benchmarks" src="assets/l06-benchmarks.svg"><figcaption>Code runs tests. Math parses answers. The checker is free. Stanford Frontier AI.</figcaption></figure>
 <h2 id="the-key-question">The key question</h2>
 <p>The reward is one sparse number at the end of a long answer. How do
@@ -342,6 +400,29 @@ model to center advantages via GAE. GRPO centers with the group mean
 and trains the policy only. In reasoning setups both skip the reward
 model entirely: verifiable rewards replace it.</p>
 <figure><img alt="PPO vs GRPO" src="assets/l06-ppo-grpo.svg"><figcaption>Same ratio, same clipping. Different centering, different KL placement. Stanford Frontier AI.</figcaption></figure>
+<h3 id="subchapter-grpo-vs-ppo-the-memory-delta-counted">Subchapter: GRPO vs PPO, the memory delta counted</h3>
+<p>For a 7B policy in fp16 (14 GB): PPO holds policy (14), reference
+(14), reward model (~14, often smaller), and value network (14:
+a second full model). Total: ~56 GB before optimizer states and
+activations. GRPO holds policy (14) and reference (14): ~28 GB.
+The verifiable reward is a program, not a model: 0 GB. The delta
+is ~28 GB: one whole model class deleted. That is the difference
+between needing 8 GPUs and needing 4, or between fitting and not.
+The price, again: per-completion advantages instead of
+per-token ones. Coarser signal, half the memory.</p>
+<div class="qa"><div class="q">Walk me through one GRPO update, start to finish.</div><div class="a"><p>One prompt, g = 4 completions, verifiable rewards [0, 0, 1,
+0]. Compute mean 0.25, std 0.433. Advantages: +1.73 for the
+correct completion, -0.58 for each wrong one. For each
+completion, compute the probability ratio r =
+pi_new/pi_old per token, clip it like PPO, multiply by the
+completion&rsquo;s advantage. Add the explicit KL penalty against
+the reference. No value function anywhere: the group mean
+centered the advantages. The correct completion&rsquo;s tokens get
+pushed up 1.73x harder than the wrong ones get pushed down.
+Rewards [0,0,0,0]: mean 0, std 0. The z-score divides by
+zero. Implementations add a small epsilon or skip the group.
+Either way the group teaches nothing: no contrast, no signal.
+Filter all-wrong and all-right groups from the batch.</p><div class="followup"><strong>Follow-up:</strong> What if all 4 completions are wrong?</div></div></div>
 <div class="qa"><div class="q">What does GRPO gain by dropping the value function?</div><div class="a"><p>Memory and simplicity. The value model in PPO is a full second
 network to train, tune, and fit in memory. The group baseline is
 free: you already sampled the completions. For verifiable rewards
@@ -371,6 +452,15 @@ the factor entirely. Result: correct answers keep their length,
 wrong answers get much shorter. A related fix is <strong>clip-higher</strong>:
 asymmetric epsilon bounds, because low-probability tokens need room
 to grow while high-probability tokens must not collapse to zero.</p>
+<h3 id="subchapter-clip-higher-asymmetric">Subchapter: clip-higher, asymmetric</h3>
+<p>PPO&rsquo;s clip is symmetric: eps = 0.2 both ways. The problem:
+low-probability tokens (the interesting explorations) need large
+upward moves to matter, while high-probability tokens collapsing
+to zero destroys behavior. <strong>Clip-higher</strong> uses eps_low = 0.2,
+eps_high = 0.28 (typical): ratios can rise to 1.28 but fall only
+to 0.8. Exploration gets headroom, collapse gets a floor. The
+never-confuse pair: the clip bounds the <em>ratio</em>, the KL penalty
+bounds the <em>drift</em>. Clip-higher relaxes the ratio&rsquo;s ceiling only.</p>
 <figure><img alt="Length bias" src="assets/l06-length-bias.svg"><figcaption>The 1/|o| term rewards long failures. DAPO and Dr. GRPO remove it. Stanford Frontier AI.</figcaption></figure>
 <h2 id="the-deepseek-r1-recipe">The DeepSeek R1 recipe</h2>
 <p><strong>R1-Zero</strong> was the proof of concept: take a pretrained base (V3:
@@ -410,7 +500,46 @@ R1 to generate answers with thinking tokens, offline, and SFT a
 small model on the full sequences. Not the teacher&rsquo;s distribution,
 the teacher&rsquo;s tokens. At small sizes this beats RL from scratch,
 and the distilled models compete with o1-mini.</p>
+<h3 id="subchapter-the-671b-to-37b-arithmetic">Subchapter: the 671B-to-37B arithmetic</h3>
+<p>R1&rsquo;s base (V3): 671B total parameters, MoE with 37B active per
+token. The ratio: 37/671 = 5.5% of the model computes each token.
+Training cost scales with active params (37B-equivalent FLOPs per
+token). Memory cost scales with total params (671B to store). The
+MoE trick from Lecture 3, at reasoning scale: capacity without
+proportional compute. MLA (multi-head latent attention) compresses
+the KV cache: instead of storing full K and V per head, store a
+low-rank latent and project per head on the fly. Long reasoning
+chains (tens of thousands of tokens) make KV memory the binding
+constraint, so the compression directly extends how far the model
+can think.</p>
+<h3 id="subchapter-distillation-teacher-tokens-vs-teacher-distribution">Subchapter: distillation, teacher tokens vs teacher distribution</h3>
+<p>Two distillation flavors. <strong>Distribution distillation</strong>: train the
+student to match the teacher&rsquo;s output probabilities (KL on the
+logits). Needs the teacher&rsquo;s logits: expensive to store, rich
+signal per token. <strong>Token distillation</strong> (R1&rsquo;s): generate the
+teacher&rsquo;s tokens offline, SFT the student on the sequences. Needs
+only the tokens: cheap to store, one-hot signal per position. R1
+chose tokens: generate once, SFT many small models cheaply. The
+tradeoff: token distillation teaches what the teacher <em>said</em>, not
+what it <em>considered</em>. The student inherits the teacher&rsquo;s paths,
+including its blind spots. The ceiling is the teacher&rsquo;s tokens:
+the student cannot exceed them, but at small sizes it beats RL
+from scratch because the tokens already encode the discovered
+strategies.</p>
 <figure><img alt="R1 pipeline" src="assets/l06-r1-pipeline.svg"><figcaption>R1-Zero proves RL works. R1 adds cold-start SFT, staged RL, rejection sampling, distillation. Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">Design the RLVR dataset for a new reasoning model. What goes in?</div><div class="a"><p>Problems with verifiable answers, graded difficulty, and no
+leakage. Verifiable: math with parseable answers (AIME-style),
+code with hidden tests (not the public ones). Difficulty: a
+mix where the current policy gets 10-70% right. All-solved
+problems teach nothing, all-failed ones teach nothing (the
+zero-std problem). Scale: tens of thousands of problems,
+each sampled g = 8-64 times per GRPO step. Dedup against
+benchmarks: any test-set overlap is contamination (Lecture 4).
+The decision rule: if a checker cannot grade it, it does not
+belong in RLVR. Save it for preference tuning.
+Dynamic filtering: drop problems the model now solves
+always, add harder ones. The training distribution must track
+the capability frontier, or the advantages collapse to noise.</p><div class="followup"><strong>Follow-up:</strong> How do you keep the difficulty mix right as the model improves?</div></div></div>
 <h2 id="the-problem-the-thinking-budget">The problem: the thinking budget</h2>
 <p>Reasoning tokens cost money and context, so length needs control:</p>
 <ul>
@@ -434,6 +563,32 @@ Surprisingly well for a hack. Appending &ldquo;wait&rdquo; keeps the model
 in thinking mode and often improves the answer. Cutting off forces
 a guess from partial reasoning. It is inference-time steering, so
 it composes with any trained reasoning model.</p><div class="followup"><strong>Follow-up:</strong> Does budget forcing actually work?</div></div></div>
+<h3 id="subchapter-budget-forcing-vs-dynamic-budgets">Subchapter: budget forcing vs dynamic budgets</h3>
+<p>Two ways to control the thinking bill:</p>
+<ul>
+<li><strong>Budget forcing</strong> (inference-time): append &ldquo;wait&rdquo; to extend,
+  cut off to truncate. No training, works on any reasoning model.
+  Crude: &ldquo;wait&rdquo; sometimes produces filler, cutoff sometimes kills
+  a chain mid-derivation.</li>
+<li><strong>Dynamic budgets</strong> (trained or routed): a classifier sends easy
+  questions to short thinking, hard ones to long. Needs the
+  router and calibration data. Precise: the budget matches the
+  problem.</li>
+</ul>
+<p>The tradeoff is control vs cost. Budget forcing is free and
+dumb. Dynamic budgets are smart and needy. Production systems
+layer them: route by difficulty first, force at the margins.</p>
+<div class="qa"><div class="q">Your reasoning API bill tripled after launch. What do you do?</div><div class="a"><p>Measure first: distribution of thinking tokens per request,
+and accuracy vs length per task type. Then: route easy tasks to
+short budgets (dynamic routing), cap the maximum thinking
+tokens, and check for the length-bias ramble (wrong answers
+getting long: the DAPO/Dr. GRPO fix). Only then consider
+distilling to a smaller model. The decision rule: never pay
+for thinking that does not change answers. Cut the tail, not
+the capability.
+That is the real tradeoff, not a bug. Segment by task: hard
+tasks keep long budgets, easy ones get cut. The bill falls
+because most traffic is easy.</p><div class="followup"><strong>Follow-up:</strong> What if short budgets hurt accuracy on hard tasks?</div></div></div>
 <h2 id="mapping-back-each-piece-answers-a-reasoning-problem">Mapping back: each piece answers a reasoning problem</h2>
 <table>
 <thead>
@@ -495,6 +650,23 @@ checker can check, so taste, style, and open-ended judgment stay out.
 Distillation pays in a ceiling: the student cannot exceed the
 teacher&rsquo;s tokens. The lecture&rsquo;s bet is that checkable domains (math,
 code) are big enough to be worth it.</p>
+<h3 id="subchapter-reasoning-in-production-october-2026">Subchapter: reasoning in production, October 2026</h3>
+<p>The R1 recipe became the industry template:</p>
+<ul>
+<li><strong>DeepSeek</strong>: V4.1 Flash ships reasoning as the default mode.
+  the R1 line continues as the open reasoning reference.</li>
+<li><strong>OpenAI</strong>: o-series (o1 through o3 generations) with
+  effort/thinking controls in the API.</li>
+<li><strong>Google</strong>: Gemini thinking modes, with token budgets exposed.</li>
+<li><strong>Anthropic</strong>: extended thinking on Claude, budget-controllable.</li>
+<li><strong>Qwen / Kimi / GLM</strong>: open reasoning models distilling the
+  same recipe (RLVR + distillation).</li>
+</ul>
+<p>Every provider now sells the same three knobs: thinking on/off,
+thinking budget, and effort level. The interview line: &ldquo;Reasoning
+is a serving feature now, not a research result.&rdquo; What remains
+research: continuous thoughts (no token tax), process rewards that
+work, and reasoning past the checkable domains.</p>
 <h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
 <p>The story in eight steps. Each step answers the one before it.</p>
 <ol>
@@ -524,14 +696,29 @@ code) are big enough to be worth it.</p>
    (&ldquo;wait&rdquo;), continuous thoughts. The shortest chain that still
    solves the problem.</li>
 </ol>
+<h2 id="go-deeper">Go deeper</h2>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/k5Fh-UgTuCo" title="CME295 Lecture 6, Autumn 2025" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/wXEvvg4YJ9I" title="GRPO explained with triangle creatures (Mihai Nica)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<ul>
+<li>Lecture 6 recording: https://www.youtube.com/watch?v=k5Fh-UgTuCo</li>
+<li>GRPO with triangle creatures (Mihai Nica): https://www.youtube.com/watch?v=wXEvvg4YJ9I</li>
+<li>DeepSeek-AI, DeepSeek-R1: https://arxiv.org/abs/2501.12948</li>
+<li>Shao et al., DeepSeekMath (GRPO): https://arxiv.org/abs/2402.03300</li>
+</ul>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
 - Lecture 6 recording (YouTube): timestamped above.
 - Lecture 6 slides (PDF), CME295 Autumn 2025.
 - DeepSeek-AI, &ldquo;DeepSeek-R1&rdquo; (2025):
-  https://arxiv.org/abs/2501.12948 — the full pipeline.
+  - <a href="https://arxiv.org/abs/2501.12948">the full pipeline.</a>
 - Shao et al., &ldquo;DeepSeekMath&rdquo; (2024):
-  https://arxiv.org/abs/2402.03300 — GRPO.</p>
+  - <a href="https://arxiv.org/abs/2402.03300">GRPO.</a></p>
 <p><strong>Further reading:</strong>
 - OpenAI, &ldquo;Learning to Reason with LLMs&rdquo; (o1 system card, 2024).
 - Muennighoff et al., &ldquo;s1: Simple test-time scaling&rdquo; (2025): budget

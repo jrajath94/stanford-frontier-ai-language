@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -321,8 +318,8 @@ vocabulary), hidden size d (a few hundred), output size V.</p>
 <h3 id="subchapter-the-cbow-loss-written-out">Subchapter: the CBOW loss, written out</h3>
 <p>Write the training objective for one CBOW step. The network outputs
 logits z over V words. Softmax gives probabilities p_i = exp(z_i) /
-sum(exp(z_j)). The loss is cross-entropy against the target word:
-L = -log(p_target). On the toy (V = 5, target &ldquo;bear&rdquo;): if the model
+sum(exp(z_j)). The loss is cross-entropy against the target word, with the natural
+log: L = -log(p_target). On the toy (V = 5, target &ldquo;bear&rdquo;): if the model
 assigns p_bear = 0.4, the loss is -log(0.4) = 0.92. If it assigns
 0.02, the loss is 3.91. The gradient pushes the hidden-layer row for
 &ldquo;bear&rdquo; toward the context average and pushes the other four rows
@@ -330,22 +327,36 @@ away. Every training step is one small tug on the geometry.</p>
 <p>The cost hides in the denominator: sum over V = 50,000 in real
 models, per step, per word. The original word2vec papers shipped
 two fixes.</p>
-<h3 id="subchapter-negative-sampling-and-glove">Subchapter: negative sampling and GloVe</h3>
+<h3 id="subchapter-negative-sampling-the-binary-choice-fix">Subchapter: negative sampling, the binary-choice fix</h3>
+<p>The CBOW loss breaks on cost: one training step scores all 50,000
+vocabulary words. The hinge: what if we never score the whole
+vocabulary at all?</p>
 <p><strong>Negative sampling</strong> replaces the V-way softmax with a binary
 choice. For the target word &ldquo;bear&rdquo; and K = 5 random &ldquo;negative&rdquo;
 words, train K+1 yes/no classifiers: &ldquo;bear&rdquo; should score high with
-this context, the 5 negatives should score low. Cost per step drops
-from O(V) to O(K). K between 5 and 20 works. The learned rows are
-still good embeddings.</p>
-<p><strong>GloVe</strong> (2014) attacks from the other side. Instead of predicting,
-count: build the co-occurrence matrix X (how often word i appears
-near word j across the corpus) and fit embeddings so their dot
-product approximates log(X_ij). Prediction and counting arrive at
-the same geometry. The field remembers both, uses neither in
-modern pipelines: contextual models (next section onward) replaced
-static vectors. But the proxy-task idea (train on something easy,
-steal the representation) became the template for all of
-pre-training.</p>
+this context, the 5 negatives should score low. The toy: one step
+needs 6 sigmoid dot products instead of 50,000 exponentials, a cost
+cut of roughly 50,000 / 6, about 8,300x. Cost per step drops from
+O(V) to O(K). K between 5 and 20 works. The learned rows are still
+good embeddings. The price: the 5 negatives are noise, not the true
+distribution, so each gradient step is a noisier tug on the
+geometry.</p>
+<h3 id="subchapter-glove-counting-instead-of-predicting">Subchapter: GloVe, counting instead of predicting</h3>
+<p>Negative sampling fixes the cost of prediction. The hinge: can we
+learn the same geometry without predicting at all?</p>
+<p><strong>GloVe</strong> (Global Vectors, 2014) attacks from the other side.
+Instead of predicting, count: build the co-occurrence matrix X (how
+often word i appears near word j across the corpus) and fit
+embeddings so their dot product approximates log(X_ij), the natural
+log. The toy: if &ldquo;bear&rdquo; appears near &ldquo;cute&rdquo; 12 times in the corpus,
+log(12) = 2.48, so training pushes w_bear dot w_cute toward 2.48.
+If &ldquo;bear&rdquo; appears near &ldquo;the&rdquo; 340 times, log(340) = 5.83, and the dot
+product lands near 5.83. Frequent pairs pull their vectors together.
+Rare pairs do not. Prediction and counting arrive at the same
+geometry. The field remembers both, uses neither in modern
+pipelines: static vectors gave way to models whose vectors change with
+the sentence around each word. But the proxy-task idea (train on something easy, steal the
+representation) became the template for all of pre-training.</p>
 <figure><img alt="Word2vec" src="assets/l01-word2vec.svg"><figcaption>A shallow network with a proxy task. The hidden layer becomes the embedding. Stanford Frontier AI.</figcaption></figure>
 <h2 id="where-word2vec-breaks">Where word2vec breaks</h2>
 <p>Two cracks, each easy to demonstrate.</p>
@@ -545,7 +556,7 @@ head, per layer):</p>
 <pre class="ascii">N = 512:    512^2 = 262K scores   = 0.5 MB
 N = 4,096:  16.7M scores          = 33 MB
 N = 32,768: 1.07B scores          = 2.1 GB
-N = 1M:     1T scores             = 2 PB (impossible)
+N = 1M:     1T scores             = 2 TB (impossible)
 </pre>
 <p>Every 2x in length costs 4x in scores. The N = 1M row is why this
 course exists: no machine stores it, so every later lecture is a
@@ -710,7 +721,7 @@ decision. As of October 2026:</p>
 </tr>
 <tr>
 <td>DeepSeek V4.1 Flash</td>
-<td>decoder-only MoE, causal</td>
+<td>causal encoder-decoder MoE</td>
 <td>Open weights (MIT). 8B/16B active per token</td>
 </tr>
 <tr>

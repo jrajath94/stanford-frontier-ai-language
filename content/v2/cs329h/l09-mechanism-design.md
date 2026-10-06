@@ -113,6 +113,63 @@ What changes is not the average price but who bears the
 strategic burden: bidders strategize in first-price, the
 mechanism computes in second-price.
 
+### Subchapter: the equilibrium bid, derived
+
+The lesson asserted b(v) = (n-1)/n x v. Here is where it comes
+from. Three definitions. Each bidder's value is drawn
+independently from the same distribution with CDF F. All
+bidders use the same increasing bid strategy, call it beta.
+Your value is v and you bid b.
+
+Step 1: the win probability. You win when every rival bids
+below b. Rivals bid beta of their values, and beta is
+increasing, so rival i bids below b exactly when their value
+sits below beta^{-1}(b). With n-1 rivals, the win probability
+is G(beta^{-1}(b)), where G = F^{n-1}.
+
+Step 2: the expected payoff. Win and keep v - b. Lose and keep
+0. Expected payoff: U(b) = (v - b) x G(beta^{-1}(b)).
+
+Step 3: the first-order condition. Differentiate U with respect
+to b and set the derivative to zero at the equilibrium bid
+b = beta(v). The derivative has two terms: bidding higher
+costs you directly (-G), and bidding higher wins more often
+((v - b) times the density term). Setting b = beta(v):
+
+-G(v) + (v - beta(v)) x G'(v) / beta'(v) = 0
+
+Step 4: solve the differential equation. Rearrange to
+beta'(v) G(v) = (v - beta(v)) G'(v). Notice the left side plus
+beta(v) G'(v) equals the derivative of the product
+beta(v) G(v), and the equation says exactly that this
+derivative equals v G'(v). Integrate from 0 to v, using
+beta(0) = 0:
+
+beta(v) G(v) = integral from 0 to v of t G'(t) dt
+
+Integrate by parts: the right side is v G(v) minus the
+integral of G(t) from 0 to v. Divide by G(v):
+
+beta(v) = v - [integral from 0 to v of G(t) dt] / G(v)
+
+The bid is the value minus a shade term: the accumulated win
+probability mass below v, normalized. Step 5: evaluate for
+the uniform case. Values uniform on [0, 10]: F(t) = t/10,
+G(t) = (t/10)^{n-1}. The integral is v^n / (n 10^{n-1}).
+Divide by G(v) = v^{n-1} / 10^{n-1}: the shade is v/n. So
+beta(v) = v - v/n = (n-1)/n x v. With n = 3: bid two thirds
+of value. The lesson's bidder 1 with value 10 bids 6.67 in
+equilibrium, against the toy's 6.5.
+
+The derivation shows the assumption doing the work. Symmetry:
+everyone draws from the same F and uses the same beta. Risk
+neutrality: the payoff is linear in money. Independent private
+values: your value tells you nothing about rivals' values.
+Break any of them and the two-thirds rule goes with it. That
+is why the lesson hedges the toy's 6.5 as "almost exactly
+right" rather than exact: real bidders are not symmetric,
+risk-neutral, independent draws.
+
 ## The key question
 
 Can the rules be designed so that honesty is each agent's best
@@ -123,7 +180,7 @@ strategy, regardless of what others do?
 A mechanism is **incentive compatible** (IC) when each agent's
 best strategy is to report truthfully. No shading, no gaming, no
 strategizing about others. The lecture's framing: think of the
-true value as the elicitation target, stated at [29:10](ts:29:10).
+true value as the elicitation target, stated at [29:10](https://www.youtube.com/watch?v=zkHTbb-0Gns&t=1750s).
 IC mechanisms elicit the thing you actually want to learn.
 Non-IC mechanisms elicit a strategic distortion, and you must
 invert the strategy to recover the truth.
@@ -160,7 +217,7 @@ No belief about others is needed. Truth dominates, as a
 > Follow-up: Why do not all auctions use second-price?
 > A: Revenue and robustness. With few bidders or collusion, second-price leaves money on the table and is vulnerable to shill bidding. First-price with a reserve can raise more revenue, Myerson's result. In practice, ad auctions moved from second-price to first-price partly because the strategic complexity was deemed manageable and revenue higher. IC is not the only objective.
 
-## VCG: pay for the harm you cause
+## VCG (Vickrey-Clarke-Groves): pay for the harm you cause
 
 The **Vickrey-Clarke-Groves** mechanism generalizes second-price
 beyond single items. Two rules.
@@ -306,12 +363,22 @@ The story in eight steps. Each step answers the one before it.
 8. **Annotation is a mechanism.** Pay for the thing you
    measure. The payment rule selects your data distribution.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/zkHTbb-0Gns" title="Stanford CS329H Autumn 2024: Mechanism Design, Sanmi Koyejo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+- Course lecture: https://www.youtube.com/watch?v=zkHTbb-0Gns
+- Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
+- Vickrey (1961): the second-price auction.
+- Myerson (1981): optimal auction design.
+
 ## Official sources and further reading
 
 **Official:**
 - CS329H Autumn 2024: Mechanism Design (video id zkHTbb-0Gns):
   auctions as preference elicitation, incentive compatibility.
-- Course textbook, chapters 9.x: auctions, IC, VCG, the
+- Course textbook, chapter 5.10: auctions, IC, VCG, the
   revelation principle, Myerson. [link](https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf)
 
 **Further reading:**

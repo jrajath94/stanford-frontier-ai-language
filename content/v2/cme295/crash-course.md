@@ -260,6 +260,33 @@ learning, hallucination by design, personalization, safety.
 
 </div>
 
+## Memory aids
+
+**Never-confuse pairs.** FLOPs (work) vs FLOPS (rate). Top-K (fixed
+count) vs top-P (fixed mass). pass@k (any succeeds) vs pass-hat@k
+(all succeed). SFT (imitate good) vs preference tuning (punish
+bad). DPO (closed form, two models) vs PPO (online, four models).
+GRPO (group baseline) vs PPO (value baseline). RAG (retrieve)
+vs long context (dump). Kappa (chance-corrected) vs agreement rate
+(raw). BLEU (precision) vs ROUGE (recall). Pre-norm (deep) vs
+post-norm (2017). MQA (1 KV head) vs GQA (8) vs MHA (32).
+
+**Mnemonics.** RAG: "retrieve, augment, generate", three verbs in
+order. ReAct: "observe, plan, act", the loop. Factuality:
+"extract, check, aggregate". R1: "cold-start, RL, big SFT, final
+RL", four stages. Agent failures in pipeline order: "punt,
+hallucinate, wrong tool, wrong args, bad output, no output, bad
+synthesis".
+
+**If this, then that.** If the distribution is sharp, top-P
+shrinks the set: use top-P with a top-K cap. If reward climbs but
+humans disagree, it is hacking: tighten beta. If all GRPO rewards
+tie, filter the group. If kappa is below 0.6, fix the rubric. If
+the answer is verifiable, use RLVR. If not, preference tuning. If
+the tool is silent, the agent hallucinates: always return
+something. If the benchmark predates the cutoff, assume
+contamination.
+
 ## Rapid fire
 
 **What are Q, K, V?** Query seeks, key advertises, value is the

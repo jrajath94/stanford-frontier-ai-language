@@ -445,6 +445,87 @@ activations, MoE vs dense.</p>
 <p><strong>Open problems.</strong> Continuous learning, hallucination by design,
 personalization, safety.</p>
 </div>
+<div class="cheat-block">
+<h3 id="memory-aids-never-confuse-pairs">Memory aids: never-confuse pairs</h3>
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>Distinction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FLOPs / FLOPS</td>
+<td>Work vs rate. Capital S is speed.</td>
+</tr>
+<tr>
+<td>r (PPO) / reward</td>
+<td>r is the ratio pi_new/pi_old. Never a reward.</td>
+</tr>
+<tr>
+<td>Top-K / top-P</td>
+<td>K fixes count. P fixes probability mass. P adapts.</td>
+</tr>
+<tr>
+<td>pass@k / pass-hat@k</td>
+<td>Any-of-k succeeds vs all-of-k succeed. Capability vs reliability.</td>
+</tr>
+<tr>
+<td>SFT / preference tuning</td>
+<td>Imitate good vs also punish bad. Format vs taste.</td>
+</tr>
+<tr>
+<td>DPO / PPO</td>
+<td>Closed-form on pairs vs online RL. Two models vs four.</td>
+</tr>
+<tr>
+<td>GRPO / PPO</td>
+<td>Group z-score vs value function. Coarse vs fine credit.</td>
+</tr>
+<tr>
+<td>RAG / long context</td>
+<td>Retrieve-then-read vs dump-everything. Cost vs simplicity.</td>
+</tr>
+<tr>
+<td>Agreement rate / kappa</td>
+<td>Raw percent vs chance-corrected. 0.85 can be 0.70 or 0.17.</td>
+</tr>
+<tr>
+<td>BLEU / ROUGE</td>
+<td>Precision-flavored vs recall-flavored. Translation vs summary.</td>
+</tr>
+<tr>
+<td>Pre-norm / post-norm</td>
+<td>Norm before sublayer (deep stacks) vs after (2017 original).</td>
+</tr>
+<tr>
+<td>MQA / GQA / MHA</td>
+<td>1 KV head / 8 KV heads / 32 KV heads. Cache 32x / 4x / 1x smaller.</td>
+</tr>
+<tr>
+<td>Mask (BERT) / mask (diffusion)</td>
+<td>Corrupt 15% to learn vs corrupt all to generate.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Mnemonics.</strong> &ldquo;Retrieve, augment, generate&rdquo; = RAG&rsquo;s three verbs in
+order. &ldquo;Observe, plan, act&rdquo; = ReAct&rsquo;s loop. &ldquo;Extract, check,
+aggregate&rdquo; = factuality&rsquo;s three steps. &ldquo;Cold-start, RL, big SFT,
+final RL&rdquo; = R1&rsquo;s four stages. &ldquo;Punt, hallucinate, wrong tool, wrong
+args, bad output, no output, bad synthesis&rdquo; = the seven failures,
+in pipeline order.</p>
+<p><strong>If this, then that.</strong> If the distribution is sharp, top-P shrinks
+the set. If flat, it grows: use top-P with a top-K cap. If reward
+climbs but humans disagree, it is hacking: tighten beta, add
+punishing pairs. If all GRPO rewards tie, the group teaches
+nothing: filter it. If kappa drops below 0.6, fix the rubric, not
+the raters. If the corpus updates hourly, use HNSW for the hot
+shard. If the answer is verifiable, use RLVR. If not, preference
+tuning. If the tool returns silence, the agent will hallucinate:
+always return something. If the benchmark is older than the
+cutoff, assume contamination.</p>
+</div>
 </div>
       
       <nav class="pager"><a href="../cme295/l09-course-recap-frontiers.html"><span class="lbl">← Previous</span>Lecture 9: Course Recap and 2025 Frontiers</a><a href="../cme295/crash-course.html"><span class="lbl">Next →</span>CME295 Crash Course</a></nav>

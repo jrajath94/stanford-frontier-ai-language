@@ -13,8 +13,8 @@ summary: "Interview-speed review of CS224N: the full story in 30 minutes, with i
 
 This page tells the whole story fast. Each section gives you the working
 version: enough to answer interview questions with confidence. Links at
-the end of each section take you into the full lesson when you want the
-derivations, the timestamps, and the follow-ups.
+the end of each section take you into the full lesson for the derivations,
+the timestamps, and the follow-ups.
 
 <div class="crash-section" markdown="1">
 
@@ -96,9 +96,9 @@ them. The chain rule multiplies local Jacobians: ds/dz = ds/dh x dh/dz.
 Forward is function application. Backward is the chain rule applied
 efficiently. Store every intermediate on the way down, reuse on the way up,
 never recompute. Autograd packages each operation's backward rule as Lego.
-verify new layers with numeric gradient checking.
+Verify new layers with numeric gradient checking.
 
-<figure class="crash-fig"><img src="assets/l03-forward-backward.svg" alt="Forward versus backward"><figcaption>Forward applies and stores; backward reuses. Never recompute.</figcaption></figure>
+<figure class="crash-fig"><img src="assets/l03-forward-backward.svg" alt="Forward versus backward"><figcaption>Forward applies and stores. Backward reuses. Never recompute.</figcaption></figure>
 
 <ul class="crash-links">
 <li><a href="l03-neural-networks-backprop.html">Lecture 3: neural networks and backpropagation</a></li>
@@ -140,8 +140,8 @@ them (unseen gets 0, seen-once gets 1) and the tables are huge.
 
 RNNs apply one weight set at every step: h(t) = tanh(W_h h(t-1) + W_e x(t) +
 b). The hidden state is memory. Each step outputs a vocabulary distribution.
-sample to generate. Two fatal problems: the strict t=1..T order cannot be
-parallelized, and distant context fades.
+Sample to generate. Two fatal problems: the strict t=1..T order cannot be
+parallelized, and distant context fades ((0.5)^6 leaves under 2%).
 
 <figure class="crash-fig"><img src="assets/l05-rnn-cell.svg" alt="RNN cell"><figcaption>One weight set, reused every step. The hidden state is memory.</figcaption></figure>
 
@@ -153,11 +153,11 @@ parallelized, and distant context fades.
 
 <div class="crash-section" markdown="1">
 
-### 7. LSTMs protect memory; seq2seq translates
+### 7. LSTMs protect memory, seq2seq translates
 
 Backprop through 30 steps multiplies the Jacobian 30 times. Eigenvalues below
-1 vanish the gradient. Above 1 explode it. Vanishing is worse: it is silent.
-Clip exploding norms at 5, 10, or 20.
+1 vanish the gradient (0.9^30 = 0.042). Above 1 explode it (1.1^30 = 17.4).
+Vanishing is worse: it is silent. Clip exploding norms at 5, 10, or 20.
 
 The LSTM (1997) guards a cell state with three gates. Forget is really
 "remember." The cell update is additive, so gradients flow. Bidirectional
@@ -165,7 +165,7 @@ LSTMs concatenate both directions. Seq2seq wires two LSTMs for translation:
 the encoder's final state seeds the decoder. The bottleneck: one fixed vector
 must hold the whole sentence.
 
-<figure class="crash-fig"><img src="assets/l06-lstm.svg" alt="LSTM"><figcaption>Three gates guard the cell; the additive update preserves gradients.</figcaption></figure>
+<figure class="crash-fig"><img src="assets/l06-lstm.svg" alt="LSTM"><figcaption>Three gates guard the cell. The additive update preserves gradients.</figcaption></figure>
 
 <ul class="crash-links">
 <li><a href="l06-lstms-nmt.html">Lecture 6: LSTMs and neural machine translation</a></li>
@@ -196,21 +196,18 @@ shorter gradient paths fight vanishing.
 ### 9. Transformers: attention everywhere
 
 RNNs fail twice: linear interaction distance ("the chef who went to the
-stores ... was") and O(n) sequential steps. Attention fixes both: constant
+stores ... Was") and O(n) sequential steps. Attention fixes both: constant
 distance, full parallelism. Self-attention is a set operation, so positional
 encoding injects order (sinusoidal or learned). Mask the future with minus
 infinity or training cheats. Scale dots by sqrt(d_k). Multi-head: 8 heads,
 64+ dims each. Residuals carry gradient 1. LayerNorm normalizes per word. The
-block repeats: attention, add-and-norm, feedforward, add-and-norm.
-
-This is a bridge lesson: the CS224N framing lives here, deep mechanics in
-CS336 (architecture, linear attention, KV cache).
+block repeats: attention, add-and-norm, feedforward, add-and-norm. The price:
+quadratic in sequence length.
 
 <figure class="crash-fig"><img src="assets/l08-block.svg" alt="Transformer block"><figcaption>Embed plus position, masked self-attention, MLP, residuals, repeat.</figcaption></figure>
 
 <ul class="crash-links">
-<li><a href="l08-transformers.html">Lecture 8: transformers (bridge)</a></li>
-<li><a href="../cs336/l03-architecture.html">CS336 L03: the modern architecture</a></li>
+<li><a href="l08-transformers.html">Lecture 8: transformers</a></li>
 </ul>
 
 </div>
@@ -231,8 +228,7 @@ frequently wrong.
 <figure class="crash-fig"><img src="assets/l09-reconstruct.svg" alt="Pretraining"><figcaption>Mask the input, predict it back. Trillions of words, no labels.</figcaption></figure>
 
 <ul class="crash-links">
-<li><a href="l09-pretraining.html">Lecture 9: pretraining (bridge)</a></li>
-<li><a href="../cs336/l09-scaling-laws.html">CS336 L09: scaling laws</a></li>
+<li><a href="l09-pretraining.html">Lecture 9: pretraining</a></li>
 </ul>
 
 </div>
@@ -254,8 +250,7 @@ it.
 <figure class="crash-fig"><img src="assets/l10-rlhf.svg" alt="RLHF pipeline"><figcaption>SFT, reward model, RL with KL penalty. Hacking is the failure mode.</figcaption></figure>
 
 <ul class="crash-links">
-<li><a href="l10-prompting-post-training.html">Lecture 10: prompting and post-training (bridge)</a></li>
-<li><a href="../cs336/l15-post-training.html">CS336 L15: post-training</a></li>
+<li><a href="l10-prompting-post-training.html">Lecture 10: prompting, instruction tuning, and RLHF</a></li>
 </ul>
 
 </div>
@@ -276,8 +271,7 @@ depending on setup. Never just believe numbers.
 <figure class="crash-fig"><img src="assets/l11-heckyes.svg" alt="BLEU failures"><figcaption>Overlap is not meaning: false negatives and false positives.</figcaption></figure>
 
 <ul class="crash-links">
-<li><a href="l11-evaluation.html">Lecture 11: evaluation (bridge)</a></li>
-<li><a href="../cs336/l12-evaluation.html">CS336 L12: evaluation</a></li>
+<li><a href="l11-evaluation.html">Lecture 11: benchmarking and evaluation</a></li>
 </ul>
 
 </div>
@@ -297,8 +291,7 @@ outruns global compute capacity.
 <figure class="crash-fig"><img src="assets/l12-memory.svg" alt="Memory budget"><figcaption>16 bytes per parameter per GPU. Optimizer states dominate.</figcaption></figure>
 
 <ul class="crash-links">
-<li><a href="l12-efficient-training.html">Lecture 12: efficient training (bridge)</a></li>
-<li><a href="../cs336/l02-resource-accounting.html">CS336 L02: resource accounting</a></li>
+<li><a href="l12-efficient-training.html">Lecture 12: efficient neural network training</a></li>
 </ul>
 
 </div>
@@ -334,7 +327,7 @@ vote). Test it with counterfactuals: base-9 arithmetic separates memorization
 from reasoning. An agent is a network in a loop: observation, action, goal.
 2024's reframing is trajectory modeling: "chain of thought prompting in a
 loop." Benchmarks (MiniWoB, WebArena, WebLinx) show a huge human-model gap.
-models make trivial unrecoverable mistakes.
+Models make trivial unrecoverable mistakes.
 
 After DPO, alignment's questions are: online versus offline (fresh data and
 fresh labels win), self-rewarding loops, beyond-pairwise methods (KTO,
@@ -345,8 +338,35 @@ is a moat: Meta bought 1.5M comparisons for LLaMA 2.
 
 <ul class="crash-links">
 <li><a href="l14-reasoning-agents.html">Lecture 14: reasoning and agents</a></li>
-<li><a href="l15-life-after-dpo.html">Lecture 15: life after DPO (bridge)</a></li>
-<li><a href="../cs336/l16-rlvr.html">CS336 L16: RLVR</a></li>
+<li><a href="l15-life-after-dpo.html">Lecture 15: life after DPO</a></li>
+</ul>
+
+</div>
+
+<div class="crash-section" markdown="1">
+
+### 16. What the deep versions add
+
+Every lesson grew subchapters that add one idea at a time: no jumps. The
+highlights, each with a worked toy or a concrete number:
+
+- Lecture 1: CBOW walks before skip-gram runs. Hierarchical softmax turns the 400K-word softmax into 19 binary decisions.
+- Lecture 2: subsampling discards "the" 98.6% of the time. FastText builds unseen words from subword pieces.
+- Lecture 3: ReLU before GELU, one increment each. Forward-mode vs reverse-mode: why every framework chose reverse.
+- Lecture 5: temperature, top-p, perplexity, each with a toy worked through.
+- Lecture 6: the GRU as the LSTM's leaner sibling. Beam search with real scores.
+- Lecture 7: dot vs additive vs general, then scaling. Local vs global attention.
+- Lecture 8: GQA, RoPE, FlashAttention: the production trio as of Oct 2026.
+- Lecture 9: MLM, CLM, span corruption, RTD side by side. Full fine-tune vs LoRA vs prefix.
+- Lecture 10: the DPO loss term by term (margin 1.38, loss 0.40).
+- Lecture 11: Elo math with an upset worked out. Contamination as the score killer.
+- Lecture 12: data, tensor, and pipeline parallelism. Quantization: 8-bit nearly free, 4-bit cheap.
+- Lecture 13: the signal chain from spikes to words. Invasive vs non-invasive.
+- Lecture 14: ReAct, tree of thought, Reflexion: three different bets.
+- Lecture 15: iterative DPO, self-rewarding, KTO: life after DPO, as of Oct 2026.
+
+<ul class="crash-links">
+<li><a href="cheatsheet.html">The one-page cheatsheet with every toy number</a></li>
 </ul>
 
 </div>
@@ -391,5 +411,17 @@ A: Mixed-precision Adam training: 2 params + 2 grads + 4 master + 4 momentum
 **Q: Online or offline alignment?**
 A: Online: fresh data from the policy, refreshed labels. April-May 2024
 papers agree it matters.
+
+**Q: Temperature 0.5 or 2.0?**
+A: 0.5 sharpens: conservative, repetitive. 2.0 flattens: wild, incoherent.
+1.0 is the honest distribution.
+
+**Q: What is GQA in one sentence?**
+A: Query heads share key-value heads in groups: the KV cache shrinks by the
+group size with little quality loss.
+
+**Q: What is perplexity, really?**
+A: The effective number of choices the model hesitates over per word. Lower
+is better.
 
 </div>

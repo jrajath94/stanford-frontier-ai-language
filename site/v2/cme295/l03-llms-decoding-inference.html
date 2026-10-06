@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -269,16 +266,16 @@ bidirectional encoders. The market decided generation matters more.</p>
 </tr>
 <tr>
 <td>DeepSeek V4.1 Flash</td>
-<td>decoder-only MoE, 552B, 8B/16B active</td>
-<td>MLA-class latent cache (890 B/token)</td>
-<td>RoPE-class</td>
+<td>causal encoder-decoder MoE, 552B, 8B/16B active</td>
+<td>CSA2 (Compressed Sparse Attention 2) compressed KV cache (890 B/token, FP4)</td>
+<td>[uncertain]</td>
 <td>1M</td>
 </tr>
 <tr>
 <td>Llama 4 Maverick (Meta)</td>
 <td>decoder-only MoE, 17B active, 128 experts</td>
-<td>GQA-class</td>
-<td>RoPE-class</td>
+<td>GQA + RoPE</td>
+<td>RoPE</td>
 <td>1M</td>
 </tr>
 <tr>
@@ -286,17 +283,20 @@ bidirectional encoders. The market decided generation matters more.</p>
 <td>decoder-only</td>
 <td>closed details</td>
 <td>unknown</td>
-<td>unknown (not public)</td>
+<td>1M (reported)</td>
 </tr>
 <tr>
 <td>Kimi K3 (Moonshot)</td>
-<td>decoder-only MoE</td>
-<td>closed details</td>
+<td>decoder-only MoE, 2.8T, 104B active, 896 experts (16+2 shared per token)</td>
+<td>Kimi Delta Attention</td>
 <td>unknown</td>
-<td>unknown</td>
+<td>1M</td>
 </tr>
 </tbody>
 </table>
+<p>Kimi Delta Attention is the sparse attention mechanism named in
+Kimi K3&rsquo;s row of the table above, the entry under the
+attention/sparsity column.</p>
 <p>Two honest notes. Closed labs publish almost no architecture
 details: GPT-6, Gemini 3, and Claude entries above are &ldquo;decoder-only
 by behavior&rdquo;, not by disclosed design. And the open-weight rows
@@ -377,8 +377,9 @@ expert: a correctness tradeoff for throughput.</p>
 <h3 id="subchapter-moe-in-production-october-2026">Subchapter: MoE in production, October 2026</h3>
 <p>Sparse MoE is the default for open frontier models. DeepSeek V4.1
 Flash: 552B total, 8B active on input, 16B on output. Llama 4
-Maverick: 17B active over 128 experts. Kimi K3: MoE (details not
-public). The pattern: total parameters measure capacity, active
+Maverick: 17B active over 128 experts. Kimi K3: 2.8T total, 104B
+active over 896 experts (16+2 shared per token), per the lineup
+table above. The pattern: total parameters measure capacity, active
 parameters measure cost. The interview line: &ldquo;MoE decouples the
 two.&rdquo; Dense models are the exception now, kept where latency
 predictability beats capacity (small fast models) or where the lab
@@ -424,8 +425,8 @@ all five on one toy distribution:</p>
   distributions give large ones.</li>
 </ul>
 <h3 id="subchapter-beam-search-worked-by-hand">Subchapter: beam search, worked by hand</h3>
-<p>Beam width B = 2 on the toy. Step 1: candidates &ldquo;lit&rdquo; (log prob
-log 0.5 = -0.69) and &ldquo;read&rdquo; (log 0.3 = -1.20). Keep both. Step 2:
+<p>Beam width B = 2 on the toy. Step 1: candidates &ldquo;lit&rdquo; (log prob,
+natural log, log 0.5 = -0.69) and &ldquo;read&rdquo; (log 0.3 = -1.20). Keep both. Step 2:
 extend &ldquo;lit&rdquo; with its top two next tokens, say &ldquo;well&rdquo; (log -0.5)
 and &ldquo;again&rdquo; (log -1.0). Extend &ldquo;read&rdquo; with &ldquo;books&rdquo; (log -0.4) and
 &ldquo;more&rdquo; (log -0.9). Four hypotheses, scores: lit+well = -1.19,
@@ -675,7 +676,6 @@ because the same GPU memory now holds ~40% more concurrent
 requests. The cost: one indirection per access. The paper&rsquo;s
 setting uses block size 16. Larger blocks waste more per request.
 Smaller blocks add table overhead.</p>
-<figure><img alt="Speculative decoding" src="assets/l03-speculative.svg"><figcaption>Draft fast, verify in one pass, keep the accepted prefix. Stanford Frontier AI.</figcaption></figure>
 <div class="qa"><div class="q">When does prompt caching hurt?</div><div class="a"><p>When the prefix is almost but not quite shared. The cache
 keys on exact prefix match: change one system-prompt word and
 the whole cache misses, but you paid the complexity of routing

@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -271,8 +268,8 @@ number, not a verdict.</p>
 probabilities take a closed form, the <strong>softmax</strong>:</p>
 <p>p(j chosen from set S) = e^{V_j} / sum_{k in S} e^{V_k}</p>
 <p>The Gumbel distribution is the unique noise, up to regularity
-conditions, that yields this form and the IIA property of Lecture
-3. Other noises give other models: Gaussian noise gives the probit
+conditions, that yields this form and the IIA (independence
+of irrelevant alternatives) property of Lecture 3. Other noises give other models: Gaussian noise gives the probit
 (see the end of this chapter). Gumbel wins on tractability:
 closed-form probabilities and easy gradients.</p>
 <p>Watch the softmax on the toy. V = (2.0, 1.0, 0.0).</p>
@@ -320,7 +317,7 @@ strategizing. When someone quotes a fitted win probability, ask
 which reading they mean. The number cannot tell you.</p>
 <h2 id="bradley-terry-the-two-item-case">Bradley-Terry: the two-item case</h2>
 <p>Take the softmax with two items. It reduces to a <strong>sigmoid</strong> of
-the gap. This is the <strong>Bradley-Terry model</strong> (Bradley and Terry,
+the gap. This is the <strong>Bradley-Terry (BT) model</strong> (Bradley and Terry,
 1952), the most used equation in this course.</p>
 <p>p(j beats k) = sigma(V_j - V_k) = 1 / (1 + e^{-(V_j - V_k)})</p>
 <p>The win probability depends only on the utility gap. Work the
@@ -339,12 +336,59 @@ p(B beats C) = sigma(1.0) = 0.731</p>
 88%. Elo ratings are Bradley-Terry utilities on a scaled axis:
 Elo&rsquo;s expected score is exactly this sigmoid.</p>
 <figure><img alt="The sigmoid turns gaps into probabilities" src="assets/l02-sigmoid.svg"><figcaption>p(j &gt; k) = sigma(V_j - V_k). Worked points: gap 1.0 gives 0.73, gap 2.0 gives 0.88. Source: original figure for Stanford Frontier AI.</figcaption></figure>
-<div class="qa"><div class="q">Derive Bradley-Terry from the random utility model in one paragraph.</div><div class="a"><p>Start with H_j = V_j + noise_j with i.i.d. Gumbel noise. Item j beats k when H_j &gt; H_k. Condition on noise_j = t: then k loses when noise_k &lt; V_j - V_k + t, which has Gumbel CDF probability. Integrate over t with the Gumbel density. The integral collapses to e^{V_j} / (e^{V_j} + e^{V_k}), which equals sigma(V_j - V_k). The full derivation is an exercise in the textbook.
+<div class="qa"><div class="q">Derive Bradley-Terry from the random utility model in one paragraph.</div><div class="a"><p>Start with H_j = V_j + noise_j with i.i.d. Gumbel noise. Item j beats k when H_j &gt; H_k. Condition on noise_j = t: then k loses when noise_k &lt; V_j - V_k + t, which has Gumbel CDF probability. Integrate over t with the Gumbel density. The integral collapses to e^{V_j} / (e^{V_j} + e^{V_k}), which equals sigma(V_j - V_k). The subchapter below shows every step.
 It is logistic regression. The log-loss on a pair (j, k) with label y is -[y log sigma(V_j - V_k) + (1-y) log(1 - sigma(V_j - V_k))]. Fitting Bradley-Terry by maximum likelihood is exactly logistic regression on pair differences. Lecture 4 builds on this.</p><div class="followup"><strong>Follow-up:</strong> Why is this the same math as logistic regression?</div></div></div>
+<h3 id="subchapter-the-derivation-shown-in-full">Subchapter: the derivation, shown in full</h3>
+<p>The lesson asserted that i.i.d. Gumbel noise gives the sigmoid.
+Here is the proof, every step. It is the one derivation this
+course cannot leave as an exercise, because everything downstream
+stands on it.</p>
+<p>Setup. Two items, j and k. Mean utilities V_j and V_k. Write d
+for the gap V_j - V_k. The noises e_j and e_k are independent
+draws from the standard Gumbel distribution. Item j wins when
+V_j + e_j &gt; V_k + e_k, which rearranges to e_k - e_j &lt; d.</p>
+<p>The standard Gumbel has CDF F(t) = exp(-exp(-t)) and density
+f(t) = exp(-t) exp(-exp(-t)). These are definitions, not
+results. Check the density integrates to 1: substitute u =
+exp(-t) and the integral becomes the integral of exp(-u) from 0
+to infinity, which is 1.</p>
+<p>Step 1: condition on e_j. Fix e_j = t. Then j wins exactly when
+e_k &lt; d + t. Since e_k is Gumbel, this happens with probability
+F(d + t) = exp(-exp(-(d + t))).</p>
+<p>Step 2: average over e_j. The unconditional win probability is
+the integral over t of f(t) times F(d + t):</p>
+<p>p = integral of exp(-t) exp(-exp(-t)) exp(-exp(-(d+t))) dt</p>
+<p>Step 3: substitute u = exp(-t). Then du = -exp(-t) dt, so
+-exp(-t) dt becomes du with flipped limits, and exp(-(d+t)) =
+exp(-d) exp(-t) = u exp(-d). The integral becomes:</p>
+<p>p = integral from 0 to infinity of exp(-u) exp(-u exp(-d)) du
+  = integral from 0 to infinity of exp(-u (1 + exp(-d))) du</p>
+<p>Step 4: evaluate. The integral of exp(-a u) from 0 to infinity
+is 1/a. Here a = 1 + exp(-d). So:</p>
+<p>p = 1 / (1 + exp(-d)) = sigma(d)</p>
+<p>That is Bradley-Terry. The sigmoid is not a modeling choice
+layered on top. It is what falls out of Gumbel noise.</p>
+<p>Verify by simulation, not just algebra. Draw 400,000 Gumbel
+pairs per gap using the inverse CDF, -log(-log(u)) for uniform
+u. Count how often d + e_j exceeds e_k.</p>
+<pre class="ascii">gap 0.0:  Monte Carlo 0.5007,  theory sigma(0) = 0.5000
+gap 1.0:  Monte Carlo 0.7304,  theory sigma(1) = 0.7311
+gap 2.0:  Monte Carlo 0.8800,  theory sigma(2) = 0.8808
+</pre>
+<p>All three agree within 0.001. The integral and the simulation
+say the same thing.</p>
+<p>Two things the proof reveals. First, the difference of two
+independent Gumbels follows the logistic distribution. That is
+the real content: Gumbel minus Gumbel is logistic, and the
+logistic CDF is the sigmoid. Second, the proof used
+independence at exactly one point: e_k &lt; d + t has probability
+F(d + t) only if e_k is independent of e_j. Correlated noise
+breaks this step, which is why Lecture 3&rsquo;s red-bus problem
+needs a different model. The derivation shows its own exit.</p>
+<figure><img alt="The preference pair" src="assets/l02-pref-pair.svg"><figcaption>Prompt x, chosen response y_w, rejected response y_l. The update widens the reward gap. Defined in CS329H, reused by later courses. Source: original figure for Stanford Frontier AI.</figcaption></figure>
 <h2 id="the-preference-pair-the-atom-of-the-course">The preference pair: the atom of the course</h2>
 <p>One object powers everything downstream. Define it carefully now,
 because every later lesson reuses it.</p>
-<figure><img alt="The preference pair" src="assets/l02-pref-pair.svg"><figcaption>Prompt x, chosen response y_w, rejected response y_l. The update widens the reward gap. Defined in CS329H, reused by later courses. Source: original figure for Stanford Frontier AI.</figcaption></figure>
 <p>A <strong>preference pair</strong> is a triple (x, y_w, y_l). The prompt x. The
 chosen response y_w, the winner. The rejected response y_l, the
 loser. A human, or a model judge, said y_w beats y_l for this
@@ -471,7 +515,7 @@ choice is empirically inconsequential for pairs.</p>
 has variance pi^2/3, so its standard deviation is about 1.81.
 The matched probit uses Phi(gap / 1.81). Work both at two gaps.</p>
 <pre class="ascii">gap 1.0:  logit sigma(1) = 0.731     probit Phi(0.55) = 0.709
-gap 2.0:  logit sigma(2) = 0.881     probit Phi(1.10) = 0.865
+gap 2.0:  logit sigma(2) = 0.881     probit Phi(1.10) = 0.864
 </pre>
 <p>The curves differ by about 0.02 across the practical range. No
 dataset distinguishes them on pairs alone. This is why the field
@@ -519,12 +563,22 @@ Two tests. The clone test: add a near-duplicate of one item and watch the others
 <li><strong>The price is IIA.</strong> The odds ignore the rest of the set.
    Tractable and strong. Clones break it. Lecture 3 shows how.</li>
 </ol>
+<h2 id="go-deeper">Go deeper</h2>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/inXUp5j107I" title="The Elo Rating System: Bradley-Terry derivation, j3m" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<ul>
+<li>The Elo Rating System (Bradley-Terry derivation): https://www.youtube.com/watch?v=inXUp5j107I</li>
+<li>Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf</li>
+<li>Bradley and Terry, Rank Analysis of Incomplete Block Designs (1952): via the textbook bibliography.</li>
+<li>Train (2009), Discrete Choice Methods with Simulation: the logit/probit reference.</li>
+</ul>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
 - The Elo Rating System (external explainer, video id inXUp5j107I):
   derives Bradley-Terry for a two-player game, builds the Elo update
   from Zermelo&rsquo;s model, and notes the Thurstone alternative.
-- Course textbook, chapters 2.x: random utility, Gumbel, BT,
+- Course textbook, chapter 1.7: random utility, Gumbel, BT,
   Plackett-Luce, the worked chess example.</p>
 <p><strong>Further reading:</strong>
 - Bradley and Terry (1952): the original paired-comparison

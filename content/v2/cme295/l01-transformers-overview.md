@@ -86,6 +86,27 @@ Worse, the vectors grow with the vocabulary. A 50,000-word vocabulary
 gives 50,000-dimensional vectors, mostly zeros. Storing them is
 wasteful. Computing with them is slow.
 
+### Subchapter: one-hot as a lookup table
+
+A one-hot vector is an index wearing a costume. Multiply it by an
+embedding matrix E (vocabulary x d) and you select one row: E^T times
+the one-hot for "bear" returns row 1. The operation is a table
+lookup. The lookup has one virtue: it is exact. It has one fatal
+flaw: no two rows share anything. Learning that "teddy" behaves like
+"bear" teaches nothing about any other word.
+
+### Subchapter: why one-hot cannot generalize
+
+Generalization needs shared structure: changing one word's
+representation must change similar words' representations. One-hot
+has none. Every dot product between distinct words is 0. The model
+must see "teddy bear" in training to know anything about "teddy
+bear". A vocabulary of 50,000 gives 2.5 billion pairs, most never
+observed. Unseen pairs stay at distance 0 forever. This is the
+sparsity problem, and it forces every later section.
+
+![One-hot vectors](assets/l01-onehot.svg "One-hot is a lookup index. Every distinct pair has dot product 0. No shared structure, no generalization. Shell 2. Source: original toy. Project: Stanford Frontier AI.")
+
 ## The key question
 
 What if a word's vector encoded the company it keeps? "Teddy" appears
@@ -129,6 +150,40 @@ The network itself is disposable. The prize is the hidden layer: each
 row is a **word embedding**, a dense vector that captures
 distributional meaning. The original setup: input size V (the
 vocabulary), hidden size d (a few hundred), output size V.
+
+### Subchapter: the CBOW loss, written out
+
+Write the training objective for one CBOW step. The network outputs
+logits z over V words. Softmax gives probabilities p_i = exp(z_i) /
+sum(exp(z_j)). The loss is cross-entropy against the target word:
+L = -log(p_target). On the toy (V = 5, target "bear"): if the model
+assigns p_bear = 0.4, the loss is -log(0.4) = 0.92. If it assigns
+0.02, the loss is 3.91. The gradient pushes the hidden-layer row for
+"bear" toward the context average and pushes the other four rows
+away. Every training step is one small tug on the geometry.
+
+The cost hides in the denominator: sum over V = 50,000 in real
+models, per step, per word. The original word2vec papers shipped
+two fixes.
+
+### Subchapter: negative sampling and GloVe
+
+**Negative sampling** replaces the V-way softmax with a binary
+choice. For the target word "bear" and K = 5 random "negative"
+words, train K+1 yes/no classifiers: "bear" should score high with
+this context, the 5 negatives should score low. Cost per step drops
+from O(V) to O(K). K between 5 and 20 works. The learned rows are
+still good embeddings.
+
+**GloVe** (2014) attacks from the other side. Instead of predicting,
+count: build the co-occurrence matrix X (how often word i appears
+near word j across the corpus) and fit embeddings so their dot
+product approximates log(X_ij). Prediction and counting arrive at
+the same geometry. The field remembers both, uses neither in
+modern pipelines: contextual models (next section onward) replaced
+static vectors. But the proxy-task idea (train on something easy,
+steal the representation) became the template for all of
+pre-training.
 
 ![Word2vec](assets/l01-word2vec.svg "A shallow network with a proxy task. The hidden layer becomes the embedding. Stanford Frontier AI.")
 
@@ -174,7 +229,47 @@ Three levels, each with a price:
 Modern models use subword tokenizers with vocabularies around 30,000
 to 50,000 tokens.
 
+### Subchapter: BPE, worked by hand
+
+**Byte-pair encoding (BPE)** learns the vocabulary from data. Start
+with characters. Repeatedly merge the most frequent adjacent pair.
+Watch three merges on a toy corpus ("reading", "reads", "read"):
+
+```ascii
+start:    r e a d i n g | r e a d s | r e a d
+merge 1:  "r"+"e" -> "re"   (most frequent pair, 3x)
+merge 2:  "re"+"a" -> "rea" (3x)
+merge 3:  "rea"+"d" -> "read" (3x)
+result:   "reading" = read + ing,  "reads" = read + s
+```
+
+Three merges discovered the root "read" with zero linguistic
+knowledge. Frequent words collapse into single tokens. Rare words
+decompose into known parts. No word is ever truly unknown: the
+worst case is a character split.
+
+### Subchapter: how modern tokenizers differ
+
+Three subword schemes, one idea, different merge rules:
+
+- **BPE** (GPT family): merge the most frequent pair. Greedy,
+  data-driven, simple.
+- **WordPiece** (BERT): merge the pair that most improves the
+  language-model likelihood, not raw frequency. Likelihood over
+  counts.
+- **Unigram** (T5, SentencePiece): start from a large vocabulary
+  and delete the least useful tokens until the target size. Top-down
+  instead of bottom-up.
+
+Practical consequences. Vocabulary sizes: ~30k (BERT), ~50k (GPT-2),
+~100k+ (newer multilingual models). Larger vocabularies mean fewer
+tokens per sentence but a bigger embedding matrix. Tokenizer choice
+changes token counts by 10-30% on the same text, which changes
+context-window usage and cost directly. The exact tokenizers of
+GPT-6, Gemini 3, and DeepSeek V4.1 are not public [unknown].
+
 ![Tokenization levels](assets/l01-token-levels.svg "Word, subword, and character splits of one sentence. Stanford Frontier AI.")
+![BPE merges](assets/l01-bpe.svg "Three merges discover the root 'read'. Frequent pairs merge first. Shell 2. Source: original toy. Project: Stanford Frontier AI.")
 
 ## First attempt at context: the RNN
 
@@ -210,6 +305,29 @@ with different heads: a sentiment head for classification, per-token
 tags for multi-classification, and step-by-step prediction for
 translation. **LSTMs** (1997) keep the same idea with a more
 structured hidden state, so memory survives longer.
+
+### Subchapter: LSTM and GRU, the gated fix
+
+The vanilla RNN overwrites its notes every step. **LSTM** adds a
+second track, the **cell state**, guarded by three learned gates
+(numbers between 0 and 1 from a sigmoid):
+
+- **Forget gate** f_t: how much of the old cell survives.
+- **Input gate** i_t: how much of the new candidate gets written.
+- **Output gate** o_t: how much of the cell becomes visible.
+
+The update is c_t = f_t * c_{t-1} + i_t * candidate_t. The key is
+the **addition**: old memory scales by the forget gate instead of
+squashing through a matrix. With f = 0.9 for the slot holding
+"The", six steps keep 0.9^6 = 0.53, not 0.016. The gradient rides
+the same highway: a chain of additions carries the error back
+unmultiplied, so it no longer vanishes. **GRU** merges the idea:
+one **update gate** blends old state and new candidate, one
+**reset gate** limits what the candidate sees. Fewer parameters,
+nearly the same power.
+
+Gates patch the chain. They do not delete it. The serial queue and
+the O(N) distance remain. That is why the field moved on.
 
 ![RNN unrolled](assets/l01-rnn.svg "Tokens enter left to right. The hidden state carries the past forward. Stanford Frontier AI.")
 
@@ -305,6 +423,49 @@ This figure defines the attention arrow for the whole learning system.
 CME295 is its first home. Later courses reuse it instead of redrawing
 it.
 
+### Subchapter: the attention arrow as the system symbol
+
+Every later lesson draws this arrow, so fix its parts. **Query**
+(one per token, at left) seeks. **Keys** (a column of pills) advertise.
+**Score bars** show the dot products before softmax. **Weight bars**
+show them after. **Values** (a matching column) mix by the weights.
+One claim per plate: this plate shows the lookup. Lecture 2's plate
+shows the causal mask. The model-map plate shows who uses which
+mask. Same chips, same colors, every time.
+
+### Subchapter: the N^2 cost table
+
+The score matrix O = QK^T is N x N. Count it in bytes (fp16, per
+head, per layer):
+
+```ascii
+N = 512:    512^2 = 262K scores   = 0.5 MB
+N = 4,096:  16.7M scores          = 33 MB
+N = 32,768: 1.07B scores          = 2.1 GB
+N = 1M:     1T scores             = 2 PB (impossible)
+```
+
+Every 2x in length costs 4x in scores. The N = 1M row is why this
+course exists: no machine stores it, so every later lecture is a
+way to avoid storing it. Read any efficiency claim as "which row of
+this table does it make affordable".
+
+> [!QA]
+> Q: Walk me through self-attention on the course's toy, start to finish.
+> A: Three tokens: counselor [1,0], helped [0,1], frame [1,1].
+> Projections are identity, so each vector is its own Q, K, V. Take
+> the query for "frame": [1,1]. Score it against each key by dot
+> product: 1, 1, 2. Softmax: exp gives [2.72, 2.72, 7.39], total
+> 12.83, weights [0.21, 0.21, 0.58]. Mix the values:
+> 0.21*[1,0] + 0.21*[0,1] + 0.58*[1,1] = [0.79, 0.79]. New "frame"
+> carries 21% of counselor, 21% of helped, 58% of itself. Every
+> token does this against every token, in parallel.
+> Follow-up: Where do Q, K, V come from in a real model?
+> A: From three learned matrices Wq, Wk, Wv multiplying the token
+> embeddings. The toy used identity to keep the arithmetic visible.
+> Training learns the projections, so the model decides what
+> "seeking" and "offering" mean per head per layer.
+
 > [!QA]
 > Q: Why does attention divide by sqrt(d_k)?
 > A: Dot products grow with dimension: for random vectors of dimension
@@ -336,6 +497,37 @@ dimensions change slowly and carry long range information.
 
 So the input to the machine is: token embedding plus position
 embedding, per position. Order restored.
+
+### Subchapter: learned vs sinusoidal, worked
+
+**Learned** position embeddings are a lookup table: position 7 gets
+row 7, trained like any parameter. Simple. It breaks past the
+longest training position: position 2,049 has no row.
+
+**Sinusoidal** embeddings need no training. Dimension 2i and 2i+1
+hold sin(p / 10000^(2i/d)) and cos(p / 10000^(2i/d)). The toy in 2
+dimensions, p = 3 and p = 5: the dot product of PE(3) and PE(5)
+works out to cos((5-3) * omega) = cos(2*omega). Only the distance 2
+survives. The model reads relative distance from the dot product
+itself. Fixed waves, no parameters, works at any position. The
+field later moved to RoPE (Lecture 2), which keeps this relative
+property and lives inside the QK product instead of the input.
+
+> [!QA]
+> Q: Why BPE and not whole words?
+> A: Whole words break on anything unseen: typos, names, new terms.
+> BPE decomposes rare words into known parts, so nothing is ever
+> truly unknown. The merge trace showed it: three merges discovered
+> the root "read" from raw frequency. The cost is tokens per
+> sentence: rare words split into many tokens, which eats context.
+> The decision rule: if your text has long tails of rare words
+> (code, multilingual), subword wins by a mile.
+> Follow-up: BPE or WordPiece?
+> A: BPE merges by raw pair frequency. WordPiece merges by which
+> pair most improves likelihood. In practice the difference is
+> small and both land near 30k-50k tokens. Pick the one your
+> framework's pretrained model already used: you cannot swap
+> tokenizers without retraining the embeddings.
 
 ## The transformer stacks it all
 
@@ -380,6 +572,38 @@ property of large language models.
 ![Transformer](assets/l01-transformer-arch.svg "Encoder and decoder stacks. Post-norm, as in the 2017 paper. Stanford Frontier AI.")
 ![End-to-end translation](assets/l01-end-to-end.svg "Tokenize, embed, encode, decode, softmax. One sentence through the whole machine. Stanford Frontier AI.")
 
+### Subchapter: the add-and-norm contract
+
+Each sublayer output is x + Sublayer(LayerNorm(x)) in the 2017
+paper (post-norm: normalize after the sublayer, then the residual
+add). The addition is the contract: the layer may refine its input,
+but the input always survives to the output. Stack 6 or 12 of these
+and the gradient has a clean highway back down: each layer's input
+is available directly, never buried under a transformation. Modern
+LLMs flip the norm to pre-norm (Lecture 2): x + Sublayer(Norm(x)),
+so the highway skips the normalization too. Same contract, cleaner
+highway, deeper stacks.
+
+### Subchapter: the causal mask, worked
+
+The decoder's masked self-attention sets future scores to negative
+infinity before the softmax. On a 4-token toy, the score matrix
+becomes a triangle:
+
+```ascii
+row 1 (token 1): sees token 1 only          [x . . .]
+row 2 (token 2): sees tokens 1, 2           [x x . .]
+row 3 (token 3): sees tokens 1, 2, 3        [x x x .]
+row 4 (token 4): sees tokens 1..4           [x x x x]
+```
+
+Softmax turns -inf into exactly 0, so future tokens get zero
+weight. This is what makes training parallel (all rows compute at
+once) and inference sequential (row 5 needs rows 1-4 finished).
+Every GPT-style model is this mask plus next-token prediction.
+
+![Causal mask](assets/l01-causal-mask.svg "Future scores become -inf before softmax. Row 3 sees tokens 1, 2, 3 only. Shell 3. Source: original toy. Project: Stanford Frontier AI.")
+
 ## Two computational tricks
 
 **Multi-head attention.** Run h self-attention operations in parallel,
@@ -390,6 +614,94 @@ slides compare heads to the multiple filters of a convolutional layer
 in vision. Same input, several views at once.
 
 ![Multi-head attention](assets/l01-multihead.svg "Four heads in parallel, concatenated, projected with Wo. Stanford Frontier AI.")
+
+### Subchapter: heads as filters, with numbers
+
+Fix the dimensions. d_model = 512, h = 8 heads, so each head works
+in d_k = 512/8 = 64 dimensions. Each head has its own Wq, Wk, Wv
+(512 x 64 each) and computes its own attention. Concatenate the 8
+outputs: 8 x 64 = 512 again. Project with Wo (512 x 512). Total
+parameters match one big head, but the behavior differs: 8
+independent votes instead of 1. Trained heads specialize: one tracks
+subject-verb, one tracks neighboring position, one tracks rare
+words. The interview line: "One softmax is one vote. Eight heads
+are eight votes."
+
+## What is used where: the three shapes in production
+
+The encoder/decoder/mask choice is the highest-level architecture
+decision. As of October 2026:
+
+| Model | Shape | Why this choice |
+|---|---|---|
+| GPT-6 Astra (OpenAI) | decoder-only, causal | Generation is the product. Closed weights |
+| Gemini 3.8 Flash (Google) | decoder-only, causal | Same reason. Closed weights |
+| DeepSeek V4.1 Flash | decoder-only MoE, causal | Open weights (MIT). 8B/16B active per token |
+| Llama 4 Maverick (Meta) | decoder-only MoE, causal | Open weights. 17B active, 128 experts |
+| BERT (2018) | encoder-only, bidirectional | Understanding tasks: classification, search embeddings |
+| T5 (2019) | encoder-decoder | Input and output differ in kind |
+
+Decoder-only won the LLM era: one stack, one objective, scales.
+Encoder-only survives where generation is not needed: search,
+classification, embeddings. Encoder-decoder survives where input
+and output differ in kind. No universal winner. The task picks the
+shape.
+
+![The three shapes](assets/l01-model-map.svg "Decoder-only, encoder-only, encoder-decoder: who uses what in October 2026. Shell 3. Source: public model cards. Project: Stanford Frontier AI.")
+
+> [!QA]
+> Q: Your product must handle 200K-token documents. What breaks in this chapter's machine?
+> A: The N x N score matrix. At N = 200,000, full attention needs
+> 4e10 scores per head per layer: impossible. The fixes this course
+> builds: sliding windows (Lecture 2) cut it to N x W, GQA (Lecture
+> 2) shrinks the KV cache, FlashAttention (Lecture 4) avoids
+> materializing the matrix, paging (Lecture 3) manages the cache.
+> The interview signal: name the exact cost (the score matrix, not
+> the parameters), then pick the tool that attacks it.
+> Follow-up: Which binds first, compute or memory?
+> A: Memory. The matrix must be stored to be softmaxed, and the KV
+> cache grows per token. Compute is large but parallel. Memory
+> capacity and bandwidth are the walls.
+> [!QA]
+> Q: Encoder-only or decoder-only for a search engine?
+> A: Encoder-only. Search needs embeddings of documents and queries:
+> bidirectional context gives each token the full picture, which
+> makes better vectors. Generation is not needed, so the causal mask
+> buys nothing and costs bidirectionality. That is why BERT-family
+> encoders still run production search and why decoder-only models
+> need workarounds for embedding tasks.
+> Follow-up: And for a chat product?
+> A: Decoder-only. Chat is generation: one token at a time,
+> conditioned on the past. The causal mask is the price of not
+> seeing the future, and next-token prediction is exactly the
+> training the product needs.
+> [!QA]
+> Q: Why did the field abandon LSTMs for language modeling?
+> A: Gates fixed the gradient problem but kept the serial chain:
+> step t still waits for t-1, so thousands of GPU cores idle, and
+> interaction distance stays O(N). Attention deleted the chain: all
+> pairs compute in parallel, any two tokens meet in one step. At
+> scale, training cost dominates, and the parallel architecture
+> wins even though each step costs O(N^2).
+> Follow-up: Where do LSTMs still win?
+> A: Streaming and on-device: constant memory per step, no KV cache
+> growth, no quadratic blowup. Speech and embedded systems still
+> run them. The tradeoff never disappeared. The data regime
+> changed.
+> [!QA]
+> Q: Why does the decoder shift its input right?
+> A: So the model never sees the answer it must predict. The
+> decoder input starts with [BOS] and the target is the same
+> sequence shifted one left, ending with [EOS]. At step t the model
+> sees tokens 1..t-1 of the input and must predict token t of the
+> target. Without the shift, the model could copy the current token
+> and the loss would be zero without learning anything.
+> Follow-up: What goes wrong at inference?
+> A: Nothing special: inference feeds the model's own outputs back
+> as the next input, which is exactly what the shifted training
+> simulated. The mismatch is distribution shift (Lecture 5):
+> training always feeds true prefixes, inference feeds the model's
+> own sometimes-wrong prefixes.
 
 **Label smoothing.** Training against hard targets (the correct word
 gets 1.0, everything else 0.0) makes the model overconfident and prone
@@ -452,6 +764,21 @@ The story in eight steps. Each step answers the one before it.
 8. **The price is quadratic.** N x N scores, 16.7M at N = 4,096. The
    rest of the course is about paying that bill.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/wjZofJX0v4M" title="Transformers, the tech behind LLMs (3Blue1Brown)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/eMlx5fFNoYc" title="Attention in transformers, step-by-step (3Blue1Brown)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+- Transformers, the tech behind LLMs (3Blue1Brown): https://www.youtube.com/watch?v=wjZofJX0v4M
+- Attention in transformers, step-by-step (3Blue1Brown): https://www.youtube.com/watch?v=eMlx5fFNoYc
+- The Illustrated Transformer (Jay Alammar): https://jalammar.github.io/illustrated-transformer/
+- Karpathy, "Let us build GPT: from scratch, in code, spelled out": https://www.youtube.com/watch?v=kCc8FmEb1nY
+
 ## Official sources and further reading
 
 **Official:**
@@ -464,7 +791,7 @@ The story in eight steps. Each step answers the one before it.
 
 **Further reading:**
 - Vaswani et al., "Attention Is All You Need" (2017):
-  https://arxiv.org/abs/1706.03762 — the transformer paper. Read the
+  - [the transformer paper. Read the](https://arxiv.org/abs/1706.03762)
   architecture section against the slides.
 - Bahdanau et al., "Neural Machine Translation by Jointly Learning to
   Align and Translate" (2014): the original attention paper.

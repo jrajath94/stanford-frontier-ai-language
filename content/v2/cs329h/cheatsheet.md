@@ -63,8 +63,75 @@ sigma 0.69, loss 0.37.
 
 **PPO objective.** maximize E[r(x,y)] - beta KL(pi || pi_ref).
 
+**GRPO advantage.** A_i = (r_i - mean(r)) / std(r) over the
+group of G samples for one prompt. Worked: [1,0,0,0] gives
++1.73, -0.58 x3. [1,1,1,0] gives +0.58 x3, -1.73. KL 0.001 to
+pi_ref. No critic.
+
+**UCB score.** A: 1.2 + 0.305 = 1.505. B: 1.0 + 1.076 = 2.076.
+Play B. Bonus shrinks with pulls: explore the uncertain.
+
+**Thompson.** Sample once from each posterior, play the
+winner. Probability matching, not maximization.
+
+**Nested logit.** Nest the buses under one node with
+dissimilarity lambda. Worked: lambda 1.0 -> train 0.155, each
+bus 0.422. lambda 0.01 -> train 0.268, each bus 0.366. As
+lambda falls, buses cannibalize each other, not the train.
+
+**Elo to BT scale.** d' = d / 173.7. A 16-point Elo swing =
+0.092 BT units. Elo is SGD: V_new = V_old + K(score -
+expected), K is the learning rate.
+
+**First-price shading.** b(v) = (n-1)/n * v. 3 bidders,
+uniform: bid 2/3 of value. v = 10 -> bid 6.67. Revenue
+equivalence: expected revenue 5.0 either format.
+
+**VCG payment.** Pay your externality: welfare of others
+without you minus welfare of others with you. Worked: bundle
+bidder 10, splitters 6+6. Split wins. Each splitter pays
+10 - 6 = 4.
+
+**Myerson virtual value.** phi(v) = v - (1-F(v))/f(v).
+Uniform [0,10]: phi = 2v - 10, zero at 5. Optimal reserve 5.
+
+**Revelation principle.** Any equilibrium outcome of any
+mechanism is a truthful equilibrium of a direct mechanism.
+Search among truthful mechanisms.
+
+**STV.** Rounds: no majority, eliminate weakest, transfer
+votes to next choice. Worked 5-voter: round 1 A=2 B=2 C=1,
+C out, transfers to B. Round 2: B wins 3-2.
+
+**Bridging.** r = mu + alpha + beta + p^T q + noise. Select
+on beta only: the note both sides rate helpful. Conservative
+by construction.
+
+**D-optimality.** Pick the query maximizing the
+log-determinant gain. Worked: gain 0.223 vs 0.086, ask X.
+
 **Polis.** u = mu + alpha_j + beta_j + p^T q_j + noise. Select
 on beta after factoring out ideology.
+
+## Never-confuse pairs
+
+- Elo rating vs BT strength: same model, different scale.
+  Divide by 173.7.
+- DPO vs PPO: DPO is offline classification on pairs. PPO is
+  online RL with rollouts. Different data regimes.
+- GRPO vs PPO: GRPO drops the critic, uses group z-scores.
+  Needs verifiable rewards, not human pairs.
+- UCB vs Thompson: UCB plays the max upper bound. Thompson
+  samples and plays the sample winner. Deterministic vs
+  randomized exploration.
+- Borda vs Condorcet: Borda counts points across ranks.
+  Condorcet checks pairwise majorities. They can disagree.
+- First-price vs second-price: first-price shades, revenue
+  equivalence holds in expectation, not per auction.
+- IIA vs IIA-prime: IIA ignores all other alternatives.
+  IIA-prime lets the count between y and y' matter.
+- Revealed vs informed: revealed is what behavior shows.
+  Informed is what reflection would endorse. Never equate.
 
 ## Numbers that demonstrate
 
@@ -79,9 +146,23 @@ on beta after factoring out ideology.
 - Condorcet cycle: A beats B, B beats C, C beats A, each 2-1.
   No group ranking is transitive.
 - Borda toy: ballots A>B>C, A>B>C, B>C>A, C>B>A. Plurality
-  crowns A. Borda crowns B 6-4-2.
+  crowns A. Borda crowns B 5-4-3.
 - Second-price toy: values 10, 7, 5. Bid 10, pay 7. Truth
   dominates: 9 loses profitable wins, 11 buys losses.
+- GRPO toy: group [1,0,0,0]. Winner advantage +1.73, losers
+  -0.58 each. The lone success gets the whole push.
+- UCB toy: A 1.505 vs B 2.076. B wins despite lower mean.
+  Uncertainty beats point estimate.
+- Nested logit: lambda 1.0 to 0.01. Train share 0.155 to
+  0.268. The nest parameter moves 11 points of share.
+- First-price: v = 10, 3 bidders. Equilibrium bid 6.67 vs
+  second-price payment 7. Expected revenue both 5.0.
+- STV 5-voter: round 1 A=2 B=2 C=1. C eliminated, transfers
+  to B. Round 2 B wins 3-2. Plurality tied 2-2.
+- D-optimal: gains 0.223 vs 0.086. Ask where uncertainty is
+  largest, 2.6x the information.
+- Elo swing: 16 points = 0.092 BT units. Scale matters for
+  interpreting leaderboards.
 
 ## Decisions: which tool when
 

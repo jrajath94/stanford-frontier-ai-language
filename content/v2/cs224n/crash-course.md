@@ -373,6 +373,126 @@ highlights, each with a worked toy or a concrete number:
 
 <div class="crash-section" markdown="1">
 
+### 17. One-glance tables
+
+Exam day is pattern matching. These tables are the patterns.
+
+**Decoding.** Greedy picks the top word every step: fast, deterministic,
+repetitive. Beam keeps k hypotheses: costs k times, fixes greedy's early
+mistakes. Temperature reshapes the distribution: low is conservative, high
+is wild. Top-p cuts the tail: keep the smallest set summing to p. The chat
+standard is temperature plus top-p: reshape, then cut.
+
+<figure class="crash-fig"><img src="assets/plate-crash-decoding.webp" alt="Decoding strategies"><figcaption>Greedy commits, beam explores, temperature plus top-p shapes then cuts. Project: Stanford Frontier AI. Source: original.</figcaption></figure>
+
+**Pretraining objectives.** Same sentence, four masks. MLM: mask tokens,
+predict with both directions. CLM: predict the next token, past only. Span
+corruption: mask whole spans, generate them back. RTD: replace tokens, label
+every token original or fake. The objective follows the architecture:
+encoders read (MLM), decoders write (CLM).
+
+<figure class="crash-fig"><img src="assets/plate-crash-objectives.webp" alt="Pretraining objectives"><figcaption>Each pretraining objective masks the same sentence differently. Project: Stanford Frontier AI. Source: original.</figcaption></figure>
+
+**Attention variants.** MHA: H query heads, H key-value heads. Full quality,
+full cache. MQA: one key-value head shared by all. Smallest cache, some
+quality loss. GQA: G key-value heads in groups. The middle ground, and the
+open standard (Llama 2/3). MLA (DeepSeek): compress keys and values into a
+latent vector. The most aggressive public design.
+
+**Eval metrics.** BLEU: precision, translation. Needs a brevity penalty.
+ROUGE: recall, summarization. BERTScore: embedding cosine similarity, meaning
+over overlap. Elo: pairwise human votes, chess math. Human eval: the gold
+standard, 67% agreement, never comparable across papers.
+
+<figure class="crash-fig"><img src="assets/plate-crash-precision-recall.webp" alt="Precision versus recall"><figcaption>BLEU asks: was what you wrote right? ROUGE asks: did you cover the reference? Project: Stanford Frontier AI. Source: original.</figcaption></figure>
+
+**Fine-tuning.** Full: move every weight a little. Wins on large shifts,
+costs the most. LoRA: freeze W, train rank-r BA, merge at inference. Zero
+latency. Adapters: small bottleneck layers. Extra latency at inference.
+Prefix: learned virtual tokens. Eats context length.
+
+**Parallelism.** Data parallel: copy the model, split the data, all-reduce
+gradients. Tensor parallel: split each layer, needs NVLink. Pipeline
+parallel: split by depth, bubbles idle some GPUs. The 3D combo trains the
+largest models.
+
+<ul class="crash-links">
+<li><a href="cheatsheet.html">The one-page cheatsheet with every toy number</a></li>
+</ul>
+
+</div>
+
+<div class="crash-section" markdown="1">
+
+### 18. Memory aids
+
+**Mnemonics.**
+
+- **Q-S-S-W-C.** Attention in five steps: Query, Score, Softmax,
+  Weighted-average, Concatenate.
+- **F-I-O.** The LSTM gates: Forget (really "remember"), Input (writes),
+  Output (reveals).
+- **T-M-O.** RLHF in three stages: Tune (SFT), Model (reward), Optimize (RL).
+- **2-2-4-4-4.** Mixed-precision bytes per parameter: 2 params, 2 grads,
+  4 master, 4 momentum, 4 variance. Total 16.
+- **A-L-H.** The eval ladder: Automatic for speed, LLM judge for dev loops,
+  Humans for final claims.
+
+**Never-confuse pairs.**
+
+- **Perplexity vs entropy.** Perplexity is e to the entropy per word. Read
+  it as live choices, not as information.
+- **Temperature vs top-p.** Temperature reshapes the whole distribution.
+  Top-p cuts the tail. Different knobs, used together.
+- **BLEU vs ROUGE.** BLEU is precision: was what you wrote right? ROUGE is
+  recall: did you cover the reference?
+- **Forward-mode vs reverse-mode.** Forward costs one sweep per input.
+  Reverse costs one sweep per output. Networks have millions of inputs and
+  one loss: reverse wins.
+- **Vanishing vs forgetting.** Vanishing is the backward pass: the gradient
+  dies. Forgetting is the forward pass: the memory fades. The LSTM fixes
+  both with the same gate.
+- **DPO vs PPO.** DPO is offline classification on fixed pairs. PPO is
+  online RL on fresh generations. Same preference goal, different data.
+- **MLM vs CLM.** MLM sees both directions: it reads. CLM sees only the
+  past: it writes.
+- **Greedy vs beam.** Greedy keeps one path and commits. Beam keeps k paths
+  and compares. Beam costs k times more.
+- **MHA vs GQA vs MQA.** MHA: one KV head per query head. GQA: KV heads
+  shared in groups. MQA: one KV head for all. The cache shrinks each step.
+- **Fine-tuning vs continued pretraining.** Fine-tuning uses labeled task
+  data. Continued pretraining uses unlabeled domain text. Different data,
+  different stage.
+
+**If this, then that.**
+
+- If the KV cache eats your GPUs, then share it: GQA, or MLA if training
+  from scratch.
+- If batch-1 does not fit, then LoRA first, ZeRO-3 second.
+- If annotators disagree on scores, then collect pairwise preferences
+  instead.
+- If a benchmark saturates (MMLU 25% to 90%), then the field moves on. Do
+  not chase a dead ruler.
+- If serving long context, then RoPE, and test extrapolation before
+  claiming the length.
+- If the tail is crazy, then top-p, not just a lower temperature.
+- If the task is local (keyboard autocomplete), then a smoothed n-gram, not
+  a transformer.
+- If the gradient explodes, then clip the norm. If it vanishes silently,
+  then change the architecture: gates, residuals, attention.
+- If reward scores climb while human preference stalls, then you are
+  hacking the proxy. Stop and fix the reward.
+- If the harness differs, then never compare the numbers. Reproduce the
+  setup or do not cite it.
+
+<ul class="crash-links">
+<li><a href="cheatsheet.html">The one-page cheatsheet with every toy number</a></li>
+</ul>
+
+</div>
+
+<div class="crash-section" markdown="1">
+
 ### Rapid-fire Q&A
 
 **Q: Why did word2vec need negative sampling?**
@@ -423,5 +543,48 @@ group size with little quality loss.
 **Q: What is perplexity, really?**
 A: The effective number of choices the model hesitates over per word. Lower
 is better.
+
+**Q: Skip-gram or CBOW for rare words?**
+A: Skip-gram. Each rare word gets its own prediction task as a center word.
+CBOW averages the context and drowns rare signals.
+
+**Q: Why the 80/10/10 rule in BERT?**
+A: [MASK] never appears at fine-tuning time. The 10% random and 10%
+unchanged cases stop the model from leaning on a token it will never see
+again.
+
+**Q: What is the KV cache?**
+A: The stored keys and values for every past token, per head. It makes
+generation O(1) per step and grows with context length. That is why GQA and
+MLA exist.
+
+**Q: RoPE in one sentence?**
+A: It rotates queries and keys by position, so the dot product sees only
+the relative angle between tokens.
+
+**Q: What is exposure bias?**
+A: Teacher forcing trains on gold histories. Inference runs on the model's
+own mistakes. The model never practiced recovery, so errors compound.
+
+**Q: Why did the transformer beat the LSTM?**
+A: Constant interaction distance plus full parallelization. The LSTM had
+neither.
+
+**Q: In Elo, why do upsets move more points?**
+A: Expected wins teach nothing. Surprises teach the most. The update is K
+times actual minus expected: 1500 vs 1600, upset win, K=32, moves 20.5
+points.
+
+**Q: What is contamination?**
+A: Test data leaking into training. The model memorizes the answers and
+the score overstates true capability. Detection is n-gram filtering.
+
+**Q: ZeRO-3 in one sentence?**
+A: Shard the optimizer states, the gradients, and the parameters across
+GPUs. 112 GB on 8 GPUs becomes 14 GB each.
+
+**Q: What is LoRA's merge property?**
+A: Fold BA into W after training. The model is byte-identical in shape to
+the original: zero extra inference latency.
 
 </div>

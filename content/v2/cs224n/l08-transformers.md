@@ -42,7 +42,7 @@ Lecture 7's attention fixed the bottleneck but kept the decoder's for loop.
 The key question: what if attention was the *whole* architecture, with no
 recurrence at all?
 
-**On this page:** [MHA, MQA, GQA](#subchapter-mha-mqa-gqa-the-kv-sharing-family) · [RoPE](#subchapter-rope-rotation-as-position) · [FlashAttention](#subchapter-flashattention-the-exact-speedup) · [Transformers in production, Oct 2026](#what-is-used-where-transformers-in-production-october-2026) · [Watch and go deeper](#watch-and-go-deeper)
+**On this page:** [MHA, MQA, GQA](#subchapter-mha-mqa-gqa-the-kv-sharing-family) · [RoPE](#subchapter-rope-rotation-as-position) · [FlashAttention](#subchapter-flashattention-the-exact-speedup) · [Sliding-window attention](#subchapter-sliding-window-attention-pay-for-w-not-n) · [Transformers in production, Oct 2026](#what-is-used-where-transformers-in-production-october-2026) · [Watch and go deeper](#watch-and-go-deeper)
 
 ## Self-attention: every word queries every word
 
@@ -229,6 +229,32 @@ tuned the tiling further. The lesson: the algorithm was fine, the memory
 traffic was the bottleneck. Modern training stacks all run some variant
 of this.
 
+### Subchapter: sliding-window attention, pay for w not n
+
+FlashAttention speeds up the n-by-n matrix. **Sliding-window attention**
+(Mistral 7B, 2023) shrinks it: each token attends only to the previous w
+tokens, not to all n. The score matrix becomes a band of width w around
+the diagonal. Cost per layer drops from n^2 to n x w.
+
+Watch it at n = 50,000, w = 4,096:
+
+```ascii
+full attention:      50,000^2        = 2.50B scores per layer per head
+sliding window:      50,000 x 4,096 = 204.8M scores per layer per head
+ratio: 12.2x cheaper
+```
+
+The KV cache shrinks too: each layer keeps only the last w keys and
+values, not the full history. The bet is locality: for most text, the
+information a token needs sits within a few thousand positions. Stacked
+layers recover longer range for free: layer 2's window reaches w tokens
+back, each of which already mixed its own w-token window, so the
+effective receptive field grows with depth. Mistral pairs the window with
+GQA: fewer KV heads, and each head looks at a band instead of the full
+matrix. Two orthogonal cuts to the same n-by-n bill.
+
+![Sliding-window attention](assets/plate-l08-sliding-window.webp "Sliding-window attention: each token attends to the previous w = 4096 tokens. At n = 50,000, scores drop from 2.5B to 204.8M per layer per head: 12.2x cheaper. Shell 3. Source: original diagram for sliding-window attention. Project: Stanford Frontier AI.")
+
 ## The block: residuals, normalization, repeat
 
 Attention alone is not a network. The transformer block wraps it:
@@ -271,9 +297,9 @@ this chapter's questions: who sees whom, where is position, who pays.
 | GPT-3 (2020) | causal MHA | learned absolute | Public paper. Decoder-only set the template |
 | Llama 2/3 (2023-24) | GQA, causal | RoPE | Public model cards. The open-weights reference |
 | Mistral 7B (2023) | sliding window + GQA | RoPE | Public paper. Long context on a budget |
-| Llama 4 Maverick/Scout (Apr 2025) | [uncertain] | [uncertain] | Meta announced MoE and open weights. Attention internals not public |
-| DeepSeek-V3 (Dec 2024) | MLA | decoupled RoPE | Public paper. Latent KV cache: 512-dim per token |
-| DeepSeek-V4 (Apr 2026) | MLA + sparse attention | [uncertain] | MIT license, MoE, 1M context. R2 never shipped |
+| Llama 4 Maverick/Scout (Apr 2025) | MoE (mixture of experts), GQA-family KV sharing, iRoPE | Public: Meta announcement and model cards. Scout: 17B active/109B total, 10M context. Maverick: 17B active/400B total, 1M context. iRoPE: interleaved local/global attention layers with RoPE on local layers only, for long-context efficiency |
+| DeepSeek-V3 (Dec 2024) | MLA (multi-head latent attention) | decoupled RoPE | Public paper. Latent KV cache: 512-dim per token |
+| DeepSeek-V4 (Apr 2026) | CSA/HCA hybrid attention | [uncertain] on positions | Public: DeepSeek release notes. V4-Pro: 1.6T total/49B active MoE, V4-Flash: 284B/13B active, both 1M context, MIT license. Compressed sparse attention plus heavily compressed attention: V4-Pro inference FLOPs at 1M context are 27% of V3.2's, KV cache 10% |
 | GPT-5.x (2025-26) | [unknown] | [unknown] | Closed. OpenAI publishes no architecture |
 | Gemini 3.x (2025-26) | [unknown] | [unknown] | Closed. Google publishes no architecture |
 | Claude 4.x/5 (2026) | [unknown] | [unknown] | Closed. Anthropic publishes no architecture |
@@ -367,9 +393,16 @@ Transformer plus a couple of modifications is still the best."
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/LWMzyfvuehA" title="CS224N Spring 2024 Lecture 8: Transformers" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 8: Transformers</strong> (Anna Goldie, Spring 2024). The guest lecture: from recurrence to attention-based models, the full transformer. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=LWMzyfvuehA</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/kCc8FmEb1nY" title="Let's build GPT: from scratch, in code, spelled out" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>Build GPT from scratch</strong> (Karpathy). The transformer block in code: attention, heads, residuals, LayerNorm.</p>
+</div>
 </div>
 
 ### Go deeper

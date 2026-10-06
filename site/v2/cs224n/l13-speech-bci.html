@@ -228,9 +228,7 @@ day.</p>
 <figure><img alt="Howard" src="assets/l13-howard.svg"><figcaption>Stanford Frontier AI, CS224N L13. Stroke at 21, locked-in. Letter board with gaze takes minutes per sentence. Eye-tracking is tiring.</figcaption></figure>
 <p><strong>Eye-tracking</strong> helped but tired him: staring at a screen all day is
 exhausting, and moving the eyes precisely is hard for locked-in patients
-(<a href="https://www.youtube.com/watch?v=tfVgHsKpRC8&amp;t=218s" target="_blank" rel="noopener">03:38 <span class="ts">⏱03:38</span></a>). The bottleneck is the body, not the device. The
-motivation for everything that follows: restore effortless communication by
-bypassing the broken output path entirely.</p>
+(<a href="https://www.youtube.com/watch?v=tfVgHsKpRC8&amp;t=218s" target="_blank" rel="noopener">03:38 <span class="ts">⏱03:38</span></a>). The bottleneck is the body, not the device.</p>
 <div class="qa"><div class="q">Why not just improve eye-tracking?</div><div class="a"><p>The bottleneck is the body, not the device. Locked-in patients struggle to move their eyes precisely, and sustained gaze is tiring. A brain interface bypasses the broken output path entirely: it reads the intention, not the muscle.
 Full consciousness with near-total paralysis. The brain works. The muscles do not respond. Communication must route around the body.</p><div class="followup"><strong>Follow-up:</strong> What does &quot;locked-in&quot; mean exactly?</div></div></div>
 <h2 id="the-2017-breakthrough-the-channel-exists">The 2017 breakthrough: the channel exists</h2>
@@ -244,8 +242,7 @@ a space: 6 characters. Forty characters per minute is under 7 words per
 minute. Slow. But speed was not the point. The point was the channel:
 motor cortex signals decode into text. The brain&rsquo;s output, read directly.</p>
 <h2 id="the-key-question">The key question</h2>
-<p>If the speech channel is gone, can we read the intention at the source —
-decode the words directly from the brain that tried to speak them?</p>
+<p>If the speech channel is gone, can we read the intention at the source, decode the words directly from the brain that tried to speak them?</p>
 <h2 id="the-implanted-system-decode-where-the-signal-lives">The implanted system: decode where the signal lives</h2>
 <p>Participant T12 (ALS, recruited 2022) received <strong>four microelectrode
 arrays</strong> (<a href="https://www.youtube.com/watch?v=tfVgHsKpRC8&amp;t=2516s" target="_blank" rel="noopener">41:56 <span class="ts">⏱41:56</span></a>): two in <strong>motor cortex</strong>, two in <strong>Broca&rsquo;s
@@ -298,13 +295,13 @@ buy, bought with surgery. Non-invasive decoding is the dream and the
 gap: safe, but the skull is a low-pass filter that no algorithm fully
 undoes. The field&rsquo;s bet: invasive for locked-in patients now,
 non-invasive if the signal processing ever catches up.</p>
-<figure><img alt="Invasive vs non-invasive" src="assets/plate-l13-invasive.webp"><figcaption>Implants give thousands of clean channels; EEG gives hundreds of noisy ones. Shell 3. Source: original diagram for BCI signals. Project: Stanford Frontier AI.</figcaption></figure>
+<figure><img alt="Invasive vs non-invasive" src="assets/plate-l13-invasive.webp"><figcaption>Implants give thousands of clean channels. EEG gives hundreds of noisy ones. Shell 3. Source: original diagram for BCI signals. Project: Stanford Frontier AI.</figcaption></figure>
 <figure><img alt="T12" src="assets/l13-t12.svg"><figcaption>Stanford Frontier AI, CS224N L13. Two arrays in motor cortex carry phoneme and word information. Two in Broca's area score near chance for this decoding.</figcaption></figure>
 <p>The motor cortex arrays carry phoneme and word information: the signal for
 attempted speech lives there. The Broca&rsquo;s area arrays score not much above
-chance for this decoding. The lesson, stated plainly: <strong>decode where the
-signal lives</strong>. Anatomy guides engineering. The system is a real-time
-speech-to-text BCI: attempted speech in, words out.</p>
+chance for this decoding. <strong>Decode where the signal lives</strong>: anatomy guides
+engineering. The system is a real-time speech-to-text BCI: attempted
+speech in, words out.</p>
 <h2 id="how-good-error-rates">How good: error rates</h2>
 <p><strong>Word error rate: about 25%.</strong> For every 100 words the participant
 attempts, 25 come out wrong (<a href="https://www.youtube.com/watch?v=tfVgHsKpRC8&amp;t=3974s" target="_blank" rel="noopener">66:14 <span class="ts">⏱66:14</span></a>). Feel what 25% means. If
@@ -374,7 +371,7 @@ Decoding is language modeling over neural signals. Phonemes, words, and language
 Every stage leaks. Spike detection misses firing events. The phoneme classifier confuses similar sounds. The language model cannot fix what the acoustics destroyed. The errors compound down the chain: each stage&rsquo;s output is the next stage&rsquo;s noisy input.</p><div class="followup"><strong>Follow-up:</strong> Where does the 25% word error rate come from?</div></div></div>
 <div class="qa"><div class="q">Is 25% word error rate usable?</div><div class="a"><p>For daily family communication, yes: the participant uses it daily. For anything formal, no: 94% of 10-word sentences contain an error under independence. Usability is not a single number: it depends on the cost of an error (a garbled &ldquo;I love you&rdquo; versus a garbled medication request) and on whether the conversation partner can ask for clarification. The trajectory matters: UC Davis near zero after continuous training says the number is not the ceiling.
 The decoder adapts to the participant&rsquo;s specific signals: electrode drift, day-to-day variation, personal articulation patterns. A static decoder fights a moving target. A learning decoder tracks it. The brain and the decoder co-adapt.</p><div class="followup"><strong>Follow-up:</strong> Why does continuous training help so much?</div></div></div>
-<div class="qa"><div class="q">You are designing the clinical trial&#x27;s primary endpoint. WER or words per minute?</div><div class="a"><p>Neither alone: the endpoint should be functional communication rate, meaning correctly conveyed words per minute. WER measures accuracy, wpm measures speed; a fast wrong system and a slow right system both fail the patient. Define success as information transfer: correct words per minute above a threshold that replaces the letter board (which manages a few words per minute). Secondary endpoints: daily usage hours (does the patient actually use it?) and error cost (are the errors recoverable in conversation?).
+<div class="qa"><div class="q">You are designing the clinical trial&#x27;s primary endpoint. WER or words per minute?</div><div class="a"><p>Neither alone: the endpoint should be functional communication rate, meaning correctly conveyed words per minute. WER measures accuracy, wpm measures speed. A fast wrong system and a slow right system both fail the patient. Define success as information transfer: correct words per minute above a threshold that replaces the letter board (which manages a few words per minute). Secondary endpoints: daily usage hours (does the patient actually use it?) and error cost (are the errors recoverable in conversation?).
 Speech recognition serves dictation: transcription accuracy is the product. BCI serves a locked-in person: communication is the product. A 25% WER system used daily beats a 5% system abandoned for fatigue. Measure the life, not the transcript.</p><div class="followup"><strong>Follow-up:</strong> Why not just use WER like speech recognition?</div></div></div>
 <div class="qa"><div class="q">Why did the motor cortex arrays carry the signal while Broca&#x27;s area scored near chance?</div><div class="a"><p>The task was attempted speech: the participant tried to move the speech articulators. Motor cortex drives movement, so it encodes the articulatory commands: phonemes as muscle instructions. Broca&rsquo;s area handles language formulation, a step removed from execution. For this decoding target (phonemes from attempted movement), the execution signal is the rich one. Decode where the signal lives: match the brain region to the behavior being decoded.
 Possibly: inner speech without attempted movement has no motor execution, so the formulation areas may carry what the motor cortex no longer provides. That is the hypothesis behind the inner-speech frontier. Unproven at lecture time: the ground-truth problem blocks the experiment.</p><div class="followup"><strong>Follow-up:</strong> Would Broca&#x27;s win for inner speech?</div></div></div>

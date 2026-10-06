@@ -309,6 +309,55 @@
 </ul>
 </div>
 <div class="cheat-block">
+<h3 id="mnemonics">Mnemonics</h3>
+<ul>
+<li><strong>Q-S-S-W-C:</strong> attention steps. Query, Score, Softmax, Weighted-average,
+  Concatenate.</li>
+<li><strong>F-I-O:</strong> LSTM gates. Forget (remember), Input (writes), Output
+  (reveals).</li>
+<li><strong>T-M-O:</strong> RLHF stages. Tune (SFT), Model (reward), Optimize (RL).</li>
+<li><strong>2-2-4-4-4:</strong> bytes per parameter. Params, grads, master, momentum,
+  variance. Total 16.</li>
+<li><strong>A-L-H:</strong> eval ladder. Automatic (speed), LLM judge (dev loops), Humans
+  (final claims).</li>
+</ul>
+</div>
+<div class="cheat-block">
+<h3 id="never-confuse-pairs">Never-confuse pairs</h3>
+<ul>
+<li><strong>Perplexity vs entropy:</strong> perplexity = e^entropy per word. Read as live
+  choices.</li>
+<li><strong>Temperature vs top-p:</strong> temperature reshapes, top-p cuts the tail.</li>
+<li><strong>BLEU vs ROUGE:</strong> precision (was it right?) vs recall (did it cover?).</li>
+<li><strong>Forward vs reverse mode:</strong> one sweep per input vs one per output.</li>
+<li><strong>Vanishing vs forgetting:</strong> backward gradient dies vs forward memory
+  fades.</li>
+<li><strong>DPO vs PPO:</strong> offline classification vs online RL on fresh generations.</li>
+<li><strong>MLM vs CLM:</strong> both directions (reads) vs past only (writes).</li>
+<li><strong>Greedy vs beam:</strong> one path commits vs k paths compare, k times cost.</li>
+<li><strong>MHA vs GQA vs MQA:</strong> H KV heads vs G groups vs 1 shared.</li>
+<li><strong>Fine-tune vs continued pretraining:</strong> labeled task data vs unlabeled
+  domain text.</li>
+</ul>
+</div>
+<div class="cheat-block">
+<h3 id="if-this-then-that">If this, then that</h3>
+<ul>
+<li>KV cache eats GPUs -&gt; GQA (MLA if training from scratch).</li>
+<li>Batch-1 does not fit -&gt; LoRA first, ZeRO-3 second.</li>
+<li>Annotators disagree on scores -&gt; collect pairwise preferences.</li>
+<li>Benchmark saturates -&gt; the ruler is dead, move on.</li>
+<li>Serving long context -&gt; RoPE, and test extrapolation first.</li>
+<li>Tail is crazy -&gt; top-p, not just lower temperature.</li>
+<li>Task is local (autocomplete) -&gt; smoothed n-gram, not transformer.</li>
+<li>Gradient explodes -&gt; clip the norm. Vanishes silently -&gt; change the
+  architecture.</li>
+<li>Reward climbs, human preference stalls -&gt; you are hacking the proxy.
+  Stop.</li>
+<li>Harness differs -&gt; never compare the numbers.</li>
+</ul>
+</div>
+<div class="cheat-block">
 <h3 id="interview-one-liners">Interview one-liners</h3>
 <ul>
 <li>&ldquo;Word meaning is a vector: know a word by the company it keeps.&rdquo;</li>
@@ -322,8 +371,8 @@
 <li>&ldquo;RLHF: tune, model preferences with Bradley-Terry, optimize with a KL leash.&rdquo;</li>
 <li>&ldquo;DPO skips the reward model: Z(x) cancels, binary classification remains.&rdquo;</li>
 <li>&ldquo;Subsampling throws away &lsquo;the&rsquo; before training: frequent words teach little.&rdquo;</li>
-<li>&ldquo;Temperature reshapes; top-p cuts the tail.&rdquo;</li>
-<li>&ldquo;GRU blends with one gate; the LSTM guards a cell.&rdquo;</li>
+<li>&ldquo;Temperature reshapes. Top-p cuts the tail.&rdquo;</li>
+<li>&ldquo;GRU blends with one gate. The LSTM guards a cell.&rdquo;</li>
 <li>&ldquo;RoPE rotates queries and keys: the dot product sees only relative distance.&rdquo;</li>
 <li>&ldquo;Perplexity is the number of live choices the model hesitates over.&rdquo;</li>
 <li>&ldquo;Never just believe numbers: the harness is half the score.&rdquo;</li>

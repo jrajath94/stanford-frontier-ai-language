@@ -37,9 +37,7 @@ day.
 
 **Eye-tracking** helped but tired him: staring at a screen all day is
 exhausting, and moving the eyes precisely is hard for locked-in patients
-([03:38](ts:03:38)). The bottleneck is the body, not the device. The
-motivation for everything that follows: restore effortless communication by
-bypassing the broken output path entirely.
+([03:38](ts:03:38)). The bottleneck is the body, not the device.
 
 > [!QA]
 > Q: Why not just improve eye-tracking?
@@ -63,8 +61,7 @@ motor cortex signals decode into text. The brain's output, read directly.
 
 ## The key question
 
-If the speech channel is gone, can we read the intention at the source —
-decode the words directly from the brain that tried to speak them?
+If the speech channel is gone, can we read the intention at the source, decode the words directly from the brain that tried to speak them?
 
 ## The implanted system: decode where the signal lives
 
@@ -129,15 +126,15 @@ gap: safe, but the skull is a low-pass filter that no algorithm fully
 undoes. The field's bet: invasive for locked-in patients now,
 non-invasive if the signal processing ever catches up.
 
-![Invasive vs non-invasive](assets/plate-l13-invasive.webp "Implants give thousands of clean channels; EEG gives hundreds of noisy ones. Shell 3. Source: original diagram for BCI signals. Project: Stanford Frontier AI.")
+![Invasive vs non-invasive](assets/plate-l13-invasive.webp "Implants give thousands of clean channels. EEG gives hundreds of noisy ones. Shell 3. Source: original diagram for BCI signals. Project: Stanford Frontier AI.")
 
 ![T12](assets/l13-t12.svg "Stanford Frontier AI, CS224N L13. Two arrays in motor cortex carry phoneme and word information. Two in Broca's area score near chance for this decoding.")
 
 The motor cortex arrays carry phoneme and word information: the signal for
 attempted speech lives there. The Broca's area arrays score not much above
-chance for this decoding. The lesson, stated plainly: **decode where the
-signal lives**. Anatomy guides engineering. The system is a real-time
-speech-to-text BCI: attempted speech in, words out.
+chance for this decoding. **Decode where the signal lives**: anatomy guides
+engineering. The system is a real-time speech-to-text BCI: attempted
+speech in, words out.
 
 ## How good: error rates
 
@@ -210,7 +207,7 @@ Two frontiers:
 
 > [!QA]
 > Q: You are designing the clinical trial's primary endpoint. WER or words per minute?
-> A: Neither alone: the endpoint should be functional communication rate, meaning correctly conveyed words per minute. WER measures accuracy, wpm measures speed; a fast wrong system and a slow right system both fail the patient. Define success as information transfer: correct words per minute above a threshold that replaces the letter board (which manages a few words per minute). Secondary endpoints: daily usage hours (does the patient actually use it?) and error cost (are the errors recoverable in conversation?).
+> A: Neither alone: the endpoint should be functional communication rate, meaning correctly conveyed words per minute. WER measures accuracy, wpm measures speed. A fast wrong system and a slow right system both fail the patient. Define success as information transfer: correct words per minute above a threshold that replaces the letter board (which manages a few words per minute). Secondary endpoints: daily usage hours (does the patient actually use it?) and error cost (are the errors recoverable in conversation?).
 > Follow-up: Why not just use WER like speech recognition?
 > A: Speech recognition serves dictation: transcription accuracy is the product. BCI serves a locked-in person: communication is the product. A 25% WER system used daily beats a 5% system abandoned for fatigue. Measure the life, not the transcript.
 

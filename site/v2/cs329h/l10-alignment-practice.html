@@ -218,8 +218,8 @@
     <article>
       <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / Lecture 10: Alignment in Practice, from Theory to Deployment</nav>
       <h1>Lecture 10: Alignment in Practice, from Theory to Deployment</h1>
-      <p class="meta-line">[uncertain] Spring 2026 · Instructor: Sanmi Koyejo · 1:13:21 · Spring 2026</p>
-      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="1QpNZXL35NM"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/1QpNZXL35NM" title="Stanford CS329H Guest Lecture: Colin Megill on Polis" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=1QpNZXL35NM" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=1QpNZXL35NM" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Guest lecture. Colin Megill on Polis, bridging-based aggregation, and Community Notes. Plus Dan Weber on value alignment and the human-experiments lecture.</p></div><h2 id="the-problem-the-lab-meets-the-world">The problem: the lab meets the world</h2>
+      <p class="meta-line">[uncertain] Autumn 2024 · Instructor: Sanmi Koyejo · [uncertain] · [uncertain]</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="VffFArrRSBE"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/VffFArrRSBE" title="Stanford CS329H: Machine Learning from Human Preferences | Autumn 2024 | Human-centered Design" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=VffFArrRSBE" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=VffFArrRSBE" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Course lecture (Stanford Online, Autumn 2024). Human-centered design for preference systems. Verified live on YouTube.</p></div><h2 id="the-problem-the-lab-meets-the-world">The problem: the lab meets the world</h2>
 <p>Lectures 1 through 9 built the machinery: comparisons, choice
 models, fitting, asking, acting, aggregating, incentives. This
 chapter asks what the machinery is for and where it breaks
@@ -303,30 +303,33 @@ individual fairness would assign elsewhere.</p>
 <p>The lesson generalizes: state which fairness you target, measure
 it, and name what you sacrificed. &ldquo;Fair&rdquo; without a definition is
 a slogan.</p>
-<div class="qa"><div class="q">Why can&#x27;t individual and group fairness both hold?</div><div class="a"><p>They demand different things when feature distributions differ across groups. Individual fairness is local: treat similar cases similarly. Group fairness is aggregate: equalize group averages. When one group&rsquo;s cases systematically differ, small subfields with few experts, local similarity and aggregate equality pull in opposite directions. Dwork et al. proved the incompatibility formally. The peer review example shows it concretely.
+<div class="qa"><div class="q">Why cannot individual and group fairness both hold?</div><div class="a"><p>They demand different things when feature distributions differ across groups. Individual fairness is local: treat similar cases similarly. Group fairness is aggregate: equalize group averages. When one group&rsquo;s cases systematically differ, small subfields with few experts, local similarity and aggregate equality pull in opposite directions. Dwork et al. proved the incompatibility formally. The peer review example shows it concretely.
 It depends on the harm model. If the harm is disparate service quality across user groups, target group fairness on the outcome that matters: satisfaction, accuracy per group. If the harm is arbitrary treatment of individuals, target individual fairness with a defensible similarity metric. Most deployed systems need both partially: constrain one, optimize the other, and audit the tradeoff.</p><div class="followup"><strong>Follow-up:</strong> Which should a preference learning system target?</div></div></div>
 <h2 id="revealed-versus-informed-preferences">Revealed versus informed preferences</h2>
-<p>Dan Weber, postdoc at Stanford HAI and the Center for Ethics in
-Society, PhD in philosophy, gave the value alignment guest
-lecture. His framing: alignment is about which preferences
+<p>Daniel Webber, post-doctoral researcher at Stanford University
+(per the lecture video&rsquo;s description), gave the value alignment
+guest lecture. His framing: alignment is about which preferences
 count, not just how to learn them.</p>
 <p>The key distinction is revealed versus informed preferences.
-<strong>Revealed preferences</strong> are what behavior shows, discussed at
-minute 20:18 of the Weber guest lecture (video id _kdR_7dCcyI;
-timestamps in this chapter link to the Polis lecture video in
-the frontmatter). <strong>Informed preferences</strong> are
+<strong>Revealed preferences</strong> are what behavior shows, discussed in
+the Webber guest lecture (video id -kdR_7dCcyI).
+<strong>Informed preferences</strong> are
 what someone would want knowing the relevant facts, with time
 to reflect. Alignment to raw revealed preferences bakes in
 mistakes, ignorance, and manipulation. Alignment to informed
 preferences requires extrapolation: from the cases you observed
 to the cases the person never considered.</p>
-<p>Weber also introduced the ESR statements, ethical and societal
+<p>Webber also introduced the ESR statements, ethical and societal
 reflection, required for the course&rsquo;s final projects: every
 project must state its value assumptions explicitly. The habit
 transfers. Any preference learning system should ship with its
 inversion assumptions written down.</p>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/-kdR_7dCcyI" title="CS329H Autumn 2024: Ethics, Daniel Webber guest lecture" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
 <div class="qa"><div class="q">What is the difference between revealed and informed preferences?</div><div class="a"><p>Revealed preferences are what choices show. Informed preferences are what someone would want with full information and reflection time. They differ whenever people err, lack facts, or face manipulation. Aligning to revealed preferences reproduces the errors. Aligning to informed preferences requires extrapolating beyond the data, which is itself a value-laden choice about how far to extrapolate and in which direction.
-That is the central risk. Extrapolation needs a model of what the person would endorse, and the designer supplies it. The defense is transparency: state the extrapolation rule, make it contestable, and prefer the weakest extrapolation that resolves the clear errors. Weber&rsquo;s ESR requirement is the institutional version: write the assumption down so it can be argued with.</p><div class="followup"><strong>Follow-up:</strong> Isn&#x27;t &quot;informed preference&quot; just the designer&#x27;s preference in disguise?</div></div></div>
+That is the central risk. Extrapolation needs a model of what the person would endorse, and the designer supplies it. The defense is transparency: state the extrapolation rule, make it contestable, and prefer the weakest extrapolation that resolves the clear errors. Webber&rsquo;s ESR requirement is the institutional version: write the assumption down so it can be argued with.</p><div class="followup"><strong>Follow-up:</strong> Is not &quot;informed preference&quot; just the designer&#x27;s preference in disguise?</div></div></div>
 <h2 id="polis-bridging-not-majority">Polis: bridging, not majority</h2>
 <p>Colin Megill, founder of Polis, gave the applied guest lecture.
 Polis is an open-source platform for large-scale deliberation.
@@ -335,7 +338,7 @@ Its most famous descendant is Community Notes on X.</p>
 ideological group decides what is &ldquo;helpful.&rdquo; The Polis answer is
 <strong>bridging</strong>: find notes rated positively by people who disagree
 with each other. Disagreement is the instrument, not the
-obstacle, stated at <a href="https://www.youtube.com/watch?v=1QpNZXL35NM&amp;t=530s" target="_blank" rel="noopener">08:50 <span class="ts">⏱08:50</span></a> in the lecture.</p>
+obstacle.</p>
 <p>The model is a factor model:</p>
 <p>u = mu + alpha_j + beta_j + p^T q_j + noise</p>
 <p>alpha is rater bias: some raters are generous. p^T q captures
@@ -347,10 +350,41 @@ not just within one camp.</p>
 consensus signal from diversity of opinion. Second, the
 factorization runs in continuous space, deliberately not
 clustering raters into liberal/conservative buckets, to avoid
-reifying the divisions it measures, stated at <a href="https://www.youtube.com/watch?v=1QpNZXL35NM&amp;t=2798s" target="_blank" rel="noopener">46:38 <span class="ts">⏱46:38</span></a>.</p>
+reifying the divisions it measures.</p>
 <p>This is Lecture 1&rsquo;s factor model deployed at scale, and Lecture
 8&rsquo;s social choice with a concrete rule: bridging beats majority
 when the population is polarized.</p>
+<h3 id="subchapter-community-notes-bridging-at-planetary-scale">Subchapter: Community Notes, bridging at planetary scale</h3>
+<p>Polis is the prototype. Community Notes on X is the deployment:
+millions of raters, millions of notes, one ranking question.
+Which note gets shown under a post?</p>
+<p>The mechanism is the same factorization, run at planetary
+scale. A rating from rater i on note n decomposes as:</p>
+<pre class="ascii">r = mu + alpha_i + beta_n + p_i^T q_n + noise
+</pre>
+<p>mu is the global mean. alpha_i is the rater&rsquo;s baseline
+generosity. beta_n is the note&rsquo;s bridging helpfulness. p_i and
+q_n are latent ideology factors. The selection rule uses only
+beta_n: a note is shown when its bridging helpfulness clears
+the bar. In words: the note must be rated helpful by raters
+from different sides of the latent disagreement axis, not just
+by one faction. [uncertain: exact threshold and
+regularization are implementation details not verified here.]</p>
+<figure><img alt="Bridging selects notes both sides rate helpful" src="assets/plate-bridging.webp"><figcaption>Two rater clusters disagree on everything except one note. That note has high beta and gets shown. Shell 3. Source: original figure for bridging aggregation. Project: Stanford Frontier AI.</figcaption></figure>
+<p>Why this is the whole course in miniature. Lectures 1 to 3: a
+choice model over ratings. Lecture 4: the fitted beta is a
+latent reward. Lecture 5: which notes get rated is an
+elicitation design. Lecture 8: aggregation without
+majoritarianism, the bridge not the mob. Lecture 9: raters
+strategize, and the factorization is the incentive-robust part,
+because gaming your own alpha_i does not move the note&rsquo;s
+beta_n.</p>
+<p>The failure mode is structural. Bridging rewards
+cross-faction agreement, so topics with no organized
+disagreement generate little signal, and novel claims that one
+side has not rated yet sit in limbo. Bridging is conservative
+by construction: it surfaces what both sides already accept,
+not what is true. That is the honest price of the mechanism.</p>
 <h2 id="human-centered-design-the-interface-is-the-model">Human-centered design: the interface is the model</h2>
 <p>The human-centered design lecture, built on tutorials from the
 HCI community, argues the elicitation interface is part of the
@@ -378,8 +412,12 @@ algorithm, Lecture 10&rsquo;s stakes.</p>
 <p>The ethics need stating. Adaptive allocation treats humans as
 bandit arms. Subjects in the worse arm get worse treatment by
 design. Human experiments need the statistical care of Lecture 6
-plus the ethical care of Weber&rsquo;s lecture: consent, debriefing,
+plus the ethical care of Webber&rsquo;s lecture: consent, debriefing,
 and a harm model for the exploration itself.</p>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/HFrCySzH9QI" title="CS329H guest lecture: Joseph Jay Williams [uncertain: title from search-index evidence]" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
 <h2 id="closing-topics-paternalism-privacy-peer-prediction">Closing topics: paternalism, privacy, peer prediction</h2>
 <p><strong>Paternalism.</strong> When should the system override stated
 preferences? The review-assistant example: help the harsh
@@ -400,6 +438,14 @@ Truth-telling maximizes shared information under the paradigm&rsquo;s
 conditions. It is mechanism design from Lecture 9 for the
 no-ground-truth case: pay for agreement that could only come
 from shared signal.</p>
+<div class="qa"><div class="q">Walk me through the Polis factor model on a toy rating matrix, by hand.</div><div class="a"><p>Three raters, two notes. Rater 1 (left) rates note A 5 stars, note B 1 star. Rater 2 (right) rates note A 1 star, note B 5 stars. Rater 3 (left) rates note A 4 stars, note B 2 stars. Fit the model u = mu + alpha + beta + p^T q. mu, the global mean: (5+1+1+5+4+2)/6 = 3. Rater 1&rsquo;s alpha: his mean is 3, so alpha_1 = 0. Rater 2&rsquo;s mean is 3, alpha_2 = 0. Rater 3&rsquo;s mean is 3, alpha_3 = 0. Ideology: raters 1 and 3 lean left, rater 2 leans right. Note A&rsquo;s beta: after removing rater means and the ideology component, note A is loved by the left and hated by the right: high ideological loading, low beta. Note B: loved by the right, low beta too. Now add note C: all three raters give it 4 stars. Its beta is high, near 1 after centering, and its ideology loading is near zero. Note C is the bridge: selected, shown, trusted. Notes A and B are factional: suppressed. That is the whole mechanism in six numbers.
+Then alpha_1 absorbs it: his mean is 5, alpha_1 = +2, and his ratings contribute no ideology or quality signal beyond the mean shift. The factorization separates generosity from belief. This is why the model beats raw averages: raw averages let the loudest and most generous raters set the outcome.</p><div class="followup"><strong>Follow-up:</strong> What if rater 1 is just generous, rating everything 5?</div></div></div>
+<div class="qa"><div class="q">Design a value audit for a peer-review assistant. It drafts reviews for conference submissions.</div><div class="a"><p>Audit the four pipeline stages from the lesson. Elicitation: whose reviewing values are in the training pairs? If all pairs come from one subfield, the model encodes one subfield&rsquo;s taste. Sample pairs across subfields and seniority. Learning: check the fitted reward against held-out reviewer judgments, sliced by subfield, and publish the slices. Aggregation: the model aggregates its training population&rsquo;s preferences. If the population is 80% from two labs, say so in the model card. Decision: the deployment threshold, when a draft review ships without human edit, is the value choice. Set it where measured draft quality beats the human baseline on blind comparison, not where the demo looks good. Add the inversion check: run the pipeline backwards from model outputs to the implied reviewer values and ask whether any real reviewer would endorse them.
+Revealed-versus-informed drift. Reviewers in a hurry reveal a preference for short, confident drafts. Their informed preference is for careful, hedged reviews. The model trained on revealed pairs becomes a confident-sounding review generator. Catch it with a free-text &ldquo;why&rdquo; field on a sample of labels: if annotators say they prefer the draft because it was fast to read, the label is measuring the wrong thing.</p><div class="followup"><strong>Follow-up:</strong> What is the single most likely failure?</div></div></div>
+<div class="qa"><div class="q">When does bridging fail? Give the failure taxonomy.</div><div class="a"><p>Four failures. First, no disagreement, no signal: on topics where one side has not shown up, there is nothing to bridge, and notes sit unrated. Second, false balance: bridging treats both sides symmetrically by construction, so on settled questions it can elevate a &ldquo;both sides&rdquo; note over the correct one. Third, manufactured disagreement: coordinated raters can plant a fake faction, and the factorization will dutifully bridge to it. Fourth, speed: bridging needs ratings from both sides, which arrive slower than a majority vote, so breaking news outruns the mechanism. The common thread: bridging assumes the disagreement is real, symmetric, and already present. When the assumption fails, the mechanism fails with it.
+Manufactured disagreement. It attacks the mechanism&rsquo;s core assumption from the inside, and the factorization cannot distinguish a real faction from a coordinated one without an identity layer. The defense is the fraud model from Lecture 8&rsquo;s leaderboard answer: detect coordination, downweight it, and accept that perfect Sybil resistance is not available.</p><div class="followup"><strong>Follow-up:</strong> Which failure is hardest to fix?</div></div></div>
+<div class="qa"><div class="q">Revealed or informed preferences: pick an extrapolation rule and defend it.</div><div class="a"><p>Ship informed preferences with a stated, contestable rule: the preference the user would endorse on reflection with the relevant facts, extrapolated by the weakest model that fixes clear errors. Concretely: correct factual mistakes the user would retract, keep value judgments the user would defend, and flag every correction in the output log. Defend it: revealed preferences bake in manipulation, ignorance, and haste, and a system that optimizes those is a system that optimizes against the user. The cost is paternalism, which is why the rule must be stated and contestable: the user can see each extrapolation and veto it. An unstated rule is paternalism without appeal. A stated rule is a contract.
+Where the user&rsquo;s values are themselves the problem: informed preferences assume a reflective self worth extrapolating toward. For users whose informed preferences endorse harm to others, the extrapolation needs a boundary, and that boundary is a policy decision, not a preference inference. The pipeline can infer what the user would want. It cannot decide what the user should be allowed to want. That line is drawn by the deployment&rsquo;s values, stated openly.</p><div class="followup"><strong>Follow-up:</strong> Where does the rule break?</div></div></div>
 <h2 id="mapping-back-the-course-in-one-pipeline">Mapping back: the course in one pipeline</h2>
 <table>
 <thead>
@@ -412,23 +458,23 @@ from shared signal.</p>
 <tbody>
 <tr>
 <td>Elicitation</td>
-<td>Lectures 1, 5, 9; HCD</td>
-<td>Who gets asked; what the interface measures</td>
+<td>Lectures 1, 5, 9. HCD</td>
+<td>Who gets asked. what the interface measures</td>
 </tr>
 <tr>
 <td>Learning</td>
 <td>Lectures 2, 3, 4</td>
-<td>Which variation counts as signal; which model structure</td>
+<td>Which variation counts as signal. which model structure</td>
 </tr>
 <tr>
 <td>Aggregation</td>
-<td>Lecture 8; Polis bridging</td>
-<td>Whose preferences weigh more; which axiom is relaxed</td>
+<td>Lecture 8. Polis bridging</td>
+<td>Whose preferences weigh more. which axiom is relaxed</td>
 </tr>
 <tr>
 <td>Decision</td>
 <td>Lectures 6, 10</td>
-<td>Defer or override; the paternalism rule</td>
+<td>Defer or override. the paternalism rule</td>
 </tr>
 </tbody>
 </table>
@@ -437,7 +483,7 @@ from shared signal.</p>
 assumes behavior reveals preference. The model assumes IIA and
 homogeneity. The aggregation relaxes some axiom. The decision
 rule overrides or defers. Each step is defensible. None is
-neutral. The honest practice is Weber&rsquo;s: write the assumptions
+neutral. The honest practice is Webber&rsquo;s: write the assumptions
 down, make them contestable, and prefer the weakest
 extrapolation that resolves the clear errors. The machinery of
 Lectures 1 through 9 is powerful exactly because it is
@@ -473,25 +519,25 @@ explicit.</p>
 </ol>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
-- Guest lecture: Dan Weber on value alignment (video id
-  _kdR_7dCcyI): revealed versus informed preferences at minute
-  20:18 of his lecture, ESR statements. Plain-text minute mark:
-  the ts: links in this chapter point at the Polis video above.
-- Guest lecture: Colin Megill on Polis (video id 1QpNZXL35NM):
-  bridging at <a href="https://www.youtube.com/watch?v=1QpNZXL35NM&amp;t=530s" target="_blank" rel="noopener">08:50 <span class="ts">⏱08:50</span></a>, continuous factorization at
-  <a href="https://www.youtube.com/watch?v=1QpNZXL35NM&amp;t=2798s" target="_blank" rel="noopener">46:38 <span class="ts">⏱46:38</span></a>.
+- Guest lecture: Daniel Webber on value alignment (video id
+  -kdR_7dCcyI): revealed versus informed preferences, ESR
+  statements.
+- CS329H Autumn 2024: Voting (video id 1QpNZXL35NM), Colin
+  Megill (Polis) guest segment: bridging, continuous
+  factorization.
 - Lecture on human-centered design (video id VffFArrRSBE).
-- Lecture on running human experiments (video id HFrCySzH9QI).
+- Guest lecture: Joseph Jay Williams (video id HFrCySzH9QI)
+  [uncertain: title from search-index evidence only].
 - Course textbook, chapters 10.x: the inversion problem, the
   four-stage pipeline, fairness, paternalism, privacy, the
-  mutual information paradigm.</p>
+  mutual information paradigm. <a href="https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf">link</a></p>
 <p><strong>Further reading:</strong>
 - Dwork et al. (2012): individual fairness.
-- Megill / Polis: https://pol.is — the open-source platform.</p>
+- Megill / Polis: <a href="https://pol.is">the open-source platform</a>.</p>
 <p><strong>Caveats from these sources.</strong> The 10%-to-40% compounding
 figure is the textbook&rsquo;s illustration of feedback loops, not a
 measured rate. The Polis factor model is stated as in the
-lecture; estimation details are the platform&rsquo;s. The HCD
+lecture. estimation details are the platform&rsquo;s. The HCD
 lecture is built on HCI community tutorials, per the lecturer.
 Timestamps link to the guest lecture videos named above.</p>
 <h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
@@ -499,15 +545,15 @@ Timestamps link to the guest lecture videos named above.</p>
 <li><strong>CS329H L01:</strong> the factor model Polis deploys at scale.</li>
 <li><strong>CS329H L04:</strong> systematic bias as the inversion problem in
   miniature.</li>
-<li><strong>CS329H L06:</strong> Thompson sampling for human experiments;
+<li><strong>CS329H L06:</strong> Thompson sampling for human experiments.
   CIRL&rsquo;s strategic human.</li>
-<li><strong>CS329H L08:</strong> aggregation impossibility; bridging as a
+<li><strong>CS329H L08:</strong> aggregation impossibility. bridging as a
   concrete escape.</li>
 <li><strong>CS329H L09:</strong> peer prediction as mechanism design without
   ground truth.</li>
 <li><strong>CS336:</strong> the deployed systems these choices govern.</li>
 </ul>
-      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=1QpNZXL35NM" target="_blank" rel="noopener">Guest lecture: Colin Megill on Polis</a></li><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=_kdR_7dCcyI" target="_blank" rel="noopener">Guest lecture: Dan Weber on value alignment</a></li><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=VffFArrRSBE" target="_blank" rel="noopener">Lecture: human-centered design</a></li><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=HFrCySzH9QI" target="_blank" rel="noopener">Lecture: running human experiments</a></li><li><span class="src-tag">NOTES</span>Course textbook, chapters 4 and 5.6-5.11 (Truong, Haupt, Koyejo, 2025)</li></ul></section>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=VffFArrRSBE" target="_blank" rel="noopener">CS329H Autumn 2024: Human-centered Design (Stanford Online)</a></li><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=1QpNZXL35NM" target="_blank" rel="noopener">CS329H Autumn 2024: Voting, with Colin Megill (Polis) guest segment</a></li><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=-kdR_7dCcyI" target="_blank" rel="noopener">CS329H Autumn 2024: Ethics (Stanford Online, Daniel Webber guest)</a></li><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=HFrCySzH9QI" target="_blank" rel="noopener">CS329H guest lecture: Joseph Jay Williams [uncertain: title evidence from search index only]</a></li><li><span class="src-tag">NOTES</span><a href="https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf" target="_blank" rel="noopener">Course textbook, chapters 4 and 5.6-5.11 (Truong, Haupt, Koyejo, 2025)</a></li></ul></section>
       <nav class="pager"><a href="../cs329h/l09-mechanism-design.html"><span class="lbl">← Previous</span>Lecture 9: Mechanism Design, Eliciting Truthful Preferences</a><a href="../cs329h/cheatsheet.html"><span class="lbl">Next →</span>CS329H Cheatsheet</a></nav>
     </article>
     <footer class="pagefoot">

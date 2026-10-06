@@ -11,7 +11,7 @@ instructor: "Christopher Manning"
 offering: "Spring 2024"
 duration: "1:19:00"
 video_id: nBor4jfWetQ
-video_title: "Lecture 2: Word Vectors, Word Senses, and Neural Classifiers"
+video_title: "Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 2 - Word Vectors and Language Models"
 video_caption: "Original lecture. Christopher Manning continues word vectors: optimization, evaluation, negative sampling, GloVe, senses, and neural classifiers."
 concepts: [optimization, learning-rate, initialization, analogies, negative-sampling, sigmoid, glove, intrinsic-evaluation, extrinsic-evaluation, word-senses, superposition, ner, cross-entropy]
 sources:
@@ -40,7 +40,7 @@ actually capture meaning, or did we just do expensive arithmetic? This
 lecture pays both bills, then uses the vectors to build the first neural
 classifier of the course.
 
-**On this page:** [Subsampling: throw away "the"](#subchapter-subsampling-throw-away-the) · [The 3/4 power](#subchapter-the-34-power-in-negative-sampling) · [FastText](#subchapter-fasttext-subwords-inside-the-vector) · [Static vectors in production](#what-is-used-where-static-vectors-in-production) · [Watch and go deeper](#watch-and-go-deeper)
+**On this page:** [Subsampling: throw away "the"](#subchapter-subsampling-throw-away-the) · [The negative-sampling loss, by hand](#subchapter-the-negative-sampling-loss-by-hand) · [The 3/4 power](#subchapter-the-34-power-in-negative-sampling) · [FastText](#subchapter-fasttext-subwords-inside-the-vector) · [Static vectors in production](#what-is-used-where-static-vectors-in-production) · [Watch and go deeper](#watch-and-go-deeper)
 
 ## How big a step: the learning rate
 
@@ -139,6 +139,37 @@ keeps the math consistent without ever summing over the vocabulary.
 
 What did we give up? The model no longer outputs true probabilities over
 the vocabulary. For learning vectors, that was never needed.
+
+### Subchapter: the negative-sampling loss, by hand
+
+The loss for one training step is a sum of binary decisions. For the real
+pair (center c, observed context o) and k negatives n_1..n_k:
+
+```ascii
+J = -log sigma(v_c . u_o) - sum over i of log sigma(-v_c . u_{n_i})
+```
+
+The first term pulls the real pair's score up. Each negative term pushes a
+noise pair's score down (the minus sign inside the sigmoid flips the
+target). Watch it on the Lecture 1 toy vectors with k = 1. Real pair
+(banking, money): dot = 1.0. Negative (banking, zebra): dot = -1.0.
+
+```ascii
+sigma(1.0) = 0.7311
+J = -log sigma(1.0) - log sigma(-(-1.0))
+  = -log(0.7311) - log(0.7311)
+  = 0.3133 + 0.3133 = 0.6265
+```
+
+Both terms are 0.3133 by symmetry: the model is equally unsure about the
+real pair and the noise pair. Training drives them apart: the real
+sigmoid toward 1 (loss toward 0), the noise sigmoids toward 0 (their
+negative-log terms toward 0). With the standard k = 5, the same step costs
+one real term plus five noise terms: 6 sigmoids, 6 dot products, no
+400,000-word sum anywhere. The full softmax is gone. The geometry that
+remains is what the vectors are for.
+
+![Negative-sampling loss, one step](assets/plate-l02-negsampling-loss.webp "One negative-sampling step on the toy: real pair dot 1.0, one negative dot -1.0. Loss = -log sigma(1.0) - log sigma(1.0) = 0.6265. Shell 2. Source: original toy for the negative-sampling loss. Project: Stanford Frontier AI.")
 
 ### Subchapter: subsampling, throw away "the"
 
@@ -417,9 +448,16 @@ makes this invention possible.
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/nBor4jfWetQ" title="CS224N Spring 2024 Lecture 2: Word Vectors and Language Models" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 2: Word Vectors and Language Models</strong> (Christopher Manning, Spring 2024). The original lecture: optimization, negative sampling, GloVe, word senses, neural classifiers. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=nBor4jfWetQ</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/ASn7ExxLZws" title="GloVe: Global Vectors for Word Representation" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>GloVe: Global Vectors</strong> (Tanmoy Chakraborty). How global co-occurrence counts plus prediction make word vectors.</p>
+</div>
 </div>
 
 ### Go deeper

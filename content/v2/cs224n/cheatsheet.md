@@ -134,6 +134,61 @@ summary: "Every key fact from CS224N on one dense page: definitions, formulas, n
 
 <div class="cheat-block" markdown="1">
 
+### Mnemonics
+
+- **Q-S-S-W-C:** attention steps. Query, Score, Softmax, Weighted-average,
+  Concatenate.
+- **F-I-O:** LSTM gates. Forget (remember), Input (writes), Output
+  (reveals).
+- **T-M-O:** RLHF stages. Tune (SFT), Model (reward), Optimize (RL).
+- **2-2-4-4-4:** bytes per parameter. Params, grads, master, momentum,
+  variance. Total 16.
+- **A-L-H:** eval ladder. Automatic (speed), LLM judge (dev loops), Humans
+  (final claims).
+
+</div>
+
+<div class="cheat-block" markdown="1">
+
+### Never-confuse pairs
+
+- **Perplexity vs entropy:** perplexity = e^entropy per word. Read as live
+  choices.
+- **Temperature vs top-p:** temperature reshapes, top-p cuts the tail.
+- **BLEU vs ROUGE:** precision (was it right?) vs recall (did it cover?).
+- **Forward vs reverse mode:** one sweep per input vs one per output.
+- **Vanishing vs forgetting:** backward gradient dies vs forward memory
+  fades.
+- **DPO vs PPO:** offline classification vs online RL on fresh generations.
+- **MLM vs CLM:** both directions (reads) vs past only (writes).
+- **Greedy vs beam:** one path commits vs k paths compare, k times cost.
+- **MHA vs GQA vs MQA:** H KV heads vs G groups vs 1 shared.
+- **Fine-tune vs continued pretraining:** labeled task data vs unlabeled
+  domain text.
+
+</div>
+
+<div class="cheat-block" markdown="1">
+
+### If this, then that
+
+- KV cache eats GPUs -> GQA (MLA if training from scratch).
+- Batch-1 does not fit -> LoRA first, ZeRO-3 second.
+- Annotators disagree on scores -> collect pairwise preferences.
+- Benchmark saturates -> the ruler is dead, move on.
+- Serving long context -> RoPE, and test extrapolation first.
+- Tail is crazy -> top-p, not just lower temperature.
+- Task is local (autocomplete) -> smoothed n-gram, not transformer.
+- Gradient explodes -> clip the norm. Vanishes silently -> change the
+  architecture.
+- Reward climbs, human preference stalls -> you are hacking the proxy.
+  Stop.
+- Harness differs -> never compare the numbers.
+
+</div>
+
+<div class="cheat-block" markdown="1">
+
 ### Interview one-liners
 
 - "Word meaning is a vector: know a word by the company it keeps."
@@ -147,8 +202,8 @@ summary: "Every key fact from CS224N on one dense page: definitions, formulas, n
 - "RLHF: tune, model preferences with Bradley-Terry, optimize with a KL leash."
 - "DPO skips the reward model: Z(x) cancels, binary classification remains."
 - "Subsampling throws away 'the' before training: frequent words teach little."
-- "Temperature reshapes; top-p cuts the tail."
-- "GRU blends with one gate; the LSTM guards a cell."
+- "Temperature reshapes. Top-p cuts the tail."
+- "GRU blends with one gate. The LSTM guards a cell."
 - "RoPE rotates queries and keys: the dot product sees only relative distance."
 - "Perplexity is the number of live choices the model hesitates over."
 - "Never just believe numbers: the harness is half the score."

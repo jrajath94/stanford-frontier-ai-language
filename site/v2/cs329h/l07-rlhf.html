@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -392,13 +389,28 @@ individual&rsquo;s preferences. The textbook states this explicitly:
 check the assumption before trusting the fit.</p>
 <div class="qa"><div class="q">An interviewer asks: &quot;What could go wrong with DPO?&quot; Give the structured answer.</div><div class="a"><p>Six assumptions, six failure modes. BT misspecification: context effects and intransitive labels break the likelihood. IIA violation: near-duplicate candidates distort the implicit Borda aggregation. Heterogeneity: mixed annotators produce a compromise policy. Systematic label bias: verbosity and position effects get learned as quality. Uninformative pairs: random sampling wastes the annotation budget. Non-stationarity: preferences drift and the fit goes stale. For each, name the diagnostic: IIA tests, per-annotator fits, bias terms, information-based selection, refresh schedules.
 Heterogeneity. Teams obsess over reward-model accuracy on pooled labels and miss that the pool mixes contradictory preferences. The averaged reward looks accurate and produces a policy nobody wanted. Per-annotator or per-group modeling is the fix, and it is rarely done.</p><div class="followup"><strong>Follow-up:</strong> Which failure is most underrated?</div></div></div>
-<div class="qa"><div class="q">Walk me through one DPO gradient step on the running example, by hand.</div><div class="a"><p>Prompt x: &ldquo;Explain why the sky is blue.&rdquo; Winner y_A has log-ratio log[pi/pi_ref] = 0.5. Loser y_B has -0.3. Beta = 1. Step one: the implicit gap = 0.5 - (-0.3) = 0.8. Step two: sigma(0.8) = 0.69. Step three: loss = -log(0.69) = 0.37. Step four: the gradient. The loss derivative with respect to the gap is -(1 - 0.69) = -0.31, so the optimizer pushes the gap wider: it raises the winner&rsquo;s log-ratio and lowers the loser&rsquo;s. The push is surprise-weighted, like Lecture 4&rsquo;s MLE: a pair the policy already ranks correctly, gap 3, sigma 0.95, contributes gradient -0.05 and barely moves. An inverted pair, gap -1, contributes -1.27 and moves a lot. That is the whole algorithm: classification on pairs, hardest pairs move most.
+<div class="qa"><div class="q">Walk me through one DPO gradient step on the running example, by hand.</div><div class="a"><p>Prompt x: &ldquo;Explain why the sky is blue.&rdquo; Winner y_A has log-ratio log[pi/pi_ref] = 0.5. Loser y_B has -0.3. Beta = 1. Step one: the implicit gap = 0.5 - (-0.3) = 0.8. Step two: sigma(0.8) = 0.69. Step three: loss = -log(0.69) = 0.37. Step four: the gradient. The loss derivative with respect to the gap is -(1 - 0.69) = -0.31, so the optimizer pushes the gap wider: it raises the winner&rsquo;s log-ratio and lowers the loser&rsquo;s. The push is surprise-weighted, like Lecture 4&rsquo;s MLE: a pair the policy already ranks correctly, gap 3, sigma 0.95, contributes gradient -0.05 and barely moves. An inverted pair, gap -1, contributes -0.73 and moves a lot. That is the whole algorithm: classification on pairs, hardest pairs move most.
 It anchors the update. The implicit reward is beta log(pi/pi_ref), so raising pi(y_A) raises the reward only relative to where the reference put it. Without pi_ref, adding a constant to all log-probabilities would change nothing observable, and the optimum would be undefined: Lecture 3&rsquo;s identification problem, wearing a policy costume.</p><div class="followup"><strong>Follow-up:</strong> What does the reference policy do during the step?</div></div></div>
 <div class="qa"><div class="q">You are aligning a 70B open model. 50,000 preference pairs, 8 H100s, one week. Choose DPO, PPO, or GRPO, and defend it.</div><div class="a"><p>Choose DPO. PPO needs four models in memory at 70B scale: policy, reference, reward, value. That is roughly 4 x 140GB in fp16 before optimizers, which does not fit 8 H100s without heroic sharding, and PPO&rsquo;s on-policy rollouts burn the week on generation. GRPO drops the critic but still needs online rollouts and a reward signal per prompt. With only human pairs and no verifiable reward, GRPO buys little. DPO trains on the fixed pairs with two models, policy and frozen reference, in a standard supervised loop. It fits, it is stable, and the Llama 3 report validates the choice at 405B. Spend the saved week on what actually moves quality: pair quality, deduplication, and a second DPO round on fresh pairs from the new policy.
 When the reward is verifiable and online. Math, code, tool use: a checker scores answers without humans, so online rollouts generate unlimited training signal and GRPO&rsquo;s group-relative advantages shine, the DeepSeek-R1 recipe. PPO when you need the full RL machinery: multi-turn trajectories with credit assignment across steps, where DPO&rsquo;s single-step classification loss cannot reach. Match the algorithm to the reward: human pairs offline favor DPO, verifiable rewards online favor GRPO, sequential credit assignment favors PPO.</p><div class="followup"><strong>Follow-up:</strong> When would you switch to PPO or GRPO instead?</div></div></div>
 <div class="qa"><div class="q">Offline DPO trains on a fixed batch. What breaks as the policy moves, and what is the fix?</div><div class="a"><p>The pairs go stale. They were sampled from the old policy, so they constrain behavior near the old policy&rsquo;s outputs. As DPO moves the policy, the new policy&rsquo;s outputs leave the region the pairs describe, and the BT likelihood extrapolates. This is the iteration problem: the same staleness that forces RLHF to relabel. The fix is online or iterative DPO: sample fresh pairs from the current policy, label them, and run DPO again. Each round re-anchors the data to the policy. The cost is the labeling loop DPO skipped. There is no free offline lunch: either the data follows the policy, or the policy outruns the data.
 Not to anything principled in general. Each round optimizes a different objective, the pairs change, so there is no fixed point theorem. In practice two to six rounds help, the Llama 3 report ran six, and returns diminish as the policy&rsquo;s outputs saturate the labelers&rsquo; ability to distinguish them. Stop when fresh pairs stop moving held-out win rates.</p><div class="followup"><strong>Follow-up:</strong> Does iterative DPO converge?</div></div></div>
 <h2 id="what-is-used-where-the-production-alignment-stacks">What is used where: the production alignment stacks</h2>
+<div class="callout"><span class="co-label">Note</span><p>This chapter covers RLHF from the choice-theoretic side: the
+BT likelihood, the identification anchor, the Borda
+connection, the assumption checklist. The mechanical
+derivations live in the sibling courses and are not repeated
+here. <strong>CS224N L10</strong> derives the RLHF pipeline from the
+language-modeling side: instruction tuning, the PPO step, and
+post-training in production as of October 2026. <strong>CME295 L05</strong>
+works PPO-clip by hand, derives DPO in four steps, and maps
+the DPO family (IPO, KTO, and friends). <strong>CME295 L06</strong> derives
+GRPO against PPO with the memory arithmetic and the
+DeepSeek-R1 recipe. <strong>CS336 L15</strong> carries the full RL
+machinery: advantage estimation, KL control, and on-policy
+training at scale. Read those for the how. Read this chapter
+for the why: what the losses assume, and what breaks when the
+assumptions fail.</p></div>
 <p>Every frontier lab runs a variant of this chapter. The public
 record, current as of October 2026, says which.</p>
 <table>
@@ -544,9 +556,22 @@ current policy, which reintroduces the loop DPO skipped.</p>
    responses. Distorted by sampling and misspecification.
    Offline pairs go stale.</li>
 </ol>
+<h2 id="go-deeper">Go deeper</h2>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/XZLc09hkMwA" title="Direct Preference Optimization paper explained, AI Coffee Break" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<ul>
+<li>DPO paper explained (AI Coffee Break): https://www.youtube.com/watch?v=XZLc09hkMwA</li>
+<li>Christiano et al., Deep RL from Human Preferences (2017): https://arxiv.org/abs/1706.03741</li>
+<li>Ouyang et al., InstructGPT (2022): https://arxiv.org/abs/2203.02155</li>
+<li>Rafailov et al., DPO (2023): https://arxiv.org/abs/2305.18290</li>
+<li>Schulman et al., PPO (2017): https://arxiv.org/abs/1707.06347</li>
+<li>DeepSeek-R1 report, GRPO (2025): https://arxiv.org/abs/2501.12948</li>
+<li>Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf</li>
+</ul>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
-- Course textbook, chapters 7.x: the RLHF loop, reward
+- Course textbook, chapters 1.2/2.9/5.3: the RLHF loop, reward
   hacking, DPO as implicit Bradley-Terry, the assumption
   checklist, the DPO-Borda connection.</p>
 <p><strong>Further reading:</strong>

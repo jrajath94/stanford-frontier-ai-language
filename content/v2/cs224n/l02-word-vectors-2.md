@@ -274,11 +274,11 @@ vector per word.
 - **FastText (Meta).** The open-source library ships pretrained vectors
   for 157 languages and a text classifier used in production content
   moderation and language identification. Public: paper, code, models.
-- **GloVe.** spaCy's default English vectors for years; still the
+- **GloVe.** spaCy's default English vectors for years. Still the
   standard baseline in information retrieval research. Public.
 - **Word2vec (gensim).** The reference implementation most practitioners
   reach for. Powers semantic search prototypes and recommender candidate
-  generation across industry. Specific company deployments vary; verify
+  generation across industry. Specific company deployments vary. Verify
   per case.
 - **Modern LLMs.** None of GPT, Llama, Gemini, or Mistral use static word
   vectors. Subword embeddings are learned during pretraining. The static

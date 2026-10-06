@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 6: Reasoning Models and GRPO — Stanford Frontier AI</title>
+<meta name="description" content="Why one-shot answers fail on multi-step problems: the think-then-answer pattern, pass@k worked by hand, verifiable rewards as free labels, GRPO&#x27;s group z-score ">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-l06" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive, Search, RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Attention, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech Brain-Computer Interfaces</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../cme295/l01-transformers-overview.html" data-page="cme295-l01">L01 · Transformers overview</a></li>
+<li><a href="../cme295/l02-attention-position-bert.html" data-page="cme295-l02">L02 · Attention and BERT</a></li>
+<li><a href="../cme295/l03-llms-decoding-inference.html" data-page="cme295-l03">L03 · LLMs and decoding</a></li>
+<li><a href="../cme295/l04-pretraining-scaling-finetuning.html" data-page="cme295-l04">L04 · Training at scale</a></li>
+<li><a href="../cme295/l05-preference-tuning.html" data-page="cme295-l05">L05 · Preference tuning</a></li>
+<li><a href="../cme295/l06-reasoning-models-grpo.html" data-page="cme295-l06" class="active">L06 · Reasoning models</a></li>
+<li><a href="../cme295/l07-rag-tool-calling-agents.html" data-page="cme295-l07">L07 · RAG and agents</a></li>
+<li><a href="../cme295/l08-evaluation.html" data-page="cme295-l08">L08 · Evaluation</a></li>
+<li><a href="../cme295/l09-course-recap-frontiers.html" data-page="cme295-l09">L09 · Recap and frontiers</a></li>
+<li><a href="../cme295/cheatsheet.html" data-page="cme295-cheatsheet">CME295 · Cheatsheet</a></li>
+<li><a href="../cme295/crash-course.html" data-page="cme295-crash">CME295 · Crash course</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../cs329h/l01-preference-foundations.html" data-page="cs329h-l01">L01 · Preference Foundations</a></li>
+<li><a href="../cs329h/l02-choice-models.html" data-page="cs329h-l02">L02 · Choice Models</a></li>
+<li><a href="../cs329h/l03-iia-identification.html" data-page="cs329h-l03">L03 · IIA and Identification</a></li>
+<li><a href="../cs329h/l04-learning-rewards.html" data-page="cs329h-l04">L04 · Learning Rewards</a></li>
+<li><a href="../cs329h/l05-metric-elicitation.html" data-page="cs329h-l05">L05 · Metric Elicitation</a></li>
+<li><a href="../cs329h/l06-bandits-exploration.html" data-page="cs329h-l06">L06 · Bandits and Exploration</a></li>
+<li><a href="../cs329h/l07-rlhf.html" data-page="cs329h-l07">L07 · RLHF</a></li>
+<li><a href="../cs329h/l08-social-choice.html" data-page="cs329h-l08">L08 · Social Choice</a></li>
+<li><a href="../cs329h/l09-mechanism-design.html" data-page="cs329h-l09">L09 · Mechanism Design</a></li>
+<li><a href="../cs329h/l10-alignment-practice.html" data-page="cs329h-l10">L10 · Alignment in Practice</a></li>
+<li><a href="../cs329h/cheatsheet.html" data-page="cs329h-cheatsheet">CS329H · Cheatsheet</a></li>
+<li><a href="../cs329h/crash-course.html" data-page="cs329h-crash">CS329H · Crash course</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+<li><a href="../cs329z/l01-intro-agentic-systems.html" data-page="cs329z-l01">L01 · Intro to Agentic Systems</a></li>
+<li><a href="../cs329z/l02-compound-ai-systems.html" data-page="cs329z-l02">L02 · Compound AI Systems</a></li>
+<li><a href="../cs329z/l03-llms-for-builders.html" data-page="cs329z-l03">L03 · LLMs for Builders</a></li>
+<li><a href="../cs329z/l04-reasoning-and-context.html" data-page="cs329z-l04">L04 · Reasoning and Context</a></li>
+<li><a href="../cs329z/l05-rag-pipeline.html" data-page="cs329z-l05">L05 · RAG Pipeline</a></li>
+<li><a href="../cs329z/l06-retrieval-methods.html" data-page="cs329z-l06">L06 · Retrieval Methods</a></li>
+<li><a href="../cs329z/l07-agentic-retrieval-failure-modes.html" data-page="cs329z-l07">L07 · Agentic Retrieval</a></li>
+<li><a href="../cs329z/l08-evaluating-agents.html" data-page="cs329z-l08">L08 · Evaluating Agents</a></li>
+<li><a href="../cs329z/cheatsheet.html" data-page="cs329z-cheatsheet">CS329Z · Cheatsheet</a></li>
+<li><a href="../cs329z/crash-course.html" data-page="cs329z-crash">CS329Z · Crash course</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
+<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
+<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
+<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
+<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
+<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
+<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
+<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
+<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
+<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+<li><a href="../mse435/l01-electrons-to-tokens.html" data-page="mse435-l01">L01 · From Electrons to Tokens</a></li>
+<li><a href="../mse435/l02-sixty-million-megawatt.html" data-page="mse435-l02">L02 · The $60M Megawatt</a></li>
+<li><a href="../mse435/l03-how-models-get-smarter.html" data-page="mse435-l03">L03 · How Models Get Smarter</a></li>
+<li><a href="../mse435/l04-evals-rlvr-enterprise.html" data-page="mse435-l04">L04 · Evals and Enterprise AI</a></li>
+<li><a href="../mse435/l05-software-is-dead.html" data-page="mse435-l05">L05 · The SaaS Reckoning</a></li>
+<li><a href="../mse435/l06-where-value-accrues.html" data-page="mse435-l06">L06 · Where Value Accrues</a></li>
+<li><a href="../mse435/cheatsheet.html" data-page="mse435-cheatsheet">MS&amp;E 435 · Cheatsheet</a></li>
+<li><a href="../mse435/crash-course.html" data-page="mse435-crash">MS&amp;E 435 · Crash course</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">MATH-ML · Overview</a></li>
+<li><a href="../math-ml/l01-vectors-as-data.html" data-page="math-ml-l01">L01 · Vectors as Data</a></li>
+<li><a href="../math-ml/l02-matrices-as-machines.html" data-page="math-ml-l02">L02 · Matrices as Machines</a></li>
+<li><a href="../math-ml/l03-eigendecomposition-pca.html" data-page="math-ml-l03">L03 · Eigen-decomposition</a></li>
+<li><a href="../math-ml/l04-svd-low-rank.html" data-page="math-ml-l04">L04 · SVD and Low Rank</a></li>
+<li><a href="../math-ml/l05-probability-bayes.html" data-page="math-ml-l05">L05 · Probability and Bayes</a></li>
+<li><a href="../math-ml/l06-distributions-covariance.html" data-page="math-ml-l06">L06 · Distributions and Covariance</a></li>
+<li><a href="../math-ml/l07-calculus-gradients-chainrule.html" data-page="math-ml-l07">L07 · Calculus for ML</a></li>
+<li><a href="../math-ml/l08-convexity-gradient-descent.html" data-page="math-ml-l08">L08 · Convexity and Gradient Descent</a></li>
+<li><a href="../math-ml/l09-least-squares-regression.html" data-page="math-ml-l09">L09 · Least Squares</a></li>
+<li><a href="../math-ml/l10-information-theory.html" data-page="math-ml-l10">L10 · Information Theory</a></li>
+<li><a href="../math-ml/cheatsheet.html" data-page="math-ml-cheatsheet">MATH-ML · Cheatsheet</a></li>
+<li><a href="../math-ml/crash-course.html" data-page="math-ml-crash-course">MATH-ML · Crash Course</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+<li><a href="../math-genai/l01-the-job.html" data-page="math-genai-l01">L01 · The Job</a></li>
+<li><a href="../math-genai/l02-kl-and-mle.html" data-page="math-genai-l02">L02 · KL Divergence and MLE</a></li>
+<li><a href="../math-genai/l03-f-divergences.html" data-page="math-genai-l03">L03 · f-Divergences</a></li>
+<li><a href="../math-genai/l04-gans.html" data-page="math-genai-l04">L04 · GANs</a></li>
+<li><a href="../math-genai/l05-wgan-evaluation.html" data-page="math-genai-l05">L05 · WGAN and Evaluation</a></li>
+<li><a href="../math-genai/l06-latent-variables-elbo.html" data-page="math-genai-l06">L06 · ELBO</a></li>
+<li><a href="../math-genai/l07-vae.html" data-page="math-genai-l07">L07 · VAE</a></li>
+<li><a href="../math-genai/l08-ddpm-forward.html" data-page="math-genai-l08">L08 · DDPM Forward</a></li>
+<li><a href="../math-genai/l09-ddpm-loss.html" data-page="math-genai-l09">L09 · DDPM Loss</a></li>
+<li><a href="../math-genai/l10-score-ddim-ar.html" data-page="math-genai-l10">L10 · Score, DDIM, AR</a></li>
+<li><a href="../math-genai/cheatsheet.html" data-page="math-genai-cheatsheet">Cheatsheet</a></li>
+<li><a href="../math-genai/crash-course.html" data-page="math-genai-crash-course">Crash course</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Math · Generative Models · Overview</a></li>
+<li><a href="../math-genmodels/l01-the-one-question.html" data-page="math-genmodels-l01">L01 · The One Question</a></li>
+<li><a href="../math-genmodels/l02-autoregressive-models.html" data-page="math-genmodels-l02">L02 · Autoregressive Models</a></li>
+<li><a href="../math-genmodels/l03-variational-autoencoders.html" data-page="math-genmodels-l03">L03 · Variational Autoencoders</a></li>
+<li><a href="../math-genmodels/l04-normalizing-flows.html" data-page="math-genmodels-l04">L04 · Normalizing Flows</a></li>
+<li><a href="../math-genmodels/l05-diffusion-ddpm.html" data-page="math-genmodels-l05">L05 · Diffusion I: DDPM</a></li>
+<li><a href="../math-genmodels/l06-score-matching-ddim.html" data-page="math-genmodels-l06">L06 · Score Matching &amp; Fast Diffusion</a></li>
+<li><a href="../math-genmodels/l07-energy-based-models.html" data-page="math-genmodels-l07">L07 · Energy-Based Models</a></li>
+<li><a href="../math-genmodels/l08-judging-a-creator.html" data-page="math-genmodels-l08">L08 · Judging a Creator</a></li>
+<li><a href="../math-genmodels/cheatsheet.html" data-page="math-genmodels-cheatsheet">Math · Generative Models · Cheatsheet</a></li>
+<li><a href="../math-genmodels/crash-course.html" data-page="math-genmodels-crash">Math · Generative Models · Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / Lecture 6: Reasoning Models and GRPO</nav>
+      <h1>Lecture 6: Reasoning Models and GRPO</h1>
+      <p class="meta-line">2025-11-07 · Instructor: Afshine Amidi, Shervine Amidi · 1:46:59 · Autumn 2025</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="k5Fh-UgTuCo"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/k5Fh-UgTuCo" title="CME295 Lecture 6, Autumn 2025" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=k5Fh-UgTuCo" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. Reasoning models, GRPO, length bias, and the R1 training pipeline.</p></div><h2 id="the-problem-one-shot-answers-fail-on-multi-step-problems">The problem: one-shot answers fail on multi-step problems</h2>
+<p>Ask a vanilla LLM a hard math problem and demand the answer in one
+shot. It writes the answer directly. On single-step questions this
+works. On multi-step problems it fails: each step is a chance to err,
+and one wrong step poisons the answer. There is no room to work.</p>
+<p>Reasoning here means the ability to solve a problem through multiple
+steps, not the ability to sound thoughtful. Four weaknesses frame the
+rest of the course: limited reasoning, static knowledge (everything
+bound to the cutoff date,
+<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=644s">10:44</a>), no
+action (all talk, no tools. Lecture 7 fixes this), and hard
+evaluation (Lecture 8 fixes this). This lecture attacks the first.</p>
+<figure><img alt="Weaknesses" src="assets/l06-weaknesses.svg"><figcaption>Four weaknesses. This lecture fixes the first. Stanford Frontier AI.</figcaption></figure>
+<h2 id="think-then-answer">Think, then answer</h2>
+<p>A <strong>reasoning model</strong> splits generation in two: first a reasoning
+chain (<strong>think tokens</strong>), then the final answer. The chain is usually
+hidden from the user. Interfaces show a thought summary instead
+(<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=1553s">25:53</a>). The
+lecture gives three hypothesized reasons: raw chains confuse users,
+they run long, and they can train competitors.</p>
+<p>The core intuition is economic. Hard problems decompose into
+tractable subproblems the model has seen in training, so more tokens
+means more compute spent well. And reasoning tokens are billed as
+output tokens, so long chains cost real money. The toy: a 50-token
+answer costs X. A 50-token answer with 500 thinking tokens costs 11X
+for the same user-visible words.</p>
+<p>The timeline: o1 preview in September 2024
+(<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=1365s">22:45</a>), Gemini
+2.0 Flash Thinking in December 2024, DeepSeek R1 in January 2025
+(<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=1398s">23:18</a>), then
+xAI, Anthropic, and Mistral entries. R1 mattered because it matched
+frontier performance with a published method.</p>
+<figure><img alt="Reasoning model" src="assets/l06-reasoning-model.svg"><figcaption>Prompt to hidden chain to answer. You pay for the chain. Stanford Frontier AI.</figcaption></figure>
+<h2 id="the-problem-one-sample-understates-the-model">The problem: one sample understates the model</h2>
+<p>A reasoning model may solve a problem on its third try after failing
+twice. Accuracy on one sample understates it. <strong>pass@k</strong> asks: if you
+draw k attempts, what is the probability at least one succeeds?</p>
+<p>Estimate it from n samples with c successes
+(<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=1937s">32:17</a>):</p>
+<p><strong>pass@k = 1 - C(n-c, k) / C(n, k)</strong></p>
+<p>Work it by hand. n = 10 samples, c = 3 successes, k = 2 attempts:</p>
+<pre class="ascii">failures: n - c = 7
+P(both attempts miss) = C(7, 2) / C(10, 2) = 21 / 45 = 0.467
+pass@2 = 1 - 0.467 = 0.533
+</pre>
+<p>The trick is the complement: C(n-c, k)/C(n, k) is the chance that all
+k draws come from the n-c failures, sampling without replacement
+(<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=2458s">40:58</a>). One
+minus that is the chance at least one succeeds. pass@1 reduces to
+c/n = 0.3, the plain success rate. Two attempts lift 0.3 to 0.533:
+the k-try behavior is the operational quantity, and it is much
+higher than the single-try number.</p>
+<p>Temperature interacts directly. T = 0 gives no diversity: every draw
+is the same, so pass@k is flat at pass@1. T = 1.2 gives too much
+diversity: draws wander off. The sweet spot sits around T = 0.2-0.8.
+The lecture&rsquo;s example peaks at 0.8
+(<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=2822s">47:02</a>).
+Papers must report temperature or their pass@k numbers do not
+compare. <strong>consensus@k</strong> (majority vote over k samples, i.e.
+self-consistency) is the companion metric.</p>
+<figure><img alt="pass@k" src="assets/l06-passk.svg"><figcaption>One minus the all-miss probability. Temperature tunes the diversity. Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">Why sample without replacement in the pass@k estimate?</div><div class="a"><p>Because the k attempts are k distinct draws from your n
+samples. Drawing the same sample twice would double-count one
+outcome. The hypergeometric form C(n-c,k)/C(n,k) counts distinct
+k-subsets, which matches how you would actually take k attempts.
+pass@1 measures the typical single try. Reasoning models are
+often deployed with sampling plus selection (best-of-N, majority
+vote), so the k-try behavior is the operational quantity. A model
+with pass@1 of 0.3 and pass@32 of 0.9 is very usable with the
+right harness.</p><div class="followup"><strong>Follow-up:</strong> Why not just report pass@1?</div></div></div>
+<h2 id="verifiable-rewards-the-checker-is-free">Verifiable rewards: the checker is free</h2>
+<p>Reasoning benchmarks share one property: the answer is verifiable
+without a human. Code runs tests. Math parses a final answer.</p>
+<ul>
+<li><strong>HumanEval</strong>
+  (<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=1748s">29:08</a>):
+  ~100+ hand-written programming problems with tests.</li>
+<li><strong>Codeforces / SWE-bench</strong>
+  (<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=1771s">29:31</a>):
+  competition problems and real GitHub issues.</li>
+<li><strong>AIME</strong>: US math olympiad qualifier. Integer answers that parse
+  cleanly.</li>
+<li><strong>GSM-8K</strong>: grade-school word problems. Exact-match grading.</li>
+</ul>
+<p>Verifiable answers unlock <strong>verifiable rewards</strong>: the checker is
+free, so RL can run without humans in the loop. That is the economic
+fact behind this entire lecture. SFT could teach reasoning chains,
+but the chains would have to be hand-written: expensive, and human
+reasoning patterns are not necessarily what helps a model. RL with
+verifiable rewards sidesteps both problems: reward correct answers
+and let the model discover its own chains.</p>
+<figure><img alt="Benchmarks" src="assets/l06-benchmarks.svg"><figcaption>Code runs tests. Math parses answers. The checker is free. Stanford Frontier AI.</figcaption></figure>
+<h2 id="the-key-question">The key question</h2>
+<p>The reward is one sparse number at the end of a long answer. How do
+you turn that single signal into per-token learning without training a
+critic model?</p>
+<h2 id="grpo-the-group-is-the-baseline">GRPO: the group is the baseline</h2>
+<p><strong>GRPO</strong> (Group Relative Policy Optimization, 2024,
+<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=3529s">58:49</a>) is the
+go-to algorithm. For one prompt, sample a group of g completions and
+score each. The advantage of completion i is its z-score inside the
+group:</p>
+<p><strong>A_i = (r_i - mean(r)) / std(r)</strong></p>
+<p>Work it on a toy. One prompt, g = 4 completions, rewards
+[0, 0, 1, 0] (three wrong, one right):</p>
+<pre class="ascii">mean = 0.25,  std = 0.433
+A_correct = (1 - 0.25) / 0.433 = +1.73
+A_wrong   = (0 - 0.25) / 0.433 = -0.58
+</pre>
+<p>The correct completion gets a large positive advantage. Each wrong
+one gets a mild negative one. No value function: the group itself
+is the baseline. Hard problems upweight automatically, because a
+correct answer among failures gets a large positive z-score.</p>
+<figure><img alt="GRPO" src="assets/l06-grpo.svg"><figcaption>Group of completions, z-scored rewards, no value function. Stanford Frontier AI.</figcaption></figure>
+<p>Against PPO (Lecture 5), the comparison is clean. Both optimize a
+ratio of new-policy to old-policy probabilities, and both clip
+updates to stay small. They differ twice. First, GRPO puts the KL
+penalty explicitly in the objective. PPO typically folds KL into the
+per-token rewards inside the advantage. Second, PPO trains a value
+model to center advantages via GAE. GRPO centers with the group mean
+and trains the policy only. In reasoning setups both skip the reward
+model entirely: verifiable rewards replace it.</p>
+<figure><img alt="PPO vs GRPO" src="assets/l06-ppo-grpo.svg"><figcaption>Same ratio, same clipping. Different centering, different KL placement. Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">What does GRPO gain by dropping the value function?</div><div class="a"><p>Memory and simplicity. The value model in PPO is a full second
+network to train, tune, and fit in memory. The group baseline is
+free: you already sampled the completions. For verifiable rewards
+the trade is excellent, which is why reasoning training converged
+on GRPO.
+Per-token credit assignment. PPO&rsquo;s value function estimates
+expected reward at each token, so advantages are token-fine.
+GRPO&rsquo;s group z-score is per-completion: every token in a good
+completion gets the same advantage. Coarser signal, cheaper
+machinery.</p><div class="followup"><strong>Follow-up:</strong> What does it lose?</div></div></div>
+<h2 id="the-length-bias-bug">The length-bias bug</h2>
+<p>GRPO&rsquo;s objective normalizes each completion&rsquo;s contribution by its
+length: a 1/|o_i| factor. Watch what it incentivizes. Two bad
+completions, both with negative advantage -1:</p>
+<pre class="ascii">short failure: 50 tokens.  contribution = -1 / 50  = -0.020
+long failure:  500 tokens. contribution = -1 / 500 = -0.002
+</pre>
+<p>The short bad output is downweighted 10x harder than the long bad
+output. The model learns: when in doubt, ramble. Empirically, output
+length keeps climbing after performance plateaus.</p>
+<p>Two 2025 fixes remove the incentive. <strong>DAPO</strong> (March,
+<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=5114s">85:14</a>)
+equalizes token-level contributions with a length-independent
+normalization. <strong>Dr. GRPO</strong> (&ldquo;GRPO done right&rdquo;,
+<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=5136s">85:36</a>) drops
+the factor entirely. Result: correct answers keep their length,
+wrong answers get much shorter. A related fix is <strong>clip-higher</strong>:
+asymmetric epsilon bounds, because low-probability tokens need room
+to grow while high-probability tokens must not collapse to zero.</p>
+<figure><img alt="Length bias" src="assets/l06-length-bias.svg"><figcaption>The 1/|o| term rewards long failures. DAPO and Dr. GRPO remove it. Stanford Frontier AI.</figcaption></figure>
+<h2 id="the-deepseek-r1-recipe">The DeepSeek R1 recipe</h2>
+<p><strong>R1-Zero</strong> was the proof of concept: take a pretrained base (V3:
+MoE, MLA, pre-norm), skip SFT entirely, and run GRPO with two
+rewards, answer accuracy plus format compliance
+(<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=5484s">91:24</a>). AIME
+accuracy climbs with RL steps. The chains work but mix languages and
+have syntax issues: with no supervision anchor, the model optimizes
+freely.</p>
+<p><strong>R1</strong>, the full pipeline, fixes the rough edges in stages:</p>
+<ol>
+<li><strong>Cold-start SFT</strong>
+   (<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=5804s">96:44</a>). A
+   small set of human-rewritten chains teaches formatting and
+   language consistency. Orders of magnitude smaller than other
+   stages [uncertain: no number given in the lecture].</li>
+<li><strong>RL.</strong> Accuracy plus format plus a language-consistency reward
+   (ratio of target-language tokens,
+   <a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=5908s">98:28</a>).</li>
+<li><strong>Large SFT.</strong> Mix reasoning and non-reasoning data. Reasoning
+   pairs come from <strong>rejection sampling</strong>: generate, judge, keep the
+   best
+   (<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=6012s">100:12</a>).
+   Non-reasoning pairs (~200k, recycled from V3,
+   <a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=5982s">99:42</a>)
+   keep the model generally useful, at a 3:1 reasoning-to-other ratio
+   (<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=6002s">100:02</a>).</li>
+<li><strong>Final RL.</strong> Reasoning rewards plus helpfulness and
+   harmlessness. Harmlessness applies to all tokens including the
+   think section. Helpfulness is judged at the user-visible level.</li>
+</ol>
+<p>Results: reasoning benchmarks split into two clusters, and R1 lands
+with the closed-source reasoning models.</p>
+<p>Then <strong>distillation</strong>
+(<a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=6233s">103:53</a>): use
+R1 to generate answers with thinking tokens, offline, and SFT a
+small model on the full sequences. Not the teacher&rsquo;s distribution,
+the teacher&rsquo;s tokens. At small sizes this beats RL from scratch,
+and the distilled models compete with o1-mini.</p>
+<figure><img alt="R1 pipeline" src="assets/l06-r1-pipeline.svg"><figcaption>R1-Zero proves RL works. R1 adds cold-start SFT, staged RL, rejection sampling, distillation. Stanford Frontier AI.</figcaption></figure>
+<h2 id="the-problem-the-thinking-budget">The problem: the thinking budget</h2>
+<p>Reasoning tokens cost money and context, so length needs control:</p>
+<ul>
+<li><strong>Dynamic budget.</strong> A classifier routes easy questions to short
+  thinking and hard ones to long thinking.</li>
+<li><strong>Budget forcing</strong> (s1 paper,
+  <a href="https://www.youtube.com/watch?v=k5Fh-UgTuCo&amp;t=3360s">56:00</a>). At
+  inference, inject &ldquo;wait&rdquo; tokens to extend thinking or cut it off
+  and demand the answer. Steering without retraining.</li>
+<li><strong>Continuous thoughts.</strong> Reason in hidden states rather than
+  tokens. Research-stage, but it would remove the token tax
+  entirely.</li>
+</ul>
+<figure><img alt="Thinking control" src="assets/l06-thinking-control.svg"><figcaption>Dynamic budgets, budget forcing, continuous thoughts. Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">Why not always think longer?</div><div class="a"><p>Because the bill is per token and the context window is finite.
+Length helps until the answer is right. Beyond that it is pure
+cost. The provider incentive (charge per reasoning token) and the
+user incentive (pay less, wait less) both point at the shortest
+chain that still solves the problem.
+Surprisingly well for a hack. Appending &ldquo;wait&rdquo; keeps the model
+in thinking mode and often improves the answer. Cutting off forces
+a guess from partial reasoning. It is inference-time steering, so
+it composes with any trained reasoning model.</p><div class="followup"><strong>Follow-up:</strong> Does budget forcing actually work?</div></div></div>
+<h2 id="mapping-back-each-piece-answers-a-reasoning-problem">Mapping back: each piece answers a reasoning problem</h2>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Answer</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>One-shot answers fail multi-step problems</td>
+<td>Think-then-answer</td>
+<td>Hidden chain first, answer second. Compute scales with tokens</td>
+</tr>
+<tr>
+<td>One sample understates the model</td>
+<td>pass@k</td>
+<td>1 - C(n-c,k)/C(n,k): the k-try probability, by hand</td>
+</tr>
+<tr>
+<td>Hand-written chains are expensive and human-shaped</td>
+<td>Verifiable rewards</td>
+<td>Code tests and math answers: the checker is free</td>
+</tr>
+<tr>
+<td>PPO&rsquo;s value function is heavy</td>
+<td>GRPO</td>
+<td>Z-score inside the group: +1.73 for the winner, -0.58 for the losers</td>
+</tr>
+<tr>
+<td>The normalizer rewards long failures</td>
+<td>DAPO / Dr. GRPO</td>
+<td>Equalize or drop the 1/|o_i| term: wrong answers get shorter</td>
+</tr>
+<tr>
+<td>Pure RL produces messy chains</td>
+<td>R1&rsquo;s stages</td>
+<td>Cold-start SFT, RL, big SFT with rejection sampling, final RL</td>
+</tr>
+<tr>
+<td>Small models cannot afford RL</td>
+<td>Distillation</td>
+<td>SFT the teacher&rsquo;s tokens, not its distribution</td>
+</tr>
+<tr>
+<td>Thinking costs money</td>
+<td>Budget control</td>
+<td>Dynamic budgets, &ldquo;wait&rdquo; forcing, continuous thoughts</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-honest-price">The honest price</h2>
+<p>Reasoning training pays in tokens: the bill is per thinking token,
+and the context window is finite. GRPO pays in coarse credit
+assignment: per-completion advantages instead of PPO&rsquo;s per-token
+ones. Verifiable rewards pay in coverage: they teach only what a
+checker can check, so taste, style, and open-ended judgment stay out.
+Distillation pays in a ceiling: the student cannot exceed the
+teacher&rsquo;s tokens. The lecture&rsquo;s bet is that checkable domains (math,
+code) are big enough to be worth it.</p>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>The story in eight steps. Each step answers the one before it.</p>
+<ol>
+<li><strong>One-shot fails multi-step.</strong> Each step is a chance to err.
+   Reasoning means solving through steps, not sounding thoughtful.</li>
+<li><strong>Think, then answer.</strong> Prompt to hidden chain to final answer.
+   Chains are hidden. Summaries are shown. Billed as output tokens.
+   o1 Sep 2024 to R1 Jan 2025 set the timeline.</li>
+<li><strong>pass@k measures k tries.</strong> 1 - C(n-c,k)/C(n,k). The toy:
+   n = 10, c = 3, k = 2 gives 0.533, up from pass@1 of 0.3.
+   Temperature tunes diversity: 0 is flat, 1.2 is wild, 0.2-0.8 is
+   the sweet spot. Report temperature or do not compare.</li>
+<li><strong>Checkable answers enable free rewards.</strong> HumanEval,
+   Codeforces, SWE-bench, AIME, GSM-8K. The checker replaces human
+   labels, so RL runs without humans in the loop.</li>
+<li><strong>GRPO z-scores inside the group.</strong> g = 4, rewards [0,0,1,0]:
+   +1.73 for the winner, -0.58 for each loser. No value function.
+   Hard problems upweight automatically.</li>
+<li><strong>Length bias rewards long failures.</strong> The 1/|o_i| term
+   downweights a 50-token failure 10x harder than a 500-token one.
+   DAPO equalizes token weights. Dr. GRPO drops the term.</li>
+<li><strong>R1: prove with Zero, ship with stages.</strong> R1-Zero: RL only,
+   works but messy. R1: cold-start SFT, RL with language reward, big
+   SFT with rejection sampling (3:1, 200k), final RL with
+   harmlessness on think tokens. Distill down for small models.</li>
+<li><strong>Control the budget.</strong> Dynamic budgets, budget forcing
+   (&ldquo;wait&rdquo;), continuous thoughts. The shortest chain that still
+   solves the problem.</li>
+</ol>
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 6 recording (YouTube): timestamped above.
+- Lecture 6 slides (PDF), CME295 Autumn 2025.
+- DeepSeek-AI, &ldquo;DeepSeek-R1&rdquo; (2025):
+  https://arxiv.org/abs/2501.12948 — the full pipeline.
+- Shao et al., &ldquo;DeepSeekMath&rdquo; (2024):
+  https://arxiv.org/abs/2402.03300 — GRPO.</p>
+<p><strong>Further reading:</strong>
+- OpenAI, &ldquo;Learning to Reason with LLMs&rdquo; (o1 system card, 2024).
+- Muennighoff et al., &ldquo;s1: Simple test-time scaling&rdquo; (2025): budget
+  forcing.
+- &ldquo;DAPO&rdquo; (2025).
+- &ldquo;Dr. GRPO: GRPO Done Right&rdquo; (2025): length-bias
+  fixes.
+- Wei et al., &ldquo;Chain-of-Thought Prompting&rdquo; (2022): the prompting
+  ancestor of reasoning models.</p>
+<p><strong>Caveats from these sources.</strong> The cold-start SFT size is ungiven
+in the lecture [uncertain]. &ldquo;Several orders of magnitude smaller&rdquo; is
+the speaker&rsquo;s phrasing. Budget-forcing and continuous-thoughts
+results are as presented live. Timeline months are as stated in the
+lecture.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>CS336 L16:</strong> RLVR: verifiable rewards and GRPO at frontier-lab
+  depth, the mathematical companion to this chapter.</li>
+<li><strong>CS336 L15:</strong> post-training: where reasoning RL sits in the full
+  stack.</li>
+<li><strong>CME295 L05:</strong> PPO, the algorithm GRPO replaces for reasoning.</li>
+<li><strong>CME295 L03:</strong> chain-of-thought prompting and self-consistency,
+  the inference-time ancestors.</li>
+<li><strong>CME295 L08:</strong> AIME, HumanEval, and benchmark reading.</li>
+</ul>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span>Lecture 6 slides (PDF), CME295 Autumn 2025</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2501.12948" target="_blank" rel="noopener">DeepSeek-AI, DeepSeek-R1: Incentivizing Reasoning Capability via RL (2025)</a></li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2402.03300" target="_blank" rel="noopener">Shao et al., DeepSeekMath: GRPO (2024)</a></li></ul></section>
+      <nav class="pager"><a href="../cme295/l05-preference-tuning.html"><span class="lbl">← Previous</span>Lecture 5: Preference Tuning, from RLHF to DPO</a><a href="../cme295/l07-rag-tool-calling-agents.html"><span class="lbl">Next →</span>Lecture 7: RAG, Tool Calling, and Agents</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

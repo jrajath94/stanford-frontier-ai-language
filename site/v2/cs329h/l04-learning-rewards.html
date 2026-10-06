@@ -218,8 +218,8 @@
     <article>
       <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / Lecture 4: Learning Rewards from Preference Data</nav>
       <h1>Lecture 4: Learning Rewards from Preference Data</h1>
-      <p class="meta-line">[uncertain] Spring 2026 · Instructor: Sanmi Koyejo · [uncertain] · Spring 2026</p>
-      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h2 id="the-problem-from-pairs-to-numbers">The problem: from pairs to numbers</h2>
+      <p class="meta-line">[uncertain] Autumn 2024 · Instructor: Sanmi Koyejo · [uncertain] · [uncertain]</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="7i6WsIzZaeo"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/7i6WsIzZaeo" title="Stanford CS329H: ML from Human Preferences | Autumn 2024 | Model-based Preference Optimization" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=7i6WsIzZaeo" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=7i6WsIzZaeo" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Course lecture (Stanford Online, Autumn 2024). Model-based preference optimization: fitting preference models from data. Verified live on YouTube.</p></div><h2 id="the-problem-from-pairs-to-numbers">The problem: from pairs to numbers</h2>
 <p>Lectures 1 through 3 defined the models. Now fit them. The input
 is preference data: pairs (j, k) with labels y = 1 when j won.
 The output is a utility vector V that predicts new comparisons.
@@ -321,6 +321,24 @@ It is also the forgetting rate: high K discards old evidence
 fast, which is how Elo tracks drifting strength. The textbook&rsquo;s
 stationarity warning applies: if abilities drift, batch MLE on
 old data is stale and online methods with forgetting win.</p>
+<h3 id="subchapter-elo-is-stochastic-gradient-descent">Subchapter: Elo is stochastic gradient descent</h3>
+<p>The Elo update is not just like SGD on the BT log-loss. It is
+SGD on the BT log-loss. Take the pair log-likelihood for A
+beating B: L = log sigma(V_A - V_B). Its gradient with respect
+to V_A is 1 - sigma(gap). One SGD step with learning rate eta:</p>
+<p>V_A &lt;- V_A + eta * (1 - sigma(gap))</p>
+<p>Elo says: V_A &lt;- V_A + K * (score - expected). Same shape. The
+surprise (score - expected) is the gradient. K is the learning
+rate. Elo is batch MLE&rsquo;s online twin, one pair at a time.</p>
+<figure><img alt="Elo equals one SGD step" src="assets/plate-elo-sgd.webp"><figcaption>The surprise is the gradient. K is the learning rate. Elo is online Bradley-Terry. Shell 3. Source: original figure for the Elo-SGD equivalence. Project: Stanford Frontier AI.</figcaption></figure>
+<p>One scale subtlety. Chess Elo writes the expected score with
+base 10 and divisor 400: E = 1/(1 + 10^{-d/400}). Bradley-Terry
+uses base e: sigma(d&rsquo;) = 1/(1 + e^{-d&rsquo;}). They match when d&rsquo; =
+d / 173.7. Elo rating points are BT utility units times 173.7.
+The 16-point swing in the worked example is a BT gap change of
+16/173.7 = 0.092. Small in utility units, standard in Elo
+units. Quote the scale with the number or the number means
+nothing.</p>
 <h2 id="noise-random-versus-systematic">Noise: random versus systematic</h2>
 <p>The textbook&rsquo;s LLM simulation adds 10% uniform label noise: one
 in ten annotations is random. Uniform noise is the kind case. It
@@ -352,6 +370,12 @@ failure mode is familiar: memorizing annotator quirks instead of
 learning quality.</p>
 <div class="qa"><div class="q">How do you detect reward-model overfitting in practice?</div><div class="a"><p>Hold out pairs and watch pairwise accuracy. When train accuracy keeps climbing and held-out accuracy stalls or falls, stop. Also watch the utility scale: exploding score gaps on training pairs with flat held-out accuracy signal memorization. A second check is downstream: does optimizing against the reward still improve human-judged quality, or has Goodhart set in?
 The reward model is optimized against, not just evaluated. A classifier&rsquo;s overfit regions sit unused. A policy optimizer actively seeks the reward model&rsquo;s overfit regions because they look like high reward. Small errors in the reward become large errors in the policy. This is why RLHF needs the KL constraint from Lecture 1.</p><div class="followup"><strong>Follow-up:</strong> Why is overfitting worse for reward models than for classifiers?</div></div></div>
+<div class="qa"><div class="q">Walk me through one MLE gradient step on three pairs, by hand.</div><div class="a"><p>Items A, B, C start at V = (0, 0, 0). Three observed pairs: A beats B, A beats C, B beats C. The log-likelihood is log sigma(V_A - V_B) + log sigma(V_A - V_C) + log sigma(V_B - V_C). At zero, each sigma is 0.5. The gradient for V_A: (1 - 0.5) + (1 - 0.5) = 1.0, one unit of surprise from each win. For V_B: -(1 - 0.5) + (1 - 0.5) = 0.0, the loss to A cancels the win over C. For V_C: -(1 - 0.5) - (1 - 0.5) = -1.0. With learning rate 0.1: V = (0.1, 0.0, -0.1). A rises, C falls, B holds. Repeat. The update is always surprise-weighted: pairs the model already predicts move nothing, upsets move a lot.
+B&rsquo;s record is one win and one loss against opponents the model rates equal. The evidence balances exactly. This is the likelihood doing the right thing: B is perfectly average given the data so far. As A pulls ahead, B&rsquo;s loss to A will carry more surprise than its win over C, and B will drift down.</p><div class="followup"><strong>Follow-up:</strong> Why did B&#x27;s gradient come out zero?</div></div></div>
+<div class="qa"><div class="q">Your reward model scores 92% on train pairs and 61% on held-out pairs. Diagnose and fix.</div><div class="a"><p>The 31-point gap is overfitting: the model memorized training quirks instead of learning quality. Check the utility scale first. If score gaps on training pairs are huge while held-out gaps are flat, the model is confident about memorized pairs and clueless elsewhere. Fixes in order: add L2 regularization, which is a Gaussian prior on the weights. stop early at the bottom of the U-turn on held-out accuracy. cut model capacity. and check for leakage, pairs or annotators shared between train and held-out. The deeper fix: 61% held-out accuracy means the reward is barely better than chance, so do not optimize against it yet. A policy optimizer will hunt the 39% of errors and turn them into behavior.
+When the Bayes error is high: inherently noisy labels cap what any model can reach. Measure annotator agreement on a doubly-labeled subset. If humans agree only 65% of the time, 61% is near the ceiling and the problem is the data, not the model. Fix the elicitation, not the fit.</p><div class="followup"><strong>Follow-up:</strong> When is 61% held-out accuracy acceptable?</div></div></div>
+<div class="qa"><div class="q">Why is L2 regularization the same thing as a Gaussian prior?</div><div class="a"><p>Write the posterior: p(V|data) proportional to p(data|V) x p(V). Take logs. The log-likelihood is the BT sum. The Gaussian prior log p(V) = -V^2/(2 s^2) plus a constant. Maximizing the log-posterior is maximizing log-likelihood minus V^2/(2 s^2). That is exactly MLE with L2 penalty lambda = 1/(2 s^2). The textbook&rsquo;s lambda = 0.05 is a prior standard deviation of about 3.2. Two names, one computation: penalized fitting is Bayesian fitting at the mode.
+It is how large a utility gap you believe before seeing data. s = 3 says gaps beyond about 6 are implausible: sigma(6) = 0.9975, near-certain wins. The prior pulls the undefeated item&rsquo;s gap back from infinity to something like 4 or 5: large, finite, honest. Pick s from domain knowledge: in chess, a 600-point Elo gap is 0.97 win probability, so s around 2 in BT units matches the real world.</p><div class="followup"><strong>Follow-up:</strong> What does the prior standard deviation mean in plain words?</div></div></div>
 <h2 id="model-selection-and-optimization">Model selection and optimization</h2>
 <p>BT versus mixture versus factor model is a model selection
 problem. Cross-validated pairwise accuracy is the workhorse
@@ -393,12 +417,12 @@ of pairs, gradient clipping, early stopping on held-out pairs.</p>
 <tr>
 <td>Systematic annotator bias</td>
 <td>Bias terms</td>
-<td>Model verbosity and position; do not clean blindly</td>
+<td>Model verbosity and position. do not clean blindly</td>
 </tr>
 <tr>
 <td>Overfit reward gets optimized against</td>
 <td>Held-out pairs</td>
-<td>Watch the U-turn; the optimizer seeks your errors</td>
+<td>Watch the U-turn. the optimizer seeks your errors</td>
 </tr>
 </tbody>
 </table>
@@ -449,22 +473,22 @@ exactly the errors this lecture&rsquo;s fitting leaves behind.</p>
 <p><strong>Caveats from these sources.</strong> The 80/20 split, the lambda =
 0.05 fit, and the 300-epoch toy run are the textbook&rsquo;s
 illustration values. The 24-point upset update is worked here
-from the standard Elo formula; the Elo scale factor 400 is the
+from the standard Elo formula. the Elo scale factor 400 is the
 chess convention. The &ldquo;10% becomes 40%&rdquo; compounding figure
 belongs to Lecture 10&rsquo;s pipeline.</p>
 <h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
 <ul>
 <li><strong>CS329H L02:</strong> BT as logistic regression on pair
-  differences; the likelihood maximized here.</li>
-<li><strong>CS329H L03:</strong> the anchor requirement; the flat direction.</li>
+  differences. the likelihood maximized here.</li>
+<li><strong>CS329H L03:</strong> the anchor requirement. the flat direction.</li>
 <li><strong>CS329H L05:</strong> the posterior variance from Bayes drives
   active query selection.</li>
-<li><strong>CS329H L06:</strong> the posterior drives Thompson sampling; Elo
+<li><strong>CS329H L06:</strong> the posterior drives Thompson sampling. Elo
   is the online idea at scale.</li>
 <li><strong>CS329H L07:</strong> the reward model fit here is the object PPO
   optimizes and DPO skips.</li>
 </ul>
-      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">NOTES</span>Course textbook, chapter 2 (Truong, Haupt, Koyejo, 2025)</li><li><span class="src-tag">SUPPLEMENT</span><a href="https://huggingface.co/datasets/stanfordnlp/SHP" target="_blank" rel="noopener">Stanford Human Preferences (SHP) dataset</a></li><li><span class="src-tag">SUPPLEMENT</span><a href="https://huggingface.co/datasets/Anthropic/hh-rlhf" target="_blank" rel="noopener">Anthropic HH-RLHF dataset</a></li></ul></section>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=7i6WsIzZaeo" target="_blank" rel="noopener">CS329H Autumn 2024: Model-based Preference Optimization (Stanford Online)</a></li><li><span class="src-tag">NOTES</span><a href="https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf" target="_blank" rel="noopener">Course textbook, chapter 2 (Truong, Haupt, Koyejo, 2025)</a></li><li><span class="src-tag">SUPPLEMENT</span><a href="https://huggingface.co/datasets/stanfordnlp/SHP" target="_blank" rel="noopener">Stanford Human Preferences (SHP) dataset</a></li><li><span class="src-tag">SUPPLEMENT</span><a href="https://huggingface.co/datasets/Anthropic/hh-rlhf" target="_blank" rel="noopener">Anthropic HH-RLHF dataset</a></li></ul></section>
       <nav class="pager"><a href="../cs329h/l03-iia-identification.html"><span class="lbl">← Previous</span>Lecture 3: IIA, Identification, and the Rashomon Effect</a><a href="../cs329h/l05-metric-elicitation.html"><span class="lbl">Next →</span>Lecture 5: Metric Elicitation, Asking the Best Questions</a></nav>
     </article>
     <footer class="pagefoot">

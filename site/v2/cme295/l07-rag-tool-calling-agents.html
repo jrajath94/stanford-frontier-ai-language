@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -405,6 +402,9 @@ hybrid (0.5 * semantic + 0.5 * BM25): A = 0.475, B = 0.80 -&gt; returns B
 <p>Exact names favor BM25. Vague questions favor embeddings. Hybrid
 covers both.</p>
 <h3 id="subchapter-the-retrieval-decision-table">Subchapter: the retrieval decision table</h3>
+<p>HyDE (Hypothetical Document Embeddings) handles the case where the
+query looks nothing like the documents: generate a fake answer
+document with an LLM and embed that instead.</p>
 <table>
 <thead>
 <tr>
@@ -469,10 +469,9 @@ hybrid combines scores (retrieval), the reranker re-scores pairs
 <p>Labels say which chunks are truly relevant. Four metrics, all
 borrowed from search. Work them on a toy ranking of three chunks
 with true relevance scores [3, 0, 2], ideal ranking [3, 2, 0]:</p>
-<pre class="ascii">DCG = 3 + 0/log2(2)... use the standard form:
-DCG = 3 + 0/1 + 2/log2(3) = 3 + 0 + 1.262 = 4.262
-ideal DCG = 3 + 2/1 + 0 = 5.0
-NDCG = 4.262 / 5.0 = 0.852
+<pre class="ascii">DCG = 3/log2(2) + 0/log2(3) + 2/log2(4) = 3 + 0 + 1.0 = 4.0
+ideal DCG = 3/log2(2) + 2/log2(3) + 0 = 3 + 1.262 = 4.262
+NDCG = 4.0 / 4.262 = 0.939
 </pre>
 <ul>
 <li><strong>NDCG</strong>
@@ -582,8 +581,8 @@ dependency, so the model emits both and the runtime runs them
 concurrently. Latency falls from 2x to 1x. Dependent calls
 serialize: the second call&rsquo;s arguments come from the first
 call&rsquo;s result. The model must learn the difference: emit
-independent calls together, wait on dependencies. The harness
-enforces it: results return tagged per call, and the model
+independent calls together, wait on dependencies. The tool-call
+runtime enforces it: results return tagged per call, and the model
 continues when all resolve.</p>
 <h2 id="the-problem-one-preamble-cannot-hold-every-tool">The problem: one preamble cannot hold every tool</h2>
 <p>Context is finite, APIs get lost in the haystack, conflicting APIs
@@ -633,8 +632,8 @@ goal is met.</p>
 <p><strong>ReAct</strong>
 (<a href="https://www.youtube.com/watch?v=h-7S6HNq0Vg&amp;t=5623s">93:43</a>,
 reason + act) decomposes the loop into observe, plan, act
-(<a href="https://www.youtube.com/watch?v=h-7S6HNq0Vg&amp;t=5674s">94:34</a>; the
-paper says think/observe/act, wording varies). Trace the thermostat
+(<a href="https://www.youtube.com/watch?v=h-7S6HNq0Vg&amp;t=5674s">94:34</a>). The
+paper says think/observe/act. Wording varies. Trace the thermostat
 example, &ldquo;my teddy bear is cold&rdquo;:</p>
 <pre class="ascii">observe:  temperature unknown. Must measure before acting.
 plan:     call get_temp().
@@ -779,7 +778,7 @@ of loops.</p><div class="followup"><strong>Follow-up:</strong> What is the cheap
 <tr>
 <td>Is the retriever any good</td>
 <td>NDCG et al.</td>
-<td>The toy ranking scores 0.852 against the ideal</td>
+<td>The toy ranking scores 0.939 against the ideal</td>
 </tr>
 <tr>
 <td>Text lookup is not enough</td>
@@ -835,7 +834,7 @@ self-containment for the world&rsquo;s messiness.</p>
 <li><strong>Semantic plus keyword.</strong> Pure embeddings return Huggy for
    Cuddly. Hybrid (0.5/0.5) scores B at 0.80 over A at 0.475.
    HyDE embeds a fake answer doc to bridge the gap.</li>
-<li><strong>Measure the ranker.</strong> NDCG on the toy: 4.262 / 5.0 = 0.852.
+<li><strong>Measure the ranker.</strong> NDCG on the toy: 4.0 / 4.262 = 0.939.
    Reciprocal rank, precision@k, recall@k cover the rest. MTEB is
    the benchmark.</li>
 <li><strong>Tool calling is three stages.</strong> Predict arguments from API plus

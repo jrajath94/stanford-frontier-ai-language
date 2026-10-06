@@ -7,17 +7,21 @@ order: 7
 nav: "L07 · RLHF"
 title: "Lecture 7: RLHF, the Choice-Theoretic View"
 summary: "The RLHF loop as applied preference learning, reward hacking, DPO as implicit Bradley-Terry, and the assumption checklist. Deep mechanics bridged to CS336 L15."
-date: "[uncertain] Spring 2026"
+date: "[uncertain]"
 instructor: "Sanmi Koyejo"
-offering: "Spring 2026"
+offering: "[uncertain]"
 duration: "[uncertain]"
-video_id: ""
-video_title: ""
-video_caption: "No dedicated lecture transcript. Built from the course textbook (chapters 1.2, 2.9, 5.3). Deep RL mechanics are bridged to CS336 L15."
-concepts: [rlhf, reward-model, ppo, dpo, reward-hacking, kl-constraint, implicit-reward]
+video_id: "XZLc09hkMwA"
+video_title: "Direct Preference Optimization: Your Language Model is Secretly a Reward Model | DPO paper explained"
+video_caption: "External explainer (not the course lecture): AI Coffee Break walks through the DPO paper, from the RLHF objective to the final loss. Verified live on YouTube."
+concepts: [rlhf, reward-model, ppo, dpo, grpo, reward-hacking, kl-constraint, implicit-reward]
 sources:
+  - tag: video
+    label: "DPO paper explained (AI Coffee Break, external explainer)"
+    url: https://www.youtube.com/watch?v=XZLc09hkMwA
   - tag: notes
     label: "Course textbook, chapters 1.2, 2.9, 5.3 (Truong, Haupt, Koyejo, 2025)"
+    url: https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
   - tag: paper
     label: "Christiano et al., Deep RL from Human Preferences (2017)"
     url: https://arxiv.org/abs/1706.03741
@@ -30,6 +34,9 @@ sources:
   - tag: paper
     label: "Schulman et al., Proximal Policy Optimization (2017)"
     url: https://arxiv.org/abs/1707.06347
+  - tag: paper
+    label: "DeepSeek-AI, DeepSeek-R1: Incentivizing Reasoning via RL (2025)"
+    url: https://arxiv.org/abs/2501.12948
 ---
 ## The problem: the predictor has no manners
 
@@ -186,6 +193,49 @@ pairs, with the policy playing both roles.
 > Follow-up: What does beta do?
 > A: Beta is the KL penalty strength, now controlling how far the policy may drift from the reference. Large beta tolerates big log-ratios: the policy can move far. Small beta pins the policy near the reference. It is the same leash as in PPO, moved inside the loss. The worked toy uses beta = 1, giving gap 0.8 and loss 0.37.
 
+### Subchapter: GRPO, the group-relative upgrade
+
+PPO needs four models in memory: the policy, the reference, the
+reward model, and a value model (the critic) that estimates
+expected return. At 671B parameters the critic alone is a second
+giant model. **GRPO**, group relative policy optimization
+(DeepSeekMath, 2024. DeepSeek-R1, 2025), deletes the critic.
+For each prompt, sample a group of G responses. Score each one.
+Normalize the scores inside the group:
+
+advantage_i = (r_i - mean(r)) / std(r)
+
+The advantage says how much better response i is than its own
+siblings. The policy update is PPO-style: a clipped objective
+that raises the probability of positive-advantage responses and
+lowers the rest, plus a KL term to the reference. No value
+model. The group is its own baseline.
+
+![GRPO: the group is its own baseline](assets/plate-grpo.webp "Four responses, one prompt. Rewards 1, 0, 0, 0 become advantages 1.73, -0.58, -0.58, -0.58. No critic model. Shell 3. Source: original figure for GRPO. Project: Stanford Frontier AI.")
+
+Work it. G = 4. Rewards: [1, 0, 0, 0], one correct answer.
+
+```ascii
+mean = 0.25
+std  = sqrt(((0.75)^2 + 3 x (0.25)^2) / 4) = sqrt(0.1875) = 0.433
+advantages: (1 - 0.25)/0.433 = 1.73,  (0 - 0.25)/0.433 = -0.58 x3
+```
+
+The update pushes the winner up with weight 1.73 and each loser
+down with weight 0.58. Note what disappeared: absolute scores.
+A group of [1, 1, 1, 0] gives advantages [0.58, 0.58, 0.58,
+-1.73]. The learning signal is purely relative, inside the
+group. This is Lecture 2's preference pair generalized: the
+Bradley-Terry atom, scaled to G responses at once.
+
+DeepSeek-R1's recipe, from the public report: start from the
+V3 base, sample 16 responses per prompt, score with
+rule-based rewards (math correctness, code tests, format),
+optimize with GRPO at KL coefficient 0.001. R1-Zero, the pure
+RL run with no supervised warmup, moved AIME 2024 pass@1 from
+15.6% to 71.0%. Reasoning behaviors, self-correction and
+reflection, emerged from the group-relative pressure alone.
+
 ## The assumption checklist
 
 Before trusting any RLHF loop, audit the assumptions from
@@ -219,11 +269,56 @@ check the assumption before trusting the fit.
 > Follow-up: Which failure is most underrated?
 > A: Heterogeneity. Teams obsess over reward-model accuracy on pooled labels and miss that the pool mixes contradictory preferences. The averaged reward looks accurate and produces a policy nobody wanted. Per-annotator or per-group modeling is the fix, and it is rarely done.
 
+> [!QA]
+> Q: Walk me through one DPO gradient step on the running example, by hand.
+> A: Prompt x: "Explain why the sky is blue." Winner y_A has log-ratio log[pi/pi_ref] = 0.5. Loser y_B has -0.3. Beta = 1. Step one: the implicit gap = 0.5 - (-0.3) = 0.8. Step two: sigma(0.8) = 0.69. Step three: loss = -log(0.69) = 0.37. Step four: the gradient. The loss derivative with respect to the gap is -(1 - 0.69) = -0.31, so the optimizer pushes the gap wider: it raises the winner's log-ratio and lowers the loser's. The push is surprise-weighted, like Lecture 4's MLE: a pair the policy already ranks correctly, gap 3, sigma 0.95, contributes gradient -0.05 and barely moves. An inverted pair, gap -1, contributes -1.27 and moves a lot. That is the whole algorithm: classification on pairs, hardest pairs move most.
+> Follow-up: What does the reference policy do during the step?
+> A: It anchors the update. The implicit reward is beta log(pi/pi_ref), so raising pi(y_A) raises the reward only relative to where the reference put it. Without pi_ref, adding a constant to all log-probabilities would change nothing observable, and the optimum would be undefined: Lecture 3's identification problem, wearing a policy costume.
+
+> [!QA]
+> Q: You are aligning a 70B open model. 50,000 preference pairs, 8 H100s, one week. Choose DPO, PPO, or GRPO, and defend it.
+> A: Choose DPO. PPO needs four models in memory at 70B scale: policy, reference, reward, value. That is roughly 4 x 140GB in fp16 before optimizers, which does not fit 8 H100s without heroic sharding, and PPO's on-policy rollouts burn the week on generation. GRPO drops the critic but still needs online rollouts and a reward signal per prompt. With only human pairs and no verifiable reward, GRPO buys little. DPO trains on the fixed pairs with two models, policy and frozen reference, in a standard supervised loop. It fits, it is stable, and the Llama 3 report validates the choice at 405B. Spend the saved week on what actually moves quality: pair quality, deduplication, and a second DPO round on fresh pairs from the new policy.
+> Follow-up: When would you switch to PPO or GRPO instead?
+> A: When the reward is verifiable and online. Math, code, tool use: a checker scores answers without humans, so online rollouts generate unlimited training signal and GRPO's group-relative advantages shine, the DeepSeek-R1 recipe. PPO when you need the full RL machinery: multi-turn trajectories with credit assignment across steps, where DPO's single-step classification loss cannot reach. Match the algorithm to the reward: human pairs offline favor DPO, verifiable rewards online favor GRPO, sequential credit assignment favors PPO.
+
+> [!QA]
+> Q: Offline DPO trains on a fixed batch. What breaks as the policy moves, and what is the fix?
+> A: The pairs go stale. They were sampled from the old policy, so they constrain behavior near the old policy's outputs. As DPO moves the policy, the new policy's outputs leave the region the pairs describe, and the BT likelihood extrapolates. This is the iteration problem: the same staleness that forces RLHF to relabel. The fix is online or iterative DPO: sample fresh pairs from the current policy, label them, and run DPO again. Each round re-anchors the data to the policy. The cost is the labeling loop DPO skipped. There is no free offline lunch: either the data follows the policy, or the policy outruns the data.
+> Follow-up: Does iterative DPO converge?
+> A: Not to anything principled in general. Each round optimizes a different objective, the pairs change, so there is no fixed point theorem. In practice two to six rounds help, the Llama 3 report ran six, and returns diminish as the policy's outputs saturate the labelers' ability to distinguish them. Stop when fresh pairs stop moving held-out win rates.
+
+## What is used where: the production alignment stacks
+
+Every frontier lab runs a variant of this chapter. The public
+record, current as of October 2026, says which.
+
+| Lab / model | Preference method (public) | Evidence |
+|---|---|---|
+| OpenAI: InstructGPT, GPT-4 | RLHF with PPO. Rule-based rewards (RBR) added since GPT-4 | InstructGPT paper (2022). GPT-4 technical report states alignment used RLHF. OpenAI's RBR post describes PPO combining the RBR signal with a helpfulness reward model |
+| OpenAI: o1-class reasoning models | PPO-class RL on chain-of-thought | Public reports describe RL training for reasoning. Exact algorithm details not fully published |
+| Anthropic: Claude | RLHF with PPO. Constitutional AI (AI feedback) | HH-RLHF paper (Bai et al., 2022) uses PPO. Constitutional AI paper (2022) adds AI-generated critique and revision |
+| Meta: Llama 3 | SFT + rejection sampling + DPO, 6 rounds. No PPO | Llama 3 technical report: DPO chosen as more efficient and stable than PPO at 405B scale |
+| Meta: Llama 2-Chat | SFT + rejection sampling + PPO-RLHF | Llama 2 paper |
+| DeepSeek: R1 | GRPO with rule-based rewards. cold-start SFT | DeepSeek-R1 report (2025): GRPO, 16 samples per prompt, KL 0.001 |
+| DeepSeek: V3 | SFT + RL stages. reasoning distilled from R1 | V3 technical report. exact RL algorithm details partially public |
+| Google: Gemini | RLHF reported. details not public | Mark as unknown: no technical report discloses the method |
+| Mistral: Mixtral-8x7B-Instruct | SFT + DPO | Company release notes: the Instruct model was "optimised through supervised fine-tuning and direct preference optimisation (DPO)" |
+| xAI: Grok | Not public | Mark as unknown |
+
+Read the pattern. Nobody runs vanilla three-stage RLHF
+unchanged anymore. OpenAI adds rule-based rewards to the PPO
+mix. Anthropic adds constitutional AI feedback. Meta dropped
+PPO for DPO at Llama 3 scale. DeepSeek dropped the critic for
+GRPO and the human labels for verifiable rewards. The
+direction is uniform: fewer learned components, more verifiable
+signal, same KL leash. What is not public is marked unknown
+above. Do not infer a lab's method from its model's behavior.
+
 ## Mapping back: what DPO buys and what it keeps
 
 | RLHF pain | DPO answer | What it keeps |
 |---|---|---|
-| Separate reward model to fit and hack | No reward model; the policy is the reward | The BT assumption, all six checklist items |
+| Separate reward model to fit and hack | No reward model. the policy is the reward | The BT assumption, all six checklist items |
 | Unstable PPO tuning | Stable classification loss | The KL leash, now as beta inside the loss |
 | Proxy errors get optimized | Pairs train the policy directly | The reference policy as the identification anchor |
 
@@ -289,30 +384,28 @@ The story in eight steps. Each step answers the one before it.
   checklist, the DPO-Borda connection.
 
 **Further reading:**
-- Christiano et al., Deep RL from Human Preferences (2017):
-  https://arxiv.org/abs/1706.03741
+- Christiano et al., Deep RL from Human Preferences (2017): [paper](https://arxiv.org/abs/1706.03741)
 - Ouyang et al., Training LMs to Follow Instructions with
   Human Feedback (2022): https://arxiv.org/abs/2203.02155
-- Rafailov et al., Direct Preference Optimization (2023):
-  https://arxiv.org/abs/2305.18290
+- Rafailov et al., Direct Preference Optimization (2023): [paper](https://arxiv.org/abs/2305.18290)
 
 **Caveats from these sources.** The DPO worked toy uses beta =
-1 from the textbook; a sibling course's worker used beta = 0.5
+1 from the textbook. a sibling course's worker used beta = 0.5
 with the same loss shape, which changes the gap and the loss
 value. The PPO-versus-DPO derivations live in CS336 L15, not
 here. The DPO-Borda proportionality needs uniform sampling and
-correct BT specification; both fail in practice.
+correct BT specification. both fail in practice.
 
 ## Connections to the other courses
 
-- **CS329H L02:** the BT likelihood inside the DPO loss; the
+- **CS329H L02:** the BT likelihood inside the DPO loss. the
   preference pair atom.
-- **CS329H L03:** IIA and identification; the reference policy
+- **CS329H L03:** IIA and identification. the reference policy
   as anchor.
-- **CS329H L04:** the reward model is a BT fit; hacking is
+- **CS329H L04:** the reward model is a BT fit. hacking is
   optimization against fitting errors.
 - **CS329H L05:** informative queries for the pair budget.
-- **CS329H L08:** DPO as a Borda election; the social-choice
+- **CS329H L08:** DPO as a Borda election. the social-choice
   view.
 - **CS336 L15:** PPO mechanics, the clipped objective, and
   full DPO derivations.

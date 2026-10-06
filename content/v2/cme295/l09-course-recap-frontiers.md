@@ -294,8 +294,8 @@ where the model must complete code given both sides. Bidirectional
 context suits diffusion naturally.
 
 Google showed an experimental text diffusion model at I/O
-([67:49](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=4069s));
-startups including Inception pursue it. **LLaDA** (early 2025,
+([67:49](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=4069s)).
+Startups including Inception pursue it too. **LLaDA** (early 2025,
 [79:38](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=4778s)) works
 through the math. Status: catching up to autoregressive models, not
 yet at the frontier. Open work: porting reasoning chains and the
@@ -538,7 +538,7 @@ LLM integration.
 humans want empathy and groundedness that system prompts cannot
 fake. Continuous learning (weights are frozen. RAG is a patch),
 hallucinations (a core design choice of next-token prediction, not
-a bug; [107:34](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=6454s)),
+a bug. [107:34](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=6454s)),
 personalization, interpretability, safety.
 
 ![Frontier](assets/l09-frontier.svg "SLMs, new hardware, agents for all, and the hard open problems. Stanford Frontier AI.")
@@ -547,7 +547,7 @@ personalization, interpretability, safety.
 codebases (HuggingFace trending papers replaced Papers with Code).
 X has the conversation. YouTube explainers: Yannic Kilcher covered
 the transformer paper back in 2017
-([109:10](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=6550s));
+([109:10](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=6550s)).
 Andrej Karpathy is the recommended educator
 ([109:28](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=6568s)).
 Company blogs for the frontier. And the course's own study guide,

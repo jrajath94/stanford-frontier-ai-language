@@ -41,7 +41,7 @@ The lecture's test case is **anaphora**, the linguistic term for a
 pronoun pointing back to its noun. Take the sentence "The animal did
 not cross the street because it was too tired." The pronoun "it"
 refers to "animal". Now look at one attention head's weights for the
-query token "it", over the eight tokens:
+query token "it", over the ten tokens:
 
 ```ascii
 query "it" attends to:
@@ -416,12 +416,12 @@ bytes):
 ```ascii
 per token per layer: 2 * 8 * 128 * 2 = 4,096 bytes
 per token, 80 layers: 327,680 bytes = 320 KB
-32K-token context:  32,768 * 320 KB = 10.5 GB per request
+32K-token context:  32,768 * 320 KB = 10.0 GiB per request
 ```
 
-With MHA (64 KV heads): 8x more, 84 GB per request. With MQA (1 KV
-head): 8x less than GQA, 1.3 GB. The cache is per request, so 100
-concurrent 32K requests need 1 TB with GQA. This is the number
+With MHA (64 KV heads): 8x more, 80 GiB per request. With MQA (1 KV
+head): 8x less than GQA, 1.25 GiB. The cache is per request, so 100
+concurrent 32K requests need 1 TiB with GQA. This is the number
 that ends serving designs. Every cache-shrinking idea (GQA, MQA,
 MLA in Lecture 3, DeepSeek V4.1's 890-bytes-per-token cache) is a
 direct attack on this multiplication.
@@ -438,14 +438,14 @@ GQA (Llama 3, Mistral, most 2024-2026 models) and MQA survives
 mainly in small fast models. The decision rule: serve throughput
 first, MQA. Balanced quality, GQA. Research flexibility, MHA.
 
-![KV cache bytes](assets/l02-kv-bytes.svg "320 KB per token for a 70B GQA model. 10.5 GB per 32K request. Shell 2. Source: original byte count. Project: Stanford Frontier AI.")
+![KV cache bytes](assets/l02-kv-bytes.svg "320 KB per token for a 70B GQA model. 10.0 GiB per 32K request. Shell 2. Source: original byte count. Project: Stanford Frontier AI.")
 
 > [!QA]
 > Q: How do you pick the GQA group size?
 > A: From the byte math. Fix your memory budget per request and
 > your target context length, then solve: KV heads = budget / (2 *
 > layers * d_head * bytes * tokens). The toy 70B: 8 KV heads give
-> 10.5 GB per 32K request. Halve to 4 heads and it is 5.25 GB.
+> 10.0 GiB per 32K request. Halve to 4 heads and it is 5.0 GiB.
 > Quality drops slowly with fewer heads (heads learn correlated
 > keys), so pick the smallest head count your evals tolerate. The
 > interview signal: show the division, not just the answer.
@@ -506,8 +506,8 @@ decoder (generate the fills) at once.
 
 **BERT** (2018) is the landmark encoder-only model. The input
 pipeline: WordPiece tokenizer with about 30k tokens
-([83:11](https://www.youtube.com/watch?v=yT84Y5zCnaA&t=4991s));
-special tokens [CLS] opening the sequence and [SEP] separating and
+([83:11](https://www.youtube.com/watch?v=yT84Y5zCnaA&t=4991s)).
+Special tokens [CLS] open the sequence, and [SEP] separates and
 closing segments. **Segment encodings** (sentence A gets one learned
 vector, sentence B another). Position encodings are added per position.
 (The lecture notes uncertainty about whether BERT's position
@@ -557,8 +557,9 @@ teacher's soft distribution and the student's. The toy: teacher
 outputs [0.7, 0.2, 0.1] over three classes, student outputs [0.5,
 0.3, 0.2]. The hard label says class 1. The teacher's 0.2 on class
 2 says "class 2 is plausible here": information the hard label
-destroys. KL(teacher || student) = 0.7*log(0.7/0.5) +
-0.2*log(0.2/0.3) + 0.1*log(0.1/0.2) = 0.236 - 0.081 - 0.069 = 0.086.
+destroys. KL(teacher || student), natural log, = 0.7*log(0.7/0.5) +
+0.2*log(0.2/0.3) + 0.1*log(0.1/0.2) = 0.236 - 0.081 - 0.069 = 0.085
+(the shown terms are rounded. The exact sum is 0.0851).
 Small when the student matches, large when it diverges. With a
 temperature on the softmax, the distribution softens further and
 the similarity signal strengthens. DistilBERT keeps ~97% of BERT's

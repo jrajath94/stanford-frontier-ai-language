@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -288,6 +285,51 @@ expected seller revenue does not depend on the auction format.
 What changes is not the average price but who bears the
 strategic burden: bidders strategize in first-price, the
 mechanism computes in second-price.</p>
+<h3 id="subchapter-the-equilibrium-bid-derived">Subchapter: the equilibrium bid, derived</h3>
+<p>The lesson asserted b(v) = (n-1)/n x v. Here is where it comes
+from. Three definitions. Each bidder&rsquo;s value is drawn
+independently from the same distribution with CDF F. All
+bidders use the same increasing bid strategy, call it beta.
+Your value is v and you bid b.</p>
+<p>Step 1: the win probability. You win when every rival bids
+below b. Rivals bid beta of their values, and beta is
+increasing, so rival i bids below b exactly when their value
+sits below beta^{-1}(b). With n-1 rivals, the win probability
+is G(beta^{-1}(b)), where G = F^{n-1}.</p>
+<p>Step 2: the expected payoff. Win and keep v - b. Lose and keep
+0. Expected payoff: U(b) = (v - b) x G(beta^{-1}(b)).</p>
+<p>Step 3: the first-order condition. Differentiate U with respect
+to b and set the derivative to zero at the equilibrium bid
+b = beta(v). The derivative has two terms: bidding higher
+costs you directly (-G), and bidding higher wins more often
+((v - b) times the density term). Setting b = beta(v):</p>
+<p>-G(v) + (v - beta(v)) x G&rsquo;(v) / beta&rsquo;(v) = 0</p>
+<p>Step 4: solve the differential equation. Rearrange to
+beta&rsquo;(v) G(v) = (v - beta(v)) G&rsquo;(v). Notice the left side plus
+beta(v) G&rsquo;(v) equals the derivative of the product
+beta(v) G(v), and the equation says exactly that this
+derivative equals v G&rsquo;(v). Integrate from 0 to v, using
+beta(0) = 0:</p>
+<p>beta(v) G(v) = integral from 0 to v of t G&rsquo;(t) dt</p>
+<p>Integrate by parts: the right side is v G(v) minus the
+integral of G(t) from 0 to v. Divide by G(v):</p>
+<p>beta(v) = v - [integral from 0 to v of G(t) dt] / G(v)</p>
+<p>The bid is the value minus a shade term: the accumulated win
+probability mass below v, normalized. Step 5: evaluate for
+the uniform case. Values uniform on [0, 10]: F(t) = t/10,
+G(t) = (t/10)^{n-1}. The integral is v^n / (n 10^{n-1}).
+Divide by G(v) = v^{n-1} / 10^{n-1}: the shade is v/n. So
+beta(v) = v - v/n = (n-1)/n x v. With n = 3: bid two thirds
+of value. The lesson&rsquo;s bidder 1 with value 10 bids 6.67 in
+equilibrium, against the toy&rsquo;s 6.5.</p>
+<p>The derivation shows the assumption doing the work. Symmetry:
+everyone draws from the same F and uses the same beta. Risk
+neutrality: the payoff is linear in money. Independent private
+values: your value tells you nothing about rivals&rsquo; values.
+Break any of them and the two-thirds rule goes with it. That
+is why the lesson hedges the toy&rsquo;s 6.5 as &ldquo;almost exactly
+right&rdquo; rather than exact: real bidders are not symmetric,
+risk-neutral, independent draws.</p>
 <h2 id="the-key-question">The key question</h2>
 <p>Can the rules be designed so that honesty is each agent&rsquo;s best
 strategy, regardless of what others do?</p>
@@ -295,7 +337,7 @@ strategy, regardless of what others do?</p>
 <p>A mechanism is <strong>incentive compatible</strong> (IC) when each agent&rsquo;s
 best strategy is to report truthfully. No shading, no gaming, no
 strategizing about others. The lecture&rsquo;s framing: think of the
-true value as the elicitation target, stated at <a href="https://www.youtube.com/watch?v=zkHTbb-0Gns&amp;t=1750s" target="_blank" rel="noopener">29:10 <span class="ts">⏱29:10</span></a>.
+true value as the elicitation target, stated at <a href="https://www.youtube.com/watch?v=zkHTbb-0Gns&amp;t=1750s">29:10</a>.
 IC mechanisms elicit the thing you actually want to learn.
 Non-IC mechanisms elicit a strategic distortion, and you must
 invert the strategy to recover the truth.</p>
@@ -321,7 +363,7 @@ No belief about others is needed. Truth dominates, as a
 <strong>dominant strategy</strong>: best regardless of what anyone else does.</p>
 <div class="qa"><div class="q">Why is truth-telling dominant in a second-price auction?</div><div class="a"><p>Your bid only decides whether you win, never what you pay: you pay the second-highest bid. Consider value 10. Bidding below 10 only loses auctions where the second bid sits between your bid and 10: profitable wins you threw away. Bidding above 10 only wins auctions where the second bid exceeds 10: you pay more than the item is worth. Bidding exactly 10 wins exactly the profitable auctions. No belief about others needed.
 Revenue and robustness. With few bidders or collusion, second-price leaves money on the table and is vulnerable to shill bidding. First-price with a reserve can raise more revenue, Myerson&rsquo;s result. In practice, ad auctions moved from second-price to first-price partly because the strategic complexity was deemed manageable and revenue higher. IC is not the only objective.</p><div class="followup"><strong>Follow-up:</strong> Why do not all auctions use second-price?</div></div></div>
-<h2 id="vcg-pay-for-the-harm-you-cause">VCG: pay for the harm you cause</h2>
+<h2 id="vcg-vickrey-clarke-groves-pay-for-the-harm-you-cause">VCG (Vickrey-Clarke-Groves): pay for the harm you cause</h2>
 <p>The <strong>Vickrey-Clarke-Groves</strong> mechanism generalizes second-price
 beyond single items. Two rules.</p>
 <figure><img alt="VCG: pay for the harm you cause" src="assets/l09-vcg.svg"><figcaption>Maximize total welfare, then charge each winner the externality they impose. Source: original figure for Stanford Frontier AI.</figcaption></figure>
@@ -453,11 +495,21 @@ you have, not the agents the theorem assumes.</p>
 <li><strong>Annotation is a mechanism.</strong> Pay for the thing you
    measure. The payment rule selects your data distribution.</li>
 </ol>
+<h2 id="go-deeper">Go deeper</h2>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/zkHTbb-0Gns" title="Stanford CS329H Autumn 2024: Mechanism Design, Sanmi Koyejo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<ul>
+<li>Course lecture: https://www.youtube.com/watch?v=zkHTbb-0Gns</li>
+<li>Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf</li>
+<li>Vickrey (1961): the second-price auction.</li>
+<li>Myerson (1981): optimal auction design.</li>
+</ul>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
 - CS329H Autumn 2024: Mechanism Design (video id zkHTbb-0Gns):
   auctions as preference elicitation, incentive compatibility.
-- Course textbook, chapters 9.x: auctions, IC, VCG, the
+- Course textbook, chapter 5.10: auctions, IC, VCG, the
   revelation principle, Myerson. <a href="https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf">link</a></p>
 <p><strong>Further reading:</strong>
 - Vickrey (1961): the second-price auction.

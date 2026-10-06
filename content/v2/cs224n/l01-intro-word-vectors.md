@@ -282,7 +282,7 @@ wherever a flat softmax is too expensive.
 
 ### Subchapter: why the tree is Huffman-shaped
 
-Not all words are equal. "The" is predicted millions of times; "zebra"
+Not all words are equal. "The" is predicted millions of times. "zebra"
 a handful. A balanced tree gives every word the same path length, which
 wastes decisions on "the". **Huffman coding** builds the tree from word
 frequencies: frequent words sit near the root with short paths, rare words

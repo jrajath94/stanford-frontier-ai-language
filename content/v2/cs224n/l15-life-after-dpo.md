@@ -11,7 +11,7 @@ instructor: "Nathan Lambert"
 offering: "Spring 2024"
 duration: "1:09:00"
 video_id: dnF463_Ar9I
-video_title: "Lecture 15: Life After DPO"
+video_title: "Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 15 - After DPO by Nathan Lambert"
 video_caption: "Invited talk. Nathan Lambert on the alignment moment after DPO: online learning, self-rewarding models, and open questions."
 concepts: [dpo, post-training, preference-data, online-learning, offline-learning, self-rewarding, kto, steerlm, reward-model, alignment]
 sources:
@@ -183,7 +183,7 @@ Pairwise preferences are not the only signal ([61:21](ts:61:21)):
 
 ![Beyond pairwise](assets/l15-beyond-pairwise.svg "Stanford Frontier AI, CS224N L15. KTO: one-sided yes/no. Starling: k-wise ranking over 5-9 answers. SteerLM: fine-grained conciseness, helpfulness, honesty.")
 
-- **KTO** (Stanford): **one-sided** preferences. Customer apps already
+- **KTO (Kahneman-Tversky Optimization)** (Stanford): **one-sided** preferences. Customer apps already
   collect "was this helpful: yes/no." No pairs, just thumbs. Different
   loss, same idea: use the abundant signal instead of demanding the scarce
   one.
@@ -267,15 +267,22 @@ lever.
 > Q: Your reward model hits 85% pairwise accuracy. Ship it?
 > A: Not yet. Run the hacking probe: optimize hard against it and inspect the winners. 85% accuracy with gibberish at the top is a broken instrument wearing a good number. Also check best-of-16 against human picks: if the reward model's favorite loses to the human favorite, the accuracy number measured the easy pairs. Accuracy is necessary, not sufficient. The probe is the gate.
 > Follow-up: What accuracy is good enough?
-> A: There is no threshold, only a tradeoff. Higher accuracy with a hacking probe failure is worse than lower accuracy that is robust. Report both numbers together, always. A reward model is a measuring instrument: calibrate it like one.
+> A: There is no threshold, only a tradeoff. Higher accuracy with a hacking probe failure is worse than lower accuracy that passes the probe. Report both numbers together, always. A reward model is a measuring instrument: calibrate it like one.
 
 ## Watch and go deeper
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/dnF463_Ar9I" title="CS224N Spring 2024 Lecture 15: After DPO" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 15: After DPO</strong> (Nathan Lambert, Spring 2024). The invited talk: online learning, self-rewarding models, open questions. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=dnF463_Ar9I</p>
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/XZLc09hkMwA" title="Direct Preference Optimization: Your Language Model is Secretly a Reward Model" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>DPO, paper explained</strong> (AI Coffee Break). From the RLHF objective to the DPO loss, derived.</p>
+</div>
 </div>
 
 ### Go deeper

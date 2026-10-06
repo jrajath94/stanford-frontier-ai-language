@@ -7,22 +7,21 @@ order: 9
 nav: "L09 · Mechanism Design"
 title: "Lecture 9: Mechanism Design, Eliciting Truthful Preferences"
 summary: "Auctions as preference elicitation, incentive compatibility, second-price and VCG mechanisms, and the revelation principle."
-date: "[uncertain] Spring 2026"
+date: "[uncertain] Autumn 2024"
 instructor: "Sanmi Koyejo"
-offering: "Spring 2026"
-duration: "1:21:40"
+offering: "[uncertain]"
+duration: "[uncertain]"
 video_id: zkHTbb-0Gns
-video_title: "Stanford CS329H Lecture 4: Mechanism Design"
-video_caption: "Original lecture. Sanmi Koyejo on mechanism design as preference elicitation: auctions, pricing, and incentive compatibility."
+video_title: "Stanford CS329H: Machine Learning from Human Preferences | Autumn 2024 | Mechanism Design"
+video_caption: "Course lecture (Stanford Online, Autumn 2024). Mechanism design as preference elicitation: auctions, pricing, incentive compatibility. Verified live on YouTube."
 concepts: [mechanism-design, auctions, incentive-compatibility, vickrey, vcg, revelation-principle, myerson]
 sources:
   - tag: video
-    label: "Lecture 4 video, Stanford Online YouTube"
+    label: "CS329H Autumn 2024: Mechanism Design (Stanford Online)"
     url: https://www.youtube.com/watch?v=zkHTbb-0Gns
   - tag: notes
-    label: "Official subtitle transcript (en-US)"
-  - tag: notes
     label: "Course textbook, chapter 5.10 (Truong, Haupt, Koyejo, 2025)"
+    url: https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
 ---
 ## The problem: people strategize
 
@@ -79,6 +78,40 @@ which you do not observe.
 First-price is not **incentive compatible**. Truth-telling is not
 the best strategy. The mechanism elicits a strategic distortion
 of the target, not the target.
+
+### Subchapter: the equilibrium shade, computed
+
+How much should a bidder shade? In the symmetric benchmark,
+values are uniform on [0, 10] and all three bidders use the same
+strategy. The equilibrium bid is:
+
+b(v) = (n - 1) / n * v
+
+With n = 3: shade one third, bid two thirds of value. The
+lesson toy's bidder 1 bids 6.5 on value 10. Equilibrium says
+6.67. The toy's bidder is shading almost exactly right.
+
+![Equilibrium shading: bid two thirds of value](assets/plate-first-price-shade.webp "Bid rises with value at slope 2/3. Truth-telling is the 45-degree line. The gap is the shade. Shell 3. Source: original figure for equilibrium bidding. Project: Stanford Frontier AI.")
+
+Why two thirds? Bid b with value v. You win when both rivals
+bid less, which under a common increasing strategy means both
+rival values sit below yours. Expected payoff: (v - b) times
+the win probability. Bid higher and you win more often but keep
+less. The first-order condition balances the two, and the
+solution is b = (n-1)/n * v. More bidders, less shade: with
+n = 10, bid 90% of value. Competition does the disciplining.
+
+Now the revenue comparison. Second-price on the toy: winner
+pays 7, the second value. First-price equilibrium: winner pays
+6.67. But that is one draw. Take expectations over the uniform
+distribution. Expected second-highest of 3 uniform values is
+10 x 2/4 = 5.0. Expected first-price payment is (2/3) times the
+expected highest value, (2/3) x 7.5 = 5.0. Equal. This is
+**revenue equivalence**: in the symmetric setting, the
+expected seller revenue does not depend on the auction format.
+What changes is not the average price but who bears the
+strategic burden: bidders strategize in first-price, the
+mechanism computes in second-price.
 
 ## The key question
 
@@ -203,14 +236,38 @@ make the answers honest.
 > Follow-up: What is the single most practical takeaway?
 > A: Pay for the thing you want to measure, not a proxy. Piece rates per label reward speed and satisfice quality. Bonuses tied to agreement with gold labels or to downstream model performance reward care. The payment rule is the mechanism, and it selects the data distribution you will train on.
 
+> [!QA]
+> Q: Walk me through VCG on a two-item example, by hand.
+> A: Two items, X and Y. Bidder 1 values the bundle {X, Y} at 10, each alone at 0: she wants both or nothing. Bidder 2 values X alone at 6. Bidder 3 values Y alone at 6. Step one, allocate for welfare: giving both to bidder 1 yields 10. Splitting gives 6 + 6 = 12. Split wins: bidder 2 gets X, bidder 3 gets Y. Step two, charge externalities. Without bidder 2, the best allocation gives both items to bidder 1 for welfare 10, and the others get 0. With bidder 2, the others get: bidder 1 gets 0, bidder 3 gets 6. Bidder 2's externality is 10 - 6 = 4. She pays 4 for an item she values at 6. Symmetrically bidder 3 pays 4. Total revenue 8, below the 10 bidder 1 would have paid for the bundle: VCG maximizes welfare, not revenue. Truth-telling was dominant throughout because each bidder's payment never depends on their own bid.
+> Follow-up: Why did bidder 2 pay 4 and not 6?
+> A: Because the payment is the harm to others, not the winner's value. Without bidder 2, others enjoy 10 (bidder 1's bundle). With her, others enjoy 6 (bidder 3's Y). The difference is 4. Her own value of 6 never enters the payment. That separation, allocation from reported values, payment from others' losses, is what makes truth-telling dominant.
+
+> [!QA]
+> Q: Design the payment scheme for an annotation pipeline. 1,000 labelers, pairwise preference labels, quality matters more than speed.
+> A: Piece rates are out: paying per label buys speed and satisficing. Use a two-part scheme. Base pay per hour, not per label, removes the rush incentive. Bonus tied to agreement with gold labels: randomly inject prompts with known-good answers, and pay a bonus proportional to the match rate. This is peer prediction's honest core: agreement with ground truth is rewarded, and the gold labels are the mechanism's audit. Add a third component for the active-learning loop: bonus weight on labels for high-information pairs, so labelers do not cherry-pick easy ones. Publish the scheme. Secret payment rules get gamed. Published ones get understood. The revelation principle applies: design the direct mechanism, pay for honesty, and do not make labelers strategize about the pay formula.
+> Follow-up: What breaks if labelers collude on the gold labels?
+> A: The bonus becomes a coordination game instead of a truth-telling game. Defense: keep gold labels secret and rotate them, so collusion has no fixed target. Also cross-check with inter-annotator agreement on non-gold items: a labeler who matches gold but disagrees with every peer is suspicious. No payment rule survives determined collusion. The goal is to make honesty the cheapest strategy, not the only one.
+
+> [!QA]
+> Q: Walk me through the revelation principle construction. Why does it let designers restrict to truthful mechanisms?
+> A: Start with any mechanism and one of its equilibria: complex bids, clever strategies, some outcome. Build a new direct mechanism: each agent reports their true type, and the mechanism simulates what that agent would have done in the old equilibrium given that report, then implements the old outcome. Truth-telling is an equilibrium of the simulation: if everyone else reports truthfully, the simulation reproduces the old equilibrium play, and deviating in the report is exactly as profitable as deviating in the old game, which was unprofitable by the equilibrium assumption. So any equilibrium outcome of any mechanism is also a truthful equilibrium outcome of a direct mechanism. Designers lose nothing by restricting to direct IC mechanisms.
+> Follow-up: What is the catch?
+> A: Two. The direct mechanism simulates the equilibrium strategies, which may be computationally monstrous: the revelation principle preserves the outcome, not the simplicity. And it assumes the agents actually play an equilibrium of the original game, which demands more rationality than real annotators or bidders possess. It is a design principle, not a deployment recipe: search among truthful mechanisms, but check the computation and the rationality assumptions before shipping.
+
+> [!QA]
+> Q: Work the Myerson reserve on the toy. Values 10, 7, 5, one item.
+> A: Plain second-price: bidder 1 bids 10, pays 7, seller gets 7. Add a reserve of 8. Bidders below 8 cannot win. Bids: 10 wins, pays max(7, 8) = 8. Seller gets 8, up from 7. The reserve excludes the weak and forces the strong to pay more. Now the risk: if all values come in below 8, the item goes unsold and the seller gets 0. The optimal reserve balances the two: set it where the virtual value crosses zero. For values uniform on [0, 10], the virtual value is 2v - 10, zero at v = 5: optimal reserve 5. Below 5 the bidder's information rent exceeds their contribution. The preference-learning parallel: an annotation budget is a reserve problem. You have limited money for labels. The reserve is the quality bar: do not buy labels below it, because their information rent, noise and bias, exceeds their value.
+> Follow-up: Why do real ad auctions use first-price with reserves instead of second-price?
+> A: Revenue and robustness at scale. With many bidders the formats converge by revenue equivalence, and first-price avoids second-price's vulnerability to shill bidding and last-look advantages. The industry decided the strategic complexity was manageable and the revenue higher. IC is one objective among several: revenue, simplicity, and robustness trade against it.
+
 ## Mapping back: what IC buys
 
 | Strategic pain | Mechanism answer | How |
 |---|---|---|
-| Bidders shade; bids confound value and belief | Second-price | Bid your value; the bid decides winning, never the price |
+| Bidders shade. bids confound value and belief | Second-price | Bid your value. the bid decides winning, never the price |
 | Multi-item allocation under strategy | VCG | Maximize welfare, charge each winner their externality |
-| Complex games with clever equilibria | Revelation principle | Any outcome is achievable truthfully; design direct and IC |
-| Seller wants revenue, not welfare | Myerson reserve | Second-price with a reserve; virtual values discount information rent |
+| Complex games with clever equilibria | Revelation principle | Any outcome is achievable truthfully. design direct and IC |
+| Seller wants revenue, not welfare | Myerson reserve | Second-price with a reserve. virtual values discount information rent |
 
 ## The honest price: truth is fragile
 
@@ -252,28 +309,28 @@ The story in eight steps. Each step answers the one before it.
 ## Official sources and further reading
 
 **Official:**
-- Lecture 9 video (mechanism design): video id zkHTbb-0Gns.
-  The elicitation-target framing is stated at [29:10](ts:29:10).
+- CS329H Autumn 2024: Mechanism Design (video id zkHTbb-0Gns):
+  auctions as preference elicitation, incentive compatibility.
 - Course textbook, chapters 9.x: auctions, IC, VCG, the
-  revelation principle, Myerson.
+  revelation principle, Myerson. [link](https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf)
 
 **Further reading:**
 - Vickrey (1961): the second-price auction.
 - Myerson (1981): optimal auction design.
 
 **Caveats from these sources.** The Gibbard-Satterthwaite
-theorem is the textbook's bridge from voting to mechanisms;
+theorem is the textbook's bridge from voting to mechanisms.
 its proof is not reproduced here. The ad-auction history,
 second-price to first-price, is the lecture's telling. The
 10/7/5 toy is worked here from the textbook's example values.
 
 ## Connections to the other courses
 
-- **CS329H L05:** annotation budgets are revenue problems;
+- **CS329H L05:** annotation budgets are revenue problems.
   active learning meets mechanism design.
 - **CS329H L06:** CIRL's strategic human is the cooperative
-  half; mechanisms are the adversarial half.
-- **CS329H L08:** voting rules are manipulable mechanisms;
+  half. mechanisms are the adversarial half.
+- **CS329H L08:** voting rules are manipulable mechanisms.
   Arrow meets Gibbard-Satterthwaite.
 - **CS329H L10:** the inversion problem: strategic behavior
   breaks the behavior-to-preference map.

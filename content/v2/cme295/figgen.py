@@ -212,22 +212,34 @@ def l01_rnn_fig():
 
 @fig
 def l01_qkv_attention():
-    f = Fig("l01-qkv-attention", 960, 640, "Self-attention: query, key, value",
+    # Numbers are l01's own worked toy: 3 tokens, 2-D vectors, identity projections.
+    import math
+    keys = ["counselor", "helped", "frame"]
+    sc = [1, 1, 2]
+    exps = [round(math.e**s, 2) for s in sc]      # [2.72, 2.72, 7.39]
+    tot = round(sum(exps), 2)                       # 12.83
+    wt = [round(e / tot, 2) for e in exps]           # [0.21, 0.21, 0.58]
+    assert exps == [2.72, 2.72, 7.39] and tot == 12.83 and wt == [0.21, 0.21, 0.58]
+    out = [round(wt[0]*1 + wt[1]*0 + wt[2]*1, 2), round(wt[0]*0 + wt[1]*1 + wt[2]*1, 2)]
+    assert out == [0.79, 0.79] and abs(sum(wt) - 1.0) < 0.01
+    f = Fig("l01-qkv-attention", 960, 660, "Self-attention: query, key, value",
             "The canonical attention arrow for this course. Softmax(Q K^T / sqrt(d_k)) V.")
-    f.text(24, 116, 'Example: the query token is "it". Which tokens answer it?', size=16, weight=500, anchor="start")
-    keys = ["The", "animal", "did", "not", "cross", "it"]
-    scores = [0.05, 0.72, 0.03, 0.02, 0.08, 0.10]
-    f.pill(80, 160, 120, 48, 'query: "it"', fill=NEWTOK, mono=False, size=15)
-    for i, (k, s) in enumerate(zip(keys, scores)):
-        y = 140 + i * 72
-        f.pill(400, y, 120, 48, k, mono=False, size=14)
-        f.bar(560, y + 8, 180, 32, s, fill=TEAL if s > 0.5 else FOCUS)
-        f.text(760, y + 24, f"{s:.2f}", size=14, font=MONO)
-        f.arrow(200, 184, 400, y + 24)
-    f.text(640, 132, "softmax(QK^T / sqrt(d_k))", size=14, fill=MUTED)
-    f.box(60, 520, 840, 72, fill=COUNT, rx=8)
-    f.text(480, 556, "Output = weighted average of values. Weights come from query-key similarity.",
-           size=15, weight=500)
+    f.text(24, 116, 'Example: the query token is "frame". Scores are dot products.',
+           size=16, weight=500, anchor="start")
+    f.pill(80, 150, 140, 48, 'query: "frame"', fill=NEWTOK, mono=False, size=15)
+    for i, (k, s, w) in enumerate(zip(keys, sc, wt)):
+        y = 140 + i * 90
+        f.pill(400, y, 130, 48, k, mono=False, size=14)
+        f.bar(560, y + 8, 180, 32, w, fill=TEAL if w > 0.5 else FOCUS)
+        f.text(752, y + 24, f"score {s} -> {w:.2f}", size=14, font=MONO, anchor="start")
+        f.arrow(220, 174, 400, y + 24)
+    f.box(60, 430, 840, 150, fill=COUNT, rx=8)
+    f.text(480, 465, f"softmax: e^1={exps[0]:.2f}, e^1={exps[1]:.2f}, e^2={exps[2]:.2f}, total={tot:.2f}",
+           size=15, weight=500, font=MONO)
+    f.text(480, 505, f"weights = [{wt[0]:.2f}, {wt[1]:.2f}, {wt[2]:.2f}] (sum to 1)",
+           size=15, weight=500, font=MONO)
+    f.text(480, 545, f"output = {wt[0]:.2f}*[1,0] + {wt[1]:.2f}*[0,1] + {wt[2]:.2f}*[1,1] = [{out[0]:.2f}, {out[1]:.2f}]",
+           size=15, weight=600, font=MONO)
     f.src()
     f.save()
 
@@ -360,7 +372,7 @@ def l02_attention_map():
     f.text(24, 116, '"The animal did not cross the street because it was too tired."',
            size=17, weight=500, anchor="start")
     toks = ["The", "animal", "did", "not", "cross", "street", "it"]
-    strong = {1: 0.62, 6: 0.15}
+    strong = {1: 0.72, 6: 0.15}  # 0.72 = the lesson toy weight on "animal" (l02)
     for i, t in enumerate(toks):
         x = 60 + i * 122
         f.pill(x, 160, 110, 48, t, mono=False, size=15,
@@ -1121,10 +1133,10 @@ def l05_compare():
 def l06_weaknesses():
     f = Fig("l06-weaknesses", 960, 600, "Vanilla LLMs: four weaknesses",
             "From CME295 Lecture 6. Reasoning models attack the first one.")
-    items = [("Limited reasoning", "one-shot answers fail on math and code", ORANGE),
+    items = [("Limited reasoning", "one-shot answers fail\non math and code", ORANGE),
              ("Static knowledge", "frozen at the cutoff date", FOCUS),
              ("No action", "all talk, no tools", TEAL),
-             ("Hard to evaluate", "BLEU and ROUGE miss free-form quality", MUTED)]
+             ("Hard to evaluate", "BLEU and ROUGE miss\nfree-form quality", MUTED)]
     for i, (k, v, col) in enumerate(items):
         x = 60 + i * 216
         f.box(x, 140, 200, 280, rx=12)
@@ -1271,16 +1283,16 @@ def l06_length_bias():
 def l06_r1_pipeline():
     f = Fig("l06-r1-pipeline", 960, 700, "DeepSeek R1: the full recipe",
             "From CME295 Lecture 6. R1-Zero proves RL works. R1 makes it usable.")
-    steps = [("V3 base", "pretrained MoE + MLA", COUNT),
-             ("Cold-start SFT", "small, human-rewritten CoTs", ACTIVE),
-             ("RL", "accuracy + format + language rewards", NEWTOK),
-             ("Big SFT", "rejection sampling, 3:1, 200k non-reasoning", ACTIVE),
-             ("Final RL", "reasoning + helpful + harmless", NEWTOK)]
+    steps = [("V3 base", ["pretrained MoE + MLA"], COUNT),
+             ("Cold-start SFT", ["small, human-rewritten", "CoTs"], ACTIVE),
+             ("RL", ["accuracy + format +", "language rewards"], NEWTOK),
+             ("Big SFT", ["rejection sampling, 3:1", "200k non-reasoning"], ACTIVE),
+             ("Final RL", ["reasoning + helpful +", "harmless"], NEWTOK)]
     for i, (k, v, col) in enumerate(steps):
         x = 36 + i * 180
         f.box(x, 130, 168, 170, fill=col, rx=12)
         f.text(x + 84, 176, k, size=14, weight=600)
-        f.text(x + 84, 224, v, size=12, fill=MUTED)
+        f.text(x + 84, 224, "\n".join(v), size=12, fill=MUTED)
         if i < 4:
             f.arrow(x + 168, 215, x + 180, 215)
     f.box(36, 350, 888, 110, fill=COUNT, rx=8)
@@ -1703,7 +1715,7 @@ def l08_factuality():
 
 @fig
 def l08_agent_failures():
-    f = Fig("l08-agent-failures", 960, 700, "Seven ways agents fail",
+    f = Fig("l08-agent-failures", 960, 780, "Seven ways agents fail",
             "From CME295 Lecture 8. Prediction, execution, synthesis. Fix failures in groups.")
     stages = [("Prediction", [( "the punt", "needed a tool, did not call one"),
                                ("tool hallucination", "find_bear, not find_teddy_bear"),
@@ -1783,11 +1795,11 @@ def l09_arc():
         if i < 7:
             f.arrow(x + 100, 255, x + 112, 255)
     f.box(40, 400, 420, 120, fill=COUNT, rx=8)
-    f.text(250, 438, "Midterm (50%)", size=17, weight=600)
-    f.text(250, 474, "lectures 1-4. Oct 24.", size=14, fill=MUTED)
+    f.text(250, 438, "Midterm", size=17, weight=600)
+    f.text(250, 474, "lectures 1-4", size=14, fill=MUTED)
     f.box(500, 400, 420, 120, fill=NEWTOK, rx=8)
-    f.text(710, 438, "Final (50%)", size=17, weight=600)
-    f.text(710, 474, "lectures 5-8. Week of Dec 8.", size=14, fill=MUTED)
+    f.text(710, 438, "Final", size=17, weight=600)
+    f.text(710, 474, "lectures 5-8", size=14, fill=MUTED)
     f.src()
     f.save()
 
@@ -1987,7 +1999,7 @@ def l01_onehot():
     f.text(260, 305, "every word equally far", size=14, fill=ORANGE, weight=500)
     f.box(500, 120, 400, 220, fill=NEWTOK, rx=12)
     f.text(700, 150, "embedding: \"cat\"", size=16, weight=600)
-    f.text(700, 190, "512 dims, all dense", size=14, fill=MUTED)
+    f.text(700, 190, "a few hundred dims, all dense", size=14, fill=MUTED)
     f.text(700, 230, "[0.2, -1.1, ..., 0.7]", size=14, font=MONO)
     f.text(700, 270, "cat near dog, far from car", size=14, fill=MUTED)
     f.text(700, 305, "distance carries meaning", size=14, fill=TEAL, weight=500)
@@ -2054,11 +2066,11 @@ def l01_causal_mask():
 def l01_model_map():
     f = Fig("l01-model-map", 960, 680, "What is used where: October 2026",
             "From CME295 Lecture 1. Public facts only. Closed labs do not publish internals.")
-    rows = [("DeepSeek V4.1 Flash", "MoE 552B, 8B/16B active", "open weights, MIT"),
-            ("Llama 4 Maverick", "MoE 128 experts, 17B active", "open weights"),
-            ("Kimi K3", "MoE (details not public)", "open weights"),
-            ("GPT-6 / Gemini 3 / Claude", "architecture not public", "unknown"),
-            ("GPT-2 (2019)", "dense 1.5B, learned positions", "the teaching model")]
+    rows = [("DeepSeek V4.1 Flash", "causal encoder-decoder MoE, 8B/16B active", "open weights, MIT"),
+            ("Llama 4 Maverick", "decoder-only MoE, 17B active, 128 experts", "open weights"),
+            ("BERT (2018)", "encoder-only, bidirectional", "search, classification, embeddings"),
+            ("T5 (2019)", "encoder-decoder", "input and output differ in kind"),
+            ("GPT-6 / Gemini 3.8 Flash", "decoder-only, causal", "closed weights")]
     for i, (m, a, n) in enumerate(rows):
         y = 110 + i * 100
         f.box(60, y, 260, 84, fill=NEWTOK, rx=12)
@@ -2066,7 +2078,7 @@ def l01_model_map():
         f.text(470, y + 30, a, size=14, weight=500, anchor="start")
         f.text(470, y + 58, n, size=13, fill=MUTED, anchor="start")
     f.box(60, 620, 840, 44, fill=COUNT, rx=8)
-    f.text(480, 642, "Pattern: open frontier is MoE. Closed frontier is unknown. Teaching is dense.",
+    f.text(480, 642, "Decoder-only won the LLM era. The other shapes survive where generation is not needed.",
            size=14, weight=500)
     f.src()
     f.save()
@@ -2093,19 +2105,32 @@ def l02_sinusoid_toy():
 
 @fig
 def l02_kv_bytes():
+    # Numbers computed from the lesson toy (l02, KV cache byte math).
+    layers, kv_heads, d_head, nbytes = 80, 8, 128, 2
+    per_layer = 2 * kv_heads * d_head * nbytes          # 4,096
+    per_token = per_layer * layers                       # 327,680 = 320 KiB
+    tokens = 32768
+    total_bytes = per_token * tokens                     # 10,737,418,240
+    gib = total_bytes / 1024**3                          # exactly 10.0
+    assert per_layer == 4096 and per_token == 327680 and gib == 10.0
+    mha_gib = gib * (64 / kv_heads)                      # 80.0
+    mqa_gib = gib / kv_heads                             # 1.25
     f = Fig("l02-kv-bytes", 960, 640, "KV cache bytes: GQA's 4x saving, counted",
-            "From CME295 Lecture 2. 70B model, 32 layers, fp16, 4K context.")
-    f.box(60, 120, 840, 240, fill=COUNT, rx=8)
-    f.text(480, 165, "per token: 2 (K,V) x 32 layers x 8 heads x 128 dim x 2 bytes = 131,072 bytes = 128 KB",
+            "From CME295 Lecture 2. Llama-3-style 70B, 80 layers, fp16, GQA with 8 KV heads.")
+    f.box(60, 120, 840, 250, fill=COUNT, rx=8)
+    f.text(480, 160, f"per token per layer: 2 (K,V) x {kv_heads} KV heads x {d_head} dim x {nbytes} bytes = {per_layer:,} bytes",
            size=16, weight=600, font=MONO)
-    f.text(480, 215, "4,096 tokens x 128 KB = 512 MB per sequence (GQA, 8 KV heads)", size=16, weight=500)
-    f.text(480, 260, "MHA with 32 KV heads: 4x the heads = 2 GB per sequence", size=16, fill=ORANGE, weight=500)
-    f.text(480, 305, "batch 32: 16 GB (GQA) vs 64 GB (MHA). The cache is the serving bottleneck.",
-           size=15, fill=MUTED)
-    f.box(60, 400, 840, 160, fill=NEWTOK, rx=8)
-    f.text(480, 440, "Decision rule: the cache, not the weights, sets max batch size.",
+    f.text(480, 205, f"per token, {layers} layers: {per_token:,} bytes = 320 KB", size=16, weight=500)
+    f.text(480, 250, f"{tokens:,} tokens x 320 KB = {gib:.1f} GiB per request (GQA, {kv_heads} KV heads)",
            size=16, weight=600)
-    f.text(480, 480, "GQA/MQA/MLA exist to shrink this number. Every serving trick downstream assumes it.",
+    f.text(480, 295, f"MHA with 64 KV heads: 8x the cache = {mha_gib:.0f} GiB per request",
+           size=16, fill=ORANGE, weight=500)
+    f.text(480, 335, f"MQA with 1 KV head: 8x smaller = {mqa_gib:.2f} GiB per request",
+           size=16, fill=TEAL, weight=500)
+    f.box(60, 410, 840, 150, fill=NEWTOK, rx=8)
+    f.text(480, 450, "Decision rule: the cache, not the weights, sets max batch size.",
+           size=16, weight=600)
+    f.text(480, 490, "100 concurrent 32K requests need 1 TiB with GQA. Halve to 4 heads and it is 5.0 GiB.",
            size=14, fill=MUTED)
     f.src()
     f.save()
@@ -2138,9 +2163,9 @@ def l02_bert_family():
 def l03_lineup():
     f = Fig("l03-lineup", 960, 700, "The October 2026 lineup: who runs what",
             "From CME295 Lecture 3. Public model cards only. Closed labs are unknown.")
-    rows = [("DeepSeek V4.1 Flash", "MoE: 552B total, 8B/16B active", "sparse is the open default"),
-            ("Llama 4 Maverick", "MoE: 17B active, 128 experts", "Meta's sparse turn"),
-            ("Kimi K3 / GLM-5.2", "MoE (details not public)", "the Chinese wave"),
+    rows = [("DeepSeek V4.1 Flash", "causal encoder-decoder MoE, 552B, 8B/16B active", "sparse is the open default"),
+            ("Llama 4 Maverick", "decoder-only MoE, 17B active, 128 experts", "Meta's sparse turn"),
+            ("Kimi K3 (Moonshot)", "decoder-only MoE, 2.8T, 104B active\n896 experts (16+2 shared per token)", "Kimi Delta Attention, 1M context"),
             ("GPT-6 / Gemini 3 / Claude", "decoder-only, internals unknown", "closed: mark unknown"),
             ("Small fast models", "dense, latency-predictable", "MoE's overhead is not worth it")]
     for i, (m, a, n) in enumerate(rows):

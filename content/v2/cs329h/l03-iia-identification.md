@@ -7,22 +7,24 @@ order: 3
 nav: "L03 · IIA and Identification"
 title: "Lecture 3: IIA, Identification, and the Rashomon Effect"
 summary: "The Independence of Irrelevant Alternatives axiom, the red-bus/blue-bus and heterogeneity failures, utility identification, and the Rashomon effect."
-date: "[uncertain] Spring 2026"
+date: "[uncertain] Autumn 2024"
 instructor: "Sanmi Koyejo"
-offering: "Spring 2026"
-duration: "1:19:20"
-video_id: _bych9RfQvw
-video_title: "Stanford CS329H Lecture 2: Choice Models"
-video_caption: "Original lecture. The second half develops the limits of the choice models from Lecture 2: IIA, identification, and model multiplicity."
+offering: "[uncertain]"
+duration: "[uncertain]"
+video_id: "inXUp5j107I"
+video_title: "The Elo Rating System"
+video_caption: "External explainer (same as L02). The final segment covers the Thurstone model, the probit alternative that this lesson uses against IIA. Verified live on YouTube."
 concepts: [iia, red-bus-blue-bus, heterogeneity, mixture-models, identification, rashomon-effect, nested-logit]
 sources:
   - tag: video
-    label: "Lecture 2 video, Stanford Online YouTube"
-    url: https://www.youtube.com/watch?v=_bych9RfQvw
-  - tag: notes
-    label: "Official subtitle transcript (en-US)"
+    label: "The Elo Rating System (external explainer, Thurstone segment)"
+    url: https://www.youtube.com/watch?v=inXUp5j107I
+  - tag: video
+    label: "CS329H Autumn 2024: Preference Models (course lecture, via playlist)"
+    url: http://www.youtube.com/playlist?list=PLoROMvodv4rNm525zyAObP4al43WAifZz
   - tag: notes
     label: "Course textbook, chapters 1.8-1.10 (Truong, Haupt, Koyejo, 2025)"
+    url: https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
   - tag: paper
     label: "Luce, Individual Choice Behavior (1959)"
 ---
@@ -110,6 +112,44 @@ integration.
 > A: IIA says the train-versus-bus odds ignore everything else. Clone the bus into red and blue. Under IIA each clone competes independently, so the train's share drops from 0.269 to 0.155 even though nothing about the train changed. Real intuition: the clones should split the bus share. The model is wrong because it assumes independent shocks for near-identical items. Correlated noise or nested logit fixes it.
 > Follow-up: Where does this bite in LLM work?
 > A: When candidate responses are near-duplicates. A reward model with IIA structure spreads probability across paraphrases instead of concentrating on the best answer. Pair sampling that includes many similar responses distorts the implicit Borda aggregation in DPO. Deduplicate candidates or model the correlation.
+
+### Subchapter: nested logit, worked
+
+The fix for clones is a two-stage choice. Group the items into
+**nests**: {train} and {red bus, blue bus}. The chooser picks a
+nest first, then an item inside the nest. IIA holds within each
+nest but not across nests. The buses now compete with each other
+before they compete with the train.
+
+![Nested logit: choose the nest, then the item](assets/plate-nested-logit.webp "Stage 1 picks the nest. Stage 2 picks the item inside. The train keeps its share. Shell 3. Source: original figure for nested logit. Project: Stanford Frontier AI.")
+
+Work it with the textbook's numbers. Give the bus nest a
+dissimilarity parameter lambda: lambda = 1 means no correlation,
+lambda near 0 means the two buses are near-perfect clones. The
+nest choice uses inclusive values. the item choice happens
+inside the nest.
+
+```ascii
+lambda = 1.0 (no correlation):  train 0.155, each bus 0.422
+lambda = 0.5:                   train 0.206, each bus 0.397
+lambda = 0.1:                   train 0.256, each bus 0.372
+lambda = 0.01 (near-clones):    train 0.268, each bus 0.366
+```
+
+Read the column. As the correlation rises, the train's share
+climbs back from 0.155 toward its pre-split value 0.269. The
+clone stops stealing from the train and steals from its
+sibling instead, which is what intuition demanded. At lambda =
+1 the model reduces to the flat softmax: the clone problem
+returns in full.
+
+The price: you must specify the nests. Wrong nests give wrong
+substitution. With three nests the model has three extra
+parameters. with learned nests it becomes a clustering problem.
+The nested logit is the tractable middle ground between the
+plain softmax, which assumes no correlation, and the full
+probit, which estimates every correlation at the cost of
+numerical integration.
 
 ## Where IIA breaks, part 2: mixtures
 
@@ -209,6 +249,24 @@ one of them is a choice, not a discovery.
 > Follow-up: How do you navigate Rashomon in practice?
 > A: Three tools. Regularization prefers simpler models in the set. Bayesian averaging keeps the uncertainty instead of picking one. Structural assumptions from domain knowledge rule out implausible members. None of them finds "the truth." They make the choice explicit and auditable.
 
+> [!QA]
+> Q: Walk me through the red-bus/blue-bus arithmetic from start to finish.
+> A: Start with two options: train with V = 1.0, bus with V = 2.0. Exponentiate: 2.72 and 7.39. Total 10.11. Shares: train 2.72/10.11 = 0.269, bus 0.731. Now split the bus into red and blue, each V = 2.0. Exponentials: 2.72, 7.39, 7.39. Total 17.50. New shares: train 2.72/17.50 = 0.155, each bus 0.422. The train lost 0.114 of share without changing at all. The mechanism: IIA forces the j-versus-k odds to ignore the rest of the set, so each clone competes independently and steals proportionally from everyone. Intuition says the clones should split the old bus share 0.731 between themselves and leave the train at 0.269. Nested logit with a near-zero dissimilarity parameter delivers exactly that: train 0.268, each bus 0.366.
+> Follow-up: Why can not the plain softmax be patched with a quick fix?
+> A: The failure is in the noise assumption, not a parameter value. IIA is equivalent to i.i.d. Gumbel noise: independent shocks for every item. No utility vector fixes it because the utilities are not the problem. You must change the correlation structure of the shocks, which means a different model: nested logit, probit with covariance, or explicit deduplication before fitting.
+
+> [!QA]
+> Q: Your LLM eval pipeline samples 4 responses per prompt and the annotator picks the best. Near-duplicates keep appearing. Redesign the pipeline.
+> A: Three changes. First, deduplicate before showing: embed the 4 candidates and drop any pair with cosine similarity above 0.95, resampling replacements. This removes the clones that break IIA instead of modeling them. Second, switch the query from "pick the best of 4" to pairwise comparisons on the deduplicated set, and fit Bradley-Terry. Pairs are cheaper per judgment and the BT likelihood is the best-understood object in the course. Third, log the choice set with every label. If you ever need set-choice probabilities later, you need to know what else was on screen. without the set, the labels are uninterpretable under any model richer than BT.
+> Follow-up: What if you cannot deduplicate because the duplicates are the point, say you are studying paraphrase robustness?
+> A: Then model the correlation instead of removing it. Fit a nested logit with paraphrase clusters as nests, or a probit with a covariance block per cluster. The plain softmax will spread probability across the paraphrases and understate the best answer's share. Name the nest structure in the report: it is a modeling choice, and the Rashomon effect says the data will not pick it for you.
+
+> [!QA]
+> Q: When is IIA a safe assumption, and when is it reckless?
+> A: Safe when the choice set is fixed and the items are genuinely distinct: chess players in a tournament, job candidates with different profiles, responses that differ in substance. The odds ratio then has no reason to move, and the softmax's tractability is pure win. Reckless when the set changes across observations, when items are near-duplicates, or when the population mixes distinct taste groups. The three tests: does the choice set vary, are any two items close substitutes, do annotators disagree in structured ways. One yes means you need nests, mixtures, or per-group models. The cost of ignoring a yes is a fit that looks precise and is wrong.
+> Follow-up: Does DPO need IIA to be true?
+> A: DPO needs the BT model to be correctly specified, and BT implies IIA. In practice DPO runs on pipelines that violate it: near-duplicate candidates, mixed annotators. The result is the distorted Borda count from Lecture 7: the policy upweights responses by head-to-head wins under a misspecified model. DPO still often works because the distortion is small relative to the signal. But when candidates cluster into near-duplicate groups, the distortion stops being small, and that is when you audit the sampling.
+
 ## The model family for IIA failures
 
 The textbook's optional section extends the family. Each member
@@ -235,10 +293,10 @@ O(n^3) without approximations.
 
 | Threat | What survives | How |
 |---|---|---|
-| Clones steal share | Correlated noise | Nested logit or probit; IIA within nests only |
-| Mixed populations | Per-group models | Mixtures or random coefficients; one BT fit is a compromise |
-| Level ambiguity | Anchors | Fix V_1 = 0 or use the reference policy; never fit unconstrained |
-| Structural ambiguity | Model sets | Rashomon: report the set, regularize, or average; do not crown one fit |
+| Clones steal share | Correlated noise | Nested logit or probit. IIA within nests only |
+| Mixed populations | Per-group models | Mixtures or random coefficients. one BT fit is a compromise |
+| Level ambiguity | Anchors | Fix V_1 = 0 or use the reference policy. never fit unconstrained |
+| Structural ambiguity | Model sets | Rashomon: report the set, regularize, or average. do not crown one fit |
 
 ## The honest price: assumptions all the way down
 
@@ -283,10 +341,10 @@ The story in eight steps. Each step answers the one before it.
 ## Official sources and further reading
 
 **Official:**
-- Lecture 2/3 video (choice models): video id _bych9RfQvw. The
-  IIA material continues the choice-models lecture.
+- The Elo Rating System (external explainer, video id inXUp5j107I):
+  the Thurstone model segment motivates the probit alternative.
 - Course textbook, chapters 3.x: IIA, red-bus/blue-bus,
-  identification, Rashomon, the extended model family.
+  identification, Rashomon, the extended model family. [link](https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf)
 
 **Further reading:**
 - Train (2009), Discrete Choice Methods with Simulation: nested
@@ -303,9 +361,9 @@ universal rate.
 ## Connections to the other courses
 
 - **CS329H L02:** the softmax and BT that IIA makes tractable.
-- **CS329H L04:** the anchor requirement before fitting; the
+- **CS329H L04:** the anchor requirement before fitting. the
   flat direction that unconstrained MLE wanders along.
 - **CS329H L07:** DPO inherits IIA and the identification
-  structure; the reference policy is the anchor.
+  structure. the reference policy is the anchor.
 - **CS329H L08:** Borda escapes Arrow by weakening IIA to
   IIA-prime.

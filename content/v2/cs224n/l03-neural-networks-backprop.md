@@ -11,7 +11,7 @@ instructor: "Christopher Manning"
 offering: "Spring 2024"
 duration: "1:13:00"
 video_id: HnliVHU2g9U
-video_title: "Lecture 3: Neural net learning: Gradients by hand (matrix calculus)"
+video_title: "Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 3 - Backpropagation, Neural Network"
 video_caption: "Original lecture. Christopher Manning derives neural network layers, the chain rule, Jacobians, and backpropagation."
 concepts: [neural-network, layer, affine, activation, sigmoid, chain-rule, jacobian, backpropagation, autograd, gradient-checking]
 sources:
@@ -33,7 +33,7 @@ should each weight move to reduce the error? A modern network has billions
 of weights. The question of this lecture is brutally practical: how do you
 compute billions of gradients before the semester ends?
 
-**On this page:** [ReLU](#subchapter-relu-the-unsaturated-workhorse) · [GELU](#subchapter-gelu-smoothness-for-transformers) · [Forward-mode vs reverse-mode](#subchapter-forward-mode-versus-reverse-mode) · [Autodiff in production](#what-is-used-where-autodiff-in-production) · [Watch and go deeper](#watch-and-go-deeper)
+**On this page:** [ReLU](#subchapter-relu-the-unsaturated-workhorse) · [GELU](#subchapter-gelu-smoothness-for-transformers) · [The Jacobian that simplifies itself](#subchapter-the-jacobian-that-simplifies-itself) · [Forward-mode vs reverse-mode](#subchapter-forward-mode-versus-reverse-mode) · [Autodiff in production](#what-is-used-where-autodiff-in-production) · [Watch and go deeper](#watch-and-go-deeper)
 
 ## The building block: a layer
 
@@ -196,6 +196,39 @@ length m and z a vector of length n, the Jacobian dh/dz is the m-by-n matrix
 whose (i,j) entry is dh_i/dz_j. The matrix version of the chain rule
 multiplies Jacobians. Same idea, more bookkeeping.
 
+### Subchapter: the Jacobian that simplifies itself
+
+One Jacobian appears in almost every classifier in this course: softmax
+followed by cross-entropy loss. The full Jacobian of the softmax is a
+dense matrix, and multiplying it out is tedious. But the composition
+collapses. If p is the softmax output and y is the one-hot gold label,
+the gradient of the loss with respect to the pre-softmax scores z is:
+
+```ascii
+dL/dz = p - y
+```
+
+Prediction minus truth, element by element. No Jacobian in sight. Watch it
+on Lecture 1's softmax toy. The model predicted
+p = [0.46, 0.38, 0.10, 0.06] for [money, crisis, river, zebra]. The true
+context word was "money", so y = [1, 0, 0, 0]:
+
+```ascii
+dL/dz = [0.46 - 1, 0.38 - 0, 0.10 - 0, 0.06 - 0]
+      = [-0.54, 0.38, 0.10, 0.06]
+```
+
+Read the signs. The money score gets a negative gradient: raise it. Every
+other score gets a positive gradient: lower them. The magnitudes are the
+errors themselves: money was underpredicted by 0.54, so it gets the
+strongest push. The four numbers sum to 0.00, as they must: the scores
+compete, so raising one means lowering the rest. This is the same
+expectation-minus-observation shape as Lecture 1's skip-gram gradient.
+Memorize this one line. You will differentiate it a hundred times in this
+course, and it is always p minus y.
+
+![Softmax plus cross-entropy: the gradient is p minus y](assets/plate-l03-softmax-ce-grad.webp "Softmax output p = [0.46, 0.38, 0.10, 0.06], gold y = [1, 0, 0, 0]. dL/dz = p - y = [-0.54, 0.38, 0.10, 0.06], summing to 0. Shell 2. Source: original toy for the softmax gradient. Project: Stanford Frontier AI.")
+
 ## Forward applies, backward reuses
 
 "Forward pass is just function application. Backward pass is the chain rule
@@ -345,9 +378,16 @@ and it is the reason Lecture 5's RNNs struggle with long sentences.
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/HnliVHU2g9U" title="CS224N Spring 2024 Lecture 3: Neural net learning: Gradients by hand" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 3: Neural net learning</strong> (Christopher Manning, Spring 2024). The original lecture: layers, the chain rule, Jacobians, backpropagation. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=HnliVHU2g9U</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/Ilg3gGewQ5U" title="What is backpropagation really doing?" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>Backpropagation, intuitively</strong> (3Blue1Brown). The chain rule as credit assignment, animated.</p>
+</div>
 </div>
 
 ### Go deeper

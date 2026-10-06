@@ -227,9 +227,16 @@ Two frontiers:
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/tfVgHsKpRC8" title="CS224N Spring 2024 Lecture 13: Speech Brain-Computer Interfaces" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 13: Speech Brain-Computer Interfaces</strong> (Chaofei Fan, Spring 2024). The original lecture: from locked-in patients to inner-speech decoding. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=tfVgHsKpRC8</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/DaWb1ukmYHQ" title="Stanford's brain implants help woman speak again" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>Stanford's speech brain implant</strong> (Stanford Medicine). The Willett 2023 speech-decoding result, on video.</p>
+</div>
 </div>
 
 ### Go deeper

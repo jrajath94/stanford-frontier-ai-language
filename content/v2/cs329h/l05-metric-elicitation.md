@@ -7,22 +7,21 @@ order: 5
 nav: "L05 · Metric Elicitation"
 title: "Lecture 5: Metric Elicitation, Asking the Best Questions"
 summary: "Fisher information and the 50/50 rule, adaptive elicitation loops, D-optimal design for preference functions, GP active queries, and active DPO."
-date: "[uncertain] Spring 2026"
+date: "[uncertain]"
 instructor: "Sanmi Koyejo"
-offering: "Spring 2026"
-duration: "1:22:40"
-video_id: 7i6WsIzZaeo
-video_title: "Stanford CS329H Lecture 3: Metric Elicitation"
-video_caption: "Original lecture. Sanmi Koyejo on metric elicitation and its tie to mechanism design."
+offering: "[uncertain]"
+duration: "[uncertain]"
+video_id: "eAtBuZHTl40"
+video_title: "Active Learning and Iterative Improvement of Computer Vision Models"
+video_caption: "External explainer (not the course lecture): Roboflow CEO Joseph Nelson on active learning as an iterative process. Verified live on YouTube."
 concepts: [metric-elicitation, fisher-information, adaptive-testing, d-optimal, active-learning, gaussian-process, adpo]
 sources:
   - tag: video
-    label: "Lecture 3 video, Stanford Online YouTube"
-    url: https://www.youtube.com/watch?v=7i6WsIzZaeo
-  - tag: notes
-    label: "Official subtitle transcript (en-US)"
+    label: "Active Learning and Iterative Improvement (Roboflow, external explainer)"
+    url: https://www.youtube.com/watch?v=eAtBuZHTl40
   - tag: notes
     label: "Course textbook, chapters 2.17-2.20 (Truong, Haupt, Koyejo, 2025)"
+    url: https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
 ---
 ## The problem: questions cost money
 
@@ -150,6 +149,29 @@ textbook simulates this: 50 items, 5 features, 100 queries.
 Active D-optimal selection beats random pairs on estimating W.
 The margin is the payoff of the whole chapter.
 
+### Subchapter: D-optimality, drawn and worked
+
+Picture the posterior over W as an ellipse. Wide in a direction
+means uncertain about that direction. Each query adds
+information along its feature-difference direction x_jk, scaled
+by w = p(1-p). The ellipse shrinks along that direction. The
+D-optimal query is the one that shrinks the ellipse's volume
+the most: maximize the log-determinant gain.
+
+![D-optimality shrinks the ellipse fastest](assets/plate-d-optimal.webp "Each query shrinks the posterior ellipse along its direction. D-optimal picks the biggest volume cut. Shell 3. Source: original figure for D-optimality. Project: Stanford Frontier AI.")
+
+Work it in 2-D. Posterior precision Lambda = I, the identity:
+the ellipse is a circle. Two candidate queries. Query 1 has
+direction x = (1, 0) and p = 0.5, so w = 0.25. By the matrix
+determinant lemma, the logdet gain is log(1 + w * x^T
+Lambda^{-1} x) = log(1 + 0.25 * 1) = log(1.25) = 0.223. Query
+2 has direction (0.71, 0.71) and p = 0.9, so w = 0.09: gain =
+log(1 + 0.09 * 1) = 0.086. Query 1 wins by a factor of 2.6.
+The 50/50 rule survives inside the matrix: the uncertain pair
+contributes more, and the direction matters too. A query along
+an already-precise direction adds little even at 50/50, because
+x^T Lambda^{-1} x is small there.
+
 ## Asking well for flexible models
 
 Parametric models have Fisher information. **Gaussian processes**
@@ -182,8 +204,8 @@ is unchanged. The computation is approximate.
 
 | Random-sampling pain | Active answer | How |
 |---|---|---|
-| Budget spent on predictable answers | Ask at 50/50 | I = p(1-p) peaks at 0.25; predictable pairs sit near 0.09 |
-| Fixed forms cannot react | Adaptive loop | Re-estimate after each answer; difficulty tracks belief |
+| Budget spent on predictable answers | Ask at 50/50 | I = p(1-p) peaks at 0.25. predictable pairs sit near 0.09 |
+| Fixed forms cannot react | Adaptive loop | Re-estimate after each answer. difficulty tracks belief |
 | Many parameters, one rule | D-optimality | Max logdet gain shrinks the ellipsoid in all directions |
 | Flexible models, no Fisher matrix | Information gain | Ask where the model is uncertain but the human is clear |
 
@@ -198,6 +220,36 @@ wrong model teaches the wrong thing efficiently. Active learning
 amplifies model errors as well as model gains. The textbook's
 remedy: keep a stream of random queries as a reality check, and
 re-examine the model when the active stream disagrees with it.
+
+> [!QA]
+> Q: Walk me through the Fisher information computation on the Rasch toy.
+> A: Take the estimated ability U-hat = 1.0 and three candidate items with difficulties -V_j of 2.0 (hard), 1.0 (matched), -1.0 (easy). Step one: compute each acceptance probability. Hard: sigma(1.0 - 2.0) = sigma(-1.0) = 0.269. Matched: sigma(0) = 0.500. Easy: sigma(2.0) = 0.881. Step two: compute I = p(1-p) for each. Hard: 0.269 x 0.731 = 0.197. Matched: 0.25. Easy: 0.881 x 0.119 = 0.105. Step three: pick the max. The matched item wins with 0.250, worth 2.4 times the easy item. The rule in one line: ask the question the user gets right half the time.
+> Follow-up: What if two items tie on information?
+> A: Break the tie by coverage: pick the item whose feature direction is least explored so far, the D-optimal tiebreak. Or pick randomly between them. Ties are rare with continuous difficulties and harmless either way: both questions are near-optimal.
+
+> [!QA]
+> Q: You have a 10,000-label budget to train a reward model for RLHF. Spend it.
+> A: Do not spend it all on random pairs. Reserve 2,000 labels as a random stream: the reality check that catches model misspecification. Spend the other 8,000 adaptively. Start with 1,000 random pairs to fit an initial BT reward model. Then loop: score candidate pairs by expected information gain under the current posterior, label the top batch, refit. Weight sampling toward pairs near 50/50 under the current model. Stratify prompts across task types so no category starves. Track held-out pairwise accuracy as the spend progresses. when it plateaus, stop early and bank the remainder. The failure to avoid: spending the whole budget up front on random pairs, which the lesson's arithmetic shows wastes roughly two thirds of the information.
+> Follow-up: How do you know the adaptive loop is helping and not just adding bias?
+> A: Compare against the random stream. Fit the model on the adaptive labels and on an equal-sized random subset, and evaluate both on a held-out set drawn randomly. If the adaptive fit wins, the selection is buying real information. If the random fit wins, the selection is chasing the model's own errors. Also watch for distribution shift: the adaptive stream oversamples hard pairs, so always evaluate on random pairs, never on the selected ones.
+
+> [!QA]
+> Q: What does the Cramer-Rao bound actually say, in plain words?
+> A: It says no unbiased estimator can be more precise than the inverse Fisher information allows. If one observation carries I = 0.25 units of information, then n observations give you at most n x 0.25, and your estimator's variance cannot go below 1/(0.25n). It is a speed limit on learning. The practical use: it converts the information numbers into sample sizes. Want the standard error halved? You need four times the information, which means four times the well-chosen questions, or twelve times the wasted ones at I = 0.09.
+> Follow-up: Does the bound apply to regularized estimators?
+> A: No, only to unbiased ones. Regularized estimators trade bias for variance and can beat the bound on mean squared error. The bound still sets the intuition: information is the currency, and biased estimators spend it differently, not freely.
+
+> [!QA]
+> Q: Greedy picks the best single question. When does planning pairs beat it?
+> A: When questions are complementary: two questions together reveal more than the sum of their separate gains. Example: two items whose difficulties bracket the ability estimate from above and below. Each alone is mildly informative. Together they pin the estimate from both sides, and the pair beats any two independent greedy picks. In practice the loss from greedy is small for smooth parametric models, and the textbook's simulations show greedy active selection beating random clearly. Plan pairs only when you have a concrete complementarity story. otherwise the greedy loop wins on simplicity.
+> Follow-up: Is there a principled way to plan the whole sequence?
+> A: Yes: Bayesian optimal experimental design over sequences, maximizing expected terminal information. It is intractable beyond tiny horizons: the decision tree branches on every possible answer. Approximations exist, lookahead with sampling, but the textbook's verdict stands: greedy is near-optimal here and far simpler. Spend the complexity budget on a better model, not a better planner.
+
+> [!QA]
+> Q: What is the random stream for, exactly, and how big should it be?
+> A: The random stream is the control group of your elicitation experiment. Active selection optimizes under the current model. if the model is wrong, the selection efficiently teaches the wrong thing. Random queries are model-free: they estimate the truth without the selection filter. Size it at 10 to 20 percent of the budget. That is enough to detect a disagreement between the active and random estimates without wasting the budget's main force. If the two streams disagree, trust the random one and fix the model. The stream is insurance, and like all insurance it looks wasteful until the day it pays.
+> Follow-up: Can the random stream be replaced by a fixed validation set?
+> A: Partly. A fixed validation set checks the final model, but it does not check the selection process while it runs. The stream's value is temporal: it catches the model going wrong mid-budget, when you can still redirect the spend. A post-hoc validation set only tells you after the money is gone.
 
 ## Recap: the whole lesson on one screen
 
@@ -228,11 +280,11 @@ The story in eight steps. Each step answers the one before it.
 ## Official sources and further reading
 
 **Official:**
-- Lecture 5 video (metric elicitation): video id 7i6WsIzZaeo.
-  The lecture ties elicitation to the earlier choice models and
-  to future applications.
+- Active Learning and Iterative Improvement (external explainer,
+  video id eAtBuZHTl40): the iterative active-learning loop in
+  production.
 - Course textbook, chapters 5.x: Fisher information, the 50/50
-  rule, the adaptive loop, D-optimality, GP acquisition, ADPO.
+  rule, the adaptive loop, D-optimality, GP acquisition, ADPO. [link](https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf)
 
 **Further reading:**
 - Chaloner and Verdinelli (1995): the Bayesian experimental
@@ -240,7 +292,7 @@ The story in eight steps. Each step answers the one before it.
 
 **Caveats from these sources.** The 50-item, 5-feature,
 100-query simulation is the textbook's illustration. The
-Cramer-Rao bound applies to unbiased estimators; regularized
+Cramer-Rao bound applies to unbiased estimators. regularized
 estimators trade bias for variance. ADPO is sketched in the
 textbook, not derived in full.
 
@@ -254,5 +306,5 @@ textbook, not derived in full.
   preferential Bayesian optimization.
 - **CS329H L07:** active DPO selects pairs for the alignment
   loop.
-- **CS329H L09:** annotation budgets are mechanism design;
+- **CS329H L09:** annotation budgets are mechanism design.
   elicitation and incentives are one story.

@@ -145,6 +145,47 @@ All five share one mathematical structure. Comparisons or choices
 from sets reveal underlying preferences. One framework covers them
 all. The rest of this chapter builds it.
 
+### Subchapter: the five settings in production
+
+Each setting has a deployed system running the comparison
+machinery. Facts below are verified against public sources,
+current as of October 2026.
+
+**Recommenders: implicit feedback.** Production recommenders
+train on implicit comparisons: a click on item A over item B is
+a revealed pairwise preference. The Bayesian Personalized
+Ranking paper (Rendle et al., 2009) made the pairwise log-loss
+on implicit feedback the standard objective. No star ratings
+needed.
+
+**Information retrieval: click models.** Search engines fit
+click models that treat a click on the third result as evidence
+it beat the first two for that query. The absolute relevance is
+never observed. Only the choice is.
+
+**Robotics: trajectory comparisons.** Christiano et al. (2017)
+trained robot policies from human comparisons of trajectory
+pairs: "which clip looks better?" The paper's arXiv page is
+linked in Go deeper. No reward function was written by hand.
+The comparisons were the reward.
+
+**LLM alignment: the pair datasets.** Two public datasets
+anchor the field. The Stanford Human Preferences (SHP) dataset
+collects Reddit preference pairs. The Anthropic HH-RLHF dataset,
+built with reinforcement learning from human feedback (RLHF),
+collects helpfulness and harmlessness comparisons. Both are
+linked live in Go deeper. Every open preference-tuning run
+starts from pairs shaped like these.
+
+**Games: Elo and Bradley-Terry.** Chess federations publish Elo
+ratings: each game is a pairwise comparison, and the update is
+the online Bradley-Terry rule from Lecture 4. LLM evaluation
+moved the same way. LMArena's public leaderboard post, dated
+December 2023, says the team adopted the Bradley-Terry model
+fitted by maximum likelihood on pairwise votes, replacing the
+raw online Elo update. The link is in Go deeper. Same atom,
+from chess clocks to chatbot arenas.
+
 > [!QA]
 > Q: What is preference learning?
 > A: Learning a model of what humans want from observed choices. The data are comparisons: A beat B, item j was chosen from a set, user i accepted item j. The model is usually a utility function: each item gets a number, and higher numbers win more often. Recommenders, search, robotics, LLM alignment, and Elo ratings all reduce to this shape.
@@ -306,7 +347,7 @@ Return to the opening problem with the new machinery. Post-training
 an LLM by human preference runs in three steps (Christiano et al.,
 2017. Ouyang et al., 2022).
 
-![The preference learning pipeline](assets/l01-pipeline.svg "Three stages. Collect preference pairs, train a reward model, optimize the policy. DPO skips the middle stage. Source: original figure for Stanford Frontier AI.")
+![The preference learning pipeline](assets/l01-pipeline.svg "Three stages. Collect preference pairs, train a reward model, optimize the policy. Direct preference optimization (DPO) skips the middle stage. Source: original figure for Stanford Frontier AI.")
 
 1. **Collect preference data.** Sample two responses to a prompt.
    Ask a human which is better. This produces preference pairs.
@@ -403,6 +444,21 @@ The story in eight steps. Each step answers the one before it.
    The U_i terms subtract away. Pairs reveal order, free of
    personal baselines. The price: no levels, no personalization.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/ApF2OenMgfc" title="Stanford CS329H Autumn 2024: Introduction, Sanmi Koyejo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/inXUp5j107I" title="The Elo Rating System: Bradley-Terry derivation, j3m" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+- Course lecture: https://www.youtube.com/watch?v=ApF2OenMgfc
+- The Elo Rating System (Bradley-Terry derivation): https://www.youtube.com/watch?v=inXUp5j107I
+- Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
+- Christiano et al., Deep RL from Human Preferences (2017): https://arxiv.org/abs/1706.03741
+- Ouyang et al., InstructGPT (2022): https://arxiv.org/abs/2203.02155
+- Rafailov et al., DPO (2023): https://arxiv.org/abs/2305.18290
+
 ## Official sources and further reading
 
 **Official:**
@@ -419,7 +475,7 @@ The story in eight steps. Each step answers the one before it.
 - Ouyang et al., Training Language Models to Follow Instructions
   with Human Feedback (2022): https://arxiv.org/abs/2203.02155,
   RLHF at LLM scale.
-- Rafailov et al., Direct Preference Optimization (2023): [paper](https://arxiv.org/abs/2305.18290, skipping the reward model.
+- Rafailov et al., Direct Preference Optimization (2023): [paper](https://arxiv.org/abs/2305.18290), skipping the reward model.
 
 **Caveats from these sources.** The textbook's lecture plan maps
 chapters 1.1-1.6 to Lecture 1, but the actual lecture content is

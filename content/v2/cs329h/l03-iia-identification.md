@@ -151,6 +151,44 @@ plain softmax, which assumes no correlation, and the full
 probit, which estimates every correlation at the cost of
 numerical integration.
 
+### Subchapter: probit on the buses, worked
+
+Nested logit fixes clones by grouping. Probit fixes them by
+correlating the noise directly. Give each bus a shared shock:
+U_train = 1 + e_t, U_red = 2 + e_c + e_r, U_blue = 2 + e_c +
+e_b. The common shock e_c hits both buses at once: good bus
+day, both buses look good. The idiosyncratic shocks e_t, e_r,
+e_b are independent Gaussians with standard deviation 1.81,
+the probit scale matched to the logit from Lecture 2. The
+common shock e_c is Gaussian with standard deviation s_c,
+which dials the correlation.
+
+No closed form exists, so simulate. Draw 400,000 shock
+vectors, pick the max utility each time, count the winners.
+Monte Carlo standard error is about 0.001.
+
+```ascii
+pre-split, train vs one bus:   train 0.348, bus 0.652
+post-split, s_c = 0.00:        train 0.194, each bus 0.403
+post-split, s_c = 1.81:        train 0.249, each bus 0.376
+post-split, s_c = 5.00:        train 0.357, each bus 0.322
+```
+
+Read the column. With no common shock the probit repeats the
+logit's mistake: the train falls from 0.348 to 0.194. As the
+common shock grows, the buses' fates lock together and the
+train's share climbs back to 0.357, essentially its pre-split
+value. The correlation parameter does the same work as the
+nested logit's lambda: both say the clones are one
+alternative wearing two coats.
+
+The price is computation. Every one of these numbers cost
+400,000 simulation draws. The logit gave its answer in one
+line of arithmetic. That is the permanent tradeoff of the
+model family: closed form or correlated shocks, pick one.
+The rule from Lecture 2 stands: pairs, use logit. Many
+similar alternatives, pay for probit or nested logit.
+
 ## Where IIA breaks, part 2: mixtures
 
 IIA fails for a second reason: populations are mixed. Take two
@@ -338,12 +376,21 @@ The story in eight steps. Each step answers the one before it.
 8. **Match the model to the failure.** Clones need nests.
    Mixtures need groups. Plain BT needs a clean small world.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/inXUp5j107I" title="The Elo Rating System: Thurstone/probit segment, j3m" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+- The Elo Rating System, Thurstone segment (probit alternative): https://www.youtube.com/watch?v=inXUp5j107I
+- Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
+- Train (2009), Discrete Choice Methods with Simulation: nested logit, mixed logit, probit estimation.
+
 ## Official sources and further reading
 
 **Official:**
 - The Elo Rating System (external explainer, video id inXUp5j107I):
   the Thurstone model segment motivates the probit alternative.
-- Course textbook, chapters 3.x: IIA, red-bus/blue-bus,
+- Course textbook, chapters 1.8-1.10: IIA, red-bus/blue-bus,
   identification, Rashomon, the extended model family. [link](https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf)
 
 **Further reading:**

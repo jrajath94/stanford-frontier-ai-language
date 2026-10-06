@@ -242,6 +242,7 @@ instead, and the user cancels: p(j &gt; k) = sigma(V_j - V_k). Pairs
 reveal order, free of personal baselines. The price: no levels, no
 personalization.</p>
 <p><a href="l01-preference-foundations.html">Full lesson: L01, Why Preferences</a></p>
+<figure><img alt="Annotator scales: generosity and discernment" src="assets/plate-annotator-scales.webp"><figcaption>Generosity is a mean shift. Discernment is spread. Calibrate both.</figcaption></figure>
 </div>
 <div class="crash-section">
 <h3 id="2-noise-turns-utilities-into-probabilities">2. Noise turns utilities into probabilities.</h3>
@@ -260,6 +261,7 @@ for A &gt; B &gt; C. The preference pair (x, y_w, y_l) is the atom of the
 course. Every method widens the winner-loser gap. This symbol is
 defined in CS329H and reused everywhere.</p>
 <p><a href="l02-choice-models.html">Full lesson: L02, Choice Models</a></p>
+<figure><img alt="Logit vs probit, worked" src="assets/plate-logit-vs-probit.webp"><figcaption>Gap 1.0: 0.731 vs 0.709. Gap 2.0: 0.881 vs 0.865. Tails differ, middles match.</figcaption></figure>
 </div>
 <div class="crash-section">
 <h3 id="3-the-axiom-that-makes-it-tractable-also-breaks">3. The axiom that makes it tractable also breaks.</h3>
@@ -277,6 +279,7 @@ so anchor V_1 = 0 before fitting. And the Rashomon effect: BT, a
 mixture, and nested logit can all hit 90% on the same data. The data
 never picks the structure. You do.</p>
 <p><a href="l03-iia-identification.html">Full lesson: L03, IIA and Identification</a></p>
+<figure><img alt="Nested logit fixes the red bus" src="assets/plate-nested-logit.webp"><figcaption>Lambda 1.0 to 0.01: train share 0.155 to 0.268. Buses cannibalize each other.</figcaption></figure>
 </div>
 <div class="crash-section">
 <h3 id="4-fitting-is-logistic-regression-the-traps-are-specific">4. Fitting is logistic regression. The traps are specific.</h3>
@@ -291,9 +294,10 @@ decoration: Lectures 5 and 6 spend it.</p>
 1500, K = 32: the winner moves to 1516, the loser to 1484. An upset
 against 1700 pays 24 points. K is the learning rate and the
 forgetting rate. Noise comes in two kinds: 10% uniform noise
-attenuates but preserves rankings; systematic noise like verbosity
+attenuates but preserves rankings. systematic noise like verbosity
 bias teaches bias as preference. Model it, do not just clean it.</p>
 <p><a href="l04-learning-rewards.html">Full lesson: L04, Learning Rewards</a></p>
+<figure><img alt="Elo is SGD" src="assets/plate-elo-sgd.webp"><figcaption>K is the learning rate. 16 Elo points = 0.092 BT units.</figcaption></figure>
 </div>
 <div class="crash-section">
 <h3 id="5-buy-questions-at-5050">5. Buy questions at 50/50.</h3>
@@ -310,6 +314,7 @@ where the model is uncertain but the human is clear. Keep a random
 stream: active selection on a wrong model teaches the wrong thing
 fast.</p>
 <p><a href="l05-metric-elicitation.html">Full lesson: L05, Metric Elicitation</a></p>
+<figure><img alt="D-optimality" src="assets/plate-d-optimal.webp"><figcaption>Gains 0.223 vs 0.086. Ask where uncertainty is largest.</figcaption></figure>
 </div>
 <div class="crash-section">
 <h3 id="6-acting-means-pricing-exploration">6. Acting means pricing exploration.</h3>
@@ -327,6 +332,7 @@ optimization puts a GP over the latent function and a BT likelihood
 on duels. And humans strategize: CIRL models the teacher, not just
 the oracle.</p>
 <p><a href="l06-bandits-exploration.html">Full lesson: L06, Bandits</a></p>
+<figure><img alt="UCB vs Thompson" src="assets/plate-ucb-vs-thompson.webp"><figcaption>A 1.505 vs B 2.076: uncertainty wins. Thompson samples once.</figcaption></figure>
 </div>
 <div class="crash-section">
 <h3 id="7-rlhf-is-applied-preference-learning-dpo-skips-the-middleman">7. RLHF is applied preference learning. DPO skips the middleman.</h3>
@@ -337,7 +343,7 @@ reference. Iterate with fresh labels.</p>
 <p>The proxy gets hacked. The reward model scores a confident wrong
 answer 5.0 and the right brief one 3.0, because it learned verbosity
 as quality. The optimizer climbs to 5.0. Goodhart with a training
-loop. The KL leash bounds it; nothing removes it.</p>
+loop. The KL leash bounds it. nothing removes it.</p>
 <p>DPO removes the reward model. The implicit reward is r* = beta
 log(pi/pi_ref). The loss is -log sigma of the implicit gap. Worked
 with beta = 1: winner log-ratio 0.5, loser -0.3, gap 0.8, sigma
@@ -346,27 +352,41 @@ pinned. DPO inherits all six assumptions: BT, IIA, homogeneous
 annotators, unbiased labels, informative queries, stationarity.
 And socially, DPO is a Borda election: it upweights responses by
 their head-to-head win count. Audit the electorate.</p>
+<p>When rewards are verifiable, skip human pairs and use GRPO:
+sample a group per prompt, z-score the rewards inside the
+group, no critic. Worked: [1,0,0,0] gives the winner +1.73 and
+each loser -0.58. DeepSeek-R1 used GRPO with rule-based rewards
+and moved AIME 2024 pass@1 from 15.6% to 71.0%. What is used
+where, October 2026: OpenAI PPO, Anthropic PPO plus
+Constitutional AI, Llama 2 PPO, Llama 3 SFT plus rejection
+sampling plus DPO (no PPO), Mixtral DPO, DeepSeek R1 GRPO.
+Gemini and Grok: not public, marked unknown.</p>
 <p><a href="l07-rlhf.html">Full lesson: L07, RLHF</a></p>
+<figure><img alt="GRPO advantages" src="assets/plate-grpo.webp"><figcaption>Group [1,0,0,0]: winner +1.73, losers -0.58 each. No critic.</figcaption></figure>
 </div>
 <div class="crash-section">
 <h3 id="8-no-neutral-aggregation-exists">8. No neutral aggregation exists.</h3>
 <p>Three candidates, four voters. Plurality crowns A 2-1-1. Borda
-counts every rank: B wins 6-4-2. Same ballots, different winners.
+counts every rank: B wins 5-4-3. Same ballots, different winners.
 The rule is the value choice.</p>
 <p>Majorities cycle: A beats B, B beats C, C beats A, each 2-1. No
 Condorcet winner. Arrow: with 3+ alternatives, no rule satisfies
 unrestricted domain, Pareto, IIA, and non-dictatorship at once.
 RLHF over many annotators is a social welfare function. It violates
-something. Borda escapes by weakening IIA. Sen&rsquo;s liberal paradox:
+something. Borda escapes by weakening IIA. STV works by rounds:
+eliminate the weakest, transfer votes to next choices. Worked
+5-voter: round 1 A=2 B=2 C=1, C out and transfers to B, round 2
+B wins 3-2. Sen&rsquo;s liberal paradox:
 nosy preferences, like moderation, break liberal aggregation.</p>
 <p><a href="l08-social-choice.html">Full lesson: L08, Social Choice</a></p>
+<figure><img alt="STV rounds" src="assets/plate-stv-rounds.webp"><figcaption>Round 1: C out, transfers to B. Round 2: B wins 3-2.</figcaption></figure>
 </div>
 <div class="crash-section">
 <h3 id="9-design-the-game-so-honesty-wins">9. Design the game so honesty wins.</h3>
 <p>Annotators satisfice. Bidders shade. First-price auction, values
 10/7/5: bidder 1 bids 6.5, wins, pays 6.5. Bids confound values
 with beliefs. Second-price: bid 10, win, pay 7. Truth dominates:
-bid 9 and lose profitable wins; bid 11 and buy losses. The bid
+bid 9 and lose profitable wins. bid 11 and buy losses. The bid
 decides winning, never the price.</p>
 <p>VCG generalizes: maximize welfare, charge each winner the harm
 they cause others. The revelation principle: any equilibrium
@@ -375,6 +395,7 @@ Myerson: sellers who want revenue run second-price with a reserve.
 The practical takeaway: pay for the thing you measure, not a
 proxy. Piece rates buy speed. The payment rule is the mechanism.</p>
 <p><a href="l09-mechanism-design.html">Full lesson: L09, Mechanism Design</a></p>
+<figure><img alt="First-price shading" src="assets/plate-first-price-shade.webp"><figcaption>Bid 2/3 of value. v=10 bids 6.67.</figcaption></figure>
 </div>
 <div class="crash-section">
 <h3 id="10-values-all-the-way-down">10. Values all the way down.</h3>
@@ -385,7 +406,7 @@ each smuggling values: elicitation (who gets asked), learning
 decision (defer or override). Bias compounds: 10% sampling skew
 becomes a 40% gap.</p>
 <p>Individual fairness and group fairness conflict when distributions
-differ. Revealed preferences bake in error; informed preferences
+differ. Revealed preferences bake in error. informed preferences
 need extrapolation, so state the rule and make it contestable.
 Polis bridges instead of majoritizing: u = mu + alpha + beta +
 p^T q + noise, select on beta after factoring out ideology. The
@@ -393,6 +414,147 @@ interface is the model: question format selects the preference
 distribution. Write the assumptions down. Weakest extrapolation
 that fixes the clear errors.</p>
 <p><a href="l10-alignment-practice.html">Full lesson: L10, Alignment in Practice</a></p>
+<figure><img alt="Bridging" src="assets/plate-bridging.webp"><figcaption>Select on beta: the note both sides rate helpful.</figcaption></figure>
+</div>
+<div class="crash-section">
+<h3 id="exam-clearing-rapid-fire-self-test">Exam clearing: rapid-fire self-test.</h3>
+<p>Cover the answers. Say each aloud before reading.</p>
+<p><strong>Q1.</strong> Why comparisons instead of scores?
+<strong>A.</strong> Scales drift per person and per day. Verdicts on pairs are stable.</p>
+<p><strong>Q2.</strong> Gumbel noise gives which choice model?
+<strong>A.</strong> Logit: P = sigma(delta). Gaussian noise gives probit.</p>
+<p><strong>Q3.</strong> Gap 2.0: logit and probit probabilities?
+<strong>A.</strong> Logit 0.881, probit 0.865. Close in the middle, differ in tails.</p>
+<p><strong>Q4.</strong> Red bus: what does nested logit change?
+<strong>A.</strong> Lambda 1.0 to 0.01 moves train share 0.155 to 0.268. Buses cannibalize each other.</p>
+<p><strong>Q5.</strong> Elo 16-point swing in BT units?
+<strong>A.</strong> 16 / 173.7 = 0.092. Elo is SGD with K as the learning rate.</p>
+<p><strong>Q6.</strong> One BT pair, log-likelihood?
+<strong>A.</strong> y*d - log(1 + e^d), d = V_j - V_k. Concave. Anchor V_1 = 0.</p>
+<p><strong>Q7.</strong> Where is Fisher information maximal?
+<strong>A.</strong> p = 0.5, I = 0.25. Ask at 50/50.</p>
+<p><strong>Q8.</strong> DPO loss on gap 0.8, beta 1?
+<strong>A.</strong> sigma(0.8) = 0.69, loss = -log(0.69) = 0.37.</p>
+<p><strong>Q9.</strong> GRPO advantages for rewards [1,0,0,0]?
+<strong>A.</strong> Winner +1.73, three losers -0.58 each. Group z-scores, no critic.</p>
+<p><strong>Q10.</strong> UCB: A 1.505 vs B 2.076. Play which?
+<strong>A.</strong> B. The exploration bonus outweighs the lower mean.</p>
+<p><strong>Q11.</strong> D-optimal: gains 0.223 vs 0.086. Ask which?
+<strong>A.</strong> The 0.223 query. Maximize log-determinant gain.</p>
+<p><strong>Q12.</strong> First-price, 3 bidders, uniform values, v = 10. Bid?
+<strong>A.</strong> 6.67. Shade one third: b = (n-1)/n * v.</p>
+<p><strong>Q13.</strong> VCG payment rule in one sentence?
+<strong>A.</strong> Pay the harm you cause others: their welfare without you minus with you.</p>
+<p><strong>Q14.</strong> Myerson optimal reserve, values uniform [0,10]?
+<strong>A.</strong> 5. Virtual value 2v - 10 crosses zero there.</p>
+<p><strong>Q15.</strong> Borda on A&gt;B&gt;C, A&gt;B&gt;C, B&gt;C&gt;A, C&gt;B&gt;A?
+<strong>A.</strong> B wins 5-4-3. Points equal pairwise win counts.</p>
+<p><strong>Q16.</strong> STV on the 5-voter variant, round by round?
+<strong>A.</strong> Round 1: A=2 B=2 C=1, C out, transfers to B. Round 2: B wins 3-2.</p>
+<p><strong>Q17.</strong> Arrow&rsquo;s four axioms?
+<strong>A.</strong> Unrestricted domain, Pareto, IIA, non-dictatorship. With 3+ alternatives, no rule satisfies all four.</p>
+<p><strong>Q18.</strong> Bridging selects notes by which term?
+<strong>A.</strong> Beta: the note&rsquo;s helpfulness after factoring out ideology. Both sides must rate it helpful.</p>
+<p><strong>Q19.</strong> Which Arrow axiom does RLHF drop?
+<strong>A.</strong> IIA, like Borda. Clones move outcomes, so deduplicate candidates.</p>
+<p><strong>Q20.</strong> Revelation principle in one sentence?
+<strong>A.</strong> Any equilibrium outcome is achievable by a truthful direct mechanism. Design for honesty.</p>
+</div>
+<div class="crash-section">
+<h3 id="memory-aids">Memory aids.</h3>
+<p><strong>Mnemonic: SCARF for the six DPO assumptions.</strong> <strong>S</strong>tationarity, <strong>C</strong>omparison model (BT), <strong>A</strong>nonymous annotators (homogeneous), <strong>R</strong>andom queries (informative), <strong>F</strong>aithful labels (unbiased). Check all six before trusting a DPO run.</p>
+<p><strong>Mnemonic: UPID for Arrow.</strong> <strong>U</strong>nrestricted domain, <strong>P</strong>areto, <strong>I</strong>IA, non-<strong>D</strong>ictatorship. Drop the I.</p>
+<p><strong>If-this-then-that rules.</strong></p>
+<ul>
+<li>If pairs are offline and fixed, then DPO. If rewards are verifiable and online, then GRPO.</li>
+<li>If the noise is Gumbel, then logit. If Gaussian, then probit. If the middle is all you have, then they are interchangeable.</li>
+<li>If alternatives are near-duplicates, then nested logit, never plain logit.</li>
+<li>If the reward model loves long answers, then style control, not a bigger model.</li>
+<li>If the leaderboard moves on noise, then bootstrap the ranks and publish intervals.</li>
+<li>If annotators know the aggregation rule, then assume strategy and design the mechanism.</li>
+<li>If the disagreement is real and symmetric, then bridge. If it is manufactured, then fraud-model first.</li>
+</ul>
+<p><strong>Never-confuse pairs.</strong> Elo vs BT: same model, divide by 173.7. DPO vs PPO: offline classification vs online RL. GRPO vs PPO: group z-scores vs learned critic. UCB vs Thompson: deterministic bound vs sampled posterior. Borda vs Condorcet: points vs pairwise majorities. First-price vs second-price: shade vs truth, equal only in expectation. IIA vs IIA-prime: ignore all others vs count what sits between. Revealed vs informed: behavior vs reflection.</p>
+</div>
+<div class="crash-section">
+<h3 id="one-glance-decision-table">One-glance decision table.</h3>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Tool</th>
+<th>Key number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pairs, anonymous</td>
+<td>Bradley-Terry</td>
+<td>sigma(gap)</td>
+</tr>
+<tr>
+<td>Rankings</td>
+<td>Plackett-Luce</td>
+<td>staged softmax</td>
+</tr>
+<tr>
+<td>Similar alternatives</td>
+<td>Nested logit</td>
+<td>lambda</td>
+</tr>
+<tr>
+<td>Fit reward</td>
+<td>MLE + L2</td>
+<td>concave, anchor V_1 = 0</td>
+</tr>
+<tr>
+<td>Next question</td>
+<td>D-optimality</td>
+<td>max log-det gain</td>
+</tr>
+<tr>
+<td>Explore arms</td>
+<td>UCB / Thompson</td>
+<td>bonus shrinks with pulls</td>
+</tr>
+<tr>
+<td>Human pairs, offline</td>
+<td>DPO</td>
+<td>gap -&gt; -log sigma</td>
+</tr>
+<tr>
+<td>Verifiable reward, online</td>
+<td>GRPO / PPO</td>
+<td>group z-score</td>
+</tr>
+<tr>
+<td>Aggregate votes</td>
+<td>Borda / STV / bridging</td>
+<td>drop IIA</td>
+</tr>
+<tr>
+<td>Strategic bidders</td>
+<td>Second-price / VCG</td>
+<td>pay externality</td>
+</tr>
+<tr>
+<td>Sell for revenue</td>
+<td>First-price + reserve</td>
+<td>b = (n-1)/n * v</td>
+</tr>
+<tr>
+<td>Fairness conflict</td>
+<td>state the tradeoff</td>
+<td>UPID, drop I</td>
+</tr>
+<tr>
+<td>Values at deployment</td>
+<td>stated, contestable rule</td>
+<td>weakest extrapolation</td>
+</tr>
+</tbody>
+</table>
+<p><a href="index.html">Back to the course index</a></p>
 </div>
       
       <nav class="pager"><a href="../cs329h/cheatsheet.html"><span class="lbl">← Previous</span>CS329H Cheatsheet</a><span></span></nav>

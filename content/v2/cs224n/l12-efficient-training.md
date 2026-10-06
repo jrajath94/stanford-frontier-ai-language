@@ -93,7 +93,7 @@ Alternate them: column-parallel then row-parallel needs only one
 all-reduce per two layers. The price is communication on every forward
 and backward pass: tensor parallelism wants GPUs with fast interconnects
 (NVLink), not a cluster spread across racks. Split the model when one GPU
-cannot hold a layer; shard the data when it can.
+cannot hold a layer. Shard the data when it can.
 
 ### Subchapter: pipeline parallelism, split the layers
 
@@ -145,7 +145,7 @@ weights can be stored in fewer bits. **INT8 quantization** maps each fp16
 weight to 8 bits: 4x smaller, roughly 2x faster matrix math. Watch the
 mapping on a toy weight 0.37 with scale 0.01: round(0.37 / 0.01) = 37,
 stored in one byte. Dequantize: 37 x 0.01 = 0.37. Per-tensor scales are
-crude; per-channel scales are the standard.
+crude. Per-channel scales are the standard.
 
 **GGUF** is the community format for quantized LLMs: 4-bit, 5-bit, 8-bit
 variants that run on CPUs and laptops. **QLoRA** combines 4-bit quantized
@@ -223,9 +223,9 @@ after training, the model is byte-identical in shape to the original.
 
 The lecture's closing chart: largest-model training compute (red) versus
 global compute capacity (blue). "Not sustainable" ([39:56](ts:39:56)).
-Training demand outruns capacity. Concentration follows: few organizations
-can train frontier models. Every technique in this lecture (bf16, ZeRO,
-checkpointing, LoRA) stretches the budget. None of them changes the curve.
+Concentration follows: few organizations can train frontier models. Every
+technique in this lecture (bf16, ZeRO, checkpointing, LoRA) stretches the
+budget. None of them changes the curve.
 
 ![Sustainability](assets/l12-sustain.svg "Stanford Frontier AI, CS224N L12. Largest-model training compute outruns global capacity: not sustainable. Training concentrates in few organizations.")
 
@@ -254,11 +254,11 @@ closed labs' advantage is scale and data, not secret parallelism math.
 > Q: You have 2x A100 (80GB each) and a 7B model to fine-tune. Plan it.
 > A: Full fine-tuning needs 112 GB: does not fit on one GPU, fits across two with ZeRO-3 (56 GB each) plus activation memory. Cheaper: LoRA. Freeze the 7B in bf16 (14 GB), train rank-16 adapters (a few million parameters): fits on one GPU with room to spare, faster, and the merge gives zero inference latency. Only go full fine-tuning if LoRA underperforms on your dev set. And use gradient checkpointing if activations overflow: recompute is cheaper than a third GPU.
 > Follow-up: What batch size?
-> A: As large as fits, with gradient accumulation to reach the effective batch you want. Microbatch 1-2 per GPU with accumulation over 32-64 steps is normal. The effective batch sets the gradient noise; the microbatch is just plumbing.
+> A: As large as fits, with gradient accumulation to reach the effective batch you want. Microbatch 1-2 per GPU with accumulation over 32-64 steps is normal. The effective batch sets the gradient noise. The microbatch is just plumbing.
 
 > [!QA]
 > Q: Walk me through one scaled backward step.
-> A: Loss = 2.0, scaler = 1024. Step 1: scaled loss = 2048. Step 2: backward in fp16. A true gradient of 1e-6 becomes 1.024e-3: representable, survives. Step 3: check for overflow. If any gradient is inf (exceeded 65,504), halve the scaler and skip the update: no corrupt step. Step 4: unscale in fp32: divide by 1024, apply the optimizer step to the fp32 master weights. The fp16 gradients did the fast math; the fp32 master kept the precision.
+> A: Loss = 2.0, scaler = 1024. Step 1: scaled loss = 2048. Step 2: backward in fp16. A true gradient of 1e-6 becomes 1.024e-3: representable, survives. Step 3: check for overflow. If any gradient is inf (exceeded 65,504), halve the scaler and skip the update: no corrupt step. Step 4: unscale in fp32: divide by 1024, apply the optimizer step to the fp32 master weights. The fp16 gradients did the fast math. The fp32 master kept the precision.
 > Follow-up: Why not just use bf16 and skip all this?
 > A: That is exactly what the field did. bf16's 8 exponent bits cover fp32's range, so 1e-6 gradients survive without scaling. Ampere and newer run bf16 natively. The scaler is legacy machinery for pre-Ampere GPUs. New training: bf16, no scaler.
 
@@ -270,7 +270,7 @@ closed labs' advantage is scale and data, not secret parallelism math.
 
 > [!QA]
 > Q: LoRA or QLoRA for fine-tuning 70B on 2x A100?
-> A: QLoRA. 70B in bf16 is 140 GB: does not fit even across 2x80GB with optimizer states. 4-bit quantized base is ~35 GB: fits on one GPU, LoRA adapters in bf16 train on top. The lecture's 7B math scales up: quantization is what makes 70B fine-tuning possible on workstation hardware. Quality cost is small on most tasks. Full fine-tuning of 70B needs a cluster; QLoRA needs a desk.
+> A: QLoRA. 70B in bf16 is 140 GB: does not fit even across 2x80GB with optimizer states. 4-bit quantized base is ~35 GB: fits on one GPU, LoRA adapters in bf16 train on top. The lecture's 7B math scales up: quantization is what makes 70B fine-tuning possible on workstation hardware. Quality cost is small on most tasks. Full fine-tuning of 70B needs a cluster. QLoRA needs a desk.
 > Follow-up: What breaks at 4-bit?
 > A: Hard reasoning tasks lose a few points: the quantization noise hits the long tail of precise computations. And the base model is frozen in 4-bit: the adapters must compensate for anything the quantization damaged. Measure on your hardest dev slice, not the average.
 

@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -306,6 +303,37 @@ The nested logit is the tractable middle ground between the
 plain softmax, which assumes no correlation, and the full
 probit, which estimates every correlation at the cost of
 numerical integration.</p>
+<h3 id="subchapter-probit-on-the-buses-worked">Subchapter: probit on the buses, worked</h3>
+<p>Nested logit fixes clones by grouping. Probit fixes them by
+correlating the noise directly. Give each bus a shared shock:
+U_train = 1 + e_t, U_red = 2 + e_c + e_r, U_blue = 2 + e_c +
+e_b. The common shock e_c hits both buses at once: good bus
+day, both buses look good. The idiosyncratic shocks e_t, e_r,
+e_b are independent Gaussians with standard deviation 1.81,
+the probit scale matched to the logit from Lecture 2. The
+common shock e_c is Gaussian with standard deviation s_c,
+which dials the correlation.</p>
+<p>No closed form exists, so simulate. Draw 400,000 shock
+vectors, pick the max utility each time, count the winners.
+Monte Carlo standard error is about 0.001.</p>
+<pre class="ascii">pre-split, train vs one bus:   train 0.348, bus 0.652
+post-split, s_c = 0.00:        train 0.194, each bus 0.403
+post-split, s_c = 1.81:        train 0.249, each bus 0.376
+post-split, s_c = 5.00:        train 0.357, each bus 0.322
+</pre>
+<p>Read the column. With no common shock the probit repeats the
+logit&rsquo;s mistake: the train falls from 0.348 to 0.194. As the
+common shock grows, the buses&rsquo; fates lock together and the
+train&rsquo;s share climbs back to 0.357, essentially its pre-split
+value. The correlation parameter does the same work as the
+nested logit&rsquo;s lambda: both say the clones are one
+alternative wearing two coats.</p>
+<p>The price is computation. Every one of these numbers cost
+400,000 simulation draws. The logit gave its answer in one
+line of arithmetic. That is the permanent tradeoff of the
+model family: closed form or correlated shocks, pick one.
+The rule from Lecture 2 stands: pairs, use logit. Many
+similar alternatives, pay for probit or nested logit.</p>
 <h2 id="where-iia-breaks-part-2-mixtures">Where IIA breaks, part 2: mixtures</h2>
 <p>IIA fails for a second reason: populations are mixed. Take two
 groups, each satisfying IIA. Group 1, half the population, has
@@ -466,11 +494,20 @@ set: the data never told you the structure. You chose it.</p>
 <li><strong>Match the model to the failure.</strong> Clones need nests.
    Mixtures need groups. Plain BT needs a clean small world.</li>
 </ol>
+<h2 id="go-deeper">Go deeper</h2>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/inXUp5j107I" title="The Elo Rating System: Thurstone/probit segment, j3m" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<ul>
+<li>The Elo Rating System, Thurstone segment (probit alternative): https://www.youtube.com/watch?v=inXUp5j107I</li>
+<li>Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf</li>
+<li>Train (2009), Discrete Choice Methods with Simulation: nested logit, mixed logit, probit estimation.</li>
+</ul>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
 - The Elo Rating System (external explainer, video id inXUp5j107I):
   the Thurstone model segment motivates the probit alternative.
-- Course textbook, chapters 3.x: IIA, red-bus/blue-bus,
+- Course textbook, chapters 1.8-1.10: IIA, red-bus/blue-bus,
   identification, Rashomon, the extended model family. <a href="https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf">link</a></p>
 <p><strong>Further reading:</strong>
 - Train (2009), Discrete Choice Methods with Simulation: nested

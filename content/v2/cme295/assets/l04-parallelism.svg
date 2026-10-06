@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640" role="img">
+<defs><marker id="ah-l04-parallelism" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#1B2838"/></marker><marker id="aht-l04-parallelism" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#1F7A72"/></marker></defs>
+<rect x="0" y="0" width="960" height="640" fill="#F7F4EE"/>
+<text x="24" y="44" font-family="Inter,'Source Sans 3','IBM Plex Sans',sans-serif" font-size="27" font-weight="600" fill="#1B2838">Parallelism: split the work</text>
+<text x="24" y="68" font-family="Inter,'Source Sans 3','IBM Plex Sans',sans-serif" font-size="15" font-weight="450" fill="#5C6B7A">From CME295 Lecture 4. Data, ZeRO, tensor, pipeline.</text>
+<rect x="60" y="110" width="260" height="100" rx="12" fill="#E7F1F8" stroke="#1B2838" stroke-width="1.5"/>
+<text x="190" y="160.0" text-anchor="middle" font-family="Inter,'Source Sans 3','IBM Plex Sans',sans-serif" font-size="16" font-weight="600" fill="#1B2838" dominant-baseline="middle">Data parallel</text>
+<text x="360" y="146.0" text-anchor="start" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="15" font-weight="500" fill="#1B2838" dominant-baseline="middle">each GPU: full model, different batch</text>
+<text x="360" y="178.0" text-anchor="start" font-family="Inter,'Source Sans 3','IBM Plex Sans',sans-serif" font-size="14" font-weight="450" fill="#5C6B7A" dominant-baseline="middle">simple, needs full model per GPU</text>
+<rect x="60" y="228" width="260" height="100" rx="12" fill="#E7F1F8" stroke="#1B2838" stroke-width="1.5"/>
+<text x="190" y="278.0" text-anchor="middle" font-family="Inter,'Source Sans 3','IBM Plex Sans',sans-serif" font-size="16" font-weight="600" fill="#1B2838" dominant-baseline="middle">ZeRO 1/2/3</text>
+<text x="360" y="264.0" text-anchor="start" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="15" font-weight="500" fill="#1B2838" dominant-baseline="middle">shard optimizer, gradients, params</text>
+<text x="360" y="296.0" text-anchor="start" font-family="Inter,'Source Sans 3','IBM Plex Sans',sans-serif" font-size="14" font-weight="450" fill="#5C6B7A" dominant-baseline="middle">fits bigger models, more comms</text>
+<rect x="60" y="346" width="260" height="100" rx="12" fill="#E7F1F8" stroke="#1B2838" stroke-width="1.5"/>
+<text x="190" y="396.0" text-anchor="middle" font-family="Inter,'Source Sans 3','IBM Plex Sans',sans-serif" font-size="16" font-weight="600" fill="#1B2838" dominant-baseline="middle">Tensor parallel</text>
+<text x="360" y="382.0" text-anchor="start" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="15" font-weight="500" fill="#1B2838" dominant-baseline="middle">split layers across GPUs</text>
+<text x="360" y="414.0" text-anchor="start" font-family="Inter,'Source Sans 3','IBM Plex Sans',sans-serif" font-size="14" font-weight="450" fill="#5C6B7A" dominant-baseline="middle">one forward pass, many GPUs</text>
+<rect x="60" y="464" width="260" height="100" rx="12" fill="#E7F1F8" stroke="#1B2838" stroke-width="1.5"/>
+<text x="190" y="514.0" text-anchor="middle" font-family="Inter,'Source Sans 3','IBM Plex Sans',sans-serif" font-size="16" font-weight="600" fill="#1B2838" dominant-baseline="middle">Pipeline parallel</text>
+<text x="360" y="500.0" text-anchor="start" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="15" font-weight="500" fill="#1B2838" dominant-baseline="middle">split layers into stages</text>
+<text x="360" y="532.0" text-anchor="start" font-family="Inter,'Source Sans 3','IBM Plex Sans',sans-serif" font-size="14" font-weight="450" fill="#5C6B7A" dominant-baseline="middle">bubbles, but scales deep</text>
+<text x="944" y="626" text-anchor="end" font-family="Inter,'Source Sans 3','IBM Plex Sans',sans-serif" font-size="12" font-weight="500" fill="#5C6B7A">Original figure · CME295</text>
+</svg>

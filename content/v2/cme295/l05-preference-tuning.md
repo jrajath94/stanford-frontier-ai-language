@@ -106,7 +106,7 @@ score gap. Work it on a toy:
 reward model scores: r_gentle = 2.0,  r_rough = 1.0
 P(gentle beats rough) = sigma(2.0 - 1.0) = sigma(1.0) = 0.731
 
-training loss on this pair: -log(0.731) = 0.313
+training loss on this pair, natural log: -log(0.731) = 0.313
 if the scores were reversed (rough = 2.0, gentle = 1.0):
   P(gentle beats rough) = sigma(-1.0) = 0.269, loss = -log(0.269) = 1.313
 ```
@@ -246,7 +246,7 @@ against an imperfect proxy.
 
 The penalty is beta * KL(pi || pi_ref), paid per token. The toy:
 beta = 0.1. At some token the policy puts 0.5 on "cold" where the
-reference puts 0.4. Token KL contribution: 0.5 * log(0.5/0.4) =
+reference puts 0.4. Token KL contribution, natural log: 0.5 * log(0.5/0.4) =
 0.5 * 0.223 = 0.11. Penalty: 0.1 * 0.11 = 0.011, subtracted from
 the reward. Small per token, but it accumulates over hundreds of
 tokens: a policy that drifts everywhere pays everywhere. The
@@ -473,7 +473,8 @@ every trained method must beat.
 
 Best-of-N's gain follows the reward model's quality, not N alone.
 The toy: reward model accuracy 80%. N = 2: the better of two draws
-is right ~88% of the time. N = 8: ~97%. N = 64: ~99%, but the
+is right ~88% of the time. Each draw is right ~78% of the time.
+The exact number depends on the base rate. N = 8: ~97%. N = 64: ~99%, but the
 reward model's own errors now dominate: it confidently picks its
 favorite hack. The curve flattens while the hacking risk grows.
 The decision rule: best-of-N with N = 4-16 for cheap gains at
@@ -493,7 +494,7 @@ derivation, in four steps:
    the reference.
 2. Solve for the optimal policy in closed form. It expresses the
    reward as a function of the policy: r(x, y) is proportional to
-   beta * log(pi(y|x) / pi_ref(y|x)).
+   beta * log(pi(y|x) / pi_ref(y|x)), the natural log.
 3. Plug that expression into the Bradley-Terry loss. The explicit
    reward cancels out.
 4. Train the policy directly on preference pairs with a supervised
@@ -509,7 +510,8 @@ pi(rejected)/pi_ref(rejected) = 0.6  (policy avoids the rejected, vs reference)
 log(1.4 / 0.6) = 0.847 > 0  ->  loss pushes this gap wider
 ```
 
-Two models instead of four
+The log is the natural log, matching the beta * log(pi/pi_ref)
+form of the reward. Two models instead of four
 ([100:08](https://www.youtube.com/watch?v=PmW_TMQ3l0I&t=6008s)):
 policy and reference. Beta around 0.1 is the typical setting. The
 lecture's verdict: PPO performs better in reported results, DPO is

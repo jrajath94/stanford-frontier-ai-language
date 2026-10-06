@@ -1974,6 +1974,686 @@ def l09_frontier():
     f.save()
 
 
+# ---------------------------------------------------------------- L01 new plates
+@fig
+def l01_onehot():
+    f = Fig("l01-onehot", 960, 620, "One-hot vs embedding: sparse index to dense meaning",
+            "From CME295 Lecture 1. One-hot carries no meaning. Embeddings learn it.")
+    f.box(60, 120, 400, 220, fill=PANEL, rx=12)
+    f.text(260, 150, "one-hot: \"cat\"", size=16, weight=600)
+    f.text(260, 190, "50,000 dims, one 1", size=14, fill=MUTED)
+    f.text(260, 230, "[0, 0, ..., 1, ..., 0]", size=14, font=MONO)
+    f.text(260, 270, "cat vs dog: distance = sqrt(2)", size=14, fill=MUTED)
+    f.text(260, 305, "every word equally far", size=14, fill=ORANGE, weight=500)
+    f.box(500, 120, 400, 220, fill=NEWTOK, rx=12)
+    f.text(700, 150, "embedding: \"cat\"", size=16, weight=600)
+    f.text(700, 190, "512 dims, all dense", size=14, fill=MUTED)
+    f.text(700, 230, "[0.2, -1.1, ..., 0.7]", size=14, font=MONO)
+    f.text(700, 270, "cat near dog, far from car", size=14, fill=MUTED)
+    f.text(700, 305, "distance carries meaning", size=14, fill=TEAL, weight=500)
+    f.arrow(460, 230, 500, 230, teal=True)
+    f.on_line(480, 200, "learn")
+    f.box(60, 380, 840, 160, fill=COUNT, rx=8)
+    f.text(480, 418, "One-hot is an index. The embedding matrix turns indices into geometry.",
+           size=15, weight=500)
+    f.text(480, 458, "Geometry is what attention compares: similar vectors score high.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l01_bpe():
+    f = Fig("l01-bpe", 960, 640, "BPE: merge the most frequent pair, repeat",
+            "From CME295 Lecture 1. Worked on a toy corpus: low low lower.")
+    f.text(480, 120, "corpus: l o w | l o w | l o w e r", size=16, font=MONO)
+    steps = [("merge 1: e+r -> er", "\"low\", \"lower\" -> \"low\", \"low er\""),
+             ("merge 2: er -> ?", "keep merging until the vocab budget fills"),
+             ("result: \"lower\" = low + er", "common words stay whole; rare words split")]
+    for i, (k, v) in enumerate(steps):
+        y = 170 + i * 110
+        f.box(120, y, 720, 94, fill=PANEL if i < 2 else NEWTOK, rx=12)
+        f.text(200, y + 47, k, size=15, weight=600, font=MONO)
+        f.text(560, y + 47, v, size=14, fill=MUTED)
+    f.box(60, 510, 840, 70, fill=COUNT, rx=8)
+    f.text(480, 545, "Frequent strings become tokens. Rare strings compose from pieces. No word is ever unknown.",
+           size=15, weight=500)
+    f.src()
+    f.save()
+
+
+@fig
+def l01_causal_mask():
+    f = Fig("l01-causal-mask", 960, 640, "The causal mask: -inf above the diagonal",
+            "From CME295 Lecture 1. Training parallelizes. Inference does not.")
+    f.text(240, 120, "scores QK^T", size=16, weight=600)
+    f.text(720, 120, "masked, then softmax", size=16, weight=600)
+    toks = ["the", "cat", "sat", "down"]
+    cs = 64
+    for mi, mx in enumerate([140, 620]):
+        for i in range(4):
+            f.text(mx - 40, 190 + i * cs + 20, toks[i], size=13, fill=MUTED, anchor="end")
+            f.text(mx + 20 + i * cs, 165, toks[i], size=13, fill=MUTED)
+            for j in range(4):
+                x, y = mx + j * cs, 180 + i * cs
+                masked = j > i
+                f.parts.append(
+                    f'<rect x="{x}" y="{y}" width="60" height="60" fill="{"#E8E2D5" if masked else "#E7F4EF"}" stroke="{INK}" stroke-width="1"/>')
+                f.text(x + 30, y + 32, "-inf" if masked else "s", size=13, font=MONO,
+                       fill=MUTED if masked else TEAL)
+    f.box(60, 480, 840, 90, fill=COUNT, rx=8)
+    f.text(480, 512, "Token 3 sees tokens 1-3, never token 4. One forward pass scores every position at once.",
+           size=15, weight=500)
+    f.text(480, 544, "At inference the future does not exist yet: decode one token per pass.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l01_model_map():
+    f = Fig("l01-model-map", 960, 680, "What is used where: October 2026",
+            "From CME295 Lecture 1. Public facts only. Closed labs do not publish internals.")
+    rows = [("DeepSeek V4.1 Flash", "MoE 552B, 8B/16B active", "open weights, MIT"),
+            ("Llama 4 Maverick", "MoE 128 experts, 17B active", "open weights"),
+            ("Kimi K3", "MoE (details not public)", "open weights"),
+            ("GPT-6 / Gemini 3 / Claude", "architecture not public", "unknown"),
+            ("GPT-2 (2019)", "dense 1.5B, learned positions", "the teaching model")]
+    for i, (m, a, n) in enumerate(rows):
+        y = 110 + i * 100
+        f.box(60, y, 260, 84, fill=NEWTOK, rx=12)
+        f.text(190, y + 42, m, size=15, weight=600)
+        f.text(470, y + 30, a, size=14, weight=500, anchor="start")
+        f.text(470, y + 58, n, size=13, fill=MUTED, anchor="start")
+    f.box(60, 620, 840, 44, fill=COUNT, rx=8)
+    f.text(480, 642, "Pattern: open frontier is MoE. Closed frontier is unknown. Teaching is dense.",
+           size=14, weight=500)
+    f.src()
+    f.save()
+
+
+# ---------------------------------------------------------------- L02 new plates
+@fig
+def l02_sinusoid_toy():
+    f = Fig("l02-sinusoid-toy", 960, 620, "Sinusoids: the dot product keeps only distance",
+            "From CME295 Lecture 2. PE(p) . PE(q) is a function of p - q.")
+    f.box(60, 120, 840, 200, fill=COUNT, rx=8)
+    f.text(480, 170, "PE(pos, 2i) = sin(pos / 10000^(2i/d))", size=20, weight=600, font=SERIF)
+    f.text(480, 210, "PE(pos, 2i+1) = cos(pos / 10000^(2i/d))", size=20, weight=600, font=SERIF)
+    f.text(480, 255, "dot(PE(3), PE(5)) = dot(PE(10), PE(12)): only the gap 2 matters", size=15, fill=MUTED)
+    f.box(60, 360, 400, 180, fill=PANEL, rx=12)
+    f.text(260, 395, "why it works", size=16, weight=600)
+    f.text(260, 435, "sin/cos of (p-q) expand into\nproducts of sin/cos of p and q", size=14, fill=MUTED)
+    f.box(500, 360, 400, 180, fill=NEWTOK, rx=12)
+    f.text(700, 395, "why it extrapolates", size=16, weight=600)
+    f.text(700, 435, "the formula works at any p:\nno learned table to run out", size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l02_kv_bytes():
+    f = Fig("l02-kv-bytes", 960, 640, "KV cache bytes: GQA's 4x saving, counted",
+            "From CME295 Lecture 2. 70B model, 32 layers, fp16, 4K context.")
+    f.box(60, 120, 840, 240, fill=COUNT, rx=8)
+    f.text(480, 165, "per token: 2 (K,V) x 32 layers x 8 heads x 128 dim x 2 bytes = 131,072 bytes = 128 KB",
+           size=16, weight=600, font=MONO)
+    f.text(480, 215, "4,096 tokens x 128 KB = 512 MB per sequence (GQA, 8 KV heads)", size=16, weight=500)
+    f.text(480, 260, "MHA with 32 KV heads: 4x the heads = 2 GB per sequence", size=16, fill=ORANGE, weight=500)
+    f.text(480, 305, "batch 32: 16 GB (GQA) vs 64 GB (MHA). The cache is the serving bottleneck.",
+           size=15, fill=MUTED)
+    f.box(60, 400, 840, 160, fill=NEWTOK, rx=8)
+    f.text(480, 440, "Decision rule: the cache, not the weights, sets max batch size.",
+           size=16, weight=600)
+    f.text(480, 480, "GQA/MQA/MLA exist to shrink this number. Every serving trick downstream assumes it.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l02_bert_family():
+    f = Fig("l02-bert-family", 960, 680, "The BERT family: what each variant changed",
+            "From CME295 Lecture 2. One mechanism per variant, not a catalog.")
+    rows = [("BERT (2018)", "MLM 15% + NSP 50/50", "bidirectional encoder baseline"),
+            ("RoBERTa (2019)", "drop NSP, more data, longer", "NSP was the weak link"),
+            ("DistilBERT (2019)", "KL-distill to 6 layers", "60% faster, 97% of the quality"),
+            ("ALBERT (2019)", "share params across layers", "same depth, far fewer params"),
+            ("T5 (2019)", "span corruption + sentinels", "everything is text-to-text")]
+    for i, (m, c, w) in enumerate(rows):
+        y = 110 + i * 100
+        f.box(60, y, 220, 84, fill=NEWTOK, rx=12)
+        f.text(170, y + 42, m, size=15, weight=600)
+        f.text(420, y + 30, c, size=14, weight=500, anchor="start")
+        f.text(420, y + 58, w, size=13, fill=MUTED, anchor="start")
+    f.box(60, 620, 840, 44, fill=COUNT, rx=8)
+    f.text(480, 642, "Interview line: name the one change and the one reason.",
+           size=14, weight=500)
+    f.src()
+    f.save()
+
+
+# ---------------------------------------------------------------- L03 new plates
+@fig
+def l03_lineup():
+    f = Fig("l03-lineup", 960, 700, "The October 2026 lineup: who runs what",
+            "From CME295 Lecture 3. Public model cards only. Closed labs are unknown.")
+    rows = [("DeepSeek V4.1 Flash", "MoE: 552B total, 8B/16B active", "sparse is the open default"),
+            ("Llama 4 Maverick", "MoE: 17B active, 128 experts", "Meta's sparse turn"),
+            ("Kimi K3 / GLM-5.2", "MoE (details not public)", "the Chinese wave"),
+            ("GPT-6 / Gemini 3 / Claude", "decoder-only, internals unknown", "closed: mark unknown"),
+            ("Small fast models", "dense, latency-predictable", "MoE's overhead is not worth it")]
+    for i, (m, a, n) in enumerate(rows):
+        y = 110 + i * 104
+        f.box(60, y, 280, 88, fill=NEWTOK, rx=12)
+        f.text(200, y + 44, m, size=15, weight=600)
+        f.text(480, y + 32, a, size=14, weight=500, anchor="start")
+        f.text(480, y + 60, n, size=13, fill=MUTED, anchor="start")
+    f.box(60, 640, 840, 44, fill=COUNT, rx=8)
+    f.text(480, 662, "Decoder-only won the architecture war. MoE won the capacity war.",
+           size=14, weight=500)
+    f.src()
+    f.save()
+
+
+@fig
+def l03_beam():
+    f = Fig("l03-beam", 960, 660, "Beam search, worked: B = 2 on the toy",
+            "From CME295 Lecture 3. Extend, score by summed log-probs, keep the best two.")
+    f.box(60, 110, 840, 90, fill=COUNT, rx=8)
+    f.text(480, 145, "step 1: keep \"lit\" (-0.69) and \"read\" (-1.20)", size=15, weight=500)
+    f.text(480, 175, "step 2: extend both, score four, keep \"lit well\" (-1.19) and \"read books\" (-1.60)",
+           size=15, weight=500)
+    f.box(60, 240, 400, 150, fill=PANEL, rx=12)
+    f.text(260, 275, "length normalization", size=16, weight=600)
+    f.text(260, 315, "score / length^alpha, alpha 0.6-1.0\nlog-probs are negative:\nlonger is always worse raw",
+           size=14, fill=MUTED)
+    f.box(500, 240, 400, 150, fill=ACTIVE, rx=12)
+    f.text(700, 275, "beam vs sampling", size=16, weight=600)
+    f.text(700, 315, "beam: stable, deterministic-ish\nhigh-probability paths\nsampling: diverse, human",
+           size=14, fill=MUTED)
+    f.box(60, 430, 840, 150, fill=NEWTOK, rx=8)
+    f.text(480, 470, "Decision rule: beam for translation and code (correctness), sampling for chat (variety).",
+           size=16, weight=600)
+    f.text(480, 510, "B = 4-8 is the practical range. Larger B burns compute for little gain.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l03_topp():
+    f = Fig("l03-topp", 960, 640, "Top-P adapts. Top-K cannot.",
+            "From CME295 Lecture 3. Toy: lit 0.50, read 0.30, slept 0.12, ate 0.08.")
+    f.box(60, 120, 400, 220, fill=NEWTOK, rx=12)
+    f.text(260, 155, "sharp: lit 0.95, rest 0.05", size=15, weight=600)
+    f.text(260, 200, "top-P 0.9 -> {lit} alone", size=14, fill=TEAL, weight=500)
+    f.text(260, 235, "top-K 2 -> {lit, +junk}", size=14, fill=MUTED)
+    f.text(260, 280, "top-P follows the entropy", size=14, fill=MUTED)
+    f.box(500, 120, 400, 220, fill=ACTIVE, rx=12)
+    f.text(700, 155, "flat: the toy distribution", size=15, weight=600)
+    f.text(700, 200, "top-P 0.9 -> {lit, read, slept}", size=14, fill=TEAL, weight=500)
+    f.text(700, 235, "top-K 2 -> {lit, read}", size=14, fill=MUTED)
+    f.text(700, 280, "top-K is blind to shape", size=14, fill=MUTED)
+    f.box(60, 380, 840, 180, fill=COUNT, rx=8)
+    f.text(480, 420, "Production default: top-P 0.9-0.95 with a top-K cap of a few hundred.",
+           size=16, weight=600)
+    f.text(480, 460, "Top-P for quality, the cap for the flat-distribution worst case.",
+           size=14, fill=MUTED)
+    f.text(480, 500, "Greedy for facts. Sampling for variety. Always with the cap.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l03_amortize():
+    f = Fig("l03-amortize", 960, 640, "Decoding is memory-bound: the proof",
+            "From CME295 Lecture 3. 1 FLOP per byte vs ~300 needed. The GPU waits on memory.")
+    f.box(60, 120, 840, 200, fill=COUNT, rx=8)
+    f.text(480, 165, "70B decode step: ~140 GFLOP of math, ~140 GB of weights moved",
+           size=16, weight=600)
+    f.text(480, 210, "arithmetic intensity: 1 FLOP per byte", size=18, weight=600, fill=ORANGE)
+    f.text(480, 255, "H100 needs ~300 FLOPs/byte to stay compute-bound. It gets 1. 300x underfed.",
+           size=15, fill=MUTED)
+    f.box(60, 360, 400, 200, fill=NEWTOK, rx=12)
+    f.text(260, 395, "move fewer bytes", size=16, weight=600)
+    f.text(260, 435, "quantization: 140 GB -> 35 GB\nGQA/MLA: smaller KV cache", size=14, fill=MUTED)
+    f.box(500, 360, 400, 200, fill=PANEL, rx=12)
+    f.text(700, 395, "amortize one move", size=16, weight=600)
+    f.text(700, 435, "batching: one move, B tokens\nspeculation: one move, k tokens", size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+# ---------------------------------------------------------------- L04 new plates
+@fig
+def l04_6nd():
+    f = Fig("l04-6nd", 960, 620, "C = 6ND: where the 6 comes from",
+            "From CME295 Lecture 4. 2 forward + 4 backward, per parameter per token.")
+    f.box(60, 120, 400, 200, fill=NEWTOK, rx=12)
+    f.text(260, 160, "forward: 2 FLOPs", size=18, weight=600)
+    f.text(260, 205, "one multiply-add\nper parameter", size=14, fill=MUTED)
+    f.box(500, 120, 400, 200, fill=ACTIVE, rx=12)
+    f.text(700, 160, "backward: 4 FLOPs", size=18, weight=600)
+    f.text(700, 205, "gradients for activations\n+ gradients for weights", size=14, fill=MUTED)
+    f.box(60, 360, 840, 180, fill=COUNT, rx=8)
+    f.text(480, 400, "GPT-3: 6 x 175e9 x 300e9 = 3.15e23 FLOPs", size=18, weight=600, font=MONO)
+    f.text(480, 445, "10.7 days on 10,000 H100s at fantasy 100% MFU. ~21 days at real 50%.",
+           size=15, fill=MUTED)
+    f.text(480, 485, "Ignores the attention quadratic term: fine at 2K context, not at 128K.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l04_chinchilla_table():
+    f = Fig("l04-chinchilla-table", 960, 660, "Chinchilla applied: 20 tokens per parameter",
+            "From CME295 Lecture 4. Everyone since overtrains on purpose.")
+    rows = [("GPT-3", "175B", "300B", "3.5T", "11.7x undertrained"),
+            ("Llama 3 70B", "70B", "15T", "1.4T", "10.7x OVERTRAINED"),
+            ("DeepSeek V4.1", "552B", "45T", "11T", "4x overtrained"),
+            ("Llama 4 Maverick", "17B act", "~22T corpus", "340B", "far past optimal")]
+    f.text(170, 100, "model", size=13, fill=MUTED, weight=600)
+    f.text(400, 100, "params", size=13, fill=MUTED, weight=600)
+    f.text(550, 100, "tokens", size=13, fill=MUTED, weight=600)
+    f.text(700, 100, "optimal", size=13, fill=MUTED, weight=600)
+    f.text(850, 100, "verdict", size=13, fill=MUTED, weight=600)
+    for i, (m, p, t, o, v) in enumerate(rows):
+        y = 120 + i * 100
+        f.box(60, y, 840, 88, fill=NEWTOK if i % 2 == 0 else PANEL, rx=12)
+        f.text(170, y + 44, m, size=15, weight=600)
+        f.text(400, y + 44, p, size=14, font=MONO)
+        f.text(550, y + 44, t, size=14, font=MONO)
+        f.text(700, y + 44, o, size=14, font=MONO)
+        f.text(850, y + 44, v, size=14, weight=500, fill=ORANGE if "under" in v else TEAL)
+    f.box(60, 540, 840, 60, fill=COUNT, rx=8)
+    f.text(480, 570, "Overtraining is deliberate: inference cost, not training cost, dominates the lifetime bill.",
+           size=15, weight=500)
+    f.src()
+    f.save()
+
+
+@fig
+def l04_flash_numbers():
+    f = Fig("l04-flash-numbers", 960, 640, "FlashAttention: the memory hierarchy is the argument",
+            "From CME295 Lecture 4. FLOPs are free. Bytes are expensive.")
+    f.box(60, 120, 400, 200, fill=ACTIVE, rx=12)
+    f.text(260, 160, "HBM: 80 GB", size=18, weight=600)
+    f.text(260, 200, "~3.35 TB/s\n~hundreds of cycles", size=14, fill=MUTED)
+    f.box(500, 120, 400, 200, fill=NEWTOK, rx=12)
+    f.text(700, 160, "SRAM: ~50 MB", size=18, weight=600)
+    f.text(700, 200, "~19 TB/s\n~tens of cycles", size=14, fill=MUTED)
+    f.box(60, 360, 840, 200, fill=COUNT, rx=8)
+    f.text(480, 400, "Naive: write the N x N score matrix to HBM, read it back. Per head, per layer.",
+           size=15, weight=500)
+    f.text(480, 440, "Flash: stream blocks through SRAM, running softmax, write only the output.",
+           size=15, weight=500)
+    f.text(480, 480, "~10x fewer HBM accesses. Exact, not approximate. Every fast kernel is a byte-saving kernel.",
+           size=15, fill=TEAL, weight=600)
+    f.src()
+    f.save()
+
+
+@fig
+def l04_lora_family():
+    f = Fig("l04-lora-family", 960, 680, "The LoRA family: one idea, four budgets",
+            "From CME295 Lecture 4. The update lives in a small subspace.")
+    rows = [("LoRA (2021)", "W = W0 + BA, rank 4", "merge after: zero inference cost"),
+            ("QLoRA (2023)", "NF4 base, BF16 adapters", "65B-class on one GPU"),
+            ("DoRA (2024)", "magnitude + direction", "closer to full fine-tuning"),
+            ("rsLoRA", "scale by 1/sqrt(r)", "stable at rank > 16")]
+    for i, (m, c, w) in enumerate(rows):
+        y = 110 + i * 104
+        f.box(60, y, 220, 88, fill=NEWTOK, rx=12)
+        f.text(170, y + 44, m, size=15, weight=600)
+        f.text(430, y + 32, c, size=14, weight=500, anchor="start", font=MONO)
+        f.text(430, y + 60, w, size=13, fill=MUTED, anchor="start")
+    f.box(60, 540, 840, 90, fill=COUNT, rx=8)
+    f.text(480, 575, "Rank is the budget knob: r = 4-16 for instruction tuning, higher for harder tasks.",
+           size=15, weight=500)
+    f.text(480, 605, "Pick by budget: QLoRA for one GPU, LoRA for a few, DoRA when quality matters most.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+# ---------------------------------------------------------------- L05 new plates
+@fig
+def l05_kl():
+    f = Fig("l05-kl", 960, 640, "The KL leash: beta sets the exchange rate",
+            "From CME295 Lecture 5. The policy spends KL where reward is highest.")
+    f.box(60, 120, 840, 200, fill=COUNT, rx=8)
+    f.text(480, 165, "penalty = beta x KL(pi || pi_ref), paid per token", size=18, weight=600, font=SERIF)
+    f.text(480, 210, "toy: policy 0.5 vs reference 0.4 -> token KL 0.11 -> penalty 0.011 at beta = 0.1",
+           size=15, fill=MUTED)
+    f.text(480, 255, "small per token, everywhere per sequence: drift everywhere, pay everywhere",
+           size=15, fill=MUTED)
+    f.box(60, 360, 400, 200, fill=NEWTOK, rx=12)
+    f.text(260, 400, "beta = 0.1", size=18, weight=600)
+    f.text(260, 440, "lenient\npolicy can improve", size=14, fill=MUTED)
+    f.box(500, 360, 400, 200, fill=ACTIVE, rx=12)
+    f.text(700, 400, "beta = 0.5", size=18, weight=600)
+    f.text(700, 440, "strict\npolicy cannot hack\nbut cannot improve either", size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l05_gae():
+    f = Fig("l05-gae", 960, 640, "GAE: lambda blends the horizons",
+            "From CME295 Lecture 5. Lambda = 0 trusts the value head. Lambda = 1 trusts the raw return.")
+    f.box(60, 120, 840, 120, fill=COUNT, rx=8)
+    f.text(480, 160, "A_t = delta_t + lambda x delta_t+1 + lambda^2 x delta_t+2 + ...",
+           size=20, weight=600, font=SERIF)
+    f.text(480, 200, "delta_t = r_t + V_t+1 - V_t: the one-step surprise", size=15, fill=MUTED)
+    f.box(60, 280, 260, 200, fill=ACTIVE, rx=12)
+    f.text(190, 320, "lambda = 0", size=18, weight=600)
+    f.text(190, 360, "one-step only\nlow variance\nhigh bias", size=14, fill=MUTED)
+    f.box(350, 280, 260, 200, fill=NEWTOK, rx=12)
+    f.text(480, 320, "lambda = 0.95", size=18, weight=600, fill=TEAL)
+    f.text(480, 360, "the standard\ncompromise", size=14, fill=MUTED)
+    f.box(640, 280, 260, 200, fill=PANEL, rx=12)
+    f.text(770, 320, "lambda = 1", size=18, weight=600)
+    f.text(770, 360, "full return\nlow bias\nhigh variance", size=14, fill=MUTED)
+    f.box(60, 520, 840, 60, fill=COUNT, rx=8)
+    f.text(480, 550, "Never-confuse: gamma discounts the future (how much). Lambda blends estimators (how far to trust).",
+           size=14, weight=500)
+    f.src()
+    f.save()
+
+
+@fig
+def l05_dpo_variants():
+    f = Fig("l05-dpo-variants", 960, 680, "The DPO family: same core, different data",
+            "From CME295 Lecture 5. No RL loop anywhere in the family.")
+    rows = [("DPO", "chosen/rejected pairs", "the original: logistic loss on pairs"),
+            ("IPO", "small pair sets", "squared loss stops the gap at a target"),
+            ("KTO", "thumbs up/down labels", "binary signals, no pairs needed"),
+            ("SimPO", "tight memory", "drops the reference, normalizes length")]
+    for i, (m, c, w) in enumerate(rows):
+        y = 110 + i * 104
+        f.box(60, y, 220, 88, fill=NEWTOK, rx=12)
+        f.text(170, y + 44, m, size=16, weight=600)
+        f.text(430, y + 32, c, size=14, weight=500, anchor="start")
+        f.text(430, y + 60, w, size=13, fill=MUTED, anchor="start")
+    f.box(60, 540, 840, 90, fill=COUNT, rx=8)
+    f.text(480, 575, "Pick by data: pairs (DPO), small pairs (IPO), binary labels (KTO), tight memory (SimPO).",
+           size=15, weight=500)
+    f.text(480, 605, "All share the closed-form trick: the reward is the log-ratio, the RL loop is gone.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l05_ppo_memory():
+    f = Fig("l05-ppo-memory", 960, 640, "PPO's memory bill: four models",
+            "From CME295 Lecture 5. 7B model in fp16: ~14 GB per model.")
+    items = [("policy", "14 GB", "trains", TEAL),
+             ("reference", "14 GB", "the KL anchor", FOCUS),
+             ("reward model", "~14 GB", "frozen grader", ORANGE),
+             ("value function", "14 GB", "the baseline", MUTED)]
+    for i, (k, v, d, col) in enumerate(items):
+        x = 60 + i * 216
+        f.box(x, 140, 200, 220, rx=12)
+        f.parts.append(f'<rect x="{x + 80}" y="165" width="40" height="40" rx="20" fill="{col}"/>')
+        f.text(x + 100, 245, k, size=15, weight=600)
+        f.text(x + 100, 280, v, size=16, font=MONO)
+        f.text(x + 100, 315, d, size=13, fill=MUTED)
+    f.box(60, 400, 840, 160, fill=COUNT, rx=8)
+    f.text(480, 440, "Total: ~42-56 GB before optimizer states and activations.",
+           size=17, weight=600)
+    f.text(480, 480, "DPO holds two models (~28 GB). That is who can afford preference tuning.",
+           size=15, fill=MUTED)
+    f.text(480, 515, "Decision rule: PPO with GPUs and quality needs, DPO without.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+# ---------------------------------------------------------------- L06 new plates
+@fig
+def l06_timeline():
+    f = Fig("l06-timeline", 960, 620, "Reasoning: o1 proved it, R1-Zero explored, R1 shipped",
+            "From CME295 Lecture 6. Length and accuracy rise together: verification gets rewarded.")
+    steps = [("o1 preview\nSep 2024", "RL on reasoning\ntraces works", TEAL),
+             ("R1-Zero\nJan 2025", "pure RL from base\nmessy but smart", ORANGE),
+             ("R1\nJan 2025", "cold-start + staged RL\nreadable and smart", FOCUS),
+             ("distill", "teacher's tokens\nto small models", MUTED)]
+    for i, (t, d, col) in enumerate(steps):
+        x = 60 + i * 216
+        f.box(x, 140, 200, 240, rx=12)
+        f.parts.append(f'<rect x="{x + 80}" y="165" width="40" height="40" rx="20" fill="{col}"/>')
+        f.text(x + 100, 250, t, size=15, weight=600)
+        f.text(x + 100, 310, d, size=13, fill=MUTED)
+        if i < 3:
+            f.arrow(x + 200, 260, x + 216, 260, teal=(i == 0))
+    f.box(60, 430, 840, 120, fill=COUNT, rx=8)
+    f.text(480, 468, "The curve to memorize: response length and accuracy climb together.",
+           size=16, weight=600)
+    f.text(480, 508, "Length is the symptom. Learned verification is the cause.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+# ---------------------------------------------------------------- L07 new plates
+@fig
+def l07_ann():
+    f = Fig("l07-ann", 960, 680, "ANN indexes: IVF clusters, HNSW graphs, PQ compresses",
+            "From CME295 Lecture 7. Linear scan over 1M chunks is 1.5B multiply-adds per query.")
+    rows = [("IVF", "cluster into ~1K cells, search ~10", "100x fewer compares; misses borders"),
+            ("HNSW", "graph, greedy walk coarse-to-fine", "default: fast, accurate, RAM-hungry"),
+            ("PQ", "compress vectors to ~100 bytes", "15x less memory, approximate")]
+    for i, (m, c, w) in enumerate(rows):
+        y = 110 + i * 110
+        f.box(60, y, 200, 94, fill=NEWTOK, rx=12)
+        f.text(160, y + 47, m, size=17, weight=600, font=MONO)
+        f.text(400, y + 32, c, size=14, weight=500, anchor="start")
+        f.text(400, y + 62, w, size=13, fill=MUTED, anchor="start")
+    f.box(60, 460, 840, 150, fill=COUNT, rx=8)
+    f.text(480, 500, "Decision rule: HNSW under ~100M vectors when RAM allows, IVF-PQ past that.",
+           size=16, weight=600)
+    f.text(480, 540, "Tune recall on your own labels: nprobe (IVF) or ef (HNSW) trades latency for recall.",
+           size=14, fill=MUTED)
+    f.text(480, 575, "50M chunks x 1500 dims: 300 GB raw, ~5 GB with PQ. That is the whole argument.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l07_mcp_arch():
+    f = Fig("l07-mcp-arch", 960, 640, "MCP: host, client, server",
+            "From CME295 Lecture 7. MCP is USB for model tools. 1:1 connections isolate failures.")
+    f.box(60, 140, 240, 200, fill=NEWTOK, rx=12)
+    f.text(180, 175, "MCP host", size=17, weight=600)
+    f.text(180, 215, "the app:\nClaude Desktop, an IDE", size=14, fill=MUTED)
+    f.box(360, 140, 240, 200, fill=PANEL, rx=12)
+    f.text(480, 175, "MCP client", size=17, weight=600)
+    f.text(480, 215, "1:1 connection\nper server", size=14, fill=MUTED)
+    f.box(660, 140, 240, 200, fill=ACTIVE, rx=12)
+    f.text(780, 175, "MCP server", size=17, weight=600)
+    f.text(780, 215, "tools + resources\n+ prompts", size=14, fill=MUTED)
+    f.arrow(300, 240, 360, 240, teal=True)
+    f.arrow(600, 240, 660, 240, teal=True)
+    f.box(60, 400, 840, 160, fill=COUNT, rx=8)
+    f.text(480, 440, "The server advertises capabilities at connect time. The client exposes them as tool schemas.",
+           size=15, weight=500)
+    f.text(480, 480, "Write the book tools once. Every MCP client uses them. The 2026 standard.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l07_debug_tree():
+    f = Fig("l07-debug-tree", 960, 700, "Agent debugging: read the chain, branch by stage",
+            "From CME295 Lecture 7. The cheapest fix wins. Fix tools before blaming the model.")
+    f.box(230, 100, 500, 70, fill=COUNT, rx=12)
+    f.text(480, 135, "agent failed -> read the reasoning chain", size=16, weight=600)
+    branches = [("never called a tool", "PREDICT", "fix router recall\nor SFT/prompt", ORANGE),
+                ("called the wrong thing", "PREDICT", "rename APIs\n disambiguate scopes", FOCUS),
+                ("tool misbehaved", "EXECUTION", "fix implementation\nreturn something always", TEAL),
+                ("ignored the result", "SYNTHESIS", "trim outputs\nmeaningful objects", MUTED)]
+    for i, (s, st, fx, col) in enumerate(branches):
+        x = 60 + i * 216
+        f.box(x, 230, 200, 280, rx=12)
+        f.parts.append(f'<rect x="{x + 80}" y="250" width="40" height="40" rx="20" fill="{col}"/>')
+        f.text(x + 100, 330, s, size=14, weight=600)
+        f.text(x + 100, 375, st, size=13, font=MONO, fill=MUTED)
+        f.text(x + 100, 430, fx, size=13, fill=MUTED)
+        f.arrow(480, 170, x + 100, 230, dashed=True)
+    f.box(60, 560, 840, 70, fill=NEWTOK, rx=8)
+    f.text(480, 595, "Most mysterious failures trace to silent, bloated, or raw-error tool outputs.",
+           size=15, weight=500)
+    f.src()
+    f.save()
+
+
+# ---------------------------------------------------------------- L08 new plates
+@fig
+def l08_elo():
+    f = Fig("l08-elo", 960, 640, "Elo, worked: 200 points means 76% expected wins",
+            "From CME295 Lecture 8. Bradley-Terry fits the ratings by maximum likelihood.")
+    f.box(60, 120, 840, 200, fill=COUNT, rx=8)
+    f.text(480, 165, "E[A beats B] = 1 / (1 + 10^((R_B - R_A)/400))", size=20, weight=600, font=SERIF)
+    f.text(480, 210, "A = 1200, B = 1000: 1 / (1 + 10^(-0.5)) = 0.76", size=17, font=MONO)
+    f.text(480, 255, "A wins: 1200 + 32 x (1 - 0.76) = 1207.7. B falls symmetrically.",
+           size=15, fill=MUTED)
+    f.box(60, 360, 400, 200, fill=NEWTOK, rx=12)
+    f.text(260, 400, "Elo", size=17, weight=600)
+    f.text(260, 440, "update per match\nonline, simple", size=14, fill=MUTED)
+    f.box(500, 360, 400, 200, fill=PANEL, rx=12)
+    f.text(700, 400, "Bradley-Terry", size=17, weight=600)
+    f.text(700, 440, "P(A beats B) = sigma(r_A - r_B)\nfit all ratings at once", size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l08_swebench():
+    f = Fig("l08-swebench", 960, 640, "SWE-bench, worked: the patch must pass both suites",
+            "From CME295 Lecture 8. Test-driven development as a benchmark.")
+    f.box(60, 120, 400, 200, fill=NEWTOK, rx=12)
+    f.text(260, 160, "FAIL_TO_PASS", size=17, weight=600, font=MONO)
+    f.text(260, 200, "tests that failed before\nmust pass after", size=14, fill=MUTED)
+    f.text(260, 255, "the issue is fixed", size=14, fill=TEAL, weight=500)
+    f.box(500, 120, 400, 200, fill=ACTIVE, rx=12)
+    f.text(700, 160, "PASS_TO_PASS", size=17, weight=600, font=MONO)
+    f.text(700, 200, "tests that passed before\nmust still pass", size=14, fill=MUTED)
+    f.text(700, 255, "nothing broke", size=14, fill=TEAL, weight=500)
+    f.box(60, 360, 840, 200, fill=COUNT, rx=8)
+    f.text(480, 400, "Toy: issue #452, divide by zero on empty input. Patch adds a guard.",
+           size=15, weight=500)
+    f.text(480, 440, "test_empty_input passes now. The other 47 still pass. Score: 1.",
+           size=15, fill=MUTED)
+    f.text(480, 480, "2026: frontier models hit 60-80% on Verified. Harder variants carry the signal now.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l08_judge_pipeline():
+    f = Fig("l08-judge-pipeline", 960, 680, "The judge pipeline: rubric to calibrated score",
+            "From CME295 Lecture 8. An uncalibrated judge is a random number generator with good grammar.")
+    steps = [("rubric", "crisp guidelines\nworked examples", TEAL),
+             ("prompt", "rationale first\nbinary, structured", FOCUS),
+             ("sample", "temp 0.1-0.2\nmultiple for ties", ORANGE),
+             ("de-bias", "both orders\nlength rules", MUTED)]
+    for i, (t, d, col) in enumerate(steps):
+        x = 60 + i * 216
+        f.box(x, 140, 200, 220, rx=12)
+        f.parts.append(f'<rect x="{x + 80}" y="160" width="40" height="40" rx="20" fill="{col}"/>')
+        f.text(x + 100, 245, t, size=16, weight=600)
+        f.text(x + 100, 295, d, size=13, fill=MUTED)
+        if i < 3:
+            f.arrow(x + 200, 250, x + 216, 250)
+    f.box(60, 410, 840, 200, fill=COUNT, rx=8)
+    f.text(480, 450, "Calibrate: humans grade 200-500 items too. Judge-human kappa must clear ~0.7.",
+           size=16, weight=600)
+    f.text(480, 490, "Monitor: re-calibrate on a rolling sample. Judges drift as models update. Version them.",
+           size=14, fill=MUTED)
+    f.text(480, 530, "The pipeline is judge-at-scale plus human-at-the-margin. The human sample is not optional.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+# ---------------------------------------------------------------- L09 new plates
+@fig
+def l09_collapse_math():
+    f = Fig("l09-collapse-math", 960, 640, "Model collapse: tails decay geometrically",
+            "From CME295 Lecture 9. Sampling concentrates. Each generation trains on the last one's sample.")
+    gens = [("human text", "100 words\nZipf spread", TEAL),
+            ("gen 1", "top 20 dominate", ORANGE),
+            ("gen 2", "top 10 dominate", ORANGE),
+            ("gen 3", "top 5 dominate", "#A33B2E")]
+    for i, (t, d, col) in enumerate(gens):
+        x = 60 + i * 216
+        f.box(x, 140, 200, 220, rx=12)
+        f.parts.append(f'<rect x="{x + 80}" y="160" width="40" height="40" rx="20" fill="{col}"/>')
+        f.text(x + 100, 245, t, size=16, weight=600)
+        f.text(x + 100, 295, d, size=13, fill=MUTED)
+        if i < 3:
+            f.arrow(x + 200, 250, x + 216, 250)
+    f.box(60, 410, 840, 150, fill=COUNT, rx=8)
+    f.text(480, 450, "tail_G3 ~ tail_G1 x c^2, c < 1: rare words and rare facts vanish first.",
+           size=16, weight=600, font=MONO)
+    f.text(480, 490, "A diversity catastrophe, not a quality dip. Re-seed the tail: provenance, fresh human data, mid-training.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l09_exam_map():
+    f = Fig("l09-exam-map", 960, 680, "The final covers L05-L08: each lecture's testable core",
+            "From CME295 Lecture 9. L01-L04 are background vocabulary.")
+    rows = [("L05 preference", "derive BT, explain the clip, PPO vs DPO", "data, objective, cost"),
+            ("L06 reasoning", "GRPO z-score, length bias, R1 stages", "work the toy numbers"),
+            ("L07 RAG/agents", "funnel, BM25, ReAct, 7 failures", "design, then debug"),
+            ("L08 evaluation", "kappa, judge biases, benchmarks", "read skeptically")]
+    for i, (m, c, w) in enumerate(rows):
+        y = 110 + i * 104
+        f.box(60, y, 220, 88, fill=NEWTOK, rx=12)
+        f.text(170, y + 44, m, size=15, weight=600)
+        f.text(430, y + 32, c, size=14, weight=500, anchor="start")
+        f.text(430, y + 60, w, size=13, fill=MUTED, anchor="start")
+    f.box(60, 540, 840, 90, fill=COUNT, rx=8)
+    f.text(480, 575, "Highest yield: the pipeline end to end (pre-train, SFT, preference, reasoning RL).",
+           size=15, weight=500)
+    f.text(480, 605, "Every other topic attaches to it. Exam questions ask how the stages differ.",
+           size=14, fill=MUTED)
+    f.src()
+    f.save()
+
+
+@fig
+def l09_block_diffusion():
+    f = Fig("l09-block-diffusion", 960, 640, "Block diffusion: the compromise the field converged on",
+            "From CME295 Lecture 9. Left to right between blocks, parallel inside.")
+    f.box(60, 120, 840, 200, fill=COUNT, rx=8)
+    f.text(480, 165, "1,000 tokens in 10 blocks of 100, 8 steps per block: 80 forward passes, not 1,000",
+           size=16, weight=600)
+    f.text(480, 210, "pure diffusion: 32 passes, no cross-position conditioning inside a step", size=15, fill=MUTED)
+    f.text(480, 250, "autoregressive: 1,000 passes, full conditioning. Blocks split the difference.",
+           size=15, fill=MUTED)
+    for i in range(5):
+        x = 120 + i * 160
+        f.box(x, 380, 140, 100, fill=NEWTOK if i % 2 == 0 else PANEL, rx=12)
+        f.text(x + 70, 420, f"block {i + 1}", size=14, weight=600, font=MONO)
+        f.text(x + 70, 450, "diffuse inside", size=12, fill=MUTED)
+        if i < 4:
+            f.arrow(x + 140, 430, x + 160, 430, teal=True)
+    f.text(480, 530, "condition left to right between blocks", size=14, fill=TEAL, weight=500)
+    f.src()
+    f.save()
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     for fn in FIGS:

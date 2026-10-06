@@ -11,7 +11,7 @@ instructor: "Christopher Manning"
 offering: "Spring 2024"
 duration: "1:17:30"
 video_id: J7ruSOIzhrE
-video_title: "Lecture 7: Attention and Final Projects; Practical Tips"
+video_title: "Stanford CS224N: NLP w/ DL | Spring 2024 | Lecture 7 - Attention, Final Projects and LLM Intro"
 video_caption: "Original lecture. Christopher Manning introduces BLEU evaluation and Bahdanau attention for neural machine translation."
 concepts: [bleu, evaluation, attention, bahdanau, seq2seq, query, attention-scores, context-vector]
 sources:
@@ -35,7 +35,7 @@ Before the new idea, the lecture fixes measurement. **BLEU**
 translation. It compares n-gram overlap between the model's output and
 human reference translations.
 
-**On this page:** [Dot vs additive scoring](#subchapter-dot-versus-additive-scoring) · [Scaled dot-product](#subchapter-scaled-dot-product-the-one-line-fix) · [Luong: local vs global](#subchapter-luongs-global-versus-local-attention) · [Attention is not an explanation](#subchapter-attention-is-not-an-explanation) · [Attention in production](#what-is-used-where-attention-in-production) · [Watch and go deeper](#watch-and-go-deeper)
+**On this page:** [Dot vs additive scoring](#subchapter-dot-versus-additive-scoring) · [Scaled dot-product](#subchapter-scaled-dot-product-the-one-line-fix) · [Luong: local vs global](#subchapter-luongs-global-versus-local-attention) · [Attention is not an explanation](#subchapter-attention-is-not-an-explanation) · [Coverage: penalize re-reading](#subchapter-coverage-penalize-re-reading) · [Attention in production](#what-is-used-where-attention-in-production) · [Watch and go deeper](#watch-and-go-deeper)
 
 ![BLEU](assets/l07-bleu.svg "Stanford Frontier AI, CS224N L07. BLEU counts matching n-grams against references and penalizes brevity.")
 
@@ -108,17 +108,17 @@ step 1, scores (dot products of the query with each encoder state):
 
 step 2, softmax:
   e^1.0 = 2.72,  e^0.5 = 1.65,  e^1.5 = 4.48.  total = 8.85
-  weights = [0.31, 0.19, 0.51]
+  weights = [0.307, 0.186, 0.506]
 
 step 3, context vector (weighted average):
-  0.31 * [1,0] + 0.19 * [0,1] + 0.51 * [1,1] = [0.82, 0.70]
+  0.307 * [1,0] + 0.186 * [0,1] + 0.506 * [1,1] = [0.814, 0.693]
 ```
 
-Read the weights. The decoder looks mostly at "pie" (0.51), some at "he"
-(0.31), little at "hit" (0.19). The context vector [0.82, 0.70] is dominated
-by the pie state. Concatenated with the decoder state, it drives the next
-prediction: "tarte". On the next step the query changes, the weights shift,
-and the model looks elsewhere.
+Read the weights. The decoder looks mostly at "pie" (0.506), some at "he"
+(0.307), little at "hit" (0.186). The context vector [0.814, 0.693] is
+dominated by the pie state. Concatenated with the decoder state, it drives
+the next prediction: "tarte". On the next step the query changes, the
+weights shift, and the model looks elsewhere.
 
 ![Attention scores](assets/l07-scores.svg "Stanford Frontier AI, CS224N L07. Attention weights over 'he hit me with a pie': the context vector is the weighted average of encoder states.")
 
@@ -191,7 +191,7 @@ and global wins. The choice encodes a bet about word order.
 
 ### Subchapter: attention is not an explanation
 
-The weights look like explanations: 0.51 on "pie" when predicting
+The weights look like explanations: 0.506 on "pie" when predicting
 "tarte". Read them that way and you will be misled. Two results:
 
 First, **adversarial attention** (Jain and Wallace, 2019). For many
@@ -204,6 +204,34 @@ Second, **correlation is not causation**. A high weight means the model
 drew on that state, not that the word caused the output. The model might
 attend to "pie" because the decoder state already decided "tarte" and the
 attention follows. Treat weights as hints for debugging, never as proof.
+
+### Subchapter: coverage, penalize re-reading
+
+Attention decoders repeat themselves: the spotlight sticks on one source
+word and the model translates it twice. **Coverage** (Tu et al., 2016)
+fixes the mechanism, not the symptom. Track how much attention each source
+word has received so far: the **coverage vector** is the sum of past
+attention weights. Penalize attending again to well-covered words.
+
+Watch it on the toy. Step 1 weights were [0.307, 0.186, 0.506] over
+{he, hit, pie}. The coverage vector is [0.307, 0.186, 0.506]: "pie" is
+half-covered already. Step 2, the model proposes weights [0.1, 0.1, 0.8]:
+it wants to stare at "pie" again. The coverage penalty sums, per word,
+the smaller of the new weight and the accumulated coverage:
+
+```ascii
+penalty = min(0.1, 0.307) + min(0.1, 0.186) + min(0.8, 0.506)
+        = 0.1 + 0.1 + 0.506 = 0.706
+```
+
+The 0.506 is the re-reading of "pie": the penalty charges the model for
+looking where it already looked. Added to the training loss, it teaches
+the attention to move on. Repetition is sometimes correct ("had had"),
+which is why coverage penalizes re-*reading* the source rather than
+re-*emitting* words: it targets the stuck spotlight, not the surface
+text.
+
+![Coverage penalty on the toy](assets/plate-l07-coverage.webp "Coverage vector [0.307, 0.186, 0.506] from step 1. Step 2 proposes [0.1, 0.1, 0.8]. Penalty = 0.1 + 0.1 + 0.506 = 0.706. Shell 3. Source: original toy for the coverage mechanism. Project: Stanford Frontier AI.")
 
 ## Why attention helps gradients
 
@@ -246,7 +274,7 @@ step to each encoder state: the path is 1 or 2 multiplications.
 
 > [!QA]
 > Q: Walk me through Bahdanau attention on the toy, naming every step.
-> A: Encoder states from "he hit pie": h1 = [1,0], h2 = [0,1], h3 = [1,1]. The decoder state (query) is s = [1, 0.5]. Step 1, score: dot products give [1.0, 0.5, 1.5]. Step 2, weights: softmax gives [0.31, 0.19, 0.51]. Step 3, context: 0.31*[1,0] + 0.19*[0,1] + 0.51*[1,1] = [0.82, 0.70]. Step 4, predict: concatenate [0.82, 0.70] with the decoder state, run the output layer, sample "tarte". The spotlight landed on "pie" because the query matched it best.
+> A: Encoder states from "he hit pie": h1 = [1,0], h2 = [0,1], h3 = [1,1]. The decoder state (query) is s = [1, 0.5]. Step 1, score: dot products give [1.0, 0.5, 1.5]. Step 2, weights: softmax gives [0.307, 0.186, 0.506]. Step 3, context: 0.307*[1,0] + 0.186*[0,1] + 0.506*[1,1] = [0.814, 0.693]. Step 4, predict: concatenate [0.814, 0.693] with the decoder state, run the output layer, sample "tarte". The spotlight landed on "pie" because the query matched it best.
 > Follow-up: Where do the query and the states come from?
 > A: The states are the encoder's hidden states: the source sentence read left to right (and right to left, if bidirectional). The query is the decoder's current hidden state: what it has generated so far. Attention is the meeting point of the two histories.
 
@@ -279,7 +307,7 @@ step to each encoder state: the path is 1 or 2 multiplications.
 | Seq2seq pain | Attention answer | How |
 |---|---|---|
 | One fixed vector must hold the sentence | A fresh context vector per step | The decoder looks back at all encoder states. Nothing is compressed once |
-| Detail lost on long sentences | The spotlight moves | Each step weights the relevant words: 0.51 on "pie" when "pie" is needed |
+| Detail lost on long sentences | The spotlight moves | Each step weights the relevant words: 0.506 on "pie" when "pie" is needed |
 | Gradients vanish over ~40 chained steps | Direct connections | Path length drops to 1-2 multiplications. The signal survives |
 
 ## The honest price
@@ -302,7 +330,7 @@ so a better model can score worse. Lecture 11 takes that problem apart.
 4. **The mechanism.** Query, scores, softmax, weighted average,
    concatenate, predict. Bahdanau et al., 2015.
 5. **The toy.** Query [1, 0.5] against [1,0], [0,1], [1,1]: scores
-   [1.0, 0.5, 1.5], weights [0.31, 0.19, 0.51], context [0.82, 0.70].
+   [1.0, 0.5, 1.5], weights [0.307, 0.186, 0.506], context [0.814, 0.693].
    The spotlight lands on "pie".
 6. **The general form.** Values plus a query: scores, softmax, weighted
    average. Any "look at the relevant parts" problem fits.
@@ -315,9 +343,16 @@ so a better model can score worse. Lecture 11 takes that problem apart.
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/J7ruSOIzhrE" title="CS224N Spring 2024 Lecture 7: Attention, Final Projects and LLM Intro" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 7: Attention, Final Projects and LLM Intro</strong> (Christopher Manning, Spring 2024). The original lecture: MT evaluation, Bahdanau attention, final projects. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=J7ruSOIzhrE</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/eMlx5fFNoYc" title="Attention in transformers, visually explained" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>Attention, visually explained</strong> (3Blue1Brown). Queries, keys, and values as geometry.</p>
+</div>
 </div>
 
 ### Go deeper

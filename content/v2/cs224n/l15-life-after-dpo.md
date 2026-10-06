@@ -41,7 +41,7 @@ in now?
 
 The premise: more and more of the labs' action moved from pretraining to
 **post-training**. The base models are built. The differentiation, and the
-alignment research, happens after. Alignment is now the main event.
+alignment research, happens after.
 
 ## Preference data at lab scale
 
@@ -53,9 +53,9 @@ Post-training is preference learning, and preferences are bought:
 - **Meta's LLaMA 2 paper**: about 1.5M comparisons bought
   ([02:53](ts:02:53)).
 
-Both "years outdated." OpenAI and Anthropic buy far more. Researchers
-cannot match that scale. The talk's challenge: what can research do without
-lab resources? The agenda is efficiency, not scale: DPO variants,
+Both "years outdated." OpenAI and Anthropic buy far more. The talk's
+challenge: what can research do without lab resources? The agenda is
+efficiency, not scale: DPO variants,
 self-rewarding loops, synthetic preferences, better use of small
 high-quality sets. A great open reward model "would help people catch up
 in alignment."
@@ -68,8 +68,7 @@ in alignment."
 
 ## The key question
 
-If the data keeps shifting under our feet, what stays still — what kind
-of feedback remains a reliable teacher no matter how good the model gets?
+If the data keeps shifting under our feet, what stays still, what kind of feedback remains a reliable teacher no matter how good the model gets?
 
 **On this page:** [The DPO loss, term by term](#subchapter-the-dpo-loss-term-by-term) · [Iterative DPO](#subchapter-iterative-dpo-and-online-variants) · [Reward model evaluation](#subchapter-reward-model-evaluation) · [Alignment in production, Oct 2026](#what-is-used-where-alignment-in-production-october-2026) · [Watch and go deeper](#watch-and-go-deeper)
 
@@ -83,7 +82,7 @@ loss = -log sigma( beta x [ log(pi(y_w)/pi_ref(y_w)) - log(pi(y_l)/pi_ref(y_l)) 
 ```
 
 Read it inside out. pi(y_w) is the policy's probability of the chosen
-answer; pi_ref(y_w) is the reference model's. The ratio says how much
+answer. Pi_ref(y_w) is the reference model's. The ratio says how much
 *more* the policy favors the chosen answer than the reference did. Same
 for the rejected answer. The bracket is the margin: preference for chosen
 minus preference for rejected, each measured against the reference. Beta
@@ -176,8 +175,7 @@ Round 1: DPO on human preferences. Round 2: the round-1 model generates new
 answers, judges them itself, and DPO trains on the self-labeled pairs.
 Round 3: repeat. Strong scores across rounds. Variations: batched DPO with
 data refreshes, **discriminator-guided DPO** (reward models plus DPO
-training). The pattern: close the loop between generation and judgment, so
-the data refreshes even without new human labels.
+training).
 
 ## Beyond pairwise: new shapes of feedback
 

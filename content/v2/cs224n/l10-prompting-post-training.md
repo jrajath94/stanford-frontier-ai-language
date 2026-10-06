@@ -11,7 +11,7 @@ instructor: "Archit Sharma"
 offering: "Spring 2024"
 duration: "1:20:00"
 video_id: 35X6zlhoCy4
-video_title: "Lecture 10: Prompting, Instruction Finetuning, and DPO/RLHF"
+video_title: "Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 10 - Post-training by Archit Sharma"
 video_caption: "Original lecture. Archit Sharma covers prompting, instruction tuning, RLHF, and DPO."
 concepts: [prompting, few-shot, chain-of-thought, instruction-tuning, flan, lima, rlhf, bradley-terry, reward-hacking, dpo, kl-penalty]
 sources:
@@ -126,12 +126,11 @@ the skill down the size ladder.
 
 ## The RLHF pipeline: tune, model, optimize
 
-Instruction tuning teaches the *form* of following. **RLHF** aligns the
-model with what humans actually prefer. The pipeline ([41:42](ts:41:42)):
+Instruction tuning teaches the *form* of following. **RLHF (reinforcement learning from human feedback)** aligns the model with what humans actually prefer. The pipeline ([41:42](ts:41:42)):
 
 ![RLHF](assets/l10-rlhf.svg "Stanford Frontier AI, CS224N L10. SFT, then a Bradley-Terry reward model, then RL with a KL penalty. Reward hacking produces gibberish.")
 
-1. **Instruction tuning (SFT).** The pretrained model plus task examples.
+1. **Instruction tuning: SFT (supervised fine-tuning).** The pretrained model plus task examples.
    It starts responding to intent.
 2. **Reward model.** Learn "how much would a human like this answer"
    ([42:09](ts:42:09)). Humans compare pairs of answers. The model learns
@@ -168,7 +167,7 @@ label:    chosen > rejected
 The chosen answer is correct and brief. The rejected answer is wrong and
 rude. A human ranked them: no scores, just "this one beats that one".
 Tens of thousands of such pairs train the reward model (RLHF) or the
-policy directly (DPO). The pair is the unit of alignment: everything
+policy directly (DPO, direct preference optimization). The pair is the unit of alignment: everything
 downstream is arithmetic on chosen-minus-rejected.
 
 ![Preference pair](assets/plate-l10-preference-pair.webp "One preference pair: prompt, chosen answer, rejected answer. The unit of alignment. Shell 2. Source: original toy for preference data. Project: Stanford Frontier AI.")
@@ -234,7 +233,7 @@ damage. It does not eliminate it.
 
 ## DPO: skip the middlemen
 
-**Direct Preference Optimization** skips the reward model and the RL. The
+**DPO** skips the reward model and the RL. The
 math: the optimal policy for a KL-constrained reward objective has a
 closed form, p* proportional to p_ref x exp(r/beta). The normalizer Z(x)
 is intractable ([62:02](ts:62:02)), but it **cancels** in the
@@ -272,7 +271,7 @@ conversation.
 | Mistral models | DPO | The lecture reports DPO use |
 | DeepSeek-R1 | RL | Public paper. Reasoning from RL, not just SFT |
 | DeepSeek-V3/V4 | RL + DPO-family | Public papers describe the post-training stack |
-| Tulu 3 (Allen AI) | SFT + DPO + RLVR | Public. The open recipe others copy |
+| Tulu 3 (Allen AI) | SFT + DPO + RLVR (reinforcement learning with verifiable rewards) | Public. The open recipe others copy |
 | GPT-5.x, Gemini 3.x, Claude | [unknown] | Closed. Post-training exists, specifics not published |
 
 The public pattern: SFT first, then preferences (PPO or DPO), then
@@ -313,9 +312,16 @@ align. They do not publish how.
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/35X6zlhoCy4" title="CS224N Spring 2024 Lecture 10: Post-training" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 10: Post-training</strong> (Archit Sharma, Spring 2024). The original lecture: prompting, instruction fine-tuning, DPO/RLHF. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=35X6zlhoCy4</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/qPN_XZcJf_s" title="Reinforcement Learning with Human Feedback (RLHF), Clearly Explained" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>RLHF, clearly explained</strong> (StatQuest, Josh Starmer). Reward models and the RL loop, step by step.</p>
+</div>
 </div>
 
 ### Go deeper

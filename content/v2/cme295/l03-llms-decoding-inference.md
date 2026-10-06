@@ -62,10 +62,14 @@ bidirectional encoders. The market decided generation matters more.
 |---|---|---|---|---|
 | GPT-6 Astra (OpenAI) | decoder-only | closed details | unknown | unknown (not public) |
 | Gemini 3.8 Flash (Google) | decoder-only | closed details | unknown | 1M (reported) |
-| DeepSeek V4.1 Flash | decoder-only MoE, 552B, 8B/16B active | MLA-class latent cache (890 B/token) | RoPE-class | 1M |
-| Llama 4 Maverick (Meta) | decoder-only MoE, 17B active, 128 experts | GQA-class | RoPE-class | 1M |
-| Claude Sonnet 5.5 (Anthropic) | decoder-only | closed details | unknown | unknown (not public) |
-| Kimi K3 (Moonshot) | decoder-only MoE | closed details | unknown | unknown |
+| DeepSeek V4.1 Flash | causal encoder-decoder MoE, 552B, 8B/16B active | CSA2 (Compressed Sparse Attention 2) compressed KV cache (890 B/token, FP4) | [uncertain] | 1M |
+| Llama 4 Maverick (Meta) | decoder-only MoE, 17B active, 128 experts | GQA + RoPE | RoPE | 1M |
+| Claude Sonnet 5.5 (Anthropic) | decoder-only | closed details | unknown | 1M (reported) |
+| Kimi K3 (Moonshot) | decoder-only MoE, 2.8T, 104B active, 896 experts (16+2 shared per token) | Kimi Delta Attention | unknown | 1M |
+
+Kimi Delta Attention is the sparse attention mechanism named in
+Kimi K3's row of the table above, the entry under the
+attention/sparsity column.
 
 Two honest notes. Closed labs publish almost no architecture
 details: GPT-6, Gemini 3, and Claude entries above are "decoder-only
@@ -166,8 +170,9 @@ expert: a correctness tradeoff for throughput.
 
 Sparse MoE is the default for open frontier models. DeepSeek V4.1
 Flash: 552B total, 8B active on input, 16B on output. Llama 4
-Maverick: 17B active over 128 experts. Kimi K3: MoE (details not
-public). The pattern: total parameters measure capacity, active
+Maverick: 17B active over 128 experts. Kimi K3: 2.8T total, 104B
+active over 896 experts (16+2 shared per token), per the lineup
+table above. The pattern: total parameters measure capacity, active
 parameters measure cost. The interview line: "MoE decouples the
 two." Dense models are the exception now, kept where latency
 predictability beats capacity (small fast models) or where the lab
@@ -223,8 +228,8 @@ vocabulary:  "lit" 0.50,  "read" 0.30,  "slept" 0.12,  "ate" 0.08
 
 ### Subchapter: beam search, worked by hand
 
-Beam width B = 2 on the toy. Step 1: candidates "lit" (log prob
-log 0.5 = -0.69) and "read" (log 0.3 = -1.20). Keep both. Step 2:
+Beam width B = 2 on the toy. Step 1: candidates "lit" (log prob,
+natural log, log 0.5 = -0.69) and "read" (log 0.3 = -1.20). Keep both. Step 2:
 extend "lit" with its top two next tokens, say "well" (log -0.5)
 and "again" (log -1.0). Extend "read" with "books" (log -0.4) and
 "more" (log -0.9). Four hypotheses, scores: lit+well = -1.19,
@@ -534,8 +539,6 @@ because the same GPU memory now holds ~40% more concurrent
 requests. The cost: one indirection per access. The paper's
 setting uses block size 16. Larger blocks waste more per request.
 Smaller blocks add table overhead.
-
-![Speculative decoding](assets/l03-speculative.svg "Draft fast, verify in one pass, keep the accepted prefix. Stanford Frontier AI.")
 
 > [!QA]
 > Q: When does prompt caching hurt?

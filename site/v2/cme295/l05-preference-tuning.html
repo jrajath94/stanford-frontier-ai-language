@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -278,7 +275,7 @@ score gap. Work it on a toy:</p>
 <pre class="ascii">reward model scores: r_gentle = 2.0,  r_rough = 1.0
 P(gentle beats rough) = sigma(2.0 - 1.0) = sigma(1.0) = 0.731
 
-training loss on this pair: -log(0.731) = 0.313
+training loss on this pair, natural log: -log(0.731) = 0.313
 if the scores were reversed (rough = 2.0, gentle = 1.0):
   P(gentle beats rough) = sigma(-1.0) = 0.269, loss = -log(0.269) = 1.313
 </pre>
@@ -390,7 +387,7 @@ against an imperfect proxy.</p>
 <h3 id="subchapter-the-kl-penalty-worked">Subchapter: the KL penalty, worked</h3>
 <p>The penalty is beta * KL(pi || pi_ref), paid per token. The toy:
 beta = 0.1. At some token the policy puts 0.5 on &ldquo;cold&rdquo; where the
-reference puts 0.4. Token KL contribution: 0.5 * log(0.5/0.4) =
+reference puts 0.4. Token KL contribution, natural log: 0.5 * log(0.5/0.4) =
 0.5 * 0.223 = 0.11. Penalty: 0.1 * 0.11 = 0.011, subtracted from
 the reward. Small per token, but it accumulates over hundreds of
 tokens: a policy that drifts everywhere pays everywhere. The
@@ -565,7 +562,8 @@ every trained method must beat.</p>
 <h3 id="subchapter-best-of-n-scaling">Subchapter: best-of-N scaling</h3>
 <p>Best-of-N&rsquo;s gain follows the reward model&rsquo;s quality, not N alone.
 The toy: reward model accuracy 80%. N = 2: the better of two draws
-is right ~88% of the time. N = 8: ~97%. N = 64: ~99%, but the
+is right ~88% of the time. Each draw is right ~78% of the time.
+The exact number depends on the base rate. N = 8: ~97%. N = 64: ~99%, but the
 reward model&rsquo;s own errors now dominate: it confidently picks its
 favorite hack. The curve flattens while the hacking risk grows.
 The decision rule: best-of-N with N = 4-16 for cheap gains at
@@ -583,7 +581,7 @@ derivation, in four steps:</p>
    the reference.</li>
 <li>Solve for the optimal policy in closed form. It expresses the
    reward as a function of the policy: r(x, y) is proportional to
-   beta * log(pi(y|x) / pi_ref(y|x)).</li>
+   beta * log(pi(y|x) / pi_ref(y|x)), the natural log.</li>
 <li>Plug that expression into the Bradley-Terry loss. The explicit
    reward cancels out.</li>
 <li>Train the policy directly on preference pairs with a supervised
@@ -596,7 +594,8 @@ reference</em> than the rejected one:</p>
 pi(rejected)/pi_ref(rejected) = 0.6  (policy avoids the rejected, vs reference)
 log(1.4 / 0.6) = 0.847 &gt; 0  -&gt;  loss pushes this gap wider
 </pre>
-<p>Two models instead of four
+<p>The log is the natural log, matching the beta * log(pi/pi_ref)
+form of the reward. Two models instead of four
 (<a href="https://www.youtube.com/watch?v=PmW_TMQ3l0I&amp;t=6008s">100:08</a>):
 policy and reference. Beta around 0.1 is the typical setting. The
 lecture&rsquo;s verdict: PPO performs better in reported results, DPO is

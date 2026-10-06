@@ -271,7 +271,7 @@ check the assumption before trusting the fit.
 
 > [!QA]
 > Q: Walk me through one DPO gradient step on the running example, by hand.
-> A: Prompt x: "Explain why the sky is blue." Winner y_A has log-ratio log[pi/pi_ref] = 0.5. Loser y_B has -0.3. Beta = 1. Step one: the implicit gap = 0.5 - (-0.3) = 0.8. Step two: sigma(0.8) = 0.69. Step three: loss = -log(0.69) = 0.37. Step four: the gradient. The loss derivative with respect to the gap is -(1 - 0.69) = -0.31, so the optimizer pushes the gap wider: it raises the winner's log-ratio and lowers the loser's. The push is surprise-weighted, like Lecture 4's MLE: a pair the policy already ranks correctly, gap 3, sigma 0.95, contributes gradient -0.05 and barely moves. An inverted pair, gap -1, contributes -1.27 and moves a lot. That is the whole algorithm: classification on pairs, hardest pairs move most.
+> A: Prompt x: "Explain why the sky is blue." Winner y_A has log-ratio log[pi/pi_ref] = 0.5. Loser y_B has -0.3. Beta = 1. Step one: the implicit gap = 0.5 - (-0.3) = 0.8. Step two: sigma(0.8) = 0.69. Step three: loss = -log(0.69) = 0.37. Step four: the gradient. The loss derivative with respect to the gap is -(1 - 0.69) = -0.31, so the optimizer pushes the gap wider: it raises the winner's log-ratio and lowers the loser's. The push is surprise-weighted, like Lecture 4's MLE: a pair the policy already ranks correctly, gap 3, sigma 0.95, contributes gradient -0.05 and barely moves. An inverted pair, gap -1, contributes -0.73 and moves a lot. That is the whole algorithm: classification on pairs, hardest pairs move most.
 > Follow-up: What does the reference policy do during the step?
 > A: It anchors the update. The implicit reward is beta log(pi/pi_ref), so raising pi(y_A) raises the reward only relative to where the reference put it. Without pi_ref, adding a constant to all log-probabilities would change nothing observable, and the optimum would be undefined: Lecture 3's identification problem, wearing a policy costume.
 
@@ -288,6 +288,23 @@ check the assumption before trusting the fit.
 > A: Not to anything principled in general. Each round optimizes a different objective, the pairs change, so there is no fixed point theorem. In practice two to six rounds help, the Llama 3 report ran six, and returns diminish as the policy's outputs saturate the labelers' ability to distinguish them. Stop when fresh pairs stop moving held-out win rates.
 
 ## What is used where: the production alignment stacks
+
+> [!NOTE]
+> This chapter covers RLHF from the choice-theoretic side: the
+> BT likelihood, the identification anchor, the Borda
+> connection, the assumption checklist. The mechanical
+> derivations live in the sibling courses and are not repeated
+> here. **CS224N L10** derives the RLHF pipeline from the
+> language-modeling side: instruction tuning, the PPO step, and
+> post-training in production as of October 2026. **CME295 L05**
+> works PPO-clip by hand, derives DPO in four steps, and maps
+> the DPO family (IPO, KTO, and friends). **CME295 L06** derives
+> GRPO against PPO with the memory arithmetic and the
+> DeepSeek-R1 recipe. **CS336 L15** carries the full RL
+> machinery: advantage estimation, KL control, and on-policy
+> training at scale. Read those for the how. Read this chapter
+> for the why: what the losses assume, and what breaks when the
+> assumptions fail.
 
 Every frontier lab runs a variant of this chapter. The public
 record, current as of October 2026, says which.
@@ -376,10 +393,23 @@ The story in eight steps. Each step answers the one before it.
    responses. Distorted by sampling and misspecification.
    Offline pairs go stale.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/XZLc09hkMwA" title="Direct Preference Optimization paper explained, AI Coffee Break" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+- DPO paper explained (AI Coffee Break): https://www.youtube.com/watch?v=XZLc09hkMwA
+- Christiano et al., Deep RL from Human Preferences (2017): https://arxiv.org/abs/1706.03741
+- Ouyang et al., InstructGPT (2022): https://arxiv.org/abs/2203.02155
+- Rafailov et al., DPO (2023): https://arxiv.org/abs/2305.18290
+- Schulman et al., PPO (2017): https://arxiv.org/abs/1707.06347
+- DeepSeek-R1 report, GRPO (2025): https://arxiv.org/abs/2501.12948
+- Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
+
 ## Official sources and further reading
 
 **Official:**
-- Course textbook, chapters 7.x: the RLHF loop, reward
+- Course textbook, chapters 1.2/2.9/5.3: the RLHF loop, reward
   hacking, DPO as implicit Bradley-Terry, the assumption
   checklist, the DPO-Borda connection.
 

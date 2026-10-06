@@ -11,7 +11,7 @@ instructor: "Shikhar Murty"
 offering: "Spring 2024"
 duration: "1:04:00"
 video_id: I0tj4Y7xaOQ
-video_title: "Lecture 14: Reasoning and Agents"
+video_title: "Stanford CS224N: NLP w/ DL | Spring 2024 | Lecture 14 - Reasoning and Agents by Shikhar Murty"
 video_caption: "Guest lecture. Shikhar Murty covers reasoning: how to prompt it, how to test it, and how agents loop language models with the world."
 concepts: [reasoning, deductive, inductive, abductive, chain-of-thought, self-consistency, counterfactual-evaluation, agents, trajectory-modeling, hindsight-relabeling, miniwob, webarena, weblinx]
 sources:
@@ -286,7 +286,7 @@ internals is [uncertain] unless the vendor documented it.
 > Q: Build a flight-booking agent. What is the architecture?
 > A: Start with the lecture's loop: instruction + action space + history predicts the next action. Add ReAct: Thought steps between actions so the agent plans. Add tools: search_flights, select_flight, enter_payment, each with a typed schema. Add guardrails: never enter payment without explicit user confirmation (WebLinx's human-communication action). Add recovery: if a step fails, the Thought step replans instead of committing to the trajectory. Evaluate on WebArena-style tasks: success rate, steps to completion, and dollars booked wrong (the metric that matters).
 > Follow-up: How do you stop it booking the wrong flight?
-> A: Confirmation gates on irreversible actions. The agent can search and compare freely. Payment needs a human yes. And idempotency: the booking tool must tolerate retries without double-booking. The reliability is in the harness, not the model.
+> A: Confirmation gates on irreversible actions. The agent can search and compare freely. Payment needs a human yes. And idempotency: the booking tool must tolerate retries without double-booking. The reliability is in the scaffolding, not the model.
 
 > [!QA]
 > Q: Self-consistency or tree of thought for a math word problem?
@@ -310,9 +310,16 @@ internals is [uncertain] unless the vendor documented it.
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
-<iframe src="https://www.youtube-nocookie.com/embed/VNxgUchyelQ" title="Retrieve On Demand, Not Upfront: The ReAct Pattern" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+<iframe src="https://www.youtube-nocookie.com/embed/I0tj4Y7xaOQ" title="CS224N Spring 2024 Lecture 14: Reasoning and Agents" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
-<p><strong>The ReAct pattern</strong> (AI TechBook). Thought, action, observation, with a worked multi-hop example.</p>
+<p><strong>Lecture 14: Reasoning and Agents</strong> (Shikhar Murty, Spring 2024). The original lecture: reasoning in language models and language model agents. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=I0tj4Y7xaOQ</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/PEssdKXOobU" title="How AI Agents Actually Work: One Loop, Tested on Real Models" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>How AI agents actually work</strong> (Ground Truth). The agent loop, ReAct, and failure modes, tested on real models.</p>
+</div>
 </div>
 
 ### Go deeper

@@ -143,10 +143,8 @@ new rating of B = 1600 - 20.5 = 1579.5
 ```
 
 The upset moves 20.5 points: beating a stronger opponent pays more than
-beating a weaker one. Expected wins move almost nothing. That is the
-whole design: ratings converge to the true skill ordering as votes
-accumulate, and surprises teach the most. 200,000 votes make the
-leaderboard stable. The weakness: Elo assumes transitive skill (if A
+beating a weaker one. Expected wins move almost nothing. 200,000 votes
+make the leaderboard stable. The weakness: Elo assumes transitive skill (if A
 beats B and B beats C, A beats C), which fails when models have different
 strengths on different tasks.
 

@@ -325,9 +325,16 @@ models.
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
+<iframe src="https://www.youtube-nocookie.com/embed/DGfCRXuNA2w" title="CS224N Spring 2024 Lecture 9: Pretraining" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
+</div>
+<p><strong>Lecture 9: Pretraining</strong> (Christopher Manning, Spring 2024). The original lecture: masked pretraining, BERT, GPT, and in-context learning. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=DGfCRXuNA2w</p>
+
+<div style="max-width:640px;margin:1.5rem 0">
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/zjkBMFhNj_g" title="Intro to Large Language Models" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
 <p><strong>Intro to large language models</strong> (Karpathy). Pretraining, RLHF, and inference in one hour.</p>
+</div>
 </div>
 
 ### Go deeper

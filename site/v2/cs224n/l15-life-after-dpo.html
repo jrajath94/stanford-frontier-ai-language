@@ -229,7 +229,7 @@ in now?</p>
 <figure><img alt="Speaker" src="assets/l15-speaker.svg"><figcaption>Stanford Frontier AI, CS224N L15. Nathan Lambert: Berkeley PhD, HuggingFace, AI2. DPO was the 2023 story. The talk asks what comes next.</figcaption></figure>
 <p>The premise: more and more of the labs&rsquo; action moved from pretraining to
 <strong>post-training</strong>. The base models are built. The differentiation, and the
-alignment research, happens after. Alignment is now the main event.</p>
+alignment research, happens after.</p>
 <h2 id="preference-data-at-lab-scale">Preference data at lab scale</h2>
 <p>Post-training is preference learning, and preferences are bought:</p>
 <figure><img alt="Data scale" src="assets/l15-data-scale.svg"><figcaption>Stanford Frontier AI, CS224N L15. Chatbot Arena: 800,000 public data points. Meta bought ~1.5M comparisons for LLaMA 2. Labs buy far more.</figcaption></figure>
@@ -238,17 +238,16 @@ alignment research, happens after. Alignment is now the main event.</p>
 <li><strong>Meta&rsquo;s LLaMA 2 paper</strong>: about 1.5M comparisons bought
   (<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=173s" target="_blank" rel="noopener">02:53 <span class="ts">⏱02:53</span></a>).</li>
 </ul>
-<p>Both &ldquo;years outdated.&rdquo; OpenAI and Anthropic buy far more. Researchers
-cannot match that scale. The talk&rsquo;s challenge: what can research do without
-lab resources? The agenda is efficiency, not scale: DPO variants,
+<p>Both &ldquo;years outdated.&rdquo; OpenAI and Anthropic buy far more. The talk&rsquo;s
+challenge: what can research do without lab resources? The agenda is
+efficiency, not scale: DPO variants,
 self-rewarding loops, synthetic preferences, better use of small
 high-quality sets. A great open reward model &ldquo;would help people catch up
 in alignment.&rdquo;</p>
 <div class="qa"><div class="q">Why does preference data scale matter so much?</div><div class="a"><p>Post-training is preference learning. More comparisons mean better reward models and better policies. Labs treat preference data as a moat: the comparisons encode what good behavior looks like, and nobody else has them.
 Methods that need less data: DPO variants, self-rewarding loops, synthetic preferences, and better use of small high-quality sets. The talk&rsquo;s research agenda is efficiency, not scale.</p><div class="followup"><strong>Follow-up:</strong> What can researchers do instead?</div></div></div>
 <h2 id="the-key-question">The key question</h2>
-<p>If the data keeps shifting under our feet, what stays still — what kind
-of feedback remains a reliable teacher no matter how good the model gets?</p>
+<p>If the data keeps shifting under our feet, what stays still, what kind of feedback remains a reliable teacher no matter how good the model gets?</p>
 <p><strong>On this page:</strong> <a href="#subchapter-the-dpo-loss-term-by-term">The DPO loss, term by term</a> · <a href="#subchapter-iterative-dpo-and-online-variants">Iterative DPO</a> · <a href="#subchapter-reward-model-evaluation">Reward model evaluation</a> · <a href="#what-is-used-where-alignment-in-production-october-2026">Alignment in production, Oct 2026</a> · <a href="#watch-and-go-deeper">Watch and go deeper</a></p>
 <h3 id="subchapter-the-dpo-loss-term-by-term">Subchapter: the DPO loss, term by term</h3>
 <p>DPO&rsquo;s loss looks cryptic until each term earns its place. For one
@@ -256,7 +255,7 @@ preference pair (prompt x, chosen y_w, rejected y_l):</p>
 <pre class="ascii">loss = -log sigma( beta x [ log(pi(y_w)/pi_ref(y_w)) - log(pi(y_l)/pi_ref(y_l)) ] )
 </pre>
 <p>Read it inside out. pi(y_w) is the policy&rsquo;s probability of the chosen
-answer; pi_ref(y_w) is the reference model&rsquo;s. The ratio says how much
+answer. Pi_ref(y_w) is the reference model&rsquo;s. The ratio says how much
 <em>more</em> the policy favors the chosen answer than the reference did. Same
 for the rejected answer. The bracket is the margin: preference for chosen
 minus preference for rejected, each measured against the reference. Beta
@@ -332,8 +331,7 @@ an LLM judge, relabels the data, and iterates DPO (<a href="https://www.youtube.
 answers, judges them itself, and DPO trains on the self-labeled pairs.
 Round 3: repeat. Strong scores across rounds. Variations: batched DPO with
 data refreshes, <strong>discriminator-guided DPO</strong> (reward models plus DPO
-training). The pattern: close the loop between generation and judgment, so
-the data refreshes even without new human labels.</p>
+training).</p>
 <h2 id="beyond-pairwise-new-shapes-of-feedback">Beyond pairwise: new shapes of feedback</h2>
 <p>Pairwise preferences are not the only signal (<a href="https://www.youtube.com/watch?v=dnF463_Ar9I&amp;t=3681s" target="_blank" rel="noopener">61:21 <span class="ts">⏱61:21</span></a>):</p>
 <figure><img alt="Beyond pairwise" src="assets/l15-beyond-pairwise.svg"><figcaption>Stanford Frontier AI, CS224N L15. KTO: one-sided yes/no. Starling: k-wise ranking over 5-9 answers. SteerLM: fine-grained conciseness, helpfulness, honesty.</figcaption></figure>

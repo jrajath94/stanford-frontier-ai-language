@@ -7,17 +7,21 @@ order: 4
 nav: "L04 · Learning Rewards"
 title: "Lecture 4: Learning Rewards from Preference Data"
 summary: "Maximum likelihood, Bayesian inference, online Elo updates, regularization, and label noise, applied to LLM preference data."
-date: "[uncertain] Spring 2026"
+date: "[uncertain] Autumn 2024"
 instructor: "Sanmi Koyejo"
-offering: "Spring 2026"
+offering: "[uncertain]"
 duration: "[uncertain]"
-video_id: ""
-video_title: ""
-video_caption: "No dedicated lecture transcript. Built from the course textbook, chapter 2 (learning from preference data)."
+video_id: "7i6WsIzZaeo"
+video_title: "Stanford CS329H: ML from Human Preferences | Autumn 2024 | Model-based Preference Optimization"
+video_caption: "Course lecture (Stanford Online, Autumn 2024). Model-based preference optimization: fitting preference models from data. Verified live on YouTube."
 concepts: [mle, bayesian-inference, elo, online-learning, regularization, label-noise, model-selection, reward-model]
 sources:
+  - tag: video
+    label: "CS329H Autumn 2024: Model-based Preference Optimization (Stanford Online)"
+    url: https://www.youtube.com/watch?v=7i6WsIzZaeo
   - tag: notes
     label: "Course textbook, chapter 2 (Truong, Haupt, Koyejo, 2025)"
+    url: https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
   - tag: supplement
     label: "Stanford Human Preferences (SHP) dataset"
     url: https://huggingface.co/datasets/stanfordnlp/SHP
@@ -166,6 +170,30 @@ fast, which is how Elo tracks drifting strength. The textbook's
 stationarity warning applies: if abilities drift, batch MLE on
 old data is stale and online methods with forgetting win.
 
+### Subchapter: Elo is stochastic gradient descent
+
+The Elo update is not just like SGD on the BT log-loss. It is
+SGD on the BT log-loss. Take the pair log-likelihood for A
+beating B: L = log sigma(V_A - V_B). Its gradient with respect
+to V_A is 1 - sigma(gap). One SGD step with learning rate eta:
+
+V_A <- V_A + eta * (1 - sigma(gap))
+
+Elo says: V_A <- V_A + K * (score - expected). Same shape. The
+surprise (score - expected) is the gradient. K is the learning
+rate. Elo is batch MLE's online twin, one pair at a time.
+
+![Elo equals one SGD step](assets/plate-elo-sgd.webp "The surprise is the gradient. K is the learning rate. Elo is online Bradley-Terry. Shell 3. Source: original figure for the Elo-SGD equivalence. Project: Stanford Frontier AI.")
+
+One scale subtlety. Chess Elo writes the expected score with
+base 10 and divisor 400: E = 1/(1 + 10^{-d/400}). Bradley-Terry
+uses base e: sigma(d') = 1/(1 + e^{-d'}). They match when d' =
+d / 173.7. Elo rating points are BT utility units times 173.7.
+The 16-point swing in the worked example is a BT gap change of
+16/173.7 = 0.092. Small in utility units, standard in Elo
+units. Quote the scale with the number or the number means
+nothing.
+
 ## Noise: random versus systematic
 
 The textbook's LLM simulation adds 10% uniform label noise: one
@@ -214,6 +242,24 @@ learning quality.
 > Follow-up: Why is overfitting worse for reward models than for classifiers?
 > A: The reward model is optimized against, not just evaluated. A classifier's overfit regions sit unused. A policy optimizer actively seeks the reward model's overfit regions because they look like high reward. Small errors in the reward become large errors in the policy. This is why RLHF needs the KL constraint from Lecture 1.
 
+> [!QA]
+> Q: Walk me through one MLE gradient step on three pairs, by hand.
+> A: Items A, B, C start at V = (0, 0, 0). Three observed pairs: A beats B, A beats C, B beats C. The log-likelihood is log sigma(V_A - V_B) + log sigma(V_A - V_C) + log sigma(V_B - V_C). At zero, each sigma is 0.5. The gradient for V_A: (1 - 0.5) + (1 - 0.5) = 1.0, one unit of surprise from each win. For V_B: -(1 - 0.5) + (1 - 0.5) = 0.0, the loss to A cancels the win over C. For V_C: -(1 - 0.5) - (1 - 0.5) = -1.0. With learning rate 0.1: V = (0.1, 0.0, -0.1). A rises, C falls, B holds. Repeat. The update is always surprise-weighted: pairs the model already predicts move nothing, upsets move a lot.
+> Follow-up: Why did B's gradient come out zero?
+> A: B's record is one win and one loss against opponents the model rates equal. The evidence balances exactly. This is the likelihood doing the right thing: B is perfectly average given the data so far. As A pulls ahead, B's loss to A will carry more surprise than its win over C, and B will drift down.
+
+> [!QA]
+> Q: Your reward model scores 92% on train pairs and 61% on held-out pairs. Diagnose and fix.
+> A: The 31-point gap is overfitting: the model memorized training quirks instead of learning quality. Check the utility scale first. If score gaps on training pairs are huge while held-out gaps are flat, the model is confident about memorized pairs and clueless elsewhere. Fixes in order: add L2 regularization, which is a Gaussian prior on the weights. stop early at the bottom of the U-turn on held-out accuracy. cut model capacity. and check for leakage, pairs or annotators shared between train and held-out. The deeper fix: 61% held-out accuracy means the reward is barely better than chance, so do not optimize against it yet. A policy optimizer will hunt the 39% of errors and turn them into behavior.
+> Follow-up: When is 61% held-out accuracy acceptable?
+> A: When the Bayes error is high: inherently noisy labels cap what any model can reach. Measure annotator agreement on a doubly-labeled subset. If humans agree only 65% of the time, 61% is near the ceiling and the problem is the data, not the model. Fix the elicitation, not the fit.
+
+> [!QA]
+> Q: Why is L2 regularization the same thing as a Gaussian prior?
+> A: Write the posterior: p(V|data) proportional to p(data|V) x p(V). Take logs. The log-likelihood is the BT sum. The Gaussian prior log p(V) = -V^2/(2 s^2) plus a constant. Maximizing the log-posterior is maximizing log-likelihood minus V^2/(2 s^2). That is exactly MLE with L2 penalty lambda = 1/(2 s^2). The textbook's lambda = 0.05 is a prior standard deviation of about 3.2. Two names, one computation: penalized fitting is Bayesian fitting at the mode.
+> Follow-up: What does the prior standard deviation mean in plain words?
+> A: It is how large a utility gap you believe before seeing data. s = 3 says gaps beyond about 6 are implausible: sigma(6) = 0.9975, near-certain wins. The prior pulls the undefeated item's gap back from infinity to something like 4 or 5: large, finite, honest. Pick s from domain knowledge: in chess, a 600-point Elo gap is 0.97 win probability, so s around 2 in BT units matches the real world.
+
 ## Model selection and optimization
 
 BT versus mixture versus factor model is a model selection
@@ -237,8 +283,8 @@ of pairs, gradient clipping, early stopping on held-out pairs.
 | Flat direction, wandering optimum | Anchor first | Fix V_1 = 0 before any fitting |
 | Undefeated items explode to infinity | Prior or L2 | Gaussian prior caps the gap at a finite value |
 | Stale batch estimates under drift | Online updates | Elo: V_new = V_old + K(score - expected), K forgets |
-| Systematic annotator bias | Bias terms | Model verbosity and position; do not clean blindly |
-| Overfit reward gets optimized against | Held-out pairs | Watch the U-turn; the optimizer seeks your errors |
+| Systematic annotator bias | Bias terms | Model verbosity and position. do not clean blindly |
+| Overfit reward gets optimized against | Held-out pairs | Watch the U-turn. the optimizer seeks your errors |
 
 ## The honest price: points hide uncertainty
 
@@ -293,18 +339,18 @@ The story in eight steps. Each step answers the one before it.
 **Caveats from these sources.** The 80/20 split, the lambda =
 0.05 fit, and the 300-epoch toy run are the textbook's
 illustration values. The 24-point upset update is worked here
-from the standard Elo formula; the Elo scale factor 400 is the
+from the standard Elo formula. the Elo scale factor 400 is the
 chess convention. The "10% becomes 40%" compounding figure
 belongs to Lecture 10's pipeline.
 
 ## Connections to the other courses
 
 - **CS329H L02:** BT as logistic regression on pair
-  differences; the likelihood maximized here.
-- **CS329H L03:** the anchor requirement; the flat direction.
+  differences. the likelihood maximized here.
+- **CS329H L03:** the anchor requirement. the flat direction.
 - **CS329H L05:** the posterior variance from Bayes drives
   active query selection.
-- **CS329H L06:** the posterior drives Thompson sampling; Elo
+- **CS329H L06:** the posterior drives Thompson sampling. Elo
   is the online idea at scale.
 - **CS329H L07:** the reward model fit here is the object PPO
   optimizes and DPO skips.

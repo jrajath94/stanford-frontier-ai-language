@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -255,13 +252,42 @@ k every time, the MLE wants V_j - V_k = infinity. The fix is
 regularization or a prior, covered below.</p>
 <div class="qa"><div class="q">Why is BT maximum likelihood convex?</div><div class="a"><p>The log-likelihood is a sum of terms y*d - log(1 + e^d) with d = V_j - V_k. Each term is concave in d, the logistic log-likelihood, and d is linear in V, so the sum is concave in V. Concave maximization has one global optimum. The anchor removes the flat direction. This is why BT fitting is reliable where deep reward models are not.
 Mixtures and latent user types. A mixture of two BT models has a non-convex likelihood with local optima. Neural reward models r_theta(x, y) are non-convex in theta. The convex case is the linear-utility, single-population BT model only.</p><div class="followup"><strong>Follow-up:</strong> What breaks convexity?</div></div></div>
+<h3 id="subchapter-standard-errors-from-the-hessian-worked">Subchapter: standard errors from the Hessian, worked</h3>
+<p>The lesson promised standard errors from the Hessian. Here they
+are, on a toy you can check. Two items, A and B. Ten pairs. A
+wins 7, B wins 3.</p>
+<p>Step 1: the MLE. The log-likelihood in the gap d = V_A - V_B
+is 7d - 10 log(1 + e^d). Differentiate and set to zero: 7 -
+10 sigma(d) = 0, so sigma(d) = 0.7 and d-hat = log(7/3) =
+0.847. Ten pairs, seven wins, gap 0.847.</p>
+<p>Step 2: the curvature. The second derivative of the
+log-likelihood at the MLE is -n p (1-p) = -10 x 0.7 x 0.3 =
+-2.1. Curvature is information: sharp peak, tight estimate.</p>
+<p>Step 3: the standard error. For a scalar parameter, SE =
+1 / sqrt(information) = 1 / sqrt(2.1) = 0.690.</p>
+<p>Step 4: the interval. The 95% Wald interval is d-hat +/-
+1.96 x SE = 0.847 +/- 1.35, which is (-0.51, 2.20).</p>
+<p>Read the interval honestly. Ten pairs cannot pin the gap: the
+data are consistent with B being better (gap -0.51) and with A
+dominating (gap 2.20). The point estimate 0.847 looks precise.
+The interval says otherwise. This is why Lecture 5&rsquo;s active
+learning and Lecture 6&rsquo;s Thompson sampling need the posterior,
+not the point: decisions made on d-hat alone ignore the 0.69
+of doubt.</p>
+<p>The general rule: with many items, the Hessian is the matrix
+H = -sum over pairs of p(1-p) x x^T, where x is the
+pair-difference indicator vector (+1 at the winner, -1 at the
+loser). Invert -H, take the diagonal, square-root it: those
+are the standard errors. The anchor from Lecture 3 makes -H
+invertible by removing the flat direction. No anchor, no
+inverse, no standard errors.</p>
 <h2 id="where-mle-breaks-the-undefeated-item">Where MLE breaks: the undefeated item</h2>
 <p>Ten games. Item j beats item k all ten times. What does MLE say
 the gap V_j - V_k should be? The likelihood of the data at gap d
 is sigma(d)^{10}. This is maximized as d goes to infinity. Watch
 the numbers:</p>
 <pre class="ascii">d = 3:   sigma = 0.953,  likelihood = 0.953^10 = 0.62
-d = 5:   sigma = 0.993,  likelihood = 0.993^10 = 0.93
+d = 5:   sigma = 0.99331,  likelihood = 0.99331^10 = 0.94
 d = 10:  sigma = 0.99995, likelihood = 0.99995^10 = 0.9995
 </pre>
 <p>Every increase helps. The optimum is at infinity. The model is
@@ -461,9 +487,20 @@ exactly the errors this lecture&rsquo;s fitting leaves behind.</p>
    cross-validation for care. Rashomon ties mean the data
    cannot choose. Choose by domain knowledge and say so.</li>
 </ol>
+<h2 id="go-deeper">Go deeper</h2>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/7i6WsIzZaeo" title="Stanford CS329H Autumn 2024: Model-based Preference Optimization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<ul>
+<li>Course lecture: https://www.youtube.com/watch?v=7i6WsIzZaeo</li>
+<li>Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf</li>
+<li>Stanford Human Preferences (SHP) dataset: https://huggingface.co/datasets/stanfordnlp/SHP</li>
+<li>Anthropic HH-RLHF dataset: https://huggingface.co/datasets/Anthropic/hh-rlhf</li>
+<li>Hunter (2004), MM algorithms for generalized Bradley-Terry.</li>
+</ul>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
-- Course textbook, chapters 4.x: MLE on pairs, Bayesian BT,
+- Course textbook, chapter 2.x: MLE on pairs, Bayesian BT,
   Elo, label noise, the LLM simulation with 10% noise, the
   overfitting U-turn.</p>
 <p><strong>Further reading:</strong>

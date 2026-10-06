@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 7: RLHF, the Choice-Theoretic View — Stanford Frontier AI</title>
+<meta name="description" content="The RLHF loop as applied preference learning, reward hacking, DPO as implicit Bradley-Terry, and the assumption checklist. Deep mechanics bridged to CS336 L15.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs329h-l07" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive, Search, RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Attention, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech Brain-Computer Interfaces</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../cme295/l01-transformers-overview.html" data-page="cme295-l01">L01 · Transformers overview</a></li>
+<li><a href="../cme295/l02-attention-position-bert.html" data-page="cme295-l02">L02 · Attention and BERT</a></li>
+<li><a href="../cme295/l03-llms-decoding-inference.html" data-page="cme295-l03">L03 · LLMs and decoding</a></li>
+<li><a href="../cme295/l04-pretraining-scaling-finetuning.html" data-page="cme295-l04">L04 · Training at scale</a></li>
+<li><a href="../cme295/l05-preference-tuning.html" data-page="cme295-l05">L05 · Preference tuning</a></li>
+<li><a href="../cme295/l06-reasoning-models-grpo.html" data-page="cme295-l06">L06 · Reasoning models</a></li>
+<li><a href="../cme295/l07-rag-tool-calling-agents.html" data-page="cme295-l07">L07 · RAG and agents</a></li>
+<li><a href="../cme295/l08-evaluation.html" data-page="cme295-l08">L08 · Evaluation</a></li>
+<li><a href="../cme295/l09-course-recap-frontiers.html" data-page="cme295-l09">L09 · Recap and frontiers</a></li>
+<li><a href="../cme295/cheatsheet.html" data-page="cme295-cheatsheet">CME295 · Cheatsheet</a></li>
+<li><a href="../cme295/crash-course.html" data-page="cme295-crash">CME295 · Crash course</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../cs329h/l01-preference-foundations.html" data-page="cs329h-l01">L01 · Preference Foundations</a></li>
+<li><a href="../cs329h/l02-choice-models.html" data-page="cs329h-l02">L02 · Choice Models</a></li>
+<li><a href="../cs329h/l03-iia-identification.html" data-page="cs329h-l03">L03 · IIA and Identification</a></li>
+<li><a href="../cs329h/l04-learning-rewards.html" data-page="cs329h-l04">L04 · Learning Rewards</a></li>
+<li><a href="../cs329h/l05-metric-elicitation.html" data-page="cs329h-l05">L05 · Metric Elicitation</a></li>
+<li><a href="../cs329h/l06-bandits-exploration.html" data-page="cs329h-l06">L06 · Bandits and Exploration</a></li>
+<li><a href="../cs329h/l07-rlhf.html" data-page="cs329h-l07" class="active">L07 · RLHF</a></li>
+<li><a href="../cs329h/l08-social-choice.html" data-page="cs329h-l08">L08 · Social Choice</a></li>
+<li><a href="../cs329h/l09-mechanism-design.html" data-page="cs329h-l09">L09 · Mechanism Design</a></li>
+<li><a href="../cs329h/l10-alignment-practice.html" data-page="cs329h-l10">L10 · Alignment in Practice</a></li>
+<li><a href="../cs329h/cheatsheet.html" data-page="cs329h-cheatsheet">CS329H · Cheatsheet</a></li>
+<li><a href="../cs329h/crash-course.html" data-page="cs329h-crash">CS329H · Crash course</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+<li><a href="../cs329z/l01-intro-agentic-systems.html" data-page="cs329z-l01">L01 · Intro to Agentic Systems</a></li>
+<li><a href="../cs329z/l02-compound-ai-systems.html" data-page="cs329z-l02">L02 · Compound AI Systems</a></li>
+<li><a href="../cs329z/l03-llms-for-builders.html" data-page="cs329z-l03">L03 · LLMs for Builders</a></li>
+<li><a href="../cs329z/l04-reasoning-and-context.html" data-page="cs329z-l04">L04 · Reasoning and Context</a></li>
+<li><a href="../cs329z/l05-rag-pipeline.html" data-page="cs329z-l05">L05 · RAG Pipeline</a></li>
+<li><a href="../cs329z/l06-retrieval-methods.html" data-page="cs329z-l06">L06 · Retrieval Methods</a></li>
+<li><a href="../cs329z/l07-agentic-retrieval-failure-modes.html" data-page="cs329z-l07">L07 · Agentic Retrieval</a></li>
+<li><a href="../cs329z/l08-evaluating-agents.html" data-page="cs329z-l08">L08 · Evaluating Agents</a></li>
+<li><a href="../cs329z/cheatsheet.html" data-page="cs329z-cheatsheet">CS329Z · Cheatsheet</a></li>
+<li><a href="../cs329z/crash-course.html" data-page="cs329z-crash">CS329Z · Crash course</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
+<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
+<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
+<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
+<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
+<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
+<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
+<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
+<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
+<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+<li><a href="../mse435/l01-electrons-to-tokens.html" data-page="mse435-l01">L01 · From Electrons to Tokens</a></li>
+<li><a href="../mse435/l02-sixty-million-megawatt.html" data-page="mse435-l02">L02 · The $60M Megawatt</a></li>
+<li><a href="../mse435/l03-how-models-get-smarter.html" data-page="mse435-l03">L03 · How Models Get Smarter</a></li>
+<li><a href="../mse435/l04-evals-rlvr-enterprise.html" data-page="mse435-l04">L04 · Evals and Enterprise AI</a></li>
+<li><a href="../mse435/l05-software-is-dead.html" data-page="mse435-l05">L05 · The SaaS Reckoning</a></li>
+<li><a href="../mse435/l06-where-value-accrues.html" data-page="mse435-l06">L06 · Where Value Accrues</a></li>
+<li><a href="../mse435/cheatsheet.html" data-page="mse435-cheatsheet">MS&amp;E 435 · Cheatsheet</a></li>
+<li><a href="../mse435/crash-course.html" data-page="mse435-crash">MS&amp;E 435 · Crash course</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">MATH-ML · Overview</a></li>
+<li><a href="../math-ml/l01-vectors-as-data.html" data-page="math-ml-l01">L01 · Vectors as Data</a></li>
+<li><a href="../math-ml/l02-matrices-as-machines.html" data-page="math-ml-l02">L02 · Matrices as Machines</a></li>
+<li><a href="../math-ml/l03-eigendecomposition-pca.html" data-page="math-ml-l03">L03 · Eigen-decomposition</a></li>
+<li><a href="../math-ml/l04-svd-low-rank.html" data-page="math-ml-l04">L04 · SVD and Low Rank</a></li>
+<li><a href="../math-ml/l05-probability-bayes.html" data-page="math-ml-l05">L05 · Probability and Bayes</a></li>
+<li><a href="../math-ml/l06-distributions-covariance.html" data-page="math-ml-l06">L06 · Distributions and Covariance</a></li>
+<li><a href="../math-ml/l07-calculus-gradients-chainrule.html" data-page="math-ml-l07">L07 · Calculus for ML</a></li>
+<li><a href="../math-ml/l08-convexity-gradient-descent.html" data-page="math-ml-l08">L08 · Convexity and Gradient Descent</a></li>
+<li><a href="../math-ml/l09-least-squares-regression.html" data-page="math-ml-l09">L09 · Least Squares</a></li>
+<li><a href="../math-ml/l10-information-theory.html" data-page="math-ml-l10">L10 · Information Theory</a></li>
+<li><a href="../math-ml/cheatsheet.html" data-page="math-ml-cheatsheet">MATH-ML · Cheatsheet</a></li>
+<li><a href="../math-ml/crash-course.html" data-page="math-ml-crash-course">MATH-ML · Crash Course</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+<li><a href="../math-genai/l01-the-job.html" data-page="math-genai-l01">L01 · The Job</a></li>
+<li><a href="../math-genai/l02-kl-and-mle.html" data-page="math-genai-l02">L02 · KL Divergence and MLE</a></li>
+<li><a href="../math-genai/l03-f-divergences.html" data-page="math-genai-l03">L03 · f-Divergences</a></li>
+<li><a href="../math-genai/l04-gans.html" data-page="math-genai-l04">L04 · GANs</a></li>
+<li><a href="../math-genai/l05-wgan-evaluation.html" data-page="math-genai-l05">L05 · WGAN and Evaluation</a></li>
+<li><a href="../math-genai/l06-latent-variables-elbo.html" data-page="math-genai-l06">L06 · ELBO</a></li>
+<li><a href="../math-genai/l07-vae.html" data-page="math-genai-l07">L07 · VAE</a></li>
+<li><a href="../math-genai/l08-ddpm-forward.html" data-page="math-genai-l08">L08 · DDPM Forward</a></li>
+<li><a href="../math-genai/l09-ddpm-loss.html" data-page="math-genai-l09">L09 · DDPM Loss</a></li>
+<li><a href="../math-genai/l10-score-ddim-ar.html" data-page="math-genai-l10">L10 · Score, DDIM, AR</a></li>
+<li><a href="../math-genai/cheatsheet.html" data-page="math-genai-cheatsheet">Cheatsheet</a></li>
+<li><a href="../math-genai/crash-course.html" data-page="math-genai-crash-course">Crash course</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Math · Generative Models · Overview</a></li>
+<li><a href="../math-genmodels/l01-the-one-question.html" data-page="math-genmodels-l01">L01 · The One Question</a></li>
+<li><a href="../math-genmodels/l02-autoregressive-models.html" data-page="math-genmodels-l02">L02 · Autoregressive Models</a></li>
+<li><a href="../math-genmodels/l03-variational-autoencoders.html" data-page="math-genmodels-l03">L03 · Variational Autoencoders</a></li>
+<li><a href="../math-genmodels/l04-normalizing-flows.html" data-page="math-genmodels-l04">L04 · Normalizing Flows</a></li>
+<li><a href="../math-genmodels/l05-diffusion-ddpm.html" data-page="math-genmodels-l05">L05 · Diffusion I: DDPM</a></li>
+<li><a href="../math-genmodels/l06-score-matching-ddim.html" data-page="math-genmodels-l06">L06 · Score Matching &amp; Fast Diffusion</a></li>
+<li><a href="../math-genmodels/l07-energy-based-models.html" data-page="math-genmodels-l07">L07 · Energy-Based Models</a></li>
+<li><a href="../math-genmodels/l08-judging-a-creator.html" data-page="math-genmodels-l08">L08 · Judging a Creator</a></li>
+<li><a href="../math-genmodels/cheatsheet.html" data-page="math-genmodels-cheatsheet">Math · Generative Models · Cheatsheet</a></li>
+<li><a href="../math-genmodels/crash-course.html" data-page="math-genmodels-crash">Math · Generative Models · Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / Lecture 7: RLHF, the Choice-Theoretic View</nav>
+      <h1>Lecture 7: RLHF, the Choice-Theoretic View</h1>
+      <p class="meta-line">[uncertain] Spring 2026 · Instructor: Sanmi Koyejo · [uncertain] · Spring 2026</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h2 id="the-problem-the-predictor-has-no-manners">The problem: the predictor has no manners</h2>
+<p>Lectures 1 through 6 built the machinery: comparisons, choice
+models, fitting, asking, acting. Now point it at the flagship
+application. A language model finishes pretraining. It predicts
+the next token beautifully. It also continues harmful prompts
+happily, rambles when asked to be brief, and invents citations.
+Prediction built capability. Nothing in pretraining taught it
+which outputs humans prefer.</p>
+<p>Carry one running example through the whole chapter. The prompt
+x: &ldquo;Explain why the sky is blue.&rdquo; Two candidate responses. y_A:
+a correct two-sentence explanation. y_B: a confident,
+detailed-sounding explanation that is wrong. An annotator reads
+both and picks y_A. That triple, (x, y_A, y_B), is the preference
+pair from Lecture 2. Everything in this chapter is machinery for
+turning thousands of such triples into a better policy.</p>
+<h2 id="first-attempt-the-three-stage-loop">First attempt: the three-stage loop</h2>
+<p><strong>RLHF</strong>, reinforcement learning from human feedback, runs in
+three stages (Christiano et al. (2017) and Ouyang et al. (2022)).</p>
+<figure><img alt="The RLHF loop" src="assets/l07-rlhf-loop.svg"><figcaption>Prompts, pairs, humans, reward model, PPO. Iterate. Source: original figure for Stanford Frontier AI.</figcaption></figure>
+<ol>
+<li><strong>Collect pairs.</strong> Sample prompts. Generate two responses
+   per prompt from the current model. Ask humans which is
+   better. This is Lecture 1&rsquo;s elicitation, Lecture 5&rsquo;s
+   question budget, Lecture 9&rsquo;s annotator incentives.</li>
+<li><strong>Train a reward model.</strong> Fit r(x, y): a function that
+   predicts which response humans will prefer. The standard
+   choice is the Bradley-Terry log-loss from Lecture 4:</li>
+</ol>
+<p>loss = -log sigma(r(x, y_w) - r(x, y_l))</p>
+<p>The reward model is a BT fit. Response embeddings are the
+   features. Regularize it. Validate it on held-out pairs.
+   Lecture 4, verbatim, at LLM scale.</p>
+<ol start="3">
+<li><strong>Optimize the policy.</strong> Fine-tune the language model to
+   maximize the learned reward, while staying close to the
+   original model. The standard optimizer is PPO with a KL
+   penalty:</li>
+</ol>
+<p>maximize E[r(x, y)] - beta * KL(pi || pi_ref)</p>
+<p>The KL term is a leash. It keeps the policy in the region
+   where the reward model is trustworthy. Without it, the
+   policy drifts into territory the reward model never saw.</p>
+<p>The loop iterates. The policy improves, which changes the pair
+distribution, which changes what the reward model must capture.
+Production systems schedule refreshes: label new batches from
+the current policy, refit, continue. This is Lecture 4&rsquo;s online
+idea at LLM scale.</p>
+<p>The deep mechanics, PPO&rsquo;s clipped objective, advantage
+estimation, annotator pipelines, model-based labeling, live in
+CS336 L15. This chapter covers the assumptions underneath,
+which is where the interviews live.</p>
+<div class="qa"><div class="q">Walk me through the RLHF pipeline in one minute.</div><div class="a"><p>Three stages. First, collect preference pairs: sample prompts, generate two responses each, ask humans which is better. Second, train a reward model r(x, y) by Bradley-Terry log-loss on the pairs: -log sigma(r(x, y_w) - r(x, y_l)). Third, optimize the policy with PPO to maximize the learned reward minus a KL penalty to the reference model. The KL leash keeps the policy where the reward model is trustworthy. Then iterate: new policy, new pairs, new reward.
+Reward hacking. The policy exploits errors in the learned reward, drifting far from sensible behavior while the proxy reward keeps rising. The KL term pins the policy near the reference model, inside the region the reward model was trained on. Remove it and optimization finds adversarial gibberish that the reward model scores highly.</p><div class="followup"><strong>Follow-up:</strong> Why the KL penalty? What breaks without it?</div></div></div>
+<h2 id="where-the-loop-breaks-reward-hacking">Where the loop breaks: reward hacking</h2>
+<p>The reward model is a proxy. The optimizer does not know that.
+It treats the proxy as the truth and climbs it. Watch the
+failure on the running example.</p>
+<pre class="ascii">true human preference:  y_A (correct, brief) &gt; y_B (wrong, detailed)
+learned reward r:       r(x, y_A) = 3.0,  r(x, y_B) = 2.0
+</pre>
+<p>So far so good. Now the policy discovers y_C: a long,
+authoritative-sounding answer that is subtly wrong. The reward
+model never saw this style during training. It keys on length
+and confidence, learned from annotator verbosity bias in Lecture
+4, and scores r(x, y_C) = 5.0. True human preference for y_C
+would be low. The optimizer does not care. It pushes the policy
+toward y_C because 5.0 beats 3.0.</p>
+<p>This is <strong>Goodhart&rsquo;s law</strong> with a training loop: when a measure
+becomes a target, it ceases to be a good measure. Optimization
+seeks the reward model&rsquo;s errors, not human preference. The
+defenses: the KL leash, iterating with fresh human labels, and
+human evaluation of the final policy rather than the proxy
+score. None of them removes the problem. They bound it.</p>
+<figure><img alt="Reward hacking" src="assets/l07-reward-hack.svg"><figcaption>The proxy rises while true quality falls. The optimizer seeks the reward model's errors. Source: original figure for Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">What is reward hacking, concretely?</div><div class="a"><p>The policy exploits errors in the learned reward model. The reward model scores a long, confident, subtly wrong answer at 5.0 because it learned verbosity as quality from biased annotators, while the truly better brief answer scores 3.0. The optimizer pushes toward 5.0 because that is the number it sees. True human preference falls while the proxy rises. Defenses: the KL leash, iterating with fresh labels, and evaluating the final policy with humans, not the proxy.
+Related but distinct. Overfitting is the reward model memorizing training quirks. Reward hacking is the policy optimizer actively seeking those quirks because they look like high reward. A classifier&rsquo;s overfit regions sit unused. A policy optimizer hunts them. That is why the KL constraint matters more here than in plain supervised learning.</p><div class="followup"><strong>Follow-up:</strong> Is reward hacking the same as overfitting?</div></div></div>
+<h2 id="the-key-question">The key question</h2>
+<p>The reward model is a middleman: pairs go in, a proxy comes out,
+the policy optimizes the proxy and hacks it. Can we skip the
+middleman and optimize the policy directly on the pairs?</p>
+<h2 id="dpo-the-policy-is-the-reward-model">DPO: the policy is the reward model</h2>
+<p><strong>DPO</strong>, direct preference optimization (Rafailov et al., 2023),
+removes the reward model. The trick is algebraic. Under the KL
+constrained RL objective, the optimal policy and the optimal
+reward determine each other. Rearranging gives the reward as a
+function of the policy:</p>
+<p>r*(x, y) = beta * log[ pi_theta(y|x) / pi_ref(y|x) ]</p>
+<p>This is the <strong>implicit reward</strong>: how much more the current
+policy likes y than the reference policy did, scaled by beta.
+Plug it into the Bradley-Terry likelihood from Lecture 2. The
+DPO loss:</p>
+<p>loss = -log sigma( r<em>(x, y_w) - r</em>(x, y_l) )</p>
+<p>No reward model is fit. The policy is trained by classification:
+push up the implicit reward of the winner, push down the
+loser&rsquo;s. Beta controls drift from the reference: large beta lets
+the policy move far, small beta pins it. The reference policy is
+the identification anchor from Lecture 3: without it, adding a
+constant to all implicit rewards changes nothing, and the
+optimum is undefined.</p>
+<figure><img alt="DPO: skip the reward model" src="assets/l07-dpo.svg"><figcaption>The policy IS the reward model. Loss is BT log-likelihood on the implicit gap. Worked: gap 0.8, sigma 0.69, loss 0.37. Source: original figure for Stanford Frontier AI.</figcaption></figure>
+<p>Work the loss by hand on the running example. The winner y_A has
+log-ratio log[pi(y_A|x) / pi_ref(y_A|x)] = 0.5. The loser y_B
+has log-ratio -0.3. Take beta = 1.</p>
+<pre class="ascii">implicit gap = 1.0 x (0.5 - (-0.3)) = 0.8
+sigma(0.8)   = 1 / (1 + e^-0.8) = 1 / (1 + 0.449) = 0.690
+loss         = -log(0.690) = 0.371
+</pre>
+<p>The pair contributes 0.37 to the loss. Gradient descent widens
+the gap: raise the winner&rsquo;s log-ratio, lower the loser&rsquo;s. That
+is the entire algorithm. A classification loss on preference
+pairs, with the policy playing both roles.</p>
+<div class="qa"><div class="q">Derive the DPO loss in plain words.</div><div class="a"><p>Start from the KL-constrained RL objective: maximize reward minus beta times KL to the reference. The optimal policy for a given reward has a closed form, and inverting it writes the reward as beta times the log-ratio of policy to reference. Substitute this implicit reward into the Bradley-Terry likelihood on the preference pair. The result is a classification loss: -log sigma of the implicit reward gap between winner and loser. No separate reward model. The policy learns directly from pairs.
+Beta is the KL penalty strength, now controlling how far the policy may drift from the reference. Large beta tolerates big log-ratios: the policy can move far. Small beta pins the policy near the reference. It is the same leash as in PPO, moved inside the loss. The worked toy uses beta = 1, giving gap 0.8 and loss 0.37.</p><div class="followup"><strong>Follow-up:</strong> What does beta do?</div></div></div>
+<h2 id="the-assumption-checklist">The assumption checklist</h2>
+<p>Before trusting any RLHF loop, audit the assumptions from
+Lectures 2 through 6. DPO inherits all of them.</p>
+<ol>
+<li><strong>Bradley-Terry holds.</strong> Pairwise probabilities follow the
+   sigmoid of a reward gap. Fails under context effects and
+   cycles, Lecture 3.</li>
+<li><strong>IIA holds.</strong> Adding candidate responses does not move pair
+   odds. Fails with near-duplicate candidates, Lecture 3.</li>
+<li><strong>Annotators are homogeneous.</strong> One reward fits all labelers.
+   Fails with structured disagreement. The fit is a compromise,
+   Lecture 3.</li>
+<li><strong>Labels reflect true preferences.</strong> No systematic bias.
+   Fails with verbosity and position bias. Model the bias,
+   Lecture 4.</li>
+<li><strong>Queries were informative.</strong> The pairs constrain the
+   reward. Random pairs waste budget. Active selection wins,
+   Lecture 5.</li>
+<li><strong>The reward is stationary.</strong> Human preferences do not drift
+   during training. Long runs need refresh, Lecture 6.</li>
+</ol>
+<p>DPO assumes BT is correctly specified. When the assumption
+fails, DPO learns a compromise policy that may match no
+individual&rsquo;s preferences. The textbook states this explicitly:
+check the assumption before trusting the fit.</p>
+<div class="qa"><div class="q">An interviewer asks: &quot;What could go wrong with DPO?&quot; Give the structured answer.</div><div class="a"><p>Six assumptions, six failure modes. BT misspecification: context effects and intransitive labels break the likelihood. IIA violation: near-duplicate candidates distort the implicit Borda aggregation. Heterogeneity: mixed annotators produce a compromise policy. Systematic label bias: verbosity and position effects get learned as quality. Uninformative pairs: random sampling wastes the annotation budget. Non-stationarity: preferences drift and the fit goes stale. For each, name the diagnostic: IIA tests, per-annotator fits, bias terms, information-based selection, refresh schedules.
+Heterogeneity. Teams obsess over reward-model accuracy on pooled labels and miss that the pool mixes contradictory preferences. The averaged reward looks accurate and produces a policy nobody wanted. Per-annotator or per-group modeling is the fix, and it is rarely done.</p><div class="followup"><strong>Follow-up:</strong> Which failure is most underrated?</div></div></div>
+<h2 id="mapping-back-what-dpo-buys-and-what-it-keeps">Mapping back: what DPO buys and what it keeps</h2>
+<table>
+<thead>
+<tr>
+<th>RLHF pain</th>
+<th>DPO answer</th>
+<th>What it keeps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Separate reward model to fit and hack</td>
+<td>No reward model; the policy is the reward</td>
+<td>The BT assumption, all six checklist items</td>
+</tr>
+<tr>
+<td>Unstable PPO tuning</td>
+<td>Stable classification loss</td>
+<td>The KL leash, now as beta inside the loss</td>
+</tr>
+<tr>
+<td>Proxy errors get optimized</td>
+<td>Pairs train the policy directly</td>
+<td>The reference policy as the identification anchor</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-honest-price-dpo-is-a-borda-election">The honest price: DPO is a Borda election</h2>
+<p>DPO&rsquo;s deepest price is social, not statistical. Train DPO with
+reference policy pi_ref. The DPO-optimal policy satisfies:</p>
+<p>pi_DPO(y|x) / pi_ref(y|x) proportional to (Borda score of y)</p>
+<p>DPO upweights each response proportionally to its Borda score:
+the number of pairwise matchups it wins against alternatives
+drawn from the reference policy. Pairwise RLHF is social choice
+in disguise. DPO finds the response that would win the most
+head-to-head matchups. Lecture 8 develops this fully.</p>
+<p>Two caveats from the textbook. The equivalence needs uniform
+pair sampling from pi_ref and a correctly specified
+Bradley-Terry model. Annotation pipelines violate both: they
+oversample long or controversial outputs, and annotator pools
+disagree. In practice DPO implements a distorted Borda count,
+and the distortion is rarely measured.</p>
+<p>The second price: DPO is offline. It learns from a fixed batch
+of pairs. As the policy moves, the pairs go stale, exactly the
+iteration problem above. Online DPO variants resample from the
+current policy, which reintroduces the loop DPO skipped.</p>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>The story in eight steps. Each step answers the one before it.</p>
+<ol>
+<li><strong>Prediction has no manners.</strong> The pretrained model
+   continues any prompt. Behavior needs human preference, not
+   more prediction.</li>
+<li><strong>The loop has three stages.</strong> Pairs, reward model, PPO
+   with KL. The reward model is a BT fit: -log sigma of the
+   reward gap. Iterate with fresh labels.</li>
+<li><strong>The proxy gets hacked.</strong> The optimizer climbs the
+   reward model&rsquo;s errors. r = 5.0 on a confident wrong answer
+   beats r = 3.0 on the right one. Goodhart with a training
+   loop.</li>
+<li><strong>Defenses bound it.</strong> KL leash, iteration, human
+   evaluation of the final policy. None removes it.</li>
+<li><strong>DPO skips the middleman.</strong> Implicit reward r* = beta
+   log(pi/pi_ref). Loss = -log sigma(gap). The toy: gap 0.8,
+   sigma 0.69, loss 0.37.</li>
+<li><strong>Beta is the leash.</strong> Large beta moves far, small beta
+   stays pinned. The reference policy anchors
+   identification.</li>
+<li><strong>Six assumptions, six failures.</strong> BT, IIA, homogeneity,
+   unbiased labels, informative queries, stationarity. DPO
+   inherits all six.</li>
+<li><strong>The price is social.</strong> DPO is a Borda election over
+   responses. Distorted by sampling and misspecification.
+   Offline pairs go stale.</li>
+</ol>
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Course textbook, chapters 7.x: the RLHF loop, reward
+  hacking, DPO as implicit Bradley-Terry, the assumption
+  checklist, the DPO-Borda connection.</p>
+<p><strong>Further reading:</strong>
+- Christiano et al., Deep RL from Human Preferences (2017):
+  https://arxiv.org/abs/1706.03741
+- Ouyang et al., Training LMs to Follow Instructions with
+  Human Feedback (2022): https://arxiv.org/abs/2203.02155
+- Rafailov et al., Direct Preference Optimization (2023):
+  https://arxiv.org/abs/2305.18290</p>
+<p><strong>Caveats from these sources.</strong> The DPO worked toy uses beta =
+1 from the textbook; a sibling course&rsquo;s worker used beta = 0.5
+with the same loss shape, which changes the gap and the loss
+value. The PPO-versus-DPO derivations live in CS336 L15, not
+here. The DPO-Borda proportionality needs uniform sampling and
+correct BT specification; both fail in practice.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>CS329H L02:</strong> the BT likelihood inside the DPO loss; the
+  preference pair atom.</li>
+<li><strong>CS329H L03:</strong> IIA and identification; the reference policy
+  as anchor.</li>
+<li><strong>CS329H L04:</strong> the reward model is a BT fit; hacking is
+  optimization against fitting errors.</li>
+<li><strong>CS329H L05:</strong> informative queries for the pair budget.</li>
+<li><strong>CS329H L08:</strong> DPO as a Borda election; the social-choice
+  view.</li>
+<li><strong>CS336 L15:</strong> PPO mechanics, the clipped objective, and
+  full DPO derivations.</li>
+<li><strong>CS224N:</strong> DPO from the language-modeling side.</li>
+</ul>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">NOTES</span>Course textbook, chapters 1.2, 2.9, 5.3 (Truong, Haupt, Koyejo, 2025)</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/1706.03741" target="_blank" rel="noopener">Christiano et al., Deep RL from Human Preferences (2017)</a></li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2203.02155" target="_blank" rel="noopener">Ouyang et al., InstructGPT (2022)</a></li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2305.18290" target="_blank" rel="noopener">Rafailov et al., Direct Preference Optimization (2023)</a></li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/1707.06347" target="_blank" rel="noopener">Schulman et al., Proximal Policy Optimization (2017)</a></li></ul></section>
+      <nav class="pager"><a href="../cs329h/l06-bandits-exploration.html"><span class="lbl">← Previous</span>Lecture 6: Bandits, Dueling, and Learning to Act</a><a href="../cs329h/l08-social-choice.html"><span class="lbl">Next →</span>Lecture 8: Social Choice, Voting Rules and Impossibility</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -155,8 +155,8 @@ vocabulary), hidden size d (a few hundred), output size V.
 
 Write the training objective for one CBOW step. The network outputs
 logits z over V words. Softmax gives probabilities p_i = exp(z_i) /
-sum(exp(z_j)). The loss is cross-entropy against the target word:
-L = -log(p_target). On the toy (V = 5, target "bear"): if the model
+sum(exp(z_j)). The loss is cross-entropy against the target word, with the natural
+log: L = -log(p_target). On the toy (V = 5, target "bear"): if the model
 assigns p_bear = 0.4, the loss is -log(0.4) = 0.92. If it assigns
 0.02, the loss is 3.91. The gradient pushes the hidden-layer row for
 "bear" toward the context average and pushes the other four rows
@@ -166,24 +166,41 @@ The cost hides in the denominator: sum over V = 50,000 in real
 models, per step, per word. The original word2vec papers shipped
 two fixes.
 
-### Subchapter: negative sampling and GloVe
+### Subchapter: negative sampling, the binary-choice fix
+
+The CBOW loss breaks on cost: one training step scores all 50,000
+vocabulary words. The hinge: what if we never score the whole
+vocabulary at all?
 
 **Negative sampling** replaces the V-way softmax with a binary
 choice. For the target word "bear" and K = 5 random "negative"
 words, train K+1 yes/no classifiers: "bear" should score high with
-this context, the 5 negatives should score low. Cost per step drops
-from O(V) to O(K). K between 5 and 20 works. The learned rows are
-still good embeddings.
+this context, the 5 negatives should score low. The toy: one step
+needs 6 sigmoid dot products instead of 50,000 exponentials, a cost
+cut of roughly 50,000 / 6, about 8,300x. Cost per step drops from
+O(V) to O(K). K between 5 and 20 works. The learned rows are still
+good embeddings. The price: the 5 negatives are noise, not the true
+distribution, so each gradient step is a noisier tug on the
+geometry.
 
-**GloVe** (2014) attacks from the other side. Instead of predicting,
-count: build the co-occurrence matrix X (how often word i appears
-near word j across the corpus) and fit embeddings so their dot
-product approximates log(X_ij). Prediction and counting arrive at
-the same geometry. The field remembers both, uses neither in
-modern pipelines: contextual models (next section onward) replaced
-static vectors. But the proxy-task idea (train on something easy,
-steal the representation) became the template for all of
-pre-training.
+### Subchapter: GloVe, counting instead of predicting
+
+Negative sampling fixes the cost of prediction. The hinge: can we
+learn the same geometry without predicting at all?
+
+**GloVe** (Global Vectors, 2014) attacks from the other side.
+Instead of predicting, count: build the co-occurrence matrix X (how
+often word i appears near word j across the corpus) and fit
+embeddings so their dot product approximates log(X_ij), the natural
+log. The toy: if "bear" appears near "cute" 12 times in the corpus,
+log(12) = 2.48, so training pushes w_bear dot w_cute toward 2.48.
+If "bear" appears near "the" 340 times, log(340) = 5.83, and the dot
+product lands near 5.83. Frequent pairs pull their vectors together.
+Rare pairs do not. Prediction and counting arrive at the same
+geometry. The field remembers both, uses neither in modern
+pipelines: static vectors gave way to models whose vectors change with
+the sentence around each word. But the proxy-task idea (train on something easy, steal the
+representation) became the template for all of pre-training.
 
 ![Word2vec](assets/l01-word2vec.svg "A shallow network with a proxy task. The hidden layer becomes the embedding. Stanford Frontier AI.")
 
@@ -442,7 +459,7 @@ head, per layer):
 N = 512:    512^2 = 262K scores   = 0.5 MB
 N = 4,096:  16.7M scores          = 33 MB
 N = 32,768: 1.07B scores          = 2.1 GB
-N = 1M:     1T scores             = 2 PB (impossible)
+N = 1M:     1T scores             = 2 TB (impossible)
 ```
 
 Every 2x in length costs 4x in scores. The N = 1M row is why this
@@ -636,7 +653,7 @@ decision. As of October 2026:
 |---|---|---|
 | GPT-6 Astra (OpenAI) | decoder-only, causal | Generation is the product. Closed weights |
 | Gemini 3.8 Flash (Google) | decoder-only, causal | Same reason. Closed weights |
-| DeepSeek V4.1 Flash | decoder-only MoE, causal | Open weights (MIT). 8B/16B active per token |
+| DeepSeek V4.1 Flash | causal encoder-decoder MoE | Open weights (MIT). 8B/16B active per token |
 | Llama 4 Maverick (Meta) | decoder-only MoE, causal | Open weights. 17B active, 128 experts |
 | BERT (2018) | encoder-only, bidirectional | Understanding tasks: classification, search embeddings |
 | T5 (2019) | encoder-decoder | Input and output differ in kind |

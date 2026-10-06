@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 2: Attention Maps, Positions, and the BERT Family — Stanford Frontier AI</title>
+<meta name="description" content="The transformer after 2017, rebuilt from its problems: reading attention maps on an anaphora toy, why positions went relative (worked sinusoid, ALiBi, RoPE toys">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-l02" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive, Search, RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Attention, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech Brain-Computer Interfaces</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../cme295/l01-transformers-overview.html" data-page="cme295-l01">L01 · Transformers overview</a></li>
+<li><a href="../cme295/l02-attention-position-bert.html" data-page="cme295-l02" class="active">L02 · Attention and BERT</a></li>
+<li><a href="../cme295/l03-llms-decoding-inference.html" data-page="cme295-l03">L03 · LLMs and decoding</a></li>
+<li><a href="../cme295/l04-pretraining-scaling-finetuning.html" data-page="cme295-l04">L04 · Training at scale</a></li>
+<li><a href="../cme295/l05-preference-tuning.html" data-page="cme295-l05">L05 · Preference tuning</a></li>
+<li><a href="../cme295/l06-reasoning-models-grpo.html" data-page="cme295-l06">L06 · Reasoning models</a></li>
+<li><a href="../cme295/l07-rag-tool-calling-agents.html" data-page="cme295-l07">L07 · RAG and agents</a></li>
+<li><a href="../cme295/l08-evaluation.html" data-page="cme295-l08">L08 · Evaluation</a></li>
+<li><a href="../cme295/l09-course-recap-frontiers.html" data-page="cme295-l09">L09 · Recap and frontiers</a></li>
+<li><a href="../cme295/cheatsheet.html" data-page="cme295-cheatsheet">CME295 · Cheatsheet</a></li>
+<li><a href="../cme295/crash-course.html" data-page="cme295-crash">CME295 · Crash course</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../cs329h/l01-preference-foundations.html" data-page="cs329h-l01">L01 · Preference Foundations</a></li>
+<li><a href="../cs329h/l02-choice-models.html" data-page="cs329h-l02">L02 · Choice Models</a></li>
+<li><a href="../cs329h/l03-iia-identification.html" data-page="cs329h-l03">L03 · IIA and Identification</a></li>
+<li><a href="../cs329h/l04-learning-rewards.html" data-page="cs329h-l04">L04 · Learning Rewards</a></li>
+<li><a href="../cs329h/l05-metric-elicitation.html" data-page="cs329h-l05">L05 · Metric Elicitation</a></li>
+<li><a href="../cs329h/l06-bandits-exploration.html" data-page="cs329h-l06">L06 · Bandits and Exploration</a></li>
+<li><a href="../cs329h/l07-rlhf.html" data-page="cs329h-l07">L07 · RLHF</a></li>
+<li><a href="../cs329h/l08-social-choice.html" data-page="cs329h-l08">L08 · Social Choice</a></li>
+<li><a href="../cs329h/l09-mechanism-design.html" data-page="cs329h-l09">L09 · Mechanism Design</a></li>
+<li><a href="../cs329h/l10-alignment-practice.html" data-page="cs329h-l10">L10 · Alignment in Practice</a></li>
+<li><a href="../cs329h/cheatsheet.html" data-page="cs329h-cheatsheet">CS329H · Cheatsheet</a></li>
+<li><a href="../cs329h/crash-course.html" data-page="cs329h-crash">CS329H · Crash course</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+<li><a href="../cs329z/l01-intro-agentic-systems.html" data-page="cs329z-l01">L01 · Intro to Agentic Systems</a></li>
+<li><a href="../cs329z/l02-compound-ai-systems.html" data-page="cs329z-l02">L02 · Compound AI Systems</a></li>
+<li><a href="../cs329z/l03-llms-for-builders.html" data-page="cs329z-l03">L03 · LLMs for Builders</a></li>
+<li><a href="../cs329z/l04-reasoning-and-context.html" data-page="cs329z-l04">L04 · Reasoning and Context</a></li>
+<li><a href="../cs329z/l05-rag-pipeline.html" data-page="cs329z-l05">L05 · RAG Pipeline</a></li>
+<li><a href="../cs329z/l06-retrieval-methods.html" data-page="cs329z-l06">L06 · Retrieval Methods</a></li>
+<li><a href="../cs329z/l07-agentic-retrieval-failure-modes.html" data-page="cs329z-l07">L07 · Agentic Retrieval</a></li>
+<li><a href="../cs329z/l08-evaluating-agents.html" data-page="cs329z-l08">L08 · Evaluating Agents</a></li>
+<li><a href="../cs329z/cheatsheet.html" data-page="cs329z-cheatsheet">CS329Z · Cheatsheet</a></li>
+<li><a href="../cs329z/crash-course.html" data-page="cs329z-crash">CS329Z · Crash course</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
+<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
+<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
+<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
+<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
+<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
+<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
+<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
+<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
+<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+<li><a href="../mse435/l01-electrons-to-tokens.html" data-page="mse435-l01">L01 · From Electrons to Tokens</a></li>
+<li><a href="../mse435/l02-sixty-million-megawatt.html" data-page="mse435-l02">L02 · The $60M Megawatt</a></li>
+<li><a href="../mse435/l03-how-models-get-smarter.html" data-page="mse435-l03">L03 · How Models Get Smarter</a></li>
+<li><a href="../mse435/l04-evals-rlvr-enterprise.html" data-page="mse435-l04">L04 · Evals and Enterprise AI</a></li>
+<li><a href="../mse435/l05-software-is-dead.html" data-page="mse435-l05">L05 · The SaaS Reckoning</a></li>
+<li><a href="../mse435/l06-where-value-accrues.html" data-page="mse435-l06">L06 · Where Value Accrues</a></li>
+<li><a href="../mse435/cheatsheet.html" data-page="mse435-cheatsheet">MS&amp;E 435 · Cheatsheet</a></li>
+<li><a href="../mse435/crash-course.html" data-page="mse435-crash">MS&amp;E 435 · Crash course</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">MATH-ML · Overview</a></li>
+<li><a href="../math-ml/l01-vectors-as-data.html" data-page="math-ml-l01">L01 · Vectors as Data</a></li>
+<li><a href="../math-ml/l02-matrices-as-machines.html" data-page="math-ml-l02">L02 · Matrices as Machines</a></li>
+<li><a href="../math-ml/l03-eigendecomposition-pca.html" data-page="math-ml-l03">L03 · Eigen-decomposition</a></li>
+<li><a href="../math-ml/l04-svd-low-rank.html" data-page="math-ml-l04">L04 · SVD and Low Rank</a></li>
+<li><a href="../math-ml/l05-probability-bayes.html" data-page="math-ml-l05">L05 · Probability and Bayes</a></li>
+<li><a href="../math-ml/l06-distributions-covariance.html" data-page="math-ml-l06">L06 · Distributions and Covariance</a></li>
+<li><a href="../math-ml/l07-calculus-gradients-chainrule.html" data-page="math-ml-l07">L07 · Calculus for ML</a></li>
+<li><a href="../math-ml/l08-convexity-gradient-descent.html" data-page="math-ml-l08">L08 · Convexity and Gradient Descent</a></li>
+<li><a href="../math-ml/l09-least-squares-regression.html" data-page="math-ml-l09">L09 · Least Squares</a></li>
+<li><a href="../math-ml/l10-information-theory.html" data-page="math-ml-l10">L10 · Information Theory</a></li>
+<li><a href="../math-ml/cheatsheet.html" data-page="math-ml-cheatsheet">MATH-ML · Cheatsheet</a></li>
+<li><a href="../math-ml/crash-course.html" data-page="math-ml-crash-course">MATH-ML · Crash Course</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+<li><a href="../math-genai/l01-the-job.html" data-page="math-genai-l01">L01 · The Job</a></li>
+<li><a href="../math-genai/l02-kl-and-mle.html" data-page="math-genai-l02">L02 · KL Divergence and MLE</a></li>
+<li><a href="../math-genai/l03-f-divergences.html" data-page="math-genai-l03">L03 · f-Divergences</a></li>
+<li><a href="../math-genai/l04-gans.html" data-page="math-genai-l04">L04 · GANs</a></li>
+<li><a href="../math-genai/l05-wgan-evaluation.html" data-page="math-genai-l05">L05 · WGAN and Evaluation</a></li>
+<li><a href="../math-genai/l06-latent-variables-elbo.html" data-page="math-genai-l06">L06 · ELBO</a></li>
+<li><a href="../math-genai/l07-vae.html" data-page="math-genai-l07">L07 · VAE</a></li>
+<li><a href="../math-genai/l08-ddpm-forward.html" data-page="math-genai-l08">L08 · DDPM Forward</a></li>
+<li><a href="../math-genai/l09-ddpm-loss.html" data-page="math-genai-l09">L09 · DDPM Loss</a></li>
+<li><a href="../math-genai/l10-score-ddim-ar.html" data-page="math-genai-l10">L10 · Score, DDIM, AR</a></li>
+<li><a href="../math-genai/cheatsheet.html" data-page="math-genai-cheatsheet">Cheatsheet</a></li>
+<li><a href="../math-genai/crash-course.html" data-page="math-genai-crash-course">Crash course</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Math · Generative Models · Overview</a></li>
+<li><a href="../math-genmodels/l01-the-one-question.html" data-page="math-genmodels-l01">L01 · The One Question</a></li>
+<li><a href="../math-genmodels/l02-autoregressive-models.html" data-page="math-genmodels-l02">L02 · Autoregressive Models</a></li>
+<li><a href="../math-genmodels/l03-variational-autoencoders.html" data-page="math-genmodels-l03">L03 · Variational Autoencoders</a></li>
+<li><a href="../math-genmodels/l04-normalizing-flows.html" data-page="math-genmodels-l04">L04 · Normalizing Flows</a></li>
+<li><a href="../math-genmodels/l05-diffusion-ddpm.html" data-page="math-genmodels-l05">L05 · Diffusion I: DDPM</a></li>
+<li><a href="../math-genmodels/l06-score-matching-ddim.html" data-page="math-genmodels-l06">L06 · Score Matching &amp; Fast Diffusion</a></li>
+<li><a href="../math-genmodels/l07-energy-based-models.html" data-page="math-genmodels-l07">L07 · Energy-Based Models</a></li>
+<li><a href="../math-genmodels/l08-judging-a-creator.html" data-page="math-genmodels-l08">L08 · Judging a Creator</a></li>
+<li><a href="../math-genmodels/cheatsheet.html" data-page="math-genmodels-cheatsheet">Math · Generative Models · Cheatsheet</a></li>
+<li><a href="../math-genmodels/crash-course.html" data-page="math-genmodels-crash">Math · Generative Models · Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / Lecture 2: Attention Maps, Positions, and the BERT Family</nav>
+      <h1>Lecture 2: Attention Maps, Positions, and the BERT Family</h1>
+      <p class="meta-line">2025-10-03 · Instructor: Afshine Amidi, Shervine Amidi · 1:47:11 · Autumn 2025</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="yT84Y5zCnaA"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/yT84Y5zCnaA" title="CME295 Lecture 2, Autumn 2025" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=yT84Y5zCnaA" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. Attention maps, positional encodings, normalization, efficient attention, and encoder-decoder families.</p></div><h2 id="the-problem-we-cannot-see-what-attention-reads">The problem: we cannot see what attention reads</h2>
+<p>Lecture 1 built the attention arrow: query against keys, softmax,
+mix the values. A model with 12 layers and 12 heads computes 144
+attention maps per sentence. Each map is an N x N matrix: rows are
+queries, columns are keys, brightness is weight. Can we read one and
+check whether the model reads like we do?</p>
+<p>The lecture&rsquo;s test case is <strong>anaphora</strong>, the linguistic term for a
+pronoun pointing back to its noun. Take the sentence &ldquo;The animal did
+not cross the street because it was too tired.&rdquo; The pronoun &ldquo;it&rdquo;
+refers to &ldquo;animal&rdquo;. Now look at one attention head&rsquo;s weights for the
+query token &ldquo;it&rdquo;, over the eight tokens:</p>
+<pre class="ascii">query &quot;it&quot; attends to:
+  The      0.03
+  animal   0.72
+  did      0.02
+  not      0.01
+  cross    0.03
+  the      0.02
+  street   0.06
+  because  0.04
+  too      0.03
+  tired    0.04
+</pre>
+<p>The weight on &ldquo;animal&rdquo; is 0.72. The map resolves the pronoun the way
+a reader does. Two lessons follow. First, attention weights are
+inspectable: you can check whether the model&rsquo;s reading matches yours.
+Second, no single head tells the whole story. Different heads track
+different relations, which is why the architecture uses many of them.</p>
+<figure><img alt="Attention map" src="assets/l02-attention-map.svg"><figcaption>The query 'it' attends most strongly to 'animal'. Attention maps make coreference visible. Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">Do attention maps explain the model&#x27;s decision?</div><div class="a"><p>They show information flow, not reasoning. A bright cell says
+token A read token B&rsquo;s representation. It does not say why that
+helped, or that the model &ldquo;understood&rdquo; coreference. Treat maps as a
+debugging lens, not a proof of understanding.
+Because they catch failures cheaply. If &ldquo;it&rdquo; attended to
+&ldquo;street&rdquo; instead of &ldquo;animal&rdquo;, you would suspect the head before
+blaming the data. Interpretability starts with checking the
+obvious.</p><div class="followup"><strong>Follow-up:</strong> Why look at maps at all, then?</div></div></div>
+<h2 id="the-problem-positions-encode-addresses-attention-needs-distances">The problem: positions encode addresses, attention needs distances</h2>
+<p>The 2017 transformer adds one position vector per index to each
+embedding. Two flavors: learned (a trainable vector per position, the
+BERT style) and sinusoidal (fixed sin/cos waves, the original paper).
+The sinusoidal version has a mathematical property the lecture
+highlights. Write the position embedding at position p as pairs of
+sin and cos at several frequencies. The dot product of the embeddings
+at positions p and q works out to a sum of cos terms of (p - q).
+Only the difference survives:</p>
+<pre class="ascii">PE(p) . PE(q) = sum over frequencies of cos((p - q) * omega)
+</pre>
+<p>The model can read relative distance straight out of the dot
+product. Whether &ldquo;bear&rdquo; sits at position 5 or 500, &ldquo;teddy&rdquo; is one
+step before it, and the waves say so. High-frequency dimensions
+change fast and track local order. Low-frequency dimensions change
+slowly and carry long-range information.</p>
+<p>That property is a hint of what the field wanted: attention cares
+about distance, not address. Absolute encodings answer &ldquo;where am I&rdquo;.
+Attention needs &ldquo;how far apart are we&rdquo;. Three successors encode
+relative position directly, each a small worked idea.</p>
+<p><strong>T5 relative bias.</strong> Add a learned scalar to the attention score,
+chosen by distance bucket. The toy: score(&ldquo;bear&rdquo;, &ldquo;teddy&rdquo;) gets +0.8
+because distance 1 has bias 0.8. score(&ldquo;bear&rdquo;, &ldquo;street&rdquo;) gets +0.1
+because distance 5 has bias 0.1. Close tokens get a boost from the
+bucket, far tokens do not.</p>
+<p><strong>ALiBi</strong> (Attention with Linear Biases,
+<a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=1822s">30:22</a>). Subtract
+a fixed penalty proportional to distance. The toy with penalty slope
+m = 0.5:</p>
+<pre class="ascii">distance 1: score - 0.5
+distance 2: score - 1.0
+distance 4: score - 2.0
+</pre>
+<p>No learned parameters. Far tokens are pushed down by arithmetic, not
+by learned weights. Because the penalty is a formula, it keeps working
+past the longest training sequence: a model trained on 2,048 tokens
+still penalizes distance 3,000 correctly. It extrapolates.</p>
+<p><strong>RoPE</strong> (rotary position embeddings,
+<a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=1897s">31:37</a>). Rotate
+the query and key vectors by an angle proportional to their
+positions. The toy in two dimensions: q = [1, 0] at position 3,
+k = [1, 0] at position 5, rotation angle = position * theta. Rotate q
+by 3<em>theta, k by 5</em>theta. Their dot product is cos((5-3)*theta):
+only the distance 2 remains. The rotation happens inside the QK dot
+product, where it belongs. RoPE is the default choice in current
+models: no extra parameters, relative by construction, clean long
+context extension.</p>
+<p><img alt="Position embeddings" src="assets/l02-pos-embeddings.svg" title="Learned vs sinusoidal. Dot products encode relative distance. Stanford Frontier AI." />
+<img alt="RoPE" src="assets/l02-rope.svg" title="Rotate Q and K by position. Their dot product keeps only relative distance. Stanford Frontier AI." /></p>
+<div class="qa"><div class="q">Why did the field move from absolute to relative positions?</div><div class="a"><p>Absolute encodings answer &ldquo;where am I&rdquo;, but attention needs &ldquo;how
+far apart are we&rdquo;. Relative schemes bake the distance into the
+score computation itself, and they generalize better: a model
+trained on length-2048 sequences can still reason about distance
+3000, because distance 3000 is just another bucket, angle, or
+penalty, not an unseen vector.
+It needs no extra parameters, it lives inside the QK dot product
+rather than as an add-on, and it extends cleanly to long contexts.
+Simplicity plus generality wins.</p><div class="followup"><strong>Follow-up:</strong> Why is RoPE the default today?</div></div></div>
+<h2 id="the-problem-deep-stacks-choke-on-post-norm">The problem: deep stacks choke on post-norm</h2>
+<p>The 2017 paper normalizes <em>after</em> each sublayer: sublayer, then layer
+norm, then the residual add. This is <strong>post-norm</strong>. Picture the
+residual stream, the highway that carries the input of each layer
+straight through to the next. With post-norm, the gradient flowing
+back down the highway passes through a layer norm at every layer.
+Each normalization rescales and recenters, and the product of many
+such rescalings destabilizes deep stacks.</p>
+<p>Modern stacks flip it (<a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=2796s">46:36</a>):
+normalize <em>before</em> the sublayer, with the residual stream flowing
+untouched. This is <strong>pre-norm</strong>. The highway stays clean, the
+gradient travels down it without passing through 48 normalizations,
+and 96-layer stacks train stably.</p>
+<p>The norm itself also changed
+(<a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=2824s">47:04</a>). <strong>Layer
+norm</strong> centers by the mean and scales by the variance: for a vector
+x, subtract the mean, divide by the standard deviation. <strong>RMSNorm</strong>
+skips the centering: scale by the root mean square only.</p>
+<pre class="ascii">layer norm:  x -&gt; (x - mean(x)) / std(x)
+RMSNorm:     x -&gt;  x / rms(x)
+</pre>
+<p>Fewer parameters, same stability in practice, cheaper to compute.
+Pre-norm plus RMSNorm is the current stack.</p>
+<figure><img alt="Pre-norm and RMSNorm" src="assets/l02-norm.svg"><figcaption>Post-norm (2017) normalizes after the sublayer. Pre-norm normalizes before it. RMSNorm drops the mean. Stanford Frontier AI.</figcaption></figure>
+<h2 id="the-problem-full-attention-costs-on2">The problem: full attention costs O(n^2)</h2>
+<p>Every token attends to every token, so the score matrix is n x n.
+Watch the numbers:</p>
+<pre class="ascii">n = 4,096:  full attention = 4,096^2 = 16,777,216 scores
+sliding window w = 512: n * w = 4,096 * 512 = 2,097,152 scores
+ratio: 8x fewer
+</pre>
+<p>For long documents the quadratic price hurts. Several patterns attend
+to less. <strong>Longformer</strong> (2020,
+<a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=3090s">51:30</a>): each
+token attends to w neighbors, plus a few global tokens that attend
+everywhere. Cost drops to O(n<em>w). </em><em>Mistral 7B</em><em>
+(<a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=3273s">54:33</a>) stacks
+sliding-window layers: each layer sees w tokens, but the receptive
+field grows with depth, like dilated convolutions. A token at layer 3
+indirectly reaches 3</em>w tokens back. The pattern is general: pay full
+attention where it matters, approximate elsewhere.</p>
+<figure><img alt="Attention approximations" src="assets/l02-attention-approx.svg"><figcaption>Full, sliding window, and stacked windows with growing receptive field. Stanford Frontier AI.</figcaption></figure>
+<h2 id="the-problem-the-kv-cache-eats-inference-memory">The problem: the KV cache eats inference memory</h2>
+<p><strong>Multi-head attention</strong> gives every head its own key and value
+projections. At inference, autoregressive decoding generates one
+token at a time. Without a cache, step t would recompute keys and
+values for all t-1 previous tokens. The <strong>KV cache</strong>
+(<a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=3479s">57:59</a>) stores
+them once and appends one row per step. The cache grows with heads,
+layers, and sequence length, and it dominates inference memory.</p>
+<p>The fix is sharing. Count the KV heads stored per layer:</p>
+<pre class="ascii">MHA (multi-head attention):  32 query heads -&gt; 32 KV heads. Cache = 32 units.
+GQA (grouped-query attention,
+[59:24](https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=3564s)):
+                             32 query heads -&gt; 8 KV heads.  Cache = 8 units (4x smaller).
+MQA (multi-query attention): 32 query heads -&gt; 1 KV head.   Cache = 1 unit (32x smaller).
+</pre>
+<p>Fewer KV heads means a smaller cache and faster decoding, at a small
+quality cost. Most current models ship GQA as the compromise.</p>
+<figure><img alt="MQA GQA MHA" src="assets/l02-mqa-gqa.svg"><figcaption>MHA: h KV heads. GQA: groups share. MQA: one shared head. The cache shrinks left to right. Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">Why does the KV cache exist at all?</div><div class="a"><p>Autoregressive decoding generates one token at a time. Without a
+cache, step t would recompute keys and values for all t-1 previous
+tokens. The cache stores them once and appends one row per step.
+Memory trades against quadratic recompute, and memory wins.
+When heads genuinely need different keys and values. Sharing
+forces heads to read the same projections. Empirically the quality
+drop is small, which is why GQA is the default, but MQA&rsquo;s single
+head is a coarser cut used mainly for maximum throughput.</p><div class="followup"><strong>Follow-up:</strong> When does GQA hurt?</div></div></div>
+<h2 id="the-key-question">The key question</h2>
+<p>The 2017 machine works on translation. What breaks when you aim it at
+512-token documents and scale it to billions of parameters, and what is
+the smallest fix for each break?</p>
+<h2 id="the-three-families-then-bert-end-to-end">The three families, then BERT end to end</h2>
+<p>Keeping the encoder, the decoder, or both gives three model families:</p>
+<ul>
+<li><strong>Encoder-only</strong> (BERT). Reads the whole sequence bidirectionally.
+  Produces embeddings for downstream tasks. Cannot generate text.</li>
+<li><strong>Decoder-only</strong> (GPT). Reads left to right, predicts the next
+  token. Generates text. This family becomes the LLM of Lecture 3.</li>
+<li><strong>Encoder-decoder</strong> (T5). Reads the input bidirectionally,
+  generates the output autoregressively. Text in, text out, for every
+  task.</li>
+</ul>
+<p><strong>T5</strong> frames every task as text-to-text. Its pre-training objective
+is <strong>span corruption</strong>. Random spans of the input are masked out and
+replaced by sentinel tokens (<X>, <Y>, and so on
+<a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=3974s">66:14</a>):</p>
+<pre class="ascii">input:  &quot;A cute teddy bear is reading &lt;X&gt; the park &lt;Y&gt; today&quot;
+target: &quot;&lt;X&gt; in &lt;Y&gt; and&quot;
+</pre>
+<p>The target is the sequence of sentinel tokens followed by their
+missing spans. The model learns to fill blanks of arbitrary length,
+which exercises the encoder (understand the corrupted input) and the
+decoder (generate the fills) at once.</p>
+<figure><img alt="T5 span corruption" src="assets/l02-t5.svg"><figcaption>Mask spans, insert sentinels, predict the fills. Stanford Frontier AI.</figcaption></figure>
+<p><strong>BERT</strong> (2018) is the landmark encoder-only model. The input
+pipeline: WordPiece tokenizer with about 30k tokens
+(<a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=4991s">83:11</a>);
+special tokens [CLS] opening the sequence and [SEP] separating and
+closing segments. <strong>Segment encodings</strong> (sentence A gets one learned
+vector, sentence B another). Position encodings are added per position.
+(The lecture notes uncertainty about whether BERT&rsquo;s position
+encodings were learned or hard-coded. Implementations commonly use
+learned absolute encodings [uncertain].)</p>
+<p>Two pre-training objectives, trained jointly:</p>
+<ul>
+<li><strong>MLM (masked language modeling).</strong> Mask 15% of tokens. Of those,
+  80% become [MASK], 10% become a random token, 10% stay unchanged.
+  Work the numbers on a 512-token sequence: 0.15 * 512 = 77 tokens
+  masked. Of the 77, about 61 become [MASK], about 8 become random
+  tokens, about 8 stay as-is. The 80/10/10 split keeps the model
+  honest: it cannot just learn &ldquo;predict something whenever you see
+  [MASK]&rdquo;, because [MASK] never appears at fine-tuning time.</li>
+<li><strong>NSP (next sentence prediction,
+  <a href="https://www.youtube.com/watch?v=yT84Y5zCnaA&amp;t=4705s">78:25</a>).</strong> 50%
+  of the time sentence B truly follows sentence A. 50% of the time it is random.
+  The [CLS] embedding predicts which. This teaches sentence-level
+  relationships.</li>
+</ul>
+<p>Notation in BERT papers: L layers, H hidden size, A attention heads.
+BERT-base is L=12, H=768, A=12. Fine-tuning adds a small head: the
+[CLS] embedding feeds a classifier for sentence tasks, or per-token
+heads for tagging tasks. The whole stack trains end to end on the
+labeled data.</p>
+<figure><img alt="BERT" src="assets/l02-bert.svg"><figcaption>WordPiece, [CLS]/[SEP], segment encodings, MLM 80/10/10, NSP 50/50. Stanford Frontier AI.</figcaption></figure>
+<p>Two descendants close the lecture:</p>
+<ul>
+<li><strong>DistilBERT.</strong> Knowledge distillation: a small student trains to
+  match a large BERT teacher&rsquo;s output distribution (KL divergence),
+  not just hard labels. The teacher&rsquo;s soft probabilities carry extra
+  signal about class similarities. Result: most of the accuracy at a
+  fraction of the size and speed.</li>
+<li><strong>RoBERTa.</strong> A replication study that found BERT was undertrained.
+  It drops NSP, masks dynamically (a fresh mask pattern each epoch
+  instead of one fixed mask), trains longer on much more data, with
+  bigger batches. Same architecture, better training, better results.</li>
+</ul>
+<div class="qa"><div class="q">Why mask only 15% of tokens, and why the 80/10/10 split?</div><div class="a"><p>15% keeps most of the context intact so prediction stays
+feasible. The 80/10/10 split fixes a train-test mismatch: [MASK]
+appears in pre-training but never in fine-tuning. By replacing 10%
+with random tokens and leaving 10% unchanged, the model must produce
+good representations for every token, not just react to the [MASK]
+symbol.
+Follow-up studies found NSP too easy and not helpful: the model
+could solve it from topic overlap alone, and removing it while
+training on longer contiguous sequences worked as well or better.
+An objective that does not teach anything is dead weight.</p><div class="followup"><strong>Follow-up:</strong> Why did RoBERTa drop NSP?</div></div></div>
+<h2 id="mapping-back-each-refinement-answers-a-2017-limitation">Mapping back: each refinement answers a 2017 limitation</h2>
+<table>
+<thead>
+<tr>
+<th>2017 limitation</th>
+<th>Refinement</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attention is opaque</td>
+<td>Attention maps</td>
+<td>Read the N x N weights: &ldquo;it&rdquo; puts 0.72 on &ldquo;animal&rdquo;</td>
+</tr>
+<tr>
+<td>Absolute positions answer the wrong question</td>
+<td>Relative schemes</td>
+<td>T5 bias per distance bucket, ALiBi penalty m * distance, RoPE rotation</td>
+</tr>
+<tr>
+<td>Post-norm destabilizes deep stacks</td>
+<td>Pre-norm + RMSNorm</td>
+<td>Clean residual highway. RMSNorm drops the mean</td>
+</tr>
+<tr>
+<td>Full attention is O(n^2)</td>
+<td>Sliding windows</td>
+<td>n*w scores: 8x fewer at n = 4,096, w = 512</td>
+</tr>
+<tr>
+<td>KV cache dominates inference memory</td>
+<td>GQA</td>
+<td>32 KV heads to 8: 4x smaller cache</td>
+</tr>
+<tr>
+<td>Translation-only, hard to inspect</td>
+<td>BERT and T5</td>
+<td>Bidirectional understanding (MLM 80/10/10, NSP 50/50) and text-to-text span corruption</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-honest-price">The honest price</h2>
+<p>Every refinement trades something. ALiBi&rsquo;s penalty is fixed, so the
+model cannot learn when far tokens matter. Sliding windows lose
+direct long-range links and recover them only through depth. GQA and
+MQA force heads to share keys and values, which costs a little
+quality. Pre-norm trains stably but can underperform post-norm on
+shallower stacks. MLM trains a model that never generates text. The
+2017 design was coherent. The refinements are compromises with the
+real world, and each one names what it gave up.</p>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>The story in eight steps. Each step answers the one before it.</p>
+<ol>
+<li><strong>Read the attention.</strong> An N x N map per head: rows are queries,
+   columns are keys. &ldquo;it&rdquo; attends 0.72 to &ldquo;animal&rdquo;: anaphora made
+   visible. A debugging lens, not a proof of reasoning.</li>
+<li><strong>Positions should encode distance.</strong> Sinusoidal dot products
+   depend only on p - q. Absolute answers &ldquo;where am I&rdquo;. Attention
+   needs &ldquo;how far apart are we&rdquo;.</li>
+<li><strong>Three relative schemes.</strong> T5 adds a learned bias per distance
+   bucket. ALiBi subtracts m * distance, no parameters,
+   extrapolates. RoPE rotates Q and K. The dot product keeps only
+   relative distance. RoPE is the default.</li>
+<li><strong>Normalize before the sublayer.</strong> Post-norm chokes the residual
+   highway in deep stacks. Pre-norm leaves it clean. RMSNorm drops
+   the mean-centering: fewer parameters, same stability.</li>
+<li><strong>Attention gets cheaper.</strong> O(n^2) hurts long documents. Sliding
+   windows: n*w, 8x fewer scores at n = 4,096, w = 512. Mistral 7B
+   stacks windows so the receptive field grows with depth.</li>
+<li><strong>Share keys and values.</strong> The KV cache dominates inference
+   memory. GQA shares 32 query heads over 8 KV heads: 4x smaller.
+   MQA goes to one. GQA is the standard compromise.</li>
+<li><strong>T5 corrupts spans.</strong> Mask spans, insert <X>/<Y> sentinels, train
+   the decoder to output each sentinel plus its missing text. Every
+   task becomes text-to-text.</li>
+<li><strong>BERT masks and predicts.</strong> WordPiece ~30k, [CLS]/[SEP], segment
+   encodings. MLM: 15% masked with 80/10/10. NSP: 50/50. Fine-tune
+   with a small head. DistilBERT distills. RoBERTa trains harder and
+   drops NSP.</li>
+</ol>
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Lecture 2 recording (YouTube): timestamped above.
+- Lecture 2 slides (PDF), CME295 Autumn 2025.
+- Devlin et al., &ldquo;BERT&rdquo; (2018):
+  https://arxiv.org/abs/1810.04805 — the encoder-only landmark.
+- Su et al., &ldquo;RoFormer: Rotary Position Embedding&rdquo; (2021):
+  https://arxiv.org/abs/2104.09864 — RoPE.</p>
+<p><strong>Further reading:</strong>
+- Raffel et al., &ldquo;Exploring the Limits of Transfer Learning with T5&rdquo;
+  (2019): span corruption and the text-to-text frame.
+- Press et al., &ldquo;Train Short, Test Long: ALiBi&rdquo; (2021): length
+  extrapolation.
+- Beltagy et al., &ldquo;Longformer&rdquo; (2020): sliding windows plus global
+  tokens.
+- Sanh et al., &ldquo;DistilBERT&rdquo; (2019).
+- Liu et al., &ldquo;RoBERTa&rdquo; (2019).</p>
+<p><strong>Caveats from these sources.</strong> The lecture flags uncertainty about
+whether BERT&rsquo;s position encodings were learned or hard-coded. Treat
+that detail as [uncertain]. Attention maps show weight, not causation.
+ALiBi and RoPE length extrapolation is empirical, not guaranteed.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>CS336 L04:</strong> linear attention, more efficient attention variants,
+  and the MoE continuation of the sharing story.</li>
+<li><strong>CS336 L03:</strong> the transformer architecture derivation this lecture
+  modifies.</li>
+<li><strong>CS224N L08-L09:</strong> transformers and pre-training from the NLP
+  sequence-modeling perspective.</li>
+<li><strong>CME295 L01:</strong> the attention arrow this lecture reads and refines.</li>
+</ul>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=yT84Y5zCnaA" target="_blank" rel="noopener">Lecture 2 recording (YouTube)</a></li><li><span class="src-tag">SLIDES</span>Lecture 2 slides (PDF), CME295 Autumn 2025</li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/1810.04805" target="_blank" rel="noopener">Devlin et al., BERT: Pre-training of Deep Bidirectional Transformers (2018)</a></li><li><span class="src-tag">PAPER</span><a href="https://arxiv.org/abs/2104.09864" target="_blank" rel="noopener">Su et al., RoFormer: Rotary Position Embedding (2021)</a></li></ul></section>
+      <nav class="pager"><a href="../cme295/l01-transformers-overview.html"><span class="lbl">← Previous</span>Lecture 1: From Words to Transformers</a><a href="../cme295/l03-llms-decoding-inference.html"><span class="lbl">Next →</span>Lecture 3: Large Language Models, Decoding, and Inference</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

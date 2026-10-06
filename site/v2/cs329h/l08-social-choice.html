@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -289,6 +286,45 @@ sequential majority instead of point totals. The chapter&rsquo;s
 5-voter variant agrees with Borda here, but the agreement is
 contingent, not structural. Different elections, different
 splits.</p>
+<h3 id="subchapter-approval-and-score-voting-worked">Subchapter: approval and score voting, worked</h3>
+<p>Plurality, Borda, STV, and Condorcet all read ranked ballots.
+Two more rules ask for richer ballots. Work both on the
+chapter&rsquo;s 4-voter toy.</p>
+<p><strong>Approval voting.</strong> Each voter marks the candidates they
+approve. Most approvals wins. From ranked ballots we need a
+conversion rule, so state it: each voter approves their top
+two.</p>
+<pre class="ascii">voter 1 (A&gt;B&gt;C):  approves A, B
+voter 2 (A&gt;B&gt;C):  approves A, B
+voter 3 (B&gt;C&gt;A):  approves B, C
+voter 4 (C&gt;B&gt;A):  approves C, B
+approvals: A = 2, B = 4, C = 2.  B wins.
+</pre>
+<p><strong>Score voting</strong> (range voting). Each voter scores every
+candidate, say 0 to 5. Highest total wins. Conversion rule,
+stated: top rank gets 5, middle gets 3, bottom gets 0.</p>
+<pre class="ascii">voter 1:  A=5, B=3, C=0
+voter 2:  A=5, B=3, C=0
+voter 3:  B=5, C=3, A=0
+voter 4:  C=5, B=3, A=0
+scores: A = 10, B = 14, C = 8.  B wins.
+</pre>
+<p>B wins under both, agreeing with Borda on this profile. The
+agreement is not structural. Approval voting ignores intensity
+past the threshold: a voter who loves A and tolerates B casts
+the same ballot as one who barely approves both. Score voting
+captures intensity, and with honest cardinal scores it
+maximizes utilitarian welfare, the sum of true utilities. That
+is the mechanism-design connection from Lecture 9: score
+voting is welfare maximization under honest reporting.</p>
+<p>The price both pay is strategy. Under approval voting, a voter
+whose favorite is A but who fears C may approve only A,
+bullet voting, to deny B a point. Under score voting, the same
+voter scores A=5 and everyone else 0. Gibbard-Satterthwaite
+applies: no non-dictatorial rule with 3+ outcomes is
+strategy-proof. The richer ballot buys expressiveness and
+sells strategy-resistance. Name the tradeoff when you pick
+the rule.</p>
 <h2 id="where-aggregation-breaks-the-cycle">Where aggregation breaks: the cycle</h2>
 <p>Majority preferences can cycle. Three voters, three candidates:</p>
 <pre class="ascii">voter 1:  A &gt; B &gt; C
@@ -471,11 +507,22 @@ rule.</p>
 <li><strong>Name the rule.</strong> No neutral aggregation exists. State
    the relaxed axiom. Audit the distortion.</li>
 </ol>
+<h2 id="go-deeper">Go deeper</h2>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/1QpNZXL35NM" title="Stanford CS329H Autumn 2024: Voting, Sanmi Koyejo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<ul>
+<li>Course lecture, Voting (Colin Megill / Polis guest segment): https://www.youtube.com/watch?v=1QpNZXL35NM</li>
+<li>Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf</li>
+<li>Arrow (1951), Social Choice and Individual Values.</li>
+<li>Sen (1970): the liberal paradox.</li>
+<li>LMArena BT leaderboard adoption (Dec 2023): https://github.com/lmarena/lmarena.github.io/blob/HEAD/_posts/2023-12-07-leaderboard-elo-update.md</li>
+</ul>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
 - CS329H Autumn 2024: Voting (video id 1QpNZXL35NM): voting and
   social choice, with the Colin Megill (Polis) guest segment.
-- Course textbook, chapters 8.x: voting rules, Condorcet,
+- Course textbook, chapters 5.2-5.5: voting rules, Condorcet,
   Arrow, Borda, the DPO-Borda connection, Sen, multi-issue
   voting. https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf</p>
 <p><strong>Further reading:</strong>

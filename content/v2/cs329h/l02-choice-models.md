@@ -7,22 +7,24 @@ order: 2
 nav: "L02 · Choice Models"
 title: "Lecture 2: Bradley-Terry, Plackett-Luce, and the Preference Pair"
 summary: "Random utility models, Gumbel noise and the logit, Bradley-Terry for pairs, Plackett-Luce for rankings, and the canonical preference-pair symbol."
-date: "[uncertain] Spring 2026"
+date: "[uncertain] Autumn 2024"
 instructor: "Sanmi Koyejo"
-offering: "Spring 2026"
-duration: "1:19:20"
-video_id: _bych9RfQvw
-video_title: "Stanford CS329H Lecture 2: Choice Models"
-video_caption: "Original lecture. Sanmi Koyejo covers choice models as the technical foundation of the human preference learning pipeline."
+offering: "[uncertain]"
+duration: "[uncertain]"
+video_id: "inXUp5j107I"
+video_title: "The Elo Rating System"
+video_caption: "External explainer (not the course lecture): derives the Bradley-Terry model of a two-player game, builds Elo from Zermelo's model, covers the update algorithm and the Thurstone model. Verified live on YouTube."
 concepts: [bradley-terry, plackett-luce, random-utility, gumbel, logit, softmax, preference-pair, elo]
 sources:
   - tag: video
-    label: "Lecture 2 video, Stanford Online YouTube"
-    url: https://www.youtube.com/watch?v=_bych9RfQvw
-  - tag: notes
-    label: "Official subtitle transcript (en-US)"
+    label: "The Elo Rating System (Bradley-Terry derivation, external explainer)"
+    url: https://www.youtube.com/watch?v=inXUp5j107I
+  - tag: video
+    label: "CS329H Autumn 2024: Preference Models (course lecture, via playlist)"
+    url: http://www.youtube.com/playlist?list=PLoROMvodv4rNm525zyAObP4al43WAifZz
   - tag: notes
     label: "Course textbook, chapter 1.7 (Truong, Haupt, Koyejo, 2025)"
+    url: https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
   - tag: paper
     label: "Bradley and Terry, Rank Analysis of Incomplete Block Designs (1952)"
 ---
@@ -126,9 +128,40 @@ will trip on it otherwise.
 
 > [!QA]
 > Q: Why model utilities as random instead of just adding noise to responses?
-> A: Both views give the same pairwise probabilities, so the choice is conceptual. The random utility view is the economics tradition: the evaluation itself fluctuates with mood, context, and unmeasured factors. It also unlocks the theory: with the right noise distribution, choice probabilities take a closed form, and that closed form is the softmax.
+> A: Both views give the same pairwise probabilities, so the choice is conceptual. The random utility view is the economics tradition: the evaluation itself fluctuates with mood, context, and unmeasured factors. It also yields the theory: with the right noise distribution, choice probabilities take a closed form, and that closed form is the softmax.
 > Follow-up: What goes wrong with a purely deterministic model?
 > A: It predicts the same choice every time. Real data shows reversals: the same annotator picks A over B on Monday and B over A on Friday. Without a noise model there is no likelihood, no fitting, and no way to say how confident the ranking is.
+
+### Subchapter: three readings of the noise, one equation
+
+The equation H_j = V_j + noise_j is fixed. Its meaning is not.
+The textbook names three readings, and each one changes what the
+fitted numbers mean and what you should do next.
+
+**Reading 1: population heterogeneity.** The noise is different
+people. V_j is the population mean utility. sigma(V_j - V_k) =
+0.73 means 73% of people prefer j. The fix for uncertainty is
+more annotators.
+
+**Reading 2: decision error.** The noise is one person's
+inconsistency. V_j is that person's true value. The 0.73 means
+this person picks j 73% of the time. The fix is repeated queries
+to the same person, or a better elicitation interface.
+
+**Reading 3: designer belief.** The noise is our uncertainty
+about the true preference. V_j is our best estimate. The 0.73 is
+our credence. The fix is more data of any kind, processed
+through Bayes.
+
+![One equation, three readings](assets/plate-noise-readings.webp "Same sigma curve. Heterogeneity: 73% of people. Decision error: one person, 73% of the time. Designer belief: 73% credence. Shell 3. Source: original figure for the three readings. Project: Stanford Frontier AI.")
+
+Same curve, three stories, three interventions. The readings
+also choose the lecture that fixes the problem. Reading 1 made
+explicit is Lecture 3's mixture model. Reading 3 made explicit
+is Lecture 4's posterior. Reading 2 ignored is Lecture 10's
+inversion failure: you modeled noise but the person was
+strategizing. When someone quotes a fitted win probability, ask
+which reading they mean. The number cannot tell you.
 
 ## Bradley-Terry: the two-item case
 
@@ -245,7 +278,7 @@ trusting the fit.
 |---|---|---|
 | Reversals are impossible | Reversals get a probability | sigma(1.0) = 0.731, so B beats A 27% of the time |
 | No confidence | Gaps are graded | Gap 1.0 vs 2.0: 0.73 vs 0.88 |
-| Nothing to fit | A likelihood exists | Log-loss on pairs; Lecture 4 maximizes it |
+| Nothing to fit | A likelihood exists | Log-loss on pairs. Lecture 4 maximizes it |
 
 ## The honest price: IIA
 
@@ -278,6 +311,24 @@ For binary comparisons the two are nearly identical after
 rescaling: the logistic and normal CDFs have similar shapes. The
 choice is empirically inconsequential for pairs.
 
+### Subchapter: how close are they, exactly
+
+Rescale so the slopes match at zero. The logistic distribution
+has variance pi^2/3, so its standard deviation is about 1.81.
+The matched probit uses Phi(gap / 1.81). Work both at two gaps.
+
+```ascii
+gap 1.0:  logit sigma(1) = 0.731     probit Phi(0.55) = 0.709
+gap 2.0:  logit sigma(2) = 0.881     probit Phi(1.10) = 0.865
+```
+
+The curves differ by about 0.02 across the practical range. No
+dataset distinguishes them on pairs alone. This is why the field
+standardized on the logit: identical predictions, closed-form
+math.
+
+![Logit versus probit: the same curve twice](assets/plate-logit-vs-probit.webp "Logistic and matched normal CDFs differ by 0.02 at gap 1. Pairs cannot tell them apart. Shell 2. Source: original comparison. Project: Stanford Frontier AI.")
+
 The difference matters for multi-way choices. Gaussian noise
 allows a covariance matrix over items, so similar items can have
 correlated shocks. That correlation is exactly what the
@@ -293,6 +344,24 @@ consider probit or nested logit.
 > A: It is the noise distribution that makes the math close. With i.i.d. Gumbel shocks, the probability that item j has the highest realized utility equals the softmax of the mean utilities. The textbook proves this by conditioning on one noise draw and integrating. No other common noise gives a closed form this clean.
 > Follow-up: Is Gumbel a realistic model of human noise?
 > A: It is a convenience, not a psychological fact. Gaussian noise, the probit model, is arguably as plausible and gives nearly identical binary predictions. Gumbel wins on tractability: closed-form probabilities, easy gradients, and the IIA structure that makes learning scale.
+
+> [!QA]
+> Q: Walk me through the softmax computation on three items, by hand.
+> A: Take mean utilities V = (2.0, 1.0, 0.0). Step one: exponentiate each. e^2.0 = 7.39, e^1.0 = 2.72, e^0.0 = 1.00. Step two: add them. Total = 11.11. Step three: divide each by the total. p(A) = 7.39/11.11 = 0.665, p(B) = 2.72/11.11 = 0.245, p(C) = 1.00/11.11 = 0.090. The three numbers sum to 1. The story behind the arithmetic: each item's realized utility is its mean plus a Gumbel shock, the choice goes to the highest realized value, and the win fractions over many draws equal these probabilities. With two items the same steps give Bradley-Terry: p(A beats B) = 7.39/(7.39+2.72) = 0.731.
+> Follow-up: What happens to the probabilities if I add 10 to every utility?
+> A: Nothing. e^{V_j+10} = e^{10} e^{V_j}, and the e^{10} factors out of every term and cancels. This is the identification problem: choice data sees differences only. Always anchor one utility before fitting.
+
+> [!QA]
+> Q: Design an Elo rating system for an online coding-interview platform. Candidates solve problems head to head.
+> A: Treat each candidate as a player and each head-to-head as a game. Start everyone at 1500. After each match, update with V_new = V_old + K(score - expected), where expected = 1/(1 + 10^{(opp - you)/400}). Pick K = 24 for established candidates and K = 40 for newcomers with fewer than 20 matches, so new ratings move fast and stable ones do not jitter. Handle draws as score 0.5. Guard the traps: undefeated newcomers explode without a prior, so shrink ratings toward 1500 by 5% each month. problem difficulty varies, so track per-topic ratings or add a problem-difficulty term, otherwise easy-problem specialists look stronger than they are. and ratings drift as candidates practice, so the K-factor's forgetting is a feature, not a bug.
+> Follow-up: Online Elo or batch Bradley-Terry: which and when?
+> A: Online Elo when matches stream in and you need a number now: leaderboards, matchmaking. Batch BT when you can wait: end-of-season rankings, where the full likelihood uses all games at once and gives proper uncertainty. Elo is stochastic gradient descent on the BT log-loss, so they agree in the long run. The batch fit also lets you add the prior that stops undefeated players from exploding.
+
+> [!QA]
+> Q: When would you abandon the Gumbel noise and pay for something richer?
+> A: When the data shows the IIA failures of Lecture 3. Near-duplicate items need correlated noise: the red-bus/blue-bus clones steal share under independent shocks. Use nested logit, which groups similar items into nests, or probit with a covariance matrix. Mixed populations need mixtures: fit one BT model per annotator group instead of one compromise. Context effects need context in the utility: V_j becomes V_j(x). The rule: start with Gumbel for tractability, and upgrade the noise exactly where the data rejects independence.
+> Follow-up: How do you detect that the noise assumption is wrong?
+> A: Two tests. The clone test: add a near-duplicate of one item and watch the others' shares. Under IIA they fall proportionally. in real data they barely move. The mixture test: fit per-group models and compare with the pooled fit. If per-group utilities disagree sharply, the pool is a compromise nobody holds. Both tests are cheap. Run them before trusting the fit.
 
 ## Recap: the whole lesson on one screen
 
@@ -323,10 +392,9 @@ The story in eight steps. Each step answers the one before it.
 ## Official sources and further reading
 
 **Official:**
-- Lecture 2 video (choice models): video id _bych9RfQvw. The
-  lecture goal, stated at [00:08](ts:00:08): by the end you
-  should have the technical tools to understand the human
-  preference learning parts of modern pipelines.
+- The Elo Rating System (external explainer, video id inXUp5j107I):
+  derives Bradley-Terry for a two-player game, builds the Elo update
+  from Zermelo's model, and notes the Thurstone alternative.
 - Course textbook, chapters 2.x: random utility, Gumbel, BT,
   Plackett-Luce, the worked chess example.
 
@@ -337,14 +405,14 @@ The story in eight steps. Each step answers the one before it.
   reference for logit, probit, nested and mixed logit.
 
 **Caveats from these sources.** The Gumbel-IIA equivalence holds
-under regularity conditions the textbook states; the proof is
+under regularity conditions the textbook states. the proof is
 left as an exercise. The "unique noise" claim is up to those
 conditions. The DPO-inherits-BT warning is the textbook's
 explicit caution, not a proven failure rate.
 
 ## Connections to the other courses
 
-- **CS329H L01:** fixed utilities and the Rasch model; pairs
+- **CS329H L01:** fixed utilities and the Rasch model. pairs
   cancel the user. This lesson adds the noise.
 - **CS329H L03:** IIA, identification, and where BT fails.
   Read next.

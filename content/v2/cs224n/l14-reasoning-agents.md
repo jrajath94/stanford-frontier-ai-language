@@ -32,9 +32,7 @@ sources:
 
 A model answers a math question correctly. Did it reason, or did it
 remember? The training data holds billions of worked examples. A correct
-answer proves nothing about the method. This lecture asks the uncomfortable
-question and builds the machinery to answer it, then puts the model in a
-loop with the world.
+answer proves nothing about the method.
 
 First, the vocabulary. Three kinds of reasoning:
 
@@ -71,8 +69,7 @@ Training methods go further. Generate rationales from a big model,
 fine-tune a small model on them (**distillation**): the small model
 inherits the big one's reasoning traces. Or fine-tune the big model on
 its **own rationales iteratively** ([17:35](ts:17:35)): performance can
-keep improving and even beat human-provided rationales. The model becomes
-its own teacher.
+keep improving and even beat human-provided rationales.
 
 ## The counterfactual test: base-9 addition
 
@@ -100,8 +97,7 @@ counterfactual itself appears in training, the test is void.
 
 ## The key question
 
-What happens when a model that can reason gets to act — to call tools,
-see the results, and try again?
+What happens when a model that can reason gets to act, to call tools, see the results, and try again?
 
 **On this page:** [ReAct](#subchapter-react-reason-and-act-interleaved) · [Tree of thought](#subchapter-tree-of-thought-search-over-thoughts) · [Reflexion](#subchapter-reflexion-the-critic-in-the-loop) · [Agents in production, Oct 2026](#what-is-used-where-agents-in-production-october-2026) · [Watch and go deeper](#watch-and-go-deeper)
 
@@ -220,8 +216,7 @@ repeat until the goal is done
 ```
 
 Each iteration is one forward pass. The world supplies the observations.
-the model supplies the actions. Reasoning and acting become the same
-operation.
+the model supplies the actions.
 
 ![Agent loop](assets/l14-agent-loop.svg "Stanford Frontier AI, CS224N L14. Instruction plus action space plus history predicts the next action. The environment responds. Repeat.")
 
@@ -283,7 +278,7 @@ internals is [uncertain] unless the vendor documented it.
 
 > [!QA]
 > Q: Walk me through one ReAct loop iteration, naming each part.
-> A: Goal: book a flight SF to NYC. Thought: "I need options; I will search." This is chain-of-thought: reasoning about the next move. Action: type("SFO to JFK Friday") and click search. This touches the world. Observation: "3 flights: $289, $340, $410." This grounds the next thought: no more reasoning in a vacuum. Next Thought: "The $289 works; I will select it." Each iteration is one model call producing a thought plus an action, and the world replies with an observation. Reason, act, see, repeat.
+> A: Goal: book a flight SF to NYC. Thought: "I need options. I will search." This is chain-of-thought: reasoning about the next move. Action: type("SFO to JFK Friday") and click search. This touches the world. Observation: "3 flights: $289, $340, $410." This grounds the next thought: no more reasoning in a vacuum. Next Thought: "The $289 works. I will select it." Each iteration is one model call producing a thought plus an action, and the world replies with an observation. Reason, act, see, repeat.
 > Follow-up: What breaks if you remove the Thought steps?
 > A: You get act-only: the model calls tools with no plan. It searches, clicks, and wanders: the email-in-the-password-field failure. The Thoughts are the plan. Remove them and the loop has no memory of what it is trying to do.
 
@@ -291,11 +286,11 @@ internals is [uncertain] unless the vendor documented it.
 > Q: Build a flight-booking agent. What is the architecture?
 > A: Start with the lecture's loop: instruction + action space + history predicts the next action. Add ReAct: Thought steps between actions so the agent plans. Add tools: search_flights, select_flight, enter_payment, each with a typed schema. Add guardrails: never enter payment without explicit user confirmation (WebLinx's human-communication action). Add recovery: if a step fails, the Thought step replans instead of committing to the trajectory. Evaluate on WebArena-style tasks: success rate, steps to completion, and dollars booked wrong (the metric that matters).
 > Follow-up: How do you stop it booking the wrong flight?
-> A: Confirmation gates on irreversible actions. The agent can search and compare freely; payment needs a human yes. And idempotency: the booking tool must tolerate retries without double-booking. The reliability is in the harness, not the model.
+> A: Confirmation gates on irreversible actions. The agent can search and compare freely. Payment needs a human yes. And idempotency: the booking tool must tolerate retries without double-booking. The reliability is in the harness, not the model.
 
 > [!QA]
 > Q: Self-consistency or tree of thought for a math word problem?
-> A: Tree of thought if the problem branches: multiple plausible first steps, dead ends that waste full rollouts. Score partial paths and prune early. Self-consistency if the paths are mostly independent attempts at the same computation: sample fully, majority vote. The cost differs: ToT pays breadth times depth in scoring calls; self-consistency pays samples times full length. For a single-path arithmetic problem, self-consistency is cheaper. For a puzzle with real branch points, ToT earns its cost.
+> A: Tree of thought if the problem branches: multiple plausible first steps, dead ends that waste full rollouts. Score partial paths and prune early. Self-consistency if the paths are mostly independent attempts at the same computation: sample fully, majority vote. The cost differs: ToT pays breadth times depth in scoring calls. Self-consistency pays samples times full length. For a single-path arithmetic problem, self-consistency is cheaper. For a puzzle with real branch points, ToT earns its cost.
 > Follow-up: Can you combine them?
 > A: Yes: search with ToT, then self-consistency vote among the surviving branches. More compute, better answers. The combination is standard where accuracy beats cost.
 

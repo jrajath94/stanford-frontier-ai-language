@@ -293,7 +293,7 @@ Claude internals is a guess until the vendor says otherwise.
 > Q: You are serving a 70B model at 128K context and the KV cache is eating your GPUs. MQA, GQA, or MLA?
 > A: GQA if you are fine-tuning an existing GQA model (Llama 3 style): it is the drop-in answer, and the cache shrinks by the group size. MLA if you are training from scratch and can afford the complexity: DeepSeek's latent cache is the most aggressive public design. MQA only if quality is not the binding constraint: one KV head is the cheapest and the weakest. Measure quality per gigabyte of cache, not just gigabytes.
 > Follow-up: Why not just quantize the KV cache?
-> A: You should do both. Quantization shrinks bytes per vector; GQA/MLA shrink the number of vectors. They multiply. The frontier systems combine them: fewer heads, fewer bits each.
+> A: You should do both. Quantization shrinks bytes per vector. GQA/MLA shrink the number of vectors. They multiply. The frontier systems combine them: fewer heads, fewer bits each.
 
 > [!QA]
 > Q: RoPE or learned absolute positions for a new 128K-context model?
@@ -303,7 +303,7 @@ Claude internals is a guess until the vendor says otherwise.
 
 > [!QA]
 > Q: Why did decoder-only win over encoder-decoder for large language models?
-> A: Three reasons. One: the training objective (next-token prediction) needs no paired data, so it scales to trillions of words; encoder-decoder pretraining needed span corruption machinery. Two: one stack is simpler to scale than two. Three: in-context learning emerged in decoder-only models at scale, which made the single stack do everything. Encoder-decoder survives where input and output differ in kind: translation, speech (Whisper), summarization.
+> A: Three reasons. One: the training objective (next-token prediction) needs no paired data, so it scales to trillions of words. Encoder-decoder pretraining needed span corruption machinery. Two: one stack is simpler to scale than two. Three: in-context learning emerged in decoder-only models at scale, which made the single stack do everything. Encoder-decoder survives where input and output differ in kind: translation, speech (Whisper), summarization.
 > Follow-up: Is the victory permanent?
 > A: Not necessarily. Retrieval-augmented and tool-using models reintroduce the two-sequence structure (query plus documents), and cross-attention is back in those designs. The decoder-only stack won pretraining. The architecture of use is still being negotiated.
 

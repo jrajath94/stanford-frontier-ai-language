@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>Lecture 10: Alignment in Practice, from Theory to Deployment — Stanford Frontier AI</title>
+<meta name="description" content="The inversion problem, the four-stage fairness pipeline, value alignment, Polis and Community Notes, human-centered design, and running human experiments.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs329h-l10" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">Stanford Frontier AI</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS336: Language Modeling from Scratch</h3><ul>
+<li><a href="../cs336/index.html" data-page="cs336-index">CS336 · Overview</a></li>
+<li><a href="../cs336/l01-tokenization.html" data-page="cs336-l01">L01 · Tokenization</a></li>
+<li><a href="../cs336/l02-resource-accounting.html" data-page="cs336-l02">L02 · Resource Accounting</a></li>
+<li><a href="../cs336/l03-architecture.html" data-page="cs336-l03">L03 · Architecture</a></li>
+<li><a href="../cs336/l04-linear-attention-moe.html" data-page="cs336-l04">L04 · Attention Alternatives + MoE</a></li>
+<li><a href="../cs336/l05-gpus.html" data-page="cs336-l05">L05 · GPUs</a></li>
+<li><a href="../cs336/l06-triton-kernels.html" data-page="cs336-l06">L06 · Triton Kernels</a></li>
+<li><a href="../cs336/l07-parallelism.html" data-page="cs336-l07">L07 · Parallelism</a></li>
+<li><a href="../cs336/l08-4d-parallelism.html" data-page="cs336-l08">L08 · 4D Parallelism</a></li>
+<li><a href="../cs336/l09-scaling-laws.html" data-page="cs336-l09">L09 · Scaling Laws</a></li>
+<li><a href="../cs336/l10-inference.html" data-page="cs336-l10">L10 · Inference</a></li>
+<li><a href="../cs336/l11-scaling-advanced.html" data-page="cs336-l11">L11 · Scaling Advanced</a></li>
+<li><a href="../cs336/l12-evaluation.html" data-page="cs336-l12">L12 · Evaluation</a></li>
+<li><a href="../cs336/l13-training-data.html" data-page="cs336-l13">L13 · Training Data</a></li>
+<li><a href="../cs336/l14-data-pipeline.html" data-page="cs336-l14">L14 · Data Pipeline</a></li>
+<li><a href="../cs336/l15-post-training.html" data-page="cs336-l15">L15 · Post-training</a></li>
+<li><a href="../cs336/l16-rlvr.html" data-page="cs336-l16">L16 · RLVR</a></li>
+<li><a href="../cs336/l17-multimodality.html" data-page="cs336-l17">L17 · Multimodality</a></li>
+<li><a href="../cs336/l18-inference.html" data-page="cs336-l18">L18 · Serving Inference</a></li>
+<li><a href="../cs336/cheatsheet.html" data-page="cs336-cheatsheet">CS336 · Cheatsheet</a></li>
+<li><a href="../cs336/crash-course.html" data-page="cs336-crash">CS336 · Crash course</a></li>
+</ul>
+<h3>CS229: Machine Learning</h3><ul>
+<li><a href="../cs229/index.html" data-page="cs229-index">CS229 · Overview</a></li>
+<li><a href="../cs229/l01-introduction.html" data-page="cs229-l01">L01 · Introduction</a></li>
+<li><a href="../cs229/l02-linear-regression.html" data-page="cs229-l02">L02 · Linear Regression</a></li>
+<li><a href="../cs229/l03-logistic-regression.html" data-page="cs229-l03">L03 · Logistic Regression</a></li>
+<li><a href="../cs229/l04-glms-softmax.html" data-page="cs229-l04">L04 · GLMs and Softmax</a></li>
+<li><a href="../cs229/l05-gda-naive-bayes.html" data-page="cs229-l05">L05 · GDA and Naive Bayes</a></li>
+<li><a href="../cs229/l06-bias-variance.html" data-page="cs229-l06">L06 · Bias, Variance, Model Selection</a></li>
+<li><a href="../cs229/l07-neural-networks-1.html" data-page="cs229-l07">L07 · Neural Networks 1</a></li>
+<li><a href="../cs229/l08-backpropagation.html" data-page="cs229-l08">L08 · Backpropagation</a></li>
+<li><a href="../cs229/l09-kmeans-gmm.html" data-page="cs229-l09">L09 · K-Means and GMM</a></li>
+<li><a href="../cs229/l10-em-pca.html" data-page="cs229-l10">L10 · EM and PCA</a></li>
+<li><a href="../cs229/l11-diffusion-models.html" data-page="cs229-l11">L11 · Diffusion Models</a></li>
+<li><a href="../cs229/l12-foundation-models.html" data-page="cs229-l12">L12 · Foundation Models</a></li>
+<li><a href="../cs229/l13-contrastive-rag.html" data-page="cs229-l13">L13 · Contrastive, Search, RAG</a></li>
+<li><a href="../cs229/l14-transformers.html" data-page="cs229-l14">L14 · Transformers</a></li>
+<li><a href="../cs229/l15-efficient-icl-sft.html" data-page="cs229-l15">L15 · Efficient Attention, ICL, SFT</a></li>
+<li><a href="../cs229/l16-reinforcement-learning.html" data-page="cs229-l16">L16 · Reinforcement Learning</a></li>
+<li><a href="../cs229/l17-rl-for-llms.html" data-page="cs229-l17">L17 · RL for LLMs</a></li>
+<li><a href="../cs229/cheatsheet.html" data-page="cs229-cheatsheet">CS229 · Cheatsheet</a></li>
+<li><a href="../cs229/crash-course.html" data-page="cs229-crash">CS229 · Crash course</a></li>
+</ul>
+<h3>CS229S: Systems for Machine Learning</h3><ul>
+<li><a href="../cs229s/index.html" data-page="cs229s-index">CS229S · Overview</a></li>
+<li><a href="../cs229s/l01-introduction.html" data-page="cs229s-l01">L01 · Introduction</a></li>
+<li><a href="../cs229s/l02-sequence-models.html" data-page="cs229s-l02">L02 · Sequence Models</a></li>
+<li><a href="../cs229s/l03-hardware-aware-design.html" data-page="cs229s-l03">L03 · Hardware-Aware Design</a></li>
+<li><a href="../cs229s/l04-transformer-performance.html" data-page="cs229s-l04">L04 · Transformer Performance</a></li>
+<li><a href="../cs229s/l05-gpu-execution-model.html" data-page="cs229s-l05">L05 · GPU Execution Model</a></li>
+<li><a href="../cs229s/l06-flash-attention.html" data-page="cs229s-l06">L06 · FlashAttention</a></li>
+<li><a href="../cs229s/l07-memory-efficient-networks.html" data-page="cs229s-l07">L07 · Memory Efficiency</a></li>
+<li><a href="../cs229s/l08-finetuning-and-peft.html" data-page="cs229s-l08">L08 · Fine-tuning and PEFT</a></li>
+<li><a href="../cs229s/l09-efficient-architectures.html" data-page="cs229s-l09">L09 · Attention-Free Architectures</a></li>
+<li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
+<li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
+<li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+</ul>
+<h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../cs224n/l01-intro-word-vectors.html" data-page="cs224n-l01">L01 · Intro and Word Vectors</a></li>
+<li><a href="../cs224n/l02-word-vectors-2.html" data-page="cs224n-l02">L02 · Word Vectors 2</a></li>
+<li><a href="../cs224n/l03-neural-networks-backprop.html" data-page="cs224n-l03">L03 · Neural Nets and Backprop</a></li>
+<li><a href="../cs224n/l04-dependency-parsing.html" data-page="cs224n-l04">L04 · Dependency Parsing</a></li>
+<li><a href="../cs224n/l05-language-modeling-rnns.html" data-page="cs224n-l05">L05 · Language Modeling and RNNs</a></li>
+<li><a href="../cs224n/l06-lstms-nmt.html" data-page="cs224n-l06">L06 · LSTMs and NMT</a></li>
+<li><a href="../cs224n/l07-attention.html" data-page="cs224n-l07">L07 · Attention</a></li>
+<li><a href="../cs224n/l08-transformers.html" data-page="cs224n-l08">L08 · Transformers</a></li>
+<li><a href="../cs224n/l09-pretraining.html" data-page="cs224n-l09">L09 · Pretraining</a></li>
+<li><a href="../cs224n/l10-prompting-post-training.html" data-page="cs224n-l10">L10 · Prompting and Post-Training</a></li>
+<li><a href="../cs224n/l11-evaluation.html" data-page="cs224n-l11">L11 · Evaluation</a></li>
+<li><a href="../cs224n/l12-efficient-training.html" data-page="cs224n-l12">L12 · Efficient Training</a></li>
+<li><a href="../cs224n/l13-speech-bci.html" data-page="cs224n-l13">L13 · Speech Brain-Computer Interfaces</a></li>
+<li><a href="../cs224n/l14-reasoning-agents.html" data-page="cs224n-l14">L14 · Reasoning and Agents</a></li>
+<li><a href="../cs224n/l15-life-after-dpo.html" data-page="cs224n-l15">L15 · Life After DPO</a></li>
+<li><a href="../cs224n/cheatsheet.html" data-page="cs224n-cheatsheet">CS224N · Cheatsheet</a></li>
+<li><a href="../cs224n/crash-course.html" data-page="cs224n-crash">CS224N · Crash course</a></li>
+</ul>
+<h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../cme295/index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../cme295/l01-transformers-overview.html" data-page="cme295-l01">L01 · Transformers overview</a></li>
+<li><a href="../cme295/l02-attention-position-bert.html" data-page="cme295-l02">L02 · Attention and BERT</a></li>
+<li><a href="../cme295/l03-llms-decoding-inference.html" data-page="cme295-l03">L03 · LLMs and decoding</a></li>
+<li><a href="../cme295/l04-pretraining-scaling-finetuning.html" data-page="cme295-l04">L04 · Training at scale</a></li>
+<li><a href="../cme295/l05-preference-tuning.html" data-page="cme295-l05">L05 · Preference tuning</a></li>
+<li><a href="../cme295/l06-reasoning-models-grpo.html" data-page="cme295-l06">L06 · Reasoning models</a></li>
+<li><a href="../cme295/l07-rag-tool-calling-agents.html" data-page="cme295-l07">L07 · RAG and agents</a></li>
+<li><a href="../cme295/l08-evaluation.html" data-page="cme295-l08">L08 · Evaluation</a></li>
+<li><a href="../cme295/l09-course-recap-frontiers.html" data-page="cme295-l09">L09 · Recap and frontiers</a></li>
+<li><a href="../cme295/cheatsheet.html" data-page="cme295-cheatsheet">CME295 · Cheatsheet</a></li>
+<li><a href="../cme295/crash-course.html" data-page="cme295-crash">CME295 · Crash course</a></li>
+</ul>
+<h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../cs329h/index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../cs329h/l01-preference-foundations.html" data-page="cs329h-l01">L01 · Preference Foundations</a></li>
+<li><a href="../cs329h/l02-choice-models.html" data-page="cs329h-l02">L02 · Choice Models</a></li>
+<li><a href="../cs329h/l03-iia-identification.html" data-page="cs329h-l03">L03 · IIA and Identification</a></li>
+<li><a href="../cs329h/l04-learning-rewards.html" data-page="cs329h-l04">L04 · Learning Rewards</a></li>
+<li><a href="../cs329h/l05-metric-elicitation.html" data-page="cs329h-l05">L05 · Metric Elicitation</a></li>
+<li><a href="../cs329h/l06-bandits-exploration.html" data-page="cs329h-l06">L06 · Bandits and Exploration</a></li>
+<li><a href="../cs329h/l07-rlhf.html" data-page="cs329h-l07">L07 · RLHF</a></li>
+<li><a href="../cs329h/l08-social-choice.html" data-page="cs329h-l08">L08 · Social Choice</a></li>
+<li><a href="../cs329h/l09-mechanism-design.html" data-page="cs329h-l09">L09 · Mechanism Design</a></li>
+<li><a href="../cs329h/l10-alignment-practice.html" data-page="cs329h-l10" class="active">L10 · Alignment in Practice</a></li>
+<li><a href="../cs329h/cheatsheet.html" data-page="cs329h-cheatsheet">CS329H · Cheatsheet</a></li>
+<li><a href="../cs329h/crash-course.html" data-page="cs329h-crash">CS329H · Crash course</a></li>
+</ul>
+<h3>CS329Z: Engineering AI Agents</h3><ul>
+<li><a href="../cs329z/index.html" data-page="cs329z-index">CS329Z · Overview</a></li>
+<li><a href="../cs329z/l01-intro-agentic-systems.html" data-page="cs329z-l01">L01 · Intro to Agentic Systems</a></li>
+<li><a href="../cs329z/l02-compound-ai-systems.html" data-page="cs329z-l02">L02 · Compound AI Systems</a></li>
+<li><a href="../cs329z/l03-llms-for-builders.html" data-page="cs329z-l03">L03 · LLMs for Builders</a></li>
+<li><a href="../cs329z/l04-reasoning-and-context.html" data-page="cs329z-l04">L04 · Reasoning and Context</a></li>
+<li><a href="../cs329z/l05-rag-pipeline.html" data-page="cs329z-l05">L05 · RAG Pipeline</a></li>
+<li><a href="../cs329z/l06-retrieval-methods.html" data-page="cs329z-l06">L06 · Retrieval Methods</a></li>
+<li><a href="../cs329z/l07-agentic-retrieval-failure-modes.html" data-page="cs329z-l07">L07 · Agentic Retrieval</a></li>
+<li><a href="../cs329z/l08-evaluating-agents.html" data-page="cs329z-l08">L08 · Evaluating Agents</a></li>
+<li><a href="../cs329z/cheatsheet.html" data-page="cs329z-cheatsheet">CS329Z · Cheatsheet</a></li>
+<li><a href="../cs329z/crash-course.html" data-page="cs329z-crash">CS329Z · Crash course</a></li>
+</ul>
+<h3>CS329A: Self-Improving AI Agents</h3><ul>
+<li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
+<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
+<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
+<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
+<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
+<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
+<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
+<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
+<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
+<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
+<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+</ul>
+<h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
+<li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
+<li><a href="../mse435/l01-electrons-to-tokens.html" data-page="mse435-l01">L01 · From Electrons to Tokens</a></li>
+<li><a href="../mse435/l02-sixty-million-megawatt.html" data-page="mse435-l02">L02 · The $60M Megawatt</a></li>
+<li><a href="../mse435/l03-how-models-get-smarter.html" data-page="mse435-l03">L03 · How Models Get Smarter</a></li>
+<li><a href="../mse435/l04-evals-rlvr-enterprise.html" data-page="mse435-l04">L04 · Evals and Enterprise AI</a></li>
+<li><a href="../mse435/l05-software-is-dead.html" data-page="mse435-l05">L05 · The SaaS Reckoning</a></li>
+<li><a href="../mse435/l06-where-value-accrues.html" data-page="mse435-l06">L06 · Where Value Accrues</a></li>
+<li><a href="../mse435/cheatsheet.html" data-page="mse435-cheatsheet">MS&amp;E 435 · Cheatsheet</a></li>
+<li><a href="../mse435/crash-course.html" data-page="mse435-crash">MS&amp;E 435 · Crash course</a></li>
+</ul>
+<h3>Mathematical Foundations of Machine Learning</h3><ul>
+<li><a href="../math-ml/index.html" data-page="math-ml-index">MATH-ML · Overview</a></li>
+<li><a href="../math-ml/l01-vectors-as-data.html" data-page="math-ml-l01">L01 · Vectors as Data</a></li>
+<li><a href="../math-ml/l02-matrices-as-machines.html" data-page="math-ml-l02">L02 · Matrices as Machines</a></li>
+<li><a href="../math-ml/l03-eigendecomposition-pca.html" data-page="math-ml-l03">L03 · Eigen-decomposition</a></li>
+<li><a href="../math-ml/l04-svd-low-rank.html" data-page="math-ml-l04">L04 · SVD and Low Rank</a></li>
+<li><a href="../math-ml/l05-probability-bayes.html" data-page="math-ml-l05">L05 · Probability and Bayes</a></li>
+<li><a href="../math-ml/l06-distributions-covariance.html" data-page="math-ml-l06">L06 · Distributions and Covariance</a></li>
+<li><a href="../math-ml/l07-calculus-gradients-chainrule.html" data-page="math-ml-l07">L07 · Calculus for ML</a></li>
+<li><a href="../math-ml/l08-convexity-gradient-descent.html" data-page="math-ml-l08">L08 · Convexity and Gradient Descent</a></li>
+<li><a href="../math-ml/l09-least-squares-regression.html" data-page="math-ml-l09">L09 · Least Squares</a></li>
+<li><a href="../math-ml/l10-information-theory.html" data-page="math-ml-l10">L10 · Information Theory</a></li>
+<li><a href="../math-ml/cheatsheet.html" data-page="math-ml-cheatsheet">MATH-ML · Cheatsheet</a></li>
+<li><a href="../math-ml/crash-course.html" data-page="math-ml-crash-course">MATH-ML · Crash Course</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative AI</h3><ul>
+<li><a href="../math-genai/index.html" data-page="math-genai-index">Mathematical Foundations of Generative AI · Overview</a></li>
+<li><a href="../math-genai/l01-the-job.html" data-page="math-genai-l01">L01 · The Job</a></li>
+<li><a href="../math-genai/l02-kl-and-mle.html" data-page="math-genai-l02">L02 · KL Divergence and MLE</a></li>
+<li><a href="../math-genai/l03-f-divergences.html" data-page="math-genai-l03">L03 · f-Divergences</a></li>
+<li><a href="../math-genai/l04-gans.html" data-page="math-genai-l04">L04 · GANs</a></li>
+<li><a href="../math-genai/l05-wgan-evaluation.html" data-page="math-genai-l05">L05 · WGAN and Evaluation</a></li>
+<li><a href="../math-genai/l06-latent-variables-elbo.html" data-page="math-genai-l06">L06 · ELBO</a></li>
+<li><a href="../math-genai/l07-vae.html" data-page="math-genai-l07">L07 · VAE</a></li>
+<li><a href="../math-genai/l08-ddpm-forward.html" data-page="math-genai-l08">L08 · DDPM Forward</a></li>
+<li><a href="../math-genai/l09-ddpm-loss.html" data-page="math-genai-l09">L09 · DDPM Loss</a></li>
+<li><a href="../math-genai/l10-score-ddim-ar.html" data-page="math-genai-l10">L10 · Score, DDIM, AR</a></li>
+<li><a href="../math-genai/cheatsheet.html" data-page="math-genai-cheatsheet">Cheatsheet</a></li>
+<li><a href="../math-genai/crash-course.html" data-page="math-genai-crash-course">Crash course</a></li>
+</ul>
+<h3>Mathematical Foundations of Generative Models</h3><ul>
+<li><a href="../math-genmodels/index.html" data-page="math-genmodels-index">Math · Generative Models · Overview</a></li>
+<li><a href="../math-genmodels/l01-the-one-question.html" data-page="math-genmodels-l01">L01 · The One Question</a></li>
+<li><a href="../math-genmodels/l02-autoregressive-models.html" data-page="math-genmodels-l02">L02 · Autoregressive Models</a></li>
+<li><a href="../math-genmodels/l03-variational-autoencoders.html" data-page="math-genmodels-l03">L03 · Variational Autoencoders</a></li>
+<li><a href="../math-genmodels/l04-normalizing-flows.html" data-page="math-genmodels-l04">L04 · Normalizing Flows</a></li>
+<li><a href="../math-genmodels/l05-diffusion-ddpm.html" data-page="math-genmodels-l05">L05 · Diffusion I: DDPM</a></li>
+<li><a href="../math-genmodels/l06-score-matching-ddim.html" data-page="math-genmodels-l06">L06 · Score Matching &amp; Fast Diffusion</a></li>
+<li><a href="../math-genmodels/l07-energy-based-models.html" data-page="math-genmodels-l07">L07 · Energy-Based Models</a></li>
+<li><a href="../math-genmodels/l08-judging-a-creator.html" data-page="math-genmodels-l08">L08 · Judging a Creator</a></li>
+<li><a href="../math-genmodels/cheatsheet.html" data-page="math-genmodels-cheatsheet">Math · Generative Models · Cheatsheet</a></li>
+<li><a href="../math-genmodels/crash-course.html" data-page="math-genmodels-crash">Math · Generative Models · Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / Lecture 10: Alignment in Practice, from Theory to Deployment</nav>
+      <h1>Lecture 10: Alignment in Practice, from Theory to Deployment</h1>
+      <p class="meta-line">[uncertain] Spring 2026 · Instructor: Sanmi Koyejo · 1:13:21 · Spring 2026</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="1QpNZXL35NM"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/1QpNZXL35NM" title="Stanford CS329H Guest Lecture: Colin Megill on Polis" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=1QpNZXL35NM" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=1QpNZXL35NM" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Guest lecture. Colin Megill on Polis, bridging-based aggregation, and Community Notes. Plus Dan Weber on value alignment and the human-experiments lecture.</p></div><h2 id="the-problem-the-lab-meets-the-world">The problem: the lab meets the world</h2>
+<p>Lectures 1 through 9 built the machinery: comparisons, choice
+models, fitting, asking, acting, aggregating, incentives. This
+chapter asks what the machinery is for and where it breaks
+outside the lab. Whose preferences count? How does fairness fail?
+How do deployed systems aggregate millions of voices? The
+answers are less mathematical and more load-bearing than
+everything before.</p>
+<p>Carry one running example. A team builds an AI assistant for
+peer review. It reads papers, suggests scores, drafts reviews.
+Whose judgment does it encode? The senior faculty who labeled
+the most data? The junior researchers who will live with its
+decisions? The machinery from earlier lectures gives no answer.
+It only executes the values smuggled into each stage.</p>
+<h2 id="first-attempt-invert-behavior-into-preference">First attempt: invert behavior into preference</h2>
+<p>Every lesson so far observed behavior: clicks, choices, labels.
+The goal was never behavior. The goal is preferences: what
+people want, so the system can serve it. The gap between
+observed behavior and true preference is the <strong>inversion
+problem</strong>.</p>
+<figure><img alt="The inversion problem" src="assets/l10-inversion.svg"><figcaption>Behavior is observed. Preferences are inferred. Errors, constraints, and strategy break the inversion. Source: original figure for Stanford Frontier AI.</figcaption></figure>
+<p>Inversion fails three ways. <strong>Errors:</strong> bounded rationality
+means choices reflect mistakes, not wants. <strong>Constraints:</strong>
+people choose from what is available, not what they want.
+<strong>Strategy:</strong> annotators and users respond to the system
+measuring them, Lecture 6&rsquo;s CIRL and Lecture 9&rsquo;s mechanisms.</p>
+<p>The concrete failure: click data in recommenders. Clicks
+reflect position bias, curiosity gaps, and outrage as much as
+satisfaction. A model trained to maximize predicted clicks
+learns clickbait, not quality. The inversion assumed clicks
+reveal preference. They reveal engagement, which is a different
+thing. Fixing it means modeling the bias in Lecture 4 or
+changing the feedback in Lecture 5.</p>
+<div class="qa"><div class="q">What is the inversion problem?</div><div class="a"><p>Observed choices do not equal underlying preferences. People err, face constrained options, and strategize against measurement. Inverting behavior to preferences requires assumptions about all three, and the assumptions are value choices. A system that optimizes learned &ldquo;preferences&rdquo; without auditing the inversion optimizes a distorted image of what people want.
+Click data in recommenders. Clicks reflect position bias, curiosity gaps, and outrage as much as satisfaction. A model trained to maximize predicted clicks learns clickbait, not quality. The inversion assumed clicks reveal preference. They reveal engagement, which is a different thing. Fixing it means modeling the bias or changing the feedback.</p><div class="followup"><strong>Follow-up:</strong> Give a concrete inversion failure.</div></div></div>
+<h2 id="the-key-question">The key question</h2>
+<p>If every technical choice smuggles in an answer to &ldquo;whose
+preferences matter,&rdquo; can we at least make the smuggling
+explicit, stage by stage?</p>
+<h2 id="the-four-stage-pipeline">The four-stage pipeline</h2>
+<p>The textbook&rsquo;s pipeline makes the values explicit. Trace the
+peer-review assistant through four stages.</p>
+<figure><img alt="The four-stage fairness pipeline" src="assets/l10-pipeline.svg"><figcaption>Elicitation, learning, aggregation, decision. Each stage embeds a value choice. Bias compounds across stages. Source: original figure for Stanford Frontier AI.</figcaption></figure>
+<ol>
+<li><strong>Elicitation.</strong> Who gets asked? Querying the most
+   &ldquo;productive&rdquo; reviewers, or the highest Fisher information
+   from Lecture 5, oversamples senior faculty in mainstream
+   areas. Efficiency has a demographic.</li>
+<li><strong>Learning.</strong> What counts as valid? Fitting Bradley-Terry
+   assumes context-free preferences and discards the
+   context-dependence of overburdened reviewers as noise. The
+   model decides which variation is signal.</li>
+<li><strong>Aggregation.</strong> Whose preferences weigh more? Simple
+   majority across annotators weights the overrepresented
+   group equally per person, which is unequal per
+   perspective. Lecture 8&rsquo;s impossibility lives here.</li>
+<li><strong>Decision.</strong> Defer or override? When the model is
+   uncertain, does the system defer to a human or decide
+   anyway? When is paternalism legitimate?</li>
+</ol>
+<p>The compounding is the point. A 10% sampling bias at
+elicitation can become a 40% performance gap after one
+feedback loop: the model serves seniors well, seniors use it
+more, their data dominates further. Each stage&rsquo;s small choice
+multiplies. Interventions: stratified sampling at elicitation,
+fairness-constrained learning, regular auditing at decision.</p>
+<h2 id="two-fairnesses-that-cannot-both-hold">Two fairnesses that cannot both hold</h2>
+<p><strong>Individual fairness</strong> (Dwork et al., 2012): similar
+individuals get similar outcomes. Formally, close features imply
+close decisions. <strong>Group fairness</strong>: protected groups get equal
+average outcomes. Formally, expected decisions match across
+groups.</p>
+<figure><img alt="Individual versus group fairness" src="assets/l10-fairness.svg"><figcaption>Similar treatment versus equal averages. In peer review they conflict: small subfields have few experts. Source: original figure for Stanford Frontier AI.</figcaption></figure>
+<p>The textbook proves by example they conflict. Peer review:
+papers in small subfields have few available experts.
+Individual fairness gives them less-expert reviewers: similar
+papers get similar reviewers, and the similar reviewers are
+scarce. Group fairness demands equally expert reviewers on
+average across subfields. Both cannot hold. Satisfying group
+fairness means giving small-subfield papers reviewers that
+individual fairness would assign elsewhere.</p>
+<p>The lesson generalizes: state which fairness you target, measure
+it, and name what you sacrificed. &ldquo;Fair&rdquo; without a definition is
+a slogan.</p>
+<div class="qa"><div class="q">Why can&#x27;t individual and group fairness both hold?</div><div class="a"><p>They demand different things when feature distributions differ across groups. Individual fairness is local: treat similar cases similarly. Group fairness is aggregate: equalize group averages. When one group&rsquo;s cases systematically differ, small subfields with few experts, local similarity and aggregate equality pull in opposite directions. Dwork et al. proved the incompatibility formally. The peer review example shows it concretely.
+It depends on the harm model. If the harm is disparate service quality across user groups, target group fairness on the outcome that matters: satisfaction, accuracy per group. If the harm is arbitrary treatment of individuals, target individual fairness with a defensible similarity metric. Most deployed systems need both partially: constrain one, optimize the other, and audit the tradeoff.</p><div class="followup"><strong>Follow-up:</strong> Which should a preference learning system target?</div></div></div>
+<h2 id="revealed-versus-informed-preferences">Revealed versus informed preferences</h2>
+<p>Dan Weber, postdoc at Stanford HAI and the Center for Ethics in
+Society, PhD in philosophy, gave the value alignment guest
+lecture. His framing: alignment is about which preferences
+count, not just how to learn them.</p>
+<p>The key distinction is revealed versus informed preferences.
+<strong>Revealed preferences</strong> are what behavior shows, discussed at
+minute 20:18 of the Weber guest lecture (video id _kdR_7dCcyI;
+timestamps in this chapter link to the Polis lecture video in
+the frontmatter). <strong>Informed preferences</strong> are
+what someone would want knowing the relevant facts, with time
+to reflect. Alignment to raw revealed preferences bakes in
+mistakes, ignorance, and manipulation. Alignment to informed
+preferences requires extrapolation: from the cases you observed
+to the cases the person never considered.</p>
+<p>Weber also introduced the ESR statements, ethical and societal
+reflection, required for the course&rsquo;s final projects: every
+project must state its value assumptions explicitly. The habit
+transfers. Any preference learning system should ship with its
+inversion assumptions written down.</p>
+<div class="qa"><div class="q">What is the difference between revealed and informed preferences?</div><div class="a"><p>Revealed preferences are what choices show. Informed preferences are what someone would want with full information and reflection time. They differ whenever people err, lack facts, or face manipulation. Aligning to revealed preferences reproduces the errors. Aligning to informed preferences requires extrapolating beyond the data, which is itself a value-laden choice about how far to extrapolate and in which direction.
+That is the central risk. Extrapolation needs a model of what the person would endorse, and the designer supplies it. The defense is transparency: state the extrapolation rule, make it contestable, and prefer the weakest extrapolation that resolves the clear errors. Weber&rsquo;s ESR requirement is the institutional version: write the assumption down so it can be argued with.</p><div class="followup"><strong>Follow-up:</strong> Isn&#x27;t &quot;informed preference&quot; just the designer&#x27;s preference in disguise?</div></div></div>
+<h2 id="polis-bridging-not-majority">Polis: bridging, not majority</h2>
+<p>Colin Megill, founder of Polis, gave the applied guest lecture.
+Polis is an open-source platform for large-scale deliberation.
+Its most famous descendant is Community Notes on X.</p>
+<p>The problem with majority voting on notes: the largest
+ideological group decides what is &ldquo;helpful.&rdquo; The Polis answer is
+<strong>bridging</strong>: find notes rated positively by people who disagree
+with each other. Disagreement is the instrument, not the
+obstacle, stated at <a href="https://www.youtube.com/watch?v=1QpNZXL35NM&amp;t=530s" target="_blank" rel="noopener">08:50 <span class="ts">⏱08:50</span></a> in the lecture.</p>
+<p>The model is a factor model:</p>
+<p>u = mu + alpha_j + beta_j + p^T q_j + noise</p>
+<p>alpha is rater bias: some raters are generous. p^T q captures
+ideological agreement between rater and note. beta_j is note
+quality after ideology is removed. A note is selected when
+beta_j clears a threshold: it must appeal across the divide,
+not just within one camp.</p>
+<p>Two details from the lecture. First, the goal is recovering
+consensus signal from diversity of opinion. Second, the
+factorization runs in continuous space, deliberately not
+clustering raters into liberal/conservative buckets, to avoid
+reifying the divisions it measures, stated at <a href="https://www.youtube.com/watch?v=1QpNZXL35NM&amp;t=2798s" target="_blank" rel="noopener">46:38 <span class="ts">⏱46:38</span></a>.</p>
+<p>This is Lecture 1&rsquo;s factor model deployed at scale, and Lecture
+8&rsquo;s social choice with a concrete rule: bridging beats majority
+when the population is polarized.</p>
+<h2 id="human-centered-design-the-interface-is-the-model">Human-centered design: the interface is the model</h2>
+<p>The human-centered design lecture, built on tutorials from the
+HCI community, argues the elicitation interface is part of the
+model. Understand users, prototype cheaply, test with humans,
+iterate. For preference learning specifically: the question
+format shapes the data. Pairwise versus ranked, forced choice
+versus skip allowed, context shown versus hidden. Each choice
+selects a different preference distribution.</p>
+<figure><img alt="Human-centered design for preference systems" src="assets/l10-hcd.svg"><figcaption>Understand, prototype, iterate. The interface is part of the model. Source: original figure for Stanford Frontier AI.</figcaption></figure>
+<p>The connection to the pipeline: HCD operates at the elicitation
+stage, where the fairness pipeline says values enter first.
+Designing the question is designing the data. A &ldquo;which is
+better&rdquo; button and a five-star widget do not measure the same
+preference.</p>
+<h2 id="running-experiments-on-humans">Running experiments on humans</h2>
+<p>The final lecture covers running preference experiments with
+humans: the applied setting where theory meets logistics. Its
+distinctive content is Thompson sampling for experiments. When
+comparing two treatments, which prompt elicits better
+responses, allocate subjects adaptively. Early results suggest A
+beats B 70/30. Thompson sampling assigns the next subject to A
+with probability 0.7. Exploration and exploitation over human
+subjects, minimizing regret while learning. Lecture 6&rsquo;s
+algorithm, Lecture 10&rsquo;s stakes.</p>
+<p>The ethics need stating. Adaptive allocation treats humans as
+bandit arms. Subjects in the worse arm get worse treatment by
+design. Human experiments need the statistical care of Lecture 6
+plus the ethical care of Weber&rsquo;s lecture: consent, debriefing,
+and a harm model for the exploration itself.</p>
+<h2 id="closing-topics-paternalism-privacy-peer-prediction">Closing topics: paternalism, privacy, peer prediction</h2>
+<p><strong>Paternalism.</strong> When should the system override stated
+preferences? The review-assistant example: help the harsh
+reviewer be harsh, liberal assistance, or nudge toward
+constructive feedback, illiberal assistance? Paternalism is the
+decision stage of the pipeline. The textbook&rsquo;s stance: name the
+override rule and its justification. Hidden paternalism is
+manipulation.</p>
+<p><strong>Privacy and personalization.</strong> Personalization needs user
+models. User models need data. The tension is fundamental: the
+factor models of Lecture 1 identify individuals to serve them.
+Aggregation and anonymization protect privacy at the cost of
+personalization quality.</p>
+<p><strong>Mutual information paradigm.</strong> For peer prediction, eliciting
+honest reports without ground truth, reward agents by the mutual
+information between their report and others&rsquo; reports.
+Truth-telling maximizes shared information under the paradigm&rsquo;s
+conditions. It is mechanism design from Lecture 9 for the
+no-ground-truth case: pay for agreement that could only come
+from shared signal.</p>
+<h2 id="mapping-back-the-course-in-one-pipeline">Mapping back: the course in one pipeline</h2>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Machinery</th>
+<th>Value choice smuggled in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Elicitation</td>
+<td>Lectures 1, 5, 9; HCD</td>
+<td>Who gets asked; what the interface measures</td>
+</tr>
+<tr>
+<td>Learning</td>
+<td>Lectures 2, 3, 4</td>
+<td>Which variation counts as signal; which model structure</td>
+</tr>
+<tr>
+<td>Aggregation</td>
+<td>Lecture 8; Polis bridging</td>
+<td>Whose preferences weigh more; which axiom is relaxed</td>
+</tr>
+<tr>
+<td>Decision</td>
+<td>Lectures 6, 10</td>
+<td>Defer or override; the paternalism rule</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-honest-price-values-all-the-way-down">The honest price: values all the way down</h2>
+<p>There is no value-free preference learning. The inversion
+assumes behavior reveals preference. The model assumes IIA and
+homogeneity. The aggregation relaxes some axiom. The decision
+rule overrides or defers. Each step is defensible. None is
+neutral. The honest practice is Weber&rsquo;s: write the assumptions
+down, make them contestable, and prefer the weakest
+extrapolation that resolves the clear errors. The machinery of
+Lectures 1 through 9 is powerful exactly because it is
+explicit. This chapter asks that the values be equally
+explicit.</p>
+<h2 id="recap-the-whole-lesson-on-one-screen">Recap: the whole lesson on one screen</h2>
+<p>The story in eight steps. Each step answers the one before it.</p>
+<ol>
+<li><strong>The lab meets the world.</strong> A peer-review assistant.
+   Whose judgment does it encode? The machinery gives no
+   answer.</li>
+<li><strong>Inversion: behavior is not preference.</strong> Errors,
+   constraints, strategy. Clicks reveal engagement, not
+   satisfaction. Clickbait is the invoice.</li>
+<li><strong>Four stages, four value choices.</strong> Elicitation,
+   learning, aggregation, decision. 10% sampling skew becomes
+   a 40% gap. Bias compounds.</li>
+<li><strong>Two fairnesses conflict.</strong> Individual: similar cases,
+   similar outcomes. Group: equal averages. Small subfields
+   prove both cannot hold.</li>
+<li><strong>Revealed versus informed.</strong> Behavior shows revealed
+   preferences. Informed preferences need extrapolation.
+   State the rule. Make it contestable.</li>
+<li><strong>Bridge, do not majoritize.</strong> Polis: u = mu + alpha +
+   beta + p^T q + noise. Select on beta after factoring out
+   ideology. Disagreement is the instrument.</li>
+<li><strong>The interface is the model.</strong> Question format selects
+   the preference distribution. Design elicitation with the
+   users.</li>
+<li><strong>Values all the way down.</strong> No neutral pipeline exists.
+   Write the assumptions down. Weakest extrapolation that
+   fixes the clear errors.</li>
+</ol>
+<h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
+<p><strong>Official:</strong>
+- Guest lecture: Dan Weber on value alignment (video id
+  _kdR_7dCcyI): revealed versus informed preferences at minute
+  20:18 of his lecture, ESR statements. Plain-text minute mark:
+  the ts: links in this chapter point at the Polis video above.
+- Guest lecture: Colin Megill on Polis (video id 1QpNZXL35NM):
+  bridging at <a href="https://www.youtube.com/watch?v=1QpNZXL35NM&amp;t=530s" target="_blank" rel="noopener">08:50 <span class="ts">⏱08:50</span></a>, continuous factorization at
+  <a href="https://www.youtube.com/watch?v=1QpNZXL35NM&amp;t=2798s" target="_blank" rel="noopener">46:38 <span class="ts">⏱46:38</span></a>.
+- Lecture on human-centered design (video id VffFArrRSBE).
+- Lecture on running human experiments (video id HFrCySzH9QI).
+- Course textbook, chapters 10.x: the inversion problem, the
+  four-stage pipeline, fairness, paternalism, privacy, the
+  mutual information paradigm.</p>
+<p><strong>Further reading:</strong>
+- Dwork et al. (2012): individual fairness.
+- Megill / Polis: https://pol.is — the open-source platform.</p>
+<p><strong>Caveats from these sources.</strong> The 10%-to-40% compounding
+figure is the textbook&rsquo;s illustration of feedback loops, not a
+measured rate. The Polis factor model is stated as in the
+lecture; estimation details are the platform&rsquo;s. The HCD
+lecture is built on HCI community tutorials, per the lecturer.
+Timestamps link to the guest lecture videos named above.</p>
+<h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
+<ul>
+<li><strong>CS329H L01:</strong> the factor model Polis deploys at scale.</li>
+<li><strong>CS329H L04:</strong> systematic bias as the inversion problem in
+  miniature.</li>
+<li><strong>CS329H L06:</strong> Thompson sampling for human experiments;
+  CIRL&rsquo;s strategic human.</li>
+<li><strong>CS329H L08:</strong> aggregation impossibility; bridging as a
+  concrete escape.</li>
+<li><strong>CS329H L09:</strong> peer prediction as mechanism design without
+  ground truth.</li>
+<li><strong>CS336:</strong> the deployed systems these choices govern.</li>
+</ul>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=1QpNZXL35NM" target="_blank" rel="noopener">Guest lecture: Colin Megill on Polis</a></li><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=_kdR_7dCcyI" target="_blank" rel="noopener">Guest lecture: Dan Weber on value alignment</a></li><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=VffFArrRSBE" target="_blank" rel="noopener">Lecture: human-centered design</a></li><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=HFrCySzH9QI" target="_blank" rel="noopener">Lecture: running human experiments</a></li><li><span class="src-tag">NOTES</span>Course textbook, chapters 4 and 5.6-5.11 (Truong, Haupt, Koyejo, 2025)</li></ul></section>
+      <nav class="pager"><a href="../cs329h/l09-mechanism-design.html"><span class="lbl">← Previous</span>Lecture 9: Mechanism Design, Eliciting Truthful Preferences</a><a href="../cs329h/cheatsheet.html"><span class="lbl">Next →</span>CS329H Cheatsheet</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

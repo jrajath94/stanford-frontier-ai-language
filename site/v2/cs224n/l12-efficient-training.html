@@ -273,7 +273,7 @@ GPU holds part of every layer. Watch a matrix multiply split two ways
 all-reduce per two layers. The price is communication on every forward
 and backward pass: tensor parallelism wants GPUs with fast interconnects
 (NVLink), not a cluster spread across racks. Split the model when one GPU
-cannot hold a layer; shard the data when it can.</p>
+cannot hold a layer. Shard the data when it can.</p>
 <h3 id="subchapter-pipeline-parallelism-split-the-layers">Subchapter: pipeline parallelism, split the layers</h3>
 <p><strong>Pipeline parallelism</strong> splits by depth: GPU 0 holds layers 1-8, GPU 1
 holds layers 9-16. A microbatch flows through: GPU 0 computes, sends
@@ -312,7 +312,7 @@ weights can be stored in fewer bits. <strong>INT8 quantization</strong> maps eac
 weight to 8 bits: 4x smaller, roughly 2x faster matrix math. Watch the
 mapping on a toy weight 0.37 with scale 0.01: round(0.37 / 0.01) = 37,
 stored in one byte. Dequantize: 37 x 0.01 = 0.37. Per-tensor scales are
-crude; per-channel scales are the standard.</p>
+crude. Per-channel scales are the standard.</p>
 <p><strong>GGUF</strong> is the community format for quantized LLMs: 4-bit, 5-bit, 8-bit
 variants that run on CPUs and laptops. <strong>QLoRA</strong> combines 4-bit quantized
 base weights with LoRA adapters in bf16: fine-tune a 65B model on one
@@ -366,9 +366,9 @@ When the task needs large changes everywhere: a new language, a new modality, or
 <h2 id="the-honest-price-not-sustainable">The honest price: not sustainable</h2>
 <p>The lecture&rsquo;s closing chart: largest-model training compute (red) versus
 global compute capacity (blue). &ldquo;Not sustainable&rdquo; (<a href="https://www.youtube.com/watch?v=UVX7SYGCKkA&amp;t=2396s" target="_blank" rel="noopener">39:56 <span class="ts">⏱39:56</span></a>).
-Training demand outruns capacity. Concentration follows: few organizations
-can train frontier models. Every technique in this lecture (bf16, ZeRO,
-checkpointing, LoRA) stretches the budget. None of them changes the curve.</p>
+Concentration follows: few organizations can train frontier models. Every
+technique in this lecture (bf16, ZeRO, checkpointing, LoRA) stretches the
+budget. None of them changes the curve.</p>
 <figure><img alt="Sustainability" src="assets/l12-sustain.svg"><figcaption>Stanford Frontier AI, CS224N L12. Largest-model training compute outruns global capacity: not sustainable. Training concentrates in few organizations.</figcaption></figure>
 <h2 id="what-is-used-where-training-stacks-october-2026">What is used where: training stacks, October 2026</h2>
 <table>
@@ -422,12 +422,12 @@ closed labs&rsquo; advantage is scale and data, not secret parallelism math.</p>
 <div class="qa"><div class="q">Walk me through the ZeRO-3 memory math for a 7B model on 8 GPUs.</div><div class="a"><p>Mixed precision: 16 bytes per parameter. 7B x 16 = 112 GB total. ZeRO-3 shards everything: parameters, gradients, optimizer states. Per GPU: 112 / 8 = 14 GB. One A100 holds 80 GB, so the model fits with room for activations. Without ZeRO (DDP), each GPU holds the full 112 GB: overflow. The price of sharding: communication. Parameters are gathered before each layer&rsquo;s forward pass and scattered after: the network carries what memory saved.
 On small models with fast GPUs: the gather/scatter communication dominates and training slows. ZeRO-1 (shard optimizer states only, 12 of 16 bytes) is often the sweet spot: most of the memory win, little of the communication cost. Scale the stage to the problem.</p><div class="followup"><strong>Follow-up:</strong> When does ZeRO-3 hurt?</div></div></div>
 <div class="qa"><div class="q">You have 2x A100 (80GB each) and a 7B model to fine-tune. Plan it.</div><div class="a"><p>Full fine-tuning needs 112 GB: does not fit on one GPU, fits across two with ZeRO-3 (56 GB each) plus activation memory. Cheaper: LoRA. Freeze the 7B in bf16 (14 GB), train rank-16 adapters (a few million parameters): fits on one GPU with room to spare, faster, and the merge gives zero inference latency. Only go full fine-tuning if LoRA underperforms on your dev set. And use gradient checkpointing if activations overflow: recompute is cheaper than a third GPU.
-As large as fits, with gradient accumulation to reach the effective batch you want. Microbatch 1-2 per GPU with accumulation over 32-64 steps is normal. The effective batch sets the gradient noise; the microbatch is just plumbing.</p><div class="followup"><strong>Follow-up:</strong> What batch size?</div></div></div>
-<div class="qa"><div class="q">Walk me through one scaled backward step.</div><div class="a"><p>Loss = 2.0, scaler = 1024. Step 1: scaled loss = 2048. Step 2: backward in fp16. A true gradient of 1e-6 becomes 1.024e-3: representable, survives. Step 3: check for overflow. If any gradient is inf (exceeded 65,504), halve the scaler and skip the update: no corrupt step. Step 4: unscale in fp32: divide by 1024, apply the optimizer step to the fp32 master weights. The fp16 gradients did the fast math; the fp32 master kept the precision.
+As large as fits, with gradient accumulation to reach the effective batch you want. Microbatch 1-2 per GPU with accumulation over 32-64 steps is normal. The effective batch sets the gradient noise. The microbatch is just plumbing.</p><div class="followup"><strong>Follow-up:</strong> What batch size?</div></div></div>
+<div class="qa"><div class="q">Walk me through one scaled backward step.</div><div class="a"><p>Loss = 2.0, scaler = 1024. Step 1: scaled loss = 2048. Step 2: backward in fp16. A true gradient of 1e-6 becomes 1.024e-3: representable, survives. Step 3: check for overflow. If any gradient is inf (exceeded 65,504), halve the scaler and skip the update: no corrupt step. Step 4: unscale in fp32: divide by 1024, apply the optimizer step to the fp32 master weights. The fp16 gradients did the fast math. The fp32 master kept the precision.
 That is exactly what the field did. bf16&rsquo;s 8 exponent bits cover fp32&rsquo;s range, so 1e-6 gradients survive without scaling. Ampere and newer run bf16 natively. The scaler is legacy machinery for pre-Ampere GPUs. New training: bf16, no scaler.</p><div class="followup"><strong>Follow-up:</strong> Why not just use bf16 and skip all this?</div></div></div>
 <div class="qa"><div class="q">Gradient checkpointing: when is the recompute worth it?</div><div class="a"><p>When activations are the binding constraint: long sequences, large batches, deep models. Checkpointing discards activations in the forward pass and recomputes them in the backward: memory down by roughly the number of checkpointed segments, compute up by one extra forward pass (~33% slower). Worth it when the alternative is a smaller batch (noisier gradients) or model parallelism (communication overhead). Not worth it when memory is plentiful: then it is pure slowdown.
 Whole transformer blocks, not individual ops. The granularity trades memory saved against recompute cost: block-level is the standard. Finer granularity saves more memory but recomputes more.</p><div class="followup"><strong>Follow-up:</strong> What do you checkpoint?</div></div></div>
-<div class="qa"><div class="q">LoRA or QLoRA for fine-tuning 70B on 2x A100?</div><div class="a"><p>QLoRA. 70B in bf16 is 140 GB: does not fit even across 2x80GB with optimizer states. 4-bit quantized base is ~35 GB: fits on one GPU, LoRA adapters in bf16 train on top. The lecture&rsquo;s 7B math scales up: quantization is what makes 70B fine-tuning possible on workstation hardware. Quality cost is small on most tasks. Full fine-tuning of 70B needs a cluster; QLoRA needs a desk.
+<div class="qa"><div class="q">LoRA or QLoRA for fine-tuning 70B on 2x A100?</div><div class="a"><p>QLoRA. 70B in bf16 is 140 GB: does not fit even across 2x80GB with optimizer states. 4-bit quantized base is ~35 GB: fits on one GPU, LoRA adapters in bf16 train on top. The lecture&rsquo;s 7B math scales up: quantization is what makes 70B fine-tuning possible on workstation hardware. Quality cost is small on most tasks. Full fine-tuning of 70B needs a cluster. QLoRA needs a desk.
 Hard reasoning tasks lose a few points: the quantization noise hits the long tail of precise computations. And the base model is frozen in 4-bit: the adapters must compensate for anything the quantization damaged. Measure on your hardest dev slice, not the average.</p><div class="followup"><strong>Follow-up:</strong> What breaks at 4-bit?</div></div></div>
 <h2 id="watch-and-go-deeper">Watch and go deeper</h2>
 <div style="max-width:640px;margin:1.5rem 0">

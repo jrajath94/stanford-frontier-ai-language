@@ -81,6 +81,7 @@
 <li><a href="../cs229s/l10-parallelism.html" data-page="cs229s-l10">L10 · Parallelism</a></li>
 <li><a href="../cs229s/cheatsheet.html" data-page="cs229s-cheatsheet">CS229S · Cheatsheet</a></li>
 <li><a href="../cs229s/crash-course.html" data-page="cs229s-crash">CS229S · Crash course</a></li>
+<li><a href="../cs229s/crash-course-02.html" data-page="cs229s-crash-02">CS229S · Crash course 2</a></li>
 </ul>
 <h3>CS224N: NLP with Deep Learning</h3><ul>
 <li><a href="../cs224n/index.html" data-page="cs224n-index">CS224N · Overview</a></li>
@@ -146,18 +147,14 @@
 </ul>
 <h3>CS329A: Self-Improving AI Agents</h3><ul>
 <li><a href="../cs329a/index.html" data-page="cs329a-index">CS329A · Overview</a></li>
-<li><a href="../cs329a/l01-self-improving-agents.html" data-page="cs329a-l01">L01 · The Self-Improving Agent</a></li>
-<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Scaling</a></li>
-<li><a href="../cs329a/l03-agents-that-act.html" data-page="cs329a-l03">L03 · Agents That Act</a></li>
-<li><a href="../cs329a/l04-learning-from-execution.html" data-page="cs329a-l04">L04 · Learning from Execution</a></li>
-<li><a href="../cs329a/l05-planning-with-search.html" data-page="cs329a-l05">L05 · Planning with Search</a></li>
-<li><a href="../cs329a/l06-sampling-at-scale.html" data-page="cs329a-l06">L06 · Sampling at Scale</a></li>
-<li><a href="../cs329a/l07-search-that-reads.html" data-page="cs329a-l07">L07 · Search That Reads</a></li>
-<li><a href="../cs329a/l08-teaching-reason.html" data-page="cs329a-l08">L08 · Teaching Reason</a></li>
-<li><a href="../cs329a/l09-verifier-bottleneck.html" data-page="cs329a-l09">L09 · The Verifier Bottleneck</a></li>
-<li><a href="../cs329a/l10-measuring-agents.html" data-page="cs329a-l10">L10 · Measuring Agents</a></li>
-<li><a href="../cs329a/cheatsheet.html" data-page="cs329a-cheatsheet">CS329A · Cheatsheet</a></li>
-<li><a href="../cs329a/crash-course.html" data-page="cs329a-crash">CS329A · Crash course</a></li>
+<li><a href="../cs329a/l01-course-overview.html" data-page="cs329a-l01">L01 · Course Overview</a></li>
+<li><a href="../cs329a/l02-test-time-scaling.html" data-page="cs329a-l02">L02 · Test-Time Compute Scaling</a></li>
+<li><a href="../cs329a/l03-feedback-tools-code.html" data-page="cs329a-l03">L03 · Feedback, Tools, Code</a></li>
+<li><a href="../cs329a/l04-planning-multistep-reasoning.html" data-page="cs329a-l04">L04 · Planning and Multi-Step Reasoning</a></li>
+<li><a href="../cs329a/l05-search-at-scale.html" data-page="cs329a-l05">L05 · Sampling at Scale</a></li>
+<li><a href="../cs329a/l06-train-time-scaling.html" data-page="cs329a-l06">L06 · Train-Time Scaling</a></li>
+<li><a href="../cs329a/l07-agentic-evaluations.html" data-page="cs329a-l07">L07 · Agentic Evaluations</a></li>
+<li><a href="../cs329a/l08-future-directions.html" data-page="cs329a-l08">L08 · Future Directions</a></li>
 </ul>
 <h3>MS&amp;E 435: Economics of the AI Supercycle</h3><ul>
 <li><a href="../mse435/index.html" data-page="mse435-index">MS&amp;E 435 · Overview</a></li>
@@ -218,8 +215,8 @@
     <article>
       <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / Lecture 1: Introduction and Word Vectors</nav>
       <h1>Lecture 1: Introduction and Word Vectors</h1>
-      <p class="meta-line">Instructor: Christopher Manning · Spring 2024</p>
-      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h2 id="the-job-make-meaning-computable">The job: make meaning computable</h2>
+      <p class="meta-line">Instructor: Christopher Manning · 1:20:00 · Spring 2024</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="DzpHeXVSC5I"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/DzpHeXVSC5I" title="Stanford CS224N: NLP with Deep Learning | Spring 2024 | Lecture 1 - Intro and Word Vectors" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=DzpHeXVSC5I" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=DzpHeXVSC5I" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. Christopher Manning introduces the course, word meaning, word2vec, gradients, and optimization.</p></div><h2 id="the-job-make-meaning-computable">The job: make meaning computable</h2>
 <p>A traveler types &ldquo;Seattle motel&rdquo; into a search box. The best document says
 &ldquo;Seattle hotel&rdquo;. A human sees the match instantly. A computer sees two
 different strings and scores the match zero.</p>
@@ -228,7 +225,7 @@ lives behind the symbols. Every system in this course, from a 2013 word
 vector to a modern chatbot, exists to close that gap: turn words into numbers
 a machine can compute with, without losing what the words mean.</p>
 <figure><img alt="Course arc" src="assets/l01-course-map.svg"><figcaption>Stanford Frontier AI, CS224N L01. The course builds from word vectors through neural nets, RNNs, attention, transformers, pretraining, and post-training.</figcaption></figure>
-<p><strong>On this page:</strong> <a href="#subchapter-cbow-the-mirror-image">CBOW, the mirror image</a> · <a href="#subchapter-hierarchical-softmax-the-tree-instead-of-the-sum">Hierarchical softmax</a> · <a href="#subchapter-why-the-tree-is-huffman-shaped">Why the tree is Huffman-shaped</a> · <a href="#what-is-used-where-embeddings-in-production">Embeddings in production</a> · <a href="#watch-and-go-deeper">Watch and go deeper</a></p>
+<p><strong>On this page:</strong> <a href="#subchapter-cbow-the-mirror-image">CBOW, the mirror image</a> · <a href="#subchapter-hierarchical-softmax-the-tree-instead-of-the-sum">Hierarchical softmax</a> · <a href="#subchapter-why-the-tree-is-huffman-shaped">Why the tree is Huffman-shaped</a> · <a href="#subchapter-one-sgd-step-by-hand">One SGD step, by hand</a> · <a href="#what-is-used-where-embeddings-in-production">Embeddings in production</a> · <a href="#watch-and-go-deeper">Watch and go deeper</a></p>
 <div class="callout"><span class="co-label">Note</span><p>This lesson follows the official Lecture 1 slide deck and the lecture
 video (embedded below in Watch and go deeper). Spoken explanations are
 grounded in the video&rsquo;s published description and the slides.</p></div>
@@ -500,6 +497,32 @@ billion updates. It is noisy: each step follows one sample, not the true
 gradient. The noise is a feature, not a bug. It jiggles the optimizer out of
 poor local minima. The objective is not convex, and life turns out to be
 okay anyway.</p>
+<h3 id="subchapter-one-sgd-step-by-hand">Subchapter: one SGD step, by hand</h3>
+<p>The gradient has a shape worth seeing once, because it explains what
+training <em>does</em> to the vectors. For the loss -log P(o | c), the gradient
+with respect to the center vector v_c is:</p>
+<pre class="ascii">d/dv_c [-log P(o|c)] = E[u] - u_o
+</pre>
+<p>E[u] is the model&rsquo;s <em>expected</em> outside vector: each word&rsquo;s u vector
+weighted by the model&rsquo;s current probability. u_o is the <em>observed</em> word&rsquo;s
+u vector. The gradient is the gap between what the model expects and what
+it saw. Watch one step on the softmax toy. The observed pair is
+(banking, money). The model&rsquo;s probabilities were [0.46, 0.38, 0.10, 0.06]:</p>
+<pre class="ascii">E[u] = 0.46 x [1.0, 0.2] + 0.38 x [0.8, 0.6]
+     + 0.10 x [-0.5, 0.9] + 0.06 x [-1.0, -0.5]
+     = [0.654, 0.380]
+grad = E[u] - u_money = [0.654 - 1.0, 0.380 - 0.2] = [-0.346, 0.180]
+</pre>
+<p>SGD steps against the gradient with learning rate 0.1:</p>
+<pre class="ascii">v_banking = [1.0, 0.0] - 0.1 x [-0.346, 0.180] = [1.035, -0.018]
+</pre>
+<figure><img alt="One SGD step: expectation minus observation" src="assets/plate-l01-sgd-step.webp"><figcaption>One SGD step on the softmax toy. Gradient = E[u] - u_money = [-0.346, 0.180]. v_banking moves from [1.0, 0.0] to [1.035, -0.018]. Shell 2. Source: original toy for the skip-gram gradient. Project: Stanford Frontier AI.</figcaption></figure>
+<p>Read the move. The x-component grew: v_banking stepped <em>toward</em>
+u_money&rsquo;s direction, because the observed word pulled it. E[u] is what
+the model predicted. u_o is what actually happened. Every SGD step drags
+the prediction toward reality, one window at a time. Billions of such
+drags, and &ldquo;banking&rdquo; ends up near &ldquo;money&rdquo;. That is all training is:
+expectation minus observation, repeated until they agree.</p>
 <div class="qa"><div class="q">Why is plain gradient descent a bad idea here?</div><div class="a"><p>Each step needs a full pass over the corpus before a single parameter update. With roughly a billion windows, one update costs a billion units of work. SGD updates after every sample, so the same work buys a billion updates. Progress per unit of compute is enormously higher.
 It changes the answer but usually for the better. A clean gradient descends into the nearest minimum, which may be sharp and poor. A noisy gradient explores, escapes sharp minima, and often lands in flatter minima that generalize better.</p><div class="followup"><strong>Follow-up:</strong> Does the noise in SGD hurt the final answer?</div></div></div>
 <h2 id="the-payoff-similarity-as-geometry">The payoff: similarity as geometry</h2>
@@ -608,7 +631,7 @@ You could, and early methods did. But count vectors are 500,000-dimensional and 
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">
 <iframe src="https://www.youtube-nocookie.com/embed/DzpHeXVSC5I" title="CS224N Spring 2024 Lecture 1: Intro and Word Vectors" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" loading="lazy" allowfullscreen></iframe>
 </div>
-<p><strong>Lecture 1: Intro and Word Vectors</strong> (Christopher Manning, Spring 2024). The original lecture: the course, word meaning, word2vec, gradients, optimization.</p>
+<p><strong>Lecture 1: Intro and Word Vectors</strong> (Christopher Manning, Spring 2024). The original lecture: the course, word meaning, word2vec, gradients, optimization. If the embed does not load, watch the lecture directly on YouTube: https://www.youtube.com/watch?v=DzpHeXVSC5I</p>
 
 <div style="max-width:640px;margin:1.5rem 0">
 <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000">

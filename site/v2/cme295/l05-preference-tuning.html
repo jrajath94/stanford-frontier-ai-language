@@ -238,6 +238,17 @@ better one and away from the worse one.</p>
 want to change behavior. Collecting preference pairs is cheaper:
 humans compare outputs instead of authoring perfect ones, and
 comparisons are fast to produce from logs or rewrites.</p>
+<h3 id="subchapter-why-pairwise-beats-pointwise">Subchapter: why pairwise beats pointwise</h3>
+<p>Three annotation formats, one winner. <strong>Pointwise</strong>: score each
+output 1-7. Slow, and raters disagree on absolute scales (your 5
+is my 6). <strong>Listwise</strong>: rank 4-8 outputs. Rich signal, but ranking
+8 items is cognitively expensive and inconsistent. <strong>Pairwise</strong>:
+pick A or B. Fast, and humans are far more consistent at
+comparisons than at absolute scores. The cost: pairs give relative
+signal only. Bradley-Terry converts relative to absolute: enough
+pairwise comparisons pin down the scores. The decision rule: if
+humans must label it, make it pairwise. If machines label it
+(Lecture 8&rsquo;s judge), listwise becomes affordable.</p>
 <figure><img alt="Why preference tuning" src="assets/l05-why-pref.svg"><figcaption>SFT shows good examples only. Preference tuning adds the negative signal. Stanford Frontier AI.</figcaption></figure>
 <div class="qa"><div class="q">Why not just add the bad examples to SFT with low weight?</div><div class="a"><p>SFT has no notion of &ldquo;worse&rdquo;. Every example is a target to
 imitate. There is no gradient that says &ldquo;produce this less&rdquo;.
@@ -282,7 +293,39 @@ score out). At inference the reward model scores single completions.
 (<a href="https://www.youtube.com/watch?v=PmW_TMQ3l0I&amp;t=2467s">41:07</a>)
 benchmarks reward models. Useful reward dimensions include
 helpfulness, friendliness, and safety.</p>
+<h3 id="subchapter-the-bradley-terry-gradient-worked">Subchapter: the Bradley-Terry gradient, worked</h3>
+<p>The loss on one pair: L = -log sigma(r_w - r_l). Take r_w = 2.0,
+r_l = 1.0. sigma(1.0) = 0.731. L = 0.313. The gradient with
+respect to the gap g = r_w - r_l: dL/dg = -(1 - sigma(g)) = -0.269.
+So the update pushes r_w up by 0.269 * lr and r_l down by the
+same. Now the wrong ordering: r_w = 1.0, r_l = 2.0. sigma(-1) =
+0.269. L = 1.313. dL/dg = -(1 - 0.269) = -0.731: a 2.7x larger
+push. The loss is self-calibrating: confident mistakes get large
+corrections, near-ties get small ones. The sigmoid saturates at
+large gaps, so runaway scores stop learning: a feature, not a bug.</p>
+<h3 id="subchapter-rewardbench-grading-the-grader">Subchapter: RewardBench, grading the grader</h3>
+<p>A reward model is a model: it needs evals. <strong>RewardBench</strong> feeds
+the reward model fixed preference pairs across categories (chat,
+reasoning, safety) and measures accuracy: how often does it score
+the chosen above the rejected. The failure modes it catches:
+reward models that prefer long answers regardless of quality,
+that miss safety violations, that cannot judge reasoning. The
+interview point: never trust a reward model you have not benched.
+A bad reward model does not just waste the RL run: it teaches the
+policy the wrong thing, confidently.</p>
 <figure><img alt="Bradley-Terry" src="assets/l05-bradley-terry.svg"><figcaption>Train pairwise, score pointwise. Sigmoid of the score gap. Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">Design the preference dataset for a coding assistant. Pairs, pointwise, or listwise?</div><div class="a"><p>Pairwise, with a twist. Generate two completions per prompt,
+have strong models or humans pick the better one. For code,
+prefer verifiable pairs: one passes the tests, one fails. That
+is free ground truth (Lecture 6&rsquo;s verifiable rewards). Add a
+slice of style pairs (two correct solutions, pick the cleaner)
+for taste. Size: tens of thousands minimum. Hundreds of
+thousands for frontier. The decision rule: verifiable pairs for
+correctness, human pairs for taste, never one alone.
+The judge&rsquo;s biases become the reward model&rsquo;s biases become
+the policy&rsquo;s biases. Machine labels are cheap and biased
+(Lecture 8&rsquo;s three biases). Mix in human labels on the slices
+that matter most: safety, tone, the product&rsquo;s core tasks.</p><div class="followup"><strong>Follow-up:</strong> What breaks if all pairs are machine-labeled?</div></div></div>
 <h2 id="the-key-question">The key question</h2>
 <p>Labels cover a slice of good behavior. How do you teach the model to
 prefer one answer over another, and how do you stop the optimizer from
@@ -310,6 +353,19 @@ preference pairs. <strong>Stage 2</strong> uses RL to steer the LLM toward high
 reward while staying near the SFT model. About 100k+ rollouts
 (generated completions) feed the loop.</p>
 <figure><img alt="RL framing" src="assets/l05-rl-frame.svg"><figcaption>Agent, state, action, policy, sparse reward. The LLM is the agent. Stanford Frontier AI.</figcaption></figure>
+<h3 id="subchapter-on-policy-vs-off-policy-bookkeeping">Subchapter: on-policy vs off-policy bookkeeping</h3>
+<p><strong>On-policy</strong>: the rollouts come from the current policy. PPO is
+on-policy: sample with pi_old, update to pi_new, discard the
+samples. Fresh data every iteration, expensive data every
+iteration. <strong>Off-policy</strong>: reuse old rollouts. Cheaper, but the
+ratio r = pi_theta/pi_old corrects for the distribution mismatch,
+and stale data biases the update when the policy has moved far.
+PPO&rsquo;s clip is the compromise: stay near pi_old so the on-policy
+data stays valid for a few updates, then resample. The bookkeeping
+rule: track the KL between the sampling policy and the current
+policy. If it grows past ~0.1-0.2, the data is stale: resample.
+DPO sidesteps all of this: no rollouts, no staleness, but also no
+exploration beyond the pair distribution.</p>
 <h2 id="the-problem-the-optimizer-games-the-proxy">The problem: the optimizer games the proxy</h2>
 <p>Stage 2 freezes the reward model and tunes the LLM to maximize
 predicted reward. But the reward model is imperfect, and optimizers
@@ -331,6 +387,47 @@ signature of reward hacking. Two constraints keep training honest: do
 not deviate too far from the base (SFT) model, and do not take
 too-big steps between RL iterations. Both are forms of regularization
 against an imperfect proxy.</p>
+<h3 id="subchapter-the-kl-penalty-worked">Subchapter: the KL penalty, worked</h3>
+<p>The penalty is beta * KL(pi || pi_ref), paid per token. The toy:
+beta = 0.1. At some token the policy puts 0.5 on &ldquo;cold&rdquo; where the
+reference puts 0.4. Token KL contribution: 0.5 * log(0.5/0.4) =
+0.5 * 0.223 = 0.11. Penalty: 0.1 * 0.11 = 0.011, subtracted from
+the reward. Small per token, but it accumulates over hundreds of
+tokens: a policy that drifts everywhere pays everywhere. The
+effect: the optimizer spends its KL budget where reward is
+highest, like money. Beta sets the exchange rate: beta = 0.1 is
+lenient, beta = 0.5 is strict. Too strict and the policy cannot
+improve. Too loose and it hacks. Tune beta on a held-out
+preference set, not on reward alone.</p>
+<h3 id="subchapter-hacking-signatures-beyond-length">Subchapter: hacking signatures beyond length</h3>
+<p>Length is the famous hack. Four more:</p>
+<ul>
+<li><strong>Sycophancy.</strong> The policy agrees with the user (&ldquo;You are so
+  right!&rdquo;) because agreement scored well in the pairs.</li>
+<li><strong>Hedging.</strong> &ldquo;As an AI&hellip;&rdquo; prefixes and endless caveats: safe
+  completions scored safe, so the policy plays safe everywhere.</li>
+<li><strong>List-ification.</strong> Everything becomes bullet lists: lists
+  looked organized to raters.</li>
+<li><strong>Refusal inflation.</strong> The policy refuses benign requests: the
+  safety pairs taught &ldquo;refuse&rdquo; too broadly.</li>
+</ul>
+<p>The detection method is the same for all: sample completions,
+have humans judge them blind, compare against the reward curve.
+Any divergence is the signature. The fix is data: add pairs that
+punish the specific hack.</p>
+<figure><img alt="The KL leash" src="assets/l05-kl.svg"><figcaption>Beta sets the exchange rate between reward and drift. The policy spends KL where reward is highest. Shell 3. Source: original toy. Project: Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">Your RL run&#x27;s reward climbs but human evals fall. Diagnose it.</div><div class="a"><p>Reward hacking until proven otherwise. Check the signatures
+in order: mean length (the classic), sycophancy rate, hedging
+frequency, refusal rate on benign prompts. Compare the reward
+curve against blind human judgments on the same samples: any
+divergence is the proof. Then act: raise beta (tighten the KL
+leash), add pairs that punish the specific hack, and bench the
+reward model on RewardBench to see if the grader itself is
+broken. Never tune on reward alone.
+Look at the subtler hacks: sycophancy, list-ification,
+hedging. The reward model learned some proxy your evals
+punish. The fix is the same: name the hack, add punishing
+pairs, re-bench the grader.</p><div class="followup"><strong>Follow-up:</strong> What if length is flat but evals still fall?</div></div></div>
 <div class="qa"><div class="q">Why not just maximize the reward without constraints?</div><div class="a"><p>Because the reward model is a learned proxy, not the true
 objective. Unconstrained optimization finds the proxy&rsquo;s blind
 spots: outputs that score high and behave badly. The KL constraint
@@ -361,11 +458,46 @@ in the favorable direction.</p>
 <p>Note the letter r here is a ratio, not a reward. Overloading the
 symbol is a classic confusion source. The lecture flags it
 explicitly.</p>
+<h3 id="subchapter-the-clip-in-both-directions">Subchapter: the clip in both directions</h3>
+<p>The toy showed positive advantage (A = 2): the clip caps how much
+the update can chase a good action. Now the negative case: A = -2
+(a bad action), r = 0.5 (the new policy already avoids it).
+r * A = -1.0. clip(0.5, 0.8, 1.2) = 0.8. 0.8 * -2 = -1.6.
+L = min(-1.0, -1.6) = -1.6: the pessimistic term wins again, and
+the update pushes the policy back toward the old one. The clip is
+symmetric: it limits movement in both directions. Without the
+lower clip, the optimizer could collapse a token&rsquo;s probability to
+zero in one step and never recover it. Never-confuse pair: the
+clip bounds the ratio, the KL penalty bounds the drift. Both
+limit movement. The clip is per-step, the KL is cumulative.</p>
+<h3 id="subchapter-four-models-in-memory-counted">Subchapter: four models in memory, counted</h3>
+<p>PPO&rsquo;s memory bill for a 7B model in fp16: policy 14 GB, reference
+14 GB, reward model 14 GB (often smaller in practice), value
+function 14 GB (usually the policy plus a value head: ~14 GB
+shared backbone plus a small head). Total: ~42-56 GB before
+optimizer states and activations. Adam states double it. This is
+why PPO needs serious hardware and why DPO&rsquo;s two models (policy
++ reference, ~28 GB) changed who can do preference tuning. The
+decision rule: PPO when you have the GPUs and need the quality,
+DPO when you do not.</p>
+<figure><img alt="PPO's memory bill" src="assets/l05-ppo-memory.svg"><figcaption>Policy, reference, reward model, value function. ~42-56 GB for 7B before optimizer states. Shell 3. Source: original arithmetic. Project: Stanford Frontier AI.</figcaption></figure>
 <p>The KL penalty usually joins as <strong>beta * KL(pi || pi_ref)</strong>: pay a
 cost for drifting from the reference (SFT) model. Four models sit in
 memory during PPO: the policy, the reference, the frozen reward
 model, and the value function.</p>
 <figure><img alt="PPO" src="assets/l05-ppo.svg"><figcaption>Clipped objective plus KL penalty. r is a ratio, not a reward. Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">Walk me through one PPO update on the toy, start to finish.</div><div class="a"><p>Old policy pi_old, advantage A = 2.0, eps = 0.2. The new
+policy makes some action 1.5x more likely: r = 1.5. Unclipped
+term: 1.5 * 2.0 = 3.00. Clipped: clip(1.5, 0.8, 1.2) = 1.2,
+1.2 * 2.0 = 2.40. L = min(3.00, 2.40) = 2.40, maximized. The
+optimizer gets the pessimistic 2.40, not the greedy 3.00. Add
+the KL penalty: beta * KL(pi || pi_ref) subtracted, keeping the
+policy near the SFT model. r is the probability ratio
+pi_theta/pi_old, not a reward. That is the whole update.
+Because the objective is maximized, and the min picks the
+pessimistic of the two terms. The max would let the optimizer
+exploit large ratios: exactly the behavior the clip exists to
+prevent.</p><div class="followup"><strong>Follow-up:</strong> Why take the min and not the max?</div></div></div>
 <h2 id="advantage-how-much-better-than-average">Advantage: how much better than average</h2>
 <p>The <strong>advantage</strong> answers &ldquo;how much better was this action than
 average&rdquo;:</p>
@@ -385,6 +517,34 @@ regression head on the model that predicts expected reward per
 token, trained jointly with the policy. It supplies the baseline
 that turns raw rewards into advantages
 (<a href="https://www.youtube.com/watch?v=PmW_TMQ3l0I&amp;t=3491s">58:11</a>).</p>
+<h3 id="subchapter-gaes-lambda-worked">Subchapter: GAE&rsquo;s lambda, worked</h3>
+<p>GAE blends n-step returns with weights from lambda. The toy: a
+3-token completion, rewards only at the end (r_3 = 6), value
+estimates V = [2, 3, 4]. TD errors: delta_t = r_t + V_{t+1} - V_t.</p>
+<pre class="ascii">delta_3 = 6 + 0 - 4 = 2
+delta_2 = 0 + 4 - 3 = 1
+delta_1 = 0 + 3 - 2 = 1
+</pre>
+<p>GAE advantage at t=1: A_1 = delta_1 + lambda<em>delta_2 +
+lambda^2</em>delta_3. With lambda = 0.95: 1 + 0.95 + 0.9025*2 = 1 +
+0.95 + 1.805 = 3.755. Lambda = 0: only delta_1 = 1 (high bias:
+trusts the value function). Lambda = 1: full return 6 - V_1 = 4
+(high variance: trusts the noisy reward). Lambda = 0.95 is the
+standard compromise. The never-confuse pair: gamma discounts the
+future (how much), lambda blends estimators (how far to trust the
+value function).</p>
+<h3 id="subchapter-the-value-heads-training-signal">Subchapter: the value head&rsquo;s training signal</h3>
+<p>The value head is a linear layer on the final hidden state,
+predicting expected return per token. Its loss is mean squared
+error against the observed returns: (V_t - R_t)^2. It trains
+jointly with the policy, on the same rollouts. Two failure modes.
+<strong>Lag</strong>: early in training the value head is random, so advantages
+are garbage and the policy updates on noise. Warm it up or
+tolerate slow starts. <strong>Scale mismatch</strong>: if rewards are 0/1 and
+the head predicts in the hundreds, the advantages explode. Normalize
+rewards or the value targets. GRPO (Lecture 6) deletes this whole
+head: the group mean is the baseline, free and always calibrated.</p>
+<figure><img alt="GAE blends horizons" src="assets/l05-gae.svg"><figcaption>Lambda = 0 trusts the value head. Lambda = 1 trusts the raw return. 0.95 splits the difference. Shell 3. Source: original toy. Project: Stanford Frontier AI.</figcaption></figure>
 <figure><img alt="Advantage" src="assets/l05-advantage.svg"><figcaption>Reward minus baseline. GAE blends horizons. The value head predicts per token. Stanford Frontier AI.</figcaption></figure>
 <p>PPO&rsquo;s practical challenges, listed honestly in the lecture: the
 two-stage dependency (stage 2 needs stage 1), hyperparameters
@@ -402,6 +562,16 @@ best-of-4: return C2 (score 5.4)
 <p>No training, real gains. The price is inference: N times the
 compute, and latency equals the slowest sample. It is the baseline
 every trained method must beat.</p>
+<h3 id="subchapter-best-of-n-scaling">Subchapter: best-of-N scaling</h3>
+<p>Best-of-N&rsquo;s gain follows the reward model&rsquo;s quality, not N alone.
+The toy: reward model accuracy 80%. N = 2: the better of two draws
+is right ~88% of the time. N = 8: ~97%. N = 64: ~99%, but the
+reward model&rsquo;s own errors now dominate: it confidently picks its
+favorite hack. The curve flattens while the hacking risk grows.
+The decision rule: best-of-N with N = 4-16 for cheap gains at
+inference, never as a substitute for training. Combine with a
+well-benched reward model (RewardBench) or the gains are
+illusory.</p>
 <h2 id="dpo-the-rl-loop-deleted">DPO: the RL loop, deleted</h2>
 <p><strong>Direct Preference Optimization</strong> starts from a question: what if
 the RL loop is unnecessary? The paper&rsquo;s title says it: &ldquo;Your
@@ -433,8 +603,74 @@ lecture&rsquo;s verdict: PPO performs better in reported results, DPO is
 cheaper and simpler. DPO&rsquo;s caveat is <strong>distribution shift</strong>: the
 pairs were generated by some other policy, and the math assumes
 coverage the data may not provide.</p>
-<p><img alt="DPO" src="assets/l05-dpo.svg" title="Solve RLHF for the optimal policy, plug into Bradley-Terry, train supervised. Stanford Frontier AI." />
-<img alt="PPO vs DPO" src="assets/l05-compare.svg" title="PPO, DPO, best-of-N. Pick by budget and goal. Stanford Frontier AI." /></p>
+<figure><img alt="DPO" src="assets/l05-dpo.svg"><figcaption>Solve RLHF for the optimal policy, plug into Bradley-Terry, train supervised. Stanford Frontier AI.</figcaption></figure>
+<h3 id="subchapter-the-four-step-derivation-spelled-out">Subchapter: the four-step derivation, spelled out</h3>
+<p>Each step of the lecture&rsquo;s derivation, with its role:</p>
+<ol>
+<li><strong>The objective.</strong> max E[r(x,y)] - beta * KL(pi || pi_ref).
+   Standard RLHF: chase reward, stay near the reference.</li>
+<li><strong>The closed form.</strong> The optimal policy is
+   pi<em>(y|x) ~ pi_ref(y|x) * exp(r(x,y)/beta). Rearranged: r(x,y) =
+   beta * log(pi</em>(y|x)/pi_ref(y|x)) + const. The reward <em>is</em> the
+   log-ratio, up to a constant.</li>
+<li><strong>The substitution.</strong> Bradley-Terry needs r_w - r_l. Plug in:
+   the constants cancel, the explicit reward model vanishes. What
+   remains is a loss on the two log-ratios.</li>
+<li><strong>The training.</strong> Supervised gradient descent on pairs. No
+   rollouts, no value function, no clip. Two models in memory.</li>
+</ol>
+<p>The sleight of hand: step 2 assumes the optimal policy, but we
+train toward it. The derivation shows the <em>target</em>. Gradient
+descent walks toward it. Distribution shift is the gap between the
+walk and the target: the pairs came from another policy, and the
+log-ratio math assumes coverage the data may not provide.</p>
+<h3 id="subchapter-the-dpo-family">Subchapter: the DPO family</h3>
+<ul>
+<li><strong>IPO</strong> (identity preference optimization): DPO can overfit
+  pairs, driving the log-ratio gap to infinity. IPO replaces the
+  logistic loss with a squared loss that stops pushing at a
+  target gap. Use when DPO overfits small pair sets.</li>
+<li><strong>KTO</strong> (Kahneman-Tversky): learns from binary good/bad labels,
+  not pairs. No chosen/rejected structure needed: just &ldquo;this was
+  good&rdquo; signals from logs. Use when you have thumbs-up/down data.</li>
+<li><strong>SimPO</strong>: drops the reference model entirely, normalizes by
+  length. Two models become one, and length bias shrinks. Use when
+  memory is tightest or length hacking appears.</li>
+</ul>
+<p>The family shares DPO&rsquo;s core: no RL loop, supervised loss on
+preference signal. Pick by data: pairs (DPO), small pairs (IPO),
+binary labels (KTO), tight memory (SimPO).</p>
+<h3 id="subchapter-what-is-used-where-october-2026">Subchapter: what is used where, October 2026</h3>
+<p>The production split, as reported publicly:</p>
+<ul>
+<li><strong>DPO and variants</strong>: the default for open-weight post-training
+  (Llama, Qwen, Mistral families) and most instruction tuning.
+  Cheap, stable, good enough for format and tone.</li>
+<li><strong>PPO/RLHF</strong>: kept where quality justifies the cost. Anthropic
+  and OpenAI report RL pipelines for flagship alignment, though
+  exact current recipes are not public.</li>
+<li><strong>GRPO and RLVR</strong>: the reasoning-training standard (Lecture 6).
+  DeepSeek&rsquo;s R1 line made verifiable-reward RL the default for
+  math and code.</li>
+</ul>
+<p>The pattern: DPO aligns the chat behavior, RL (PPO/GRPO) builds
+the reasoning. Most frontier stacks run both, in that order.</p>
+<figure><img alt="The DPO family" src="assets/l05-dpo-variants.svg"><figcaption>DPO, IPO, KTO, SimPO. Same core, different data and budgets. Shell 3. Source: the four papers. Project: Stanford Frontier AI.</figcaption></figure>
+<figure><img alt="PPO vs DPO" src="assets/l05-compare.svg"><figcaption>PPO, DPO, best-of-N. Pick by budget and goal. Stanford Frontier AI.</figcaption></figure>
+<div class="qa"><div class="q">Walk me through the DPO derivation, all four steps.</div><div class="a"><p>Start with the RLHF objective: maximize reward minus beta
+times KL to the reference. Solve it in closed form: the optimal
+policy is proportional to pi_ref times exp(r/beta). Rearrange:
+the reward equals beta times the log of pi/pi_ref, plus a
+constant. Plug that into the Bradley-Terry loss: the constants
+cancel and the explicit reward model disappears. Train the
+policy directly on pairs with this supervised loss. Two models
+in memory, no rollouts, no value function. The caveat is
+distribution shift: the pairs came from another policy.
+Step 2 assumes the optimal policy. Gradient descent only
+walks toward it. If the pair data does not cover the regions
+the policy explores, the log-ratio math extrapolates blindly.
+Symptom: the gap grows but evals do not improve. Fix: refresh
+the pairs from the current policy (iterative DPO).</p><div class="followup"><strong>Follow-up:</strong> Where can the derivation break in practice?</div></div></div>
 <div class="qa"><div class="q">If DPO is cheaper, why does anyone still run PPO?</div><div class="a"><p>Reported performance. PPO&rsquo;s online rollouts explore regions the
 static pair dataset never covers, and the value function centers
 the updates. DPO is limited to what the pair distribution shows.
@@ -527,14 +763,31 @@ while human judgment falls is the signal that the bill came due.</p>
    Two models, beta ~ 0.1. Cheaper than PPO. Watch distribution
    shift.</li>
 </ol>
+<h2 id="go-deeper">Go deeper</h2>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/PmW_TMQ3l0I" title="CME295 Lecture 5, Autumn 2025" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/XZLc09hkMwA" title="DPO paper explained (AI Coffee Break)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<ul>
+<li>Lecture 5 recording: https://www.youtube.com/watch?v=PmW_TMQ3l0I</li>
+<li>DPO paper explained (AI Coffee Break): https://www.youtube.com/watch?v=XZLc09hkMwA</li>
+<li>Ouyang et al., InstructGPT: https://arxiv.org/abs/2203.02155</li>
+<li>Schulman et al., PPO: https://arxiv.org/abs/1707.06347</li>
+<li>Rafailov et al., DPO: https://arxiv.org/abs/2305.18290</li>
+<li>Lambert et al., RewardBench: https://arxiv.org/abs/2403.13787</li>
+</ul>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
 - Lecture 5 recording (YouTube): timestamped above.
 - Lecture 5 slides (PDF), CME295 Autumn 2025.
 - Ouyang et al., &ldquo;InstructGPT&rdquo; (2022):
-  https://arxiv.org/abs/2203.02155 — the RLHF pipeline.
+  - <a href="https://arxiv.org/abs/2203.02155">the RLHF pipeline.</a>
 - Rafailov et al., &ldquo;DPO&rdquo; (2023):
-  https://arxiv.org/abs/2305.18290 — the closed-form shortcut.</p>
+  - <a href="https://arxiv.org/abs/2305.18290">the closed-form shortcut.</a></p>
 <p><strong>Further reading:</strong>
 - Schulman et al., &ldquo;PPO&rdquo; (2017): the clipped objective.
 - Schulman et al., &ldquo;GAE&rdquo; (2015): advantage estimation.

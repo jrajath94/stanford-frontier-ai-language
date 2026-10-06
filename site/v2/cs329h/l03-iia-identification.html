@@ -218,8 +218,8 @@
     <article>
       <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / Lecture 3: IIA, Identification, and the Rashomon Effect</nav>
       <h1>Lecture 3: IIA, Identification, and the Rashomon Effect</h1>
-      <p class="meta-line">[uncertain] Spring 2026 · Instructor: Sanmi Koyejo · 1:19:20 · Spring 2026</p>
-      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="_bych9RfQvw"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/_bych9RfQvw" title="Stanford CS329H Lecture 2: Choice Models" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=_bych9RfQvw" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=_bych9RfQvw" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">Original lecture. The second half develops the limits of the choice models from Lecture 2: IIA, identification, and model multiplicity.</p></div><h2 id="the-problem-too-many-numbers-to-learn">The problem: too many numbers to learn</h2>
+      <p class="meta-line">[uncertain] Autumn 2024 · Instructor: Sanmi Koyejo · [uncertain] · [uncertain]</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><div class="video-block" data-vid="inXUp5j107I"><div class="video-wrap"><iframe src="https://www.youtube-nocookie.com/embed/inXUp5j107I" title="The Elo Rating System" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="video-blocked" hidden><p>Video blocked (ad-blocker or local file mode).</p><a class="watch-btn" href="https://www.youtube.com/watch?v=inXUp5j107I" target="_blank" rel="noopener">Watch on YouTube</a></div></div><p class="video-fallback">Video not loading? <a href="https://www.youtube.com/watch?v=inXUp5j107I" target="_blank" rel="noopener">Watch on YouTube</a></p><p class="video-cap">External explainer (same as L02). The final segment covers the Thurstone model, the probit alternative that this lesson uses against IIA. Verified live on YouTube.</p></div><h2 id="the-problem-too-many-numbers-to-learn">The problem: too many numbers to learn</h2>
 <p>Lecture 2&rsquo;s softmax is convenient. It is also suspiciously
 strong. Count what it claims. The full preference distribution
 over M items needs one probability per ordering: M! - 1 free
@@ -276,6 +276,36 @@ covariance matrix, handles it naturally at the cost of numerical
 integration.</p>
 <div class="qa"><div class="q">Explain the red-bus/blue-bus problem in one minute.</div><div class="a"><p>IIA says the train-versus-bus odds ignore everything else. Clone the bus into red and blue. Under IIA each clone competes independently, so the train&rsquo;s share drops from 0.269 to 0.155 even though nothing about the train changed. Real intuition: the clones should split the bus share. The model is wrong because it assumes independent shocks for near-identical items. Correlated noise or nested logit fixes it.
 When candidate responses are near-duplicates. A reward model with IIA structure spreads probability across paraphrases instead of concentrating on the best answer. Pair sampling that includes many similar responses distorts the implicit Borda aggregation in DPO. Deduplicate candidates or model the correlation.</p><div class="followup"><strong>Follow-up:</strong> Where does this bite in LLM work?</div></div></div>
+<h3 id="subchapter-nested-logit-worked">Subchapter: nested logit, worked</h3>
+<p>The fix for clones is a two-stage choice. Group the items into
+<strong>nests</strong>: {train} and {red bus, blue bus}. The chooser picks a
+nest first, then an item inside the nest. IIA holds within each
+nest but not across nests. The buses now compete with each other
+before they compete with the train.</p>
+<figure><img alt="Nested logit: choose the nest, then the item" src="assets/plate-nested-logit.webp"><figcaption>Stage 1 picks the nest. Stage 2 picks the item inside. The train keeps its share. Shell 3. Source: original figure for nested logit. Project: Stanford Frontier AI.</figcaption></figure>
+<p>Work it with the textbook&rsquo;s numbers. Give the bus nest a
+dissimilarity parameter lambda: lambda = 1 means no correlation,
+lambda near 0 means the two buses are near-perfect clones. The
+nest choice uses inclusive values. the item choice happens
+inside the nest.</p>
+<pre class="ascii">lambda = 1.0 (no correlation):  train 0.155, each bus 0.422
+lambda = 0.5:                   train 0.206, each bus 0.397
+lambda = 0.1:                   train 0.256, each bus 0.372
+lambda = 0.01 (near-clones):    train 0.268, each bus 0.366
+</pre>
+<p>Read the column. As the correlation rises, the train&rsquo;s share
+climbs back from 0.155 toward its pre-split value 0.269. The
+clone stops stealing from the train and steals from its
+sibling instead, which is what intuition demanded. At lambda =
+1 the model reduces to the flat softmax: the clone problem
+returns in full.</p>
+<p>The price: you must specify the nests. Wrong nests give wrong
+substitution. With three nests the model has three extra
+parameters. with learned nests it becomes a clustering problem.
+The nested logit is the tractable middle ground between the
+plain softmax, which assumes no correlation, and the full
+probit, which estimates every correlation at the cost of
+numerical integration.</p>
 <h2 id="where-iia-breaks-part-2-mixtures">Where IIA breaks, part 2: mixtures</h2>
 <p>IIA fails for a second reason: populations are mixed. Take two
 groups, each satisfying IIA. Group 1, half the population, has
@@ -346,6 +376,12 @@ on the training pairs but induce different policies. Optimizing
 one of them is a choice, not a discovery.</p>
 <div class="qa"><div class="q">Distinguish the identification problem from the Rashomon effect.</div><div class="a"><p>Identification is within one model class: V and V + c are algebraically equivalent, so the ambiguity never resolves no matter how much data arrives. Rashomon is across model classes: a BT model, a mixture model, and a nested logit can tie on the same dataset even though each is identified. One is math, the other is empirical multiplicity.
 Three tools. Regularization prefers simpler models in the set. Bayesian averaging keeps the uncertainty instead of picking one. Structural assumptions from domain knowledge rule out implausible members. None of them finds &ldquo;the truth.&rdquo; They make the choice explicit and auditable.</p><div class="followup"><strong>Follow-up:</strong> How do you navigate Rashomon in practice?</div></div></div>
+<div class="qa"><div class="q">Walk me through the red-bus/blue-bus arithmetic from start to finish.</div><div class="a"><p>Start with two options: train with V = 1.0, bus with V = 2.0. Exponentiate: 2.72 and 7.39. Total 10.11. Shares: train 2.72/10.11 = 0.269, bus 0.731. Now split the bus into red and blue, each V = 2.0. Exponentials: 2.72, 7.39, 7.39. Total 17.50. New shares: train 2.72/17.50 = 0.155, each bus 0.422. The train lost 0.114 of share without changing at all. The mechanism: IIA forces the j-versus-k odds to ignore the rest of the set, so each clone competes independently and steals proportionally from everyone. Intuition says the clones should split the old bus share 0.731 between themselves and leave the train at 0.269. Nested logit with a near-zero dissimilarity parameter delivers exactly that: train 0.268, each bus 0.366.
+The failure is in the noise assumption, not a parameter value. IIA is equivalent to i.i.d. Gumbel noise: independent shocks for every item. No utility vector fixes it because the utilities are not the problem. You must change the correlation structure of the shocks, which means a different model: nested logit, probit with covariance, or explicit deduplication before fitting.</p><div class="followup"><strong>Follow-up:</strong> Why can not the plain softmax be patched with a quick fix?</div></div></div>
+<div class="qa"><div class="q">Your LLM eval pipeline samples 4 responses per prompt and the annotator picks the best. Near-duplicates keep appearing. Redesign the pipeline.</div><div class="a"><p>Three changes. First, deduplicate before showing: embed the 4 candidates and drop any pair with cosine similarity above 0.95, resampling replacements. This removes the clones that break IIA instead of modeling them. Second, switch the query from &ldquo;pick the best of 4&rdquo; to pairwise comparisons on the deduplicated set, and fit Bradley-Terry. Pairs are cheaper per judgment and the BT likelihood is the best-understood object in the course. Third, log the choice set with every label. If you ever need set-choice probabilities later, you need to know what else was on screen. without the set, the labels are uninterpretable under any model richer than BT.
+Then model the correlation instead of removing it. Fit a nested logit with paraphrase clusters as nests, or a probit with a covariance block per cluster. The plain softmax will spread probability across the paraphrases and understate the best answer&rsquo;s share. Name the nest structure in the report: it is a modeling choice, and the Rashomon effect says the data will not pick it for you.</p><div class="followup"><strong>Follow-up:</strong> What if you cannot deduplicate because the duplicates are the point, say you are studying paraphrase robustness?</div></div></div>
+<div class="qa"><div class="q">When is IIA a safe assumption, and when is it reckless?</div><div class="a"><p>Safe when the choice set is fixed and the items are genuinely distinct: chess players in a tournament, job candidates with different profiles, responses that differ in substance. The odds ratio then has no reason to move, and the softmax&rsquo;s tractability is pure win. Reckless when the set changes across observations, when items are near-duplicates, or when the population mixes distinct taste groups. The three tests: does the choice set vary, are any two items close substitutes, do annotators disagree in structured ways. One yes means you need nests, mixtures, or per-group models. The cost of ignoring a yes is a fit that looks precise and is wrong.
+DPO needs the BT model to be correctly specified, and BT implies IIA. In practice DPO runs on pipelines that violate it: near-duplicate candidates, mixed annotators. The result is the distorted Borda count from Lecture 7: the policy upweights responses by head-to-head wins under a misspecified model. DPO still often works because the distortion is small relative to the signal. But when candidates cluster into near-duplicate groups, the distortion stops being small, and that is when you audit the sampling.</p><div class="followup"><strong>Follow-up:</strong> Does DPO need IIA to be true?</div></div></div>
 <h2 id="the-model-family-for-iia-failures">The model family for IIA failures</h2>
 <p>The textbook&rsquo;s optional section extends the family. Each member
 trades tractability for realism at one specific failure.</p>
@@ -375,22 +411,22 @@ O(n^3) without approximations.</p>
 <tr>
 <td>Clones steal share</td>
 <td>Correlated noise</td>
-<td>Nested logit or probit; IIA within nests only</td>
+<td>Nested logit or probit. IIA within nests only</td>
 </tr>
 <tr>
 <td>Mixed populations</td>
 <td>Per-group models</td>
-<td>Mixtures or random coefficients; one BT fit is a compromise</td>
+<td>Mixtures or random coefficients. one BT fit is a compromise</td>
 </tr>
 <tr>
 <td>Level ambiguity</td>
 <td>Anchors</td>
-<td>Fix V_1 = 0 or use the reference policy; never fit unconstrained</td>
+<td>Fix V_1 = 0 or use the reference policy. never fit unconstrained</td>
 </tr>
 <tr>
 <td>Structural ambiguity</td>
 <td>Model sets</td>
-<td>Rashomon: report the set, regularize, or average; do not crown one fit</td>
+<td>Rashomon: report the set, regularize, or average. do not crown one fit</td>
 </tr>
 </tbody>
 </table>
@@ -432,10 +468,10 @@ set: the data never told you the structure. You chose it.</p>
 </ol>
 <h2 id="official-sources-and-further-reading">Official sources and further reading</h2>
 <p><strong>Official:</strong>
-- Lecture 2/3 video (choice models): video id _bych9RfQvw. The
-  IIA material continues the choice-models lecture.
+- The Elo Rating System (external explainer, video id inXUp5j107I):
+  the Thurstone model segment motivates the probit alternative.
 - Course textbook, chapters 3.x: IIA, red-bus/blue-bus,
-  identification, Rashomon, the extended model family.</p>
+  identification, Rashomon, the extended model family. <a href="https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf">link</a></p>
 <p><strong>Further reading:</strong>
 - Train (2009), Discrete Choice Methods with Simulation: nested
   logit, mixed logit, probit estimation.
@@ -449,14 +485,14 @@ universal rate.</p>
 <h2 id="connections-to-the-other-courses">Connections to the other courses</h2>
 <ul>
 <li><strong>CS329H L02:</strong> the softmax and BT that IIA makes tractable.</li>
-<li><strong>CS329H L04:</strong> the anchor requirement before fitting; the
+<li><strong>CS329H L04:</strong> the anchor requirement before fitting. the
   flat direction that unconstrained MLE wanders along.</li>
 <li><strong>CS329H L07:</strong> DPO inherits IIA and the identification
-  structure; the reference policy is the anchor.</li>
+  structure. the reference policy is the anchor.</li>
 <li><strong>CS329H L08:</strong> Borda escapes Arrow by weakening IIA to
   IIA-prime.</li>
 </ul>
-      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=_bych9RfQvw" target="_blank" rel="noopener">Lecture 2 video, Stanford Online YouTube</a></li><li><span class="src-tag">NOTES</span>Official subtitle transcript (en-US)</li><li><span class="src-tag">NOTES</span>Course textbook, chapters 1.8-1.10 (Truong, Haupt, Koyejo, 2025)</li><li><span class="src-tag">PAPER</span>Luce, Individual Choice Behavior (1959)</li></ul></section>
+      <section class="sources"><h2>Sources</h2><ul><li><span class="src-tag">VIDEO</span><a href="https://www.youtube.com/watch?v=inXUp5j107I" target="_blank" rel="noopener">The Elo Rating System (external explainer, Thurstone segment)</a></li><li><span class="src-tag">VIDEO</span><a href="http://www.youtube.com/playlist?list=PLoROMvodv4rNm525zyAObP4al43WAifZz" target="_blank" rel="noopener">CS329H Autumn 2024: Preference Models (course lecture, via playlist)</a></li><li><span class="src-tag">NOTES</span><a href="https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf" target="_blank" rel="noopener">Course textbook, chapters 1.8-1.10 (Truong, Haupt, Koyejo, 2025)</a></li><li><span class="src-tag">PAPER</span>Luce, Individual Choice Behavior (1959)</li></ul></section>
       <nav class="pager"><a href="../cs329h/l02-choice-models.html"><span class="lbl">← Previous</span>Lecture 2: Bradley-Terry, Plackett-Luce, and the Preference Pair</a><a href="../cs329h/l04-learning-rewards.html"><span class="lbl">Next →</span>Lecture 4: Learning Rewards from Preference Data</a></nav>
     </article>
     <footer class="pagefoot">

@@ -125,6 +125,55 @@ sequential majority instead of point totals. The chapter's
 contingent, not structural. Different elections, different
 splits.
 
+### Subchapter: approval and score voting, worked
+
+Plurality, Borda, STV, and Condorcet all read ranked ballots.
+Two more rules ask for richer ballots. Work both on the
+chapter's 4-voter toy.
+
+**Approval voting.** Each voter marks the candidates they
+approve. Most approvals wins. From ranked ballots we need a
+conversion rule, so state it: each voter approves their top
+two.
+
+```ascii
+voter 1 (A>B>C):  approves A, B
+voter 2 (A>B>C):  approves A, B
+voter 3 (B>C>A):  approves B, C
+voter 4 (C>B>A):  approves C, B
+approvals: A = 2, B = 4, C = 2.  B wins.
+```
+
+**Score voting** (range voting). Each voter scores every
+candidate, say 0 to 5. Highest total wins. Conversion rule,
+stated: top rank gets 5, middle gets 3, bottom gets 0.
+
+```ascii
+voter 1:  A=5, B=3, C=0
+voter 2:  A=5, B=3, C=0
+voter 3:  B=5, C=3, A=0
+voter 4:  C=5, B=3, A=0
+scores: A = 10, B = 14, C = 8.  B wins.
+```
+
+B wins under both, agreeing with Borda on this profile. The
+agreement is not structural. Approval voting ignores intensity
+past the threshold: a voter who loves A and tolerates B casts
+the same ballot as one who barely approves both. Score voting
+captures intensity, and with honest cardinal scores it
+maximizes utilitarian welfare, the sum of true utilities. That
+is the mechanism-design connection from Lecture 9: score
+voting is welfare maximization under honest reporting.
+
+The price both pay is strategy. Under approval voting, a voter
+whose favorite is A but who fears C may approve only A,
+bullet voting, to deny B a point. Under score voting, the same
+voter scores A=5 and everyone else 0. Gibbard-Satterthwaite
+applies: no non-dictatorial rule with 3+ outcomes is
+strategy-proof. The richer ballot buys expressiveness and
+sells strategy-resistance. Name the tradeoff when you pick
+the rule.
+
 ## Where aggregation breaks: the cycle
 
 Majority preferences can cycle. Three voters, three candidates:
@@ -347,12 +396,23 @@ The story in eight steps. Each step answers the one before it.
 8. **Name the rule.** No neutral aggregation exists. State
    the relaxed axiom. Audit the distortion.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/1QpNZXL35NM" title="Stanford CS329H Autumn 2024: Voting, Sanmi Koyejo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+- Course lecture, Voting (Colin Megill / Polis guest segment): https://www.youtube.com/watch?v=1QpNZXL35NM
+- Course textbook (Truong, Haupt, Koyejo): https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
+- Arrow (1951), Social Choice and Individual Values.
+- Sen (1970): the liberal paradox.
+- LMArena BT leaderboard adoption (Dec 2023): https://github.com/lmarena/lmarena.github.io/blob/HEAD/_posts/2023-12-07-leaderboard-elo-update.md
+
 ## Official sources and further reading
 
 **Official:**
 - CS329H Autumn 2024: Voting (video id 1QpNZXL35NM): voting and
   social choice, with the Colin Megill (Polis) guest segment.
-- Course textbook, chapters 8.x: voting rules, Condorcet,
+- Course textbook, chapters 5.2-5.5: voting rules, Condorcet,
   Arrow, Borda, the DPO-Borda connection, Sen, multi-issue
   voting. https://mlhp.stanford.edu/Machine-Learning-from-Human-Preferences.pdf
 

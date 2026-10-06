@@ -98,6 +98,44 @@ like an adult: Pareto, contamination, Goodhart.
 
 ![Course arc](assets/l09-arc.svg "Lectures 1-4 were the midterm. Lectures 5-8 are the final. Lecture 9 points forward. Stanford Frontier AI.")
 
+### Subchapter: the exam map
+
+The final covers Lectures 5-8. What each lecture tests, and the
+question it rewards:
+
+- **L05 (preference tuning).** Bradley-Terry, PPO-clip, DPO's
+  four steps. Rewards: derive the loss, explain the clip, compare
+  PPO vs DPO by memory and data.
+- **L06 (reasoning).** GRPO's z-score, the length-bias bug, R1's
+  stages. Rewards: work the toy numbers, name the failure modes.
+- **L07 (RAG/agents).** The retrieval funnel, BM25 vs
+  embeddings, ReAct, the seven failures. Rewards: design a
+  pipeline, debug a trace.
+- **L08 (evaluation).** Kappa, the judge's biases, benchmark
+  families. Rewards: read numbers skeptically, design an eval.
+
+L01-L04 are background vocabulary: the attention formula, RoPE,
+the 6ND rule, Chinchilla. The exam tests the back half's
+decisions, not the front half's derivations.
+
+![Exam map](assets/l09-exam-map.svg "Final: L05-L08. Each lecture's testable core. Shell 3. Source: the lecture's stated scope. Project: Stanford Frontier AI.")
+
+> [!QA]
+> Q: The lecture asks "which wall forces the change". Name three walls and the changes they forced.
+> A: One: inference is sequential (1,000 tokens need 1,000
+> passes). Forced: speculative decoding, and the diffusion
+> paradigm itself. Two: the KV cache grows with context.
+> Forced: GQA, MLA, paging, quantization. Three: human data is
+> finite and the web turned synthetic. Forced: curation as a
+> discipline, mid-training as a stage, verifiable rewards as a
+> label-free signal. The pattern: every wall is a scaling wall,
+> and every change either removes the wall or routes around it.
+> Follow-up: Which wall is still standing?
+> A: Continuous learning: weights freeze at training time and
+> RAG is a patch. Hallucinations: a design choice of next-token
+> prediction, not a bug to fix. Those two are research, not
+> engineering.
+
 > [!QA]
 > Q: How should I study this recap for the final?
 > A: The final covers Lectures 5-8, so weight the back half:
@@ -144,6 +182,56 @@ and the bias becomes a constraint. Bias helps when data is scarce.
 data wins when it is abundant.
 
 ![ViT](assets/l09-vit.svg "Patches are tokens. [CLS] classifies. Weak bias plus big data beats strong bias. Stanford Frontier AI.")
+
+### Subchapter: the inductive-bias argument, quantified
+
+The toy version of the argument, with the crossover:
+
+```ascii
+1M images:   CNN (strong locality bias) wins. ViT underfits: too
+             little data to learn spatial structure.
+300M images: ViT wins. The CNN's bias is now a constraint: it
+             cannot use the extra data as well.
+```
+
+Inductive bias is a bet about the world. The bet pays when data
+is scarce (the model cannot afford to learn the structure) and
+costs when data is abundant (the structure is learnable, and the
+bias forbids better structures). The same argument recurs: RoPE
+vs learned positions (weak bias wins at scale), MoE routing
+(learned routing beats fixed), even pre-training itself (learn
+from data beats hand-built features). The pattern: strong priors
+for small data, weak priors for big data. The interview line:
+"Bias is a loan against data. Big data repays it."
+
+### Subchapter: DeepSeek OCR's token argument
+
+The lecture's closing provocation: image patches as tokens carry
+text meaning in very few tokens. A rendered page (text as image,
+patched) encodes emojis, layout, fonts, and style that a text
+tokenizer splinters into dozens of tokens or mangles. The
+argument: tokenizers are a lossy, arbitrary discretization. Pixels
+are universal. If patches beat BPE on text-heavy images, the
+tokenizer itself is the bottleneck, not the model. Open question,
+not settled: rendering text as images costs resolution and
+compute. But it reframes the L01 tokenization lecture: maybe the
+right "token" was never a text piece at all.
+
+> [!QA]
+> Q: When does strong inductive bias beat weak bias plus data?
+> A: When data is scarce or the bias is exactly right. The 1M-image
+> toy: the CNN's locality wins because 1M images cannot teach
+> spatial structure from scratch. The general rule: strong bias
+> when the data cannot cover the hypothesis space, weak bias when
+> it can. The trap is keeping the strong bias after data arrives:
+> then it is a constraint, not a help. Audit every architectural
+> bias against current data scale, not the scale it was designed
+> for.
+> Follow-up: Name a bias the field already retired this way.
+> A: Learned absolute positions gave way to RoPE: the weak
+> relative bias scaled better. Fixed dense attention gave way to
+> GQA and sliding windows: full attention was a bias toward
+> "everything matters", and it did not survive long contexts.
 
 **Vision-language models** answer questions about images. Two
 wirings:
@@ -216,6 +304,42 @@ rest of the autoregressive toolkit to diffusion.
 ![Diffusion](assets/l09-diffusion.svg "Noise to image: denoise step by step. The sculptor analogy. Stanford Frontier AI.")
 ![Masked diffusion](assets/l09-mdm.svg "Mask is noise. Unmask in N steps, not one per token. Stanford Frontier AI.")
 
+### Subchapter: block diffusion, the practical middle
+
+Pure masked diffusion unmasks all positions in parallel: fast,
+but positions cannot condition on each other within a step.
+Autoregressive decoding conditions fully: slow, one token per
+pass. **Block diffusion** splits the difference: decode left to
+right in blocks, diffuse within each block. The toy: 1,000 tokens
+in 10 blocks of 100, N = 8 diffusion steps per block: 80 forward
+passes instead of 1,000, with left-to-right conditioning between
+blocks. Quality approaches autoregressive (each block sees all
+previous blocks), speed approaches diffusion. The 2026 frontier
+models (Mercury, Inception's line) use block or semi-autoregressive
+variants: the pure-parallel dream loses to the hybrid in
+practice. The interview line: "Blocks are the compromise the
+field converged on."
+
+![Block diffusion](assets/l09-block-diffusion.svg "Left to right between blocks, parallel inside. 80 passes instead of 1000. Shell 3. Source: the diffusion-LLM literature. Project: Stanford Frontier AI.")
+
+> [!QA]
+> Q: Walk me through masked diffusion on a 12-token answer, start to finish.
+> A: Forward (training): take the 12-token answer, mask 3 tokens,
+> then 3 more, and so on until all 12 are [MASK]. The model
+> learns to predict the masked tokens from the unmasked ones at
+> every corruption level. Reverse (inference): start from 12
+> [MASK] plus the prompt. Step 1: predict all 12, keep the 3 most
+> confident, re-mask the rest. Step 2: predict the 9 masked, keep
+> 3 more. Repeat: 4 steps of 3 tokens each unmask the answer.
+> Confidence-ordered unmasking is the mechanism: easy tokens
+> first, hard ones with more context.
+> Follow-up: Why confidence-ordered, not left-to-right?
+> A: Because the model can. Autoregressive decoding is forced
+> left-to-right by its factorization. Diffusion has no such
+> constraint, so it unmasks the sure tokens first and spends
+> later steps on the hard ones. That is the draft-to-refine
+> intuition, mechanized.
+
 > [!QA]
 > Q: Why is text harder for diffusion than images?
 > A: Images are continuous: you can add a little Gaussian noise to a
@@ -269,6 +393,63 @@ Transformer details are not settled. Papers still move every knob:
 
 ![Design space](assets/l09-design.svg "Optimizer, norm, attention, activations, scale: every knob is live. Stanford Frontier AI.")
 
+### Subchapter: Muon, what changed
+
+Adam adapts per-parameter learning rates from gradient history.
+**Muon** (Kimi K2 paper) takes a different path: it orthogonalizes
+the gradient update via Newton-Schulz iteration, approximating the
+closest orthogonal matrix to the gradient. The intuition: gradient
+descent on matrices works better when the update preserves the
+matrix's geometry instead of scaling each entry independently.
+**MuonClip** adds the stability fix. Reported result: faster
+convergence than Adam on large transformer training, at similar
+per-step cost. Status: a candidate standard, not the standard.
+Adam still trains most models. The interview point: the optimizer
+is not settled law. When a lab reports a new one with real
+speedups at scale, the field pays attention, because optimizer
+gains multiply every training run ever.
+
+### Subchapter: the frontier as of October 2026
+
+Where the lecture's open questions stand now:
+
+- **Diffusion LLMs.** Block-diffusion models (Mercury-class)
+  serve production traffic for latency-sensitive coding. Quality
+  still trails the best autoregressive models on reasoning.
+  LLaDA's math got ported, extended, and partially absorbed.
+- **SLMs.** Small models won the cost war: most API volume runs
+  on sub-30B models. The Pareto frontier the lecture predicted
+  is the market now.
+- **Agents.** Agentic browsing shipped (Atlas and followers).
+  Security remains the gate: prompt injection is unsolved,
+  certificate-style guarantees are still proposals.
+- **Reasoning.** RLVR + GRPO became the standard training stack
+  (Lecture 6's recipe, industrialized).
+- **Data.** Mid-training is standard. Provenance filtering is a
+  product category. The 80%-synthetic pressure did not relent.
+
+The walls that moved: inference cost (down, via SLMs and
+speculation), reasoning (up, via RLVR), data quality (sideways:
+better curation, worse raw web). The walls that did not:
+hallucinations (still design, not bug), continuous learning
+(still frozen weights), interpretability (still early).
+
+> [!QA]
+> Q: You have one research bet for the next two years. Where do you place it?
+> A: On the data wall, specifically provenance and synthetic-data
+> discipline. Every lab faces the same 80%-synthetic pressure,
+> and the winner is whoever trains on the cleanest distribution.
+> It compounds: better data improves every model the lab trains,
+> unlike an architecture tweak that helps one run. Second choice:
+> inference economics (block diffusion, better speculation):
+> the lab that serves reasoning 10x cheaper owns the agent
+> market. Both bets are on walls, not fashions.
+> Follow-up: Why not bet on a new architecture?
+> A: Architectures are lottery tickets with long odds: the
+> transformer survived a decade of challengers. Walls are
+> certainties: the data wall and the cost wall exist regardless
+> of architecture. Bet on certainties.
+
 ## The problem: data is the new bottleneck
 
 Early LLMs scraped a human-written internet. That world is gone: the
@@ -289,6 +470,45 @@ Responses: data-curation companies, and a new pipeline stage,
 ([93:41](https://www.youtube.com/watch?v=Q86qzJ1K1Ss&t=5621s)):
 after pre-training, before fine-tuning, train on a large but
 higher-quality corpus. Pre-train, mid-train, fine-tune.
+
+### Subchapter: the collapse math, formalized
+
+The toy, generation by generation. Human text: 100 words, Zipf
+spread. Model G1 trained on it: samples the top 20 words
+disproportionately (models concentrate mass). G2 trained on G1's
+output: the top 10 dominate. G3: the top 5. Each generation's
+training distribution is the previous generation's *sample*,
+and sampling concentrates. Formally: if each generation keeps
+probability mass p on the head and the head shrinks, the tail
+probability decays geometrically: tail_G3 ~ tail_G1 * c^2 for
+some c < 1. The tails (rare words, rare facts, minority
+viewpoints) vanish first. That is why collapse is a diversity
+catastrophe, not just a quality dip: the model forgets what it
+never sees. Defenses: filter synthetic data out (provenance),
+mix in fresh human data every generation (the tail must be
+re-seeded), and mid-train on curated corpora.
+
+![Collapse math](assets/l09-collapse-math.svg "Each generation trains on the last one's sample. Tails decay geometrically. Shell 3. Source: Shumailov et al. Project: Stanford Frontier AI.")
+
+### Subchapter: mid-training, the new stage
+
+The pipeline gains a stage between pre-training and fine-tuning:
+
+```ascii
+pre-train:  trillions of tokens, raw web, broad
+mid-train:  hundreds of billions, curated, high-quality
+fine-tune:  millions, task-specific
+```
+
+Mid-training exists because raw pre-training data got worse (the
+80%-synthetic estimate) while fine-tuning data is too small to
+fix foundations. It re-trains the base on the good stuff: books,
+papers, filtered code, textbooks, at a scale that moves the
+weights' priors. The economics: mid-training costs ~10% of
+pre-training and buys back much of the quality the raw web lost.
+The 2026 norm: no serious base model ships without it. The
+interview line: "Mid-training is pre-training on the internet we
+wish we had."
 
 ![Data](assets/l09-data.svg "The internet turned synthetic. Curation and mid-training are the answers. Stanford Frontier AI.")
 
@@ -367,13 +587,28 @@ The story in eight steps. Each step answers the one before it.
    behind security work. Open: continuous learning,
    hallucinations-as-design, personalization, safety.
 
+## Go deeper
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/Q86qzJ1K1Ss" title="CME295 Lecture 9, Autumn 2025" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;margin:16px 0;">
+<iframe style="position:absolute;top:0;left:0;width:100%;height:100%;" src="https://www.youtube-nocookie.com/embed/W2gVx1PIbF4" title="LLaDA: Large Language Diffusion Models (paper explained)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+- Lecture 9 recording: https://www.youtube.com/watch?v=Q86qzJ1K1Ss
+- LLaDA paper explained: https://www.youtube.com/watch?v=W2gVx1PIbF4
+- Dosovitskiy et al., ViT: https://arxiv.org/abs/2010.11929
+- Nie et al., LLaDA: https://arxiv.org/abs/2502.09992
+- Shumailov et al., model collapse: https://arxiv.org/abs/2305.17493
+
 ## Official sources and further reading
 
 **Official:**
 - Lecture 9 recording (YouTube): timestamped above.
 - Lecture 9 slides (PDF), CME295 Autumn 2025.
-- Dosovitskiy et al., "ViT" (2020):
-  https://arxiv.org/abs/2010.11929
+- Dosovitskiy et al., "ViT" (2020): [paper](https://arxiv.org/abs/2010.11929)
 - Nie et al., "LLaDA" (2025): https://arxiv.org/abs/2502.09992
 
 **Further reading:**

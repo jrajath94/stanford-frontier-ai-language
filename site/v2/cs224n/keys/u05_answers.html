@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U05 · Answers — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Answer keys for the U05 lesson exercises.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u05-answers" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers" class="active">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U05 · Answers</nav>
+      <h1>U05 · Answers</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="answer-key-u05-attention-and-transformers">Answer key , U05 Attention and transformers</h1>
+<p>Attempt the exercises before reading. Ladders are oral: answer aloud,
+then check.</p>
+<h2 id="remediation">Remediation</h2>
+<p>R1. (1,0).(1,0) = 1, (1,0).(0,1) = 0, (1,0).(-1,0) = -1. Similarity
+is the dot product, attention scores inherit the geometry.
+R2. (0.576, 0.284, 0.140), sum 1.000. Every attention row is a
+distribution over positions.
+R3. (n, d) @ (d, d_k) = (n, d_k). (n, n) @ (n, d_v) = (n, d_v).
+Typecheck every product.</p>
+<h2 id="breadth">Breadth</h2>
+<p>A1. Q asks, K indexes, V carries. Scores = QK^T/sqrt(d_k), weights =
+softmax, out = weights @ V. Toy: scores (0.707, 0, -0.707), weights
+(0.576, 0.284, 0.140), out (0.872, 0.568).
+A2. Raw dot variance = d_k, at d_k = 64 the softmax saturates to
+one-hot and gradients die. Dividing by sqrt(d_k) restores unit
+variance. Toy: max 0.866/entropy 0.571 unscaled, 0.218/1.974 scaled.
+A3. h heads, d_k = d/h, each with its own QKV, concat and project
+with W_o. Same FLOPs as one wide head, h independent routings.
+Shapes (n=8,d=32,h=4): scores (8,8), concat (8,32), W_o (32,32).
+A4. Causal: -inf above the diagonal, added to scores before softmax.
+Padding: -inf at pad columns. Mask after softmax leaks (the future
+shaped the distribution). Toy: row sums 1, upper max 0.0.
+A5. Residual: y = x + F(x), gradient keeps the identity path.
+Layer norm: per-vector mean 0 var 1. Pre-norm is the stable default
+past ~12 layers.
+A6. Attention is permutation-equivariant, so order needs an explicit
+signal. Sinusoid: fixed waves, learned: a table to n_max. PE(0) =
+(0,1,0,1), PE(1) = (0.841, 0.540, 0.010, 1.000) at d = 4.
+A7. Per-position two-layer MLP: (n,d) -&gt; (n,4d) -&gt; (n,d), 8d^2
+params per layer (2/3 of the block). Toy d=32: 8320 params.
+A8. Encoder-only: no mask, understanding. Decoder-only: causal mask,
+generation. Enc-dec: cross-attention (Q decoder, K/V encoder),
+conditioned generation.
+A9. One layer (n=8,d=32,h=4): X (8,32) -&gt; QKV (8,32) -&gt; split
+(4,8,8) -&gt; scores (4,8,8) -&gt; heads (4,8,8) -&gt; concat (8,32) -&gt; W_o
+(8,32) -&gt; FFN hidden (8,128) -&gt; out (8,32).
+A10. Per layer: attention 2n^2d, FFN 16nd^2, projections 4nd^2.
+Toy n=512,d=1024: 0.54 + 8.59 + 2.15 = 11.3 GFLOP. Training
+parallel, inference serial, 4x context = 16x attention FLOPs.
+A11. Cache past K/V (frozen under causality): step cost O(t^2d) -&gt;
+O(td), total O(n^3d) -&gt; O(n^2d). Toy: 23936 -&gt; 2176, ratio 11.0x.
+Price: 2Lnd floats (4.0 GiB at 32 layers, 8k, 4096, fp16).
+A12. The six lines: PE add, LN, MHA, residual, LN, FFN, residual,
+every shape asserted.</p>
+<h2 id="oral-ladders">Oral ladders</h2>
+<p>L1 (QKV). Define the three roles. Compute the toy. Derive the convex
+blend. Diagnose the explanation failure (weights are one factor).
+Design the frozen-values test.</p>
+<p>L2 (scale). Derive Var = d_k. Compute both regimes. Explain
+saturation. Diagnose the stalled tiny transformer. Design the
+scale ablation.</p>
+<p>L3 (MHA). Write the head split. Trace the five shapes. Derive 4d^2
+params. Diagnose head redundancy. Design the pruning test.</p>
+<p>L4 (masks). Write both masks. Prove mask-before-softmax (exp(-1e9)
+= 0, post-softmax renormalizes a shaped distribution). Compute the
+toy. Diagnose the peek (validation looks too good). Design the
+mask-order test.</p>
+<p>L5 (residual/norm). Write both formulas. Compute the toy norm.
+Derive dy/dx = I + dF/dx. Diagnose the no-warmup post-norm stall.
+Design the placement test.</p>
+<p>L6 (positions). Write the sinusoid. Compute PE(1). Prove
+permutation equivariance (scores depend on content pairs only).
+Diagnose the chance reversal score. Design the reversal test.</p>
+<p>L7 (FFN). Write the two layers. Count 8320. Derive the 2/3 param
+share. Diagnose the removal (capacity collapse). Design the
+expansion sweep.</p>
+<p>L10 (cost). Write the three terms. Compute the toy. Derive the n =
+8d crossover. Diagnose flat step time (bandwidth bound). Design the
+scaling fit.</p>
+<p>L11 (KV cache). Define the cache. Compute 23936/2176. Derive the
+2Lnd memory price. Diagnose the long-context OOM. Design the timing
+test.</p>
+<h2 id="exercises">Exercises</h2>
+<p>E1. <code>attention</code> reproduces scores, weights, output.
+E2. Random Q, K: every row sums to 1 (assert allclose).
+E3. <code>scaled_scores</code> reproduces the entropy pair 0.571/1.974.
+E4. d_k = 256: unscaled score variance ~256, scaled ~1.
+E5. <code>mha</code> asserts all five shapes.
+E6. h = 1 output matches single-head attention with d_k = d.
+E7. Both masks: row sums 1, upper triangle exactly 0.
+E8. Post-softmax masking gives different weights than pre-softmax
+masking on the toy (report both).
+E9. <code>layer_norm</code> gives mean -0.0, var 0.999995 on (1,2,3,4,5).
+E10. F = 0: block output equals input exactly.
+E11. <code>sinusoid</code> reproduces PE(0) and PE(1).
+E12. Permute input without PE: output permutes identically
+(equivariance holds numerically).
+E13. <code>ffn</code> asserts (8,32) -&gt; (8,128) -&gt; (8,32).
+E14. d = 64: 16640 + 16448 = 33088 params.
+E15. <code>cross_attention</code> asserts scores (6,10), out (6,32).
+E16. Table: encoder-only none, decoder-only causal, enc-dec
+causal (decoder) + padding (cross).
+E17. <code>layer_trace</code> reproduces all 12 shapes.
+E18. Transposed scores: shapes pass, causal pattern fails (row 1
+no longer (1,0,0,0)).
+E19. <code>flops</code> reproduces 0.54/8.59/2.15/11.3 GFLOP.
+E20. 2n^2d = 16nd^2 gives n = 8d = 8192 at d = 1024.
+E21. <code>decode_step</code> matches full recompute exactly.
+E22. 2 x 32 x 8192 x 4096 x 2 bytes = 4,294,967,296 bytes = 4.0
+GiB.
+E23. <code>transformer_layer</code> cold: shape (4,16), finite, one backward
+step no nan.
+E24. With PE the permutation check fails (order matters), without
+PE it passes (equivariance).</p>
+      
+      <nav class="pager"><a href="../lessons/u05_attention_transformer.html"><span class="lbl">← Previous</span>U05 · Attention and transformers</a><a href="../lessons/u06_pretraining_scaling.html"><span class="lbl">Next →</span>U06 · Pretraining, scaling, systems, data</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

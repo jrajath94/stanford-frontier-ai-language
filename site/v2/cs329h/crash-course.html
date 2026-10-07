@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crash course — CS329H: Machine Learning from Human Preferences</title>
+<meta name="description" content="Interview-speed review of all 10 units.">
+<link rel="stylesheet" href="assets/vendor/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="cs329h-crash">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html">CS329H: Machine Learning from Human Preferences</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="lessons/u01_lesson.html" data-page="cs329h-u01">U01 · Preferences, choices, and ge</a></li>
+<li><a href="lessons/u02_lesson.html" data-page="cs329h-u02">U02 · Random utility, axioms, and </a></li>
+<li><a href="lessons/u03_lesson.html" data-page="cs329h-u03">U03 · Choice estimation and Bayesi</a></li>
+<li><a href="lessons/u04_lesson.html" data-page="cs329h-u04">U04 · Fisher information and exper</a></li>
+<li><a href="lessons/u05_lesson.html" data-page="cs329h-u05">U05 · RLHF and DPO</a></li>
+<li><a href="lessons/u06_lesson.html" data-page="cs329h-u06">U06 · Active elicitation and assis</a></li>
+<li><a href="lessons/u07_lesson.html" data-page="cs329h-u07">U07 · Acquisition, Thompson sampli</a></li>
+<li><a href="lessons/u08_lesson.html" data-page="cs329h-u08">U08 · Inversion, style, and bounde</a></li>
+<li><a href="lessons/u09_lesson.html" data-page="cs329h-u09">U09 · Aggregation, impossibility, </a></li>
+<li><a href="lessons/u10_lesson.html" data-page="cs329h-u10">U10 · Research projects and oral m</a></li>
+<li><a href="cheatsheet.html" data-page="cs329h-cheatsheet">Cheatsheet</a></li>
+<li><a href="crash-course.html" data-page="cs329h-crash" class="active">Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / Crash course</nav>
+      <h1>Crash course</h1>
+      
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="crash-course-cs329h-preference-learning-and-rlhf">Crash course: cs329h (preference learning and RLHF)</h1>
+<p>A fast pass over all ten units. One page per unit: the core ideas, the key numbers, the failure modes, the interview line. Provenance: S01-S04 source-supported (title level), S05-S18 PLANNED / SOURCE ATTRIBUTION PENDING, taught as independent theory.</p>
+<h2 id="u01-preference-models">U01. Preference models</h2>
+<p>Core: choices reveal preferences, the Bradley-Terry model turns pairwise wins into scores via the logistic function. Scores are identified only up to an additive constant: anchor before reporting.</p>
+<p>Numbers: 5-1 toy gives MLE gap log(5) = 1.61. P(A beats B) = 1/(1+exp(-gap)).</p>
+<p>Failure: noise attenuates the gap, unanchored scores drift across runs.</p>
+<p>Interview line: &ldquo;BT scores are differences, the constant is meaningless.&rdquo;</p>
+<h2 id="u02-choice-theory">U02. Choice theory</h2>
+<p>Core: random utility models (Gumbel noise gives softmax). IIA: the A-vs-B ratio does not depend on C. Axioms (transitivity, IIA) are testable restrictions.</p>
+<p>Numbers: IIA predicts red-bus/blue-bus shares 0.50/0.25/0.25, violations break it.</p>
+<p>Failure: cycles in pairwise data cannot be fit by any score vector, the residual is the signal.</p>
+<p>Interview line: &ldquo;IIA is a prediction, not a law.&rdquo;</p>
+<h2 id="u03-estimation">U03. Estimation</h2>
+<p>Core: MLE for choice models, EM for latent variables, Bayesian posteriors with priors, calibration of predicted probabilities.</p>
+<p>Numbers: Bernoulli mixtures are flat for EM (verified -277.0138 everywhere), the Gaussian mixture climbs -775.9 to -738.2.</p>
+<p>Failure: flat likelihoods (non-identifiability) stall optimizers, the Bernoulli flatness is the documented case.</p>
+<p>Interview line: &ldquo;Check the likelihood surface before trusting the optimizer.&rdquo;</p>
+<h2 id="u04-policy-optimization">U04. Policy optimization</h2>
+<p>Core: KL-constrained optimum pi* proportional to pi_ref * exp(r/beta). Fisher information measures what the data can identify. Design criteria (A/D-optimality) rank experiments.</p>
+<p>Numbers: the closed form is exact under the KL constraint, off that assumption it is an approximation.</p>
+<p>Failure: reward hacking (the proxy rises, the truth falls), differentiation under the integral needs regularity.</p>
+<p>Interview line: &ldquo;The optimum is closed-form only under the KL assumption.&rdquo;</p>
+<h2 id="u05-rlhf-and-dpo">U05. RLHF and DPO</h2>
+<p>Core: RLHF trains a reward model then optimizes against it (PPO). DPO skips the reward model: the implicit reward is beta * log(pi/pi_ref), trained with a logistic loss on pairs.</p>
+<p>Numbers: DPO costs about 2x SFT per pair, no RL loop.</p>
+<p>Failure: reward hacking, off-policy data breaks the DPO derivation, a bad reference policy drags the optimum down.</p>
+<p>Interview line: &ldquo;DPO has an implicit reward, it is not reward-free.&rdquo;</p>
+<h2 id="u06-active-elicitation-and-assistance-games">U06. Active elicitation and assistance games</h2>
+<p>Core: value of information (expected gain in decision quality). Assistance games: the agent is unsure of the human&rsquo;s objective and learns it from actions. Contextual vs assisted bandits.</p>
+<p>Numbers: VoI toy = 0.25 (posterior best 0.75 minus prior best 0.5). Tea/coffee posterior 0.727. Greedy regret 29.6 vs epsilon-greedy 2.4 (T=300, seed 0).</p>
+<p>Failure: greedy locks onto the wrong arm, elicitation burden caps real queries.</p>
+<p>Interview line: &ldquo;Information is worth what it changes.&rdquo;</p>
+<h2 id="u07-acquisition-thompson-sampling-dueling-bandits">U07. Acquisition, Thompson sampling, dueling bandits</h2>
+<p>Core: Thompson sampling (sample from the posterior, act optimally for the sample). Dueling bandits learn from pairwise comparisons, strong regret measures the duel quality. Acquisition functions rank what to try next.</p>
+<p>Numbers: 4-arm BT bandit, strengths 1.2/0.8/0.3/-0.5, seed 23: greedy regret 89.6, epsilon-greedy 5.2, TS 4.0. Capstone: uniform 17.24, dueling TS 3.11, leader TS 8.36 (T=200, 20 seeds).</p>
+<p>Failure: random duels never trigger the 0.95 stopping rule in 500 rounds (leader-focused duels trigger at round 43).</p>
+<p>Interview line: &ldquo;Sample the world, then act optimally in the sample.&rdquo;</p>
+<h2 id="u08-inversion-style-bounded-rationality">U08. Inversion, style, bounded rationality</h2>
+<p>Core: invert observed choices to latent rewards under a rationality model. Style vs content: the reward mixes both. Bounded rationality: humans choose with noise and bias.</p>
+<p>Numbers: inversion interval [-0.94, 3.31]: the sign is unsure, and the lesson says so.</p>
+<p>Failure: misspecified rationality (wrong temperature, wrong bias model) inverts to the wrong reward, the empty interval means the model contradicts the data.</p>
+<p>Interview line: &ldquo;The interval is the honest answer, the point estimate hides the uncertainty.&rdquo;</p>
+<h2 id="u09-aggregation-impossibility-fairness">U09. Aggregation, impossibility, fairness</h2>
+<p>Core: Arrow (no ranked rule satisfies UD, Pareto, IIA, non-dictatorship with 3+ candidates). Gibbard-Satterthwaite (every such rule is manipulable). Condorcet cycles, spoilers, interpersonal comparison, jury theorem, subgroup fairness.</p>
+<p>Numbers: cycle margins +1/+1/+1, cycle frequency 0.081 (11 voters, seed 0). Spoiler: A wins 4-3-2, D enters (loses 2-7 to B), B wins. Jury: 5 voters at 0.6 = 0.6826, 101 voters = 0.9791. Subgroup: pooled 0.73 hides 0.87/0.59. Welfare: t=0.5 gives (0.707, 0.707).</p>
+<p>Failure: correlated voters void the jury theorem, unnormalized scales flip welfare sums.</p>
+<p>Interview line: &ldquo;Pick your poison deliberately, document the dropped axiom.&rdquo;</p>
+<h2 id="u10-research-projects-and-oral-mastery">U10. Research projects and oral mastery</h2>
+<p>Core: pre-analysis plans, literature review, falsifiable hypotheses, data consent, method baselines, uncertainty quantification, reproducible code, contribution statements, integrity/reflection/impact, oral formats, negative results, open-source gaps.</p>
+<p>Numbers: capstone A (H1 supported, H2 not), capstone B (hypothetical audit: BLOCK on drift).</p>
+<p>Failure: burying the negative result, quoting hypothetical numbers as real.</p>
+<p>Interview line: &ldquo;The failure is data, report it with numbers.&rdquo;</p>
+<h2 id="the-arc-in-one-paragraph">The arc in one paragraph</h2>
+<p>Model preferences (U01-U02), estimate them (U03), optimize policies (U04-U05), elicit actively (U06-U07), invert carefully (U08), aggregate honestly (U09), research reproducibly (U10). Every claim has a home unit, every number has a seed, every failure is reported.</p>
+      
+      <nav class="pager"><a href="cheatsheet.html"><span class="lbl">← Previous</span>Cheatsheet</a><span></span></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/vendor/katex.min.js"></script>
+<script src="assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "";</script>
+<script src="assets/app.js"></script>
+</body>
+</html>

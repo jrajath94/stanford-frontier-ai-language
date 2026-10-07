@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U08 · LLM evaluation and judging — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Lesson: LLM evaluation and judging.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-u08">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cme295-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_attention_variants.html" data-page="cme295-u02">U02 · Transformer variants and posit</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_llm_generation.html" data-page="cme295-u03">U03 · LLM architecture and generatio</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_training_adaptation.html" data-page="cme295-u04">U04 · Training and efficient adaptat</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_preference_optimization.html" data-page="cme295-u05">U05 · Preference tuning and policy o</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_reasoning_scaling.html" data-page="cme295-u06">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_rag_agents.html" data-page="cme295-u07">U07 · RAG and agentic systems</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_llm_evaluation.html" data-page="cme295-u08" class="active">U08 · LLM evaluation and judging</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_trends_synthesis.html" data-page="cme295-u09">U09 · Current trends, exams, and syn</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="../interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="../interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="../interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="../interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="../interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cme295-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cme295-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/research_grpo_extension.html" data-page="cme295-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / U08 · LLM evaluation and judging</nav>
+      <h1>U08 · LLM evaluation and judging</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u08-llm-evaluation-and-judging">U08 , LLM evaluation and judging</h1>
+<p>Prerequisites: P07, P10, P22. Bridge links in <code>../prerequisites.md</code>.
+Lecture anchor: L7 (Nov 13, 2026). Claim class: OFFICIAL-SYLLABUS for
+judge rubrics, pointwise/pairwise judging, position/verbosity bias,
+human checks, appropriate metrics, and benchmark interpretation.
+REQUESTED-BRANCH for calibration, nondeterminism, blind evaluation,
+contamination, uncertainty, and cost/latency. All leaves: PLANNED /
+SOURCE ATTRIBUTION PENDING until slide or transcript extraction
+verifies them.
+Notation: see <code>../notation_and_shapes.md</code>. Glossary: <code>../glossary.md</code>.</p>
+<h2 id="not-yet-understood">Not yet understood</h2>
+<p>Concepts this unit uses but does not teach. Each one arrives in a
+later unit.</p>
+<ol>
+<li>Trends and synthesis (U09): diffusion, keystone review, exams.</li>
+</ol>
+<h2 id="local-remediation-win-rate-ece-confidence-interval">Local remediation , win rate, ECE, confidence interval</h2>
+<p>Do this block first if the unit diagnostic flags P07 gaps.</p>
+<p><strong>R0.1 Win rate.</strong> Judge compares A vs B on n items. A wins w
+times. Win rate = w / n. Ties need a stated convention: drop
+them or count half.</p>
+<p><strong>R0.2 Expected calibration error.</strong> Bin predictions by
+confidence. ECE = sum over bins (fraction in bin) x |accuracy -
+confidence|. Perfect calibration gives 0.</p>
+<p><strong>R0.3 Wilson interval.</strong> For w wins in n trials, the 95%
+Wilson score interval is center = (p + z^2/2n)/(1 + z^2/n)
+with half-width z sqrt(p(1-p)/n + z^2/4n^2)/(1 + z^2/n),
+z = 1.96, p = w/n. n = 100, w = 62: [0.522, 0.709].
+Small n means wide bands.</p>
+<hr />
+<h3 id="c01-judge-rubrics">C01: judge rubrics</h3>
+<p>Leaf id <code>cme295-U08-C01</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;best practices&rdquo;, L7).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L7 &ldquo;best practices&rdquo;. Scope: writing the rubric the judge
+   model follows. Objectives: write a three-criterion rubric
+   and state the specificity rule. Depends on P22.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: &ldquo;which answer is
+   better&rdquo; gets shrugs from the judge, what fixes it? Toy
+   rubric: correctness (does it solve the task), completeness
+   (no missing steps), clarity (a reader can follow). Each
+   scored 1-5 with one anchor example per level.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The rubric is the law, the judge is the
+   court. Vague law gives arbitrary verdicts. Each criterion
+   needs a definition and an anchor, or the judge invents
+   its own.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Criteria
+   list, scale (1-5 or binary), anchors, aggregation rule
+   (mean or weighted). Assumption: the criteria cover what
+   the user cares about, nothing important is unscored.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation, a design rule:
+   one criterion per valued property, anchors from real
+   examples, pilot on 50 items, revise where judges
+   disagree. The mechanism is disagreement-driven revision.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u08_lab_run.py</code>
+   (lab6 rubric): vague rubric, inter-judge agreement 0.58.
+   Anchored rubric, agreement 0.81. The anchors bought 0.23
+   of agreement.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>judge(item, rubric,
+   model)</code>: prompt = rubric + item, return the parsed scores.
+   The rubric is a string constant, versioned.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: two
+   judge runs on 50 items agree above 0.75. Below that, the
+   rubric is vague or the task is subjective.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Rubric writing costs expert hours once. Every vague
+   criterion costs agreement on every future eval.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> No rubric
+    (fast, arbitrary). Human-only judging (gold, slow).
+    Choose anchored rubrics for repeatable evals.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: criteria cover user value. Counterexample:
+    the rubric scores style, users care about correctness.
+    Validate the rubric against human preference first.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    LLM-as-judge best-practice guides. Extension: ablate
+    anchors vs no anchors, measure agreement delta.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: law and court. Ladder: define the rubric -&gt;
+    write the toy -&gt; justify anchors -&gt; implement judge -&gt;
+    predict the style-vs-correctness failure. Transfer:
+    rubric for code review.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: three
+    criteria for math answers. E2: agreement 0.58, what is
+    the first fix? E3: why version the rubric? Key:
+    <code>../keys/u08_answers.md</code> R1-R3.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u08_fig01.png</code>: Shell 3, one rule (rubric before/after),
+    before vague prompt, after anchored rubric. Source:
+    original toy. Numbers from <code>render_u08.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-pointwisepairwise">C02: pointwise/pairwise</h3>
+<p>Leaf id <code>cme295-U08-C02</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;LLM-as-a-judge overview&rdquo;, L7).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L7 judge overview. Scope: scoring one answer vs comparing
+   two. Objectives: state when each wins and compute a
+   pairwise win rate. Depends on C01, R0.1.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: is &ldquo;7/10&rdquo; or &ldquo;A
+   beats B&rdquo; the better verdict? Toy: pointwise gives A 7, B
+   6, but the judge&rsquo;s 7 means different things on different
+   days. Pairwise asks directly, A wins 62 of 100. The
+   comparison is the stabler signal.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Pointwise is a ruler, pairwise is a
+   scale. Rulers need calibration, scales just compare. When
+   absolute quality matters, use the ruler. When ranking
+   matters, use the scale.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Scores
+   s in [1,5], pairs (A,B), win rate w/n, Bradley-Terry
+   scores from pairs. Assumption: pairwise transitivity
+   roughly holds, cycles are rare.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> n models need n(n-1)/2 pairs
+   for a full round robin, O(n^2). Pointwise needs n scores,
+   O(n). The mechanism tradeoff: cost vs comparability.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u08_lab_run.py</code>
+   (lab7 bt): 4 models, 6 pairs, 100 items each. Win matrix
+   computed, BT scores (mean-centered MLE): A 0.41, B 0.20,
+   C -0.09, D -0.51. Ranking is stable across seeds.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>pairwise(models,
+   items, judge)</code>: for each pair and item, get the verdict,
+   tally wins. Return the win matrix.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: win
+   rates sum sensibly (w_AB + w_BA = 1 with ties handled).
+   Cycles (A&gt;B&gt;C&gt;A) flagged, not hidden.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Pairwise costs O(n^2) judge calls. With 10 models and
+   500 items, that is 22,500 calls. Budget accordingly.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Elo from
+    sampled pairs (cheaper, noisier). Human pairwise (gold,
+    slow). Choose full pairwise under 6 models, sampled
+    beyond.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: transitivity. Counterexample: rock-paper-scissors
+    model strengths, the ranking is meaningless. Report
+    cycles, do not average them away.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    pairwise judging and Elo analyses. Extension: compare
+    full vs sampled pairs on ranking stability.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: ruler vs scale. Ladder: define the modes -&gt;
+    compute the toy -&gt; justify the O(n^2) -&gt; implement
+    pairwise -&gt; predict the cycle failure. Transfer:
+    pairwise for hiring screens.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: 5 models,
+    full pairs, how many? E2: w_AB = 0.62, w_BA = 0.30,
+    ties? E3: when is pointwise better? Key:
+    <code>../keys/u08_answers.md</code> R4-R6.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the modes are a caption on <code>u08_fig01.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-positionverbosity-bias">C03: position/verbosity bias</h3>
+<p>Leaf id <code>cme295-U08-C03</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;biases and pitfalls&rdquo;, L7).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L7 biases. Scope: the judge favoring the first answer or
+   the longer one. Objectives: measure both biases and apply
+   the swap correction. Depends on C02, P07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: A beats B 70%
+   when A is first, but only 45% when B is first, which
+   number is true? Toy: debiased estimate = (0.70 +
+   (1 - 0.45)) / 2 = 0.625. The swap averages out the
+   position effect.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The judge is a tired reader. It likes
+   what it sees first and what fills the page. Swapping the
+   order and averaging cancels the first bias. Length caps
+   tame the second.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Win rate
+   by position, length difference in tokens, debiased
+   estimate. Assumption: the bias is symmetric, swapping
+   truly cancels it.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Present each pair twice, both
+   orders. True preference p, position bias b toward first.
+   Observed: p + b and (1 - p) + b in the two orders. Mean
+   of (obs1, 1 - obs2) = p. The algebra cancels b.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u08.py</code>: A-first
+   0.70, B-first A wins 0.45. Debiased 0.625. Verbosity: +
+   200 tokens buys +0.08 win rate with no quality change.
+   Figure: <img alt="u08_fig02" src="../assets/u08_fig02.png" title="u08_fig02" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>debiased(models,
+   items, judge)</code>: judge both orders, return (w1 + (1 -
+   w2)) / 2. Double the calls, half the bias.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the two
+   orders disagree by less than 0.1 on most pairs. Large
+   gaps flag strong position bias, investigate.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Swapping doubles judge calls. Verbosity control is free:
+   cap length or penalize it in the rubric.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Single
+    order (cheap, biased). Human judges (their own biases).
+    Choose swapped pairs whenever rankings matter.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: symmetric bias. Counterexample: the judge
+    favors first AND longer, and longer correlates with
+    being second. Control length first, then swap.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    judge-bias studies (position, verbosity, self-preference).
+    Extension: measure your judge&rsquo;s bias curve vs length
+    difference.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: tired reader. Ladder: define the biases -&gt;
+    compute the toy -&gt; justify the swap algebra -&gt;
+    implement debiased -&gt; predict the asymmetric failure.
+    Transfer: bias audit for resume screening.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: orders give
+    0.70 and 0.45, debiased? E2: +200 tokens, +0.08, what
+    is the fix? E3: why double the calls? Key:
+    <code>../keys/u08_answers.md</code> R7-R9.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u08_fig02.png</code>: Shell 3, one rule (swap correction),
+    before biased rates, after debiased estimate. Source:
+    original toy. Numbers from <code>render_u08.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-calibration">C04: calibration</h3>
+<p>Leaf id <code>cme295-U08-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on trust in scores. Scope: whether judge confidences mean
+   what they say. Objectives: compute ECE on a toy and state
+   the recalibration fix. Depends on P07, R0.2.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the judge says
+   90% confident and is right 78% of the time, do you trust
+   the 90? Toy bins: confidence 0.9, accuracy 0.78. The
+   judge is overconfident, discount its certainty.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Calibration is honesty about doubt. A
+   calibrated judge&rsquo;s &ldquo;70%&rdquo; comes true 70% of the time. An
+   overconfident judge&rsquo;s &ldquo;90%&rdquo; is a boast.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Bins,
+   accuracy per bin, ECE. Assumption: the calibration set
+   matches deployment, calibration does not transfer across
+   task shifts.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> ECE = sum_b (n_b / n) x |acc_b
+   - conf_b|. It is a weighted honesty gap. Recalibration:
+   fit a mapping (e.g. temperature scaling on scores) on a
+   held-out set.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u08.py</code>: 5
+   bins, accuracies [0.55, 0.62, 0.68, 0.75, 0.78] at
+   confidences [0.55, 0.65, 0.75, 0.85, 0.95]. ECE = 0.074.
+   The top bin is the liar. Figure:
+   <img alt="u08_fig03" src="../assets/u08_fig03.png" title="u08_fig03" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>ece(conf, correct,
+   bins=10)</code>: digitize, per-bin |mean correct - mean conf|,
+   weight by bin size. Ten lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: ECE on
+   a fresh set, not the fit set. If ECE is 0 on the fit set
+   and 0.1 fresh, the mapping overfit.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Needs labeled data, the expensive part. Bins need ~50+
+   items each for stable estimates.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Raw
+    confidences (free, dishonest). Human confidence (their
+    own miscalibration). Choose recalibration when scores
+    drive decisions.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: calibration transfers. Counterexample: the
+    judge is calibrated on math and wild on poetry. Recalibrate
+    per domain.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    calibration literature for LLMs. Extension: calibration
+    curves per domain, find where they diverge.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: honesty about doubt. Ladder: define ECE -&gt;
+    compute the toy -&gt; justify the bins -&gt; implement ece -&gt;
+    predict the domain-shift failure. Transfer: calibration
+    for medical triage scores.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: bin conf
+    0.85, acc 0.75, n_b/n 0.2, contribution? E2: ECE 0.074,
+    good or bad? E3: why per domain? Key:
+    <code>../keys/u08_answers.md</code> R10-R12.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u08_fig03.png</code>: Shell 3, one rule (bin comparison),
+    before confidences, after accuracy gaps. Source:
+    original toy. Numbers from <code>render_u08.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-nondeterminism">C05: nondeterminism</h3>
+<p>Leaf id <code>cme295-U08-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on repeatability. Scope: same prompt, different answers
+   across runs. Objectives: name the three sources and the
+   pinning protocol. Depends on P12, C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the eval says
+   0.72 on Monday and 0.69 on Friday, did the model change?
+   Toy: temperature 0.7, two runs, 3 of 100 verdicts flip.
+   The model did not change, the sampler did.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The judge is a die that remembers its
+   last roll. Sampling temperature, batching, and backend
+   updates all shake it. Pin what you can, measure what you
+   cannot.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Seed,
+   temperature, backend version, agreement rate across runs.
+   Assumption: the provider honors the seed, not all do.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation, a protocol:
+   temperature 0 for judging, fixed seed, pinned model
+   version, log all three. Measure run-to-run agreement on
+   100 items before trusting a delta.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u08_lab_run.py</code>
+   (lab8 temp): temp 0, agreement 0.97 across 2 runs. Temp
+   0.7, agreement 0.88. A 0.03 metric delta is noise at
+   temp 0.7, signal at temp 0.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>stable_judge(item,
+   rubric)</code>: call with temperature=0, seed=42,
+   model=&rdquo;pinned-id&rdquo;. Log the triple with the score.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check:
+   run-to-run agreement above 0.95 at temp 0. Below that,
+   the backend is nondeterministic despite the seed.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Pinning is free. The cost is vigilance: backends change
+   under you, re-measure agreement monthly.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Majority
+    vote over 3 runs (costly, stable). Human judges (their
+    own drift). Choose temp 0 plus pinning as the default.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: temp 0 is deterministic. Counterexample:
+    batched inference with nondeterministic kernels still
+    jitters. Verify, do not assume.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    LLM reproducibility notes. Extension: agreement vs
+    temperature curve for your judge.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: die that remembers. Ladder: define the sources
+    -&gt; compute the toy -&gt; justify the pinning -&gt; implement
+    stable_judge -&gt; predict the kernel-jitter failure.
+    Transfer: determinism for grading exams.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: agreement
+    0.88, delta 0.03, signal? E2: three things to pin. E3:
+    why re-measure monthly? Key: <code>../keys/u08_answers.md</code>
+    R13-R15.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, pinning is a caption on <code>u08_fig01.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-human-checks">C06: human checks</h3>
+<p>Leaf id <code>cme295-U08-C06</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;best practices&rdquo;, L7).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L7 best practices. Scope: where humans stay in the eval
+   loop. Objectives: state the three human gates and the
+   sampling rule. Depends on P22, C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the judge says
+   the new model wins, do you ship on its word alone? Toy:
+   1000 pairs judged by model, 100 sampled for humans.
+   Humans agree on 78. The 22 disagreements are the audit
+   report.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The judge is an intern, humans are the
+   partners. The intern does the volume, the partners spot
+   check. No partner review, no signature.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Sample
+   size (100+), agreement rate, disagreement taxonomy,
+   escalation rule. Assumption: the human sample represents
+   the full set, stratify it.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Gates: (1) rubric validation
+   (humans approve the rubric), (2) spot checks (humans
+   re-judge a sample), (3) disagreement review (humans read
+   every systematic disagreement class). The mechanism is
+   layered trust.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u08_lab_run.py</code>
+   (lab9 audit): model win rate 0.62, human sample win rate
+   0.58, agreement 0.78. The 0.04 gap is within the Wilson
+   band (n=100), ship with the caveat logged.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>audit(judgments,
+   n=100)</code>: stratified sample, human labels, return
+   agreement and the disagreement classes.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check:
+   agreement above 0.75 and no systematic disagreement
+   class above 10% of the sample. Else revise the rubric.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Humans cost per item. 100 items per eval round is the
+   usual price of trust.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Full human
+    eval (gold, 10x cost). No humans (fast, blind). Choose
+    sampled audits, the middle path.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the sample represents the set.
+    Counterexample: the sample misses the long-tail task
+    where the judge is worst. Stratify by task type.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    human-AI agreement studies. Extension: find the
+    disagreement class your judge hides.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: intern and partners. Ladder: define the gates
+    -&gt; compute the toy -&gt; justify stratification -&gt;
+    implement audit -&gt; predict the long-tail failure.
+    Transfer: human checks for a hiring tool.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: agreement
+    0.78, ship? E2: 22 disagreements, what next? E3: why
+    stratify? Key: <code>../keys/u08_answers.md</code> R16-R18.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the gates are a caption on <code>u08_fig01.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-blind-evaluation">C07: blind evaluation</h3>
+<p>Leaf id <code>cme295-U08-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on fairness. Scope: hiding model identity from the judge.
+   Objectives: state what blinding removes and the
+   de-anonymization risk. Depends on C02, C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the judge gives
+   your house model higher scores, is it better or just
+   familiar? Toy: blinded, house wins 0.52. Unblinded,
+   house wins 0.61. The 0.09 is self-preference, not skill.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Blinding is a blindfold on the judge.
+   No names, no styles, no tells. The verdict then rests on
+   the words alone.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Anonymized
+   IDs, style normalization, self-preference gap.
+   Assumption: anonymization actually hides identity,
+   strong models have recognizable styles.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Strip names, shuffle order,
+   normalize formatting. Measure the blind vs unblind gap
+   on a calibration set. The gap is the bias you removed.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u08_lab_run.py</code>
+   (lab10 blind): blind 0.52, unblind 0.61, gap 0.09. After
+   style normalization, unblind 0.55, gap 0.03. Formatting
+   was half the tell.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>blind(pairs)</code>:
+   replace model names with A/B, strip signature phrases,
+   shuffle. Return the anonymized pairs.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: a
+   classifier cannot guess the model from the anonymized
+   text above chance. If it can, the blindfold leaks.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Blinding is cheap text processing. The cost is eternal
+   vigilance: new tells appear with new models.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Unblind
+    judging (fast, biased). Human blind panels (gold,
+    slow). Choose blinding for all internal comparisons.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the blindfold holds. Counterexample: the
+    model says &ldquo;as an AI&rdquo;, unblinding itself. Scrub known
+    tells.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    self-preference bias studies. Extension: measure your
+    judge&rsquo;s self-preference gap.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: blindfold. Ladder: define blinding -&gt; compute
+    the toy -&gt; justify the gap measure -&gt; implement blind
+    -&gt; predict the self-tell failure. Transfer: blind
+    resume review.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: blind 0.52,
+    unblind 0.61, what is 0.09? E2: two tells to scrub. E3:
+    why shuffle order too? Key: <code>../keys/u08_answers.md</code>
+    R19-R21.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, blinding is a caption on <code>u08_fig02.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-contamination">C08: contamination</h3>
+<p>Leaf id <code>cme295-U08-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on test integrity. Scope: benchmark items leaking into
+   training. Objectives: name three detection signals and
+   the quarantine rule. Depends on P10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model aces
+   the benchmark, did it learn or did it memorize? Toy:
+   perplexity on benchmark items 8.2, on fresh paraphrases
+   24.6. The 3x gap smells like memorization.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Contamination is an open book passed off
+   as a closed exam. The score measures the leak, not the
+   learning. Quarantine the test set like a crime scene.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Perplexity
+   gap, n-gram overlap rate, canary strings. Assumption: the
+   fresh set is truly fresh, paraphrases are not in training
+   either.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Signals: (1) perplexity far
+   lower on benchmark than on paraphrases, (2) verbatim
+   n-gram matches with training data, (3) canary strings
+   (planted unique tokens) appearing in outputs. Any one is
+   a red flag.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u08.py</code>:
+   benchmark ppl 8.2, paraphrase ppl 24.6, gap 3.0x. Clean
+   model: 18.4 vs 21.2, gap 1.15x. Figure:
+   <img alt="u08_fig04" src="../assets/u08_fig04.png" title="u08_fig04" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>scan(model, bench,
+   fresh)</code>: compute perplexities, n-gram overlap, canary
+   hits. Return the three signals.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: gap
+   below 1.3x on a known-clean model. Above 2x, investigate
+   before publishing the score.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Scanning is inference, cheap. Building fresh sets costs
+   human time. Canaries are free, plant them early.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Trust the
+    score (fast, wrong). Private held-out sets (gold,
+    maintenance cost). Choose detection plus quarantine.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: paraphrases are fresh. Counterexample: the
+    paraphraser trained on the same data, the &ldquo;fresh&rdquo; set
+    leaks too. Generate fresh items from scratch.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    contamination detection literature. Extension: plant
+    canaries, train a small model, verify detection.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: open book exam. Ladder: define the signals -&gt;
+    compute the toy -&gt; justify the gap threshold -&gt;
+    implement scan -&gt; predict the paraphrase-leak failure.
+    Transfer: contamination in hiring tests.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: ppl 8.2 vs
+    24.6, verdict? E2: three signals. E3: why plant canaries
+    early? Key: <code>../keys/u08_answers.md</code> R22-R24.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u08_fig04.png</code>: Shell 3, one rule (gap comparison),
+    before benchmark ppl, after paraphrase ppl. Source:
+    original toy. Numbers from <code>render_u08.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-appropriate-metrics">C09: appropriate metrics</h3>
+<p>Leaf id <code>cme295-U08-C09</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;best practices&rdquo;, L7).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L7 best practices. Scope: matching the metric to the
+   task. Objectives: state the metric ladder and the
+   mismatch rule. Depends on P10, C02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: BLEU says the
+   summary is bad, humans love it, who is wrong? Toy: the
+   metric counts n-gram overlap, the human reads meaning.
+   The metric is wrong for the task, change the metric.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Metrics are shoes, tasks are feet. Exact
+   match fits short answers, judges fit open generation,
+   task success fits agents. Wrong shoes hurt every step.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Metric
+   ladder: exact match &lt; overlap &lt; model judge &lt; human &lt;
+   task outcome. Assumption: higher rungs cost more, pick
+   the cheapest rung that decides the question.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation, a selection
+   rule: the metric must vary with what you change and be
+   blind to what you do not. Validate each metric against
+   human judgment on 100 items before adopting it.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u08_lab_run.py</code>
+   (lab11 metric): metric A correlates 0.91 with human
+   ranks, metric B 0.43. Ship A. Cost: A needs a judge call
+   per item, B is free. The 0.48 correlation gap justifies
+   the cost.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>validate(metric,
+   human_ranks, items)</code>: compute the rank correlation.
+   Adopt if above 0.8, else climb the ladder.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the
+   metric moves when the model improves on human review.
+   A metric that never moves is decoration.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Validation costs 100 human labels once. The wrong metric
+   costs every decision made on it.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> One metric
+    for everything (simple, wrong). Human-only (right,
+    slow). Choose the ladder, validate each rung.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: correlation transfers. Counterexample: the
+    metric correlates on easy items and fails on hard ones.
+    Validate across difficulty bands.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    metric-validation studies. Extension: validate your
+    house metric, publish the correlation.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: shoes and feet. Ladder: define the ladder -&gt;
+    compute the toy -&gt; justify the 0.8 bar -&gt; implement
+    validate -&gt; predict the difficulty-band failure.
+    Transfer: metrics for a support bot.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: corr 0.91
+    vs 0.43, which ships? E2: metric never moves, verdict?
+    E3: why 100 items? Key: <code>../keys/u08_answers.md</code>
+    R25-R27.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u08_fig05.png</code>: chapter plate, metric ladder plus the five
+    caveats. Source: original. Tradeoff map, no invented numbers.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-uncertainty">C10: uncertainty</h3>
+<p>Leaf id <code>cme295-U08-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on honest reporting. Scope: intervals and bands around
+   eval numbers. Objectives: compute a Wilson interval and
+   state the reporting rule. Depends on P07, R0.3.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: win rate 0.62
+   on 100 items, is that better than 0.55? Toy: Wilson
+   [0.522, 0.709] vs [0.452, 0.644]. The bands overlap, the
+   verdict is &ldquo;not sure&rdquo;, not &ldquo;A wins&rdquo;.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A point estimate is a photo, an interval
+   is a photo with the blur marked. Report the blur or the
+   photo lies by omission.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> n, w,
+   Wilson interval, seed spread. Assumption: items are
+   independent enough for the binomial math, near enough
+   in practice.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Wilson score interval, z =
+   1.96: center = (p + z^2/2n)/(1 + z^2/n), half-width =
+   z sqrt(p(1-p)/n + z^2/4n^2)/(1 + z^2/n), p = w/n. Width
+   shrinks as 1/sqrt(n). Four times the items halves the
+   band. The mechanism is the law of large numbers. Name
+   correction: an earlier revision of this unit taught
+   p +/- 1.96 sqrt(p(1-p)/n) as the Wilson interval. That
+   formula is the Wald (normal-approximation) interval,
+   misnamed. The runner, lesson, and cheatsheet now use the
+   true Wilson score interval above.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u08_lab_run.py</code>
+   (lab3 wilson): n = 100, w = 62: [0.522, 0.709]. n = 400,
+   w = 248: [0.572, 0.666]. Same rate, half the band.
+   Numbers observed from the runner.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>wilson(w, n,
+   z=1.96)</code>: p = w/n, denom = 1 + z^2/n, center = (p +
+   z^2/2n)/denom, hw = z sqrt(p(1-p)/n + z^2/4n^2)/denom,
+   return [center - hw, center + hw]. Report it with every
+   win rate.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: bands
+   shrink with n on repeated subsamples. If not, the items
+   are not independent.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Intervals are free arithmetic. The cost is humility:
+   half your &ldquo;wins&rdquo; become ties.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Point
+    estimates (crisp, dishonest). Bootstrap (better, needs
+    care). Choose Wilson as the default, bootstrap for
+    complex metrics.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: independence. Counterexample: 100 items
+    from 5 prompts, the effective n is near 5. Cluster
+    your items.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    eval-uncertainty guides. Extension: bootstrap vs Wilson
+    on your eval, compare widths.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: photo with blur. Ladder: define the interval -&gt;
+    compute the toy -&gt; justify 1/sqrt(n) -&gt; implement
+    wilson -&gt; predict the cluster failure. Transfer:
+    uncertainty for A/B test readouts.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: n = 100,
+    w = 62, interval? E2: bands overlap, verdict? E3: 100
+    items from 5 prompts, effective n? Key:
+    <code>../keys/u08_answers.md</code> R28-R30.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, intervals are a caption on <code>u08_fig02.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-costlatency">C11: cost/latency</h3>
+<p>Leaf id <code>cme295-U08-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on budgets. Scope: what evals cost in money and time.
+   Objectives: compute a pairwise eval bill and state the
+   sampling rule. Depends on P23, C02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: full pairwise
+   on 10 models costs how much? Toy: 45 pairs x 500 items =
+   22,500 judge calls. At $0.002 per call: $45. Doubled for
+   swapped orders: $90. The bill is knowable before you run.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Evals are a market. Price every design
+   before you buy it. Sampled pairs are the discount rack,
+   full pairwise is bespoke.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Calls =
+   pairs x items x orders, price per call, latency per call.
+   Assumption: the price list is current, providers change
+   it.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Bill = pairs x items x orders
+   x price. Latency = calls / throughput. Sampling: judge
+   a random subset, scale the interval by 1/sqrt(m).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u08_lab_run.py</code>
+   (lab4 bill): 10 models, 500 items, swapped: 45,000 calls,
+   $90 at $0.002. Sampled 100 items: $18, interval 2.2x
+   wider. The tradeoff is explicit.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>bill(models, items,
+   orders=2, price=0.002)</code>: return pairs x items x orders x
+   price. Run it before every eval design.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: actual
+   spend within 10% of the bill. Overruns mean retries or
+   price changes.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   The meta-cost: pricing the eval is free, skipping it is
+   how $90 becomes $900.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Full evals
+    (precise, pricey). Tiny samples (cheap, wide bands).
+    Choose the sample size that buys the needed precision.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: price is stable. Counterexample: the
+    provider doubles the price mid-quarter. Re-price
+    before big runs.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    eval-efficiency literature. Extension: find your
+    minimum sample for a 0.05 band.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: shopping. Ladder: define the bill -&gt; compute
+    the toy -&gt; justify sampling -&gt; implement bill -&gt;
+    predict the price-change failure. Transfer: pricing a
+    data-labeling run.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: 6 models,
+    200 items, swapped, $0.002, bill? E2: sample 50 items,
+    band factor? E3: spend 2x the bill, what happened?
+    Key: <code>../keys/u08_answers.md</code> R31-R33.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the bill is a caption on <code>u08_fig05.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-benchmark-interpretation">C12: benchmark interpretation</h3>
+<p>Leaf id <code>cme295-U08-C12</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;benchmarks&rdquo;, L7).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L7 benchmarks. Scope: reading scores without fooling
+   yourself. Objectives: state the five benchmark caveats
+   and the saturation rule. Depends on C08, C09, C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: model X scores
+   92 on the benchmark, model Y scores 91, is X better? Toy:
+   with n = 500 the band is +/- 0.024, the gap is noise.
+   With contamination unmeasured, both numbers are suspect.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A benchmark is a thermometer. It reads
+   temperature, not health. A broken thermometer reads
+   whatever it wants.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Score,
+   band, contamination status, saturation point.
+   Assumption: the benchmark measures something you care
+   about, most measure something adjacent.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Five caveats: (1) bands (C10),
+   (2) contamination (C08), (3) saturation (everyone near
+   100), (4) gaming (training to the test), (5) construct
+   validity (does it test the skill). Check all five before
+   quoting a number.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u08_lab_run.py</code>
+   (lab5 bench): 92 vs 91 on n = 500: bands [0.893, 0.941]
+   and [0.882, 0.932], overlap. Verdict: tie. Saturation:
+   5 models above 0.90, the benchmark no longer separates
+   them.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>read_bench(scores,
+   n, contam)</code>: attach bands, flag contamination unknown,
+   flag saturation above 0.90. Return the annotated table.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: no
+   naked scores in any report, every number carries its
+   band and its contamination status.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Interpretation is free. Misinterpretation costs product
+   decisions.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Leaderboard
+    worship (simple, wrong). Ignoring benchmarks (blind).
+    Choose annotated reading, the middle path.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the benchmark is clean. Counterexample:
+    half the items are in the training set, the ranking
+    inverts on fresh items. Quarantine first.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    benchmark-critique literature. Extension: re-rank 5
+    models on a fresh paraphrase set, compare orders.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: thermometer. Ladder: define the caveats -&gt;
+    compute the toy -&gt; justify the tie verdict -&gt;
+    implement read_bench -&gt; predict the contamination
+    failure. Transfer: reading hiring benchmarks.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: 92 vs 91,
+    n = 500, verdict? E2: five models above 0.90, what
+    now? E3: three must-haves on every reported score.
+    Key: <code>../keys/u08_answers.md</code> R34-R36.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u08_fig05.png</code>: chapter plate, metric ladder plus the
+    five caveats. Source: original. Tradeoff map, no
+    invented numbers.</p>
+</li>
+</ol>
+      
+      <nav class="pager"><a href="../keys/u07_answers.html"><span class="lbl">← Previous</span>U07 · Answers</a><a href="../keys/u08_answers.html"><span class="lbl">Next →</span>U08 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

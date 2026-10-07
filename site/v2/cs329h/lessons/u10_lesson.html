@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U10 · Research projects and oral mastery — CS329H: Machine Learning from Human Preferences</title>
+<meta name="description" content="Unit 10: Research projects and oral mastery.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs329h-u10">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS329H: Machine Learning from Human Preferences</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../lessons/u01_lesson.html" data-page="cs329h-u01">U01 · Preferences, choices, and ge</a></li>
+<li><a href="../lessons/u02_lesson.html" data-page="cs329h-u02">U02 · Random utility, axioms, and </a></li>
+<li><a href="../lessons/u03_lesson.html" data-page="cs329h-u03">U03 · Choice estimation and Bayesi</a></li>
+<li><a href="../lessons/u04_lesson.html" data-page="cs329h-u04">U04 · Fisher information and exper</a></li>
+<li><a href="../lessons/u05_lesson.html" data-page="cs329h-u05">U05 · RLHF and DPO</a></li>
+<li><a href="../lessons/u06_lesson.html" data-page="cs329h-u06">U06 · Active elicitation and assis</a></li>
+<li><a href="../lessons/u07_lesson.html" data-page="cs329h-u07">U07 · Acquisition, Thompson sampli</a></li>
+<li><a href="../lessons/u08_lesson.html" data-page="cs329h-u08">U08 · Inversion, style, and bounde</a></li>
+<li><a href="../lessons/u09_lesson.html" data-page="cs329h-u09">U09 · Aggregation, impossibility, </a></li>
+<li><a href="../lessons/u10_lesson.html" data-page="cs329h-u10" class="active">U10 · Research projects and oral m</a></li>
+<li><a href="../cheatsheet.html" data-page="cs329h-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs329h-crash">Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / U10 · Research projects and oral mastery</nav>
+      <h1>U10 · Research projects and oral mastery</h1>
+      
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="uu10-research-projects-and-oral-mastery">UU10: research projects and oral mastery</h1>
+<p>Prerequisites: Bridges P21-P24, U07-C09 and U07-C10 for the dueling baseline, U09-C12 for the welfare framing.. Local remediation opens this lesson.</p>
+<h2 id="provenance">Provenance</h2>
+<p>Session S18 (&ldquo;Summary and practical tips&rdquo;, 30 Nov 2026) is PLANNED. All twelve concepts are taught as independent theory: PLANNED / SOURCE ATTRIBUTION PENDING. The capstone runs are original simulations on this machine.</p>
+<h2 id="local-remediation-run-the-uniform-baseline-first-it-calibrates-every-claim-later">Local remediation: Run the uniform baseline first, it calibrates every claim later.</h2>
+<p>If dueling TS theory is shaky, re-read U07 before the replication.</p>
+<h2 id="russian-doll-ladder-for-the-major-mechanism-thesis-to-plan-to-experiment-to-verdict">Russian-doll ladder for the major mechanism (thesis to plan to experiment to verdict)</h2>
+<ul>
+<li>Shell 0: U01 preference models</li>
+<li>Shell 1: U07 dueling bandits</li>
+<li>Shell 2: U09 aggregation</li>
+</ul>
+<h2 id="not-yet-understood-dependency-list">Not-yet-understood dependency list</h2>
+<ol>
+<li>real human preference datasets</li>
+<li>a published replication</li>
+</ol>
+<hr />
+<h3 id="cs329h-u10-c01-pre-analysis-plan">cs329h-U10-C01: pre-analysis plan</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S01). Objective: write a research plan before running code. Depends on P21.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: how do you stop yourself from p-hacking? Toy: the capstone A plan (frozen before the run).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> A pre-analysis plan names the hypotheses, the metric, the sample, the success rule, and the failure rule before any number exists. It turns &ldquo;it worked&rdquo; into a checkable claim.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Plan elements: H (hypotheses), M (metric), N (sample), S (success rule), F (failure rule). Assumption: the plan is timestamped before the data run.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Capstone A plan: H1 (dueling TS &lt; uniform), H2 (leader TS &lt; dueling TS), metric mean cumulative strong regret, T=200, 20 seeds, success = lower mean with non-overlapping 95 percent CIs, failure = overlap or reversal.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> The plan text (above). Same as capstones/replicate_dueling_ts.py docstring.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Write the five-element plan. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: an independent reader could run it. Check: the failure rule is written before the numbers. Expected: the frozen plan.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1). Discipline, not compute.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: no plan (claims shift with the results). Alternative: plan after seeing data (fraud). Choose the frozen plan.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the plan is vague enough to declare victory anyway. Counterexample: &ldquo;TS performs well&rdquo; with no metric.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: preregister a real replication. Falsifiable: the plan either predicts the outcome or does not.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the five elements. Oral ladder through the capstone plan. Transfer: an A/B test. Failure diagnosis: &ldquo;our method works&rdquo; with no baseline. Explain. Counterfactual: what if data were free? Research: preregistration.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) name the elements. (E2) write the capstone A success rule. (E3) spot the vague plan. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u10_f01.png: lesson plate, source original plan, alt text &ldquo;Before: vague claim. After: five elements (hypotheses, metric, sample, success rule, failure rule), frozen before the run.&rdquo; Audit: before state vague, after state the plan, rule named. No conflict.</p>
+<figure><img alt="Before: vague claim. After: five elements (hypotheses, metric, sample, success rule, failure rule), frozen before the run." src="../assets/u10_f01.png"><figcaption>Before: vague claim. After: five elements (hypotheses, metric, sample, success rule, failure rule), frozen before the run.</figcaption></figure>
+<h3 id="cs329h-u10-c02-literature-review">cs329h-U10-C02: literature review</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S01). Objective: read the baseline literature before proposing. Depends on P22.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what already exists? Toy: the dueling-bandit literature behind capstone A.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> A literature review finds the closest published methods, re-derives their key result, and implements the simplest one. Your contribution is measured against the strongest baseline, not the weakest.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> The reading contract: (1) the problem statement, (2) the theorem, (3) the proof sketch, (4) the experimental setup. Assumption: you read the proof, not just the abstract.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Worked: dueling bandits. Problem: learn the best arm from pairwise comparisons. Key result: Thompson sampling achieves low regret empirically. Setup: Bradley-Terry simulator, 4 arms.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: the four contract elements above. Same as the capstone README.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Fill the reading contract for one paper. Table template.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: every cell is specific (numbers, not adjectives). Expected: the completed table.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: skim abstracts (misses the mechanism). Alternative: skip reading (reinvent badly). Choose the contract.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the baseline is misread (wrong metric). Counterexample: compare cumulative regret to simple regret.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: replicate the baseline result. Falsifiable: the numbers either match or they do not.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the contract. Oral ladder through the dueling baseline. Transfer: a new drug trial. Failure diagnosis: &ldquo;we beat the state of the art&rdquo; against a weak baseline. Explain. Counterfactual: what if no baseline existed? Research: survey methods.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) state the contract. (E2) fill it for dueling TS. (E3) spot the metric mismatch. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the table is the artifact. No plate. Logged.</p>
+<h3 id="cs329h-u10-c03-hypothesis">cs329h-U10-C03: hypothesis</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S01). Objective: turn an intuition into a falsifiable hypothesis. Depends on C01, C02.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what exactly do you predict? Toy: H2 (leader-focused TS beats vanilla dueling TS).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> A hypothesis names the intervention, the outcome, the direction, and the condition. &ldquo;Leader-focused dueling TS has lower mean strong regret than vanilla dueling TS on the 4-arm BT bandit&rdquo; is falsifiable, &ldquo;a better acquisition helps&rdquo; is not.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Hypothesis form: intervention I, outcome O, direction D, condition K. Assumption: the condition is checkable.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> H2 as written above. It failed (leader TS mean 8.36 vs TS 3.11). The failure is data: challenges are costly.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: the two hypotheses H1 and H2 with their directions. Same numbers as the capstone results.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Rewrite a vague intuition as I/O/D/K. Template.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the direction could be wrong (it was). Expected: the rewritten hypothesis.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: vague intuition (cannot fail). Alternative: many hypotheses (multiple-comparison fishing). Choose one sharp hypothesis per experiment.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the hypothesis is true by definition (circular). Counterexample: &ldquo;the method that picks better arms gets lower regret&rdquo;.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test H2 variants (different focus rules). Falsifiable: each variant either beats TS or does not.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the four parts. Oral ladder through H2. Transfer: a product feature test. Failure diagnosis: &ldquo;our intuition was confirmed&rdquo; with no direction stated. Explain. Counterfactual: what if the direction were unstated? Research: hypothesis design.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) state the form. (E2) write H2 in the form. (E3) spot the circular hypothesis. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the hypothesis rewrites are the artifact. No plate. Logged.</p>
+<h3 id="cs329h-u10-c04-data-consent">cs329h-U10-C04: data consent</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S01). Objective: design consent for preference-data collection. Depends on P24, U01-C10.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: the raters label 6000 pairs. What did they agree to? Toy: the consent form for the capstone B rater pool (hypothetical).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Data consent for preference collection: purpose (what the data trains), voluntariness, withdrawal (can a rater leave and take their labels?), data use (who sees the labels), retention. Preference data is opinion data: it reveals the rater.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> The consent contract: purpose, voluntary participation, withdrawal terms, data-use limits, retention period. Assumption: raters can read the form.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Worked: the hypothetical rater pool. Purpose: train a preference model. Withdrawal: labels removed within 30 days (HYPOTHETICAL terms). Use: research only. Retention: 2 years (HYPOTHETICAL). Every term is labeled hypothetical.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: the five contract elements above. Same structure as the capstone B README.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Write the consent form. Template.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: every element has a named term. Expected: the completed form.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1). Governance, not compute.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: no consent (exploitation). Alternative: a click-through nobody reads (theater). Choose the readable contract.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: withdrawal is promised but technically impossible (labels already in the model). Counterexample: &ldquo;withdraw anytime&rdquo; with no removal mechanism.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test rater comprehension of the form. Falsifiable: quiz the raters.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the five elements. Oral ladder through the withdrawal problem. Transfer: a medical trial. Failure diagnosis: raters revolt over data use. Explain. Counterfactual: what if data were public? Research: consent design.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U10 task 3 writes the consent form. Exercises: (E1) name the elements. (E2) write the withdrawal term. (E3) spot the impossible promise. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u10_f04.png: lesson plate, source original synthetic run, alt text &ldquo;25 synthetic raters, 2000 prompts x 3 pairs. Funnel 6000 to 5664. Labels reveal the rater.&rdquo; Audit: before state who is labeled, after state the consent scope, rule named. No conflict.</p>
+<figure><img alt="25 synthetic raters, 2000 prompts x 3 pairs. Funnel 6000 to 5664. Labels reveal the rater." src="../assets/u10_f04.png"><figcaption>25 synthetic raters, 2000 prompts x 3 pairs. Funnel 6000 to 5664. Labels reveal the rater.</figcaption></figure>
+<h3 id="cs329h-u10-c05-method-baselines">cs329h-U10-C05: method baselines</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S02). Objective: run the baseline ladder and read the numbers. Depends on C01-C04, U07-C07.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: did the replication work? Toy: capstone A numbers.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Method baselines: uniform (17.24, CI [16.56, 17.92]), dueling TS (3.11, CI [2.23, 3.99]), leader TS (8.36, CI [6.86, 9.87]). H1 supported, H2 not supported.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Verdict rule: lower mean plus non-overlapping 95 percent CIs. Assumption: 20 seeds give honest CIs.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> H1: TS beats uniform by 14.13 with no CI overlap. H2: leader TS is worse than TS by 5.25. The extension adds regret.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> The numbers above (computed by replicate_dueling_ts.py). Same numbers as figure u10_f02 and the capstone README.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Compute means, SDs, CIs from the per-seed regrets. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the JSON matches the figure. Expected: the verdicts.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(seeds x T).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: eyeball the curves (misses the overlap). Alternative: p-values without the effect size (thin). Choose means plus CIs.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the CIs are read as hard bounds. Counterexample: &ldquo;the true mean cannot be 4.0&rdquo; (it can, CI is a procedure).</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test on 8 arms (does the ordering hold?). Falsifiable: re-run.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the verdicts. Oral ladder through the numbers. Transfer: a clinical trial readout. Failure diagnosis: overlapping CIs claimed as a win. Explain. Counterfactual: what if seeds were 5? Research: replication standards.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U10 tasks 4-5 re-run the ladder. Exercises: (E1) state the verdicts. (E2) compute one CI. (E3) argue the CI misreading. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u10_f02.png: lesson plate, source original simulation, alt text &ldquo;Bars with CIs: uniform 17.24, dueling TS 3.11, leader TS 8.36. H1 supported, H2 not.&rdquo; Audit: before state plan, after state verdicts, rule named. No conflict.</p>
+<figure><img alt="Bars with CIs: uniform 17.24, dueling TS 3.11, leader TS 8.36. H1 supported, H2 not." src="../assets/u10_f02.png"><figcaption>Bars with CIs: uniform 17.24, dueling TS 3.11, leader TS 8.36. H1 supported, H2 not.</figcaption></figure>
+<h3 id="cs329h-u10-c06-uncertainty">cs329h-U10-C06: uncertainty</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S02). Objective: quantify what the numbers do not know. Depends on C05.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: the mean is 3.11. How sure are we? Toy: the CI machinery behind capstone A.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Uncertainty quantification: report the mean, the SD, the SE, and the 95 percent CI for every number. State what varies (seeds) and what does not (the environment). TS: mean 3.11, SD 2.01, CI [2.23, 3.99].</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> CI = mean +/- 1.96 x SD / sqrt(n), n = 20 seeds. Assumption: seeds are exchangeable, the environment is fixed.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Worked: uniform SD 1.55 (tight), TS SD 2.01, leader SD 3.43 (wide: the extension is unstable). The SD is information, not noise to hide.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: the three SD/CI rows above (computed). Same numbers as results_cap_a.json.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Compute SD, SE, CI from per-seed values. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the SD is reported, not just the mean. Expected: the uncertainty table.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(n).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: mean only (hides the instability). Alternative: min/max (no procedure). Choose mean plus SD plus CI.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the wide SD is treated as a bug to fix by cherry-picking seeds. Counterexample: drop the worst 5 seeds and &ldquo;improve&rdquo; the CI.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: bootstrap the CI (falsifiable: compare).</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state what varies and what does not. Oral ladder through the leader SD. Transfer: a poll margin of error. Failure diagnosis: the mean is quoted without the SD. Explain. Counterfactual: what if n were 200? Research: uncertainty reporting.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U10 task 5 builds the uncertainty table. Exercises: (E1) state the CI formula. (E2) compute the leader SE. (E3) argue the cherry-picking failure. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the uncertainty table is the artifact. No plate. Logged.</p>
+<h3 id="cs329h-u10-c07-reproducible-code">cs329h-U10-C07: reproducible code</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S02). Objective: make the experiment re-runnable by a stranger. Depends on C05, C06.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: can someone re-run capstone A? Toy: the two-run check (identical JSON).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Reproducible code: fixed seeds, pinned environment, committed scripts, outputs written to files. The check: run twice, diff the outputs. Capstone A passed: identical JSON across runs.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> The reproducibility contract: seeds fixed, dependencies named, one command reproduces the numbers. Assumption: the machine runs the same code.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Worked: capstones/replicate_dueling_ts.py. One command reproduces results_cap_a.json and figures/cap_a_regret.png. The two-run diff was empty.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: the contract elements above. Same as the capstone README.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Run the two-run check. Five commands.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the diff is empty. Expected: REPRODUCIBLE.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(2 x run).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: &ldquo;runs on my machine&rdquo; (unverifiable). Alternative: notebooks with hidden state (order-dependent). Choose scripts with fixed seeds.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: a dependency updates silently and the numbers drift. Counterexample: NumPy changes a sampler, the JSON differs. Fix: record the version.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: run on a second machine. Falsifiable: the diff.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the contract. Oral ladder through the two-run check. Transfer: a clinical analysis pipeline. Failure diagnosis: the numbers drift between runs. Explain. Counterfactual: what if seeds were unfixable? Research: reproducibility standards.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U10 task 6 runs the two-run check. Exercises: (E1) state the contract. (E2) run the check. (E3) argue the silent-dependency failure. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the check log is the artifact. No plate. Logged.</p>
+<h3 id="cs329h-u10-c08-contribution-statements">cs329h-U10-C08: contribution statements</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S01). Objective: state what is new relative to the baseline. Depends on C02, C05.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what did capstone A contribute? Toy: the contribution sentence.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> A contribution statement names the delta over the strongest baseline: what you did, what changed, what the evidence is. &ldquo;We replicated dueling TS vs uniform on a 4-arm BT bandit and falsified the leader-focus extension (8.36 vs 3.11).&rdquo;</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> The contribution form: baseline B, intervention I, evidence E, scope S. Assumption: the baseline is the strongest known (C02).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Worked: B = dueling TS (C02 literature). I = leader-focused dueling. E = mean 8.36 vs 3.11, non-overlapping CIs, 20 seeds. S = 4-arm BT simulation (not humans).</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: the four form elements above. Same numbers as the capstone JSON.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Write the contribution sentence. Template.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the scope names what is NOT claimed. Expected: the completed sentence.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: &ldquo;novel method&rdquo; with no baseline (unmeasurable). Alternative: claim beyond the scope (humans). Choose the bounded statement.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the contribution is the baseline relabeled. Counterexample: &ldquo;we propose TS for duels&rdquo; (it exists).</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: have a peer grade the statement. Falsifiable by review.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the form. Oral ladder through the capstone statement. Transfer: a patent claim. Failure diagnosis: the statement claims human generality. Explain. Counterfactual: what if no baseline existed? Research: novelty assessment.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U10 task 7 writes the statement. Exercises: (E1) state the form. (E2) write the scope. (E3) spot the relabeled baseline. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the statement is the artifact. No plate. Logged.</p>
+<h3 id="cs329h-u10-c09-integrityreflectionimpact">cs329h-U10-C09: integrity/reflection/impact</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S01). Objective: practice research integrity: reflect on limits, state impact. Depends on C01-C08.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what could go wrong if this research were used? Toy: the capstone A reflection.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Integrity: report the negative result (C11), do not p-hack (C01). Reflection: the limits (simulated BT, 4 arms, no humans). Impact: who benefits and who could be harmed (better elicitation helps assistants, the same methods optimize manipulation).</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> The reflection form: integrity (what was reported honestly), limits (what the experiment cannot say), impact (who is affected). Assumption: the reflection is written, not implied.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Worked: integrity (H2 failure reported with numbers). Limits (no human data). Impact (preference elicitation at scale concentrates influence over what users see).</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: the three form elements above. Same numbers as the capstone results.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Write the reflection. Template.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the negative result appears. Expected: the completed reflection.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: impact as boilerplate (&ldquo;no foreseeable harm&rdquo;). Alternative: no reflection (limits discovered by reviewers). Choose the written form.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the reflection is written after acceptance pressure kills it. Counterexample: the H2 failure quietly dropped from the draft.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: none, practice.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the form. Oral ladder through the impact claim. Transfer: an IRB statement. Failure diagnosis: &ldquo;no foreseeable harm&rdquo; for a persuasion method. Explain. Counterfactual: what if the method only helped? Research: impact assessment.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U10 task 7 includes the reflection. Exercises: (E1) state the form. (E2) write the limits. (E3) spot the dropped negative result. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u10_f05.png: lesson plate, source original audit, alt text &ldquo;Gates: agreement pass, position pass, drift fail, size pass. Decision BLOCK.&rdquo; Audit: before state metrics, after state the verdict, rule named. No conflict.</p>
+<figure><img alt="Gates: agreement pass, position pass, drift fail, size pass. Decision BLOCK." src="../assets/u10_f05.png"><figcaption>Gates: agreement pass, position pass, drift fail, size pass. Decision BLOCK.</figcaption></figure>
+<h3 id="cs329h-u10-c10-quizzesoral-formats">cs329h-U10-C10: quizzes/oral formats</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S01). Objective: prepare for oral assessment formats. Depends on the whole course.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: how is oral mastery tested? Toy: the 8-rung ladder drill.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Oral formats: the quiz (timed, written), the ladder drill (one claim, eight follow-ups: define, toy, derive, implement and complexity, compare, debug, critique, design), the demo (one screen, one claim, live run, the decision).</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> The ladder contract: one claim, eight rungs, no notes after rung 2. Assumption: the claim is from this course.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Worked: claim &ldquo;H1 supported&rdquo;. Define strong regret. Toy: the 4-arm bandit. Derive the verdict rule. Implement: the CI code. Compare: uniform. Debug: unpaired seeds. Critique: simulated BT, not humans. Design: the human replication.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: the eight rungs above. Same as interview/oral-defenses.md ladder 1.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Run the drill with a partner. Instructions.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: every rung answered without notes. Expected: the completed ladder.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: slides for every rung (hides gaps). Alternative: memorized script (breaks on follow-ups). Choose the drill.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the drill stops at rung 3 (derivation skipped). Counterexample: &ldquo;the math is in the paper&rdquo;.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: record and review (falsifiable by playback).</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the three formats and the eight rungs. Oral ladder through the claim. Transfer: a thesis defense. Failure diagnosis: the speaker cannot derive the claim. Explain. Counterfactual: what if notes were allowed? Research: oral assessment.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U10 task 8 designs a ladder. Exercises: (E1) name the rungs. (E2) write the debug rung. (E3) spot the skipped derivation. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figures visuals/u10_f06.png (the ladder) and u10_f07.png (the demo checklist): lesson plates, source original drill, alt text &ldquo;Eight rungs: define, toy, derive, implement, compare, debug, critique, design. Demo: one screen, one claim, live run, the decision.&rdquo; Audit: before state the claim, after state the defense, rule named. No conflict.</p>
+<h3 id="cs329h-u10-c11-negative-results">cs329h-U10-C11: negative results</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S02). Objective: report a failed hypothesis honestly. Depends on C05, C06.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: H2 failed. What now? Toy: the leader-TS extension.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> A negative result is a result: the leader-focused extension achieved 8.36 vs 3.11 for vanilla TS. The honest report says the acquisition design added regret, and hypothesizes why (challenges cost strong regret).</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> The negative-result report: (1) the hypothesis, (2) the numbers, (3) the diagnosis, (4) what it rules out. Assumption: the experiment was sound (C01-C04 hold).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Report: H2 not supported. Numbers 8.36 vs 3.11, CIs [6.86, 9.87] vs [2.23, 3.99]. Diagnosis: forcing duels against the least-tried challenger spends rounds on weak arms. Ruled out: &ldquo;any leader focus helps&rdquo;.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: the four-part report above. Same numbers as the capstone JSON.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Write the negative-result report. Template.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the hypothesis is not quietly dropped. Expected: the completed report.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: bury the failure (publication bias). Alternative: spin it (&ldquo;promising direction&rdquo;). Choose the honest report.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the diagnosis is invented without a follow-up test. Counterexample: &ldquo;probably the beta prior&rdquo; with no ablation.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: ablate the focus rule (falsifiable).</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the four parts. Oral ladder through the H2 failure. Transfer: a failed drug trial. Failure diagnosis: the failure is hidden in an appendix. Explain. Counterfactual: what if the experiment were unsound? Research: reporting standards.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U10 task 8 writes the report. Exercises: (E1) state the parts. (E2) write the diagnosis. (E3) spot the spin. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u10_f03.png: lesson plate, source original simulation, alt text &ldquo;H2 failed: leader TS 8.36 vs dueling TS 3.11. The extension added regret.&rdquo; Audit: before state the hypothesis, after state the failure, rule named. No conflict.</p>
+<figure><img alt="H2 failed: leader TS 8.36 vs dueling TS 3.11. The extension added regret." src="../assets/u10_f03.png"><figcaption>H2 failed: leader TS 8.36 vs dueling TS 3.11. The extension added regret.</figcaption></figure>
+<h3 id="cs329h-u10-c12-open-source-gaps">cs329h-U10-C12: open source gaps</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S01). Objective: name what the field lacks in open artifacts. Depends on the whole course.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what is absent from the open ecosystem? Toy: the gap list for preference learning.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Open source gaps in preference learning: (1) open preference datasets with full provenance (who labeled, under what protocol), (2) open evaluation riges for reward models with subgroup slicing, (3) replication code for published acquisition methods, (4) audit tooling for annotation pipelines. Each gap is a project a student could own.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> A gap statement: what is absent, why it matters, what &ldquo;done&rdquo; looks like. Assumption: the gap is real (checked by looking).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Worked: gap 2. Missing: an open reward-model eval with subgroup slicing (U09-C08). Why it matters: pooled accuracy hides failing groups. Done: a rig that reports per-group accuracy on a public dataset.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: the four gaps above (qualitative, no invented numbers). Same structure as the course map.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Write one gap statement. Template.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: &ldquo;done&rdquo; is checkable. Expected: the completed statement.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: assume the ecosystem is complete (it is not). Alternative: vague &ldquo;more datasets&rdquo; (not a project). Choose the checkable gap.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the gap was filled last year (not checked). Counterexample: propose an eval rig that already exists.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: fill one gap (falsifiable by the artifact).</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the four gaps. Oral ladder through gap 2. Transfer: any open-source ecosystem. Failure diagnosis: the gap statement has no &ldquo;done&rdquo;. Explain. Counterfactual: what if everything were open? Research: ecosystem analysis.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U10 task 8 includes a gap statement. Exercises: (E1) name the gaps. (E2) write the &ldquo;done&rdquo; for gap 2. (E3) spot the already-filled gap. Keys in answer_keys/u10_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u10_f08.png: lesson plate, source original map, alt text &ldquo;Ten units: U01 preferences, U02-U03 rewards, U04 policy, U05 evaluation, U06-U07 active elicitation, U08 inversion, U09 aggregation, U10 research. Open gaps sit on top.&rdquo; Audit: before state fragments, after state the map, rule named. No conflict.</p>
+<figure><img alt="Ten units: U01 preferences, U02-U03 rewards, U04 policy, U05 evaluation, U06-U07 active elicitation, U08 inversion, U09 aggregation, U10 research. Open gaps sit on top." src="../assets/u10_f08.png"><figcaption>Ten units: U01 preferences, U02-U03 rewards, U04 policy, U05 evaluation, U06-U07 active elicitation, U08 inversion, U09 aggregation, U10 research. Open gaps sit on top.</figcaption></figure>
+      
+      <nav class="pager"><a href="../lessons/u09_lesson.html"><span class="lbl">← Previous</span>U09 · Aggregation, impossibility, and fairness</a><a href="../cheatsheet.html"><span class="lbl">Next →</span>Cheatsheet</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

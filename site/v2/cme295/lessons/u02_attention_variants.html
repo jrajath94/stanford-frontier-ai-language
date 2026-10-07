@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U02 · Transformer variants and positional mechanisms — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Lesson: Transformer variants and positional mechanisms.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-u02">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cme295-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_attention_variants.html" data-page="cme295-u02" class="active">U02 · Transformer variants and posit</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_llm_generation.html" data-page="cme295-u03">U03 · LLM architecture and generatio</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_training_adaptation.html" data-page="cme295-u04">U04 · Training and efficient adaptat</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_preference_optimization.html" data-page="cme295-u05">U05 · Preference tuning and policy o</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_reasoning_scaling.html" data-page="cme295-u06">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_rag_agents.html" data-page="cme295-u07">U07 · RAG and agentic systems</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_llm_evaluation.html" data-page="cme295-u08">U08 · LLM evaluation and judging</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_trends_synthesis.html" data-page="cme295-u09">U09 · Current trends, exams, and syn</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="../interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="../interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="../interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="../interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="../interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cme295-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cme295-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/research_grpo_extension.html" data-page="cme295-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / U02 · Transformer variants and positional mechanisms</nav>
+      <h1>U02 · Transformer variants and positional mechanisms</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u02-transformer-variants-and-positional-mechanisms">U02 , Transformer variants and positional mechanisms</h1>
+<p>Prerequisites: P04, P12, P14. Bridge links in <code>../prerequisites.md</code>.
+Lecture anchor: L2 (Oct 2, 2026). Claim class: OFFICIAL-SYLLABUS for
+MHA/MQA/GQA, position embeddings (RoPE and variants), model families.
+REQUESTED-BRANCH for attention approximation, cache math detail,
+complexity analysis, and failure cases (KV caching is named in L5).
+All leaves: PLANNED / SOURCE ATTRIBUTION PENDING until slide or
+transcript extraction verifies them.
+Notation: see <code>../notation_and_shapes.md</code>. Glossary: <code>../glossary.md</code>.</p>
+<h2 id="not-yet-understood">Not yet understood</h2>
+<p>Concepts this unit uses but does not teach. Each one arrives in a
+later unit.</p>
+<ol>
+<li>Next-token sampling (U03): temperature, top-k, top-p.</li>
+<li>Training and adaptation (U04): SFT, LoRA, optimizer memory.</li>
+<li>Preference tuning (U05): DPO, RLHF, reward models.</li>
+<li>Reasoning RL (U06): GRPO, verifiers, test-time scaling.</li>
+<li>RAG and agents (U07): retrieval pipelines and ReAct loops.</li>
+<li>LLM evaluation (U08): judging, bias, calibration, intervals.</li>
+</ol>
+<h2 id="local-remediation-projections-softmax-stability-rotation">Local remediation , projections, softmax stability, rotation</h2>
+<p>Do this block first if diagnostic items D1, D2, or D6 were not full
+marks.</p>
+<p><strong>R0.1 Projection.</strong> W in R^{d x d}, x in R^d. y = Wx is a learned
+linear map: it rotates, scales, and mixes the axes. Q = XW_q means
+every position&rsquo;s vector is remapped before it becomes a query. Three
+different maps (W_q, W_k, W_v) let one vector play three roles.</p>
+<p><strong>R0.2 Stable softmax.</strong> Compute m = max(z), then exp(z - m) / sum.
+The shift changes nothing mathematically (it factors out) and prevents
+overflow. Check: softmax([1000, 1001]) = softmax([0, 1]).</p>
+<p><strong>R0.3 2D rotation.</strong> R(theta) = [[cos, -sin], [sin, cos]]. R(theta)
+applied to (1, 0) gives (cos theta, sin theta): length preserved,
+angle added. R(a)R(b) = R(a+b): rotations compose by adding angles.
+RoPE is this fact applied per position.</p>
+<hr />
+<h3 id="c01-attention-approximation">C01: attention approximation</h3>
+<p>Leaf id <code>cme295-U02-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   extension: the syllabus names efficient kernels and Flash Attention
+   (L5) but not approximation theory. Scope: replacing exact softmax
+   attention with a cheaper form. Objectives: write the kernel
+   factorization, state the unbiasedness claim, and compute the FLOP
+   ratio on a toy. Depends on P04 (low-rank ideas) and P14.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: exact attention costs
+   O(T^2 d), what if we never form the T x T matrix? Toy: replace
+   exp(q . k) with phi(q) . phi(k) for a feature map phi. Then
+   attention becomes (phi(Q)(phi(K)^T V)) computed right to left in
+   O(T d^2).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The softmax kernel is a similarity function.
+   Approximate the similarity with an inner product of random
+   features, the matrix product then associates the other way and the
+   quadratic term disappears. Randomness buys speed, variance is the
+   price.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> phi: R^d -&gt; R^m
+   (feature map, m features). Approximation:
+   softmax(QK^T/sqrt(d)) V ~= D^{-1} (phi(Q) (phi(K)^T V)) with row
+   normalizer D. Assumption: E[phi(q) . phi(k)] = exp(q . k / sqrt(d))
+   (unbiased), the variance is finite and controlled by m.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Performer (Choromanski et al., 2020):
+   draw random directions w_i, phi(x) = exp(w^T x - |x|^2/2) /
+   sqrt(m). Then E[phi(q)^T phi(k)] = exp(q^T k). The attention sum
+   becomes sum_v phi(q)^T phi(k_v) v_v = phi(q)^T (sum_v phi(k_v)
+   v_v^T): compute S = phi(K)^T V once (m x d), then multiply per
+   query. No T x T matrix ever exists.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u02.py</code> (T = 4096,
+   d = 512): exact attention ~8.6e9 toy FLOPs, linear form ~1.1e9,
+   ratio 8.0. The ratio grows with T: at T = 32768 the gap is 64x.
+   Figure: <img alt="u02_fig04" src="../assets/u02_fig04.png" title="u02_fig04" /> (chapter plate).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>linear_attention(Q,
+   K, V, phi)</code>: Kf = phi(K) (T x m), S = Kf^T @ V (m x d),
+   z = Kf.sum(0) (m,), return (phi(Q) @ S) / (phi(Q) @ z). Ten
+   lines. The division is the row normalizer.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: with m large
+   the output approaches exact softmax attention on random data,
+   the normalizer keeps rows summing to 1, doubling m halves the
+   variance. If rows do not sum to 1, the normalizer is wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Time O(T m d), memory O(m d + T m). Statistically: unbiased but
+   noisy, downstream quality depends on m and the task. Numerically:
+   the exp features can overflow, the -|x|^2/2 term stabilizes them.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Exact
+    attention with Flash Attention (L5/U06 scope) keeps exactness
+    and cuts memory IO. Sparse patterns (local windows) are exact
+    on a subset. Choose approximation when T is huge and some noise
+    is affordable, choose exact + IO-aware kernels otherwise.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: unbiased means good. Counterexample: at small m the
+    variance swamps the signal and training diverges, unbiasedness
+    says nothing about any single run. Always report m and seed
+    sweeps.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Choromanski
+    et al. (2020, Performer). Extension: fix T and sweep m on a copy
+    task, find the m where accuracy matches exact attention and
+    report the FLOP ratio at that m.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the right-to-left product order. Ladder: define
+    the kernel -&gt; compute the FLOP ratio -&gt; justify unbiasedness -&gt;
+    implement linear_attention -&gt; predict the small-m failure.
+    Transfer: approximate attention over 1M-length genomics, defend
+    m.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: FLOP ratio at
+    T = 1024, d = 512, m = 256. E2: why does the normalizer need
+    phi(K) summed, not phi(Q)? E3: what breaks if phi can be
+    negative? Key: <code>../keys/u02_answers.md</code> R1-R3.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Chapter
+    plate <code>u02_fig04.png</code>: left cost without the rule (exact),
+    center the stored object (feature map), right cost with the rule
+    (linear), footer the tradeoff. Source: original. Numbers from
+    <code>render_u02.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-mha">C02: MHA</h3>
+<p>Leaf id <code>cme295-U02-C02</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;MHA, MQA, GQA&rdquo;. Scope: multi-head attention proper. Objectives:
+   write the head equations, trace per-head shapes, and explain why
+   heads help. Depends on P14 and U01 C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: one attention pattern
+   must track syntax, coreference, and position at once, can it?
+   Toy: d = 64, h = 4, so d_k = 16. Each head learns its own Q, K,
+   V maps and its own pattern, the outputs concatenate.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Heads are parallel attention workers with
+   private projections. Each sees the same input through different
+   lenses. Concatenation plus a final projection mixes their votes.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Per head i:
+   Q_i = XW_q^i, K_i = XW_k^i, V_i = XW_v^i, each (B, T, d_k).
+   Head output O_i = softmax(Q_i K_i^T / sqrt(d_k)) V_i. Concat:
+   (B, T, d), then W_o: (d, d). Assumption: d divisible by h.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Splitting d into h subspaces lets
+   each head specialize: the score softmax runs inside a d_k
+   dimensional space, so heads do not interfere. The 1/sqrt(d_k)
+   scale keeps dot products O(1) at init, so the softmax starts
+   diffuse instead of saturated.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> d = 64, h = 4: per-head parameters
+   3 * 64 * 16 = 3072 for QKV plus 64*64 = 4096 for W_o, total
+   7168 per layer. Scale check: q, k ~ N(0, 1) in 16 dims gives
+   q.k ~ N(0, 16), dividing by sqrt(16) = 4 restores unit scale.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>mha(X)</code>:
+   for each head: project, score, mask, softmax, mix, concat,
+   return concat @ W_o. Twelve lines in numpy with explicit head
+   loops (slow, clear).</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: output shape
+   (B, T, d), with h = 1 the code matches single-head attention,
+   permuting head order with matching W_o columns is invariant. If
+   heads collapse to identical patterns, init or the task is at
+   fault.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Time O(T^2 d) (h heads x d_k = d total width). Memory O(h T^2)
+   scores. More heads at fixed d means thinner heads, past ~d_k = 32
+   the heads starve.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Single-head
+    wide attention (cheaper, less expressive). Multi-query (C03) for
+    inference. Choose MHA for training quality, variants for
+    serving.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: heads specialize. Counterexample: on some tasks
+    heads learn redundant copies, pruning studies remove most heads
+    with small loss. Specialization is an opportunity, not a
+    guarantee.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Vaswani et
+    al. (2017) sections 3.2.2. Extension: measure per-head pattern
+    diversity (mean pairwise distance of attention maps) across
+    layers of a tiny model, report where redundancy peaks.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: why divide by sqrt(d_k)? Ladder: define a head -&gt;
+    trace shapes -&gt; justify the scale -&gt; implement mha -&gt;
+    predict the head-collapse case. Transfer: heads for
+    multi-channel sensor fusion, defend h.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: d_k for d = 768,
+    h = 12. E2: parameters of MHA at d = 128, h = 4. E3: what
+    happens to the softmax at init without the scale? Key:
+    <code>../keys/u02_answers.md</code> R4-R6.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: head, projection, pattern. Lesson plate: before (one
+    mixed pattern) -&gt; rule (split into h heads) -&gt; after (h
+    patterns, concat). Logged as a plate spec with the computed
+    shapes above.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-mqa">C03: MQA</h3>
+<p>Leaf id <code>cme295-U02-C03</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;MHA, MQA, GQA&rdquo;. Scope: multi-query attention. Objectives: state
+   what is shared, compute the KV cache saving, and name the quality
+   cost. Depends on C02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: at decode time the
+   bottleneck is the KV cache load, not math, what if all query
+   heads shared one KV head? Toy: 32 query heads, 1 KV head. The
+   cache shrinks 32x, the queries keep their private projections.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Queries stay diverse, keys and values become a
+   shared bulletin board. Every head reads the same board with its
+   own question. Memory traffic falls, representational bandwidth
+   falls too.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> K, V: (B, 1, T,
+   d_k) broadcast to h heads. Q_i stays (B, T, d_k) per head.
+   Assumption: one KV head can serve all query heads without
+   catastrophic quality loss (true for large models, shaky for
+   small).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Cache bytes = 2 (K and V) * layers *
+   kv_heads * d_k * T * bytes. MQA sets kv_heads = 1. The attention
+   math is unchanged per head, only the K/V projections are shared.
+   Training usually still uses MHA and converts, or trains MQA
+   directly with care.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u02.py</code> (32 layers,
+   32 query heads, d_k = 128, T = 2048, fp16): MHA cache 1024 MiB,
+   MQA cache 32 MiB, ratio 32.0. Figure:
+   <img alt="u02_fig01" src="../assets/u02_fig01.png" title="u02_fig01" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>mqa(X)</code>: K =
+   XW_k, V = XW_v (single head each), for each query head i:
+   scores = Q_i K^T / sqrt(d_k), mix V. The K/V projection code is
+   identical to one MHA head.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: cache bytes
+   match the formula, with kv_heads = h the code reduces to MHA,
+   outputs equal MHA only if the weights were trained that way.
+   If quality drops sharply at small scale, the shared board is too
+   narrow.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Decode memory traffic falls ~32x in the toy, arithmetic barely
+   changes. Quality: large models absorb the sharing, small models
+   lose accuracy on retrieval-heavy tasks.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> GQA (C04) is
+    the middle ground. Choose MQA for maximum inference economy on
+    large models, GQA when quality must stay near MHA.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: sharing never hurts. Counterexample: small models
+    trained with MQA from scratch underperform MHA on benchmarks,
+    the capacity cut bites when the model is already small.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Shazeer
+    (2019, &ldquo;Fast Transformer Decoding: One Write-Head is All You
+    Need&rdquo;). Extension: train tiny MHA vs MQA models at fixed
+    parameters, measure the accuracy gap and the cache ratio.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: what is shared in MQA? Ladder: define the sharing -&gt;
+    compute the 32x -&gt; justify the quality claim -&gt; implement mqa
+    -&gt; predict the small-model failure. Transfer: MQA for a
+    streaming translation cache, defend the choice.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: cache bytes for
+    24 layers, 16 heads, d_k = 64, T = 4096, fp16, MQA. E2: ratio
+    MHA/MQA there. E3: why does the arithmetic cost barely change?
+    Key: <code>../keys/u02_answers.md</code> R7-R9.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u02_fig01.png</code>: Shell 3, one rule (share the KV head), before
+    MHA 32 KV heads, after MQA 1 KV head, cache bytes computed in
+    <code>render_u02.py</code>. Alt text: &ldquo;Plate showing KV head counts and
+    cache sizes for MHA, GQA, and MQA.&rdquo;</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-gqa">C04: GQA</h3>
+<p>Leaf id <code>cme295-U02-C04</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;MHA, MQA, GQA&rdquo;. Scope: grouped-query attention. Objectives:
+   state the grouping, compute the cache size, and place GQA between
+   MHA and MQA. Depends on C02, C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: MQA is fast but costs
+   quality, MHA is quality but slow, is there a dial? Toy: 32 query
+   heads in 8 groups, each group of 4 shares one KV head. Cache
+   falls 4x vs MHA.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> GQA is MHA with sharing and MQA with groups.
+   The group count G is the knob: G = h gives MHA, G = 1 gives MQA.
+   Public example: Llama-2 70B uses G = 8 groups (public model
+   fact, not course content).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> kv_heads = G.
+   Query head i uses KV head floor(i / (h / G)). Cache bytes from
+   the C03 formula with kv_heads = G. Assumption: groups are
+   contiguous in head order.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Same code as MQA with G KV heads.
+   Upcasting: an MHA checkpoint converts to GQA by mean-pooling KV
+   heads within each group, then a short continued training run
+   recovers quality. This made GQA the practical default for open
+   large models.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Same toy as C03 (32 layers, 32 heads,
+   d_k = 128, T = 2048, fp16): GQA with G = 8 gives 256 MiB vs
+   MHA 1024 MiB vs MQA 32 MiB. Figure: <img alt="u02_fig01" src="../assets/u02_fig01.png" title="u02_fig01" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>gqa(X, G)</code>: compute
+   G KV heads, repeat each KV head h/G times along the head axis,
+   run standard MHA math. The repeat is a view, not a copy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: G = h
+   reproduces MHA exactly, G = 1 reproduces MQA, cache bytes match
+   the formula. If G does not divide h, the grouping is invalid.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Cache scales with G. Quality sits between MHA and MQA, at
+   G = 8 the gap to MHA is small in published reports.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> MQA for max
+    economy, MHA for max quality, GQA as the default compromise.
+    Choose G by the memory budget: the largest G that fits.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: mean-pooling KV heads is harmless. Counterexample:
+    pooling without continued training drops quality, the
+    &ldquo;free conversion&rdquo; story needs the recovery run.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Ainslie et
+    al. (2023, GQA). Extension: upcast a tiny MHA to GQA with and
+    without continued training, measure the gap.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: what does G control? Ladder: define groups -&gt; compute
+    256 MiB -&gt; justify the compromise -&gt; implement gqa -&gt; predict
+    the no-recovery failure. Transfer: pick G for a 24 GB card,
+    show the arithmetic.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: cache for G = 4
+    in the C03 toy. E2: which G recovers MHA? E3: why is the repeat
+    a view, and why does that matter? Key: <code>../keys/u02_answers.md</code>
+    R10-R12.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Same
+    figure as C03 (<code>u02_fig01.png</code>), the GQA column is the middle
+    panel. Audit row shared.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-learnedfixed-positions">C05: learned/fixed positions</h3>
+<p>Leaf id <code>cme295-U02-C05</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;Position embeddings&rdquo;. Scope: absolute position schemes before
+   RoPE. Objectives: write the sinusoidal formula, compute
+   wavelengths, and contrast learned vs fixed. Depends on P03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: attention is
+   permutation invariant, how does position 5 know it is fifth?
+   Toy: add a position vector p_m to each token vector. Learned:
+   p_m is a table row. Fixed: p_m from sines and cosines.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Position codes are name tags for slots. Learned
+   tags adapt to the data but stop at the trained length. Fixed
+   sinusoid tags follow a formula, so they extend to any length,
+   with different frequencies tracking coarse vs fine position.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> p_m in R^d for
+   position m. Sinusoid: p_{m,2i} = sin(m / 10000^{2i/d}),
+   p_{m,2i+1} = cos(m / 10000^{2i/d}). Assumption: addition to the
+   token vector does not destroy content (the model learns to
+   separate them).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Wavelength of pair i:
+   lambda_i = 2 pi * 10000^{2i/d}. Low i: short waves track exact
+   offsets, high i: long waves track coarse region. The dot product
+   of two codes depends on the offset m - n plus absolute terms,
+   that absolute residue is why relative schemes (C06, C07) came
+   later.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u02.py</code> (d = 6):
+   wavelengths 6.3, 135.4, 2916.4. The curves over 64 positions show
+   the fast pair oscillating and the slow pair barely moving.
+   Figure: <img alt="u02_fig03" src="../assets/u02_fig03.png" title="u02_fig03" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>sinusoid(T, d)</code>:
+   for m in range(T), i in range(d//2): fill sin and cos. Five
+   lines. Learned: <code>nn.Embedding(T_max, d)</code>.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: p_0 has
+   sin(0) = 0 in even slots, cos(0) = 1 in odd slots, shifting m by
+   lambda_i returns the pair to itself. If p_m is all zeros, the
+   frequency base is wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Fixed: no parameters. Learned: T_max * d parameters and a hard
+   wall at T_max. Both add O(T d) once.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Relative
+    schemes (C06, C07) for extrapolation. Choose learned for fixed
+    short contexts (BERT), sinusoid when zero extra parameters
+    matter, RoPE for modern decoders.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: learned positions extend past T_max. Counterexample:
+    position T_max + 5 has no trained row, the model sees garbage
+    and generation degrades. Extrapolation needs relative codes.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Vaswani et
+    al. (2017) section 3.5. Extension: train a tiny model with
+    learned positions, then test at 2x length, measure the accuracy
+    cliff and locate it.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the sinusoid formula. Ladder: define the code -&gt;
+    compute a wavelength -&gt; justify fixed vs learned -&gt; implement
+    sinusoid -&gt; predict the extrapolation cliff. Transfer: position
+    codes for 2D image patches, state the change.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: wavelength for
+    i = 0, d = 512. E2: parameters of learned positions for
+    T_max = 512, d = 768. E3: why does addition (not concat) work?
+    Key: <code>../keys/u02_answers.md</code> R13-R15.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u02_fig03.png</code>: Shell 2, count the toy (wavelengths), curves
+    over 64 positions. Source: original toy. Numbers from
+    <code>render_u02.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-rope-rotation">C06: RoPE rotation</h3>
+<p>Leaf id <code>cme295-U02-C06</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;Position embeddings (RoPE and variants)&rdquo;. Scope: rotary
+   embeddings. Objectives: write the rotation, prove the relative
+   property, and rotate a pair by hand. Depends on C05 and R0.3.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: absolute codes leave
+   an absolute residue, can position enter through relative offsets
+   only? Toy: pair (x_0, x_1) at position m rotated by angle
+   m * theta. The dot product of rotated pairs depends only on the
+   offset.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> RoPE spins each 2D slice of Q and K by an
+   angle proportional to position. Two vectors from positions m and
+   n meet with relative angle (m - n) * theta. Absolute position
+   disappears from the dot product, only distance survives.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> For pair i:
+   theta_i = base^{-2i/d} (base often 10000). Rotation R(m theta_i)
+   applied to each (x_{2i}, x_{2i+1}) of Q and K. Applied to Q and K
+   only, not V. Assumption: even d, pairs are independent.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> (R(m t) q) . (R(n t) k) =
+   q^T R(m t)^T R(n t) k = q^T R((n-m) t) k. The transpose flips the
+   sign, rotations compose by addition (R0.3), and the result is a
+   function of (n - m). No absolute m or n remains.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u02.py</code>: x = (1, 0),
+   m = 1, theta = 1.0 gives y = (0.5403, 0.8415) = (cos 1, sin 1).
+   Relative check R(1) R(2)^T vs R(-1): max error 1.11e-16
+   (exact to machine precision). Figure:
+   <img alt="u02_fig02" src="../assets/u02_fig02.png" title="u02_fig02" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>rope(x, m)</code>:
+   reshape last axis to pairs, for each pair apply the 2x2 rotation
+   with angle m * theta_i. Eight lines. Precompute cos/sin tables
+   per position for speed.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: m = 0 is the
+   identity, the relative property holds to 1e-12, norms are
+   preserved. If norms change, the rotation matrix is wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   O(T d) extra, no parameters. Long angles (large m * theta_i) wrap
+   around, tiny theta_i pairs barely rotate at trained lengths and
+   misbehave past them (extrapolation, C12).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> ALiBi (C07)
+    for extrapolation without rotation. Learned relative biases for
+    short contexts. Choose RoPE as the modern default, tune the base
+    for long contexts.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: RoPE extrapolates to any length. Counterexample:
+    positions far past training see angle combinations never seen,
+    perplexity explodes. Fixes: larger base, position interpolation
+    (U03 C03).</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Su et al.
+    (2021, RoFormer). Extension: train a tiny RoPE model, evaluate
+    perplexity at 1x, 2x, 4x length, find the cliff and test whether
+    a larger base moves it.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: why is RoPE applied to Q and K but not V? Ladder: define
+    the rotation -&gt; rotate the toy -&gt; prove the relative property -&gt;
+    implement rope -&gt; predict the extrapolation cliff. Transfer:
+    RoPE for 1D audio frames, state what changes.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: rotate (0, 1) by
+    m = 2, theta = 0.5. E2: prove the norm is preserved. E3: what
+    breaks if RoPE is also applied to V? Key: <code>../keys/u02_answers.md</code>
+    R16-R18.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u02_fig02.png</code>: Shell 3, one rule (rotate by m*theta), before
+    raw pair, after rotated pair. Source: original toy. Numbers from
+    <code>render_u02.py</code>. Alt text: &ldquo;Plate showing a 2D vector before and
+    after rotary position embedding.&rdquo;</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-relative-effects">C07: relative effects</h3>
+<p>Leaf id <code>cme295-U02-C07</code>. Claim class OFFICIAL-SYLLABUS (&ldquo;RoPE and
+variants&rdquo;).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;Position embeddings (RoPE and variants)&rdquo;. Scope: relative
+   position schemes beyond RoPE. Objectives: write the T5 bias and
+   ALiBi penalty, and explain why relative codes extrapolate. Depends
+   on C05, C06.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: RoPE&rsquo;s angles still
+   wrap past training length, is there a scheme with no angles at
+   all? Toy: score s_{ij} = q_i . k_j - m_h * |i - j| (ALiBi). Far
+   pairs pay a linear penalty, no position vector exists.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Relative schemes tax distance directly. T5 adds
+   a learned bucketed bias per offset. ALiBi subtracts a fixed
+   per-head slope times distance. Both make &ldquo;far&rdquo; mean &ldquo;unlikely&rdquo;
+   without any absolute code.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Bias B[i, j] =
+   f(i - j), added to scores before softmax. ALiBi slopes m_h =
+   2^{-8h/H} per head h. Assumption: distance penalty is enough,
+   exact far-field content matters less.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Adding B[i,j] shifts the softmax:
+   positions far apart get exponentially less weight (ALiBi) or a
+   learned offset (T5 buckets: 32 buckets, log-spaced past 128).
+   Because the rule uses only i - j, it applies at any length:
+   extrapolation is structural, not learned.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: 4 positions, head slope m = 0.5.
+   Penalties |i-j| * 0.5: distance 3 costs 1.5 logit points, i.e. a
+   factor exp(-1.5) ~= 0.22 in weight. The near field dominates by
+   construction.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>alibi_bias(T, H)</code>:
+   for h, i, j: B[h, i, j] = -m_h * abs(i - j), causal entries keep
+   -inf. Six lines. Add to scores before softmax.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: B[i, i] = 0,
+   B is symmetric in |i-j|, larger slopes penalize harder. If far
+   weights do not shrink, the sign is flipped.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   O(H T^2) bias, usually fused. No parameters (ALiBi) or tiny
+   tables (T5). Extrapolation is the win, fine distance control is
+   the loss vs learned biases.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> RoPE for the
+    modern default with interpolation fixes. Choose ALiBi when
+    zero-shot length extrapolation matters more than matching
+    trained-length quality.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: distance penalty never hurts. Counterexample: tasks
+    needing exact far recall (long-range copying) suffer under
+    strong slopes, the penalty that helps extrapolation hurts
+    retrieval.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Raffel et
+    al. (2020, T5) and Press et al. (2022, ALiBi). Extension: compare
+    RoPE vs ALiBi perplexity at 2x trained length on a tiny model,
+    state which degrades less.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the ALiBi bias. Ladder: define the bias -&gt;
+    compute the distance-3 penalty -&gt; justify extrapolation -&gt;
+    implement alibi_bias -&gt; predict the far-recall failure.
+    Transfer: relative bias for code with nesting depth, defend
+    the distance metric.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: ALiBi weight
+    ratio for distances 1 vs 4 at slope 1.0. E2: why is the bias
+    added before softmax? E3: T5 bucket count vs exact offsets:
+    what is lost? Key: <code>../keys/u02_answers.md</code> R19-R21.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: offset, penalty, weight. Lesson plate: before (flat
+    scores) -&gt; rule (subtract slope * distance) -&gt; after (near-field
+    weights). Logged as a plate spec with the computed toy.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-encoderdecoder-layouts">C08: encoder/decoder layouts</h3>
+<p>Leaf id <code>cme295-U02-C08</code>. Claim class OFFICIAL-SYLLABUS (&ldquo;Transformer
+model families&rdquo;).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;Transformer model families&rdquo;. Scope: the three layouts. Objectives:
+   state the mask and attention pattern of each, and route a task to
+   the right layout. Depends on U01 C08, C09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: BERT reads both ways,
+   GPT reads left to right, T5 has two stacks, which wiring does
+   what? Toy: the sentence &ldquo;the cat sat&rdquo;. Encoder: every position
+   sees every position. Decoder: position i sees &lt;= i.
+   Encoder-decoder: decoder queries the encoder&rsquo;s final states.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Encoder = read the whole input (bidirectional).
+   Decoder = write left to right (causal). Encoder-decoder = read
+   with one stack, write with another, connected by cross-attention.
+   The mask is the layout.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Encoder self
+   scores: (T, T) unmasked. Decoder self scores: (T, T) causal.
+   Cross scores: (T_dec, T_enc), queries from decoder, keys/values
+   from encoder. Assumption: the task&rsquo;s information flow matches the
+   mask.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Cross-attention: Q from decoder
+   states, K/V from encoder outputs, each generated token conditions
+   on the full source. No new math beyond C07 attention with split
+   sources. The encoder runs once, the decoder runs per step.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Shapes: source S = 16, target T = 8, d = 64,
+   h = 4. Cross scores: (B, 4, 8, 16). Encoder cost paid once,
+   decoder pays per step. That asymmetry is why decoders dominate
+   serving cost.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>enc_dec(src, tgt)</code>:
+   E = encoder(src) (unmasked), for each target step: causal
+   self-attention on decoded prefix, cross-attention to E,
+   predict next token. The cross call reuses C07 attend with split
+   inputs.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: encoder mask is
+   all zeros (or padding only), decoder mask is causal, cross mask
+   allows all source positions. If the decoder sees future targets,
+   the target mask is wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Encoder: O(S^2). Decoder: O(T^2 + T*S). Two stacks = more
+   parameters than one for the same depth.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Decoder-only
+    (GPT) for open generation, encoder-only (BERT) for
+    understanding/classification, encoder-decoder for
+    sequence-to-sequence with a distinct source. Choose by whether
+    the input needs full bidirectional reading.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: bidirectional is always better for understanding.
+    Counterexample: for generation, bidirectional targets leak the
+    future (C09), the layout must match the task&rsquo;s causality.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Devlin et
+    al. (2019, BERT) and Radford et al. (2018/2019, GPT). Extension:
+    train encoder-only vs decoder-only tiny models on a
+    classification task at fixed parameters, state the winner.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: draw the three masks. Ladder: define each layout -&gt;
+    trace the shapes -&gt; justify the cross wiring -&gt; implement
+    enc_dec -&gt; predict the bidirectional-generation leak. Transfer:
+    layout for speech-to-text, defend the choice.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: cross-attention
+    score shape for S = 32, T = 16, h = 4, B = 2. E2: which stack
+    runs once vs per step? E3: why cannot BERT generate left to
+    right? Key: <code>../keys/u02_answers.md</code> R22-R24.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: encoder stack, decoder stack, cross edge. Architecture
+    plate: named boxes (encoder, decoder, cross-attention) and named
+    edges (self, cross). Logged as a plate spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-bert-derivatives">C09: BERT derivatives</h3>
+<p>Leaf id <code>cme295-U02-C09</code>. Claim class OFFICIAL-SYLLABUS (&ldquo;Transformer
+model families&rdquo;).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;Transformer model families&rdquo;. Scope: the BERT family tree.
+   Objectives: state MLM and NSP, list RoBERTa&rsquo;s changes, and
+   explain distillation. Depends on C08, U01 C11.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: no labels exist for
+   raw text, how does an encoder learn anything? Toy: &ldquo;the [MASK]
+   sat&rdquo;. The model predicts &ldquo;cat&rdquo; from both sides. That is masked
+   language modeling.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> MLM: hide 15% of tokens, predict them from
+   context. NSP (original BERT): predict whether sentence B follows
+   A. RoBERTa: drop NSP, train longer, bigger batches, more data.
+   DistilBERT: a small student mimics a big teacher&rsquo;s outputs.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> MLM loss:
+   cross-entropy on masked positions only. NSP loss: binary
+   cross-entropy on the [CLS] vector. Assumption: bidirectional
+   context helps understanding tasks, generation is out of scope.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> MLM gradient flows only through
+   masked positions, the rest are context. Distillation loss:
+   student matches teacher logits (soft targets, temperature T)
+   plus the true labels. Soft targets carry the teacher&rsquo;s
+   uncertainty (&ldquo;dark knowledge&rdquo;).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Mask 15% of T = 128: ~19 positions train
+   per sequence, 109 are context only. DistilBERT keeps ~97% of
+   BERT&rsquo;s GLUE score at 40% of the parameters (published figures,
+   public knowledge).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>mlm_loss(logits,
+   targets, mask)</code>: gather logits at masked positions, cross
+   entropy, mean. Four lines. The mask selects the training
+   positions.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: loss only on
+   masked positions, 15% masking rate holds on average, [MASK]
+   never appears at fine-tune time (the 80/10/10 corruption rule
+   handles the mismatch). If all positions train, the mask is
+   broken.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Only 15% of positions produce loss: sample-inefficient vs causal
+   LM (100% of positions train). Bidirectional context is the
+   compensation.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Causal LM
+    (GPT) for generation, MLM for understanding. RoBERTa over BERT
+    when training from scratch. Choose MLM for classification,
+    NER, retrieval encoders.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: NSP helps. Counterexample: RoBERTa removed NSP with
+    no loss (later work: the signal was mostly topic, not order).
+    Pretext tasks need ablations, not faith.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Devlin et
+    al. (2019), Liu et al. (2019, RoBERTa), Sanh et al. (2019,
+    DistilBERT). Extension: ablate NSP on a tiny BERT, measure
+    downstream accuracy with and without it.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: what do MLM and NSP predict? Ladder: define MLM -&gt;
+    compute the 15% -&gt; justify bidirectionality -&gt; implement
+    mlm_loss -&gt; critique NSP. Transfer: MLM for protein sequences,
+    defend the mask rate.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: train positions
+    for T = 512 at 15%. E2: why 80/10/10 corruption? E3: distillation
+    temperature effect on soft targets. Key: <code>../keys/u02_answers.md</code>
+    R25-R27.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: mask, prediction, family edge. Lesson plate: before
+    (masked sentence) -&gt; rule (predict from both sides) -&gt; after
+    (filled token). Logged as a plate spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-cache-differences">C10: cache differences</h3>
+<p>Leaf id <code>cme295-U02-C10</code>. Claim class REQUESTED-BRANCH (KV caching is
+named in L5, the per-layout math here is the branch).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch from
+   L5 &ldquo;KV caching&rdquo;. Scope: what each layout caches. Objectives:
+   compute the cache for a layout, contrast prefill and decode, and
+   state what encoder-decoder caches. Depends on C03, C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: generating token 500
+   recomputes keys for tokens 1..499 unless we store them, what
+   exactly is stored? Toy: decoder-only, 32 layers, 1 KV head
+   (MQA), d_k = 128, T = 2048, fp16: 32 MiB (from C03).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The cache is the past, materialized. Prefill:
+   process the prompt in parallel, write all K/V. Decode: for each
+   new token, compute one Q/K/V, append, attend over the cache.
+   The cache turns O(T^2) rework into O(T) appends.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Per layer:
+   K_cache, V_cache: (B, kv_heads, T_cached, d_k). Bytes from the
+   C03 formula. Assumption: the cache holds exact past K/V (no
+   eviction), batch size fixed during decode.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Without cache, step t recomputes K/V
+   for t tokens: total O(T^2) projection work. With cache, step t
+   projects 1 token: O(T) total. Attention over the cache is still
+   O(T) per step (unavoidable: the new token reads the past), but
+   the projections stop repeating.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> The C03 toy: MHA 1024 MiB, GQA-8 256 MiB,
+   MQA 32 MiB at T = 2048. Encoder-decoder: the encoder cache is
+   written once (S positions) and read by every decode step, the
+   decoder self-cache grows per step. Prefix sharing across
+   requests multiplies the win.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>decode_step(x_new,
+   cache)</code>: q, k, v = project(x_new), cache.append(k, v),
+   a = softmax(q @ cache.K^T / sqrt(d)), return a @ cache.V.
+   Six lines. Prefill is the same loop over the prompt without
+   sampling.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: cached decode
+   matches uncached forward to 1e-5, cache bytes match the formula,
+   appending preserves order. If outputs diverge, the position
+   indices or the mask are stale.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Time per step O(T d) attention + O(d^2) projections. Memory: the
+   cache formula. The cache is the serving memory wall, that is why
+   MQA/GQA exist.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Recompute
+    everything (simple, slow). Paged/quantized caches (U06 scope).
+    Choose caching always for serving, the only question is the
+    layout and dtype.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the cache matches the current prompt. Counterexample:
+    prefix caching with a stale entry serves another user&rsquo;s context,
+    cache keys must include the full prefix identity. Correctness
+    first, sharing second.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Pope et al.
+    (2023, efficient TPU inference) for the cache math. Extension:
+    measure per-token latency with and without cache on a tiny
+    model, report the crossover length where caching wins.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: what is stored per layer? Ladder: define the cache -&gt;
+    compute 32 MiB -&gt; justify prefill/decode split -&gt; implement
+    decode_step -&gt; predict the stale-prefix failure. Transfer:
+    cache for a streaming ASR decoder, defend the eviction rule.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: cache bytes for
+    12 layers, 4 KV heads, d_k = 64, T = 1024, fp16. E2: work saved
+    vs recompute at T = 512 (projection FLOPs). E3: why does
+    attention stay O(T) per step even with cache? Key:
+    <code>../keys/u02_answers.md</code> R28-R30.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: cache block, append, read. Lesson plate: before (empty
+    cache, prompt) -&gt; rule (prefill writes, decode appends) -&gt;
+    after (full cache, next token). Logged as a plate spec with the
+    C03 numbers.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-complexity">C11: complexity</h3>
+<p>Leaf id <code>cme295-U02-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch: the syllabus names efficient kernels (L5) without the
+   complexity ledger. Scope: time and memory of attention. Objectives:
+   write the O(T^2 d) derivation and find the dominant term for a
+   given regime. Depends on P04, U01 C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: which term kills you
+   first at T = 8192, d = 4096: the scores or the weights? Toy:
+   scores (h, T, T): 8 * 8192^2 = 5.4e8 floats = 2.1 GB fp32 per
+   layer, weights are fixed. Scores win by far.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Attention has two bills: compute (FLOPs) and
+   memory (bytes moved). The T^2 scores dominate both at long
+   context. Everything in efficient attention is an attack on T^2.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Time: QK^T
+   costs O(T^2 d), AV costs O(T^2 d), projections O(T d^2). Memory:
+   scores O(T^2), activations O(T d), weights O(d^2). Assumption:
+   dense attention, no sparsity.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Q (T, d) @ K^T (d, T): each of T^2
+   outputs is a d-dot product -&gt; T^2 d multiply-adds. Softmax:
+   O(T^2). Attention @ V: (T, T) @ (T, d) -&gt; T^2 d. Total per
+   layer: O(T^2 d + T d^2). The crossover: T^2 d &gt; T d^2 iff T &gt; d.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> T = 4096, d = 512: T^2 d = 8.6e9,
+   T d^2 = 1.1e9 (from <code>render_u02.py</code>). Scores dominate 8:1.
+   At T = 128, d = 4096: T d^2 = 2.1e9 vs T^2 d = 6.7e7, the FFN
+   and projections dominate. The regime flips at T = d.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>flop_ledger(T, d,
+   h, L)</code>: print QK^T, AV, projections, FFN, and the totals per
+   layer and per model. Eight lines. The ledger is the design
+   tool.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: ledger sums
+   match a profiler within 2x (constant factors differ), the
+   T = d crossover holds, doubling T quadruples the score term.
+   If doubling T only doubles cost, sparsity or a kernel trick is
+   active.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Memory wall first (scores materialized), compute wall second.
+   Flash Attention (U06) attacks the memory wall without changing
+   the FLOP count: same math, far less IO.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Count FLOPs
+    for design, measure wall time for truth, the two differ by
+    hardware efficiency (U04 C04). Choose the ledger for
+    architecture choice, the profiler for serving budgets.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: fewer FLOPs means faster. Counterexample: an
+    approximation with fewer FLOPs but poor memory locality runs
+    slower than dense attention with a fused kernel. FLOPs are not
+    time.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Dao et al.
+    (2022, FlashAttention) for the IO analysis. Extension: profile
+    a tiny attention at T = 512..8192, fit the measured curve and
+    report where it deviates from T^2.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the per-layer big-O. Ladder: define the terms -&gt;
+    compute the 8:1 -&gt; justify the T = d crossover -&gt; implement
+    the ledger -&gt; predict the FLOP-vs-time failure. Transfer:
+    complexity for cross-attention with S = 4096, T = 128, name
+    the dominant term.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: ledger for
+    T = 2048, d = 1024, L = 24 (score FLOPs total). E2: memory of
+    scores in fp16 at T = 8192, h = 8. E3: why does Flash Attention
+    not change the FLOP count? Key: <code>../keys/u02_answers.md</code>
+    R31-R33.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: term, regime, dominant. A table (term | big-O | toy
+    value | dominant when) is the right medium. Logged as
+    text-table with the computed values above.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-failure-cases">C12: failure cases</h3>
+<p>Leaf id <code>cme295-U02-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch: what breaks, collected in one place. Scope: five classic
+   failures. Objectives: name each failure, its signature, and its
+   fix. Depends on C05-C07, C11.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model trains fine
+   at 2k context and collapses at 8k, what are the suspects? Toy
+   list: length extrapolation, attention sink, rank collapse,
+   RoPE base mismatch, head redundancy.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Every efficient choice buys a failure mode.
+   Relative codes buy extrapolation trouble, shared KV buys
+   capacity trouble, deep stacks buy rank trouble. Diagnose by
+   signature, not by guess.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Signatures:
+   extrapolation = perplexity cliff past trained length, sink =
+   position 0 absorbs mass, rank collapse = token vectors converge,
+   base mismatch = wrong RoPE base for the length, redundancy =
+   heads with near-identical maps. Assumption: the failure is in
+   the architecture, not the data.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Rank collapse (Dong et al., 2021):
+   repeated attention + residual without enough FFN/LN diversity
+   drives token representations toward a rank-1 matrix, the
+   residual path and FFN are the counterforce. Attention sink:
+   softmax needs somewhere to dump mass when nothing matches, and
+   position 0 becomes the dump.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy sink: scores [5, 0, 0, 0] for a query
+   with no good match: softmax = [0.981, 0.006, 0.006, 0.006].
+   Position 0 absorbs 98% of the mass without meaning anything.
+   That is the signature in one row.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>diagnose(model,
+   long_text)</code>: (1) perplexity vs length curve, (2) mean attention
+   mass on position 0, (3) effective rank of layer outputs,
+   (4) head map diversity. Twenty lines around a tiny model.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the perplexity
+   curve is flat to trained length, sink mass is bounded, rank stays
+   high. A cliff at exactly T_max points at positions, a gradual
+   rise points at capacity.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Diagnosis is cheap (forward passes). Fixes cost: interpolation
+   retraining, base changes, or architecture swaps.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Fix the
+    position scheme for cliffs, the sharing for capacity, the depth
+    for rank. Choose the fix by the signature, not by popularity.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the list is complete. Counterexample: data
+    distribution shift mimics every architectural signature,
+    always run the same diagnostics on a length-matched in-domain
+    sample first.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Dong et
+    al. (2021, rank collapse) and Xiao et al. (2024, attention
+    sink). Extension: measure sink mass vs length on a tiny model,
+    report the correlation.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name three failures and their signatures. Ladder: define
+    the sink -&gt; compute the toy row -&gt; justify the dump -&gt;
+    implement the diagnostic -&gt; separate data shift from
+    architecture. Transfer: failure modes for a vision transformer,
+    state which transfer.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: sink mass for
+    scores [3, 0, 0]. E2: why does the residual fight rank
+    collapse? E3: which signature points at RoPE base vs data
+    shift? Key: <code>../keys/u02_answers.md</code> R34-R36.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: failure, signature, fix. A table (failure | signature |
+    fix) is the right medium. Logged as text-table.</p>
+</li>
+</ol>
+      
+      <nav class="pager"><a href="../keys/u01_answers.html"><span class="lbl">← Previous</span>U01 · Answers</a><a href="../keys/u02_answers.html"><span class="lbl">Next →</span>U02 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

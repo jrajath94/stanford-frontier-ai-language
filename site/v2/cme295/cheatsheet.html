@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheatsheet — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Every key fact on one dense page.">
+<link rel="stylesheet" href="assets/vendor/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="cme295-cheatsheet">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="cheatsheet.html" data-page="cme295-cheatsheet" class="active">Cheatsheet</a></li>
+<li><a href="crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="lessons/u02_attention_variants.html" data-page="cme295-u02">U02 · Transformer variants and posit</a></li>
+<li><a href="keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="lessons/u03_llm_generation.html" data-page="cme295-u03">U03 · LLM architecture and generatio</a></li>
+<li><a href="keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="lessons/u04_training_adaptation.html" data-page="cme295-u04">U04 · Training and efficient adaptat</a></li>
+<li><a href="keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="lessons/u05_preference_optimization.html" data-page="cme295-u05">U05 · Preference tuning and policy o</a></li>
+<li><a href="keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="lessons/u06_reasoning_scaling.html" data-page="cme295-u06">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="lessons/u07_rag_agents.html" data-page="cme295-u07">U07 · RAG and agentic systems</a></li>
+<li><a href="keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="lessons/u08_llm_evaluation.html" data-page="cme295-u08">U08 · LLM evaluation and judging</a></li>
+<li><a href="keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="lessons/u09_trends_synthesis.html" data-page="cme295-u09">U09 · Current trends, exams, and syn</a></li>
+<li><a href="keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="interview/keys-oral.html" data-page="cme295-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="interview/keys-transfer.html" data-page="cme295-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="capstones/research_grpo_extension.html" data-page="cme295-cap-research">Capstone · Research</a></li>
+<li><a href="capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / Cheatsheet</nav>
+      <h1>Cheatsheet</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="cme295-cheatsheet">CME295 cheatsheet</h1>
+<p>One page per unit. Computed toys, not measurements. Baseline
+2026-10-06.</p>
+<h2 id="formulas">Formulas</h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attention</td>
+<td>softmax(QK^T / sqrt(d)) V</td>
+</tr>
+<tr>
+<td>BT loss</td>
+<td>-log sigmoid(r_w - r_l)</td>
+</tr>
+<tr>
+<td>PPO objective</td>
+<td>E[min(rho A, clip(rho, 1-eps, 1+eps) A)]</td>
+</tr>
+<tr>
+<td>DPO loss</td>
+<td>-log sigmoid(beta x margin)</td>
+</tr>
+<tr>
+<td>GRPO advantage</td>
+<td>A_i = (r_i - mu) / sigma</td>
+</tr>
+<tr>
+<td>pass@k</td>
+<td>1 - (1 - p)^k</td>
+</tr>
+<tr>
+<td>Recall / precision</td>
+<td>H/R , H/K</td>
+</tr>
+<tr>
+<td>RRF</td>
+<td>sum 1/(k + rank_i)</td>
+</tr>
+<tr>
+<td>Debiased win rate</td>
+<td>(w1 + 1 - w2)/2</td>
+</tr>
+<tr>
+<td>ECE</td>
+<td>sum_b (n_b/n) x |acc_b - conf_b|</td>
+</tr>
+<tr>
+<td>Wilson</td>
+<td>center (p + z^2/2n)/(1 + z^2/n), half-width z sqrt(p(1-p)/n + z^2/4n^2)/(1 + z^2/n), z = 1.96</td>
+</tr>
+<tr>
+<td>LoRA params</td>
+<td>r(d + k) vs dk</td>
+</tr>
+</tbody>
+</table>
+<h2 id="key-numbers-toys">Key numbers (toys)</h2>
+<ul>
+<li>BT: r_w=1.2, r_l=0.4 -&gt; P=0.69, loss=0.371</li>
+<li>PPO: rho=2.0, A=1.0, eps=0.2 -&gt; obj=1.2</li>
+<li>DPO: margin 0.14 -&gt; P=0.535, loss=0.626</li>
+<li>GRPO: [1,1,0,0] -&gt; A=[1,1,-1,-1]</li>
+<li>pass@16 at p=0.2 -&gt; 0.972</li>
+<li>Retrieval: R=8,K=20,H=6 -&gt; recall 0.75, precision 0.30</li>
+<li>Bias: orders 0.70/0.45 -&gt; debiased 0.625</li>
+<li>ECE toy -&gt; 0.074</li>
+<li>n=100,w=62 -&gt; [0.522, 0.709] (Wilson)</li>
+</ul>
+<h2 id="failure-fix">Failure -&gt; fix</h2>
+<table>
+<thead>
+<tr>
+<th>Failure</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quadratic attention</td>
+<td>GQA, KV cache, FlashAttention</td>
+</tr>
+<tr>
+<td>Reward hacking</td>
+<td>harden verifier, audit gap</td>
+</tr>
+<tr>
+<td>KL drift</td>
+<td>KL anchor, early stop</td>
+</tr>
+<tr>
+<td>Position bias</td>
+<td>judge both orders</td>
+</tr>
+<tr>
+<td>Verbosity bias</td>
+<td>length caps in rubric</td>
+</tr>
+<tr>
+<td>Contamination</td>
+<td>perplexity gap, quarantine</td>
+</tr>
+<tr>
+<td>Runaway agent</td>
+<td>step cap, no-repeat guard</td>
+</tr>
+<tr>
+<td>Split-table retrieval</td>
+<td>overlapping chunks</td>
+</tr>
+<tr>
+<td>Tied GRPO groups</td>
+<td>raise temperature</td>
+</tr>
+<tr>
+<td>Saturated benchmark</td>
+<td>retire it, build harder items</td>
+</tr>
+</tbody>
+</table>
+<h2 id="decision-rules">Decision rules</h2>
+<ul>
+<li>DPO vs RLHF: verifier exists -&gt; RLVR/DPO, subjective -&gt; RLHF</li>
+<li>Train vs test-time: rare hard queries + verifier -&gt; test-time</li>
+<li>Hybrid vs dense: part numbers + prose -&gt; hybrid</li>
+<li>Pointwise vs pairwise: ranking matters -&gt; pairwise</li>
+<li>Full vs PEFT: new domain or big shift -&gt; full, else LoRA</li>
+<li>RAG vs long context: corpus &gt;&gt; window -&gt; RAG</li>
+<li>Ship or not: lower Wilson band clears 0.5 after debiasing</li>
+</ul>
+<h2 id="oral-ladder-rungs">Oral ladder rungs</h2>
+<p>Define, toy, derive, implement/complexity, compare, debug,
+critique assumptions, design experiment/transfer.</p>
+<h2 id="never-forget">Never forget</h2>
+<p>No naked scores. Dated claims only. Orphans are decisions.
+The final tests the graph, not the nodes.</p>
+      
+      <nav class="pager"><a href="glossary.html"><span class="lbl">← Previous</span>Glossary</a><a href="crash-course.html"><span class="lbl">Next →</span>Crash course</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/vendor/katex.min.js"></script>
+<script src="assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "";</script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U07 · RAG and agentic systems — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Lesson: RAG and agentic systems.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-u07">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cme295-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_attention_variants.html" data-page="cme295-u02">U02 · Transformer variants and posit</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_llm_generation.html" data-page="cme295-u03">U03 · LLM architecture and generatio</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_training_adaptation.html" data-page="cme295-u04">U04 · Training and efficient adaptat</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_preference_optimization.html" data-page="cme295-u05">U05 · Preference tuning and policy o</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_reasoning_scaling.html" data-page="cme295-u06">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_rag_agents.html" data-page="cme295-u07" class="active">U07 · RAG and agentic systems</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_llm_evaluation.html" data-page="cme295-u08">U08 · LLM evaluation and judging</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_trends_synthesis.html" data-page="cme295-u09">U09 · Current trends, exams, and syn</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="../interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="../interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="../interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="../interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="../interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cme295-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cme295-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/research_grpo_extension.html" data-page="cme295-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / U07 · RAG and agentic systems</nav>
+      <h1>U07 · RAG and agentic systems</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u07-rag-and-agentic-systems">U07 , RAG and agentic systems</h1>
+<p>Prerequisites: P19, P20, P21. Bridge links in <code>../prerequisites.md</code>.
+Lecture anchor: L6 (Nov 6, 2026). Claim class: OFFICIAL-SYLLABUS for
+retrieval pipeline, context construction (context compaction), function
+calling and tool results (tool calling), and agent state (memory).
+REQUESTED-BRANCH for advanced retrieval, hybrid search, reranking,
+ReAct, stopping rules, permissions, and failure separation. All
+leaves: PLANNED / SOURCE ATTRIBUTION PENDING until slide or
+transcript extraction verifies them.
+Notation: see <code>../notation_and_shapes.md</code>. Glossary: <code>../glossary.md</code>.</p>
+<h2 id="not-yet-understood">Not yet understood</h2>
+<p>Concepts this unit uses but does not teach. Each one arrives in a
+later unit.</p>
+<ol>
+<li>LLM evaluation (U08): judging, bias, calibration, intervals.</li>
+<li>Trends and synthesis (U09): diffusion, keystone review, exams.</li>
+</ol>
+<h2 id="local-remediation-recall-cosine-json-tool-calls">Local remediation , recall, cosine, JSON tool calls</h2>
+<p>Do this block first if the unit diagnostic flags P19 or P20 gaps.</p>
+<p><strong>R0.1 Recall and precision.</strong> Corpus has R relevant docs. You
+retrieve K docs, H of them relevant. Recall = H / R, precision =
+H / K. Toy: R = 8, K = 20, H = 6. Recall 0.75, precision 0.30.</p>
+<p><strong>R0.2 Cosine similarity.</strong> For vectors a, b: cos = (a . b) /
+(|a| |b|). Range [-1, 1]. Dense retrieval ranks docs by cosine
+between query and doc vectors.</p>
+<p><strong>R0.3 Tool call as JSON.</strong> A tool call is a JSON object:
+{&ldquo;name&rdquo;: &ldquo;search&rdquo;, &ldquo;arguments&rdquo;: {&ldquo;q&rdquo;: &ldquo;refund policy&rdquo;}}. The
+model emits it, the runtime executes it, the result returns as
+text. The schema is the contract.</p>
+<hr />
+<h3 id="c01-retrieval-pipeline">C01: retrieval pipeline</h3>
+<p>Leaf id <code>cme295-U07-C01</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;retrieval&rdquo;, L6).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L6 &ldquo;retrieval&rdquo;. Scope: the index-then-rank pipeline that
+   feeds context to the model. Objectives: draw the pipeline,
+   compute recall and precision, and state the chunking
+   tradeoff. Depends on P19, R0.1, R0.2.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model knows
+   the world up to its cutoff, how does it answer about last
+   week&rsquo;s policy change? Toy: corpus 100 docs, 8 relevant to
+   the query. Retrieve top 20 by cosine, 6 relevant land in
+   the set. Recall 0.75, precision 0.30. The model now sees 6
+   of 8 facts.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The pipeline is a funnel. Parse and chunk
+   the corpus, embed each chunk, index the vectors. At query
+   time: embed the query, fetch nearest neighbors, hand the
+   top-k to the model. Wide at the bottom, narrow at the top.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Chunks
+   (token spans with metadata), embeddings in R^d, index
+   (approximate nearest neighbors), k cutoff. Assumption: the
+   embedding puts related texts near each other, and the
+   chunker never splits a fact across a boundary.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No theorem, a pipeline:
+   chunk -&gt; embed -&gt; index (offline), embed query -&gt; ANN
+   search -&gt; top-k (online). Recall is set by the index and
+   k, precision by the embedding quality.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u07.py</code>: 100
+   docs, 8 relevant, k = 20, hits 6. Recall 0.75, precision
+   0.30. Doubling k to 40 catches 7 relevant: recall 0.875,
+   precision 0.175. Figure: <img alt="u07_fig01" src="../assets/u07_fig01.png" title="u07_fig01" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>retrieve(query,
+   index, k)</code>: q = embed(query), ids = index.search(q, k),
+   return [docs[i] for i in ids]. Four lines plus the
+   embedding call.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: a query
+   built from a known doc must return that doc in the top-k.
+   If it does not, the embedder or the chunker is wrong, not
+   the index.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Index build is O(N) embeddings, one-time. Query is
+   sublinear in N with ANN. Cost driver: embedding the
+   corpus and storing d-dimensional vectors.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Full
+    corpus in context (exact, context limits kill it). Keyword
+    search only (cheap, misses paraphrase). Choose dense
+    retrieval when the corpus exceeds the context window.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the chunker keeps facts whole. Counterexample:
+    a table split across two chunks retrieves half the
+    answer. Fix with overlapping chunks or structure-aware
+    parsing.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    original RAG paper (Lewis et al., 2020) pipeline sections.
+    Extension: vary chunk size on a fixed corpus, plot
+    recall@20, find the peak.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: recall vs precision. Ladder: define the funnel -&gt;
+    compute the toy -&gt; justify the chunker assumption -&gt;
+    implement retrieve -&gt; predict the split-table failure.
+    Transfer: retrieval for code search.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: R = 8,
+    K = 20, H = 6, recall and precision? E2: k = 40, H = 7,
+    what changed? E3: two chunking failure modes. Key:
+    <code>../keys/u07_answers.md</code> R1-R3.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u07_fig01.png</code>: Shell 3, one rule (top-k retrieval),
+    before query alone, after top-k with hits marked. Source:
+    original toy. Numbers from <code>render_u07.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-advanced-retrieval">C02: advanced retrieval</h3>
+<p>Leaf id <code>cme295-U07-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   past the basic funnel. Scope: query rewriting, HyDE,
+   multi-hop, and parent-document retrieval. Objectives: state
+   what each fixes and its cost. Depends on C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the user asks a
+   vague question, the embedding matches vague docs, what
+   then? Toy: query &ldquo;it broke again&rdquo;. Rewrite: &ldquo;pump P-101
+   failure modes&rdquo;. The rewrite retrieves the manual, the raw
+   query retrieves forum complaints.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Basic retrieval is one shot. Advanced
+   retrieval is a small program around the index: rewrite the
+   query, retrieve, expand, retrieve again. Each step trades
+   latency for recall.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Rewrite
+   model, hypothetical-doc embedder (HyDE), hop budget,
+   parent-child chunk map. Assumption: the extra steps add
+   signal faster than they add noise.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> HyDE: generate a hypothetical
+   answer, embed it instead of the query, nearest neighbors
+   of the answer are nearer the truth. Multi-hop: retrieve,
+   read, form a follow-up query, retrieve again. Each hop is
+   one more funnel pass.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy from <code>labs/u07_lab_run.py</code>:
+   single-hop recall@20 = 0.62. Two-hop recall@20 = 0.81 at
+   2.1x latency. Query rewrite adds +0.09 recall at 1.3x
+   latency. The ladder is measurable.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>multihop(query,
+   index, hops=2)</code>: docs = retrieve(query). For each hop:
+   query = expand(query, docs), docs += retrieve(query).
+   Return deduped docs.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: recall
+   rises monotonically with hops on a multi-hop benchmark.
+   If hop 2 adds nothing, the questions are single-hop.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Cost multiplies by hops. The failure mode is drift: each
+   hop can wander off-topic. Cap hops at 2-3.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Bigger
+    k (cheap, noisier). Better embedder (one-time cost,
+    helps everything). Choose multi-hop when questions
+    genuinely need two facts from two places.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: hops add signal. Counterexample: the
+    expander hallucinates a follow-up query, hop 2
+    retrieves fiction. Ground each hop in retrieved text.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read HyDE
+    (Gao et al., 2022) and the multi-hop RAG analyses.
+    Extension: ablate rewrite vs hop count, find which buys
+    more recall per millisecond.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: what HyDE embeds. Ladder: define the program -&gt;
+    compute the toy -&gt; justify the latency trade -&gt; implement
+    multihop -&gt; predict the drift failure. Transfer:
+    multi-hop for legal research.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: when is hop
+    2 useless? E2: HyDE on a query with no good answer, what
+    happens? E3: cost model for 3 hops. Key:
+    <code>../keys/u07_answers.md</code> R4-R6.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, hops are a caption on <code>u07_fig01.png</code>. Logged
+    in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-hybrid-search">C03: hybrid search</h3>
+<p>Leaf id <code>cme295-U07-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on combining signals. Scope: BM25 plus dense, fusion by
+   weighted sum or reciprocal rank. Objectives: compute a
+   fusion by hand and state when each signal wins. Depends on
+   P19, C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: dense search
+   misses the exact part number &ldquo;XJ-4471&rdquo;, keyword search
+   misses the paraphrase &ldquo;pump failure&rdquo;, how do you get
+   both? Toy: doc A: BM25 0.9, dense 0.4. Doc B: BM25 0.3,
+   dense 0.8. Fusion 0.5/0.5: A 0.65, B 0.55. A wins, both
+   signals counted.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Two witnesses, one vote each. BM25
+   testifies about exact terms, dense about meaning. Fusion
+   is the jury. Neither witness is trusted alone.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> BM25
+   score (term statistics), dense cosine, fusion weight
+   alpha, or RRF constant k=60. Scores must be normalized
+   before a weighted sum. Assumption: the two signals err
+   in different ways.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Weighted sum: s = alpha *
+   bm25_norm + (1 - alpha) * dense. RRF: s = sum 1/(k +
+   rank_i). RRF needs no normalization, only ranks. The
+   mechanism is error decorrelation.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u07.py</code>: docs
+   A/B/C, BM25 [0.9, 0.3, 0.5], dense [0.4, 0.8, 0.5],
+   alpha 0.5 -&gt; fused [0.65, 0.55, 0.50]. Dense alone
+   ranks B first, fusion ranks A first. Figure:
+   <img alt="u07_fig02" src="../assets/u07_fig02.png" title="u07_fig02" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>hybrid(q,
+   bm25_idx, vec_idx, alpha, k)</code>: r1 = bm25(q), r2 =
+   vec(q), normalize both to [0,1], fuse, take top-k.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: a query
+   with a rare exact term must surface the term-matching
+   doc. If dense alone buries it, the fusion weight is
+   wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Two indexes, two queries per request. BM25 is cheap,
+   dense dominates cost. RRF avoids the normalization
+   step.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Dense
+    only (misses exact terms). BM25 only (misses
+    paraphrase). Choose hybrid when the corpus mixes part
+    numbers and prose.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: scores are comparable. Counterexample:
+    unnormalized BM25 dwarfs cosine, alpha becomes
+    meaningless. Normalize first, always.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    RRF paper (Cormack et al., 2009). Extension: sweep alpha
+    on a mixed corpus, find the recall peak.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: RRF formula. Ladder: define the witnesses -&gt;
+    compute the toy -&gt; justify normalization -&gt; implement
+    hybrid -&gt; predict the scale-mismatch failure. Transfer:
+    hybrid for product search.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: fuse with
+    alpha 0.8, who wins? E2: RRF for ranks (1, 3) and (2,
+    2), k = 60? E3: when does hybrid add nothing? Key:
+    <code>../keys/u07_answers.md</code> R7-R9.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u07_fig02.png</code>: Shell 3, one rule (fusion), before two
+    rankings, after fused ranking. Source: original toy.
+    Numbers from <code>render_u07.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-rerank">C04: rerank</h3>
+<p>Leaf id <code>cme295-U07-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on the second stage. Scope: cross-encoder reranking of
+   the top-k. Objectives: state the two-stage math and the
+   latency budget rule. Depends on C01, C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the retriever
+   is fast and dumb, the reader needs the best 5 docs, who
+   bridges the gap? Toy: 50 candidates from hybrid search,
+   cross-encoder scores each pair (query, doc), top 5 go to
+   the model. Precision@5 jumps from 0.40 to 0.80.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The retriever is a bouncer, the reranker
+   is the judge. The bouncer admits 50, the judge picks 5.
+   The judge reads each pair carefully, which the bouncer
+   cannot afford to do.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Candidate
+   count N (50-200), final count M (3-10), cross-encoder
+   scoring pairs. Assumption: the true best docs are inside
+   the N, reranking cannot rescue what retrieval missed.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Bi-encoder: one vector per doc,
+   dot product, fast. Cross-encoder: joint (query, doc)
+   encoding, slow, accurate. Two stages = recall from stage
+   1, precision from stage 2. The product bounds the end
+   quality.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u07_lab_run.py</code>
+   (lab6 rerank): stage 1 recall@50 = 0.90. Rerank
+   precision@5 = 0.80. End-to-end: 0.72 of relevant docs
+   reach the model in the top 5. The stages multiply.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>rerank(query,
+   docs, m=5)</code>: scores = [cross(q, d) for d in docs],
+   return top-m by score. The cross call is the cost.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check:
+   precision@5 rises versus the stage-1 order on a labeled
+   set. If it does not, the cross-encoder is miscalibrated
+   or the labels are noisy.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Cost = N cross-encoder calls per query. Latency rule:
+   N x single-call ms must fit the budget, else shrink N.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> LLM
+    as reranker (accurate, 10x cost). No rerank (fast,
+    noisy top-5). Choose cross-encoder when precision@5
+    drives answer quality.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: candidates contain the answer.
+    Counterexample: stage-1 recall 0.40, the reranker
+    polishes the wrong 50. Fix retrieval first.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    cross-encoder reranking literature (Nogueira et al.).
+    Extension: vary N in {20, 50, 200}, measure end
+    precision@5 per ms.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: bouncer vs judge. Ladder: define the stages -&gt;
+    compute the toy -&gt; justify the product bound -&gt;
+    implement rerank -&gt; predict the low-recall failure.
+    Transfer: rerank for candidate resumes.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: recall@50
+    0.90, precision@5 0.80, end-to-end? E2: N = 200, 15 ms
+    per call, latency? E3: when is the LLM reranker worth
+    it? Key: <code>../keys/u07_answers.md</code> R10-R12.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the two stages are a caption on
+    <code>u07_fig02.png</code>. Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-context-construction">C05: context construction</h3>
+<p>Leaf id <code>cme295-U07-C05</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;context compaction&rdquo;, L6).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L6 &ldquo;context compaction&rdquo;. Scope: packing retrieved docs into
+   the prompt window. Objectives: compute a token budget pack
+   and state the truncation policy. Depends on C01, C04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: 5 reranked docs,
+   800 tokens each, window 4000, system prompt 500, what fits?
+   Toy: budget = 4000 - 500 - 500 (reserve for answer) =</p>
+</li>
+<li>
+<p>Docs at 800 each: 3 fit (2400), the 4th is cut at
+   600 tokens with a truncation mark. Order by score, cut
+   from the bottom.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The window is a suitcase. Fold the big
+   items (summarize long docs), put essentials on top (best
+   docs first), and leave room for the trip home (the
+   answer). An overstuffed suitcase bursts at the seams.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Window W
+   tokens, system S, reserve R, doc tokens d_i. Pack: sum
+   d_i &lt;= W - S - R. Assumption: truncation from the bottom
+   loses the least, the rerank order is trustworthy.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Greedy pack by score: take docs
+   in rerank order until the budget fills, truncate the last.
+   Optional: compress long docs with a summarizer first. The
+   mechanism is a knapsack with unit values by rank.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u07_lab_run.py</code>: W = 8000,
+   S = 600, R = 1000, docs [1500, 1200, 900, 800, 700].
+   Budget 6400. All 5 fit (5100). Add a 6th at 2000: total
+   7100, cut 700 from the last doc.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>pack(docs, W, S,
+   R)</code>: budget = W - S - R, take docs while they fit,
+   truncate the last with &ldquo;[&hellip;]&rdquo;. Return the prompt string.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: total
+   tokens &lt;= W on a tokenizer count. If it overflows, the
+   token estimates were wrong, measure with the real
+   tokenizer.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Packing is trivial compute. The cost is in lost
+   information: every truncated token is a fact the model
+   never sees.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Map-reduce
+    over docs (scales, loses cross-doc links). Long-context
+    model (simple, 10x cost, attention dilution). Choose
+    packing with truncation for fixed windows.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: order equals value. Counterexample: the 5th
+    doc holds the key fact, truncation cuts it. Mitigate
+    with per-doc minimum guarantees or compression.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    &ldquo;lost in the middle&rdquo; studies on position effects.
+    Extension: place the key doc at positions 1, 3, 5, measure
+    answer accuracy, find the position curve.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: the suitcase. Ladder: define the budget -&gt;
+    compute the toy -&gt; justify bottom truncation -&gt; implement
+    pack -&gt; predict the key-fact-cut failure. Transfer:
+    packing for multi-document summarization.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: W = 4000,
+    S = 500, R = 500, docs of 800, how many fit? E2: why
+    reserve R? E3: two mitigations for lost-in-the-middle.
+    Key: <code>../keys/u07_answers.md</code> R13-R15.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the pack is a caption on <code>u07_fig01.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-function-calling">C06: function calling</h3>
+<p>Leaf id <code>cme295-U07-C06</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;Tool calling&rdquo;, L6).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L6 &ldquo;Tool calling&rdquo;. Scope: the model emitting structured
+   calls the runtime executes. Objectives: write a tool
+   schema, parse a call, and state the validation rule.
+   Depends on P20, R0.3.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model says
+   &ldquo;I will search for the refund policy&rdquo;, who does the
+   searching? Toy: schema {&ldquo;name&rdquo;: &ldquo;search&rdquo;, &ldquo;arguments&rdquo;:
+   {&ldquo;q&rdquo;: &ldquo;string&rdquo;}}. The model emits {&ldquo;name&rdquo;: &ldquo;search&rdquo;,
+   &ldquo;arguments&rdquo;: {&ldquo;q&rdquo;: &ldquo;refund policy&rdquo;}}. The runtime runs it
+   and pastes the result back. Words become actions.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The schema is a menu, the call is an
+   order, the runtime is the kitchen. The model can only
+   order what is on the menu, in the format the menu
+   demands. A bad order bounces back with an error.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Tool
+   name, JSON schema for arguments, call object, result
+   string. Assumption: the model was trained to emit valid
+   calls, and the schema describes the tool truthfully.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Constrained decoding or
+   training: the next tokens after the call trigger must
+   parse as JSON against the schema. The runtime validates,
+   executes, and appends the result as a new message. The
+   loop continues until the model answers or stops.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u07_lab_run.py</code>
+   (lab7 schema): schema with one required string arg.
+   Valid call parses in 1 step. Call missing &ldquo;q&rdquo; fails
+   validation with error &ldquo;missing required argument: q&rdquo;.
+   The error message is part of the contract.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>dispatch(call,
+   tools)</code>: validate against tools[call.name].schema, on
+   error return the error string, else return
+   tools[call.name].fn(**call.arguments).</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: 100
+   synthetic calls, all valid ones execute, all invalid ones
+   return errors naming the fault. If a bad call executes,
+   validation is broken.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Parsing is free. Execution cost is the tool&rsquo;s cost. The
+   risk is semantic: the model calls the right tool with
+   the wrong arguments.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Free-text
+    action parsing with regex (brittle). Code execution
+    (powerful, sandbox it). Choose schema-validated calls
+    for reliability.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the schema tells the truth. Counterexample:
+    the &ldquo;search&rdquo; tool actually deletes records. The model
+    cannot see past the schema, the registry must be
+    trusted (C11).</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    function-calling API documentation and its evaluation
+    suites. Extension: measure call validity vs argument
+    correctness separately, find which fails first.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: menu, order, kitchen. Ladder: define the schema
+    -&gt; write the toy call -&gt; justify validation -&gt; implement
+    dispatch -&gt; predict the lying-schema failure. Transfer:
+    function calling for a calendar agent.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: write a
+    schema for get_weather(city). E2: call missing the city,
+    what returns? E3: why validate before execute? Key:
+    <code>../keys/u07_answers.md</code> R16-R18.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u07_fig03.png</code>: Shell 3, one rule (call and result),
+    before model text, after tool result in context. Source:
+    original toy. Numbers from <code>render_u07.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-toolsresults">C07: tools/results</h3>
+<p>Leaf id <code>cme295-U07-C07</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;Tool calling&rdquo;, L6).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L6 tool use. Scope: designing tools and handling their
+   results. Objectives: state the tool design rules and the
+   result-size policy. Depends on C06, P20.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the search tool
+   returns 50,000 tokens, what happens to the window? Toy:
+   result cap 2000 tokens, truncate with a marker, log the
+   full result to a store. The model sees the head, the
+   audit keeps the body.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Tools are senses, results are
+   sensations. A sense that floods the brain with noise is
+   worse than no sense. Each tool reports concisely or not
+   at all.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Tool
+   description, result cap in tokens, error taxonomy,
+   idempotency flag. Assumption: tools are deterministic
+   enough that retries are safe, or flagged otherwise.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Result handling: cap size,
+   extract the structured part, summarize the rest if
+   needed, mark truncation. Errors return as typed results,
+   not exceptions, so the model can react.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u07_lab_run.py</code>
+   (lab8 truncate): raw result 50,000 tokens, cap 2000, kept
+   head 2000 with marker. Error case: timeout returns
+   {&ldquo;error&rdquo;: &ldquo;timeout&rdquo;, &ldquo;retry&rdquo;: true}. The model retries
+   once.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>handle(result,
+   cap=2000)</code>: if len &gt; cap, truncate and mark. If error,
+   wrap as a typed message. Return the message for the
+   context.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: no
+   result entering the context exceeds the cap on a fuzz
+   run. If one does, the cap is applied in the wrong place.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Truncation is free. The cost is information loss, same as
+   C05. Typed errors cost one extra model step to handle.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Full
+    results in context (blows the window). Tool-side
+    summarization (costs a model call). Choose cap plus
+    marker as the default.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: retries are safe. Counterexample: the
+    &ldquo;send_email&rdquo; tool is not idempotent, a retry sends
+    twice. Flag side effects in the schema (C11).</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read MCP
+    tool specification notes on result handling. Extension:
+    measure answer quality vs result cap, find the knee.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: senses and sensations. Ladder: define the cap -&gt;
+    compute the toy -&gt; justify typed errors -&gt; implement
+    handle -&gt; predict the double-send failure. Transfer:
+    result policy for a database tool.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: cap 2000,
+    result 50000, what enters context? E2: why typed errors?
+    E3: tool with side effects, what must the schema say?
+    Key: <code>../keys/u07_answers.md</code> R19-R21.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u07_fig03.png</code> covers the result half, Shell 3. Source:
+    original toy. Numbers from <code>render_u07.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-react">C08: ReAct</h3>
+<p>Leaf id <code>cme295-U07-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on the agent loop pattern. Scope: Thought, Action,
+   Observation interleaving. Objectives: write one ReAct
+   trace and state the stopping rule. Depends on C06, C07,
+   C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model must
+   use two tools in sequence, how does it keep track? Toy
+   trace: Thought &ldquo;I need the policy doc&rdquo;, Action
+   search(q=&rdquo;refund policy&rdquo;), Observation &ldquo;doc found, 3
+   pages&rdquo;, Thought &ldquo;now I summarize&rdquo;, Action answer(&hellip;).
+   The trace is the working memory.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> ReAct thinks out loud with hands.
+   Each thought plans one move, each action moves, each
+   observation reports back. The loop is the agent&rsquo;s
+   short-term memory.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Thought
+   (free text), Action (tool call), Observation (tool
+   result). Assumption: the model writes honest thoughts
+   that actually guide the next action.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The prompt format interleaves
+   the three roles. The model generates until the next
+   trigger: Thought ends at &ldquo;Action:&rdquo;, Action ends at the
+   call close, then the runtime injects the Observation.
+   The loop joins a parser with a prompt.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u07_lab_run.py</code>
+   (lab9 react trace): trace with 2 tool calls, 14 total
+   steps, final answer cites both observations. A broken
+   trace loops Thought without Action 6 times, the loop
+   detector fires.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>react_step(history,
+   tools)</code>: prompt the model, parse Thought/Action, if
+   Action: run dispatch, append Observation. Return on
+   answer or on the step cap.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: on 20
+   scripted tasks, the agent calls the right tools in the
+   right order. If it never acts, the trigger format is
+   wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Cost = steps x model call. The trace grows the context,
+   compaction (C05) applies to traces too.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Plan-then-act
+    (one plan up front, brittle). Code as actions (compact,
+    needs a sandbox). Choose ReAct when tasks need 2-8
+    tool steps with visible reasoning.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: thoughts guide actions. Counterexample: the
+    model writes a good thought then calls the wrong tool.
+    The thought is decoration, grade the actions.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read ReAct
+    (Yao et al., 2022). Extension: strip the Thought lines,
+    measure task success, find what the thoughts add.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: the three roles. Ladder: define the loop -&gt;
+    write the toy trace -&gt; justify the triggers -&gt;
+    implement react_step -&gt; predict the decoration
+    failure. Transfer: ReAct for a shopping agent.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: write a
+    2-tool trace. E2: 6 Thoughts, 0 Actions, what fired?
+    E3: why grade actions not thoughts? Key:
+    <code>../keys/u07_answers.md</code> R22-R24.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u07_fig03.png</code>: Shell 3, one ReAct cycle, before
+    thought, after observation. Source: original toy.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-state">C09: state</h3>
+<p>Leaf id <code>cme295-U07-C09</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;memory&rdquo;, L6).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L6 &ldquo;memory&rdquo;. Scope: what the agent remembers across steps
+   and sessions. Objectives: separate working memory, episodic
+   memory, and long-term store, and state the write policy.
+   Depends on P20, C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the agent books
+   a flight in step 3 and needs the confirmation code in step
+   9, where does it live? Toy: working memory = the trace
+   (last 8 steps). Episodic = the session log (all steps,
+   summarized). Long-term = the user profile (window seat).
+   Three stores, three lifetimes.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The agent has a desk (trace), a notebook
+   (session summary), and a filing cabinet (profile). The
+   desk is fast and small, the notebook is cheap and lossy,
+   the cabinet is permanent and must be curated.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Trace
+   window, summary function, profile schema, write triggers.
+   Assumption: summaries preserve what future steps need,
+   the summarizer knows what matters.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Compaction: when the trace
+   exceeds the window, summarize the oldest steps into the
+   notebook, keep the newest verbatim. Retrieval from the
+   notebook is itself a retrieval problem (C01).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u07_lab_run.py</code>
+   (lab10 compact): 40-step trace, window 8, summary every 8
+   steps. Final context: 8 verbatim steps + 4 summaries.
+   Token count 3200 vs 12000 uncompacted, 3.75x smaller.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>compact(trace,
+   window=8)</code>: while len(trace) &gt; window: summary =
+   summarize(trace[:8]), trace = [summary] + trace[8:].
+   Return the compacted trace.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: a fact
+   from step 2 (confirmation code) is still answerable at
+   step 30. If not, the summarizer dropped it, fix the
+   summary prompt.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Summarization costs model calls. The risk is lossy
+   compression of exactly the detail a later step needs.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Full
+    history (exact, blows the window). No memory (cheap,
+    amnesiac). Choose window plus summaries for long tasks.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the summary keeps what matters.
+    Counterexample: the code is summarized away, step 30
+    needs it verbatim. Keep verbatim anchors for codes,
+    IDs, and numbers.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    context-compaction and agent-memory literature. Extension:
+    measure fact recall vs summary frequency, find the knee.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: desk, notebook, cabinet. Ladder: define the
+    stores -&gt; compute the toy -&gt; justify the anchors -&gt;
+    implement compact -&gt; predict the summary-loss failure.
+    Transfer: state for a coding agent.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: 40 steps,
+    window 8, how many summaries? E2: what must stay
+    verbatim? E3: two write triggers for the profile. Key:
+    <code>../keys/u07_answers.md</code> R25-R27.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the three stores are a caption on
+    <code>u07_fig03.png</code>. Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-stopping">C10: stopping</h3>
+<p>Leaf id <code>cme295-U07-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on loop control. Scope: when the agent stops acting and
+   answers. Objectives: write three stopping rules and state
+   the runaway signature. Depends on C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the agent has
+   called search 12 times and keeps rephrasing, when does
+   someone pull the plug? Toy: rules: max 10 steps, no
+   repeat action twice in a row, stop when the model emits
+   the answer trigger. Step 11 fires the cap.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The loop is a dog on a leash. The leash
+   is the step cap, the collar is the repeat detector, the
+   owner is the answer trigger. A loop without a leash runs
+   until the budget dies.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Step cap
+   N, repeat window, answer trigger string, cost budget.
+   Assumption: a correct task finishes within the cap, the
+   cap binds only runaways.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> After each step, check: step
+   count &gt;= N, last two actions identical, or answer
+   trigger present. Any true -&gt; stop. The mechanism is a
+   guardrail evaluated per step, O(1).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u07_lab_run.py</code>
+   (lab11 stop batch): 100 scripted runs, cap 10. 91 finish
+   by answer, 6 hit the repeat guard, 3 hit the cap. The 3
+   cap hits are the tasks to fix.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>should_stop(history,
+   n=10)</code>: if len &gt;= n return True. If last two actions
+   equal return True. If answer trigger in last output
+   return True. Else False.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: cap-hit
+   rate below 5% on the task suite. Above that, the cap is
+   too tight or the tasks are too hard.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Guards are free. The cost they prevent is unbounded: a
+   runaway loop burns budget with zero return.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Model-decided
+    stopping only (elegant, runaways). Human approval per
+    step (safe, slow). Choose hard guards plus the trigger.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the cap binds only runaways. Counterexample:
+    a legit 12-step task dies at step 10. Set the cap from
+    the task distribution, not from superstition.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read agent
+    loop optimization notes (L6 topic). Extension: sweep the
+    cap on a task suite, plot success vs cost, find the knee.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: leash, collar, owner. Ladder: define the guards
+    -&gt; compute the toy -&gt; justify the 5% rule -&gt; implement
+    should_stop -&gt; predict the tight-cap failure. Transfer:
+    stopping for a web-browsing agent.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: 3 cap hits
+    in 100, acceptable? E2: repeat guard fires on a legit
+    retry, what now? E3: why O(1) matters. Key:
+    <code>../keys/u07_answers.md</code> R28-R30.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, guards are a caption on <code>u07_fig03.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-permissions">C11: permissions</h3>
+<p>Leaf id <code>cme295-U07-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on safety. Scope: what the agent may do without asking.
+   Objectives: write a three-tier permission table and the
+   approval flow. Depends on P21, C07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the agent wants
+   to delete the production database to &ldquo;clean up&rdquo;, who
+   says no? Toy tiers: read (always allow), write sandbox
+   (allow with log), irreversible (require approval). The
+   delete needs a human click.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Tools carry badges: green, yellow, red.
+   Green tools run free, yellow tools run logged, red tools
+   wait at the gate. The agent sees the badge before it
+   acts.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Tier per
+   tool, approval channel, audit log, policy file.
+   Assumption: the tier list is complete, every tool has a
+   badge, no unbadged tools exist.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Before dispatch, check the
+   tier. Green: execute. Yellow: execute and log. Red:
+   pause, request approval with the exact call shown, resume
+   on grant. The mechanism is a gate, not a suggestion.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u07_lab_run.py</code>
+   (lab12 gate): 12 tools, 7 green, 3 yellow, 2 red. 1000
+   actions: 0 red executed without approval, 3 approval
+   requests denied by the human. The gate held.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>gated_dispatch(call,
+   tools, approver)</code>: tier = tools[call.name].tier. If red:
+   ok = approver(call). If not ok return &ldquo;denied&rdquo;. Else
+   dispatch.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: a red
+   tool called in a test fires the approval path, never the
+   direct path. If it executes directly, the gate is
+   bypassed.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   The gate is free, approvals cost human minutes. Price
+   red-tier actions accordingly: batch them.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> All-open
+    (fast, one mistake from disaster). All-approval (safe,
+    unusable). Choose tiers by blast radius.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: tiers match reality. Counterexample: the
+    &ldquo;read&rdquo; tool has a side effect (logging reads triggers
+    alerts). Audit tools for hidden writes.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read MCP
+    permission and approval-binding notes. Extension: red-team
+    the tier list, find one misbadged tool.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: the three badges. Ladder: define the tiers -&gt;
+    compute the toy -&gt; justify the gate -&gt; implement
+    gated_dispatch -&gt; predict the hidden-write failure.
+    Transfer: permissions for a deploy agent.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: which tier
+    for send_email? E2: approval denied, what returns? E3:
+    why batch red actions? Key: <code>../keys/u07_answers.md</code>
+    R31-R33.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u07_fig04.png</code>: chapter plate, the permission tiers are
+    the red panel. Source: original.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-failure-separation">C12: failure separation</h3>
+<p>Leaf id <code>cme295-U07-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on debugging. Scope: attributing a wrong answer to
+   retrieval, model, or tool failure. Objectives: run the
+   separation protocol and name the fix per class. Depends
+   on C01, C08, P22.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the agent
+   answered wrong, was the doc missing, the model sloppy,
+   or the tool broken? Toy: check the trace. Doc absent -&gt;
+   retrieval failure. Doc present, answer ignores it -&gt;
+   model failure. Tool errored -&gt; tool failure. Three
+   bins, three fixes.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The pipeline is a relay race. When the
+   baton drops, find which handoff failed. Blaming the
+   runner for a dropped baton at the exchange is how you
+   fix the wrong thing twice.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Trace
+   with docs, calls, observations, answer. Oracle labels for
+   a sample. Assumption: the trace is complete, nothing
+   relevant happened off-trace.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Protocol: (1) was a relevant
+   doc retrieved? No -&gt; retrieval. (2) did the tool return
+   correctly? No -&gt; tool. (3) did the answer use the
+   evidence? No -&gt; model. The order matters, check upstream
+   first.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u07_lab_run.py</code>: 100 wrong
+   answers labeled: 47 retrieval, 31 model, 22 tool. Fixing
+   retrieval (better chunks) recovers 47, the biggest lever.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>separate(trace,
+   oracle)</code>: return the first failing stage in pipeline
+   order. Aggregate over samples, print the histogram.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the
+   bins sum to the error count, and a fix to the top bin
+   moves the metric. If not, the labels are wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Labeling costs human time per sample. 100 samples give a
+   usable histogram, the Pareto usually shows by 50.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> End-to-end
+    vibes (&ldquo;the agent is dumb&rdquo;). Fixing everything at once.
+    Choose separation first, it aims the fix.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: single cause. Counterexample: retrieval was
+    weak AND the model ignored the doc. Label the primary
+    cause, note the secondary.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read RAG
+    error analyses. Extension: rerun separation after each
+    fix, watch the histogram shift.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: the relay. Ladder: define the bins -&gt; compute
+    the toy -&gt; justify upstream-first -&gt; implement separate
+    -&gt; predict the double-cause failure. Transfer:
+    separation for a support chatbot.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: doc absent,
+    which bin? E2: 47/31/22, what do you fix first? E3: why
+    upstream first? Key: <code>../keys/u07_answers.md</code> R34-R36.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u07_fig04.png</code>: chapter plate, RAG vs agent map with
+    the three failure bins. Source: original. Tradeoff map,
+    no invented numbers.</p>
+</li>
+</ol>
+      
+      <nav class="pager"><a href="../keys/u06_answers.html"><span class="lbl">← Previous</span>U06 · Answers</a><a href="../keys/u07_answers.html"><span class="lbl">Next →</span>U07 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

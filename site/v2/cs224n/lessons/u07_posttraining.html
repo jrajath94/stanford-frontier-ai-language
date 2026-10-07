@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U07 · Post-training and preferences — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Lesson: Post-training and preferences.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u07" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07" class="active">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U07 · Post-training and preferences</nav>
+      <h1>U07 · Post-training and preferences</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u07-post-training-and-preferences">U07 , Post-training and preferences</h1>
+<h2 id="local-remediation">Local remediation</h2>
+<p>Bridges: <code>../shared/prerequisites/p08_information.md</code> (P08, KL and
+entropy), <code>../shared/prerequisites/p14_transformer.md</code> (P14, the
+model being tuned), <code>../shared/prerequisites/p17_rl.md</code> (P17,
+policies and rewards). Post-training turns a text predictor into an
+assistant: demos, preferences, and the optimization that respects
+both.</p>
+<p>R1. Sigmoid: sigmoid(0.9) = 0.7109. Maps a real gap to a
+probability. Every preference loss in this unit is -log sigmoid of
+something.
+R2. KL divergence: KL((0.5,0.3,0.2) || (0.4,0.4,0.2)) = 0.0253.
+Measures how far the policy drifted from the reference. The leash
+of the unit.
+R3. Policy gradient sketch: move log-probability up where the
+advantage is positive, down where negative. PPO and DPO are two
+ways to do this safely.</p>
+<hr />
+<h3 id="c01-sft">C01: SFT</h3>
+<p>Leaf id <code>cs224n-U07-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   post-training sessions of the Winter 2026 schedule (S10-S11 per
+   <code>course_map.md</code>). Scope: supervised fine-tuning. Objectives:
+   write the SFT loss, explain what it teaches, state its limit.
+   Depends on R3, U06 C02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the base model
+   predicts text, how do you teach it the assistant format? Toy:
+   instruction-response pairs, next-token loss on the response
+   tokens only. Loss 2.797 on the toy pair.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Show, do not tell. SFT is U06 C02&rsquo;s AR loss
+   restricted to demonstrations: prompt + ideal response, loss on
+   the response. It teaches format and style (how to answer), not
+   new facts (the knowledge is already in the weights).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Pairs
+   (prompt, response). Loss = mean -log P(response_t | prompt,
+   response_<t>) over response tokens. Assumption: the demos are
+   high quality, SFT imitates, so it imitates flaws too.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Same math as AR pretraining, the
+   difference is the data (curated demos) and the mask (loss on
+   responses only, not prompts). Prompt tokens are context, not
+   targets: predicting the user&rsquo;s question teaches nothing.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u07.py</code>: toy next-token loss
+   2.797 on the demo pair. The number is small-data illustration,
+   not a benchmark.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>sft_loss(logits,
+   ids, resp_mask)</code>: AR loss times the response mask. ~8 lines.
+   Test: loss matches when the mask is all ones (reduces to AR).</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 2.797. Check:
+   prompt-only mask gives zero loss contribution from prompts.
+   Check: all-ones mask equals plain AR loss.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Cheap (thousands of pairs, not billions of tokens).
+   The cost is data: good demos are written by experts, slowly.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    skip SFT, go straight to RL: the policy starts from a raw
+    predictor and must discover format by trial and error. Choose
+    SFT first (the standard). It is the cheapest alignment step.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;SFT teaches the model new facts.&rdquo; Counterexample:
+    SFT on unknown facts teaches hallucination with confidence
+    (the model learns the style of answering, then applies it to
+    things it does not know). Teach format with SFT, check facts
+    separately.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: SFT on demos with deliberately wrong facts, then
+    quiz. Predict: the model repeats the wrong facts fluently.
+    Falsifier: it refuses (then the base model knew better, note
+    it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A1 (breadth), L1 (ladder:
+    write the loss, compute the toy, derive the mask, diagnose the
+    hallucination, design the wrong-facts test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: implement
+    <code>sft_loss</code>, match 2.797. E2: show prompt masking changes the
+    loss. Keys in <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a pipeline stage (<img alt="u07_fig01" src="../assets/u07_fig01.png" title="u07_fig01" />, stage 1). Audit row
+    in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-instruction-data">C02: instruction data</h3>
+<p>Leaf id <code>cs224n-U07-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S10-S11.
+   Scope: what the demos contain. Objectives: list the desiderata,
+   explain diversity&rsquo;s role, state the size regime. Depends on C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: 1k demos or 100k?
+   What makes a demo good? Toy: desiderata list (below). The
+   finding from the literature: a small, diverse, high-quality set
+   beats a large noisy one for SFT (quality over quantity, at this
+   stage).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The demos are the spec. Each pair says &ldquo;when
+   asked X, answer like Y&rdquo;. Diversity across tasks (QA, coding,
+   writing, reasoning) teaches generality, quality teaches the
+   standard. One more demo of the same task adds little, one demo
+   of a new task adds a capability.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Pairs with
+   task labels, a coverage matrix over tasks x styles. Assumption:
+   the base model already knows the facts (C01&rsquo;s limit applies).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the mechanism is
+   coverage. The model&rsquo;s behavior after SFT is bounded by the
+   demo distribution, unseen task types stay unseen. Diversity is
+   measured, not hoped: count tasks, styles, lengths.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 1000 demos,
+   50 tasks, 20 each. Add 1000 more of task 1: task-1 loss falls,
+   others flat. Add 20 each of 50 new tasks: all-task loss falls.
+   Diversity wins per demo.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>coverage(pairs)</code>:
+   count per task, report the min and the entropy. ~8 lines. Test:
+   the toy counts.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Min 20, entropy over
+   50 uniform tasks = log(50) = 3.91. Check: the skewed set has
+   lower entropy.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Curation is human labor: the binding constraint. The
+   cost of noise: the model imitates the noise (C01).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    synthetic demos (model-generated): cheap, risks style collapse.
+    Choose human demos for the seed set. Choose synthetic for
+    scale, with filtering.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;more demos are better.&rdquo; Counterexample: the toy:
+    1000 same-task demos add nothing new. Beyond coverage,
+    quantity is repetition.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: SFT on 1k diverse vs 10k single-task demos, probe
+    all tasks. Predict: diverse wins broadly. Falsifier: 10k wins
+    (then the probe was single-task, check it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A2 (breadth: name the
+    desiderata and the diversity argument).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E3: implement
+    <code>coverage</code>, match the toy entropy. E4: argue the diversity
+    claim in three sentences. Keys in <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a coverage argument (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-reward-model">C03: reward model</h3>
+<p>Leaf id <code>cs224n-U07-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S10-S11.
+   Scope: learning taste from pairs. Objectives: write the
+   Bradley-Terry loss, compute the toy, explain what the reward
+   means. Depends on R1, C04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: &ldquo;which answer is
+   better&rdquo; is easier to judge than &ldquo;how good is this answer&rdquo;.
+   How do pairwise judgments become a scalar reward? Toy: r =
+   (1.2, 0.3), P(chosen) = 0.7109, loss 0.3412.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A judge that scores. The reward model reads a
+   (prompt, response) and outputs a scalar. Trained on pairs: push
+   the chosen above the rejected. The Bradley-Terry model turns the
+   gap into a probability: P = sigmoid(r_c - r_r).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> r(x, y):
+   scalar. Pair (y_c, y_r) per prompt. Loss = -log sigmoid(r_c -
+   r_r), mean over pairs. Assumption: the judge&rsquo;s preferences are
+   transitive enough for a scalar (the model&rsquo;s assumption, not a
+   fact).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Bradley-Terry: P(c beats r) =
+   e^{r_c}/(e^{r_c} + e^{r_r}) = sigmoid(r_c - r_r). The loss is
+   logistic on the gap. Gradient: (1 - P) pushes r_c up and r_r
+   down, proportional to uncertainty. Certain pairs (big gap) give
+   little gradient, close pairs teach.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u07.py</code>: P = 0.7109, loss
+   0.3412. Three pairs: losses (0.3412, 0.7444, 0.2014), mean
+   0.429. The second pair (r_c &lt; r_r) is the expensive one: the
+   model currently prefers the rejected response.
+   <img alt="u07_fig02" src="../assets/u07_fig02.png" title="u07_fig02" /> draws the gap-to-probability map.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>bt_loss(rc, rr)</code>:
+   -log sigmoid(rc - rr). <code>rm_loss(pairs)</code>: mean. ~6 lines. Test:
+   the toy numbers.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 0.7109/0.3412
+   and the mean 0.429. Check: swapping c and r gives loss -log(1 -
+   P). Check: equal rewards give loss log 2 = 0.6931.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> One scalar head on the SFT model, pairs are cheaper
+   than demos (judging is faster than writing). The cost is noise:
+   human agreement on pairs is ~70 percent, not 100.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    absolute scoring (rate 1-5): noisier, harder to calibrate.
+    Choose pairwise (the standard). The reward is ordinal, not
+    cardinal: gaps matter, levels do not.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the reward is the true objective.&rdquo; Counterexample:
+    C10&rsquo;s toy: the reward&rsquo;s argmax differs from the true argmax.
+    The reward is a proxy, optimizing it is not optimizing quality.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: measure pairwise agreement between the reward model
+    and held-out human judges. Predict: ~70 percent, matching human
+    agreement. Falsifier: 95 percent (then the pairs were too easy,
+    check them).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A3 (breadth), L3 (ladder:
+    write BT, compute the toy, derive the gradient, diagnose the
+    proxy, design the agreement test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E5: implement
+    <code>bt_loss</code>, match 0.3412. E6: reproduce the 3-pair mean 0.429.
+    Keys in <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u07_fig02" src="../assets/u07_fig02.png" title="u07_fig02" />: gap to probability, Shell 3, source
+    original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-pairwise-preferences">C04: pairwise preferences</h3>
+<p>Leaf id <code>cs224n-U07-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S10-S11.
+   Scope: the data behind the reward. Objectives: describe pair
+   collection, explain disagreement handling, state the bias
+   risks. Depends on C03, C11.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: who judges, and what
+   do you do when judges disagree? Toy: 3 judges, 2 say A, 1 says
+   B. Majority: A wins. The disagreement is signal (genuine taste
+   difference) or noise (bad instructions), the handling differs.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Pairs are votes. Collection: sample two
+   responses per prompt (often from the SFT model), ask judges to
+   pick. Quality: instructions with examples, agreement checks,
+   spam filters. Disagreement: majority vote, or keep soft labels
+   (the honest version).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> (prompt,
+   y_A, y_B, preference) tuples. Agreement rate: fraction of
+   judge pairs that agree (~0.7 typical). Assumption: the sampled
+   responses cover the quality range (if both are bad, the pair
+   teaches little).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the mechanism is
+   protocol. Soft labels: P = fraction preferring A, the BT loss
+   becomes cross-entropy against P. Hard labels: P in {0, 1}.
+   Soft labels preserve disagreement instead of hiding it.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): judges split
+   2-1 for A. Hard label: A wins, loss -log P_A. Soft label: target
+   0.667, loss = -(0.667 log P_A + 0.333 log(1 - P_A)). The soft
+   version penalizes overconfidence.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>soft_bt_loss(rc,
+   rr, p_target)</code>: cross-entropy against the soft target. ~4 lines.
+   Test: p_target = 1 reduces to C03&rsquo;s loss.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> p_target = 1 gives
+   0.3412 on the toy. Check: p_target = 0.5 gives loss independent
+   of the gap&rsquo;s sign (maximum uncertainty).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Judging is the bottleneck: human hours. The cost of bad
+   protocol: C11&rsquo;s biases baked into the reward, then into the
+   policy.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    AI judges: cheap, inherits the judge model&rsquo;s biases. Choose
+    human judges for the seed pairs. Choose AI judges for scale,
+    with human audits.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;majority vote is the truth.&rdquo; Counterexample: a
+    2-1 split on a genuinely hard pair, the majority erases the
+    minority taste. Soft labels keep it. The vote is a summary,
+    not the truth.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train reward models on hard vs soft labels from the
+    same pairs, compare held-out agreement. Predict: soft wins on
+    close pairs. Falsifier: tie (then disagreement was noise).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A4 (breadth: describe
+    collection, disagreement, soft labels).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E7: implement
+    <code>soft_bt_loss</code>, verify the p_target = 1 reduction. E8: compute
+    the soft-label loss for the 2-1 toy at P_A = 0.711. Keys in
+    <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a protocol (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-rlhf">C05: RLHF</h3>
+<p>Leaf id <code>cs224n-U07-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S10-S11.
+   Scope: the full loop. Objectives: write the three stages, state
+   what each contributes, explain why the order matters. Depends on
+   C01-C04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: SFT imitates, the
+   reward judges, how do they combine into a policy? Toy: the
+   pipeline (fig01): SFT on demos, reward model on pairs, policy
+   optimization against the reward with a KL leash to the SFT
+   model.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Three teachers in sequence. SFT: &ldquo;answer like
+   this&rdquo; (format). Reward: &ldquo;this is better than that&rdquo; (taste).
+   RL: &ldquo;produce more of what scores well, but stay near the SFT
+   model&rdquo; (policy). Each stage answers what the previous one
+   cannot: format, then preference, then exploration.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> pi_SFT: the
+   start policy. r: the reward model. pi: the optimized policy.
+   Objective: E[r] - beta KL(pi || pi_SFT). Assumption: the reward
+   generalizes to the policy&rsquo;s samples (C09&rsquo;s on-policy problem
+   when it does not).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The KL-regularized objective: the
+   reward pulls toward high scores, the KL pulls toward the SFT
+   model. Beta sets the tradeoff. Without the KL term the policy
+   exploits the reward&rsquo;s errors (C10), without the reward the
+   policy is just SFT.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> The toy numbers live in the components:
+   BT loss 0.3412 (C03), KL 0.0253 (C08), PPO clip 0.600 (C06).
+   <img alt="u07_fig01" src="../assets/u07_fig01.png" title="u07_fig01" /> draws the pipeline. The unit&rsquo;s numbers
+   are distributed, the lesson is the assembly.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>rlhf_objective(r,
+   kl, beta)</code>: r - beta * kl. ~2 lines. The stages are C01, C03,
+   C06&rsquo;s code.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> beta = 0 recovers
+   pure reward maximization. Check: large beta keeps pi near pi_SFT
+   (KL small).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Three training runs, three datasets. The cost is
+   complexity: each stage can fail (bad demos, noisy pairs,
+   unstable RL). DPO (C07) exists to collapse two of them.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    DPO (C07): skip the reward model and the RL. Choose RLHF when
+    the reward needs to generalize beyond pairs (online
+    exploration). Choose DPO for simplicity and stability.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;more RL is better.&rdquo; Counterexample: over-optimized
+    policies get high reward and low quality (C10). The KL leash
+    and early stopping are load-bearing, not optional.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: sweep beta, plot reward vs human quality. Predict:
+    inverted U (too little leash: hacking, too much: SFT).
+    Falsifier: monotonic (then the reward was perfect, unlikely).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A5 (breadth), L5 (ladder:
+    name the stages, write the objective, derive the tradeoff,
+    diagnose the over-optimization, design the beta sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E9: implement
+    <code>rlhf_objective</code>, verify the beta = 0 case. E10: sketch the
+    inverted-U prediction. Keys in <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u07_fig01" src="../assets/u07_fig01.png" title="u07_fig01" />: the pipeline, Shell 3, source original
+    toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-ppo">C06: PPO</h3>
+<p>Leaf id <code>cs224n-U07-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S10-S11.
+   Scope: the RL optimizer. Objectives: write the clipped
+   objective, compute the toy, explain what clipping prevents.
+   Depends on R3, C05, P17.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the policy gradient
+   wants a big step toward high reward, what stops a destructive
+   update? Toy: ratio r = 1.3, advantage A = 0.5, eps = 0.2.
+   Unclipped 0.650, clipped 0.600: the step is capped.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A trust region made of arithmetic. The ratio
+   pi/pi_old measures how far the policy moved, clipping it to
+   [1-eps, 1+eps] bounds each update. The min() takes the
+   pessimistic of the clipped and unclipped: never trust a big
+   step, even if it looks good.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> r_t =
+   pi(a|s)/pi_old(a|s). A_t: advantage. Objective: E[min(r A,
+   clip(r, 1-eps, 1+eps) A)]. Assumption: advantages estimated
+   (GAE), the clip is per token.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> When A &gt; 0, the objective wants r
+   large, clip caps it at (1+eps)A. When A &lt; 0, it wants r small,
+   clip floors at (1-eps)A. The min: if the unclipped objective is
+   already pessimistic (r moved the wrong way), keep it. The
+   update never relies on a large ratio.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u07.py</code>: r = 1.3, A = 0.5:
+   unclipped 0.650, clipped min(0.650, 1.2 x 0.5) = 0.600. The
+   0.050 difference is the trust region working.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>ppo_loss(r, A,
+   eps)</code>: min(r<em>A, clip(r,1-eps,1+eps)</em>A), mean. ~4 lines. Test:
+   the toy numbers.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 0.650/0.600.
+   Check: r = 1 gives r*A both ways (no clipping at the start).
+   Check: A &lt; 0 flips which bound binds.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Needs the old policy&rsquo;s log-probs (memory), multiple
+   epochs per batch (sample efficiency). The cost is the tuning of eps,
+   beta (KL), value loss coefficients interact.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    DPO (C07): no RL loop at all. Choose PPO when online
+    exploration matters (the reward generalizes to new samples).
+    Choose DPO when pairs suffice.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;clipping guarantees stability.&rdquo; Counterexample:
+    the value function can still diverge, and the KL can still
+    grow if beta is wrong. Clipping bounds the policy step, not
+    the whole run.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: PPO with eps in {0.1, 0.2, 0.4} on a toy bandit-LM.
+    Predict: 0.2 trains, 0.4 oscillates. Falsifier: 0.4 fine
+    (then the task was too easy to destabilize).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A6 (breadth), L6 (ladder:
+    write the objective, compute the toy, derive the min,
+    diagnose the divergence, design the eps sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E11: implement
+    <code>ppo_loss</code>, match 0.650/0.600. E12: show the A &lt; 0 case binds
+    the other side. Keys in <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a clipped step (carried in text). Logged as an honest exception
+    in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-dpo">C07: DPO</h3>
+<p>Leaf id <code>cs224n-U07-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S10-S11.
+   Scope: preference optimization without RL. Objectives: write the
+   DPO loss, compute the toy, explain the reference&rsquo;s role.
+   Depends on C03, C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: can the pairs train
+   the policy directly, skipping the reward model and PPO? Toy:
+   beta = 0.1, log-ratio gap 0.8, loss 0.6539. One loss, no RL
+   loop.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The reward, solved out. DPO&rsquo;s insight: the
+   optimal policy for the KL-regularized objective has a closed
+   form in terms of the reward, invert it, and the reward becomes
+   a function of the policy. Then the BT loss trains the policy
+   directly on pairs.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> pi: policy,
+   pi_ref: reference (usually the SFT model). Loss = -log
+   sigmoid(beta (log pi(y_c)/pi_ref(y_c) - log pi(y_r)/pi_ref(y_r))).
+   Assumption: the closed-form inversion holds (it does for the
+   KL-regularized objective).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The optimal policy satisfies r(x,y)
+   = beta log pi*(y|x)/pi_ref(y|x) + const. Substitute into the BT
+   loss: the reward disappears, the policy remains. The gradient
+   pushes up the chosen log-ratio and down the rejected one,
+   scaled by beta and by uncertainty (sigmoid again).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u07.py</code>: beta = 0.1, gap
+   0.8 (chosen log-ratio 0.5, rejected -0.3): inside = 0.08, loss =
+   0.6539. Small beta, small inside: the loss is near log 2
+   (uncertain), and the gradient is large there.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>dpo_loss(lc, lr,
+   beta)</code>: -log sigmoid(beta*(lc - lr)). ~3 lines. Test: the toy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 0.6539. Check:
+   lc = lr gives log 2 = 0.6931 (no signal). Check: large beta x
+   gap saturates the sigmoid (confident, small gradient).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> One training run on pairs, needs pi_ref&rsquo;s log-probs
+   (a frozen copy in memory). Stable (it is supervised learning).
+   The cost: no online exploration (C09).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    PPO (C06): online, exploratory, fiddly. Choose DPO for
+    simplicity and stability on fixed pairs. Choose PPO when the
+    policy must explore beyond the pairs.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;DPO cannot overfit the pairs.&rdquo; Counterexample:
+    DPO without the reference term collapses: it pushes chosen
+    log-probs up without bound (the errors.md U07 T2 entry). The
+    reference term is the leash, dropping it breaks the method.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: DPO with and without the reference term on toy
+    pairs. Predict: without, chosen log-probs diverge. Falsifier:
+    stable (then beta or the data hid it, check both).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A7 (breadth), L7 (ladder:
+    write the loss, compute the toy, derive the inversion,
+    diagnose the collapse, design the reference ablation).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E13: implement
+    <code>dpo_loss</code>, match 0.6539. E14: show the no-reference collapse
+    on the toy. Keys in <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a loss (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-referencekl-role">C08: reference/KL role</h3>
+<p>Leaf id <code>cs224n-U07-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S10-S11.
+   Scope: the leash. Objectives: write the KL penalty, compute the
+   toy, explain what happens without it. Depends on R2, C05-C07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the reward says
+   &ldquo;more&rdquo;, what says &ldquo;not too far&rdquo;? Toy: pi = (0.5, 0.3, 0.2),
+   ref = (0.4, 0.4, 0.2), KL = 0.0253. Penalty = beta x KL, paid
+   per token.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A leash, not a target. The KL term does not say
+   where to go, it taxes distance from the reference. Small beta:
+   long leash (more optimization, more risk). Large beta: short
+   leash (safe, near-SFT). The reference is usually the SFT model:
+   the last known-good policy.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> KL(pi ||
+   pi_ref) per token, averaged. Beta: scalar. Assumption: the
+   reference is fixed during the run (it is the anchor).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> KL = sum pi log(pi/pi_ref): the
+   extra nats to encode pi&rsquo;s samples under pi_ref. Paid per token,
+   subtracted from the reward. The policy maximizes reward minus
+   distance: the optimum sits where marginal reward equals beta x
+   marginal distance.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u07.py</code>: KL = 0.0253.
+   <img alt="u07_fig03" src="../assets/u07_fig03.png" title="u07_fig03" /> draws ref vs policy bars. At beta =
+   0.1, the penalty is 0.00253 per token: a gentle leash.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>kl_penalty(pi,
+   ref, beta)</code>: beta * sum(pi log(pi/ref)). ~3 lines. Test: the
+   toy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 0.0253. Check:
+   pi = ref gives 0. Check: the penalty grows as pi moves away.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Needs the reference log-probs (a frozen model or cached
+   values). The cost is the tuning of beta (C05&rsquo;s inverted U).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    no KL (pure reward): hacks (C10). Alternative: hard constraint
+    (trust region): PPO&rsquo;s clip does this per step. Choose the KL
+    penalty as the standard leash.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;a small KL means a good run.&rdquo; Counterexample: KL
+    near zero with high reward can mean the reward was gamed
+    without moving the distribution much (subtle hacking). Watch
+    the reward and the quality, not just the KL.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: sweep beta, record KL and human quality. Predict:
+    quality peaks at moderate KL. Falsifier: quality rises with KL
+    (then the reference was bad, note it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A8 (breadth), L8 (ladder:
+    write the penalty, compute the toy, derive the tradeoff,
+    diagnose the gamed KL, design the beta sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E15: implement
+    <code>kl_penalty</code>, match 0.0253. E16: show penalty = 0 when pi =
+    ref. Keys in <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u07_fig03" src="../assets/u07_fig03.png" title="u07_fig03" />: the leash, Shell 3, source original
+    toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-on-policy-data">C09: on-policy data</h3>
+<p>Leaf id <code>cs224n-U07-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S10-S11.
+   Scope: the distribution shift inside RL. Objectives: define
+   on-policy vs off-policy, explain why the reward&rsquo;s training data
+   goes stale, state the fix. Depends on C03, C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the reward model
+   trained on the SFT model&rsquo;s samples, the policy now writes
+   differently. Is the reward still right? Toy: the reward is
+   accurate near the SFT distribution, untested far from it. The
+   policy optimizes into the untested region: the scores rise, the
+   quality may not.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A map that ends at the border. The reward
+   model knows the territory it was trained on (samples from an
+   older policy). RL walks off the map: the reward still returns
+   numbers, but they are extrapolations. On-policy data (fresh
+   pairs from the current policy) redraws the map.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> pi_old: the
+   sampling policy. pi: the current policy. Reward accuracy is a
+   function of distance from pi_old&rsquo;s samples. Assumption: the
+   reward generalizes locally, not globally.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the mechanism is
+   covariate shift. The BT loss minimized error on pi_old&rsquo;s
+   distribution, pi&rsquo;s distribution differs (that is the point of
+   optimization). The fix: iterate (collect pairs from pi, retrain
+   the reward, repeat) or stay close (the KL leash, C08).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): reward
+   accuracy 0.85 on pi_old&rsquo;s samples, 0.60 on pi&rsquo;s samples after
+   1000 RL steps. The 25-point drop is the staleness, measured.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>staleness_check(rm,
+   old_samples, new_samples)</code>: accuracy on both. ~8 lines. Test:
+   the toy gap.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Old 0.85, new 0.60.
+   Check: at step 0 the gap is zero (same distribution). Check:
+   the gap grows with KL(pi || pi_old).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Fresh pairs cost judging (C04). The cost of skipping:
+   optimizing a stale proxy (C10&rsquo;s mechanism).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    DPO (C07): no RL, no staleness (but also no exploration).
+    Choose iteration when running RL. Choose DPO when pairs are
+    fixed.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the reward was validated, so it stays valid.&rdquo;
+    Counterexample: the toy: validation was on pi_old&rsquo;s samples.
+    Validity is distribution-relative, not absolute.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: track reward accuracy on fresh pairs across RL
+    steps. Predict: it falls as KL rises. Falsifier: flat (then
+    the reward generalized, good news).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A9 (breadth: define the
+    shift and the two fixes).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E17: implement
+    <code>staleness_check</code>, reproduce the toy gap. E18: argue why the
+    KL leash mitigates it. Keys in <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a gap (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-reward-hacking">C10: reward hacking</h3>
+<p>Leaf id <code>cs224n-U07-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S10-S11.
+   Scope: Goodhart&rsquo;s law in RLHF. Objectives: define hacking, show
+   the toy, list the defenses. Depends on C03, C05, C09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the reward climbs
+   every step, is the model getting better? Toy: proxy = (0.9,
+   0.4), true = (0.3, 0.5). Proxy argmax: response 0. True argmax:
+   response 1. Optimizing the proxy picks the wrong answer.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The proxy is a statue of the goal, not the
+   goal. Optimization pressure finds the statue&rsquo;s flaws: verbose
+   answers (length bias), confident tone, sycophancy. The reward
+   rises, the quality does not. This is the default outcome, not
+   an edge case.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> True quality
+   q (unobserved), proxy r (observed). Hacking: argmax r != argmax
+   q, or E[r] up while E[q] flat. Assumption: the toy&rsquo;s true scores
+   are known (in practice they are not: that is the problem).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is C09&rsquo;s: the policy
+   moves where the proxy is wrong (off-distribution), because
+   there the proxy is most exploitable. The KL leash (C08) slows
+   it, iteration (C09) corrects it, neither removes it.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u07.py</code>: proxy argmax 0,
+   true argmax 1. Two numbers, one lesson: the argmax moved.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>hack_gap(proxy,
+   true)</code>: 1 if argmaxes differ else 0, plus the rank correlation.
+   ~5 lines. Test: the toy gives 1.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Gap 1 on the toy.
+   Check: identical proxy and true give 0. Check: rank
+   correlation &lt; 1 flags softer hacking.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Detection needs true quality (human eval): expensive.
+   The cost of ignoring it: a model that scores well and serves
+   badly.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> No
+    alternative: every proxy gets hacked under pressure. The
+    defenses are layered: KL leash, iteration, human eval, and
+    (the honest one) admitting the proxy&rsquo;s limits in the card
+    (U06 C10).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;we will notice the hacking.&rdquo; Counterexample:
+    subtle hacking (slightly longer answers, slightly more
+    confident) passes casual inspection. Notice needs measurement:
+    human eval on the optimized policy, not the reward curve.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: human-rank the policy&rsquo;s outputs at RL steps 0, 500,
+    1000 while the reward rises. Predict: human rank peaks then
+    falls (the inverted U). Falsifier: monotonic rise (then the
+    proxy was good, note it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A10 (breadth), L10
+    (ladder: define hacking, compute the toy, derive the mechanism,
+    diagnose the rising reward, design the human-rank test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E19: implement
+    <code>hack_gap</code>, match the toy. E20: list three hack signatures
+    (length, confidence, sycophancy) with one-line tests. Keys in
+    <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    an argmax flip (carried in text). Logged as an honest exception
+    in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-annotation-bias">C11: annotation bias</h3>
+<p>Leaf id <code>cs224n-U07-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S10-S11.
+   Scope: the judges are human. Objectives: list the bias modes,
+   explain how each enters the reward, state the mitigations.
+   Depends on C04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: judges prefer longer
+   answers 60 percent of the time, all else equal. What does the
+   reward learn? Toy: the reward learns length as quality. The
+   policy learns verbosity. Nobody asked for verbosity.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The reward inherits the judges. Length bias,
+   position bias (prefer the first shown), sycophancy bias
+   (prefer agreement), cultural bias (whose taste). Each is a
+   shortcut the reward can learn instead of quality. The pair
+   protocol (C04) is where they enter, measurement is where they
+   are caught.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Bias =
+   systematic preference uncorrelated with the intended quality.
+   Measured by stratification: agreement conditional on length,
+   position, etc. Assumption: the intended quality is definable
+   (often it is not: then the bias is the spec, honestly stated).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> If P(prefer A | longer A) = 0.6 with
+   quality held fixed, the BT gradient pushes the reward toward
+   length. The policy follows. The mitigation: balance the pairs
+   (equal lengths), randomize positions, instruct against
+   sycophancy, diversify judges.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 100 pairs,
+   quality tied, longer wins 60. Expected under no bias: 50. The
+   10-point excess is the bias, measured. After length-balancing:
+   51 (gone).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>bias_audit(pairs)</code>:
+   win rate of longer responses at tied quality. ~8 lines. Test:
+   the toy gives 0.60, then 0.51 after balancing.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 0.60/0.51.
+   Check: position bias audit similarly (first-shown win rate).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Audits are cheap (counting). The cost is in the fix:
+   rebalancing pairs, rewriting instructions, recruiting diverse
+   judges.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    ignore it: the standard failure (verbose, sycophantic
+    models). Choose the audit always. This is hygiene, not a
+    tradeoff.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;expert judges are unbiased.&rdquo; Counterexample:
+    experts have stronger, more consistent biases (they agree on
+    the wrong thing). Agreement is not correctness.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: audit a public preference dataset for length bias.
+    Predict: longer wins &gt; 55 percent at tied quality. Falsifier:
+    50 percent (then the dataset was balanced, good).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A11 (breadth: name four
+    biases and one mitigation each).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E21: implement
+    <code>bias_audit</code>, match the toy. E22: design the position-bias
+    audit. Keys in <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a rate (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-evaluation">C12: evaluation</h3>
+<p>Leaf id <code>cs224n-U07-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> The unit&rsquo;s
+   close. Scope: knowing whether post-training helped. Objectives:
+   list the eval kinds, explain why the reward curve lies, state
+   the human-eval protocol. Depends on C10, C11, U06 C11.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the reward went up,
+   the KL is small, the loss fell. Did the assistant get better?
+   Toy: the only honest answer comes from human judges on fresh
+   prompts, blinded, with agreement measured. Everything else is
+   a proxy.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Three evals, one truth. Automated: benchmarks
+   and the reward itself (cheap, gameable). Model-judged: an LLM
+   rates outputs (cheap, biased like its training). Human: blinded
+   pairwise on fresh prompts (expensive, the standard). The reward
+   curve is not an eval (C10).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Win rate vs
+   the SFT baseline on N fresh prompts, blinded, with inter-judge
+   agreement. Assumption: the prompts cover the deployment
+   distribution (else the eval is theater).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the mechanism is
+   protocol (like C04). Blinding removes identity bias, fresh
+   prompts remove leakage (U06 C08), agreement quantifies noise.
+   The win rate with a confidence interval is the report.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 200 prompts,
+   policy wins 120, ties 30, loses 50. Win rate 60 percent, 95
+   percent CI (53, 67). Agreement 0.72. The CI is the honest part.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>win_rate(wins,
+   ties, losses)</code>: rate and Wilson CI. ~8 lines. Test: the toy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 60 percent,
+   CI (53, 67). Check: ties counted as half (or reported
+   separately, stated).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Human eval is the most expensive step in the unit.
+   The cost of skipping it: shipping a hacked policy (C10).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    ship on benchmarks: faster, risks C10. Choose human eval for
+    the final gate. Choose automated evals for iteration.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the eval prompts can be reused.&rdquo; Counterexample:
+    reused prompts leak into training (U06 C08) and get gamed
+    (C10). Fresh prompts per eval, or the eval rots.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: correlate the reward curve with human win rate
+    across checkpoints. Predict: they diverge late (hacking).
+    Falsifier: tracked throughout (then the proxy was good).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u07_answers.md</code> A12 (breadth: name the
+    three evals and why the reward curve is not one).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E23: implement
+    <code>win_rate</code>, match the toy. E24: write the one-paragraph handoff
+    from U07 to U08 (what post-training fixed, what prompting
+    changes). Keys in <code>keys/u07_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u07_fig01" src="../assets/u07_fig01.png" title="u07_fig01" /> is reused as the unit&rsquo;s closing image:
+    the pipeline is the eval&rsquo;s context. Logged in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="unit-visual-map">Unit visual map</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Claim</th>
+<th>Shell</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="u07_fig01" src="../assets/u07_fig01.png" title="u07_fig01" /></td>
+<td>RLHF: three stages, three datasets</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u07_fig02" src="../assets/u07_fig02.png" title="u07_fig02" /></td>
+<td>reward gap 0.9 gives P 0.711</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u07_fig03" src="../assets/u07_fig03.png" title="u07_fig03" /></td>
+<td>KL is a leash, not a target</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+</tbody>
+</table>
+      
+      <nav class="pager"><a href="../keys/u06_answers.html"><span class="lbl">← Previous</span>U06 · Answers</a><a href="../keys/u07_answers.html"><span class="lbl">Next →</span>U07 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U02 · Random utility, axioms, and factor models — CS329H: Machine Learning from Human Preferences</title>
+<meta name="description" content="Unit 02: Random utility, axioms, and factor models.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs329h-u02">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS329H: Machine Learning from Human Preferences</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../lessons/u01_lesson.html" data-page="cs329h-u01">U01 · Preferences, choices, and ge</a></li>
+<li><a href="../lessons/u02_lesson.html" data-page="cs329h-u02" class="active">U02 · Random utility, axioms, and </a></li>
+<li><a href="../lessons/u03_lesson.html" data-page="cs329h-u03">U03 · Choice estimation and Bayesi</a></li>
+<li><a href="../lessons/u04_lesson.html" data-page="cs329h-u04">U04 · Fisher information and exper</a></li>
+<li><a href="../lessons/u05_lesson.html" data-page="cs329h-u05">U05 · RLHF and DPO</a></li>
+<li><a href="../lessons/u06_lesson.html" data-page="cs329h-u06">U06 · Active elicitation and assis</a></li>
+<li><a href="../lessons/u07_lesson.html" data-page="cs329h-u07">U07 · Acquisition, Thompson sampli</a></li>
+<li><a href="../lessons/u08_lesson.html" data-page="cs329h-u08">U08 · Inversion, style, and bounde</a></li>
+<li><a href="../lessons/u09_lesson.html" data-page="cs329h-u09">U09 · Aggregation, impossibility, </a></li>
+<li><a href="../lessons/u10_lesson.html" data-page="cs329h-u10">U10 · Research projects and oral m</a></li>
+<li><a href="../cheatsheet.html" data-page="cs329h-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs329h-crash">Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / U02 · Random utility, axioms, and factor models</nav>
+      <h1>U02 · Random utility, axioms, and factor models</h1>
+      
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u02-random-utility-axioms-and-factor-models">U02: Random utility, axioms, and factor models</h1>
+<p>Prerequisites: P03 (vectors), P06 (probability), P07 (estimation). Local remediation opens this lesson.</p>
+<h2 id="provenance">Provenance</h2>
+<p>Concepts C01-C06 map to session S03, &ldquo;Random utility models and axiomatizations&rdquo; (30 Sep 2026): SOURCE-SUPPORTED at title level. Concepts C07-C09 map to session S04, &ldquo;Factor models&rdquo; (5 Oct 2026): SOURCE-SUPPORTED at title level. Concepts C10-C12 are requested extensions: PLANNED / SOURCE ATTRIBUTION PENDING, taught as independent theory.</p>
+<h2 id="local-remediation-dot-products-and-the-gumbel-distribution">Local remediation: dot products and the Gumbel distribution</h2>
+<p>The dot product w . v = sum_k w_k v_k measures alignment. The norm ||w|| is its length. In factor models, the score of item i for respondent j is w_j . v_i.</p>
+<p>The Gumbel(0,1) distribution has CDF F(e) = exp(-exp(-e)) and PDF f(e) = exp(-e - exp(-e)). Key fact: if e_1..e_k are independent Gumbel draws, then argmax_i (u_i + e_i) picks i with probability exp(u_i)/sum_j exp(u_j). Proof sketch: P(u_1 + e_1 is the max) = integral of f(e_1) times product of F(e_1 + u_1 - u_j) over j. The integral evaluates to the softmax. The lesson uses this result. The lab verifies it by simulation.</p>
+<h2 id="russian-doll-ladder-for-the-major-mechanism-random-utility">Russian-doll ladder for the major mechanism (random utility)</h2>
+<ul>
+<li>Shell 0: Why do identical people facing identical options sometimes choose differently?</li>
+<li>Shell 1: Toy: three snacks with fixed appeal. Each day a random craving shock hits.</li>
+<li>Shell 2: U_i = u_i + e_i. E_i independent Gumbel. Choice = argmax U_i.</li>
+<li>Shell 3: Rule: P(choose i) = exp(u_i)/sum_j exp(u_j).</li>
+<li>Shell 4: Derive the softmax from the Gumbel CDF. Simulate to confirm.</li>
+<li>Shell 5: Check: as the noise scale goes to 0, the choice becomes deterministic argmax of u.</li>
+<li>Shell 6: Change one factor: correlate the shocks of two similar options. Predict IIA breaks, measure with nested logit.</li>
+<li>Shell 7: Counterexample: red bus / blue bus. IIA predicts the car drops to 0.50.</li>
+<li>Shell 8: Compare flat logit with nested logit under equal parameters.</li>
+<li>Shell 9: Extension: test IIA on real choice data with a Hausman-style test. Falsifiable: removing an option and refitting must keep ratios within noise.</li>
+<li>Shell 10: Production: a recommender that adds near-duplicate items cannibalizes share under a flat logit. Nest or deduplicate.</li>
+</ul>
+<h2 id="not-yet-understood-dependency-list">Not-yet-understood dependency list</h2>
+<ol>
+<li>Full axiomatization proofs (Luce, McFadden): stated as named conditions with the intuition. Proofs are extensions.</li>
+<li>Mixed logit estimation: named as the heterogeneity fix. Fitting deferred to U03 methods.</li>
+<li>Identification of nested logit parameters: conditions stated in C11.</li>
+</ol>
+<hr />
+<h3 id="cs329h-u02-c01-latent-utility">cs329h-U02-C01: latent utility</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> Maps to S03. Objective: define latent utility and separate it from the observed choice. Depends on P06.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what single number summarizes how much someone wants an option? Toy: three snacks with appeal 1.0, 0.5, 0.0.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Utility is a hidden scoreboard. Higher means wanted more. You never see the scoreboard. You only see which option won each contest.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Deterministic utility u_i, real scalar, utils. Random utility U_i = u_i + e_i. Assumption: the deterministic part is fixed while we observe. All day-to-day wobble lives in e_i.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The choice rule is argmax_i U_i. With zero noise this is deterministic: the top-u item always wins. With noise, the winner varies and the choice frequencies reveal u up to scale. Figure u02_f07 maps utilities [1.0, 0.5, -0.5] to shares [0.55, 0.33, 0.12].</p>
+<p><strong>Contract 6. Computed numerical example.</strong> u = [1.0, 0.5, -0.5]. Softmax shares: [0.547, 0.331, 0.122]. Same numbers as figure u02_f07.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Compute shares with the stable softmax (subtract the max before exp). Five lines of NumPy.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check 1: shares sum to 1. Check 2: adding a constant to all u leaves shares unchanged. Expected: the three numbers above.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(k) for k options. The exp overflows past ~700. The max-subtraction keeps it safe.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: deterministic argmax (no noise). Choose the noisy model when choices vary across repeats. Choose deterministic when the same option always wins.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> If the true utility moves during observation (learning, satiation), one fixed u cannot fit early and late data. Counterexample: first-week versus fourth-week choices differ systematically.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test utility stability by fitting u on the first half of the data and checking the second half. Falsifiable: a likelihood-ratio test against a two-regime model.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: define latent utility in one sentence. Oral ladder through the softmax computation. Transfer: ad clicks with position effects. Where does u live? Failure diagnosis: shares do not sum to 1. Find the bug. Counterfactual: what if two items tie for max? Research: utility versus reward in RLHF (preview of U05).</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U02 task 1 computes the shares. Exercises: (E1) compute the three shares by hand. (E2) prove shift invariance. (E3) find the overflow threshold. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u02_f07.png: lesson plate, source original toy, closed form, alt text &ldquo;Bar chart of three utilities 1.0, 0.5, minus 0.5. Arrow labeled softmax. Bar chart of probabilities 0.55, 0.33, 0.12.&rdquo; Audit: before state utilities, after state shares, rule named. No conflict.</p>
+<figure><img alt="Bar chart of three utilities 1.0, 0.5, minus 0.5. Arrow labeled softmax. Bar chart of probabilities 0.55, 0.33, 0.12." src="../assets/u02_f07.png"><figcaption>Bar chart of three utilities 1.0, 0.5, minus 0.5. Arrow labeled softmax. Bar chart of probabilities 0.55, 0.33, 0.12.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u02-c02-random-utility-distribution">cs329h-U02-C02: random utility distribution</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> Maps to S03. Objective: state the random utility model and derive the logit rule from Gumbel noise. Depends on C01.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: which noise distribution turns argmax into a clean formula? Toy: the three snacks. Each day add a random craving shock.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Everyone has a baseline liking plus a daily wobble. The wobble follows the Gumbel shape, and that exact shape makes the win probabilities come out as the softmax. Other noise shapes give other rules.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> e_i iid Gumbel(0,1), same units as u. Choice = argmax_i (u_i + e_i). Assumptions: independent shocks across options. Gumbel shape. Fixed u.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> P(choose 1) = P(u_1 + e_1 &gt; u_j + e_j for all j). Condition on e_1 = e: the event needs e_j &lt; e + u_1 - u_j for each j, probability product_j F(e + u_1 - u_j). Integrate over the Gumbel density of e_1. The integral collapses to exp(u_1)/sum_j exp(u_j). Figure u02_f01 simulates 20000 choices and matches the formula to 0.004.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> u = [1.0, 0.5, 0.0], n = 20000, seed 0. Simulated shares: [0.511, 0.308, 0.181]. Formula: [0.506, 0.307, 0.186]. Max gap 0.005. Same numbers as figure u02_f01.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Sample Gumbel via -log(-log(uniform)). Take argmax. Histogram. Ten lines of NumPy.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check 1: histogram approaches softmax as n grows. Check 2: with u all equal, shares approach 1/3 each. Expected: the numbers above.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(n*k) draws. Monte Carlo error shrinks as 1/sqrt(n). 20000 draws give about 0.004 accuracy here.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: Gaussian noise gives the probit model (no closed form. Needs integrals). Alternative: no noise gives argmax. Choose Gumbel when you want the closed-form softmax. Choose Gaussian when the noise story demands it and you can pay for integration.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Correlated shocks break the derivation: if two options share unobserved appeal, their shocks move together and the formula overstates substitution. This is the red bus / blue bus case (C05).</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test the Gumbel shape by comparing predicted versus empirical choice shares across many option sets. Falsifiable: systematic misfit in the tails rejects Gumbel.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write U_i and the choice rule. Oral ladder through the integral sketch. Transfer: where else does argmax-plus-noise appear (e.g., neural network sampling)? Failure diagnosis: simulated shares do not match softmax. Name two causes (wrong sampler, too few draws). Counterfactual: what if shocks are correlated? Research: other noise families and their choice rules.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U02 task 2 runs the simulation. Exercises: (E1) derive the Gumbel sampler. (E2) verify the 1/3 check. (E3) explain the 1/sqrt(n) error. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u02_f01.png: lesson plate, source original toy, seed 0, alt text &ldquo;Bar chart of simulated shares 0.511, 0.308, 0.181. Arrow labeled softmax of utilities. Bar chart of formula shares 0.506, 0.307, 0.186.&rdquo; Audit: before state simulation, after state formula, rule named. No conflict.</p>
+<figure><img alt="Bar chart of simulated shares 0.511, 0.308, 0.181. Arrow labeled softmax of utilities. Bar chart of formula shares 0.506, 0.307, 0.186." src="../assets/u02_f01.png"><figcaption>Bar chart of simulated shares 0.511, 0.308, 0.181. Arrow labeled softmax of utilities. Bar chart of formula shares 0.506, 0.307, 0.186.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u02-c03-choice-axioms">cs329h-U02-C03: choice axioms</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> Maps to S03. Objective: state the core choice axioms and what each buys. Depends on C01.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: which consistency rules must choice data obey for a utility story to make sense? Toy: three pairwise votes that cycle.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Axioms are hygiene rules for choices. Transitivity says if A beats B and B beats C, then A beats C. Without it, no single ranking explains the data.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Binary relation &gt; on options. Axioms: completeness (every pair comparable), transitivity (no cycles), independence of irrelevant alternatives (defined in C05). Assumption: the relation comes from pairwise majority or fitted choice probabilities.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> If choices maximize a single utility function, the revealed relation is transitive: u_a &gt; u_b and u_b &gt; u_c imply u_a &gt; u_c. Contrapositive: a cycle refutes the single-utility story. Figure u02_f03 shows the cycle A&gt;B&gt;C&gt;A at 0.80 each. The best single-score fit predicts 0.50 everywhere, residual 0.30 per pair.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Observed win rates 0.80, 0.80, 0.80 around the cycle. Single-score fit: all scores equal, predicted 0.50 each. Residual 0.30 per pair. Same numbers as figure u02_f03.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Detect cycles in the majority-vote tournament graph with depth-first search. Fifteen lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: a transitive tournament has zero directed cycles. Expected: the cycle flagged on the toy.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> Cycle detection O(m + pairs). With noisy data, use a statistical test rather than raw majority votes.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: allow intransitivity and model it (e.g., pairwise comparison models without scores). Choose axioms when you need a ranking. Drop them when the data genuinely cycles and the application needs pairwise predictions.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Sampling noise creates fake cycles: with few comparisons per pair, majority votes cycle by chance. Counterexample: 1-0 records on three pairs can cycle with probability 1/4 under pure noise.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether observed cycles exceed the noise baseline via permutation of outcomes within pairs. Falsifiable: cycle count within the permutation range means noise, not structure.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state transitivity. Oral ladder through the contrapositive. Transfer: sports rankings with rock-paper-scissors matchups. Failure diagnosis: the cycle disappears with more data. Explain. Counterfactual: what if completeness fails (some pairs never meet)? Research: models for cyclic data.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U02 task 3 detects the cycle. Exercises: (E1) prove the contrapositive. (E2) compute the 1/4 noise-cycle probability. (E3) design the permutation test. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u02_f03.png: lesson plate, source original toy, closed form, alt text &ldquo;Three bars at 0.80 for the cycle pairs. Arrow labeled fit one score per item. Three bars at 0.50 with residual note.&rdquo; Audit: before state cycle data, after state poor fit, rule named. No conflict.</p>
+<figure><img alt="Three bars at 0.80 for the cycle pairs. Arrow labeled fit one score per item. Three bars at 0.50 with residual note." src="../assets/u02_f03.png"><figcaption>Three bars at 0.80 for the cycle pairs. Arrow labeled fit one score per item. Three bars at 0.50 with residual note.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u02-c04-consistency">cs329h-U02-C04: consistency</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> Maps to S03. Objective: define stochastic consistency and test it. Depends on C03.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: the data is noisy. What does consistency mean for probabilities rather than votes? Toy: P(A&gt;B) = 0.7, P(B&gt;C) = 0.7. What must P(A&gt;C) be?</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Strong stochastic transitivity: if A usually beats B and B usually beats C, then A must beat C at least as usually. Probabilities cannot cycle too hard under a single utility.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Choice probabilities p_ab, p_bc, p_ac in [0,1]. Condition: p_ab &gt;= 0.5 and p_bc &gt;= 0.5 imply p_ac &gt;= max(p_ab, p_bc) under the strict version. Assumption: one fixed utility vector generates all three.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Under Bradley-Terry, p_ac = sigma(d_ab + d_bc) where d_ab = logit(p_ab). Since sigma rises monotonically, p_ac &gt;= max(p_ab, p_bc) whenever both exceed 0.5. So a violation (p_ac below both) refutes the model. The 0.80 cycle violates it maximally.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> p_ab = p_bc = 0.7 gives d = 0.847 each. P_ac must be sigma(1.694) = 0.845. Observed 0.2 would be a hard violation.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> For each triple, check the inequality on estimated probabilities with confidence intervals. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: Bradley-Terry fitted probabilities always satisfy it. Expected: violation flagged on the 0.2 toy.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(m^3) triples naive. Fine for small m, sample triples for large m.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: weak stochastic transitivity (only p_ac &gt;= 0.5). Choose the strong version when testing the logistic model. Choose the weak version as a minimal sanity check.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Estimation noise: sample probabilities violate the inequality by chance. Counterexample: true p_ac = 0.85 but the sample shows 0.6 with n = 10. Use intervals, not point estimates.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: count violations across all triples in a real dataset and compare against a Bradley-Terry bootstrap. Falsifiable: excess violations reject the model.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state strong stochastic transitivity. Oral ladder through the sigma derivation. Transfer: Elo ratings in chess. What does a violation mean? Failure diagnosis: violations vanish under the fitted model. Explain why that is circular. Counterfactual: what if utilities drift? Research: testing transitivity without a parametric model.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) compute the 0.845 bound. (E2) show fitted probabilities always satisfy it. (E3) build the bootstrap test sketch. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Shares figure u02_f03 (cycle as the extreme violation). Logged as shared.</p>
+<hr />
+<h3 id="cs329h-u02-c05-iia-conditions">cs329h-U02-C05: IIA conditions</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> Maps to S03. Objective: state IIA, show where the logit implies it, and break it with the red bus example. Depends on C02.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: when a new bus route opens, who loses riders? Toy: car 2/3, red bus 1/3. Add a blue bus identical to the red one.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> IIA says the ratio of two options&rsquo; shares never changes when other options come or go. It holds when options compete independently and fails when the newcomer copies an existing option.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> IIA: P(a)/P(b) constant across choice sets containing a and b. The logit implies it: the ratio is exp(u_a - u_b), independent of the set. Assumption: independent Gumbel shocks.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Under the logit, P(car)/P(red) = exp(u_car - u_red) regardless of which other options exist. Add the blue bus: IIA keeps the car:red ratio at 2:1 and symmetry gives red:blue 1:1, so shares become car 0.50, red 0.25, blue 0.25. Intuition says the car should keep 0.67 and the buses split 0.33. Figure u02_f02 computes the IIA prediction.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Before: [0.67, 0.33]. IIA after: [0.50, 0.25, 0.25]. Intuitive after: [0.67, 0.17, 0.17]. Same numbers as figures u02_f02 and u02_f08.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Test IIA: fit on the full set, fit on a subset, compare the implied ratios with a likelihood-ratio test. The lab sketches it.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: on data generated from a true logit, the test does not reject. Expected: rejection on the bus data.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> Two fits plus the test statistic. O(n) each. Needs enough data in both the full and reduced sets.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: nested logit (C12, figure u02_f08). Alternative: mixed logit with random coefficients. Choose nested logit when you know the grouping. Choose mixed logit when heterogeneity is continuous.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> The red bus / blue bus case is the canonical counterexample. Any near-duplicate option breaks IIA under the flat logit.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: run the subset test on a real choice dataset (e.g., travel mode). Falsifiable: stable ratios across subsets support IIA. Movement rejects it.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state IIA in one sentence. Oral ladder through the ratio derivation. Transfer: adding a near-duplicate product to a store. What does a flat logit predict? Failure diagnosis: the test rejects on logit-generated data. Name the likely cause (too little data). Counterfactual: what if the new option is genuinely distinct? Research: IIA tests without parametric assumptions.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) derive the ratio formula. (E2) compute the IIA shares. (E3) sketch the subset test. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u02_f02.png: lesson plate, source original toy, closed form, alt text &ldquo;Two bars 0.67 and 0.33. Arrow labeled add blue bus, keep ratios. Three bars 0.50, 0.25, 0.25.&rdquo; Audit: before state two options, after state IIA shares, rule named. No conflict.</p>
+<figure><img alt="Two bars 0.67 and 0.33. Arrow labeled add blue bus, keep ratios. Three bars 0.50, 0.25, 0.25." src="../assets/u02_f02.png"><figcaption>Two bars 0.67 and 0.33. Arrow labeled add blue bus, keep ratios. Three bars 0.50, 0.25, 0.25.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u02-c06-choice-probabilities">cs329h-U02-C06: choice probabilities</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> Maps to S03. Objective: compute multinomial choice probabilities and use them for prediction. Depends on C02.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: given utilities, what share does each of five options get? Toy: utilities [2.0, 1.0, 0.0, -1.0, -2.0].</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Exponentiate each utility, then divide by the total. Big utilities dominate. The rest split the remainder.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> p_i = exp(u_i)/sum_j exp(u_j), dimensionless, sums to 1. Assumptions: logit noise, fixed utilities.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> This is the C02 result applied to k options. The denominator is the partition function. Its log is the expected maximum utility (a fact used in U05 for the regularized optimum).</p>
+<p><strong>Contract 6. Computed numerical example.</strong> u = [2.0, 1.0, 0.0, -1.0, -2.0]. Shares: [0.636, 0.234, 0.086, 0.032, 0.012]. The top option takes nearly two-thirds.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Stable softmax in five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: shares sum to 1. The max utility gets the max share. Expected: the numbers above.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(k). Subtract the max before exponentiating.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: top-1 deterministic pick. Choose probabilities when you need uncertainty. Choose argmax when the decision is final.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Miscalibrated utilities give miscalibrated shares: overconfident u produces extreme shares. Counterexample: u scaled by 10 makes the top share 1.000 for practical purposes.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: calibrate predicted shares against empirical shares in bins. Falsifiable: systematic overconfidence rejects the utility scale.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the formula. Oral ladder through the five-option computation. Transfer: next-token probabilities in a language model. What is u? Failure diagnosis: shares sum to 0.5. Find the bug. Counterfactual: what if k = 100000? Research: calibration of large choice sets.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U02 task 4 computes the five shares. Exercises: (E1) compute by hand. (E2) prove the max-share claim. (E3) state the log-partition fact. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Definition and computation unit. Shares figure u02_f07 as the visual anchor. Logged as shared.</p>
+<hr />
+<h3 id="cs329h-u02-c07-factorization">cs329h-U02-C07: factorization</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> Maps to S04. Objective: factor a respondent-by-item score matrix into embeddings. Depends on P03.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: 4 respondents rate 5 items. Can 8 + 10 numbers replace 20? Toy: the 4x5 matrix in figure u02_f04.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Each respondent has a taste vector. Each item has a feature vector. The score is their dot product. Shared structure compresses the table.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> R: 4x2 respondent embeddings. V: 5x2 item embeddings. Score M[j,i] = r_j . v_i. Assumption: the true matrix has low rank (2 here).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> If M = R V&rsquo; exactly, then 20 entries come from 18 free numbers (minus rotation). The SVD recovers factors up to rotation. Figure u02_f04 shows max reconstruction error 0.000 on the toy.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Seed 0 factors. M entries range about -3 to 3. SVD rank-2 reconstruction error 0.0000. Same numbers as figure u02_f04.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Truncated SVD via numpy.linalg.svd. Keep top d components. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: reconstruction error near 0 at the true rank. Residual energy at higher ranks. Expected: error 0.0000 at d = 2.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> SVD costs O(min(mn^2, m^2 n)). For large matrices use randomized SVD. Choosing d trades bias against variance.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: full per-cell parameters (no compression, needs dense data). Alternative: clustering respondents into types. Choose factorization when tastes vary smoothly. Choose types when they cluster.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Rank higher than d: the residual carries real signal and predictions suffer. Counterexample: a block-diagonal preference matrix needs rank equal to the number of blocks.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: select d by held-out prediction, not by the scree plot. Falsifiable: if d = 3 beats d = 2 out of sample, the rank-2 claim fails.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write M = R V&rsquo; with shapes. Oral ladder through the SVD recovery. Transfer: recommender systems. What are R and V? Failure diagnosis: reconstruction error stays high at d = 2. Diagnose. Counterfactual: what if respondents are identical? Research: identifiability of factors up to rotation.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U02 task 5 runs the SVD. Exercises: (E1) count free parameters. (E2) explain rotation ambiguity. (E3) pick d by held-out error. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u02_f04.png: lesson plate, source original toy, seed 0, alt text &ldquo;Heatmap of the 4x5 score matrix. Arrow labeled rank-2 factors. Listed respondent and item factor vectors with reconstruction error 0.000.&rdquo; Audit: before state full matrix, after state factors, rule named. No conflict.</p>
+<figure><img alt="Heatmap of the 4x5 score matrix. Arrow labeled rank-2 factors. Listed respondent and item factor vectors with reconstruction error 0.000." src="../assets/u02_f04.png"><figcaption>Heatmap of the 4x5 score matrix. Arrow labeled rank-2 factors. Listed respondent and item factor vectors with reconstruction error 0.000.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u02-c08-respondentitem-embeddings">cs329h-U02-C08: respondent/item embeddings</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> Maps to S04. Objective: interpret embeddings and use them for prediction. Depends on C07.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: a new respondent arrives with two known ratings. What will they think of item 4? Toy: use the figure u02_f04 factors.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Embeddings place people and items on the same map. Close means liked. A new person&rsquo;s position is triangulated from their known ratings.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> r_new in R^d estimated by least squares against known item factors. Assumption: item factors are fixed and the new respondent follows the same model.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Given item factors V and observed scores m for items in set S, solve min_r sum_{i in S} (m_i - r . v_i)^2. Then predict unseen items by r . v_i. This is the cold-start fold-in.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Using the toy factors, a new respondent rating items 0 and 1 at 1.5 and -0.5 gets r ≈ [14.26, 6.17] and a wild item-4 prediction of -12.42. The numbers are honest and the lesson is sharp: items 0 and 1 have nearly collinear factors, so two ratings do not determine the position. Fold-in needs varied item factors, not just |S| &gt;= d. (Verified in the lab.)</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Least squares via numpy.linalg.lstsq. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: with all items observed, fold-in recovers the true row up to noise. Expected: predictions near the held-out true scores.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(|S| d^2). Needs |S| &gt;= d with varied item factors, else the position is underdetermined.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: population-average prediction for new respondents. Choose fold-in when at least d informative ratings exist. Choose the average otherwise.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Out-of-distribution tastes: the new respondent&rsquo;s true vector lies outside the span of V. Counterexample: a respondent who likes exactly the items everyone hates.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test fold-in accuracy as a function of |S| on real rating data. Falsifiable: no improvement past |S| = d rejects the linear model.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the fold-in objective. Oral ladder through the least-squares step. Transfer: a new user on a streaming service. What do you need? Failure diagnosis: predictions are wild. Name two causes (too few ratings, collinear items). Counterfactual: what if item factors drift? Research: nonlinear fold-in.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U02 task 6 runs fold-in. Exercises: (E1) write the normal equations. (E2) state the |S| &gt;= d condition. (E3) handle the OOD case. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Interpretation unit anchored on figure u02_f04. No new plate. Logged.</p>
+<hr />
+<h3 id="cs329h-u02-c09-preference-heterogeneity">cs329h-U02-C09: preference heterogeneity</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> Maps to S04. Objective: detect heterogeneity and model it with mixtures. Depends on C07.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: the pooled win rate is 0.48. Does anyone actually sit at 0.48? Toy: two groups at 0.88 and 0.08.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The average voter does not exist. Pooling two opposite camps produces a middle number nobody holds.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Mixture: fraction alpha of group 1 with scores s^(1), rest with s^(2). Observed choice probability is the alpha-weighted mix. Assumption: group membership is fixed per respondent.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Pooled P(A beats B) = alpha sigma(d_1) + (1-alpha) sigma(d_2). With d_1 = 2.2, d_2 = -2.2, alpha = 0.5, the pool is 0.50 while no individual is near 0.50. Figure u02_f05 simulates this: pooled 0.48, groups 0.88 and 0.08.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> n = 500 per group, seed 0. Pooled 0.484, group 1 0.884, group 2 0.084. Same numbers as figure u02_f05.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Two-component mixture fit by EM (U03-C03) or by clustering respondents first. The lab clusters.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: within-group fits beat the pooled fit on held-out data. Expected: the three numbers above.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> Mixture fitting is non-convex. Use multiple restarts. Each group needs enough data to stand alone.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: one pooled model (simple, wrong when groups oppose). Alternative: per-respondent random effects. Choose the mixture when groups are discrete. Choose random effects when variation is continuous.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Label switching and spurious groups: with weak data, EM invents groups that do not exist. Counterexample: pure noise split into two &ldquo;groups&rdquo; with enough parameters.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test the number of groups by held-out likelihood, not by in-sample fit. Falsifiable: if two groups do not beat one group out of sample, keep one.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the mixture formula. Oral ladder through the pooling arithmetic. Transfer: voters on a divisive issue. What does the poll average hide? Failure diagnosis: EM finds different groups per run. Explain and fix. Counterfactual: what if alpha varies by item? Research: discovering groups without labels.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U02 task 7 clusters the toy. Exercises: (E1) compute the pooled rate. (E2) explain label switching. (E3) design the held-out group-count test. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u02_f05.png: lesson plate, source original toy, seed 0, alt text &ldquo;One bar for pooled win rate 0.48. Arrow labeled split by group. Two bars 0.88 and 0.08.&rdquo; Audit: before state pooled number, after state group numbers, rule named. No conflict.</p>
+<figure><img alt="One bar for pooled win rate 0.48. Arrow labeled split by group. Two bars 0.88 and 0.08." src="../assets/u02_f05.png"><figcaption>One bar for pooled win rate 0.48. Arrow labeled split by group. Two bars 0.88 and 0.08.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u02-c10-scale-ambiguity">cs329h-U02-C10: scale ambiguity</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING. Requested extension. Objective: prove the utility/noise scale tradeoff and fix the scale. Depends on C02.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: utilities [2, 1, -1] or [4, 2, -2]. Which is right? Toy: both give the same shares once the noise scales too.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Utility numbers and noise size are two dials with one effect. Doubling both leaves every choice unchanged. Only the ratio is real.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Model: choice = argmax_i (u_i + sigma_e * e_i) with e_i standard Gumbel. Scale transform: (u, sigma_e) -&gt; (c<em>u, c</em>sigma_e) for c &gt; 0 leaves choices unchanged. Assumption: the noise family scales linearly.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> argmax_i (c u_i + c e_i) = argmax_i (u_i + e_i) since c &gt; 0 preserves order. Hence (u, sigma_e) and (c u, c sigma_e) are observationally identical. Figure u02_f06 shows utilities u and 2u with matched noise giving identical shares [0.547, 0.331, 0.122].</p>
+<p><strong>Contract 6. Computed numerical example.</strong> u = [1.0, 0.5, -0.5]. Shares under (u, 1) and (2u, 2): [0.547, 0.331, 0.122] both. Same numbers as figure u02_f06.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Fix sigma_e = 1 (standard) and estimate u. One convention line in the fitter.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: rescaling the fitted u by 2 and the noise by 2 reproduces the same predictions. Expected: identical shares.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> No compute cost. The cost of ignoring it is misinterpreted &ldquo;strong preferences&rdquo; that are really low noise.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative scale fixes: fix ||u|| = 1, or fix one gap to 1. Choose noise-scale-1 as the default. Choose a fixed gap when comparing noise levels across groups.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Comparing utilities across two fitted models with different implicit scales is meaningless. Counterexample: group A &ldquo;cares more&rdquo; may just be group A with less noise.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether two groups differ in noise scale by fitting a per-group scale and comparing held-out likelihood. Falsifiable: no improvement means one scale suffices.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the tradeoff in one line. Oral ladder through the argmax proof. Transfer: comparing temperature-scaled language models. What is identified? Failure diagnosis: utilities double after a code change. What happened? Counterfactual: what if noise does not scale linearly? Research: identifying noise scale from response times.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) prove the invariance. (E2) show the cross-group comparison trap. (E3) pick a scale convention and defend it. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u02_f06.png: lesson plate, source original toy, closed form, alt text &ldquo;Bar chart of shares for utilities u. Arrow labeled scale u by 2, noise by 2. Identical bar chart.&rdquo; Audit: before state shares, after state same shares, rule named. No conflict.</p>
+<figure><img alt="Bar chart of shares for utilities u. Arrow labeled scale u by 2, noise by 2. Identical bar chart." src="../assets/u02_f06.png"><figcaption>Bar chart of shares for utilities u. Arrow labeled scale u by 2, noise by 2. Identical bar chart.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u02-c11-estimation-assumptions">cs329h-U02-C11: estimation assumptions</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING. Requested extension. Objective: list what logit and factor estimation assume and how to check each. Depends on C02, C07.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what must be true for the estimates to mean anything? Toy: the bus data, the cycle data, the two-group data as three violations.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Every estimator is a contract: IID records, correct noise family, connected comparison graph, fixed scale, and (for factors) low rank. Break a clause and the numbers lie quietly.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Checklist: (i) independence across records. (ii) Gumbel noise (or the chosen link). (iii) connected comparison graph. (iv) scale fixed. (v) rank d correct. (vi) no unmodeled heterogeneity.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Each clause maps to a failure already computed: (i) U01-C08 repeats. (ii) C05 buses. (iii) U01-C07 components. (iv) C10 scale. (v) C07 residual. (vi) C09 pooling. The mechanism is the same each time: the estimator optimizes the wrong objective.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Reuse: cycle residual 0.30 per pair (C03). Bus IIA error 0.17 on the car (C05/C12). Pooled-vs-group gap 0.40 (C09). Three numbers, three broken clauses.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Pre-fit checklist script: graph connectivity, repeat rate, cycle count, heterogeneity screen. The lab implements it.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: on clean simulated data all checks pass. Expected: a pass/fail report per clause.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> All checks are O(n + m^2) or cheaper. The expensive part is the repair of a failure, not its detection.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: fit first, diagnose later. Choose check-first when data collection continues and stays cheap to fix. Choose fit-first for one-shot historical data.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> The checklist itself assumes the checks have power: with tiny n every check passes vacuously. Counterexample: 10 records pass all checks and still mislead.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: measure how often published preference datasets violate each clause. Falsifiable: a dataset with zero violations across clauses is clean by this screen.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: recite the six clauses. Oral ladder: pick a clause, name its failure, name its check. Transfer: a new preference dataset lands on your desk. What is your first hour? Failure diagnosis: all checks pass but held-out loss is bad. What remains unchecked? Counterfactual: what if no fix exists for a violation? Research: assumption-lean estimators.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U02 task 8 runs the checklist. Exercises: (E1) map each clause to its figure. (E2) construct the tiny-n counterexample. (E3) prioritize fixes under a deadline. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Summary unit. Each clause points to its figure. No new plate. Logged.</p>
+<hr />
+<h3 id="cs329h-u02-c12-counterexamples">cs329h-U02-C12: counterexamples</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING. Requested extension. Objective: collect the counterexamples that bound the unit and show the repairs. Depends on C01-C11.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what is the smallest dataset that breaks each model in this unit? Toy: four mini-datasets, one per break.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Counterexamples are the guardrails: cycles break scores, clones break IIA, groups break pooling, scale breaks interpretation.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Four cases: (i) 0.80 cycle. (ii) red/blue bus. (iii) two opposite groups. (iv) doubled utilities. Each with its repair: pairwise-only model, nested logit, mixture, scale fix.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> (i) No score vector fits the cycle. Residual 0.30 per pair is the proof. (ii) IIA forces the car to 0.50. Nested logit restores 0.67. (iii) Pooled 0.48 represents nobody. The mixture recovers 0.88/0.08. (iv) (u,1) and (2u,2) are identical. Fix sigma_e = 1. Figure u02_f08 shows repair (ii) numerically.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Cycle residual 0.30. IIA car error 0.17. Pooling gap 0.40. Scale shares identical to three decimals. All computed earlier in this unit.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> A four-case test battery: feed each mini-dataset to the naive fitter and confirm the expected failure mode. The lab runs it.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: each case fails the naive model and passes its repair. Expected: four pass/fail rows.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> Trivial compute. The value is conceptual: run the battery before trusting any fit.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: memorize the repairs as rules of thumb. Choose the battery when onboarding or auditing. Choose memory when the patterns are internalized.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> The battery is not exhaustive: real data mixes breakages. Counterexample: cycles plus heterogeneity together need both repairs at once.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: add a fifth case from your own data. Falsifiable: if the naive model survives all five, the data is unusually clean.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the four breaks and four repairs. Oral ladder: pick a break, derive the failure, apply the repair. Transfer: audit a production ranker. Which case do you test first? Failure diagnosis: the repair does not help. What does that tell you? Counterfactual: what if two breaks coincide? Research: unified models for combined breaks.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U02 task 9 runs the battery. Exercises: (E1) reproduce the four numbers. (E2) combine two breaks. (E3) add a fifth case. Keys in answer_keys/u02_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u02_f08.png: lesson plate, source original toy, closed form, alt text &ldquo;Three bars for flat logit shares 0.50, 0.25, 0.25. Arrow labeled nest the buses. Three bars 0.67, 0.17, 0.17.&rdquo; Audit: before state flat shares, after state nested shares, rule named. No conflict.</p>
+<figure><img alt="Three bars for flat logit shares 0.50, 0.25, 0.25. Arrow labeled nest the buses. Three bars 0.67, 0.17, 0.17." src="../assets/u02_f08.png"><figcaption>Three bars for flat logit shares 0.50, 0.25, 0.25. Arrow labeled nest the buses. Three bars 0.67, 0.17, 0.17.</figcaption></figure>
+      
+      <nav class="pager"><a href="../lessons/u01_lesson.html"><span class="lbl">← Previous</span>U01 · Preferences, choices, and generalization</a><a href="../lessons/u03_lesson.html"><span class="lbl">Next →</span>U03 · Choice estimation and Bayesian learning</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview · Transfer keys — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Keys for the transfer sets.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-int-transfer-keys">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cme295-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_attention_variants.html" data-page="cme295-u02">U02 · Transformer variants and posit</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_llm_generation.html" data-page="cme295-u03">U03 · LLM architecture and generatio</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_training_adaptation.html" data-page="cme295-u04">U04 · Training and efficient adaptat</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_preference_optimization.html" data-page="cme295-u05">U05 · Preference tuning and policy o</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_reasoning_scaling.html" data-page="cme295-u06">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_rag_agents.html" data-page="cme295-u07">U07 · RAG and agentic systems</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_llm_evaluation.html" data-page="cme295-u08">U08 · LLM evaluation and judging</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_trends_synthesis.html" data-page="cme295-u09">U09 · Current trends, exams, and syn</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="../interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="../interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="../interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="../interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="../interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cme295-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cme295-int-transfer-keys" class="active">Interview · Transfer keys</a></li>
+<li><a href="../capstones/research_grpo_extension.html" data-page="cme295-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / Interview · Transfer keys</nav>
+      <h1>Interview · Transfer keys</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="transfer-sets-key">Transfer sets key</h1>
+<p>Full keys for <code>transfer-sets.md</code>. Closed-book.</p>
+<h2 id="t1">T1</h2>
+<ol>
+<li>Strong: rare words shatter into many byte tokens, fertility
+   explodes, and the model loses subword morphology. The merge
+   table was the compression.</li>
+<li>Strong: train a smaller BPE (2k merges) that fits, or use a
+   byte-fallback model with a short context. Both trade quality
+   for bytes.</li>
+<li>Strong: fertility rises, so the same text costs more tokens,
+   latency rises linearly with token count.</li>
+</ol>
+<h2 id="t2">T2</h2>
+<ol>
+<li>Strong: RoPE rotation angles beyond the trained range are
+   unseen, attention scores go off-distribution, the model
+   babbles past 4k.</li>
+<li>Strong: position interpolation (scale angles down, cheap,
+   blurs positions) or NTK-aware scaling (keeps high-frequency
+   detail, needs tuning). Both trade fidelity for reach.</li>
+<li>Strong: perplexity on 16k documents vs 4k slices of the same
+   documents, plus a needle-in-haystack retrieval probe you
+   build yourself.</li>
+</ol>
+<h2 id="t3">T3</h2>
+<ol>
+<li>Strong: they hit a dead expert, outputs degrade or the
+   router must redistribute. Naive fallback drops them.</li>
+<li>Strong: redistribute to the next-best expert per token, or
+   run the dead expert&rsquo;s share on CPU at lower priority.</li>
+<li>Strong: balanced routing spreads the damage evenly (small
+   everywhere), imbalanced routing concentrates it (some
+   tokens destroyed, most fine).</li>
+</ol>
+<h2 id="t4">T4</h2>
+<ol>
+<li>Strong: per rank: 32 layers x 2 adapted matrices x
+   r(4096+4096) params x 2 bytes = 64 x 8192 x 2 =
+   1,048,576 bytes. 20 MiB / 1,048,576 = 20. Max rank 20
+   (19 in decimal MB). The dropped factor was the second
+   LoRA matrix: each adapted weight needs both B (d x r)
+   and A (r x k), r(d+k) params per the lesson&rsquo;s formula,
+   not r(d).</li>
+<li>Strong: fine-grained style and rare-task adaptation go
+   first. High-rank directions carry the subtle stuff.</li>
+<li>Strong: when rank 20 cannot move the needle on the eval,
+   or when the task needs full-rank changes (new domain).</li>
+</ol>
+<h2 id="t5">T5</h2>
+<ol>
+<li>Strong: mostly noise. The BT loss fits the 5% signal and
+   95% label noise, the reward becomes a noise amplifier.</li>
+<li>Strong: pilot a clearer rubric on 200 pairs and re-label,
+   or drop low-agreement pairs and label more. Never scale
+   55%.</li>
+<li>Strong: neither trains well, but DPO fails cheaper and
+   faster. Fix the data first, the algorithm second.</li>
+</ol>
+<h2 id="t6">T6</h2>
+<ol>
+<li>Strong: 64 x 30 s = 32 minutes of verifier time per step,
+   serial. Parallel workers divide it, but the bill stands.</li>
+<li>Strong: cache verifier results per (prompt, program hash),
+   and verify a subsample per group with the slow verifier
+   while a fast proxy scores the rest.</li>
+<li>Strong: when the proxy&rsquo;s ranking agrees with the slow
+   verifier above 0.9 and the speed ratio exceeds 10x. Then
+   audit with the slow one weekly.</li>
+</ol>
+<h2 id="t7">T7</h2>
+<ol>
+<li>Strong: at retrieval, the hostile page enters the context
+   as a trusted-looking document. The model reads it as data
+   and obeys it as instruction.</li>
+<li>Strong: (1) mark retrieved text as data with delimiters
+   (cheap), (2) scan retrieved docs for instruction patterns
+   (medium), (3) sandbox the agent so injections cannot reach
+   side effects (pricey, best).</li>
+<li>Strong: stop, do not act on the injected instruction, log
+   the attempt, and either ask the user or skip the document.</li>
+</ol>
+<h2 id="t8">T8</h2>
+<ol>
+<li>Strong: position bias. Every close call may be an order
+   artifact.</li>
+<li>Strong: randomize which model goes first per pair (halves
+   the systematic bias), and spend the saved budget on more
+   items for tighter bands.</li>
+<li>Strong: report &ldquo;unswapped pairs, position bias
+   uncorrected&rdquo;, widen the tie band, and refuse to rank
+   models within the bias margin.</li>
+</ol>
+<h2 id="t9">T9</h2>
+<ol>
+<li>Strong: confidence-thresholded unmasking (fewer, safer
+   steps) and a final autoregressive polish pass on the
+   uncertain tokens.</li>
+<li>Strong: coherence rate vs step count on a fixed set. The
+   knee is where the curve flattens.</li>
+<li>Strong: when the knee sits above your latency budget.
+   Then serial is the product answer.</li>
+</ol>
+<h2 id="t10">T10</h2>
+<ol>
+<li>Strong: model calls (the trace is long), tool latency
+   (search is slow), and the observation round trips.</li>
+<li>Strong: cap the trace (fewer steps, same tools) and
+   parallelize independent tool calls. Both cut wall time,
+   not smarts.</li>
+<li>Strong: single-shot RAG with no loop. It costs
+   multi-step tasks, which then fail or escalate.</li>
+</ol>
+      
+      <nav class="pager"><a href="../interview/transfer-sets.html"><span class="lbl">← Previous</span>Interview · Transfer sets</a><a href="../capstones/research_grpo_extension.html"><span class="lbl">Next →</span>Capstone · Research</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

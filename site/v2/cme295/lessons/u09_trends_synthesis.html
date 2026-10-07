@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U09 · Current trends, exams, and synthesis — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Lesson: Current trends, exams, and synthesis.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-u09">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cme295-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_attention_variants.html" data-page="cme295-u02">U02 · Transformer variants and posit</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_llm_generation.html" data-page="cme295-u03">U03 · LLM architecture and generatio</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_training_adaptation.html" data-page="cme295-u04">U04 · Training and efficient adaptat</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_preference_optimization.html" data-page="cme295-u05">U05 · Preference tuning and policy o</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_reasoning_scaling.html" data-page="cme295-u06">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_rag_agents.html" data-page="cme295-u07">U07 · RAG and agentic systems</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_llm_evaluation.html" data-page="cme295-u08">U08 · LLM evaluation and judging</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_trends_synthesis.html" data-page="cme295-u09" class="active">U09 · Current trends, exams, and syn</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="../interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="../interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="../interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="../interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="../interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cme295-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cme295-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/research_grpo_extension.html" data-page="cme295-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / U09 · Current trends, exams, and synthesis</nav>
+      <h1>U09 · Current trends, exams, and synthesis</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u09-current-trends-exams-and-synthesis">U09 , Current trends, exams, and synthesis</h1>
+<p>Prerequisites: P22, P24. Bridge links in <code>../prerequisites.md</code>.
+Lecture anchor: L8 (Nov 20, 2026) and L9 (Dec 4, 2026), plus the
+midterm (Oct 23) and final (Dec 9). Claim class: OFFICIAL-SYLLABUS
+for diffusion LLM topics named in L8 (continuous, discrete, and
+masked diffusion, training, inference) and the L9 recap. All exam
+mapping and practice is REQUESTED-BRANCH original work: both exams
+fell after the build baseline, no exam content is claimed or
+reproduced. All leaves: PLANNED / SOURCE ATTRIBUTION PENDING until
+slide or transcript extraction verifies them.
+Notation: see <code>../notation_and_shapes.md</code>. Glossary: <code>../glossary.md</code>.</p>
+<h2 id="not-yet-understood">Not yet understood</h2>
+<p>This is the final unit, so no later unit teaches new concepts.</p>
+<ol>
+<li>L8/L9 exam artifacts: unpublished, treated as REQUESTED-BRANCH.
+   Open threads are tracked in <code>../source_gaps.md</code>.</li>
+</ol>
+<h2 id="local-remediation-diffusion-idea-objective-mapping">Local remediation , diffusion idea, objective mapping</h2>
+<p>Do this block first if the unit diagnostic flags P22 gaps.</p>
+<p><strong>R0.1 The diffusion idea.</strong> Start from pure noise (or full
+masks), remove a little noise per step, repeat until text
+appears. Autoregressive models write left to right, diffusion
+models refine everywhere at once.</p>
+<p><strong>R0.2 Objective mapping.</strong> An exam objective names what the
+learner must do (&ldquo;derive the DPO loss&rdquo;). Mapping checks that
+each objective has a teaching home and an assessment. No home,
+no claim.</p>
+<hr />
+<h3 id="c01-source-era-trends">C01: source-era trends</h3>
+<p>Leaf id <code>cme295-U09-C01</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;Diffusion LLMs&rdquo;, L8).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L8 topic bullets: continuous diffusion, discrete diffusion,
+   masked diffusion, training, inference. Scope: what
+   diffusion LMs are and how they differ from autoregressive
+   models. Objectives: describe masked diffusion in one
+   paragraph and state its inference tradeoff. Depends on
+   U01-U03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: must text be
+   written left to right? Toy: length-8 sequence, mask 4
+   positions. Step 1: model predicts all 4 masked tokens at
+   once. Step 2: re-mask the 2 least confident, predict
+   again. Done in 2 parallel steps, not 8 serial ones.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Autoregressive generation types out text.
+   Diffusion generation sculpts it: start with a block of
+   marble (masks), chip away everywhere, refine the rough
+   spots. Parallel chips, serial polish.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Mask
+   schedule (how many tokens unmask per step), confidence
+   threshold, noise process for discrete tokens.
+   Assumption: parallel prediction does not destroy
+   coherence, the refinement steps repair it.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Masked diffusion training:
+   mask a random fraction of tokens, predict them from the
+   rest, cross-entropy on masked positions only. Inference:
+   start fully masked, unmask the most confident subset per
+   step. The mechanism is iterative refinement, not
+   factorization.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u09.py</code> and
+   <code>labs/u09_lab_run.py</code>: 8 tokens with confidences [0.9,
+   0.85, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3]. Step 1 unmasks the
+   top 4. Step 2 unmasks 2 more, 2 stay masked. Two
+   parallel steps cover 6 of 8 tokens vs 8 serial steps.
+   Figure: <img alt="u09_fig01" src="../assets/u09_fig01.png" title="u09_fig01" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>diffuse_decode(model,
+   n, steps)</code>: tokens = all masks. For each step: scores =
+   model(tokens), unmask the top-k confident. Return
+   tokens.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: with
+   steps = n and k = 1, the process reduces to a valid
+   (order-free) generation. If quality collapses at few
+   steps, the confidence estimates are miscalibrated.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Fewer serial steps than autoregressive, but each step
+   processes the full sequence. The win is latency with
+   parallel hardware, not total FLOPs.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Autoregressive
+    (coherent, serial). Speculative decoding (parallel
+    draft, serial verify). Choose diffusion when parallel
+    hardware is plentiful and latency dominates.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: refinement repairs incoherence.
+    Counterexample: early wrong unmaskings lock in and
+    poison later steps. Confidence calibration is the
+    guard.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    masked diffusion LM papers (2024-2025). Extension:
+    measure quality vs step count, find the knee where
+    extra steps stop helping.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: typing vs sculpting. Ladder: define the mask -&gt;
+    run the toy -&gt; justify parallel steps -&gt; implement
+    diffuse_decode -&gt; predict the lock-in failure.
+    Transfer: diffusion for infilling code.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: 8 tokens,
+    2 steps, how many unmasked per step? E2: why re-mask
+    low-confidence tokens? E3: when does diffusion lose to
+    autoregressive? Key: <code>../keys/u09_answers.md</code> R1-R3.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u09_fig01.png</code>: Shell 3, one rule (unmask by
+    confidence), before full masks, after refined text.
+    Source: original toy. Numbers from <code>render_u09.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-inspect-recap-topics">C02: inspect recap topics</h3>
+<p>Leaf id <code>cme295-U09-C02</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;Recap&rdquo;, L9).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L9 &ldquo;Recap&rdquo;. Scope: the load-bearing ideas from each
+   lecture, compressed. Objectives: name one key mechanism
+   per lecture L1-L7 and its failure mode. Depends on
+   U01-U08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: nine lectures,
+   what actually matters? Toy: L1 attention, L2 RoPE, L3
+   SFT+LoRA, L4 GRPO, L5 KV cache, L6 ReAct, L7 judge bias.
+   Seven mechanisms, each with one sentence and one
+   failure.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The recap is a map, not the territory.
+   Each pin marks a mechanism worth re-deriving from
+   scratch. If you cannot re-derive it, the pin is a wish.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> One row
+   per lecture: mechanism, equation, failure. Assumption:
+   the syllabus bullets describe what was taught, pending
+   artifact verification.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new derivation, a
+   compression protocol: for each lecture, write the one
+   equation you would reconstruct first and the one
+   assumption that breaks it.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u09_lab_run.py</code>
+   (lab6 recap): the recap table itself, 7 rows, printed as
+   a checklist. Each row verified against its unit lesson.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>recap_check()</code>: for
+   each lecture, prompt: mechanism? equation? failure? Score
+   0/1 per answer. The checklist is the implementation.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: 21/21
+   on the checklist before the final. Below 15, revisit
+   the weak lectures.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   The recap costs one focused hour. Skipping it costs the
+   exam.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Re-reading
+    everything (thorough, slow). Flashcards of facts
+    (fast, shallow). Choose mechanism-level recall.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the bullets match the lectures.
+    Counterexample: a guest lecture replaced a topic.
+    Verify against artifacts when they publish.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Re-read
+    each unit&rsquo;s C12 generalization section. Extension: write
+    the 7 equations from memory, check against lessons.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: map not territory. Ladder: name the pins -&gt;
+    derive one -&gt; justify its failure -&gt; implement
+    recap_check -&gt; predict the bullet-mismatch failure.
+    Transfer: recap for any course.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: L4 in one
+    sentence. E2: L7&rsquo;s failure mode. E3: 15/21, what now?
+    Key: <code>../keys/u09_answers.md</code> R4-R6.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the recap is a table in the lab key. Logged
+    in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-midterm-objective-mapping">C03: midterm objective mapping</h3>
+<p>Leaf id <code>cme295-U09-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> The
+   midterm (Oct 23, 2026) fell after baseline. No exam
+   content exists or is claimed. Scope: mapping syllabus
+   objectives for L1-L4 to lesson homes. Objectives:
+   build the map and find the gaps. Depends on P22.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: is every
+   testable objective taught somewhere? Toy: objective
+   &ldquo;derive the DPO loss&rdquo; -&gt; U05 C09 (taught, assessed).
+   Objective &ldquo;implement FlashAttention&rdquo; -&gt; named in L5,
+   taught nowhere yet. The map exposes the hole.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The map is an inventory audit. Every
+   objective needs a shelf (lesson) and a price tag
+   (assessment). Unshelved objectives are promises, not
+   coverage.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Objective
+   list from syllabus bullets, home unit, assessment
+   pointer. Assumption: syllabus bullets approximate the
+   exam scope, the instructor decides the real scope.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation, a procedure:
+   list objectives per lecture, point each at a lesson
+   concept and an exercise, mark orphans. The mechanism is
+   bookkeeping with teeth.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u09.py</code>: 24
+   objectives from L1-L4 bullets, 21 mapped, 3 orphans
+   (FlashAttention internals, speculative decoding
+   details, on-policy distillation variants). Figure:
+   <img alt="u09_fig02" src="../assets/u09_fig02.png" title="u09_fig02" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>map_objectives(objs,
+   lessons)</code>: for each objective, find the concept id or
+   mark ORPHAN. Print the orphan list.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: every
+   non-orphan objective resolves to a real file and line.
+   Dangling pointers are lies.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   The map costs an hour. Orphans become study priorities
+   or explicit scope cuts.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Studying
+    everything equally (fair, wasteful). Ignoring the map
+    (fast, blind). Choose the map, then weight by orphans.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: bullets equal exam scope. Counterexample:
+    the midterm tests a guest topic. The map is a guide,
+    not a contract.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    course policies on exams when published. Extension:
+    after the midterm, score the map&rsquo;s predictions.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: inventory audit. Ladder: define the map -&gt;
+    build the toy -&gt; justify the orphan rule -&gt; implement
+    map_objectives -&gt; predict the guest-topic failure.
+    Transfer: mapping for a job interview loop.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: 24
+    objectives, 3 orphans, coverage? E2: an orphan you
+    care about, what now? E3: why resolve pointers? Key:
+    <code>../keys/u09_answers.md</code> R7-R9.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u09_fig02.png</code>: Shell 3, one rule (map or orphan),
+    before bullet list, after mapped grid. Source:
+    original. Counts from <code>render_u09.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-final-objective-mapping">C04: final objective mapping</h3>
+<p>Leaf id <code>cme295-U09-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> The
+   final (Dec 9, 2026) fell after baseline. No exam content
+   exists or is claimed. Scope: cumulative objectives
+   L1-L9. Objectives: extend the midterm map and weight by
+   cross-lecture links. Depends on C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the final is
+   cumulative, where do lectures connect? Toy: DPO (L4)
+   needs the BT model (U05), which needs MLE (P07), which
+   needs probability (P06). The chain is the study order.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The final tests the graph, not the
+   nodes. Edges between lectures are where the hard
+   questions live.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Cumulative
+   objective list, dependency edges, weight per edge.
+   Assumption: cumulative means integrative, not just
+   longer.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Extend the C03 map to L5-L9,
+   then add edges: each objective lists its prerequisites.
+   Study time follows edge density.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: 40 objectives, 34 mapped, 6
+   orphans. Densest edges: U05-&gt;U06 (RL foundations),
+   U07-&gt;U08 (agent eval). Numbers are toy counts from the
+   mapping exercise.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>cumulative_map(objs)</code>: map,
+   then for each objective list prerequisite concepts.
+   Sort study order by edge count.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: no
+   objective lists a prerequisite that is itself an orphan.
+   Chains must ground out in taught material.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Same cost as C03, double the rows. The payoff is study
+   order.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Rereading
+    linearly (simple, misses edges). Cramming orphans
+    (risky). Choose edge-weighted study.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: edges are known. Counterexample: the final
+    emphasizes L8-L9, which have the thinnest artifact
+    base. Weight recent lectures up.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    final exam policy when published. Extension: after the
+    final, audit which edges were actually tested.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: graph not nodes. Ladder: define the edges -&gt;
+    build the toy -&gt; justify edge weighting -&gt; implement
+    cumulative_map -&gt; predict the recency failure.
+    Transfer: mapping for a system design interview.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: densest
+    edge, what does it mean? E2: orphan prerequisite,
+    what now? E3: why weight recent lectures? Key:
+    <code>../keys/u09_answers.md</code> R10-R12.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the cumulative map extends <code>u09_fig02.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-dated-update-separation">C05: dated update separation</h3>
+<p>Leaf id <code>cme295-U09-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on honesty about time. Scope: separating the Oct 6, 2026
+   baseline from later updates. Objectives: state the
+   baseline rule and the update protocol. Depends on P22.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: a new paper
+   lands in November, does the course absorb it silently?
+   Toy: baseline note &ldquo;GRPO as of Oct 2026&rdquo;, update note
+   &ldquo;Nov 2026: follow-up X, changes claim Y&rdquo;. Two dates,
+   no confusion.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The course is a newspaper with an
+   archive. New editions do not rewrite old ones, they
+   stack with dates.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Baseline
+   date, update entries with dates, supersede links.
+   Assumption: readers check dates, writers write them.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Protocol: every factual claim
+   carries &ldquo;as of&rdquo; or a dated source. Updates append, never
+   edit history. The mechanism is append-only truth.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> This unit: baseline 2026-10-06,
+   L8/L9 in the future at baseline, exams unheld. Any
+   claim about L8 content is dated speculation, labeled.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>stamp(claim, date,
+   source)</code>: attach the triple. <code>update(old, new)</code>: link,
+   do not overwrite.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: no
+   undated factual claim in new material. An audit grep
+   for missing stamps passes.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Stamping is free. Undated claims cost trust.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Silent
+    updates (clean look, dishonest). Frozen course (honest,
+    stale). Choose dated appends.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: readers check dates. Counterexample: a
+    stale claim quoted without its date. Put dates inline,
+    not in footnotes.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    currentness policy in <code>../currentness.md</code>. Extension:
+    audit one unit for undated claims.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: newspaper archive. Ladder: define the stamp -&gt;
+    apply to the toy -&gt; justify append-only -&gt; implement
+    stamp -&gt; predict the stale-quote failure. Transfer:
+    dating for a research wiki.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: claim
+    about L8, how to date it? E2: update contradicts
+    baseline, what now? E3: why inline dates? Key:
+    <code>../keys/u09_answers.md</code> R13-R15.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, dates are text. Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-original-exam-style-practice">C06: original exam-style practice</h3>
+<p>Leaf id <code>cme295-U09-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on practice. Scope: original questions in exam style,
+   built from syllabus objectives. Objectives: write and
+   solve five mixed questions under time. Depends on
+   U01-U08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: how do you
+   practice for an exam you cannot see? Toy: &ldquo;Compute the
+   GRPO advantage for rewards [2, 0, 0, 0]&rdquo; (2 min),
+   &ldquo;State two judge biases and their fixes&rdquo; (3 min). Same
+   skills, new numbers.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Practice spars, the exam is the
+   fight. Sparring partners are not the opponent, but the
+   muscles are the same.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Question
+   bank, time budget, rubric per question. Assumption: the
+   syllabus objectives approximate the exam, the format is
+   a guess.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Build questions from the
+   objective map (C03): one per major mechanism, mixed
+   difficulty, timed. Grade against the unit keys.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Five questions in the lab, with
+   times: group norm (3 min), pass@k (2 min), fusion (3
+   min), ECE (3 min), bias swap (2 min). Total 13 min.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>practice_set(objs,
+   n=5)</code>: sample objectives, render questions, start the
+   timer. Grade with the keys.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: every
+   question traces to an objective and a key. Orphan
+   questions are cut.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Building the set costs an hour. The exam costs more.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Past exams
+    (none exist yet). Passive rereading (comfortable,
+    useless). Choose timed original practice.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: format guess is right. Counterexample: the
+    exam is all proofs. Practice derivations too, not just
+    numbers.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    exam policy when published, adjust format. Extension:
+    after the midterm, compare.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: sparring. Ladder: define the set -&gt; build the
+    toy -&gt; justify timing -&gt; implement practice_set -&gt;
+    predict the format-miss failure. Transfer: practice
+    for interviews.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: build one
+    3-min question. E2: 13-min set, what does it cover?
+    E3: why trace to objectives? Key:
+    <code>../keys/u09_answers.md</code> R16-R18.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the set is text in the lab. Logged in
+    <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-cross-lecture-dependencies">C07: cross-lecture dependencies</h3>
+<p>Leaf id <code>cme295-U09-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on the graph. Scope: how lectures build on each other.
+   Objectives: draw the dependency edges and find the
+   keystone concepts. Depends on U01-U08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: which concept,
+   removed, collapses the most later material? Toy: remove
+   &ldquo;attention&rdquo;, U02-U09 lose their footing. Remove &ldquo;RLVR&rdquo;,
+   only U06 wobbles. Attention is the keystone.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The course is a building. Lower floors
+   hold upper floors. The keystone concepts are the
+   load-bearing walls.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Nodes
+   (concepts), edges (depends-on), keystone score (number
+   of downstream dependents). Assumption: the edges are
+   honest, not decorative.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Count downstream dependents
+   per concept. The top three are the keystones. Study
+   them first, test them hardest.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u09_lab_run.py</code>: toy
+   graph of 20 concepts, attention has 15 downstream,
+   policy gradient 9, retrieval 7. The ranking is the
+   study order.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>keystones(edges)</code>: count
+   transitive dependents per node, sort. Return the top
+   three.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the
+   top keystone is a U01-U02 concept. If a U08 concept
+   tops the list, the edges are wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Counting is trivial. The value is prioritization.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Flat review
+    (fair, slow). Recency-weighted review (fresh, shaky
+    base). Choose keystone-first.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: edges are complete. Counterexample: a
+    hidden dependency (judging needs calibration) is
+    missing, the ranking misleads. Audit edges yearly.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    prerequisite graph in <code>../prerequisites.md</code>. Extension:
+    build the full 108-node graph, compute keystones.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: load-bearing walls. Ladder: define the graph -&gt;
+    compute the toy -&gt; justify the ranking -&gt; implement
+    keystones -&gt; predict the missing-edge failure.
+    Transfer: dependencies in a codebase.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: keystone
+    of the toy graph? E2: U08 concept on top, verdict? E3:
+    why test keystones hardest? Key:
+    <code>../keys/u09_answers.md</code> R19-R21.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u09_fig04.png</code>: chapter plate, dependency map with
+    keystones marked. Source: original.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-comparative-architectures">C08: comparative architectures</h3>
+<p>Leaf id <code>cme295-U09-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on architecture choice. Scope: transformer vs diffusion
+   vs hybrid, head to head. Objectives: state the three
+   decision axes and pick for two scenarios. Depends on
+   C01, U01-U03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: a new project,
+   which architecture? Toy axes: coherence (AR wins),
+   latency with parallel hardware (diffusion wins),
+   tooling maturity (AR wins). Score 2-1 for AR today.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Architectures are vehicles. The sedan
+   (AR) is refined and everywhere. The prototype
+   (diffusion) is fast on the track, rough on the road.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Axes:
+   quality, latency, maturity. Scenario weights.
+   Assumption: the scores are dated, the race is still
+   running.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation, a decision
+   matrix: rows architectures, columns axes, cells scored
+   1-3 with dates. The winner is weighted sum, the dates
+   are the honesty.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy matrix in the lab key: AR
+   [3, 2, 3], diffusion [2, 3, 1], equal weights: AR 8,
+   diffusion 6. Weights [0.2, 0.6, 0.2] (latency-heavy):
+   both 2.4, a tie.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>decide(matrix,
+   weights)</code>: weighted sums, return the ranking with the
+   date stamp.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the
+   dates are present and the weights are stated. A matrix
+   without dates is an opinion.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   The matrix costs an hour of honest scoring. The wrong
+   pick costs a project.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Hype-driven
+    choice (fast, wrong). Analysis paralysis (slow, safe).
+    Choose the dated matrix.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: axes are complete. Counterexample:
+    inference cost per token flips the ranking at scale.
+    Add cost as an axis.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    diffusion LM comparisons. Extension: re-score yearly.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: sedan vs prototype. Ladder: define the axes -&gt;
+    score the toy -&gt; justify the dates -&gt; implement decide
+    -&gt; predict the missing-axis failure. Transfer:
+    framework choice for a startup.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: equal
+    weights, who wins? E2: latency-weighted, result? E3:
+    why date every cell? Key: <code>../keys/u09_answers.md</code>
+    R22-R24.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the matrix is a table in the lab key. Logged
+    in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-end-to-end-toy">C09: end-to-end toy</h3>
+<p>Leaf id <code>cme295-U09-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on integration. Scope: one tiny forward pass touching
+   every stage. Objectives: run tokens through embedding,
+   attention, and logits by hand. Depends on U01-U03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: do the pieces
+   actually connect? Toy: vocab 4, d = 2, sequence &ldquo;a b&rdquo;.
+   Embed, one attention head, project to logits. Every
+   number on the table.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The toy is a dollhouse. Every room is
+   real, just small. Walk through it once and the mansion
+   stops being scary.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> E in
+   R^(4x2), x in {0,1}^2, W_q/k/v in R^(2x2), W_o in
+   R^(2x4). Assumption: no masks, no norms, no dropout,
+   the dollhouse has no plumbing.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> e = E[x], q = e W_q, k = e
+   W_k, v = e W_v, a = softmax(q k^T / sqrt(2)), h = a v,
+   logits = h W_o. Each step is a matrix multiply.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u09_lab_run.py</code>: with
+   the fixed toy matrices, logits for position 2: [0.33,
+   0.67, -0.33, -0.67]. Argmax picks token 1 (&ldquo;b&rdquo;). The
+   runner prints every intermediate.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>tiny_forward(E, x,
+   Wq, Wk, Wv, Wo)</code>: the six lines above. Shapes asserted
+   at each step.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: rows
+   of a sum to 1, logits shape (2, 4). If not, a transpose
+   is wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   O(n^2 d) with n = 2, d = 2: sixteen multiplies. The
+   point is the path, not the speed.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Reading
+    the equations (abstract). A full model (opaque).
+    Choose the dollhouse.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the toy teaches scale. Counterexample:
+    nothing about KV caching or numerics appears at n = 2.
+    The toy teaches connection, not systems.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Re-read
+    U01 C08 and U02 C11. Extension: add the causal mask,
+    watch position 1 change.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: dollhouse. Ladder: define the rooms -&gt; run the
+    toy -&gt; justify each multiply -&gt; implement tiny_forward
+    -&gt; predict the scale-blindness failure. Transfer: toy
+    for a CNN.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: shape of
+    a? E2: rows sum to 1, why? E3: argmax token? Key:
+    <code>../keys/u09_answers.md</code> R25-R27.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u09_fig03.png</code>: Shell 3, one rule (the six lines),
+    before token ids, after logits. Source: original toy.
+    Numbers from <code>render_u09.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-research-protocol">C10: research protocol</h3>
+<p>Leaf id <code>cme295-U09-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on doing research. Scope: the full protocol from
+   question to negative result. Objectives: write a
+   falsifiable hypothesis and its kill criteria. Depends
+   on P22.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: what separates
+   a real experiment from theater? Toy: hypothesis &ldquo;group
+   norm beats batch norm on mixed difficulty&rdquo;. Kill
+   criterion: &ldquo;if the delta is within 2 seed-std, kill
+   it&rdquo;. The kill criterion is the honesty.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Research is a bet with an exit. The
+   hypothesis is the bet, the kill criteria are the
+   stop-loss. No stop-loss, no trade.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Question,
+   hypothesis, baselines, budget, metrics, seeds,
+   ablations, kill criteria. Assumption: the question is
+   worth the budget.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation, a checklist:
+   question, falsifiable hypothesis, literature, data,
+   baselines, matched budgets, metrics, controls,
+   ablations, seeds, uncertainty, failure criteria,
+   reproducibility, negative-result plan, limitations,
+   ethics. Every item present or explicitly waived.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> The capstone report
+   (<code>../capstones/research_grpo_extension.md</code>) is the
+   worked example: hypothesis, execution, negative result
+   reported honestly.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>protocol(hypothesis)</code>:
+   render the checklist, flag missing items. The checklist
+   is the code.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the
+   kill criteria are numeric and pre-registered. Vague
+   criteria (&ldquo;if it looks bad&rdquo;) fail the check.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   The protocol costs an hour of writing. Skipping it
+   costs months of theater.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Exploratory
+    hacking (finds things, proves nothing). Pure theory
+    (clean, untested). Choose the protocol for claims.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the protocol guarantees truth.
+    Counterexample: p-hacking inside the protocol. Pre-register
+    and keep hands off the analysis plan.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read P22
+    and the capstone report. Extension: write a protocol
+    for your own question.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: bet with an exit. Ladder: define the protocol
+    -&gt; write the toy -&gt; justify kill criteria -&gt;
+    implement protocol -&gt; predict the p-hack failure.
+    Transfer: protocol for a product experiment.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: write a
+    falsifiable hypothesis. E2: kill criterion for it. E3:
+    two waivable items. Key: <code>../keys/u09_answers.md</code>
+    R28-R30.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the protocol is a checklist. Logged in
+    <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-production-bridge">C11: production bridge</h3>
+<p>Leaf id <code>cme295-U09-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on shipping. Scope: from lab result to production
+   system. Objectives: list the acceptance gates and the
+   rollback plan. Depends on P24.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the lab says
+   0.98, production says 0.81, what happened? Toy: lab
+   data was clean, production is messy, latency caps k at
+   2, the verifier is weaker. The gates catch each gap.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Production is the ocean, the lab is
+   the pool. Gates are the airlocks: data, latency,
+   verifier, cost, monitoring, rollback. Skip one and the
+   ocean floods in.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Acceptance
+   criteria, shadow metrics, latency budget, cost per
+   query, rollback trigger. Assumption: the lab result is
+   real, the gap is environmental.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Gates in order: (1) data
+   match (production sample through the lab pipeline),
+   (2) latency (p99 under budget), (3) cost (per-query
+   under budget), (4) shadow (run alongside, compare),
+   (5) rollback (one command, tested). Each gate is a
+   measurement, not a meeting.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> The applied capstone
+   (<code>../capstones/applied_rag_support.md</code>) is the worked
+   example: discovery, gates, hypothetical cost numbers
+   labeled as such, rollback plan.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>gates(system)</code>: run
+   the five measurements, return pass/fail per gate. Ship
+   only on five passes.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the
+   rollback was tested, not just written. An untested
+   rollback is a wish.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Gates cost engineering weeks. Skipping them costs
+   incidents.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Ship and pray
+    (fast, famous last words). Eternal shadow (safe,
+    never ships). Choose gated rollout.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the lab result is real. Counterexample:
+    the lab metric was gamed (U06 C06). Audit the lab
+    before bridging it.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read P24
+    and the applied capstone. Extension: write gates for
+    your system.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: airlocks. Ladder: define the gates -&gt; run the
+    toy -&gt; justify the order -&gt; implement gates -&gt;
+    predict the gamed-lab failure. Transfer: gates for an
+    ML feature launch.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: five
+    gates. E2: rollback untested, verdict? E3: lab 0.98,
+    prod 0.81, first check? Key: <code>../keys/u09_answers.md</code>
+    R31-R33.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, gates are a checklist. Logged in
+    <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-oral-defense">C12: oral defense</h3>
+<p>Leaf id <code>cme295-U09-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on the final skill. Scope: defending any concept under
+   questioning. Objectives: survive an 8-rung ladder on a
+   drawn concept. Depends on U01-U08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: can you
+   explain it when the questions keep coming? Toy ladder on
+   GRPO: define -&gt; toy -&gt; derive -&gt; implement -&gt; compare -&gt;
+   debug -&gt; critique -&gt; design. Eight rungs, no hiding.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The defense is a stress test. Each rung
+   loads the concept harder. Passing means the knowledge
+   is structural, not painted on.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Ladder
+   rungs (8), concept draw, rubric per rung. Assumption:
+   the defender may say &ldquo;I do not know&rdquo; once without
+   failing, twice is a crack.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The ladder protocol from the
+   course prompt: define, intuitive toy, derive, implement
+   and complexity, compare, debug, critique assumptions,
+   design experiment or production transfer. Same ladder
+   every time, different concept.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Ten ladders with full keys in
+   <code>../interview/oral-defenses.md</code> and
+   <code>../interview/keys-oral.md</code>. This unit&rsquo;s defense draws
+   from all nine units.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>defend(concept)</code>: draw,
+   climb the 8 rungs, score each. The ladders are the
+   implementation.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the
+   defender derives, not recites. Recitation fails at rung
+   3.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   One defense is 20 minutes. Ten defenses are a course.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Written
+    exams (scalable, gameable). Vibe checks (fast,
+    empty). Choose the ladder.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the ladder fits every concept. Counterexample:
+    pure-fact concepts (dates) have no rung 3. Adapt:
+    rung 3 becomes &ldquo;justify why this fact matters&rdquo;.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    oral defense keys. Extension: defend a concept from
+    U01 cold.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: stress test. Ladder: the ladder is the lesson,
+    climb it. Transfer: defense for a thesis.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: the 8
+    rungs. E2: &ldquo;I do not know&rdquo; twice, verdict? E3: rung 3
+    for a date fact? Key: <code>../keys/u09_answers.md</code>
+    R34-R36.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, defenses are text. Logged in
+    <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+      
+      <nav class="pager"><a href="../keys/u08_answers.html"><span class="lbl">← Previous</span>U08 · Answers</a><a href="../keys/u09_answers.html"><span class="lbl">Next →</span>U09 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

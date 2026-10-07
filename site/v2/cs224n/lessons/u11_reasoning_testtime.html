@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U11 · Reasoning and test-time compute — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Lesson: Reasoning and test-time compute.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u11" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11" class="active">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U11 · Reasoning and test-time compute</nav>
+      <h1>U11 · Reasoning and test-time compute</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u11-reasoning-and-test-time-compute">U11 , Reasoning and test-time compute</h1>
+<h2 id="local-remediation">Local remediation</h2>
+<p>Bridges: <code>../shared/prerequisites/p14_transformer.md</code> (P14, the
+decoder being sampled), <code>../shared/prerequisites/p17_rl.md</code> (P17,
+rewards and policies), <code>../shared/prerequisites/p22_experiments.md</code>
+(P22, ablations and falsification). This unit spends compute after
+training: sample more, check the answers, decode faster. The theme:
+inference is a budget, spend it where it moves the score.</p>
+<p>R1. Binomial majority: at p = 0.6, majority of n gives 0.6000
+(n = 1), 0.6826 (n = 5), 0.7535 (n = 11), 0.8256 (n = 21).
+Voting helps when errors are independent.
+R2. Reversal: at p = 0.4, majority of 5 gives 0.3174, of 11
+gives 0.2465. Voting hurts below 0.5. Check p first.
+R3. Diminishing returns: gain(n) = 1 - exp(-n/20). Budget 100
+samples: 10 prompts x 10 gives total gain 3.935, 1 prompt x 100
+gives 0.993. Spread beats depth.</p>
+<hr />
+<h3 id="c01-reasoning-supervision">C01: reasoning supervision</h3>
+<p>Leaf id <code>cs224n-U11-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   reasoning sessions of the Winter 2026 schedule (S15-S16 per
+   <code>course_map.md</code>). Scope: training models to show their work.
+   Objectives: define the supervision targets, state the
+   faithfulness limit, name the cost. Depends on U07, U08 C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: you supervise the
+   steps, not just the answer, what changes? Toy: two models,
+   same answer accuracy, one trained on step labels. The
+   step-trained model debugs better (its steps are checkable),
+   but the steps are still not proven causal (C12).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Supervision is a spotlight. Point it at the
+   answer and the model learns answers. Point it at the steps
+   and the model learns checkable work. The spotlight does not
+   make the work true, it makes it visible.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Step
+   labels, answer labels, a process reward. Assumption: the
+   step labels are correct (expensive humans or verifiable
+   steps, C02&rsquo;s cheaper case).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is the loss: answer
+   loss on the final token, step loss on intermediates. The
+   gradient reaches the steps either way, the labels decide
+   what &ldquo;right&rdquo; means per step.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): labeling
+   1000 steps costs 10x labeling 1000 answers (steps are
+   longer to judge). The budget question: steps or more
+   answers?</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>step_loss(
+   trace, step_labels)</code>: cross-entropy per step, mask the
+   answer-only variant for the ablation. ~8 lines. Test: the
+   step variant has lower step error on the toy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The step-trained
+   model must beat answer-only on step checks, not just on
+   answers. Check: both train on the same traces.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Step labels cost more per trace. The statistical
+   cost: noisy step labels teach noise.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    answer-only supervision plus test-time sampling (C05).
+    Choose step labels when steps must be auditable. Choose
+    answer-only when only the answer matters.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;supervised steps are the model&rsquo;s reasoning.&rdquo;
+    Counterexample: the model learns plausible steps that
+    ratify a guessed answer (rationalization, U08 C05).
+    Supervised, not faithful.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: corrupt one step, measure answer change.
+    Predict: step-supervised models change more (they use the
+    steps). Falsifier: no difference (then the steps are
+    decoration, check).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A1 (breadth), L1
+    (ladder: define the targets, run the toy, derive the
+    spotlight, diagnose rationalization, design the
+    corruption test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: implement
+    <code>step_loss</code>, compare the two variants. E2: corrupt a step
+    and measure the answer shift. Keys in <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a loss (carried in text). Logged as an honest exception
+    in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-verifiable-reward">C02: verifiable reward</h3>
+<p>Leaf id <code>cs224n-U11-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   S15-S16 (DeepSeek-R1 and DAPO readings per the schedule).
+   Scope: rewards a program can check. Objectives: define
+   verifiability, contrast with learned rewards, state the
+   hacking resistance. Depends on C01, U07 C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the reward is a
+   unit test, can the model hack it? Toy: math answer checked
+   by exact match on the final number. Hacking needs the right
+   number, which is the task. The reward is the task.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A verifiable reward is a lock with one key:
+   the right answer. A learned reward is a lock the model can
+   pick (U07 C10). Verifiable rewards trade generality for
+   honesty.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A verifier
+   function v(answer) in {0, 1}, a task family with checkable
+   answers (math, code tests). Assumption: the verifier is
+   correct (a buggy test teaches bugs).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is RL with a
+   ground-truth reward: policy gradient on v. No reward model,
+   no preference data, no hacking surface beyond the verifier
+   itself. The gradient is honest because the reward is.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 100 math
+   items, verifier exact-match. Reward 1 on 63, 0 on 37. The
+   policy gradient pushes toward the 63. No judge in the loop.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>rl_step(
+   policy, items, verifier)</code>: sample, score with v, policy
+   gradient update. ~10 lines. Test: the toy 63/37 split.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The reward must
+   equal the verifier on every item (no learned middle layer).
+   Check: a wrong answer never scores 1.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Binary rewards are sparse: many samples score 0.
+   The cost is the samples needed to find the 1s.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    learned reward models (U07). Choose verifiable rewards for
+    math, code, games. Choose learned rewards where no
+    verifier exists (open-ended writing).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the verifier is correct.&rdquo; Counterexample: the
+    test suite misses an edge case, the model learns the
+    exploit and scores 1 on wrong code. Verify the verifier.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: weak verifier (few tests) vs strong verifier
+    (many tests), measure true correctness on held-out tests.
+    Predict: weak verifiers breed exploits. Falsifier: no
+    difference (then the model is honest, or the tests are).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A2 (breadth), L2
+    (ladder: define verifiability, run the toy, derive the
+    honesty, diagnose the buggy test, design the verifier
+    strength test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E3: implement
+    <code>rl_step</code> on the toy. E4: plant a buggy test and show the
+    exploit. Keys in <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a reward class (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-deepseek-r1dapo-readings">C03: DeepSeek-R1/DAPO readings</h3>
+<p>Leaf id <code>cs224n-U11-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   S15 (schedule readings: DeepSeek-R1, DAPO, titles only per
+   the honesty rules). Scope: what the reading list claims,
+   read honestly. Objectives: state the titles, extract the
+   checkable claims, mark what was not read. Depends on C02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the schedule lists
+   DeepSeek-R1 and DAPO, what do you actually know? Toy: the
+   honest reading card: title, venue, the claim in one
+   sentence, &ldquo;not read&rdquo; stamped on the rest.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A reading list is a map, not the
+   territory. The card records the boundary: title known,
+   claims unverified, paper not opened. This is C10&rsquo;s U14
+   cousin applied to papers.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A reading
+   card: title, authors, date, one-sentence claim, read status.
+   Assumption: none about the content (that is the point).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   the card: it stops title-dropping from becoming
+   knowledge-claims. Every claim about the paper cites the
+   card or the paper.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): the card
+   for DeepSeek-R1 reads &ldquo;title known from the S15 reading
+   list, content not inspected in this build&rdquo;. The card is the
+   deliverable.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>reading_card(
+   title, source)</code>: the five fields, read status default
+   &ldquo;not read&rdquo;. ~6 lines. Test: the toy card.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> No content claim
+   appears without a read status of &ldquo;read&rdquo;. Check: the card
+   for DAPO matches the same format.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Five minutes per card. The cost of skipping it:
+   citing papers you never opened.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    read the papers. Choose the card when time-boxed. Choose
+    reading before any claim that depends on the content.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the title tells you the method.&rdquo; Counterexample:
+    titles undersell ablations and oversell novelty. Read
+    before you repeat.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is hygiene. The extension is the reading itself.
+    the reading.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A3 (breadth: state
+    the card fields and the honesty rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E5: write cards
+    for the S15-S16 readings. E6: find one claim in your notes
+    that outruns its card, fix it. Keys in <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a card (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-outcomeprocess-verification">C04: outcome/process verification</h3>
+<p>Leaf id <code>cs224n-U11-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S16
+   (verification readings per the schedule). Scope: checking
+   answers vs checking steps. Objectives: define both, state
+   the cost-accuracy trade, choose per task. Depends on C01,
+   C02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: do you check the
+   final answer or every step? Toy: outcome check costs 1
+   unit, catches wrong answers. Process check costs 5 units,
+   catches wrong steps too. The answer is right but the steps
+   are wrong: outcome passes, process fails.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Outcome verification is the bouncer at the
+   exit: right answer, come in. Process verification is the
+   inspector on the line: every step must hold. The inspector
+   costs more and catches more.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A verifier
+   for answers, a verifier for steps, costs c_o and c_p.
+   Assumption: step verifiers exist (rare outside math/code).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is selection:
+   generate n candidates, keep the ones that verify. Outcome
+   selection needs n samples. Process selection can prune
+   early: kill a trace at the first bad step.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 10
+   traces, 4 with right answers, 2 with right steps. Outcome
+   keeps 4, process keeps 2. Process is stricter and 5x the
+   cost.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>select(
+   traces, verifier, mode)</code>: outcome filters on the answer,
+   process filters on every step. ~10 lines. Test: the toy 4
+   vs 2.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Process-kept
+   traces are a subset of outcome-kept traces on the toy.
+   Check: the cost ratio is about 5.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Process verification multiplies the check cost by
+   the trace length. The statistical win: cleaner training
+   data.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    no verification, trust the sample. Choose outcome for
+    checkable answers. Choose process when the steps are the
+    product (tutoring, proofs).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;verified steps mean a right answer.&rdquo;
+    Counterexample: every step checks out, the conclusion is
+    a non sequitur. Verify the logic, not just the steps.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: outcome vs process selection on 60 math items,
+    equal total budget. Predict: process wins per item but
+    loses per dollar. Falsifier: process wins per dollar
+    (then pruning saves enough, check).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A4 (breadth), L4
+    (ladder: define both, run the toy, derive the subset,
+    diagnose the non sequitur, design the budget test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E7: implement
+    <code>select</code> in both modes, match 4 vs 2. E8: price both on
+    the toy. Keys in <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a filter (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-repeated-sampling">C05: repeated sampling</h3>
+<p>Leaf id <code>cs224n-U11-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   S16 (test-time compute readings per the schedule). Scope: the
+   simplest test-time scaling. Objectives: compute the majority
+   curve, state the independence assumption, name the cost.
+   Depends on U08 C06, R1.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: one sample gives
+   0.60, what do 21 give? Toy: majority vote, independent
+   errors: 0.6000, 0.6826, 0.7535, 0.8256 at n = 1, 5, 11, 21.
+   More samples, same model, better answer.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Sampling is a second chance machine. Each
+   draw is a guess, the majority is the committee. Committees
+   beat individuals when the members err independently.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Single-draw
+   accuracy p, sample count n, majority rule. Assumption:
+   errors independent across draws (the load-bearing one).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> P(majority right) = sum over k
+   above n/2 of C(n,k) p^k (1-p)^(n-k). The binomial tail.
+   At p = 0.6 the tail grows with n, at p = 0.4 it shrinks
+   (R2&rsquo;s reversal).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u11.py</code>: 0.6000, 0.6826,
+   0.7535, 0.8256. The gains shrink: +0.083, +0.071, +0.072.
+   Diminishing but real.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>majority_vote(
+   samples)</code>: count, take the max. ~5 lines. Test: the toy
+   curve on simulated draws.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> At n = 1 the
+   vote equals the draw. Check: the empirical curve matches
+   the binomial within noise.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Cost is n times one generation. The statistical
+   efficiency: each extra sample buys less than the last.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    train a bigger model. Choose sampling when the model is
+    fixed and latency allows. Choose training when the budget
+    is per-query forever.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;errors are independent.&rdquo; Counterexample: the
+    model repeats its favorite wrong answer 21 times, the
+    majority is wrong with confidence. Correlated errors break
+    the committee (C10&rsquo;s failure analysis).</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: measure pairwise agreement of wrong answers
+    vs the independence prediction. Predict: excess agreement.
+    Falsifier: matches (then the binomial holds, rare).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A5 (breadth), L5
+    (ladder: define the vote, compute the curve, derive the
+    tail, diagnose the correlated failure, design the
+    agreement test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E9: implement
+    <code>majority_vote</code>, match the curve. E10: simulate correlated
+    errors and show the break. Keys in <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u11_fig01" src="../assets/u11_fig01.png" title="u11_fig01" />: the scaling curve, Shell 6,
+    source original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-self-consistency">C06: self-consistency</h3>
+<p>Leaf id <code>cs224n-U11-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S15
+   (self-consistency readings per the schedule). Scope: majority
+   vote over reasoning paths. Objectives: define it, separate
+   it from C05, state the p &gt; 0.5 condition. Depends on C05,
+   U08 C06.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model reasons
+   three ways and answers twice &ldquo;A&rdquo; once &ldquo;B&rdquo;, what is the
+   answer? Toy: &ldquo;A&rdquo;. The paths differ, the answer is stable.
+   Stability is the signal.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Self-consistency is C05 with reasoning
+   traces: sample diverse paths, vote the answers. Diverse
+   paths that converge are stronger evidence than one path.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> n paths,
+   answers a_1..a_n, the majority. Assumption: p &gt; 0.5 per
+   path (R2: below that, voting hurts).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Same binomial as C05. The new
+   part is diversity: temperature and prompt variation make
+   the paths differ. Identical paths are one path with extra
+   steps.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u11.py</code>: at p = 0.4,
+   majority of 5 gives 0.3174, of 11 gives 0.2465. Voting on
+   a weak reasoner makes it worse. Check p first, then vote.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>self_consistent(
+   paths)</code>: extract answers, majority vote. ~6 lines. Test:
+   the toy vote and the reversal.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> With identical
+   paths the vote equals any single path. Check: the reversal
+   numbers match.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> n reasoning traces cost n times the tokens. The
+   efficiency question: does diversity rise with temperature
+   or just noise?</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    one long trace (C07&rsquo;s depth). Choose self-consistency for
+    breadth over paths. Choose depth for a single hard
+    derivation.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;diverse paths.&rdquo; Counterexample: temperature
+    0 gives 5 identical paths, the &ldquo;vote&rdquo; is theater. Measure
+    path diversity, not just n.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: sweep temperature, measure path diversity vs
+    vote gain. Predict: an interior optimum. Falsifier:
+    monotone (then diversity is free, check the task).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A6 (breadth: state
+    the p &gt; 0.5 condition and the diversity requirement).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E11: implement
+    <code>self_consistent</code>, match the reversal. E12: show the
+    temperature-0 theater. Keys in <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a vote (carried in text, figure is C05&rsquo;s). Logged as an
+    honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-compute-allocation">C07: compute allocation</h3>
+<p>Leaf id <code>cs224n-U11-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S16.
+   Scope: splitting a fixed sample budget. Objectives: define
+   the allocation problem, compute the toy trade, state the
+   breadth rule. Depends on C05, R3.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: 100 samples, 10
+   prompts or 1 prompt? Toy: gain(n) = 1 - exp(-n/20). 10 x 10
+   gives 3.935, 1 x 100 gives 0.993. Spread wins.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The budget is water, the prompts are
+   plants. Diminishing returns mean the tenth liter on one
+   plant beats the hundredth. Water broadly.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Budget B,
+   prompts m, samples per prompt n = B/m, gain g(n) concave.
+   Assumption: gains are concave (diminishing, the common
+   case).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Total = m times g(B/m). With g
+   concave, the sum is maximized by spreading (Jensen&rsquo;s
+   inequality working for you). The toy numbers are the
+   proof.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u11.py</code>: 3.935 vs 0.993.
+   The deep allocation wastes 75 percent of the budget on
+   saturated returns.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>allocate(B, m,
+   gain)</code>: compare splits, pick the max. ~6 lines. Test: the
+   toy picks 10 x 10.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The chosen split
+   must beat the extremes (all-breadth, all-depth). Check:
+   with linear gain the split does not matter.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The math is free. The cost is the measurement of g, which
+   needs the measurement (C05&rsquo;s curve).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    adaptive allocation (spend where it helps). Choose the
+    fixed split for simplicity. Choose adaptive when gains
+    differ across prompts (hard ones deserve more).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;gains are concave.&rdquo; Counterexample: a task
+    with a threshold (needs 50 samples to click), spreading
+    gives 10 x 10 = 0. Know the shape before you spread.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: measure g on 3 task types, test the spread
+    rule. Predict: holds where concave. Falsifier: threshold
+    tasks break it (then allocate adaptively).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A7 (breadth), L7
+    (ladder: define the problem, compute 3.935 vs 0.993,
+    derive the concave rule, diagnose the threshold task,
+    design the g measurement).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E13: implement
+    <code>allocate</code>, match the toy. E14: build a threshold gain
+    and show the break. Keys in <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u11_fig03" src="../assets/u11_fig03.png" title="u11_fig03" />: the allocation bars, Shell 8,
+    source original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-speculative-decode">C08: speculative decode</h3>
+<p>Leaf id <code>cs224n-U11-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S16
+   (speculative decoding readings per the schedule). Scope:
+   faster decoding with a draft model. Objectives: define the
+   accept rule, compute the expected gain, state the draft-cost
+   condition. Depends on U05 C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the big model is
+   slow, the small model is fast but worse, can they team up?
+   Toy: draft 5 tokens, accept each with p = 0.7. Expected
+   accepted: 2.941 per pass. Same output distribution, fewer
+   big-model calls.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The small model proposes, the big model
+   disposes. Each proposed token is checked against the big
+   model&rsquo;s distribution and accepted or corrected. The output
+   is exactly the big model&rsquo;s, only faster.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Draft
+   length g, per-token accept probability a, draft cost c_d,
+   target cost c_t. Assumption: the accept rule preserves the
+   target distribution (it does, by construction).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Expected accepted run = (1 -
+   a^(g+1)) / (1 - a). At a = 0.7, g = 5: 2.941. Speedup needs
+   c_d small: the draft must be much cheaper than the target.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u11.py</code>: 2.941 of 5
+   drafts accepted on average. Each pass yields ~3 tokens for
+   ~1 target forward pass plus 5 cheap drafts.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>spec_step(
+   draft, target, g)</code>: draft g, verify in one target pass,
+   accept the prefix, resample at the first reject. ~12 lines.
+   Test: the accepted count matches the toy expectation.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The output
+   distribution equals the target&rsquo;s alone (the guarantee).
+   Check: with a = 1 the draft is always fully accepted.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The win is latency, not FLOPs: fewer sequential
+   target passes. The cost: the draft model and its memory.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    a smaller model alone. Choose speculation when you need
+    the big model&rsquo;s quality at lower latency. Choose the
+    small model when its quality suffices.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the draft is cheap enough.&rdquo; Counterexample:
+    a draft at half the target&rsquo;s cost with a = 0.3: the
+    overhead exceeds the gain. Measure a and c_d first.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: sweep draft sizes, measure wall-clock speedup.
+    Predict: an interior optimum in g. Falsifier: monotone
+    (then the draft is nearly free, scale it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A8 (breadth), L8
+    (ladder: define the rule, compute 2.941, derive the
+    expectation, diagnose the expensive draft, design the g
+    sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E15: implement
+    <code>spec_step</code> on the toy distributions, match 2.941. E16:
+    raise the draft cost and show the break-even. Keys in
+    <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u11_fig02" src="../assets/u11_fig02.png" title="u11_fig02" />: the acceptance bars, Shell 3,
+    source original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-evaluation-bias">C09: evaluation bias</h3>
+<p>Leaf id <code>cs224n-U11-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   S15-S16. Scope: how reasoning evals can mislead. Objectives:
+   name the bias classes, design the control, state the
+   correction. Depends on U10 C09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model writes
+   long traces and wins, is it reasoning or typing? Toy: the
+   judge prefers the longer trace 0.62 of the time, blinded to
+   length 0.53. The 0.09 is length bias, U10&rsquo;s lesson applied.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Reasoning evals have the same tilts as all
+   evals, plus one: trace length looks like thought. Control
+   for it or measure typing skill.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Win rates,
+   blinded variants, the delta. Assumption: the blinding
+   removes only the bias factor.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is U10 C09&rsquo;s: the
+   difference between the raw and blinded win rates is the
+   bias estimate. Reasoning adds the trace-length factor to
+   the list.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 0.62 raw,
+   0.53 blinded, bias 0.09. Report the blinded number.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>reason_bias(
+   traces)</code>: truncate or blind length, rescore. ~8 lines.
+   Test: the toy 0.09.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The blinded
+   traces must be otherwise identical. Check: the delta is
+   stable across seeds.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Two evals. The cost is building the blinding.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    human grading of traces. Choose controls for scale.
+    Choose humans for the final word.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the answer check is enough.&rdquo; Counterexample:
+    the trace is gibberish but the answer is right, and the
+    eval rewards the pair. Check traces when traces are the
+    claim.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: correlate trace length with win rate across 5
+    judges. Predict: positive. Falsifier: flat (then this
+    judge is clean, check the next).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A9 (breadth: name
+    the trace-length bias and the control).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E17: implement
+    <code>reason_bias</code>, match 0.09. E18: blind style instead.
+    Keys in <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a control (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-failure-analysis">C10: failure analysis</h3>
+<p>Leaf id <code>cs224n-U11-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   S15-S16. Scope: taxonomizing why reasoning traces fail.
+   Objectives: define the taxonomy, count 60 traces, state the
+   fix order. Depends on U09 C12.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the reasoning
+   model fails 40 percent of the time, where? Toy: 60 traces:
+   wrong tool 14, bad args 11, no stop 9, retrieval miss 12,
+   rationalized trace 8, other 6. The taxonomy says what to
+   fix.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> U09 C12&rsquo;s autopsy, specialized: reasoning
+   adds the rationalization class (steps that look right and
+   are not). Count first, fix the biggest class.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The six
+   classes, counts, the fix order. Assumption: one dominant
+   cause per trace.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is the
+   count plus the fix order: wrong tool (14) and retrieval
+   miss (12) dominate, so the sprint is tools and retrieval,
+   not the reasoner.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u11.py</code>: the six counts
+   sum to 60. The top two classes are 26 of 60: nearly half
+   the failures.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>classify_trace(
+   trace)</code>: rule-based labels, the rationalization check
+   (steps consistent with a wrong answer). ~12 lines. Test:
+   the toy counts.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Counts sum to</p>
+</li>
+<li>
+<p>Check: two labelers agree on 90 percent (or the
+   taxonomy is vague).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> One inspection per trace. The cost of skipping it:
+   tuning the reasoner when the tools were broken.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    fix by intuition. Choose the taxonomy past 20 failures.
+    Choose intuition for a handful.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the classes are disjoint.&rdquo; Counterexample: a
+    bad-arg call that also used the wrong tool. Allow the
+    secondary label, keep the primary.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: fix the top class, re-measure on 60 new traces.
+    Predict: the failure rate falls by about the class share.
+    Falsifier: no fall (then the labels were wrong).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A10 (breadth), L10
+    (ladder: define the classes, count the toy, derive the
+    fix order, diagnose the double-labeled trace, design the
+    re-measure).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E19: implement
+    <code>classify_trace</code>, match the counts. E20: write the sprint
+    plan from the top two classes. Keys in <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a count (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-cost-quality">C11: cost-quality</h3>
+<p>Leaf id <code>cs224n-U11-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S16.
+   Scope: the price of test-time compute. Objectives: plot the
+   frontier, find the knee, state the budget rule. Depends on
+   C05, C07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: samples cost
+   money, where is the knee? Toy: (1, 0.55), (4, 0.68), (16,
+   0.75), (64, 0.79). The knee is near 16: past it, 4x the
+   cost for +0.04.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The frontier is the menu: each point is a
+   (cost, quality) pair. The knee is where the menu stops
+   being worth it. Spend to the knee, not past it.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Sample
+   count n, accuracy a(n), cost per sample. Assumption: the
+   toy curve shape (diminishing, C05&rsquo;s).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is the ratio:
+   delta quality over delta cost per step. When the ratio
+   falls below your value of quality, stop. The knee is where
+   the ratio bends.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u11.py</code>: 1 to 4 buys
+   +0.13, 4 to 16 buys +0.07, 16 to 64 buys +0.04. The price
+   of quality rises 3x across the curve.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>knee(points)</code>:
+   max curvature, or the budget rule (stop when the marginal
+   gain is below the threshold). ~8 lines. Test: the toy
+   knee at 16.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The knee must
+   lie between the endpoints. Check: monotone quality in n.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The curve needs the measurement. The cost is the
+   samples to draw it.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    fixed n for everything. Choose the knee per task. Choose
+    fixed n when latency must be predictable.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the curve is stable.&rdquo; Counterexample: a new
+    prompt shifts the whole curve, the old knee is wrong.
+    Re-measure per prompt family.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: knee per task type on 20 tasks, cluster them.
+    Predict: math tasks have later knees than factual ones.
+    Falsifier: no pattern (then one knee serves, simpler).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A11 (breadth:
+    state the knee rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E21: implement
+    <code>knee</code>, match 16. E22: shift the curve and show the knee
+    moving. Keys in <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a frontier (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-limits-of-trace-evidence">C12: limits of trace evidence</h3>
+<p>Leaf id <code>cs224n-U11-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   S15-S16. Scope: what a trace can and cannot prove. Objectives:
+   state the faithfulness limit, run the corruption test, mark
+   the honest use of traces. Depends on C01, U08 C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the trace looks
+   perfect, do you believe it? Toy: corrupt one step, the
+   answer does not change. The step was decoration, not
+   cause.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A trace is a story the model tells about
+   its answer. Stories can be true, useful, and still not the
+   cause. Treat traces as evidence, not as proof.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A trace, a
+   corruption operator, the answer shift. Assumption: the
+   corruption preserves fluency (or the test is unfair).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is the
+   intervention: change the step, watch the answer. No change
+   means the step did not cause the answer. This is U13&rsquo;s
+   causal logic applied to text.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 20
+   traces, corrupt the middle step, 14 answers unchanged. The
+   steps are mostly decoration on this task.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>corrupt_test(
+   traces)</code>: perturb each step, measure answer flips. ~8
+   lines. Test: the toy 14/20.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The corruption
+   must keep the trace fluent (else the model notices the
+   break). Check: uncorrupted reruns give the same answers.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> One extra generation per corruption. The cost is
+   designing fair corruptions.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    trust the trace. Choose the test when traces justify
+    decisions. Choose trust for low-stakes chat.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;failing the test means the model deceives.&rdquo;
+    Counterexample: the model genuinely used the step but is
+    steady under the corruption (redundant reasoning). The test
+    is one-sided: pass is evidence, fail is not proof of
+    deceit.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: process-supervised vs answer-only models on the
+    corruption test. Predict: process models flip more.
+    Falsifier: tie (then supervision did not buy causality).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u11_answers.md</code> A12 (breadth:
+    state the limit and the test), L12 (ladder: define
+    faithfulness, run the toy, derive the intervention logic,
+    diagnose the redundant-reasoning case, design the
+    supervision comparison).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E23: implement
+    <code>corrupt_test</code>, match 14/20. E24: write the honest-use
+    paragraph for traces. Keys in <code>keys/u11_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a limit (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="unit-visual-map">Unit visual map</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Claim</th>
+<th>Shell</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="u11_fig01" src="../assets/u11_fig01.png" title="u11_fig01" /></td>
+<td>majority vote at p=0.6: 0.600 to 0.826</td>
+<td>6</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u11_fig02" src="../assets/u11_fig02.png" title="u11_fig02" /></td>
+<td>spec decode: 2.94 tokens per draft pass</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u11_fig03" src="../assets/u11_fig03.png" title="u11_fig03" /></td>
+<td>10x10 beats 1x100: 3.94 vs 0.99</td>
+<td>8</td>
+<td>original toy</td>
+</tr>
+</tbody>
+</table>
+      
+      <nav class="pager"><a href="../labs/u01_lab.html"><span class="lbl">← Previous</span>Lab 01 · NLP history, tasks, and data</a><a href="../labs/u01_lab_key.html"><span class="lbl">Next →</span>Lab 01 · Keys</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

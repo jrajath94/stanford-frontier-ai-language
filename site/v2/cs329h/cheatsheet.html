@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheatsheet — CS329H: Machine Learning from Human Preferences</title>
+<meta name="description" content="Every key fact on one dense page.">
+<link rel="stylesheet" href="assets/vendor/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="cs329h-cheatsheet">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="index.html">CS329H: Machine Learning from Human Preferences</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="lessons/u01_lesson.html" data-page="cs329h-u01">U01 · Preferences, choices, and ge</a></li>
+<li><a href="lessons/u02_lesson.html" data-page="cs329h-u02">U02 · Random utility, axioms, and </a></li>
+<li><a href="lessons/u03_lesson.html" data-page="cs329h-u03">U03 · Choice estimation and Bayesi</a></li>
+<li><a href="lessons/u04_lesson.html" data-page="cs329h-u04">U04 · Fisher information and exper</a></li>
+<li><a href="lessons/u05_lesson.html" data-page="cs329h-u05">U05 · RLHF and DPO</a></li>
+<li><a href="lessons/u06_lesson.html" data-page="cs329h-u06">U06 · Active elicitation and assis</a></li>
+<li><a href="lessons/u07_lesson.html" data-page="cs329h-u07">U07 · Acquisition, Thompson sampli</a></li>
+<li><a href="lessons/u08_lesson.html" data-page="cs329h-u08">U08 · Inversion, style, and bounde</a></li>
+<li><a href="lessons/u09_lesson.html" data-page="cs329h-u09">U09 · Aggregation, impossibility, </a></li>
+<li><a href="lessons/u10_lesson.html" data-page="cs329h-u10">U10 · Research projects and oral m</a></li>
+<li><a href="cheatsheet.html" data-page="cs329h-cheatsheet" class="active">Cheatsheet</a></li>
+<li><a href="crash-course.html" data-page="cs329h-crash">Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / Cheatsheet</nav>
+      <h1>Cheatsheet</h1>
+      
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="cheatsheet-cs329h">Cheatsheet: cs329h</h1>
+<p>Formulas, definitions, and numbers for all ten units. Provenance: S01-S04 source-supported (title level), S05-S18 PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<h2 id="formulas">Formulas</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bradley-Terry</td>
+<td>P(i beats j) = 1 / (1 + exp(-(s_i - s_j)))</td>
+</tr>
+<tr>
+<td>BT log-likelihood</td>
+<td>sum log sigmoid(y * gap) over pairs</td>
+</tr>
+<tr>
+<td>BT identifiability</td>
+<td>scores identified up to +c, anchor (sum zero or first zero)</td>
+</tr>
+<tr>
+<td>Softmax (Gumbel-max)</td>
+<td>P(i) = exp(u_i) / sum exp(u_j)</td>
+</tr>
+<tr>
+<td>IIA</td>
+<td>P(A)/P(B) independent of C</td>
+</tr>
+<tr>
+<td>KL-constrained optimum</td>
+<td>pi*(y|x) proportional to pi_ref(y|x) exp(r(x,y)/beta)</td>
+</tr>
+<tr>
+<td>DPO loss</td>
+<td>-log sigmoid(beta * (log(pi(yw)/pi_ref(yw)) - log(pi(yl)/pi_ref(yl))))</td>
+</tr>
+<tr>
+<td>DPO implicit reward</td>
+<td>beta * log(pi(y|x)/pi_ref(y|x))</td>
+</tr>
+<tr>
+<td>Value of information</td>
+<td>E[max_a E[U|answer]] - max_a E[U]</td>
+</tr>
+<tr>
+<td>Bayes update (tea toy)</td>
+<td>0.8<em>0.5/(0.8</em>0.5+0.3*0.5) = 0.727</td>
+</tr>
+<tr>
+<td>Strong regret</td>
+<td>C* - max(C_i, C_j), C = true Copeland scores</td>
+</tr>
+<tr>
+<td>Jury theorem</td>
+<td>sum_{k&gt;n/2} C(n,k) p^k (1-p)^{n-k}, needs p &gt; 0.5 and independence</td>
+</tr>
+<tr>
+<td>CI (95%)</td>
+<td>mean +/- 1.96 * SD / sqrt(n)</td>
+</tr>
+<tr>
+<td>Borda (3 candidates)</td>
+<td>2/1/0 points per ballot</td>
+</tr>
+<tr>
+<td>Pareto frontier (toy)</td>
+<td>(sqrt(t), sqrt(1-t)), t in [0,1]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="key-numbers">Key numbers</h2>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>Number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U01 BT gap, 5-1 toy</td>
+<td>1.61</td>
+</tr>
+<tr>
+<td>U03 EM, Gaussian mixture</td>
+<td>-775.9 to -738.2</td>
+</tr>
+<tr>
+<td>U06 VoI toy</td>
+<td>0.25</td>
+</tr>
+<tr>
+<td>U06 greedy vs eps-greedy regret</td>
+<td>29.6 vs 2.4 (T=300, seed 0)</td>
+</tr>
+<tr>
+<td>U07 TS vs greedy vs eps-greedy</td>
+<td>4.0 vs 89.6 vs 5.2 (seed 23)</td>
+</tr>
+<tr>
+<td>U08 inversion interval</td>
+<td>[-0.94, 3.31], sign unsure</td>
+</tr>
+<tr>
+<td>U09 cycle margins</td>
+<td>+1/+1/+1</td>
+</tr>
+<tr>
+<td>U09 cycle frequency</td>
+<td>0.081 (11 voters, seed 0)</td>
+</tr>
+<tr>
+<td>U09 spoiler</td>
+<td>A 4-3-2, then B (A2 D2 B3 C2), D loses 2-7 to B</td>
+</tr>
+<tr>
+<td>U09 jury</td>
+<td>0.6826 (n=5), 0.9791 (n=101) at p=0.6</td>
+</tr>
+<tr>
+<td>U09 subgroup</td>
+<td>pooled 0.73, groups 0.87 / 0.59</td>
+</tr>
+<tr>
+<td>U09 welfare t=0.5</td>
+<td>(0.707, 0.707)</td>
+</tr>
+<tr>
+<td>U10 capstone A</td>
+<td>uniform 17.24 [16.56, 17.92], TS 3.11 [2.23, 3.99], leader 8.36 [6.86, 9.87]</td>
+</tr>
+<tr>
+<td>U10 capstone B (HYPOTHETICAL)</td>
+<td>funnel 6000/6000/5664/5664, drift 0.793 to 0.718, BLOCK</td>
+</tr>
+</tbody>
+</table>
+<h2 id="definitions">Definitions</h2>
+<ul>
+<li><strong>Identifiability</strong>: distinct parameters give distinct data distributions.</li>
+<li><strong>IIA (Arrow)</strong>: the A-vs-B social order depends only on A-vs-B ballots.</li>
+<li><strong>Strategyproofness</strong>: no voter gains by misreporting.</li>
+<li><strong>Strong regret</strong>: per-round shortfall of the duel&rsquo;s best Copeland score vs the max.</li>
+<li><strong>Pre-analysis plan</strong>: hypotheses, metric, sample, success rule, failure rule, frozen before the run.</li>
+<li><strong>Contribution</strong>: baseline, intervention, evidence, scope.</li>
+<li><strong>Negative-result report</strong>: hypothesis, numbers, diagnosis, what it rules out.</li>
+<li><strong>Data consent</strong>: purpose, voluntariness, withdrawal, data-use limits, retention.</li>
+<li><strong>Oral ladder</strong>: define, toy, derive, implement/complexity, compare, debug, critique, design.</li>
+</ul>
+<h2 id="axiom-and-escape-maps">Axiom and escape maps</h2>
+<ul>
+<li><strong>Arrow</strong>: UD, Pareto, IIA, non-dictatorship. Escapes: 2 candidates, restricted domain (single-peaked), cardinal ballots, randomization.</li>
+<li><strong>Gibbard-Satterthwaite</strong>: 3+ outcomes, deterministic, non-dictatorial rules are manipulable. Escape: random dictator (strategyproof in expectation).</li>
+<li><strong>Jury</strong>: needs independence and p &gt; 0.5. Correlated errors void it.</li>
+<li><strong>Interpersonal comparison</strong>: needs a common scale. Rescaling one voter flips sums.</li>
+</ul>
+<h2 id="honest-number-rules">Honest-number rules</h2>
+<ol>
+<li>Every computed number states its seed.</li>
+<li>CIs are procedure properties, not bounds on the truth.</li>
+<li>Hypothetical numbers stay labeled HYPOTHETICAL.</li>
+<li>Negative results are reported with numbers, not buried.</li>
+<li>The constant in BT scores is meaningless, anchor before quoting.</li>
+</ol>
+      
+      <nav class="pager"><a href="lessons/u10_lesson.html"><span class="lbl">← Previous</span>U10 · Research projects and oral mastery</a><a href="crash-course.html"><span class="lbl">Next →</span>Crash course</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="assets/vendor/katex.min.js"></script>
+<script src="assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "";</script>
+<script src="assets/app.js"></script>
+</body>
+</html>

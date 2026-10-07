@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U09 · Aggregation, impossibility, and fairness — CS329H: Machine Learning from Human Preferences</title>
+<meta name="description" content="Unit 09: Aggregation, impossibility, and fairness.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs329h-u09">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS329H: Machine Learning from Human Preferences</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../lessons/u01_lesson.html" data-page="cs329h-u01">U01 · Preferences, choices, and ge</a></li>
+<li><a href="../lessons/u02_lesson.html" data-page="cs329h-u02">U02 · Random utility, axioms, and </a></li>
+<li><a href="../lessons/u03_lesson.html" data-page="cs329h-u03">U03 · Choice estimation and Bayesi</a></li>
+<li><a href="../lessons/u04_lesson.html" data-page="cs329h-u04">U04 · Fisher information and exper</a></li>
+<li><a href="../lessons/u05_lesson.html" data-page="cs329h-u05">U05 · RLHF and DPO</a></li>
+<li><a href="../lessons/u06_lesson.html" data-page="cs329h-u06">U06 · Active elicitation and assis</a></li>
+<li><a href="../lessons/u07_lesson.html" data-page="cs329h-u07">U07 · Acquisition, Thompson sampli</a></li>
+<li><a href="../lessons/u08_lesson.html" data-page="cs329h-u08">U08 · Inversion, style, and bounde</a></li>
+<li><a href="../lessons/u09_lesson.html" data-page="cs329h-u09" class="active">U09 · Aggregation, impossibility, </a></li>
+<li><a href="../lessons/u10_lesson.html" data-page="cs329h-u10">U10 · Research projects and oral m</a></li>
+<li><a href="../cheatsheet.html" data-page="cs329h-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs329h-crash">Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / U09 · Aggregation, impossibility, and fairness</nav>
+      <h1>U09 · Aggregation, impossibility, and fairness</h1>
+      
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u09-aggregation-impossibility-and-fairness">U09: Aggregation, impossibility, and fairness</h1>
+<p>Prerequisites: P06 (probability), P07 (statistical estimation), P22 (experimental method). Local remediation opens this lesson.</p>
+<h2 id="provenance">Provenance</h2>
+<p>Sessions S16 (&ldquo;Impossibilities: Gibbard-Satterthwaite and Arrow&rdquo;, 16 Nov 2026) and S17 (&ldquo;Fairness and information aggregation&rdquo;, 18 Nov 2026) are PLANNED. All twelve concepts are taught as independent theory: PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<h2 id="local-remediation-voting-rules-strategyproofness-pareto">Local remediation: voting rules, strategyproofness, Pareto</h2>
+<p>Voting rules: plurality (most first-place votes), Borda (points by rank: 2 for first, 1 for second, 0 for third), Condorcet (the candidate that beats all others pairwise). Different rules give different winners from the same ballots.</p>
+<p>Strategyproofness: no voter can get a better outcome by misreporting. Gibbard-Satterthwaite: with 3+ outcomes, no non-dictatorial deterministic rule is strategyproof.</p>
+<p>Pareto: outcome X Pareto-dominates Y if someone prefers X and nobody prefers Y. Pareto efficiency: the chosen outcome is not dominated.</p>
+<h2 id="russian-doll-ladder-for-the-major-mechanism-the-condorcet-cycle">Russian-doll ladder for the major mechanism (the Condorcet cycle)</h2>
+<ul>
+<li>Shell 0: Can majority rule contradict itself?</li>
+<li>Shell 1: Toy: 3 voters, 3 candidates A, B, C. Ballots: A&gt;B&gt;C, B&gt;C&gt;A, C&gt;A&gt;B.</li>
+<li>Shell 2: Pairwise majorities: A beats B 2-1, B beats C 2-1, C beats A 2-1.</li>
+<li>Shell 3: Rule: majority is pairwise, not global. The cycle A&gt;B&gt;C&gt;A has no winner.</li>
+<li>Shell 4: Compute the three margins. Implement the tournament.</li>
+<li>Shell 5: Check: each margin is 2-1. Check: adding two A&gt;B&gt;C ballots breaks the cycle (margins +3, +3, +1).</li>
+<li>Shell 6: Counterexample to &lsquo;majority always works&rsquo;: the cycle itself.</li>
+<li>Shell 7: Compare: Borda 3-3-3 tie vs plurality 1-1-1 tie vs Condorcet no winner. All &lsquo;fair&rsquo;, all different.</li>
+<li>Shell 8: Extension: how often do cycles occur in random profiles? Falsifiable: simulate (here 0.081 for 11 voters, seed 0, numpy legacy np.random.RandomState).</li>
+<li>Shell 9: Production: any deployed ranking (search, recommendations) picks a rule. The rule is a normative choice (C09), not a discovery.</li>
+</ul>
+<h2 id="not-yet-understood-dependency-list">Not-yet-understood dependency list</h2>
+<ol>
+<li>Full Arrow proof (statement plus intuition here).</li>
+<li>Computational social choice complexity (named only).</li>
+<li>Welfare economics beyond the toy (named only).</li>
+</ol>
+<hr />
+<h3 id="cs329h-u09-c01-individual-versus-social-ranking">cs329h-U09-C01: individual versus social ranking</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S16). Objective: separate individual ballots from the social outcome. Depends on P06.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: three voters disagree. What does &ldquo;the group&rdquo; want? Toy: ballots A&gt;B&gt;C, B&gt;C&gt;A, C&gt;A&gt;B.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Individual rankings are inputs, the social ranking is the output of a rule. The rule is a choice, and different rules give different &ldquo;group wants&rdquo;.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Profile: n voters x ranking over m candidates. Rule f: profile -&gt; outcome. Assumption: voters report sincerely (relaxed in C05).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> On the toy: plurality 1-1-1 tie, Borda 3-3-3 tie, Condorcet no winner. Three rules, no agreement. &ldquo;The group want&rdquo; is undefined without the rule.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Tallies computed: plurality {A:1, B:1, C:1}, Borda {A:3, B:3, C:3}, Condorcet none. Same numbers as figure u09_f01.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Tally plurality, Borda, Condorcet from ballots. Fifteen lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: plurality sums to 3, Borda sums to 9. Expected: u09_f01.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(n m log m) for Borda.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: declare the rule by fiat (common in products). Alternative: ask for cardinal scores (richer ballots). Choose the rule deliberately and document it.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the rule is chosen after seeing the ballots to favor a candidate. Counterexample: pick Borda because it elects your favorite.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test how often the three rules disagree on random profiles. Falsifiable: measure it.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the three rules. Oral ladder through the tallies. Transfer: ranking job candidates by a panel. Failure diagnosis: the &ldquo;winner&rdquo; changes with the rule. Explain. Counterfactual: what if ballots were unanimous? Research: rule selection principles.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U09 task 1 tallies the toy. Exercises: (E1) compute the three tallies. (E2) explain the disagreement. (E3) argue the after-the-fact failure. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u09_f01.png: lesson plate, source original toy, alt text &ldquo;Three ballots listed. Arrows to three rule boxes: plurality 1-1-1, Borda 3-3-3, Condorcet no winner.&rdquo; Audit: before state ballots, after state outcomes, rule named. No conflict.</p>
+<figure><img alt="Three ballots listed. Arrows to three rule boxes: plurality 1-1-1, Borda 3-3-3, Condorcet no winner." src="../assets/u09_f01.png"><figcaption>Three ballots listed. Arrows to three rule boxes: plurality 1-1-1, Borda 3-3-3, Condorcet no winner.</figcaption></figure>
+<h3 id="cs329h-u09-c02-arrow-assumptions">cs329h-U09-C02: Arrow assumptions</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S16). Objective: state Arrow&rsquo;s conditions and the impossibility. Depends on C01.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: is there a perfect voting rule? Toy: the four conditions tested on a spoiler profile.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Arrow: with 3+ candidates, no ranked voting rule satisfies all of: unrestricted domain, Pareto, IIA (independence of irrelevant alternatives), non-dictatorship. Something must give.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> UD: any profile allowed. Pareto: unanimous pairwise preference respected. IIA: the relative order of A, B depends only on A-vs-B ballots. Non-dictatorship: no single voter always decides. (This IIA differs from the choice IIA of U02-C05.)</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Proof intuition: IIA + Pareto force a &ldquo;swing voter&rdquo; whose ballot swings some pair, that voter becomes decisive on all pairs: a dictator. Contradiction with non-dictatorship.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Spoiler computed: without D, plurality elects A (4-3-2). D enters, loses pairwise to B 2-7, yet plurality flips to B (A2 D2 B3 C2). Adding a loser changed the winner: IIA violated.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Check which rules violate which condition on examples. Table.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the spoiler example flips the plurality winner. Expected: the table in u09_f03.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1) for the statement, the proof is the cost (not reproduced here).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: relax IIA (most practical rules do). Alternative: restrict domain (single-peaked). Alternative: cardinal ballots (range voting escapes via richer input). Choose the relaxation deliberately.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: invoking &ldquo;Arrow says voting is impossible&rdquo; to justify an arbitrary rule. The theorem scopes ranked rules, it does not bless dictatorship.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test single-peakedness on real ballot data (do cycles vanish?). Falsifiable: measure it.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: recite the four conditions. Oral ladder through the spoiler. Transfer: a team picking a restaurant. Failure diagnosis: someone cites Arrow to end discussion. Explain. Counterfactual: what if only 2 candidates? Research: domain restrictions.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U09 task 2 builds the spoiler. Exercises: (E1) recite the conditions. (E2) verify the flip. (E3) argue the misuse failure. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u09_f03.png: lesson plate, source original toy, alt text &ldquo;Table of four axioms with one-line meanings. Impossibility statement below.&rdquo; Audit: before state axioms, after state impossibility, rule named. No conflict.</p>
+<figure><img alt="Table of four axioms with one-line meanings. Impossibility statement below." src="../assets/u09_f03.png"><figcaption>Table of four axioms with one-line meanings. Impossibility statement below.</figcaption></figure>
+<h3 id="cs329h-u09-c03-gibbard-satterthwaite-assumptions">cs329h-U09-C03: Gibbard-Satterthwaite assumptions</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S16). Objective: state GS and demonstrate manipulation. Depends on C01.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: can voters game the rule? Toy: Borda, profile (A&gt;B&gt;C, B&gt;A&gt;C, B&gt;A&gt;C), voter 0 misreports A&gt;C&gt;B (found by exhaustive search).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Gibbard-Satterthwaite: with 3+ outcomes, every non-dictatorial deterministic rule is manipulable: some voter can profit by lying. Strategyproofness is unattainable in general.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Strategyproof: sincere reporting is always optimal. Onto: every outcome achievable. Deterministic rule. Assumption: voters have strict preferences and vote to maximize their outcome.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Sincere Borda: A4 B5 C0, B wins (tie-break ballot order). Voter 0 (true A&gt;B&gt;C) reports A&gt;C&gt;B: A4 B4 C1, tie A/B, tie-break elects A. Voter 0 gains: A over B.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> The found example with sincere outcome B, misreport A&gt;C&gt;B, new outcome A. Same numbers as figure u09_f04.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Exhaustive search for manipulations. Fifteen lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the misreport strictly improves the voter outcome by their own ranking. Expected: u09_f04.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(profiles x misreports). Tiny for 3x3.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: randomized rules (strategyproof in expectation, e.g. random dictator). Alternative: restricted domains. Choose by whether randomness is acceptable.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: &ldquo;strategyproof&rdquo; claimed for a deterministic rule with 3+ outcomes: contradicts GS. Counterexample: any such claim.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: measure manipulation frequency over random profiles for Borda vs plurality. Falsifiable: count it.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the theorem in one sentence. Oral ladder through the example. Transfer: bidding in an auction. Failure diagnosis: voters coordinate strategically. Explain. Counterfactual: what if only 2 outcomes? Research: approximate strategyproofness.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U09 task 3 finds a manipulation. Exercises: (E1) state GS. (E2) verify the profitable misreport. (E3) argue the false claim failure. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u09_f04.png: lesson plate, source original toy, alt text &ldquo;Sincere ballots with Borda totals A4 B5 C0, winner B. Strategic ballot A&gt;C&gt;B, totals A4 B4 C1, winner A.&rdquo; Audit: before state sincere, after state strategic, rule named. No conflict.</p>
+<figure><img alt="Sincere ballots with Borda totals A4 B5 C0, winner B. Strategic ballot A&gt;C&gt;B, totals A4 B4 C1, winner A." src="../assets/u09_f04.png"><figcaption>Sincere ballots with Borda totals A4 B5 C0, winner B. Strategic ballot A&gt;C&gt;B, totals A4 B4 C1, winner A.</figcaption></figure>
+<h3 id="cs329h-u09-c04-cycles">cs329h-U09-C04: cycles</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S16). Objective: compute the Condorcet cycle and its consequences. Depends on C01.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: the ladder cycle again, now as the unit core. Toy: the 3x3 profile.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> A Condorcet cycle: A beats B, B beats C, C beats A, all by majority. No Condorcet winner exists. Majority rule contradicts itself.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Margin matrix M_ij = #(i above j) - #(j above i). Cycle: M_AB, M_BC, M_CA all &gt; 0. Assumption: odd voters or named tie-breaking.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The cycle is the concrete witness that &ldquo;the majority will&rdquo; can be incoherent. Any rule must break the symmetry somehow: tie-breaks, scoring, or agenda order.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Margins: A&gt;B +1, B&gt;C +1, C&gt;A +1 (2-1 each). Adding two A&gt;B&gt;C ballots: +3, +3, +1, transitive A&gt;B&gt;C. Same numbers as figure u09_f02.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Compute the margin matrix, detect the cycle. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: M skew-symmetric, cycle detected. Expected: u09_f02.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(n m^2).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: declare cycles impossible by fiat (wrong). Alternative: scoring rules (dissolve the cycle into numbers). Choose scoring when a total order is required.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the agenda (vote order) decides. Vote A-vs-B first, then winner vs C: C wins the tournament though no Condorcet winner exists. The procedure, not the voters, picks.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: simulate cycle frequency over random profiles (impartial culture): 0.081 for 11 voters here, seed 0, numpy legacy np.random.RandomState. Falsifiable: re-run the simulation with that RNG.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: define the Condorcet winner. Oral ladder through the margins. Transfer: three friends picking a movie. Failure diagnosis: the vote agenda keeps changing the winner. Explain. Counterfactual: what if the profile were transitive? Research: cycle frequency.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U09 task 4 computes margins and simulates cycle frequency. Exercises: (E1) define the winner. (E2) compute the margins. (E3) argue the agenda failure. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u09_f02.png: lesson plate, source original toy, alt text &ldquo;Triangle A&gt;B&gt;C&gt;A with 2-1 margins on each edge.&rdquo; Audit: before state ballots, after state cycle, rule named. No conflict.</p>
+<figure><img alt="Triangle A&gt;B&gt;C&gt;A with 2-1 margins on each edge." src="../assets/u09_f02.png"><figcaption>Triangle A&gt;B&gt;C&gt;A with 2-1 margins on each edge.</figcaption></figure>
+<h3 id="cs329h-u09-c05-strategic-reports">cs329h-U09-C05: strategic reports</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S16). Objective: model strategic voting as a game. Depends on C03.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: when everyone can lie, what happens? Toy: the C03 manipulation as a 2-player game (voter 0 vs voter 1, sincere/strategic each).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Strategic voting is a game: each voter ballot is a move, the rule maps ballots to outcomes, voters maximize their own outcome. Equilibria can differ wildly from sincere outcomes.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Players: voters. Strategies: ballots. Payoff: rank of the outcome in the voter true order (lower better). Assumption: common knowledge of the rule and of others preferences (strong).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Computed game: (sincere, sincere) -&gt; B, payoffs (1, 0). Any profile with voter 0 strategic -&gt; A, payoffs (0, 1). Voter 0 has a strictly dominant strategic move.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> The 2x2 outcome table above (computed). Nash: voter 0 strategic. Same numbers as figure u09_f05.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Enumerate strategy profiles, compute outcomes. Fifteen lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the equilibrium verified by best response. Expected: u09_f05.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(strategies^voters). Explodes fast, toys only.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: assume sincerity (naive). Alternative: mechanism design (change the rule). Choose the game model when stakes justify it.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: common-knowledge assumption fails, voters misjudge others and the &ldquo;equilibrium&rdquo; never occurs. Counterexample: voter 0 strategizes against a phantom.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test how often sincere is already an equilibrium over random profiles. Falsifiable: count it.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: what is a voter strategy? Oral ladder through the matrix. Transfer: bidding on eBay. Failure diagnosis: everyone votes strategically and all are worse off. Explain. Counterfactual: what if ballots were secret with no polls? Research: equilibrium selection.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U09 task 5 builds the game. Exercises: (E1) define the payoff. (E2) find the equilibrium. (E3) argue the common-knowledge failure. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u09_f05.png: lesson plate, source original toy, alt text &ldquo;2x2 payoff matrix. Rows voter 0, columns voter 1. Equilibrium at (strategic, sincere) marked.&rdquo; Audit: before state sincere profile, after state equilibrium, rule named. No conflict.</p>
+<figure><img alt="2x2 payoff matrix. Rows voter 0, columns voter 1. Equilibrium at (strategic, sincere) marked." src="../assets/u09_f05.png"><figcaption>2x2 payoff matrix. Rows voter 0, columns voter 1. Equilibrium at (strategic, sincere) marked.</figcaption></figure>
+<h3 id="cs329h-u09-c06-interpersonal-comparison">cs329h-U09-C06: interpersonal comparison</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S17). Objective: explain why aggregating cardinal utilities needs comparable scales. Depends on U01-C04, U02-C10.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: your 8/10 and my 8/10: the same? Toy: voter 1: A=100, B=0. Voter 2: A=0, B=1.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Cardinal aggregation (sums, averages) compares numbers across people. But utility scales are personal: rescaling one voter utilities changes the social outcome without changing anyone preferences. The comparison is meaningless without a common scale.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Social welfare W = sum_i u_i(x). Invariance problem: W changes under per-voter affine rescaling. Assumption needed: comparable, calibrated scales (rarely true).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Raw sums: A=100, B=1: A wins by a mile. Normalize voter 1 to [0,1]: A=1, B=1: tie. A meaning-preserving rescale flipped the verdict from landslide to tie.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> The numbers above. Same numbers as figure u09_f06.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Compute sums under two normalizations. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: individual orders unchanged by rescaling. Expected: the flip in u09_f06.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(voters).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: ordinal rules (no comparison problem, Arrow applies). Alternative: calibrated money (willingness to pay as the common scale). Choose ordinal when scales are unknowable. Choose money when stakes are monetary.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the &ldquo;common scale&rdquo; is imposed by fiat (e.g. everyone 0-10) and the outcome reflects the scale choice. Counterexample: 0-10 vs 0-100 elicitation flips a close sum.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test sensitivity of the sum to the normalization on real survey data. Falsifiable: report the flip rate.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: why is the sum meaningless without comparable scales? Oral ladder through the toy. Transfer: adding happiness across people. Failure diagnosis: the social choice flips when the survey scale changes. Explain. Counterfactual: what if a true common scale existed? Research: comparable welfare.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) compute both sums. (E2) explain the flip. (E3) argue the fiat-scale failure. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u09_f06.png: lesson plate, source original toy, alt text &ldquo;Two voter scales. Raw sums 100 vs 1. Normalized sums 1 vs 1.&rdquo; Audit: before state raw scales, after state normalized sums, rule named. No conflict.</p>
+<figure><img alt="Two voter scales. Raw sums 100 vs 1. Normalized sums 1 vs 1." src="../assets/u09_f06.png"><figcaption>Two voter scales. Raw sums 100 vs 1. Normalized sums 1 vs 1.</figcaption></figure>
+<h3 id="cs329h-u09-c07-information-aggregation">cs329h-U09-C07: information aggregation</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S17). Objective: state when voting aggregates information well. Depends on P06.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: can a crowd be wiser than its members? Toy: 5 voters, each correct with prob 0.6 independently.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Information aggregation: voters share a common goal (the truth) but get noisy signals. Majority vote can beat any individual: the Condorcet jury theorem.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> n odd voters, each correct with prob p &gt; 0.5, independent. P(majority correct) = sum_{k&gt;n/2} C(n,k) p^k (1-p)^{n-k}. Assumption: independence and competence (p &gt; 0.5).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> n = 5, p = 0.6: P = 0.6826. n = 101: 0.9791. The crowd converges to the truth as n grows, if the assumptions hold.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> The two numbers above (binomial, computed). Same numbers in the text.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Binomial tail. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: P increases in n and p. Check: p &lt; 0.5 reverses (crowd converges to wrong). Expected: 0.6826, 0.9791.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(n).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: follow the expert (better if one p is much higher). Alternative: weight by competence (needs known p). Choose majority when competence is symmetric and unknown.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: correlated errors (common bias). The independence assumption is the fragile one. Counterexample: all voters watch the same misleading news: p effectively 0.4 for all, the crowd is confidently wrong.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test the independence assumption on real voting data (correlation of errors). Falsifiable: correlated errors void the theorem.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the jury theorem. Oral ladder through the numbers. Transfer: a panel of doctors. Failure diagnosis: the crowd is confidently wrong. Explain. Counterfactual: what if p &lt; 0.5? Research: correlated juries.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U09 task 6 computes the jury numbers. Exercises: (E1) write the formula. (E2) compute both numbers. (E3) argue the correlated-error failure. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the binomial numbers are worked in the text. No plate. Logged.</p>
+<h3 id="cs329h-u09-c08-subgroup-fairness">cs329h-U09-C08: subgroup fairness</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S17). Objective: measure preference-model performance by subgroup. Depends on U01-C12.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: the reward model pleases the majority. Who does it fail? Toy: two groups of 500, accuracies 0.87 and 0.59, pooled 0.73.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Subgroup fairness: report preference prediction accuracy per group, not just pooled. A pooled number hides a failing minority.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Accuracy_g = P(correct | group g). Disparity = max - min. Assumption: group labels exist and are reliable.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Pooled 0.73 looks fine, group B at 0.59 is near chance. The fix is data or modeling per group, not more pooled data.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> The three numbers (computed on the toy). Same as figure u09_f07.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Slice accuracy by group. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: pooled accuracy is the size-weighted mean. Expected: the bars in u09_f07.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(n).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: pooled only (hides). Alternative: per-group models (costly). Choose slicing always, modeling per group when disparity is large and groups are stable.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: groups are not the right slice, the real disparity hides inside a group. Counterexample: slicing by region misses the age disparity.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether per-group thresholds close the gap on held-out data. Falsifiable: no close means the slice was not the issue.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: define disparity. Oral ladder through the numbers. Transfer: a medical test across populations. Failure diagnosis: pooled accuracy high, complaints from one group. Explain. Counterfactual: what if one group? Research: fair preference learning.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U09 task 7 slices the toy. Exercises: (E1) define disparity. (E2) verify the pooled number. (E3) argue the wrong-slice failure. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u09_f07.png: lesson plate, source original toy, alt text &ldquo;Bars: pooled 0.73, group A 0.87, group B 0.59.&rdquo; Audit: before state pooled number, after state group split, rule named. No conflict.</p>
+<figure><img alt="Bars: pooled 0.73, group A 0.87, group B 0.59." src="../assets/u09_f07.png"><figcaption>Bars: pooled 0.73, group A 0.87, group B 0.59.</figcaption></figure>
+<h3 id="cs329h-u09-c09-normative-choices">cs329h-U09-C09: normative choices</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S17). Objective: name the normative choices aggregation forces. Depends on C01-C08.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: who decides the rule? Toy: the course own project grading: the rule picked by the instructor.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Every aggregation bakes in values: whose ballots count, how they are weighted, what the rule maximizes. These are normative choices: they cannot be derived from the ballots.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> The choice set: franchise (who votes), ballot form (rank vs score), rule (plurality vs Borda vs &hellip;), tie-breaks. Each is decided before the ballots, by someone.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Arrow says no rule is neutral, GS says no rule is strategyproof, C06 says sums need scales. So the designer must own the tradeoffs explicitly instead of hiding behind &ldquo;the data&rdquo;.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: three defensible designs for one election (plurality for simplicity, Borda for consensus, Condorcet for pairwise legitimacy), each with its cost stated.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Write the design memo: franchise, ballot, rule, tie-break, justification. Template.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: every element has a named decider and a reason. Expected: the completed memo.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1). Governance, not compute.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: &ldquo;let the data decide&rdquo; (impossible, the rule is prior to the data). Alternative: sortition/random (neutral, unaccountable). Choose explicit design with reasons.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the memo is written after the fact to rationalize the winner. Counterexample: the rule changes each election to suit the incumbent.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: none, practice. The empirical questions are in C04/C07/C08.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the four design elements. Oral ladder through the memo. Transfer: a company promotion committee. Failure diagnosis: stakeholders reject the outcome as rigged. Explain. Counterfactual: what if values were unanimous? Research: legitimate aggregation.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) name the elements. (E2) write one memo row. (E3) spot the after-the-fact memo. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the memo template is the artifact. No plate. Logged.</p>
+<h3 id="cs329h-u09-c10-impossibility-scope">cs329h-U09-C10: impossibility scope</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S16). Objective: state exactly what the impossibility theorems do and do not rule out. Depends on C02, C03.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: does Arrow mean democracy is impossible? Toy: the escape routes, with single-peakedness worked.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The theorems scope ranked, deterministic, unrestricted-domain rules. They do not rule out: 2 candidates, restricted domains, cardinal ballots, randomized rules, or approximate satisfaction.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Escape map: (1) 2 outcomes: majority works. (2) single-peaked domain: Condorcet winner exists. (3) cardinal scores: range voting. (4) randomization: random dictator is strategyproof. Each escape drops one assumption.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The honest use of impossibility: pick your poison deliberately. The dishonest use: cite it to avoid justifying a rule.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: single-peaked profile (ideals 0.2, 0.4, 0.8 on candidates at 0, 0.5, 1.0). Margins: B&gt;A +1, B&gt;C +1, A&gt;C +1. Median voter top (B) is the Condorcet winner.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Check single-peakedness of a profile. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the median peak beats all pairwise. Expected: the worked example.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(n m).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: ignore the theorems (common, sloppy). Alternative: treat them as conversation-enders (wrong). Choose the escape map.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: &ldquo;single-peaked&rdquo; assumed without checking, the domain is not restricted and cycles return. Counterexample: assume it, elect, then find the cycle.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test single-peakedness on real ranking data. Falsifiable: measure the violation rate.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the four escapes. Oral ladder through the median-voter result. Transfer: a board vote. Failure diagnosis: someone says &ldquo;Arrow proves we cannot decide&rdquo;. Explain. Counterfactual: what if determinism were dropped? Research: beyond the classical escapes.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U09 task 8 checks single-peakedness and the median result. Exercises: (E1) name the escapes. (E2) verify the median result. (E3) argue the unchecked-assumption failure. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the escape map is the artifact (table in text). No plate. Logged.</p>
+<h3 id="cs329h-u09-c11-practical-relaxation">cs329h-U09-C11: practical relaxation</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S17). Objective: turn impossibility into engineering: relaxations that work. Depends on C10.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: we must ship a ranking. What do we actually do? Toy: recommendation with Borda + random tie-breaks + audit log.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Practical relaxation: pick a rule, document the violated axiom, add guardrails (audit, appeal, periodic review). Impossibility constrains the choice, it does not forbid shipping.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> The relaxation template: rule R, axiom dropped (e.g. IIA), guardrail (e.g. spoiler detection), review cadence. Assumption: stakeholders accept the documented tradeoff.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Borda drops IIA, the guardrail watches for spoiler-like flips between elections, the review revisits the rule yearly. This is how real systems cope.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: on the cycle profile, Borda with the guardrail flags the 3-3-3 near-tie for human review instead of silently tie-breaking.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Implement the guardrail: flag if the top-two gap is below epsilon. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the flag fires on the toy. Check: it stays quiet on a decisive profile. Expected: the flag behavior.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(m).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: no guardrail (silent arbitrariness). Alternative: human decides everything (unscalable). Choose the documented relaxation.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the guardrail threshold is gamed (engineered near-ties to force review). Counterexample: strategic near-tie to trigger human override.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test the guardrail false-positive rate on historical elections. Falsifiable: measure it.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the template. Oral ladder through the toy. Transfer: a hiring rubric. Failure diagnosis: the rule silently flips winners. Explain. Counterfactual: what if axioms were all satisfiable? Research: auditing aggregation.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) state the template. (E2) apply it to Borda. (E3) argue the gaming failure. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the template is the artifact. No plate. Logged.</p>
+<h3 id="cs329h-u09-c12-welfare-tradeoff">cs329h-U09-C12: welfare tradeoff</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S17). Objective: trace the Pareto frontier between groups. Depends on C06, C08.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: helping group A hurts group B. What are the options? Toy: policy t in [0,1], w_A = sqrt(t), w_B = sqrt(1-t).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The Pareto frontier: the set of policies where no group can gain without another losing. Every point on it is &ldquo;efficient&rdquo;, choosing among them is values, not math.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Welfare vector (w_A, w_B). Frontier: {(sqrt(t), sqrt(1-t))}. Dominated points lie inside. Assumption: welfare is measurable (strong, C06 applies).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> t = 0.25: (0.500, 0.866). t = 0.5: (0.707, 0.707). t = 0.75: (0.866, 0.500). Max-sum and max-min both pick t = 0.5 here (symmetric toy).</p>
+<p><strong>Contract 6. Computed numerical example.</strong> The three points above (computed). Same numbers as figure u09_f08.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Trace the frontier over t. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the curve is concave, endpoints (0,1) and (1,0). Expected: u09_f08.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(grid).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: maximize the sum (utilitarian). Alternative: maximize the minimum (Rawlsian). Both pick points on the frontier, neither is &ldquo;correct&rdquo;.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the welfare numbers are invented, the frontier is then theater. Counterexample: w_A, w_B from an unvalidated survey.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether the stakeholder chosen point is stable under re-elicitation. Falsifiable: measure the shift.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: define Pareto efficiency. Oral ladder through the points. Transfer: splitting a budget between teams. Failure diagnosis: stakeholders fight over the point. Explain. Counterfactual: what if no conflict? Research: fair welfare.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) define the frontier. (E2) compute the three points. (E3) argue the invented-numbers failure. Keys in answer_keys/u09_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u09_f08.png: lesson plate, source original toy, closed form, alt text &ldquo;Concave frontier from (0,1) to (1,0). Points at t = 0.25, 0.5, 0.75 marked. Max-sum and max-min both at t = 0.5.&rdquo; Audit: before state conflict, after state frontier, rule named. No conflict.</p>
+<figure><img alt="Concave frontier from (0,1) to (1,0). Points at t = 0.25, 0.5, 0.75 marked. Max-sum and max-min both at t = 0.5." src="../assets/u09_f08.png"><figcaption>Concave frontier from (0,1) to (1,0). Points at t = 0.25, 0.5, 0.75 marked. Max-sum and max-min both at t = 0.5.</figcaption></figure>
+      
+      <nav class="pager"><a href="../lessons/u08_lesson.html"><span class="lbl">← Previous</span>U08 · Inversion, style, and bounded rationality</a><a href="../lessons/u10_lesson.html"><span class="lbl">Next →</span>U10 · Research projects and oral mastery</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

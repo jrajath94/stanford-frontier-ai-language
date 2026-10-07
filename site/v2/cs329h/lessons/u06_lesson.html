@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U06 · Active elicitation and assistance games — CS329H: Machine Learning from Human Preferences</title>
+<meta name="description" content="Unit 06: Active elicitation and assistance games.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs329h-u06">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS329H: Machine Learning from Human Preferences</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../lessons/u01_lesson.html" data-page="cs329h-u01">U01 · Preferences, choices, and ge</a></li>
+<li><a href="../lessons/u02_lesson.html" data-page="cs329h-u02">U02 · Random utility, axioms, and </a></li>
+<li><a href="../lessons/u03_lesson.html" data-page="cs329h-u03">U03 · Choice estimation and Bayesi</a></li>
+<li><a href="../lessons/u04_lesson.html" data-page="cs329h-u04">U04 · Fisher information and exper</a></li>
+<li><a href="../lessons/u05_lesson.html" data-page="cs329h-u05">U05 · RLHF and DPO</a></li>
+<li><a href="../lessons/u06_lesson.html" data-page="cs329h-u06" class="active">U06 · Active elicitation and assis</a></li>
+<li><a href="../lessons/u07_lesson.html" data-page="cs329h-u07">U07 · Acquisition, Thompson sampli</a></li>
+<li><a href="../lessons/u08_lesson.html" data-page="cs329h-u08">U08 · Inversion, style, and bounde</a></li>
+<li><a href="../lessons/u09_lesson.html" data-page="cs329h-u09">U09 · Aggregation, impossibility, </a></li>
+<li><a href="../lessons/u10_lesson.html" data-page="cs329h-u10">U10 · Research projects and oral m</a></li>
+<li><a href="../cheatsheet.html" data-page="cs329h-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs329h-crash">Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / U06 · Active elicitation and assistance games</nav>
+      <h1>U06 · Active elicitation and assistance games</h1>
+      
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u06-active-elicitation-and-assistance-games">U06: Active elicitation and assistance games</h1>
+<p>Prerequisites: P06 (probability), P17 (RL), P18 (Bayesian). Local remediation opens this lesson.</p>
+<h2 id="provenance">Provenance</h2>
+<p>Sessions S10 (&ldquo;Active elicitation for LLMs, and case studies&rdquo;, 26 Oct 2026) and S11 (&ldquo;Assistance games. Assisted vs. contextual bandits&rdquo;, 28 Oct 2026) are PLANNED. All twelve concepts are taught as independent theory: PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<h2 id="local-remediation-value-of-information-contextual-bandits-partial-observability">Local remediation: value of information, contextual bandits, partial observability</h2>
+<p>Value of information: VoI(q) = E_{answer}[max_a E[u_a | answer]] - max_a E[u_a]. It prices one question in the units of the decision payoff. A query is worth asking when its VoI exceeds its elicitation cost.</p>
+<p>Contextual bandit: each round shows a context x, the agent picks an arm a, and earns reward r(x, a). The policy maps contexts to arms. Feedback arrives only for the chosen arm.</p>
+<p>Partial observability: the agent does not see the world state. In assistance the hidden state is the human&rsquo;s objective theta. The agent holds a belief b(theta) and updates it on the human&rsquo;s behavior.</p>
+<h2 id="russian-doll-ladder-for-the-major-mechanism-value-of-information">Russian-doll ladder for the major mechanism (value of information)</h2>
+<ul>
+<li>Shell 0: Which question should we ask the human next, and is it worth the bother?</li>
+<li>Shell 1: Toy: utility gap g in {-0.5, 1.5}, prior 0.5 each. One query reveals g.</li>
+<li>Shell 2: VoI = expected best utility after the answer minus best utility now.</li>
+<li>Shell 3: Rule: ask the query with the largest VoI minus elicitation cost.</li>
+<li>Shell 4: Compute VoI = 0.25 for the toy. Implement the expectation over answers.</li>
+<li>Shell 5: Check: VoI &gt;= 0 always for a Bayesian decider. Check: VoI = 0 when the answer cannot change the decision.</li>
+<li>Shell 6: Change one factor: noisy answers. Predict VoI falls, then measure it.</li>
+<li>Shell 7: Counterexample: a query with VoI 0.25 but elicitation cost 0.4. Net value negative. Do not ask.</li>
+<li>Shell 8: Compare VoI with expected information gain: decision-relevant versus pure uncertainty reduction.</li>
+<li>Shell 9: Extension: does VoI-ranked querying beat random querying on held-out preference accuracy per query? Falsifiable: no win means the answer model is misspecified.</li>
+<li>Shell 10: Production: query budget and human attention are the scarce resources. VoI prices them in decision units.</li>
+</ul>
+<h2 id="not-yet-understood-dependency-list">Not-yet-understood dependency list</h2>
+<ol>
+<li>CIRL solution methods beyond the formulation taught here.</li>
+<li>Human cognitive models of question answering (treated as a noise channel).</li>
+<li>Large-scale annotation operations (covered conceptually only).</li>
+</ol>
+<hr />
+<h3 id="cs329h-u06-c01-value-of-information">cs329h-U06-C01: value of information</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S10). Objective: define value of information and compute it on a toy. Depends on P06, P18.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: how much is one more question worth before we hear the answer? Toy: utility gap g in {-0.5, 1.5}, prior 0.5 each. One query reveals g.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> VoI is the expected improvement in the final decision from asking. It prices a question in the same units as the decision payoff.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> VoI(q) = E_y[max_a E[u(a) | y]] - max_a E[u(a)]. Units: utils. Assumption: the decider re-optimizes on the posterior.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The outer expectation runs over answers not yet seen. The inner max re-optimizes after each possible answer. VoI &gt;= 0 because ignoring the answer is always allowed.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Prior mean gap 0.5, so choose A: expected gap 0.5. After the query: g = -0.5 -&gt; pick B (0), g = 1.5 -&gt; pick A (1.5). Expected 0.75. VoI = 0.25. Same numbers as figure u06_f01.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Enumerate answers, compute the posterior best action per answer, average. Five lines of NumPy.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: VoI &gt;= 0. Check: VoI = 0 when the answer cannot flip the decision. Expected: 0.25.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(answers x actions). The cost is conceptual: the answer model must be honest.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: expected information gain (variance reduction). VoI is decision-relevant, info gain is not. Choose VoI when a decision follows. Choose info gain for pure learning.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the answer model is overconfident, so realized value falls below computed VoI. Counterexample: the query &ldquo;reveals&rdquo; g but the human answers at random. True VoI 0, computed 0.25.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether VoI-ranked queries beat random queries on held-out preference accuracy per query. Falsifiable: no win means the answer model is misspecified.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the VoI formula. Oral ladder through the 0.25. Transfer: a doctor ordering a test. What is VoI? Failure diagnosis: computed VoI high, realized gain zero. Explain. Counterfactual: what if answers are free? Research: VoI under model misspecification.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U06 task 1 computes VoI on the toy. Exercises: (E1) write the formula. (E2) compute the 0.25. (E3) construct the zero-VoI case. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u06_f01.png: lesson plate, source original toy, closed form, alt text &ldquo;Prior bars on gap values -0.5 and 1.5. Arrow labeled ask the query. Posterior decisions with expected value 0.75 and VoI 0.25.&rdquo; Audit: before state prior, after state posterior decisions, rule named. No conflict.</p>
+<figure><img alt="Prior bars on gap values -0.5 and 1.5. Arrow labeled ask the query. Posterior decisions with expected value 0.75 and VoI 0.25." src="../assets/u06_f01.png"><figcaption>Prior bars on gap values -0.5 and 1.5. Arrow labeled ask the query. Posterior decisions with expected value 0.75 and VoI 0.25.</figcaption></figure>
+<h3 id="cs329h-u06-c02-query-choice">cs329h-U06-C02: query choice</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S10). Objective: rank candidate queries by expected gain. Depends on C01.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: three possible questions, one slot. Which one? Toy: prior gap N(0,1), three queries with noise sd 0.7, 1.0, 1.5.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Rank by expected variance reduction. The noisiest question teaches the least. Pick the top of the ranking.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Info gain I(q) = Var_prior - E[Var_post]. Units: utils squared. Assumption: Gaussian prior and Gaussian noise.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Posterior variance after one Gaussian observation: prior var 1, noise var s^2 gives s^2/(1+s^2). Gain = 1/(1+s^2). For s = 0.7: 0.671. s = 1.0: 0.500. s = 1.5: 0.308.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Gains: 0.67, 0.50, 0.31. Query 1 wins. Same numbers as figure u06_f02.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Compute the posterior variance per candidate, rank. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: gains positive and decreasing in noise. Expected: the ranking q1 &gt; q2 &gt; q3.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(candidates). The hard part is the noise model per query type.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: VoI (needs a downstream decision). Alternative: random queries (baseline). Choose info gain for pure preference learning. Choose VoI when a product decision follows.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the noise model is wrong, the &ldquo;best&rdquo; query is unanswerable by humans. Counterexample: s = 0.01 on paper, but humans answer at chance.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether info-gain ranking beats random on held-out accuracy per query. Falsifiable: no win means the noise model is wrong.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the gain formula. Oral ladder through the ranking. Transfer: which survey question goes first? Failure diagnosis: the top-ranked query teaches nothing. Explain. Counterfactual: what if all queries share one noise level? Research: non-Gaussian gains.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U06 task 2 ranks the queries. Exercises: (E1) write the gain formula. (E2) compute the three gains. (E3) argue the failure case. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u06_f02.png: lesson plate, source original toy, closed form, alt text &ldquo;Three query boxes with noise sd 0.7, 1.0, 1.5. Arrow labeled rank by expected gain. Bars 0.67, 0.50, 0.31 with query 1 marked best.&rdquo; Audit: before state candidates, after state ranking, rule named. No conflict.</p>
+<figure><img alt="Three query boxes with noise sd 0.7, 1.0, 1.5. Arrow labeled rank by expected gain. Bars 0.67, 0.50, 0.31 with query 1 marked best." src="../assets/u06_f02.png"><figcaption>Three query boxes with noise sd 0.7, 1.0, 1.5. Arrow labeled rank by expected gain. Bars 0.67, 0.50, 0.31 with query 1 marked best.</figcaption></figure>
+<h3 id="cs329h-u06-c03-preference-uncertainty">cs329h-U06-C03: preference uncertainty</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S10). Objective: represent uncertainty over preferences as a posterior. Depends on P18, U03.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: how unsure are we about a preference? Toy: posterior over gap g ~ N(0.8, 0.16), 2000 samples, seed 0.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The posterior is the current belief about the preference. Its spread drives elicitation: wide spread means ask more.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Samples g_i from p(g | data). Mean 0.8, sd 0.4. Assumption: the likelihood and prior are trusted.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Uncertainty splits into noise (answer flips) and parameter uncertainty (little data). More queries shrink the latter, not the former.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Sample mean 0.79, sample sd 0.40, P(g &gt; 0) = 0.978 (seed 0, n = 2000). Same numbers as figure u06_f03.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Draw posterior samples, histogram them, report quantiles. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the sample mean matches the analytic 0.8 within Monte Carlo error. Expected: the histogram in u06_f03.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(samples). Sampling is cheap, the posterior itself is the expensive object.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: point estimate plus Laplace approximation. Alternative: bootstrap. Choose the full posterior when decisions need tail probabilities. Choose Laplace for speed.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the posterior is overconfident because the likelihood missed a bias. Counterexample: all samples say g &gt; 0 but the true gap is negative under systematic annotation bias.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test calibration of P(g &gt; 0) on held-out pairs. Falsifiable: miscalibration means the uncertainty model is wrong.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: what does the posterior spread mean? Oral ladder through P(g &gt; 0) = 0.977. Transfer: poll margins. Failure diagnosis: the posterior is narrow but predictions fail. Explain. Counterfactual: what if data were infinite? Research: uncertainty under misspecification.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U06 task 3 samples the posterior. Exercises: (E1) state the sampling setup. (E2) compute P(g &gt; 0). (E3) separate noise from parameter uncertainty. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u06_f03.png: lesson plate, source original toy, seed 0, alt text &ldquo;Histogram of 2000 posterior gap samples. Mean line at 0.79, sd 0.40, P(g &gt; 0) = 0.978 marked.&rdquo; Audit: before state prior belief, after state posterior spread, rule named. No conflict.</p>
+<figure><img alt="Histogram of 2000 posterior gap samples. Mean line at 0.79, sd 0.40, P(g &gt; 0) = 0.978 marked." src="../assets/u06_f03.png"><figcaption>Histogram of 2000 posterior gap samples. Mean line at 0.79, sd 0.40, P(g &gt; 0) = 0.978 marked.</figcaption></figure>
+<h3 id="cs329h-u06-c04-assistance-formulation">cs329h-U06-C04: assistance formulation</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S11). Objective: state the assistance game formulation. Depends on P17.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: how do we formalize &ldquo;help me&rdquo; when the helper does not know the goal? Toy: human knows the reward R, agent does not. Both share the payoff.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> An assistance game: two players, common payoff. The human knows the reward function. The agent infers it from the human behavior and acts to help.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> State s, human action a_H, agent action a_A, reward R(s, a_H, a_A, theta), theta known to the human only. Common payoff: both maximize E[R].</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The human actions are observations about theta. The agent keeps a belief over theta and acts to maximize expected common reward. This is a POMDP with the human in the loop.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Toy: theta in {tea, coffee}, prior 0.5. Human reaches for the left cupboard (evidence for tea). Agent belief shifts to 0.727, agent brews tea. Expected common reward rises from 0.5 to 0.727.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Belief update on theta given the human action, then the expected-reward action. Pseudocode, ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the belief sums to 1. Check: a fully revealing human action collapses the belief. Expected: the 0.5 -&gt; 0.727 shift.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> Exact solution is intractable (POMDP). The formulation is the contribution, approximations do the work.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: the agent optimizes a fixed proxy reward (no inference). Alternative: ask the human directly (pure elicitation). Choose inference when human behavior is informative and cheap. Choose asking when it is not.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the human is not optimal (bounded rationality, U08), so the agent misreads the evidence. Counterexample: the human reaches left out of habit, not preference. The agent &ldquo;helps&rdquo; wrongly.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether belief-based assistance beats proxy optimization on a synthetic human with known theta. Falsifiable: no win means the inference adds nothing.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the information asymmetry in one sentence. Oral ladder through the belief shift. Transfer: a junior assistant and a busy manager. Failure diagnosis: the agent helps wrongly though the human acted clearly. Explain. Counterfactual: what if the human were fully transparent? Research: assistance with bounded-rational humans.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U06 task 4 implements the belief update. Exercises: (E1) name who knows what. (E2) compute the 0.727. (E3) argue the habit failure. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u06_f04.png: architecture plate, source original toy, alt text &ldquo;Human box labeled knows theta. Agent box labeled belief over theta. Arrow labeled human action as evidence. Both point to a common payoff box.&rdquo; Audit: before state asymmetry, after state belief loop, rule named. No conflict.</p>
+<figure><img alt="Human box labeled knows theta. Agent box labeled belief over theta. Arrow labeled human action as evidence. Both point to a common payoff box." src="../assets/u06_f04.png"><figcaption>Human box labeled knows theta. Agent box labeled belief over theta. Arrow labeled human action as evidence. Both point to a common payoff box.</figcaption></figure>
+<h3 id="cs329h-u06-c05-humanagent-objectives">cs329h-U06-C05: human/agent objectives</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S11). Objective: separate the shared objective from each player information and actions. Depends on C04.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: if both want the same thing, why is assistance hard? Toy: same tea/coffee setup. Human acts with full knowledge, agent with a belief.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The objective is shared, but the information and the action sets differ. The human knows theta and acts in the world. The agent sees the human and acts with partial knowledge. Misalignment comes from ignorance, not malice.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Common payoff J = E[R(theta)]. Human policy pi_H(a | s, theta). Agent policy pi_A(a | s, belief). Same J, different conditioning.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Because the conditioning differs, the optimal agent action differs from what the human would do. The agent trades acting on its best guess against gathering more evidence.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Toy: human brews tea (knows theta = tea). Agent with belief 0.727 brews tea: expected payoff 0.727. An agent that ignores the human and guesses at random gets 0.5. Watching the human is worth 0.227.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Compute expected payoff under three agent policies: ignore, imitate, belief-optimal. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: belief-optimal &gt;= imitate &gt;= ignore in expectation. Expected: 0.727, 0.727 (here), 0.5.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(policies x theta). Tiny here, the ordering is the point.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: single-agent view (the human is part of the environment). Alternative: zero-sum view (wrong here). Choose the common-payoff game when interests align. Choose the single-agent view for implementation simplicity.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the &ldquo;common&rdquo; payoff is assumed but the human wants something else. Counterexample: the human wants tea, the agent optimizes click-based &ldquo;satisfaction&rdquo; and brews coffee because coffee photos get clicks.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test sensitivity of the agent action to the common-payoff assumption. Falsifiable: small misspecification flips the action.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: what is shared and what differs? Oral ladder through the 0.227. Transfer: coach and player. Failure diagnosis: the agent acts against the human evident goal. Explain. Counterfactual: what if both had the same information? Research: misspecified common ground.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U06 task 5 compares the three policies. Exercises: (E1) write J and the two policies. (E2) compute the 0.227. (E3) construct the click-counterexample. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u06_f05.png: architecture plate, source original toy, alt text &ldquo;Human box and agent box both arrow into one common payoff box. Labels mark what each conditions on.&rdquo; Audit: before state separate views, after state shared objective, rule named. No conflict.</p>
+<figure><img alt="Human box and agent box both arrow into one common payoff box. Labels mark what each conditions on." src="../assets/u06_f05.png"><figcaption>Human box and agent box both arrow into one common payoff box. Labels mark what each conditions on.</figcaption></figure>
+<h3 id="cs329h-u06-c06-partial-observability">cs329h-U06-C06: partial observability</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S11). Objective: define partial observability in assistance and its consequences. Depends on C04, P18.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what exactly does the agent not see? Toy: theta hidden, human action observed with noise.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Partial observability means the agent decisions condition on a belief, not on the world state. Every human action is a noisy sensor reading of theta.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Belief b(theta) = P(theta | history). Observation model P(a_H | theta). Assumption: the observation model is known or learned.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Bayes: b&rsquo;(theta) proportional to P(a_H | theta) b(theta). The belief is a sufficient statistic of the history. Acting on raw history without it is intractable.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Toy: prior 0.5/0.5, P(reach left | tea) = 0.8, P(reach left | coffee) = 0.3. Observe reach left: posterior tea = 0.727.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Implement the Bayes update. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the posterior sums to 1. Check: an uninformative action (0.5/0.5 likelihoods) leaves the belief unchanged. Expected: 0.727.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(|theta|) per update for discrete theta. Continuous theta needs approximation.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: act on raw history (intractable). Alternative: assume full observability (wrong). Choose the belief state. It is the standard reduction.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the observation model is wrong (human reaches left out of habit). The belief concentrates on the wrong theta. Counterexample: true likelihoods 0.5/0.5 with the model above.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test belief calibration on a synthetic human with known theta. Falsifiable: miscalibration means the observation model is wrong.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: what is the belief? Oral ladder through the 0.727. Transfer: a poker tell. Failure diagnosis: the belief is confident but wrong. Explain. Counterfactual: what if observation were perfect? Research: learning the observation model.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) write the update. (E2) compute the posterior. (E3) argue the habit failure. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Definition unit shared with figure u06_f04. The update arithmetic is worked in the text. No new plate. Logged.</p>
+<h3 id="cs329h-u06-c07-contextual-bandit">cs329h-U06-C07: contextual bandit</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S11). Objective: define the contextual bandit and the optimal policy under known rewards. Depends on P17.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: the best action depends on the situation. How do we formalize that? Toy: contexts {morning, evening}, arms {tea, coffee}, rewards [[0.8, 0.3], [0.2, 0.9]].</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> A contextual bandit shows a context, takes an arm, earns a reward. The policy maps contexts to arms. With known rewards, pick the best arm per context.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Context x in X, arm a in A, mean reward mu(x, a). Policy pi: X -&gt; A. Assumption: rewards are stationary in (x, a).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Optimal policy: pi*(x) = argmax_a mu(x, a). Morning -&gt; tea (0.8). Evening -&gt; coffee (0.9).</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Contexts equally likely: expected reward 0.85. A context-blind policy (always tea) gets 0.5. Context is worth 0.35.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Argmax per context. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: each context maps to its max arm. Expected: 0.85 vs 0.5.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(|X| |A|). The learning problem (unknown mu) is where the cost lives.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: full RL (context transitions matter). Alternative: supervised learning (rewards observed for all arms). Choose the bandit when feedback is only for the chosen arm and contexts do not transition.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: contexts are non-stationary (morning tastes drift). The fixed map goes stale. Counterexample: evening tea becomes popular, the policy keeps serving coffee.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether a context-aware policy beats the best context-blind policy on logged data with proper off-policy correction. Falsifiable: no win means context adds nothing.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the objective. Oral ladder through the 0.35. Transfer: news article recommendation. Failure diagnosis: the context-aware policy underperforms the blind one. Explain. Counterfactual: what if contexts were unobserved? Research: non-stationary bandits.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U06 task 6 computes the optimal policy. Exercises: (E1) write pi*. (E2) compute the 0.35. (E3) argue the drift failure. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Definition unit anchored on figure u06_f06 (comparison table). No new plate. Logged.</p>
+<h3 id="cs329h-u06-c08-assisted-bandit">cs329h-U06-C08: assisted bandit</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S11). Objective: define the assisted bandit: human and agent jointly choose. Depends on C04, C07.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what changes when a human sits next to the bandit algorithm? Toy: agent suggests, human picks. Human overrides a wrong suggestion with prob 0.9.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> In an assisted bandit the agent proposes and the human disposes (or the reverse). Human oversight catches the agent exploration mistakes, at the cost of human attention.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Agent proposes a in A. Human accepts or overrides. Team reward: mu(x, a_final). Assumption: the human override is informative (better than random).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The team can explore more aggressively than a solo agent: the human veto bounds the downside. The human is a safety filter with a cost per veto.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Toy (morning): agent suggests uniformly. Team reward = 0.5<em>0.8 + 0.5</em>(0.9<em>0.8 + 0.1</em>0.3) = 0.775. Solo uniform gets 0.55. Assistance is worth 0.225.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Simulate the propose-override loop. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: team &gt;= solo agent. Check: with a random human (override prob 0) team = solo. Expected: 0.775 vs 0.55.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(rounds). The cost is human attention per round.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: full autonomy (no human). Alternative: human alone (no agent proposals). Choose assisted when mistakes are costly and human attention is available. Choose autonomy when attention is the bottleneck.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the human rubber-stamps (override prob drops to 0.1 under fatigue). Team = 0.575, barely above 0.55, minus attention cost: net negative.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether measured override rates stay above the break-even point in a real deployment. Falsifiable: below break-even, remove the human.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: who proposes, who disposes? Oral ladder through the 0.775. Transfer: autopilot with a pilot. Failure diagnosis: the team underperforms solo. Explain. Counterfactual: what if the human were always right? Research: optimal veto policies.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U06 task 7 simulates the loop. Exercises: (E1) describe the protocol. (E2) compute the 0.775. (E3) compute the rubber-stamp case. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Shared with figure u06_f06 (contextual vs assisted table). Logged.</p>
+<h3 id="cs329h-u06-c09-exploration-cost">cs329h-U06-C09: exploration cost</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S10/S11). Objective: quantify exploration cost as cumulative regret. Depends on C07, P17.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what does exploration cost in reward? Toy: 3-arm Bernoulli [0.6, 0.55, 0.5], T = 300, seed 0. Greedy vs epsilon-greedy (0.1).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Exploration cost is cumulative regret: the gap between the best arm reward and what the policy earned, summed over rounds. Every exploratory pull pays this tax.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Regret(T) = sum_t (mu* - mu_{a_t}). Units: reward. Assumption: stationary arms.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Greedy (after one pull each) can lock onto a suboptimal arm: regret grows linearly. Epsilon-greedy pays a steady exploration tax but finds the best arm: regret grows slower.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Computed (seed 0): greedy regret 29.6, epsilon-greedy regret 2.4. Same numbers as figure u06_f07.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Simulate both policies with a fixed seed. Fifteen lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: regret is non-negative and non-decreasing. Check: the best arm is pulled most by epsilon-greedy. Expected: the two curves in u06_f07.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(T) simulation. The conceptual cost: regret is measured against a counterfactual.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: Bayesian regret (average over a prior). Alternative: simple regret (final arm quality). Choose cumulative regret for online systems. Choose simple regret for pure optimization.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: non-stationary arms make &ldquo;regret&rdquo; against a fixed best arm meaningless. Counterexample: the best arm changes at t = 100. Both policies regret accounting misleads.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether the measured regret gap replicates across seeds. Falsifiable: overlapping bands mean no conclusion.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: define regret. Oral ladder through the curves. Transfer: A/B testing a website. Failure diagnosis: the regret curve bends upward late. Explain. Counterfactual: what if arm means were known? Research: non-stationary regret.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U06 task 8 runs the simulation. Exercises: (E1) write the regret formula. (E2) explain the greedy lock-in. (E3) argue the non-stationarity failure. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u06_f07.png: lesson plate, source original toy, seed 0, alt text &ldquo;Two cumulative regret curves to T = 200. Greedy ends at 29.6, epsilon-greedy at 2.4.&rdquo; Audit: before state untried arms, after state regret curves, rule named. No conflict.</p>
+<figure><img alt="Two cumulative regret curves to T = 200. Greedy ends at 29.6, epsilon-greedy at 2.4." src="../assets/u06_f07.png"><figcaption>Two cumulative regret curves to T = 200. Greedy ends at 29.6, epsilon-greedy at 2.4.</figcaption></figure>
+<h3 id="cs329h-u06-c10-elicitation-burden">cs329h-U06-C10: elicitation burden</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S10). Objective: model human burden as a budget and show diminishing returns. Depends on C02.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: how many questions can we ask before the human quits? Toy: Gaussian gap, query noise sd 1, marginal gains 0.5, 0.167, 0.083, 0.05, 0.033.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Elicitation burden is the human-side cost: time, attention, fatigue. Each extra query buys less information than the last. The budget binds before the information runs out.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Budget B queries. Cumulative gain G(n) = n/(1+n) for the Gaussian toy. Assumption: each query costs the same human effort.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Marginal gains decrease: the fifth query buys 0.033 where the first bought 0.5. Stop when marginal gain falls below the cost per query.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Marginal gains: 0.500, 0.167, 0.083, 0.050, 0.033. Same numbers as figure u06_f08.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Compute cumulative and marginal gains. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: cumulative gains increasing and concave. Expected: the diminishing curve.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(B). The economics, not the compute, is the point.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: fixed question list (no adaptivity). Alternative: stop on posterior width (C03). Choose the marginal rule when query costs are known. Choose the width rule when they are not.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: fatigue makes later answers noisier, so realized gains fall faster than the model says. Counterexample: the fifth query noise sd doubles, its true gain is 0.008, not 0.033.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: measure answer noise versus question order in a real elicitation session. Falsifiable: rising noise means the budget must shrink.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the stopping rule. Oral ladder through the marginals. Transfer: a survey that is too long. Failure diagnosis: later queries add nothing. Explain. Counterfactual: what if burden were zero? Research: fatigue-aware elicitation.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) write G(n). (E2) compute the five marginals. (E3) argue the fatigue failure. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u06_f08.png: lesson plate, source original toy, closed form, alt text &ldquo;Bars of marginal information gain for queries 1 to 5: 0.50, 0.17, 0.08, 0.05, 0.03. Curve falls steeply.&rdquo; Audit: before state first query, after state fifth query, rule named. No conflict.</p>
+<figure><img alt="Bars of marginal information gain for queries 1 to 5: 0.50, 0.17, 0.08, 0.05, 0.03. Curve falls steeply." src="../assets/u06_f08.png"><figcaption>Bars of marginal information gain for queries 1 to 5: 0.50, 0.17, 0.08, 0.05, 0.03. Curve falls steeply.</figcaption></figure>
+<h3 id="cs329h-u06-c11-privacy">cs329h-U06-C11: privacy</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S10). Objective: name the privacy risks of preference elicitation. Depends on C10.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what does a preference query reveal? Toy: ten pairwise choices that together pin down a sensitive attribute (stylized).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Preferences are personal data. Queries and answers leak them. Elicitation must minimize what is asked, what is stored, and who sees it.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Threat model: the answers, the query sequence, and the inferred posterior are all sensitive. Units: bits of leakage per query (mutual information, stylized).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Each answer reduces uncertainty about theta. That is the point of elicitation and also the leak. Minimization: ask only decision-relevant queries (C01), aggregate where possible, expire raw answers.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Stylized: as answers accumulate the posterior concentrates, and concentration is the leak. No invented bit counts are reported, the mechanism is the lesson.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Checklist algorithm: tag each query with sensitivity, drop queries above a threshold unless VoI justifies them. Pseudocode.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the checklist runs before any query is sent. Expected: a short risk table.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(queries). The cost is process, not compute.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: differential privacy on answers (noise for plausible deniability). Alternative: on-device elicitation (no server sees answers). Choose DP when aggregation suffices. Choose on-device when individual posteriors must stay local.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: &ldquo;anonymized&rdquo; preference traces re-identify users (preferences are fingerprints). Counterexample: release the query log without names, the pattern still singles out the user.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test re-identification risk on synthetic traces. Falsifiable: high re-identification means the anonymization failed.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name three leaks (answers, query sequence, posterior). Oral ladder through the minimization argument. Transfer: a health questionnaire. Failure diagnosis: a preference dataset leaks identities. Explain. Counterfactual: what if answers were never stored? Research: private elicitation protocols.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) name the three leaks. (E2) write the checklist. (E3) argue the fingerprint failure. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the risk table is worked in the text. No plate required. Logged.</p>
+<h3 id="cs329h-u06-c12-practical-case-design">cs329h-U06-C12: practical case design</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S10). Objective: assemble a complete elicitation case: population, budget, stopping rule, metric. Depends on C01-C11.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: design the elicitation for a chatbot persona tuner (hypothetical product). Population: 200 beta users. Budget: 5 queries each. Metric: held-out pairwise accuracy.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> A case design turns the unit pieces into a plan: who we ask, what we ask, when we stop, how we know it worked. Every number is labeled hypothetical.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Population N = 200 (hypothetical). Queries per user &lt;= 5 (burden). Total 1000 answers. Stopping: marginal gain &lt; 0.02 or budget spent. Metric: accuracy on 200 held-out pairs. All numbers hypothetical.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The design flows from the unit: VoI ranks queries (C02), the posterior tracks uncertainty (C03), the marginal rule stops (C10), the privacy checklist screens (C11). The metric is decided before data collection (U10-C01).</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Hypothetical projection: 1000 answers at the C02 noise levels cut posterior variance by about 0.9 on the toy model, labeled hypothetical.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Write the case as a one-page plan with five headings: population, query policy, stopping rule, privacy, metric. Template in the lab.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: every heading has an entry. Check: all numbers carry the hypothetical label. Expected: the completed template.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1) planning. The cost is the discipline to decide the metric first.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: open-ended interviews (rich, unscalable). Alternative: implicit feedback only (cheap, biased). Choose structured elicitation for the middle ground.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the beta population does not represent the deployment population. The tuned persona pleases beta users and misses everyone else. Counterexample: beta users are employees.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: run the case on a pilot of 20 users, then revise the budget. Falsifiable: pilot accuracy below 0.6 kills the design.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the five headings. Oral ladder through the budget arithmetic. Transfer: a product survey. Failure diagnosis: held-out accuracy flat after 500 answers. Explain. Counterfactual: what if budget were unlimited? Research: representative sampling for elicitation.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U06: the case template is filled as the lab wrap-up. Exercises: (E1) list the headings. (E2) justify the stopping rule. (E3) argue the representation failure. Keys in answer_keys/u06_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the case template is the artifact. No plate. Logged.</p>
+      
+      <nav class="pager"><a href="../lessons/u05_lesson.html"><span class="lbl">← Previous</span>U05 · RLHF and DPO</a><a href="../lessons/u07_lesson.html"><span class="lbl">Next →</span>U07 · Acquisition, Thompson sampling, and dueling bandits</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

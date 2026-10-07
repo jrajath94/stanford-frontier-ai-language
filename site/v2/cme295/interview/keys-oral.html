@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interview · Oral keys — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Oral defense rubrics.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-int-oral-keys">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cme295-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_attention_variants.html" data-page="cme295-u02">U02 · Transformer variants and posit</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_llm_generation.html" data-page="cme295-u03">U03 · LLM architecture and generatio</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_training_adaptation.html" data-page="cme295-u04">U04 · Training and efficient adaptat</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_preference_optimization.html" data-page="cme295-u05">U05 · Preference tuning and policy o</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_reasoning_scaling.html" data-page="cme295-u06">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_rag_agents.html" data-page="cme295-u07">U07 · RAG and agentic systems</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_llm_evaluation.html" data-page="cme295-u08">U08 · LLM evaluation and judging</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_trends_synthesis.html" data-page="cme295-u09">U09 · Current trends, exams, and syn</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="../interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="../interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="../interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="../interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="../interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cme295-int-oral-keys" class="active">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cme295-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/research_grpo_extension.html" data-page="cme295-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / Interview · Oral keys</nav>
+      <h1>Interview · Oral keys</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="oral-defense-keys">Oral defense keys</h1>
+<p>Full keys for <code>oral-defenses.md</code>. Two points per rung, 16 per ladder.</p>
+<h2 id="d1-attention">D1 , attention</h2>
+<ol>
+<li>Strong: softmax(QK^T/sqrt(d))V, weights over values.</li>
+<li>Strong: rows [0.731, 0.269] and [0.269, 0.731].</li>
+<li>Strong: dot products grow as sqrt(d), unscaled softmax
+   saturates, gradients die. The scale keeps variance at 1.</li>
+<li>Strong: four lines, O(n^2 d) time, O(n^2) memory.</li>
+<li>Strong: RNN is O(n) serial with fading memory, attention
+   is parallel with direct links but quadratic cost.</li>
+<li>Strong: scores are flat (bad QK init) or the scale is
+   wrong. Check score variance first.</li>
+<li>Strong: nothing, without positions it is permutation
+   invariant. Positions are added, not assumed.</li>
+<li>Strong: sweep the scale in {1, sqrt(d), d} on a toy copy
+   task, measure convergence steps.</li>
+</ol>
+<h2 id="d2-rope">D2 , RoPE</h2>
+<ol>
+<li>Strong: rotate each 2D pair of q/k by an angle
+   proportional to position, different frequencies per pair.</li>
+<li>Strong: (1, 0) rotated 90 degrees is (0, 1).</li>
+<li>Strong: the dot product of rotated vectors depends on the
+   angle difference, which is the relative distance.</li>
+<li>Strong: pair loop with cos/sin, O(d) per position.</li>
+<li>Strong: learned positions memorize absolute slots and die
+   past trained length, RoPE generalizes relatively.</li>
+<li>Strong: unseen rotation angles, the model never learned
+   those frequencies. Interpolate or rescale.</li>
+<li>Strong: too high loses long-range order, too low wastes
+   dimensions. The base sets the wavelength ladder.</li>
+<li>Strong: perplexity on 2x-length documents plus a
+   distance-sensitive retrieval probe.</li>
+</ol>
+<h2 id="d3-temperature">D3 , temperature</h2>
+<ol>
+<li>Strong: divide logits by T before softmax, T reshapes
+   sharpness.</li>
+<li>Strong: T=0.5: [0.867, 0.117, 0.016]. T=2: [0.506,
+   0.307, 0.186].</li>
+<li>Strong: T-&gt;0 gives argmax (one-hot), T-&gt;infinity gives
+   uniform. Limits bracket all behavior.</li>
+<li>Strong: softmax(logits/T), one extra division, free.</li>
+<li>Strong: top-k cuts the tail by rank, temperature reshapes
+   the whole distribution. They compose.</li>
+<li>Strong: lower T, or add top-p. Repetition means the
+   distribution is too flat or too peaked on a loop.</li>
+<li>Strong: that the logits are calibrated enough for
+   reshaping to be meaningful. Garbage logits stay garbage.</li>
+<li>Strong: sweep T in {0.3, 0.7, 1.0, 1.5}, measure quality
+   (judge) vs diversity (distinct n-grams), find the knee.</li>
+</ol>
+<h2 id="d4-lora">D4 , LoRA</h2>
+<ol>
+<li>Strong: W + BA with B in R^(dxr), A in R^(rxk), r small.</li>
+<li>Strong: 1 x (4 + 4) = 8 parameters vs 16 full.</li>
+<li>Strong: full needs dk, LoRA needs r(d + k), ratio about
+   r(d+k)/dk. At r=8, d=k=4096: 64x fewer.</li>
+<li>Strong: h = Wx + BAx, inference adds the BAx term, tiny
+   cost, mergeable into W.</li>
+<li>Strong: full moves every weight (expressive, expensive,
+   forgetful), LoRA moves a subspace (cheap, stable).</li>
+<li>Strong: rank too low for the task, or the LR is wrong.
+   Raise r, then check the data.</li>
+<li>Strong: that the task change lives in a low-rank
+   subspace. New domains may need full rank.</li>
+<li>Strong: train r in {1, 4, 16, 64} on the task, plot eval
+   vs r, find the knee.</li>
+</ol>
+<h2 id="d5-ppo-clipping">D5 , PPO clipping</h2>
+<ol>
+<li>Strong: E[min(rho A, clip(rho, 1-eps, 1+eps) A)].</li>
+<li>Strong: min(2.0 x 1.0, 1.2 x 1.0) = 1.2.</li>
+<li>Strong: the trust region bounds the KL per step, the min
+   takes the pessimistic side so bad steps cannot pay.</li>
+<li>Strong: five lines, check that rho = 1 gives the plain
+   advantage.</li>
+<li>Strong: unclipped PG follows rho anywhere, one bad batch
+   can destroy the policy. Clipping bounds the damage.</li>
+<li>Strong: the policy outran the rollout data (stale
+   batches) or the LR is too high. Refresh rollouts.</li>
+<li>Strong: no, it is an approximate guardrail, not a proof.
+   Pathological cases still slip through.</li>
+<li>Strong: sweep eps in {0.1, 0.2, 0.3}, measure stability
+   (KL per step) vs speed (reward per step).</li>
+</ol>
+<h2 id="d6-grpo">D6 , GRPO</h2>
+<ol>
+<li>Strong: A_i = (r_i - mu)/sigma over the prompt group.</li>
+<li>Strong: [1, 1, -1, -1].</li>
+<li>Strong: E[(r - b) d log pi] = E[r d log pi] since
+   E[d log pi] = 0. The group mean is action-independent.</li>
+<li>Strong: sample G, normalize, clipped loss, guards: eps
+   on sigma and skip on all-tied.</li>
+<li>Strong: PPO needs a critic the size of the policy, GRPO
+   uses the group. Cheaper, prompt-relative.</li>
+<li>Strong: no contrast: sampler too cold, task too easy, or
+   the verifier is constant. Check temperature first.</li>
+<li>Strong: that rewards in one group are comparable: same
+   prompt, same verifier. Mixed prompts break it.</li>
+<li>Strong: sweep G in {4, 16, 64} at fixed rollout budget,
+   measure reward per step.</li>
+</ol>
+<h2 id="d7-rag">D7 , RAG</h2>
+<ol>
+<li>Strong: recall = H/R, precision = H/K.</li>
+<li>Strong: recall 0.75, precision 0.30.</li>
+<li>Strong: end quality &lt;= recall@N x precision@M, the stages
+   multiply, the chain is only as strong as its weakest.</li>
+<li>Strong: retrieve top-N, rerank to top-M. Costs: ANN
+   search plus N cross-encoder calls.</li>
+<li>Strong: stuffing is exact but bounded by the window and
+   dilutes attention. RAG scales the corpus, not the
+   window.</li>
+<li>Strong: model bin (retrieval worked, the model failed).
+   Fix the reader, not the index.</li>
+<li>Strong: that facts are not split across chunk
+   boundaries. Tables and lists break it.</li>
+<li>Strong: vary chunk size on a fixed corpus, plot
+   recall@20, find the peak.</li>
+</ol>
+<h2 id="d8-judge-bias">D8 , judge bias</h2>
+<ol>
+<li>Strong: position favors the first answer, verbosity
+   favors the longer one.</li>
+<li>Strong: (0.70 + 0.55)/2 = 0.625.</li>
+<li>Strong: obs1 = p + b, obs2 = (1 - p) + b, the mean of
+   (obs1, 1 - obs2) equals p. Bias cancels.</li>
+<li>Strong: judge both orders, average. Large order gaps
+   flag strong bias, investigate.</li>
+<li>Strong: swapping cancels position, caps handle length.
+   They address different biases, use both.</li>
+<li>Strong: asymmetric bias or length correlating with
+   order. Control length first, then re-swap.</li>
+<li>Strong: no, self-preference needs blinding, swapping
+   only fixes position.</li>
+<li>Strong: vary the length difference, measure the win-rate
+   shift, plot the bias curve.</li>
+</ol>
+<h2 id="d9-diffusion">D9 , diffusion</h2>
+<ol>
+<li>Strong: how many tokens unmask per step, by confidence.</li>
+<li>Strong: the 4 most confident tokens unmask first.</li>
+<li>Strong: mask a random fraction, cross-entropy on masked
+   positions only, learn to denoise.</li>
+<li>Strong: loop over steps, full-sequence forward pass per
+   step, O(steps x n^2 d).</li>
+<li>Strong: AR is serial and coherent, diffusion is parallel
+   and refining. Latency vs maturity.</li>
+<li>Strong: miscalibrated confidence locks in wrong tokens
+   early. More steps or better calibration.</li>
+<li>Strong: that parallel predictions do not destroy
+   coherence, refinement repairs it.</li>
+<li>Strong: vary steps in {1, 2, 4, 8, 16}, measure quality,
+   find the knee.</li>
+</ol>
+<h2 id="d10-dpo">D10 , DPO</h2>
+<ol>
+<li>Strong: r = beta log(pi/pi_ref), the policy as reward.</li>
+<li>Strong: margin = 0.1 x 1.4 = 0.14.</li>
+<li>Strong: the KL-regularized optimum is pi* proportional
+   to pi_ref exp(r/beta), invert for r.</li>
+<li>Strong: -log sigmoid(margin), check the margin grows
+   during training.</li>
+<li>Strong: RLHF trains 3 stages with a learned reward,
+   DPO is one loss on pairs. Simpler, assumption-bound.</li>
+<li>Strong: likelihood displacement: the loss widens the
+   margin, both likelihoods can fall. Track log pi_w.</li>
+<li>Strong: that preferences are transitive and noiseless
+   enough for BT. Noise and cycles break it.</li>
+<li>Strong: log the chosen log-prob over training, correlate
+   with the margin, find displacement.</li>
+</ol>
+      
+      <nav class="pager"><a href="../interview/oral-defenses.html"><span class="lbl">← Previous</span>Interview · Oral defenses</a><a href="../interview/transfer-sets.html"><span class="lbl">Next →</span>Interview · Transfer sets</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

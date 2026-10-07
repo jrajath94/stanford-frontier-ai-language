@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U05 · Attention and transformers — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Lesson: Attention and transformers.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u05" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05" class="active">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U05 · Attention and transformers</nav>
+      <h1>U05 · Attention and transformers</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u05-attention-and-transformers">U05 , Attention and transformers</h1>
+<h2 id="local-remediation">Local remediation</h2>
+<p>Bridges: <code>../shared/prerequisites/p12_pytorch.md</code> (P12, tensor ops),
+<code>../shared/prerequisites/p14_transformer.md</code> (P14, the architecture at
+a glance). This unit rebuilds both from numpy so the machinery is
+yours, not the framework&rsquo;s.</p>
+<p>R1. Dot product as similarity: (1,0).(1,0) = 1, (1,0).(0,1) = 0,
+(1,0).(-1,0) = -1. Parallel = high, orthogonal = zero, opposite =
+negative. Attention scores are similarities with learned geometry.
+R2. Softmax rows sum to 1: softmax(0.707, 0, -0.707) = (0.576, 0.284,
+0.140), sum 1.000. Every attention row is a probability distribution
+over positions.
+R3. Shape arithmetic: (n, d) @ (d, d_k) = (n, d_k). (n, n) @ (n, d_v)
+= (n, d_v). If a product does not typecheck, the code is wrong,
+C09 makes this a reflex.</p>
+<hr />
+<h3 id="c01-querykeyvalue">C01: query/key/value</h3>
+<p>Leaf id <code>cs224n-U05-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   attention sessions of the Winter 2026 schedule (S06-S07 per
+   <code>course_map.md</code>). Scope: the QKV mechanism, one head. Objectives:
+   define the three roles, compute one head by hand, state why three
+   projections instead of one. Depends on R1, R2, R3.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: position 3 needs
+   information from position 1, the RNN would squeeze it through 2
+   lossy steps (U04 C04). Can position 3 read position 1 directly?
+   Toy: q = (1,0) asks &ldquo;who is parallel to me&rdquo;, keys answer, values
+   carry the content. Weights (0.576, 0.284, 0.140) over the three
+   keys.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A retrieval system. The query is the question,
+   the keys are the index, the values are the documents. Attention
+   scores match the question against the index, the weights fetch a
+   blend of the documents. Three learned projections let the model
+   use different geometry for asking, indexing, and carrying.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> X: (n, d)
+   input. W_q, W_k: (d, d_k). W_v: (d, d_v). Q, K: (n, d_k). V:
+   (n, d_v). Scores S = QK^T: (n, n). Weights P = softmax(S):
+   (n, n), rows sum to 1. Out = PV: (n, d_v). Assumption: d_k = d_v
+   usually, the three projections are learned.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> S_{ij} = q_i . k_j: every position
+   scores every position, O(n^2 d_k). P = softmax(S / sqrt(d_k))
+   (the scale is C02). Out_i = sum_j P_{ij} v_j: a convex
+   combination of values. No recurrence, no convolution: the only
+   mixing is the weighted sum.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u05.py</code>: q = (1,0), K rows
+   (1,0), (0,1), (-1,0), V rows (2,0), (0,2), (-2,0). Scores (0.707,
+   0, -0.707). Weights (0.576, 0.284, 0.140). Output (0.872, 0.568)
+   = 0.576 v1 + 0.284 v2 + 0.140 v3. <img alt="u05_fig01" src="../assets/u05_fig01.png" title="u05_fig01" /> draws
+   the three weights and the blend.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>attention(Q, K, V)</code>:
+   scores, scale, softmax, weighted sum. ~8 lines. Test: the toy
+   numbers above.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match scores, weights,
+   output. Check: weights sum to 1. Check: with V = K the output is
+   a blend of keys (sanity, not a use case).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Time O(n^2 d), memory O(n^2) for the score matrix. The
+   quadratic cost is the transformer&rsquo;s defining bill (C10). Stable:
+   softmax with max subtraction (U03 C02 pattern).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    RNN state (U04): O(n) memory, lossy. Alternative: convolution:
+    local only. Choose attention when any position may need any
+    other (long range). Choose the alternatives when n is huge and
+    locality suffices.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;attention weights explain the model.&rdquo; Counterexample:
+    different weight matrices can give the same output (the values
+    carry the content, weights are one factor). Weights are a clue,
+    not an explanation. Do not ship interpretability claims on
+    weights alone.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: freeze the values to one-hot position codes and check
+    whether high-weight positions predict output changes under
+    input swaps. Predict: often they do not (values dominate).
+    Falsifier: they always do (then weights are faithful here).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A1 (breadth), L1 (ladder:
+    define the roles, compute the toy, derive the blend, diagnose
+    the explanation failure, design the freeze test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: implement
+    <code>attention</code>, match the toy. E2: show weights sum to 1 for random
+    Q, K. Keys in <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u05_fig01" src="../assets/u05_fig01.png" title="u05_fig01" />: one query&rsquo;s weights and the blend,
+    Shell 3, source original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-scaled-weights">C02: scaled weights</h3>
+<p>Leaf id <code>cs224n-U05-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   attention sessions (S06-S07). Scope: the 1/sqrt(d_k) factor.
+   Objectives: derive why it is needed, compute both regimes, state
+   the failure without it. Depends on C01 and P06 (variance).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: d_k = 64, q and k have
+   unit-variance entries, what do the raw dot products look like?
+   Toy: dot variance = d_k = 64, std = 8. Softmax of values spread
+   over +-16 collapses to one-hot. The head stops blending and
+   stops learning (softmax saturates, gradients vanish).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The scale is a calibration knob. Raw dots grow
+   with d_k, dividing by sqrt(d_k) restores unit variance, so the
+   softmax stays in its sensitive range. Without it, big models
+   (big d_k) get peaked attention and dead gradients for free.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> d_k: head
+   dimension. If q_i, k_i ~ N(0,1) independent, q.k has mean 0,
+   variance d_k. Scale: S / sqrt(d_k) has variance 1. Assumption:
+   unit-variance inputs (true at init, layer norm keeps it true,
+   C05).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Var(sum_{i=1}^{d_k} q_i k_i) =
+   sum Var(q_i k_i) = d_k (independence). Softmax saturates when
+   inputs differ by more than ~5: with std 8, one key wins by luck
+   of the draw. Dividing by 8 brings the spread back to ~1, where
+   softmax discriminates instead of collapsing.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u05.py</code>, d_k = 64, 8 keys:
+   unscaled: max weight 0.866, entropy 0.571 (near one-hot).
+   Scaled by 1/8: max weight 0.218, entropy 1.974 (spread out).
+   <img alt="u05_fig02" src="../assets/u05_fig02.png" title="u05_fig02" /> draws both distributions. The numbers are
+   the lesson.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>scaled_scores(Q,
+   K)</code>: return Q @ K.T / sqrt(d_k). ~3 lines. Test: variance of the
+   scaled scores ~1 on random unit inputs.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match max 0.866 -&gt;
+   0.218 and entropies 0.571 -&gt; 1.974. Check: scaled score variance
+   near 1 for d_k in {16, 64, 256}.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Free: one division. The cost is in forgetting it:
+   saturated softmax, vanishing gradients, a model that trains like
+   a hard-coded lookup.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    learned temperature: more flexible, less principled at init.
+    Choose 1/sqrt(d_k) as the default (the init argument is tight).
+    Tune only if attention entropy looks wrong in a trained model.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the scale is a minor detail.&rdquo; Counterexample: the
+    toy: entropy 0.571 vs 1.974. An unscaled head at d_k = 64 is a
+    different mechanism (argmax routing) with dead gradients. The
+    errors.md entry (U05 T1) is this bug.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train a tiny transformer with and without the scale,
+    fixed init, and compare loss at 1k steps. Predict: unscaled
+    trains slower or stalls. Falsifier: no difference (then d_k was
+    small, check it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A2 (breadth), L2 (ladder:
+    derive the variance, compute both regimes, explain saturation,
+    diagnose the stall, design the ablation).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E3: implement
+    <code>scaled_scores</code>, match the entropy pair. E4: show score variance
+    ~d_k unscaled, ~1 scaled, for d_k = 256. Keys in
+    <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u05_fig02" src="../assets/u05_fig02.png" title="u05_fig02" />: unscaled vs scaled distributions,
+    Shell 3, source original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-mha">C03: MHA</h3>
+<p>Leaf id <code>cs224n-U05-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   attention sessions (S06-S07). Scope: multi-head attention. Objectives:
+   write the head split, explain why heads help, trace the shapes.
+   Depends on C01, C02, C09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: one head gives one
+   blend, what if position 3 needs &ldquo;subject&rdquo; from position 1 and
+   &ldquo;tense&rdquo; from position 2 at once? Toy: h = 4 heads, d = 32, d_k =</p>
+</li>
+<li>
+<p>Each head learns its own QKV geometry, the outputs concat and
+   re-project.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A panel of specialists, not one generalist.
+   Each head attends in its own subspace (syntax, coreference,
+   position). The output projection mixes the specialists&rsquo; reports.
+   One head with d_k = 32 is not the same: the split forces
+   separate score matrices.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> h heads, d_k =
+   d/h. Per head: scores (n, n), out (n, d_k). Concat: (n, d).
+   W_o: (d, d). Assumption: d divisible by h, heads share no
+   parameters.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Head_i = attention(XW_qi, XW_ki,
+   XW_vi). MHA = concat(heads) W_o. Parameters: 4 d^2 (Q, K, V, O
+   projections). Compute: h times the single-head cost, same total
+   FLOPs as one big head, but h independent (n, n) score matrices.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Shape trace from <code>compute_u05.py</code>, n = 8,
+   d = 32, h = 4: per-head scores (8, 8), per-head out (8, 8),
+   concat (8, 32), W_o (32, 32). The lab asserts every shape.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>mha(X, params, h)</code>:
+   split, per-head attention, concat, project. ~15 lines. Test: the
+   shape trace.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match all five
+   shapes. Check: h = 1 reduces to single-head attention with d_k =
+   d. Check: output shape (n, d) regardless of h.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Same FLOPs as single-head at width d, memory holds h
+   score matrices (n, n) each. More heads = more diverse routing at
+   fixed compute, too many heads = d_k too small to be useful.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    one wide head: same FLOPs, one routing decision. Choose MHA as
+    the default (the standard). Choose fewer, wider heads when d_k
+    &lt; 32 starts to hurt (empirical).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;heads specialize cleanly.&rdquo; Counterexample: trained
+    heads often redundantly attend to the same positions, some heads
+    can be pruned with no loss. Specialization is a tendency, not a
+    guarantee. Do not assign linguistic roles to heads without
+    probing.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: prune heads one by one on a trained tiny model and
+    measure the loss delta. Predict: a long tail, a few heads
+    matter. Falsifier: uniform deltas (then heads are symmetric,
+    check the init).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A3 (breadth), L3 (ladder:
+    write the split, trace the shapes, derive the param count,
+    diagnose the redundancy, design the pruning test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E5: implement <code>mha</code>,
+    assert the five shapes. E6: verify h = 1 matches single-head.
+    Keys in <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a shape trace (carried in text as the five shapes). Logged as an
+    honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-masks">C04: masks</h3>
+<p>Leaf id <code>cs224n-U05-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   attention sessions (S06-S07). Scope: causal and padding masks.
+   Objectives: write both, prove the order (mask before softmax),
+   state the leak failure. Depends on C01 and U04 C09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the decoder predicts
+   w_4 from w_1..w_3, the full (n, n) score matrix lets position 3
+   see position 5. How is the future hidden? Toy: add -1e9 above
+   the diagonal, then softmax. Upper triangle becomes exactly 0.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A one-way mirror. The causal mask blinds each
+   position to the future, the padding mask blinds all positions to
+   filler (U04 C09). Both are added to the scores before softmax:
+   -inf becomes 0 weight. After softmax is too late (the mass
+   already moved, renormalizing leaks rank information).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Causal mask M:
+   (n, n), 0 on/below diagonal, -inf above. Padding mask: (n,),
+   -inf at pad positions, broadcast over queries. P =
+   softmax(S/sqrt(d_k) + M). Assumption: -1e9 stands in for -inf
+   (finite, no nan).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> softmax(z_i - 1e9) = 0 up to float
+   precision: exp(-1e9) underflows to 0. The row renormalizes over
+   allowed positions only. Masking after softmax (zeroing weights
+   then renormalizing) gives different numbers: the disallowed
+   scores shaped the distribution before they were cut.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u05.py</code>, 4x4 random scores:
+   row sums (1, 1, 1, 1), upper-triangle max 0.0. Row 1: (1.00, 0,
+   0, 0). Row 3: (0.50, 0.18, 0.32, 0). <img alt="u05_fig03" src="../assets/u05_fig03.png" title="u05_fig03" />
+   draws scores vs weights. The numbers are the lesson.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>causal_mask(n)</code>:
+   triu(-1e9, k=1). <code>apply_mask(scores, mask)</code>: scores + mask before
+   softmax. ~6 lines. Test: the row sums and the zero triangle.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match row sums and
+   upper max 0.0. Check: masking after softmax gives different
+   weights (demonstrate on the toy). Check: padding mask zeroes a
+   pad column for every row.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Free (an add). The cost is the bug: a leaked future is a
+   train/test skew that inflates validation scores silently. Always
+   test the mask with a shift: predict position t from prefix only.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    no mask (encoder): every position sees every position. Choose
+    causal for generation (the arrow of time). Choose padding mask
+    whenever batches are padded. Choose neither only for full
+    bidirectional encoding.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;mask after softmax is equivalent.&rdquo; Counterexample:
+    the toy check: post-softmax masking renormalizes a distribution
+    the future already shaped. The errors.md entry (U05 T2) is this
+    bug. Test: weights must be exactly 0 above the diagonal, not
+    just small.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train a decoder with the mask accidentally applied
+    after softmax and compare validation perplexity to the correct
+    version. Predict: the buggy one looks better (it peeked).
+    Falsifier: identical (then the mask had no effect, check it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A4 (breadth), L4 (ladder:
+    write both masks, prove the order, compute the toy, diagnose the
+    leak, design the peek test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E7: implement both
+    masks, match row sums and zeros. E8: demonstrate post-softmax
+    masking differs. Keys in <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u05_fig03" src="../assets/u05_fig03.png" title="u05_fig03" />: scores vs masked weights, Shell 3,
+    source original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-residualnormalization">C05: residual/normalization</h3>
+<p>Leaf id <code>cs224n-U05-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   attention sessions (S06-S07). Scope: why deep stacks train.
+   Objectives: write the residual update, write layer norm, explain
+   what each fixes. Depends on U03 C01 (gradients) and P09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: 12 attention layers,
+   each a learned function, what stops the gradient from dying
+   across them (U04 C06 all over again)? Toy: y = x + F(x). The
+   gradient dy/dx = I + dF/dx: the identity path carries signal
+   even if F&rsquo;s gradient vanishes. The block learns a correction,
+   not a replacement.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Residuals are express lanes. Each sublayer adds
+   its contribution to the running representation, the gradient
+   flows back along the skip untouched. Layer norm is the
+   stabilizer: it re-centers each vector (mean 0, var 1) so the
+   scale never drifts across layers.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> x: (n, d).
+   Sublayer: attention or FFN. y = x + Sublayer(LN(x)) (pre-norm) or
+   LN(x + Sublayer(x)) (post-norm). LN: per-vector mean/var norm,
+   learned gain and bias. Assumption: shapes preserved (d in, d
+   out) so the add typechecks.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> dL/dx = dL/dy (I + dF/dx): the
+   identity term guarantees a full-strength path. LN(x) = (x - mu) /
+   sigma * gamma + beta: differentiable, per token, no batch
+   statistics (unlike batch norm, which breaks on variable
+   sequences).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u05.py</code>: x = (1,2,3,4,5),
+   normalized mean -0.0, var 1.000000 (0.999995 up to the eps).
+   Pre-norm block sketch: the add keeps (n, d) -&gt; (n, d), the lab
+   asserts it.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>layer_norm(x, g, b,
+   eps)</code>: the formula, ~5 lines. <code>block(x, sublayer, ...)</code>: pre-norm
+   residual, ~6 lines. Test: mean/var on the toy, shape preserved.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match mean -0.0, var
+   ~1. Check: LN output has the same shape as input. Check: with
+   F = 0 the block is the identity (the gradient path is exact).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> O(n d) per norm: cheap next to attention. Pre-norm
+   trains more stably at depth (the modern default), post-norm was
+   the original. The choice matters past ~12 layers.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    batch norm: wrong for sequences (batch statistics leak across
+    variable lengths). Choose layer norm (per token). Choose
+    pre-norm for deep stacks, post-norm only to match a legacy
+    checkpoint.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;norm placement is cosmetic.&rdquo; Counterexample: deep
+    post-norm stacks need learning-rate warmup to train at all, the
+    gradient through 24 post-norm layers without warmup explodes or
+    stalls. Placement is a stability decision, stated up front.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train a 12-layer tiny transformer pre-norm vs
+    post-norm, no warmup. Predict: pre-norm trains, post-norm
+    stalls. Falsifier: both train (then the depth was too small to
+    matter).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A5 (breadth), L5 (ladder:
+    write both formulas, compute the toy, derive the identity path,
+    diagnose the no-warmup stall, design the placement test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E9: implement
+    <code>layer_norm</code>, match mean/var. E10: show the block is the
+    identity when F = 0. Keys in <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    an identity path (carried in text as the gradient formula).
+    Logged as an honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-positions">C06: positions</h3>
+<p>Leaf id <code>cs224n-U05-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   attention sessions (S06-S07). Scope: order without recurrence.
+   Objectives: write sinusoid and learned encodings, explain why
+   attention needs them, state the length limit. Depends on C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: attention is a set
+   operation (permute the input, permute the output identically),
+   where did word order go? Toy: &ldquo;dog bites man&rdquo; vs &ldquo;man bites dog&rdquo;
+   have the same multiset. Without positions, the model cannot tell
+   them apart.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Attention sees a bag, positions label the bag.
+   Add a position vector to each token embedding (or bias the
+   scores, as in relative schemes). The model then has both &ldquo;what&rdquo;
+   and &ldquo;where&rdquo;. Sinusoids give a fixed ruler, learned encodings give
+   a fitted ruler, both break at unseen lengths.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> PE(pos, 2i) =
+   sin(pos / 10000^{2i/d}), PE(pos, 2i+1) = cos(&hellip;). Shape (n, d),
+   added to embeddings. Learned: an (n_max, d) table. Assumption:
+   addition (not concat) keeps d fixed, the model disentangles.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Sinusoid: each dimension is a wave
+   with a different frequency, PE(pos + k) is a linear function of
+   PE(pos) (rotation), so relative offsets are learnable. Learned:
+   row pos of a table, no extrapolation past n_max.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u05.py</code>, d = 4: PE(0) =
+   (0, 1, 0, 1). PE(1) = (0.841, 0.540, 0.010, 1.000). The fast wave
+   (freq 1) moved a lot, the slow wave (freq 0.01) barely moved.
+   That is the ruler working.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>sinusoid(n, d)</code>:
+   the formula, ~8 lines. Test: match PE(0) and PE(1) above.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match both vectors.
+   Check: PE(pos) has norm ~sqrt(d/2) for all pos (bounded ruler).
+   Check: permuting input without PE permutes output (the
+   permutation-equivariance that makes PE necessary).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Sinusoid: free, fixed. Learned: n_max x d parameters.
+   Length extrapolation is the cost: both degrade past the training
+   max (the honest limit, carried into U06&rsquo;s context discussion).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    relative positions (bias by offset, not absolute id). Choose
+    absolute (sinusoid/learned) for the standard. Choose relative
+    when length generalization matters more. All schemes assume a
+    max length somewhere.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the model learns order from the data anyway.&rdquo;
+    Counterexample: without any position signal the architecture is
+    permutation-equivariant (prove it: attention scores depend only
+    on content pairs). No signal, no order, no matter how much
+    data.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train with and without PE on an order-sensitive toy
+    (e.g. reverse the sequence). Predict: no-PE gets chance.
+    Falsifier: no-PE learns it (then order leaked another way,
+    check the data).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A6 (breadth), L6 (ladder:
+    write the formula, compute PE(1), prove equivariance, diagnose
+    the chance score, design the reversal test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E11: implement
+    <code>sinusoid</code>, match PE(0)/PE(1). E12: prove permutation
+    equivariance numerically (permute, compare). Keys in
+    <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a ruler (carried in text as the two PE vectors). Logged as an
+    honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-feedforward">C07: feedforward</h3>
+<p>Leaf id <code>cs224n-U05-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   attention sessions (S06-S07). Scope: the per-position FFN.
+   Objectives: write it, count its parameters, explain its job.
+   Depends on U03 C03 (MLP) and C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: attention only mixes
+   positions, where does per-position computation happen? Toy: FFN
+   applied to each of the n vectors independently: (n, d) -&gt; (n,
+   4d) -&gt; (n, d). Same weights at every position.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Attention is the meeting, the FFN is the desk
+   work after. Each position processes its own vector through a
+   two-layer MLP (expand, activate, contract). The 4x expansion is
+   the capacity knob: most of the model&rsquo;s parameters live here.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> W_1: (d, 4d),
+   b_1: (4d,). W_2: (4d, d), b_2: (d,). FFN(x) = W_2 relu(W_1 x +
+   b_1) + b_2, applied per position. Parameters: 8 d^2 per layer
+   (vs 4 d^2 for attention). Assumption: the 4x ratio is convention,
+   not law.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Per-position: no cross-talk, so it
+   parallelizes trivially over n. The expansion gives the MLP room
+   for features, the contraction returns to the residual width d so
+   the add typechecks (C05).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Shape trace (hand, labeled as such): d =
+   32, n = 8. In (8, 32) -&gt; hidden (8, 128) -&gt; out (8, 32).
+   Parameters: 32x128 + 128 + 128x32 + 32 = 8320. The lab asserts
+   the trace.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>ffn(x, W1, b1, W2,
+   b2)</code>: the two layers, ~6 lines. Test: the shape trace.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match (8,32) -&gt;
+   (8,128) -&gt; (8,32) and 8320 params. Check: applying to a permuted
+   input permutes the output (position-wise, no mixing).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> O(n d^2) time, the dominant per-layer cost at small n
+   (attention&rsquo;s n^2 wins at large n). 2/3 of the layer&rsquo;s parameters.
+   The usual pruning target.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    wider attention instead: same params, different inductive bias.
+    Choose the FFN as the default (the standard block). Shrink the
+    expansion (2x) when parameters are the budget.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the FFN is just a nonlinearity.&rdquo; Counterexample:
+    remove it and keep attention: the model loses most of its
+    capacity (2/3 of params) and per-position depth. Ablations show
+    the drop. It is half the block, not a garnish.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train with expansion in {1, 4, 8} at fixed total
+    params (adjust depth). Predict: 4 wins or ties. Falsifier: 1
+    wins (then depth mattered more than width here).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A7 (breadth), L7 (ladder:
+    write the layers, count 8320, derive the param share, diagnose
+    the removal, design the expansion sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E13: implement <code>ffn</code>,
+    assert the trace. E14: count params for d = 64. Keys in
+    <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a shape trace (carried in text). Logged as an honest exception
+    in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-encoderdecoder-distinctions">C08: encoder/decoder distinctions</h3>
+<p>Leaf id <code>cs224n-U05-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   attention sessions (S06-S07). Scope: the three architectures.
+   Objectives: define encoder-only, decoder-only, encoder-decoder,
+   state which mask each uses and what each is for. Depends on C04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: one block design,
+   three jobs (classify, generate, translate). What changes? Toy:
+   encoder (BERT-style): no causal mask, read the label off [CLS].
+   Decoder (GPT-style): causal mask, predict next. Enc-dec: encoder
+   reads the source (no mask), decoder writes with cross-attention
+   to the encoder.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Three floor plans from one brick. Encoder-only:
+   bidirectional, for understanding (classify, extract). Decoder-only:
+   causal, for generation (the modern default). Encoder-decoder:
+   two stacks joined by cross-attention, for conditioned generation
+   (translation, summarization).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Cross-attention:
+   Q from the decoder, K/V from the encoder: (n_dec, n_enc) scores.
+   Masks: encoder none, decoder causal, cross-attention padding only
+   (the source is fully known). Assumption: the task decides, the
+   block does not care.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the distinction is which
+   masks and which K/V sources. Decoder-only training is U04 C01&rsquo;s
+   next-word loss with a transformer instead of an RNN. The
+   mechanism that matters is C04&rsquo;s: the mask is the architecture.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Cross-attention shape trace (hand, labeled
+   as such): n_dec = 6, n_enc = 10, d = 32. Scores (6, 10), weights
+   (6, 10) rows sum to 1, out (6, 32). The lab asserts it.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>cross_attention(Q_dec,
+   K_enc, V_enc, pad_mask)</code>: scores, mask, softmax, blend. ~8 lines.
+   Test: the trace.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match (6,10) scores,
+   row sums 1, (6,32) out. Check: with no pad mask it reduces to
+   full attention over the source.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Cross-attention costs O(n_dec n_enc d). Encoder-decoder
+   doubles the stack (two sets of layers). Decoder-only won the
+   era: one stack, one loss, scales.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    prefix LM (one stack, partial mask). Choose decoder-only for
+    generation at scale. Choose encoder-only for classification with
+    a small budget. Choose enc-dec when the conditioning input is
+    long and separate (translation).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;decoder-only can do everything enc-dec can.&rdquo;
+    Counterexample: with a 10k-token source and a short target, the
+    decoder-only model re-reads the source every layer at full n^2
+    cost, enc-dec reads it once. The floor plan has a price.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: translation at fixed params, enc-dec vs decoder-only
+    (source+target concat). Predict: enc-dec wins on long sources.
+    Falsifier: decoder-only wins everywhere (then the concat
+    format was favorable, check it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A8 (breadth: name the
+    three, their masks, their jobs).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E15: implement
+    <code>cross_attention</code>, assert the trace. E16: list the mask per
+    architecture in a table. Keys in <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a floor plan (carried in text as the mask table). Logged as an
+    honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-shape-checks">C09: shape checks</h3>
+<p>Leaf id <code>cs224n-U05-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> The unit&rsquo;s
+   debugging discipline. Scope: shape-driven development. Objectives:
+   write the full shape trace of one layer, make shape asserts a
+   habit. Depends on all of U05 so far.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the loss is nan and
+   the shapes all &ldquo;look right&rdquo;. Where is the bug? Toy: the full
+   trace below. The discipline: assert every intermediate, the
+   assert that fires names the bug.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Shapes are types. A transformer layer is a
+   pipeline of typed transforms, a mismatch is a compile error you
+   have to write yourself. The trace is the spec, the asserts are
+   the compiler.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> One layer, n =
+   8, d = 32, h = 4, d_k = 8. X (8,32) -&gt; Q,K,V (8,32) -&gt; split
+   (4, 8, 8) -&gt; scores (4, 8, 8) -&gt; weights (4, 8, 8) -&gt; heads out
+   (4, 8, 8) -&gt; concat (8, 32) -&gt; W_o (8, 32) -&gt; residual add (8,
+   32) -&gt; FFN hidden (8, 128) -&gt; out (8, 32).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: this is the composition
+   of C01-C08 with dimensions attached. The mechanism is the habit:
+   every function asserts its input and output shapes.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> The trace above is the example (from
+   <code>compute_u05.py</code>&rsquo;s MHA section, extended by hand through the
+   FFN, labeled where hand-extended). The lab implements the trace
+   as asserts.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>layer_trace(n, d,
+   h)</code>: return the list of (name, shape) pairs. ~10 lines. The lab
+   turns it into asserts inside each function.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> All 12 shapes match.
+   Check: change h to 8, d_k becomes 4, the trace updates (the
+   function computes, not hardcodes).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Asserts are free (disabled in prod with -O if
+   paranoid). The cost is the extra lines, the payoff is the first
+   time one fires.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    debuggers and prints: slower, stateless. Choose asserts (they
+    stay in the code and document the contract). This is a
+    discipline, not a tradeoff.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the shapes matched, so the code is right.&rdquo; Counterexample:
+    transposed scores (n, n) still typecheck (square!): the mask
+    lands on the wrong axis. Shapes are necessary, not sufficient.
+    Pair them with the value checks in C01-C04.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: deliberately transpose the scores and run the toy
+    checks. Predict: shapes pass, values fail (row sums still 1,
+    but the causal pattern breaks). Falsifier: values pass too
+    (then the test was symmetric, fix it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A9 (breadth: recite the
+    trace).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E17: implement
+    <code>layer_trace</code>, match all 12 shapes. E18: the transpose trap:
+    show shapes pass and values fail. Keys in <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a trace (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-traininginference-cost">C10: training/inference cost</h3>
+<p>Leaf id <code>cs224n-U05-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   systems-flavored sessions. Scope: what the transformer costs.
+   Objectives: write the per-layer FLOPs, contrast train vs
+   inference, state the n^2 bill. Depends on C01, C07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: training is fast
+   (parallel over n) but inference crawls (serial over n). Why both?
+   Toy: per layer, attention O(n^2 d), FFN O(n d^2). Training does
+   all n positions at once, inference generates one token at a
+   time, re-reading the context.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Two different bills. Training: one big parallel
+   matmul per layer, the n^2 score matrix materialized once.
+   Inference: n serial steps, without the cache (C11) each step
+   redoes O(t^2) work. The transformer trains like a parallel
+   machine and generates like an RNN.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Per layer per
+   token: attention 4 n d^2 (projections) + 2 n^2 d (scores+blend),
+   FFN 16 n d^2 (two layers at 4x). Units: FLOPs. Assumption:
+   counting multiply-adds, ignoring memory traffic (the honest
+   simplification, stated).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Projections: 4 matmuls of (n, d) @
+   (d, d): 4 n d^2. Scores: (n, d)(d, n) per head: n^2 d total.
+   Blend: same. FFN: (n,d)@(d,4d) + (n,4d)@(4d,d) = 8 n d^2
+   multiply-adds x2 = 16 n d^2. At large n the n^2 term dominates,
+   at small n the FFN does.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): n = 512, d =
+   1024, one layer. Attention: 2 x 512^2 x 1024 = 0.54 GFLOP.
+   FFN: 16 x 512 x 1024^2 = 8.59 GFLOP. Projections: 4 x 512 x
+   1024^2 = 2.15 GFLOP. Total ~11.3 GFLOP per layer forward. The
+   FFN dominates at this n, the n^2 term takes over past n ~ 8d.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>flops(n, d)</code>:
+   return the three terms and the total. ~6 lines. Test: the toy
+   numbers.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 0.54, 8.59,
+   2.15, 11.3 GFLOP. Check: doubling n quadruples the attention
+   term, doubles the FFN term.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Memory: the (n, n) scores per head per layer (training).
+   Inference memory: the KV cache (C11). The practical cost is
+   context length: 4x the context = 16x the attention FLOPs.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    linear attention / SSMs: O(n) but different quality. Choose the
+    standard transformer when quality first. Choose alternatives
+    when n is extreme (100k+) and the bill dominates.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;FLOPs predict speed.&rdquo; Counterexample: at small n
+    the model is memory-bandwidth bound (loading weights), not
+    compute bound, doubling d barely changes step time. Roofline
+    thinking beats FLOP counting for inference.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: measure step time vs n for the toy sizes and fit the
+    curve. Predict: quadratic fit at large n, flat at small n
+    (bandwidth bound). Falsifier: linear throughout (then the
+    measurement was wrong, check batching).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A10 (breadth), L10
+    (ladder: write the terms, compute the toy, derive the
+    crossover, diagnose the flat timing, design the scaling fit).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E19: implement
+    <code>flops</code>, match the toy. E20: find the n where attention passes
+    the FFN for d = 1024. Keys in <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a FLOP budget (carried in text). Logged as an honest exception
+    in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-kv-cache-bridge">C11: KV cache bridge</h3>
+<p>Leaf id <code>cs224n-U05-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> The bridge
+   to inference systems (U06). Scope: the KV cache. Objectives:
+   explain what is cached and why, compute the saving, state the
+   memory price. Depends on C01, C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: generating token 17
+   recomputes keys and values for tokens 1..16 (they did not
+   change). What is saved, and what does it cost to keep? Toy: per
+   layer per head, cache K and V: 2 x t x d_k floats at step t.
+   Work per step drops from O(t^2 d) to O(t d).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A memo pad. The past&rsquo;s keys and values are
+   frozen (causal: they never change), so store them once and
+   attend against the pad. Each new token appends one row. The pad
+   grows with the conversation: memory for speed.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Cache per
+   layer: K_cache (t, d), V_cache (t, d): 2 t d floats. Step t+1:
+   compute q, k, v for the new token only, scores = q @ K_cache^T:
+   O(t d). Assumption: causal (past never changes), batch 1 for
+   the simple version.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Without cache, step t costs O(t^2 d)
+   (recompute all pairs), total over n steps O(n^3 d). With cache,
+   step t costs O(t d), total O(n^2 d). The saving is a full factor
+   of n in the total. Memory price: 2 x layers x n x d floats.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u05.py</code>, n = 16, d = 8, per
+   head per layer: no cache 23936, cached 2176, ratio 11.0x. The
+   ratio grows with n (it is ~2n/3 here, linear in n).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>decode_step(q_new,
+   k_new, v_new, K_cache, V_cache)</code>: append, attend, return token
+   and new cache. ~10 lines. Test: matches full recomputation
+   exactly.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 23936/2176.
+   Check: cached decode equals non-cached decode bit-for-bit (the
+   cache is exact, not approximate). Check: cache size 2 t d after
+   t steps.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Time saved: factor ~n. Memory: 2 L n d floats (e.g. 32
+   layers, n = 8k, d = 4096: 2 GB in fp16). The cache is the
+   inference memory story, U06 builds on it.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    recompute (no cache): less memory, O(n^3) time. Choose the
+    cache always for autoregressive decoding (exact, standard).
+    Evict/compress only when memory forces it (U06).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the cache is free.&rdquo; Counterexample: the 2 GB
+    above, long contexts OOM on the cache, not the weights. The
+    fix is cache quantization or eviction, not smaller weights.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: decode 64 tokens with and without cache, measure
+    time. Predict: cached wins by ~10x+. Falsifier: tie (then n was
+    tiny, the overhead dominated).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A11 (breadth), L11
+    (ladder: define the cache, compute the saving, derive the
+    memory price, diagnose the OOM, design the timing test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E21: implement
+    <code>decode_step</code>, verify exactness vs recompute. E22: compute the
+    cache GB for 32 layers, n = 8k, d = 4096, fp16. Keys in
+    <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a saving ratio (carried in text). Logged as an honest exception
+    in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-independent-implementation">C12: independent implementation</h3>
+<p>Leaf id <code>cs224n-U05-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> The unit&rsquo;s
+   capstone. Scope: one transformer layer from numpy, no help.
+   Objectives: assemble C01-C07 + C09 into a working layer, verify
+   against the checks. Depends on all of U05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: can you write the
+   layer without looking? Toy: n = 4, d = 16, h = 2. Embeddings +
+   sinusoid in, pre-norm MHA + residual, pre-norm FFN + residual,
+   out. Every shape asserted (C09).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The layer as a recipe: normalize, attend,
+   add, normalize, transform, add. Six lines of numpy with asserts
+   between them. If you can write it cold, you own the
+   architecture, if not, the gaps point back to the concept that
+   needs work.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> x: (4, 16).
+   After MHA block: (4, 16). After FFN block: (4, 16). Assumption:
+   random weights, pre-norm, causal mask on.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: composition. The
+   mechanism is the assembly order: PE add -&gt; LN -&gt; MHA -&gt; residual
+   -&gt; LN -&gt; FFN -&gt; residual. The order is the architecture.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> The lab runs it: output shape (4, 16),
+   finite values, and (the check that matters) permuting the input
+   without PE permutes the output, with PE it does not.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>transformer_layer(x,
+   params)</code>: the six lines with asserts. The lab writes it, the key
+   gives the reference order.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Shape (4, 16), all
+   finite. Gradient flows (one backward step, no nan). The PE
+   permutation check.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The capstone costs one careful hour. The payoff: every
+   later unit (U06-U08) assumes this fluency.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> No
+    alternative: this is the skill. The selection is effort: write
+    it cold before reading the key.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;I understand it because I read it.&rdquo; Counterexample:
+    the transpose trap (C09): readers miss it, writers catch it.
+    Writing is the test.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: time yourself writing the layer cold, then list the
+    concepts you hesitated on. Predict: the hesitations map to
+    real gaps. Falsifier: fluent throughout (then move to U06).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u05_answers.md</code> A12 (breadth: recite
+    the six lines).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E23: write
+    <code>transformer_layer</code> cold, pass all checks. E24: run the PE
+    permutation check. Keys in <code>keys/u05_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u05_fig03" src="../assets/u05_fig03.png" title="u05_fig03" /> is reused as the unit&rsquo;s closing image:
+    the mask is the architectural decision. Logged in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="unit-visual-map">Unit visual map</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Claim</th>
+<th>Shell</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="u05_fig01" src="../assets/u05_fig01.png" title="u05_fig01" /></td>
+<td>one query&rsquo;s weights pick the values</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u05_fig02" src="../assets/u05_fig02.png" title="u05_fig02" /></td>
+<td>1/sqrt(d_k) softens the distribution</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u05_fig03" src="../assets/u05_fig03.png" title="u05_fig03" /></td>
+<td>causal mask zeroes future weights</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+</tbody>
+</table>
+      
+      <nav class="pager"><a href="../keys/u04_answers.html"><span class="lbl">← Previous</span>U04 · Answers</a><a href="../keys/u05_answers.html"><span class="lbl">Next →</span>U05 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

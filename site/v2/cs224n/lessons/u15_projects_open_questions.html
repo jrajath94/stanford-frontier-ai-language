@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U15 · Project tutorials and open questions — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Lesson: Project tutorials and open questions.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u15" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15" class="active">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U15 · Project tutorials and open questions</nav>
+      <h1>U15 · Project tutorials and open questions</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u15-project-tutorials-and-open-questions">U15 , Project tutorials and open questions</h1>
+<h2 id="local-remediation">Local remediation</h2>
+<p>Bridges: <code>../shared/prerequisites/p02_python.md</code> (P02, the
+working language), <code>../shared/prerequisites/p12_pytorch.md</code> (P12,
+tensors and stability), <code>../shared/prerequisites/p22_experiments.md</code>
+(P22, falsifiable projects), <code>../shared/prerequisites/p24_production.md</code>
+(P24, stakeholder foundations). This unit turns the course into a
+project: the tutorials (C01-C03), the default project recipe
+(C04-C05), the project machinery (C06-C10), and the open horizon
+(C11-C12).</p>
+<p>R1. Minimal GPT-2: V = 1000, d = 8, L = 4. Total 44,928 params.
+The recipe scales: the default project is this, bigger.
+R2. Seed variance: 5 seeds, mean 0.8045, std 0.0203. One seed
+is an anecdote, five are evidence.
+R3. Pipeline: proposal, milestone, poster, report. Four gates
+from SRC-04. Each gate needs a falsifiable claim, not a demo.</p>
+<hr />
+<h3 id="c01-python-review">C01: Python review</h3>
+<p>Leaf id <code>cs224n-U15-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   Python review session of the Winter 2026 schedule (S03 per
+   <code>course_map.md</code>). Scope: the Python you need for the
+   course. Objectives: write clean numeric code, state the
+   vectorization rule, avoid the loop trap. Depends on P02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the loop over
+   1M tokens takes minutes, the vectorized version takes a
+   second, why? Toy: numpy dot on 1M floats: 0.002 s. Python
+   loop: 0.4 s. The loop is the trap.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Python is the conductor, numpy is the
+   orchestra. The conductor waves (calls), the orchestra
+   plays (C loops). Conduct, do not play.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Arrays,
+   shapes, dtypes. Assumption: the data fits in memory (or
+   batch it).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is where the loop
+   runs: C for numpy, Python for the for-loop. Same
+   arithmetic, 200x the speed.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): the
+   0.002 s vs 0.4 s above. Measure on your machine, the
+   ratio holds.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>fast_dot(a,
+   b)</code>: numpy dot, shape check. ~4 lines. Test: matches the
+   loop&rsquo;s answer.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The answers
+   match to 1e-10. Check: shapes agree before the call.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Same FLOPs, different constant. The cost of the
+   loop: your afternoon.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    PyTorch (C02). Choose numpy for CPU labs. Choose torch
+    for GPUs and autograd.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;vectorized is always faster.&rdquo; Counterexample:
+    tiny arrays: the call overhead dominates. Vectorize the
+    big loops.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is craft. The extension is the
+    habit: profile before optimizing.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A1 (breadth), L1
+    (ladder: state the rule, time the toy, derive the loop
+    location, diagnose the tiny-array case, design the
+    profile habit).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: time both
+    versions. E2: find the crossover size. Keys in
+    <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a timing (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-pytorch-tutorial">C02: PyTorch tutorial</h3>
+<p>Leaf id <code>cs224n-U15-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   PyTorch tutorial session (S06 per <code>course_map.md</code>). Scope:
+   tensors, autograd, and stability. Objectives: build the
+   graph, read a gradient, keep it stable. Depends on P12,
+   U03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: who computes the
+   gradient? Toy: x = tensor(2.0, requires_grad=True), y =
+   x**2, y.backward(): x.grad is 4.0. Autograd did the chain
+   rule.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> PyTorch records what you did (the graph)
+   and replays it backwards (the gradient). You write the
+   forward, it writes the backward.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Tensors,
+   the graph, .grad. Assumption: the ops are differentiable
+   (or the graph stops).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is U03&rsquo;s chain
+   rule, automated: each op knows its local derivative, the
+   engine multiplies them.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): x = 2,
+   y = x^2 = 4, dy/dx = 2x = 4. The .grad reads 4.0.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>grad_check(
+   f, x)</code>: autograd vs finite difference. ~8 lines. Test:
+   match to 1e-5.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Finite
+   differences agree (U03 C10&rsquo;s check). Check: no NaN in the
+   grad.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Backward costs about 2x forward. Stability: U03
+   C03&rsquo;s softmax shift, C08&rsquo;s clipping.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    numpy with hand gradients. Choose torch for models.
+    Choose numpy for the course labs (this box has no torch).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the graph is free.&rdquo; Counterexample: keeping
+    the graph for 1000 steps eats memory. Detach or lose
+    the graph.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is craft. The extension is grad
+    checks on every new op.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A2 (breadth: state
+    the graph rule and the check).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E3: the x^2 toy.
+    E4: grad-check a softmax. Keys in <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a graph (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-hugging-face-tutorial">C03: Hugging Face tutorial</h3>
+<p>Leaf id <code>cs224n-U15-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   Hugging Face tutorial session (S13 per <code>course_map.md</code>).
+   Scope: the standard model-and-data plumbing. Objectives:
+   load a tokenizer and model, run a batch, name the
+   versioning rule. Depends on C02, U12.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: you need a
+   pretrained model in 5 lines, how? Toy: the tokenizer +
+   model pair, one forward pass, logits out. The plumbing is
+   the product.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The hub is a library, the API is the
+   librarian. You ask for a model by name and version, you
+   get weights and config. Pin the version or the library
+   moves under you.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Model
+   names, revisions, tokenizers, batches. Assumption: the
+   name resolves to what you think (pin the revision).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   the pipeline: tokenize, batch, forward, decode. Each
+   stage has a contract (shapes, padding).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): batch of
+   4, length 7, vocab 50: logits (4, 7, 50). The shapes are
+   the contract (U03 C11&rsquo;s lesson).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>encode_batch(
+   texts, tok)</code>: pad, mask, tensor. ~8 lines. Test: the
+   shapes.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The attention
+   mask zeros the padding. Check: decode(encode(s)) is s.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The hub download is the cost. The risk: an
+   unpinned revision changes results.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    raw PyTorch, own data loading. Choose the hub for
+    standard models. Choose raw for custom architectures.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the name is the model.&rdquo; Counterexample: the
+    revision moved, your numbers changed. Pin everything.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is craft. The extension is the
+    version log.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A3 (breadth: state
+    the pipeline and the pin rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E5: write the
+    5-line load. E6: show the mask on padding. Keys in
+    <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a pipeline (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-minimalist-gpt-2-objective">C04: minimalist GPT-2 objective</h3>
+<p>Leaf id <code>cs224n-U15-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   final project description (SRC-04: default project implements
+   parts of GPT-2). Scope: the smallest honest GPT-2. Objectives:
+   count the params, write the loss, train the toy. Depends on
+   U04, U05, R1.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: what is the least
+   you can build and call it GPT-2? Toy: V = 1000, d = 8,
+   L = 4: 44,928 params. Next-token cross-entropy. The
+   recipe, miniature.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> GPT-2 is embeddings plus transformer
+   blocks plus a head, trained to predict the next token.
+   The miniature has every part, just small. Scale is a
+   dial, not a different machine.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> V, d, L,
+   the param count, the loss. Assumption: the parts compose
+   the same at scale (the scaling bet, U06).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Params = embeddings (Vd + nd)
+   + L times (attention + MLP). The loss is U04&rsquo;s next-token
+   cross-entropy. The mechanism is the stack.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u15.py</code>: 44,928 params.
+   The toy loss falls 1.164 to 1.043 on random data (the
+   probe learns the mean, honestly labeled).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>tiny_gpt2(
+   V, d, L)</code>: the parts list. ~10 lines. Test: the param
+   count.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The count
+   matches the formula. Check: the loss falls on the toy.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> U06&rsquo;s scaling: the miniature teaches the
+   plumbing, not the capabilities.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    the full default project (parts of real GPT-2). Choose
+    the miniature for understanding. Choose the default for
+    the grade.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the miniature predicts the full model.&rdquo;
+    Counterexample: capabilities emerge with scale (U06).
+    The miniature teaches mechanics, not emergence.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: scale d in {8, 32, 128}, measure the loss
+    curve shape. Predict: same shape, lower floor.
+    Falsifier: different shape (then scale changes the
+    dynamics, interesting).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A4 (breadth), L4
+    (ladder: define the parts, count 44,928, derive the
+    formula, diagnose the emergence gap, design the scale
+    sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E7: implement
+    the param counter, match 44,928. E8: train the probe,
+    match the loss fall. Keys in <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u15_fig01" src="../assets/u15_fig01.png" title="u15_fig01" />: the param plate, Shell 2,
+    source original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-downstream-tasks">C05: downstream tasks</h3>
+<p>Leaf id <code>cs224n-U15-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   SRC-04 (default project: 3 downstream tasks). Scope: using
+   the miniature on tasks. Objectives: define the transfer,
+   report with uncertainty, state the fine-tune rule. Depends
+   on C04, U06 C09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model is
+   trained, now what? Toy: three tasks with toy scores:
+   paraphrase 0.81 +/- 0.03, sentiment 0.93 +/- 0.01, QA 0.68
+   +/- 0.05. Labeled toy, the template is the lesson.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Pretraining is school, downstream tasks
+   are the jobs. The template: attach a head, fine-tune a
+   little, report with intervals (U10&rsquo;s discipline).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Task
+   scores with standard errors. Assumption: the scores are
+   labeled toy (they are, say so).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is U06 C09&rsquo;s
+   transfer: the pretrained stack plus a task head. The
+   reporting is U10&rsquo;s: intervals, slices.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u15.py</code> (labeled toy):
+   the three scores above. QA&rsquo;s 0.05 SE is the widest: the
+   task needs more items.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>downstream(
+   model, task)</code>: head, fine-tune, report. ~8 lines. Test:
+   the template runs.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Every score has
+   its SE. Check: the fine-tune uses a dev split.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Fine-tuning is cheap. The cost is the eval items
+   for honest SEs.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    prompt the base model (U08). Choose fine-tuning for
+    reliability. Choose prompting for speed.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the toy scores are real.&rdquo; Counterexample:
+    they are template numbers. Never cite them as findings.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: run the template for real on the miniature.
+    Predict: the pattern holds (sentiment &gt; paraphrase &gt;
+    QA). Falsifier: any order (then the miniature differs,
+    investigate).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A5 (breadth: state
+    the template and the toy label).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E9: run the
+    template. E10: widen QA&rsquo;s items, show the SE shrink.
+    Keys in <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a template (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-proposalmilestonereport">C06: proposal/milestone/report</h3>
+<p>Leaf id <code>cs224n-U15-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   SRC-04 (proposal, milestone, poster, report). Scope: the
+   four gates. Objectives: write each gate&rsquo;s one-pager, state
+   the falsifiable rule, pass the gates. Depends on P22, U10
+   C10-C12.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the project is 4
+   weeks, how do you not drift? Toy: the proposal names the
+   claim (&ldquo;k=5 beats k=1 on our QA&rdquo;), the milestone shows the
+   first numbers, the poster tells the story, the report
+   proves it. Each gate has a falsifiable claim.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The gates are the project&rsquo;s spine. The
+   proposal promises, the milestone shows progress, the
+   poster communicates, the report archives. A gate without
+   a claim is a status meeting.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Four
+   documents, each with a claim. Assumption: the claim
+   survives contact with data (or it changes, honestly).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   the gate: each document answers &ldquo;what did you claim, what
+   did you find, what changed&rdquo;. The report is U10 C12&rsquo;s
+   accounting plus U13 C12&rsquo;s impact.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): the
+   proposal claim above, milestone numbers (k=5: 0.667 vs
+   k=1: 0.000), the report&rsquo;s verdict. The numbers from U09&rsquo;s
+   toys, reused honestly.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>gate_doc(
+   kind, claim, evidence)</code>: the template. ~6 lines. Test: all
+   four kinds render.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Every gate names
+   its claim and its evidence. Check: the report&rsquo;s claims
+   match the proposal&rsquo;s (or the changes are logged).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Writing time. The cost of skipping a gate: drift.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    one final report. Choose the gates for a team or a grade.
+    Choose the single report for solo exploration.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the proposal survives.&rdquo; Counterexample: the
+    data kills the claim at the milestone. Change the claim,
+    log the change, continue.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is operations. The extension is
+    doing it.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A6 (breadth), L6
+    (ladder: define the gates, write the toy claim, derive
+    the gate logic, diagnose the killed claim, design the
+    change log).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E11: write the
+    proposal one-pager. E12: write the milestone with the
+    U09 numbers. Keys in <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u15_fig03" src="../assets/u15_fig03.png" title="u15_fig03" />: the four gates, Shell 10,
+    source SRC-04. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-project-scope">C07: project scope</h3>
+<p>Leaf id <code>cs224n-U15-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   SRC-04. Scope: sizing the project. Objectives: score the
+   idea, cut it to fit, state the kill rule. Depends on U10
+   C11.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the idea needs 8
+   weeks, you have 4, what goes? Toy: the scorecard 3/5
+   (missing: metric defined, novelty). Define the metric:
+   4/5. Cut the novelty: ship the measurement.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> U10 C11&rsquo;s scorecard, applied: scope is the
+   art of the shippable. A project that does one thing well
+   beats a project that does three things badly.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The five
+   criteria, the cut list. Assumption: the cut preserves the
+   claim (or the claim changes).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is subtraction:
+   list everything, cut until it fits the time box, keep the
+   falsifiable core.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u15.py</code>: 3/5. The two
+   missing are the rescope targets: define the metric
+   (+1), cut novelty (ship at 4/5).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>rescope(idea,
+   weeks)</code>: score, cut, rescore. ~8 lines. Test: the toy
+   3/5 to 4/5.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The rescoped
+   idea fits the weeks. Check: the claim is still falsifiable.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> An honest hour. The cost of skipping it: the 8-
+   week idea in 4 weeks.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    do it all, sleep less. Choose scoping always. The
+    alternative is the crunch.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the cut kept the claim.&rdquo; Counterexample: the
+    cut removed the control group. Cut scope, never the
+    control.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is craft. The extension is the
+    habit.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A7 (breadth: state
+    the cut rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E13: score and
+    cut the toy idea. E14: find the control in the cut list.
+    Keys in <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a cut (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-original-implementation">C08: original implementation</h3>
+<p>Leaf id <code>cs224n-U15-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   SRC-04 (default project: implement parts of GPT-2). Scope:
+   writing your own code. Objectives: implement from the
+   spec, test each part, state the originality rule. Depends
+   on C04, the course integrity policy (SRC-06).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the project says
+   &ldquo;implement&rdquo;, what does that allow? Toy: you write the
+   attention from U05&rsquo;s spec, test the shapes, cite the
+   spec. Original code, cited ideas.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Implementation is translation: spec to
+   code. The spec is cited, the code is yours. Copying the
+   translation is not translation.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The spec,
+   your code, the tests, the citations. Assumption: the spec
+   is complete enough to implement from.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is the test: shape
+   checks (U03 C11), grad checks (U03 C10), the toy numbers.
+   Tests are the proof of understanding.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): your
+   attention matches the spec&rsquo;s shapes (4, 7, 50) and the
+   grad check passes. The code is yours, the idea is cited.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> The rule, not
+   code: spec in, tests green, citations attached. Test: the
+   toy passes.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> All tests green.
+   Check: no copied code without attribution.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Your time. The cost of copying: the policy
+   violation (SRC-06).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    use the library. Choose implementation for the parts you
+    must understand. Choose the library for the plumbing.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;clean code means my code.&rdquo; Counterexample:
+    renamed variables on copied code. The policy cares about
+    provenance, not cosmetics.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is integrity. The extension is the
+    habit.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A8 (breadth: state
+    the originality rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E15: implement one
+    part from spec, test it. E16: cite the spec. Keys in
+    <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a rule (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-reproducibility">C09: reproducibility</h3>
+<p>Leaf id <code>cs224n-U15-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   SRC-04. Scope: making the project rerunnable. Objectives:
+   seed everything, log everything, state the tolerance.
+   Depends on R2, P22.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: your partner
+   reruns your code, gets a different number, what broke? Toy:
+   5 seeds give mean 0.8045, std 0.0203. The &ldquo;different
+   number&rdquo; is inside the noise. Report the spread.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Reproducibility is the receipt: seeds,
+   versions, data, commands. A result without a receipt is a
+   story.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Seeds, the
+   spread, the receipt. Assumption: the code is deterministic
+   given the seed (true on CPU, mostly true on GPU).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is the seed
+   sweep: run k seeds, report mean and std. The tolerance is
+   the std: differences inside it are noise.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u15.py</code>: mean 0.8045,
+   std 0.0203. A rerun at 0.79 is consistent, at 0.70 is
+   not.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>seed_sweep(
+   run, seeds)</code>: the stats. ~6 lines. Test: the toy numbers.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The seeds are
+   fixed and logged. Check: the receipt reruns.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> k runs. The cost of one run: an anecdote.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    one seed, one number. Choose the sweep for any claim.
+    Choose one seed for debugging.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;same seed, same number.&rdquo; Counterexample: GPU
+    nondeterminism, library versions. Log those too.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is craft. The extension is the
+    receipt habit.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A9 (breadth), L9
+    (ladder: define the receipt, compute the spread, derive
+    the tolerance, diagnose the GPU case, design the
+    receipt).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E17: implement
+    <code>seed_sweep</code>, match the toy. E18: write the receipt for
+    the U09 lab. Keys in <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u15_fig02" src="../assets/u15_fig02.png" title="u15_fig02" />: the seed bars, Shell 5, source
+    original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-limitations">C10: limitations</h3>
+<p>Leaf id <code>cs224n-U15-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   SRC-04 (the report). Scope: the honest limits section.
+   Objectives: list the limits, rank them, state what each
+   would take to fix. Depends on U10 C12, U12 C12.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the project
+   worked, what did it not do? Toy: the list: toy data (not
+   real), 5 seeds (not 50), one language (not twelve), no
+   human eval. Each with its fix cost.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Limitations are the report&rsquo;s immune
+   system: they stop the reader from overclaiming your
+   work. A missing limitations section is a claim without a
+   leash.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The limit
+   list with fix costs. Assumption: the list is complete
+   (audit it).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   the ranking: the limit that most threatens the claim goes
+   first.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): the four
+   limits above, ranked: toy data first (it threatens
+   everything).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>limitations(
+   project)</code>: the ranked list. ~6 lines. Test: the toy list.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Every claim in
+   the report maps to a limit or a defense. Check: the top
+   limit is named in the abstract.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> An honest hour. The cost of skipping it: the
+   reviewer writes it for you, unkindly.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    bury the limits. Choose honesty always. The alternative
+    is the rebuttal.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the list is complete.&rdquo; Counterexample: the
+    limit you forgot. Have someone else read it.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is the close of the machinery.
+    The extension is the habit.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A10 (breadth:
+    state the ranking rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E19: write the
+    limits for the U11 lab. E20: rank them. Keys in
+    <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a list (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-open-questions-2026">C11: open questions 2026</h3>
+<p>Leaf id <code>cs224n-U15-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Scope: the
+   horizon as of the October 2026 baseline. Objectives: name
+   the open questions, mark each as open (not answered), state
+   what would close it. Depends on the whole course.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: what is still
+   unknown? Toy: the list: the ICL mechanism (U08), faithful
+   reasoning (U11), the scaling limit (U06), multilingual
+   parity (U12), mechanistic understanding (U13). Each open,
+   each with a closing experiment.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Open questions are the field&rsquo;s todo list.
+   This course ends where research begins. The list is dated:
+   October 2026. It will age.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Questions
+   with closing criteria. Assumption: the list is partial
+   (it is).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   the criterion: each question names the experiment that
+   would answer it.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): &ldquo;does
+   ICL implement gradient descent?&rdquo; Closing: the
+   construction or the refutation, with the experiment.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>open_list()</code>: the
+   dated list. ~6 lines. Test: 5 questions, each with a
+   criterion.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Every question
+   is marked open. Check: the date is on the list.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Reading time. The cost of skipping it: thinking
+   the field is done.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    present answers. Choose open questions for honesty. The
+    alternative is the textbook that aged badly.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the list is the field.&rdquo; Counterexample: the
+    question nobody asked yet. Lists are partial.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: the questions are the extensions. Pick one.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A11 (breadth:
+    name 3 open questions and their closing criteria), L11
+    (ladder: name the questions, mark them open, derive the
+    criteria, diagnose the answered-in-disguise, design the
+    experiment for one).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E21: write the
+    dated list. E22: add one question of your own with its
+    criterion. Keys in <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a list (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-oral-defense">C12: oral defense</h3>
+<p>Leaf id <code>cs224n-U15-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Scope: the
+   course&rsquo;s close. Objectives: defend the project orally,
+   handle the ladders, state the defense rubric. Depends on
+   the whole course.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: can you defend
+   your project out loud? Toy: the rubric: claim stated (1),
+   evidence shown (1), limit named (1), transfer answered
+   (1). Four points, no slides needed.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The defense is the course in miniature:
+   say what you did, show the numbers, name the limits,
+   answer the changed scenario. If you can defend it, you
+   know it.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The
+   rubric, the ladders (interview banks). Assumption: the
+   defender did the work (the integrity rule).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   the oral ladder: define, compute, derive, diagnose,
+   design. The interview banks are the practice ground.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): the
+   defense of the U09 lab: claim (recall at k), evidence
+   (0.000/0.333/0.667/1.000), limit (toy corpus), transfer
+   (hourly updates). Four points.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>defend(
+   project)</code>: the four-point check. ~6 lines. Test: the toy
+   scores 4.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Every point has
+   evidence. Check: the transfer answer is not &ldquo;I do not
+   know&rdquo; (it can be &ldquo;here is the experiment&rdquo;).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> An hour of talking. The cost of skipping it: the
+   gap between writing and knowing.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    written exam. Choose oral for depth. Choose written for
+    scale.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;fluent means correct.&rdquo; Counterexample: the
+    fluent rationalization (U11 C12). The rubric scores
+    evidence, not fluency.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is the close. The extension is the
+    defense itself.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u15_answers.md</code> A12 (breadth:
+    state the rubric), L12 (ladder: state the claim, show
+    the evidence, name the limit, answer the transfer,
+    score the defense).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E23: defend the
+    U09 lab aloud. E24: defend the U11 lab aloud. Keys in
+    <code>keys/u15_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a rubric (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="unit-visual-map">Unit visual map</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Claim</th>
+<th>Shell</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="u15_fig01" src="../assets/u15_fig01.png" title="u15_fig01" /></td>
+<td>tiny GPT-2: 44,928 params</td>
+<td>2</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u15_fig02" src="../assets/u15_fig02.png" title="u15_fig02" /></td>
+<td>5 seeds: mean 0.8045, std 0.0203</td>
+<td>5</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u15_fig03" src="../assets/u15_fig03.png" title="u15_fig03" /></td>
+<td>4 project gates (SRC-04)</td>
+<td>10</td>
+<td>SRC-04</td>
+</tr>
+</tbody>
+</table>
+      
+      <nav class="pager"><a href="../labs/u05_lab.html"><span class="lbl">← Previous</span>Lab 05 · Attention and transformers</a><a href="../labs/u05_lab_key.html"><span class="lbl">Next →</span>Lab 05 · Keys</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

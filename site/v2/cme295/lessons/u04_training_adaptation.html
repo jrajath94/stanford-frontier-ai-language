@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U04 · Training and efficient adaptation — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Lesson: Training and efficient adaptation.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-u04">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cme295-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_attention_variants.html" data-page="cme295-u02">U02 · Transformer variants and posit</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_llm_generation.html" data-page="cme295-u03">U03 · LLM architecture and generatio</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_training_adaptation.html" data-page="cme295-u04" class="active">U04 · Training and efficient adaptat</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_preference_optimization.html" data-page="cme295-u05">U05 · Preference tuning and policy o</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_reasoning_scaling.html" data-page="cme295-u06">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_rag_agents.html" data-page="cme295-u07">U07 · RAG and agentic systems</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_llm_evaluation.html" data-page="cme295-u08">U08 · LLM evaluation and judging</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_trends_synthesis.html" data-page="cme295-u09">U09 · Current trends, exams, and syn</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="../interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="../interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="../interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="../interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="../interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cme295-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cme295-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/research_grpo_extension.html" data-page="cme295-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / U04 · Training and efficient adaptation</nav>
+      <h1>U04 · Training and efficient adaptation</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u04-training-and-efficient-adaptation">U04 , Training and efficient adaptation</h1>
+<p>Prerequisites: P10, P11, P12, P15. Bridge links in
+<code>../prerequisites.md</code>.
+Lecture anchor: L3 (Oct 9, 2026), hardware parts L5 (Oct 30, 2026).
+Claim class: OFFICIAL-SYLLABUS for pretraining, SFT, LoRA, data/loss.
+REQUESTED-BRANCH for quantization, hardware efficiency, numerical
+precision, full-vs-PEFT, regression tests, resource budgets (hardware
+trade-offs are named in L5). All leaves: PLANNED / SOURCE ATTRIBUTION
+PENDING until slide or transcript extraction verifies them.
+Notation: see <code>../notation_and_shapes.md</code>. Glossary: <code>../glossary.md</code>.</p>
+<h2 id="not-yet-understood">Not yet understood</h2>
+<p>Concepts this unit uses but does not teach. Each one arrives in a
+later unit.</p>
+<ol>
+<li>Preference tuning (U05): DPO, RLHF, reward models.</li>
+<li>Reasoning RL (U06): GRPO, verifiers, test-time scaling.</li>
+<li>RAG and agents (U07): retrieval pipelines and ReAct loops.</li>
+<li>LLM evaluation (U08): judging, bias, calibration, intervals.</li>
+</ol>
+<h2 id="local-remediation-loss-adam-bytes">Local remediation , loss, Adam, bytes</h2>
+<p>Do this block first if diagnostic items D7 or D10 were not full marks.</p>
+<p><strong>R0.1 Cross-entropy again.</strong> True [1, 0], predicted [0.7, 0.3]:
+loss = -log 0.7 = 0.357 nats. The loss only sees the true class&rsquo;s
+probability. Everything in pretraining and SFT is this number summed
+over tokens.</p>
+<p><strong>R0.2 Adam states.</strong> Adam keeps two moving averages per parameter
+(m, v). In fp32 that is 8 bytes per parameter on top of the weights
+and gradients. A 7B model in fp32 Adam: 7e9 * (4 + 4 + 8) bytes =
+112 GB. The optimizer is the memory iceberg.</p>
+<p><strong>R0.3 Byte arithmetic.</strong> fp32 = 4 bytes, fp16/bf16 = 2, int8 = 1.
+7B params: fp32 28 GB, fp16 14 GB, int8 7 GB. Every precision
+decision in this unit is this arithmetic.</p>
+<hr />
+<h3 id="c01-pretraining">C01: pretraining</h3>
+<p>Leaf id <code>cme295-U04-C01</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L3
+   &ldquo;Pretraining&rdquo;. Scope: next-token training at scale. Objectives:
+   state the objective, the data requirement, and the compute
+   scaling picture. Depends on P10, U01 C11.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: where does the base
+   model&rsquo;s knowledge come from? Toy: the LM loss from U01 C11
+   summed over trillions of tokens. No labels, the next token is
+   the label.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Pretraining is the act of reading the internet with a
+   test after every word: predict the next one. The model that
+   predicts well must compress grammar, facts, and reasoning
+   patterns into its weights. Scale (data, params, compute) is the
+   lever.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Objective:
+   sum over tokens of -log p(x_t | x_{&lt;t}). Data: trillions of
+   tokens, mixed domains. Compute: ~6 N D FLOPs (N params, D
+   tokens). Assumption: more compute with balanced N and D helps
+   (Chinchilla: scale both together).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The 6ND estimate: per token, forward
+   ~2N, backward ~4N FLOPs. Chinchilla (Hoffmann et al., 2022):
+   the compute-optimal ratio is roughly D ~= 20 N (tokens to
+   params). Train a 7B model on ~140B tokens, not 1T, at fixed
+   compute (the public Chinchilla finding).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: N = 7e9, D = 1.4e11. FLOPs =
+   6 * 7e9 * 1.4e11 = 5.9e21. At 1e15 FLOP/s effective per GPU,
+   that is 5.9e6 GPU-seconds ~= 68 GPU-days on one card, or hours
+   on thousands. The arithmetic is the budget.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>pretrain_step(batch)</code>:
+   logits = model(batch[:, :-1]), loss = lm_loss(logits,
+   batch[:, 1:]), loss.backward(), optimizer.step(). The shift by
+   one is the whole trick.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: loss starts
+   near log V and falls, doubling compute at the Chinchilla ratio
+   beats lopsided scaling, loss spikes are investigated, not
+   ignored. If loss never falls below log V, the shift is wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   O(6ND) FLOPs. Memory: weights + optimizer + activations (R0.2).
+   Loss spikes from bad batches or too-high LR are the classic
+   instability, data filtering and LR schedules are the guards.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Train from
+    scratch vs continue a public base. Choose continued pretraining
+    when the domain is special and data is moderate, from scratch
+    only with Chinchilla-scale budgets.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: more data always helps. Counterexample: duplicated
+    or toxic data degrades the model, quality beats quantity past
+    a point. Deduplication and filtering are part of training, not
+    decoration.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Hoffmann
+    et al. (2022, Chinchilla) and the GPT-3 data sections.
+    Extension: train two tiny models at fixed FLOPs, one
+    param-heavy, one data-heavy, report which wins.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the 6ND rule. Ladder: define the objective -&gt;
+    compute the toy budget -&gt; justify the 20:1 ratio -&gt; implement
+    pretrain_step -&gt; predict the dirty-data failure. Transfer:
+    pretraining for code, state the data mix change.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: FLOPs for
+    N = 1e9, D = 2e10. E2: GPU-days at 5e14 FLOP/s effective. E3:
+    why the shift-by-one? Key: <code>../keys/u04_answers.md</code> R1-R3.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: N, D, FLOPs. A table (N | D | FLOPs | GPU-days) is the
+    right medium. Logged as text-table with the computed toy.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-dataloss">C02: data/loss</h3>
+<p>Leaf id <code>cme295-U04-C02</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L3
+   (pretraining data and loss are inseparable). Scope: what the
+   loss sees and what the data must be. Objectives: explain
+   packing, loss masking, and the data quality pipeline. Depends on
+   C01, P10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: documents have
+   different lengths, how do you fill a batch without wasting half
+   of it? Toy: pack short documents end to end with a separator,
+   mask the loss so position i never trains on document j&rsquo;s tokens.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The batch is a shipping container: pack it
+   full, but label the boxes so the loss knows which is which.
+   Data quality is the manifest: dedupe, filter, mix. The loss is
+   only as honest as the manifest.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Packed
+   sequence: concat of documents + separators, length T. Loss mask:
+   1 on real tokens, 0 on padding (and optionally on the separator).
+   Mix: domain weights summing to 1. Assumption: documents are
+   independent, cross-document attention is blocked or accepted.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Without masking, padding tokens
+   train the model to predict padding: the loss must zero them.
+   Packing without document masks lets tokens attend across
+   documents (usually harmless at scale, blocked when it matters).
+   Deduplication: repeated text gets memorized, dedupe removes the
+   incentive.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: batch of 4 documents, lengths
+   [100, 300, 50, 550], T = 1024. Unpacked waste: 4*1024 - 1000 =
+   3096 padding tokens (75% waste). Packed: one 1000-token
+   sequence, ~2% waste. The packing decision is a 75-point swing.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>pack(docs, T)</code>:
+   concat with separators, cut into T-length chunks, build the
+   loss mask (0 on padding). Eight lines. The mask multiplies the
+   per-token loss.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: masked loss
+   ignores padding (loss unchanged when padding grows), dedupe
+   rate reported, domain mix matches the plan. If padding trains,
+   the mask is misaligned.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Packing is O(total tokens). Filtering costs CPU, not GPU.
+   Dirty data wastes the most expensive resource (GPU time).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Padding
+    (simple, wasteful) vs packing (efficient, needs masks). Choose
+    packing always at scale, padding only for tiny runs.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the mix does not matter. Counterexample: too much
+    code starves prose fluency and vice versa, the mix is a
+    hyperparameter with real effects.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the data
+    sections of the Llama papers (public) for mix practice.
+    Extension: vary the code fraction in a tiny run, measure
+    prose vs code perplexity.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: why mask padding in the loss? Ladder: define packing
+    -&gt; compute the waste -&gt; justify the mask -&gt; implement pack -&gt;
+    predict the mix failure. Transfer: packing for variable-length
+    audio, state the mask analog.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: waste for
+    lengths [200, 200, 200], T = 1024, unpacked. E2: write the
+    mask for [tok, tok, pad, pad]. E3: one dedupe failure mode.
+    Key: <code>../keys/u04_answers.md</code> R4-R6.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: document, pack, mask. Lesson plate: before (padded
+    batch, waste) -&gt; rule (pack + mask) -&gt; after (full batch).
+    Logged as a plate spec with the 75% computation.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-quantization">C03: quantization</h3>
+<p>Leaf id <code>cme295-U04-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch (efficiency theme, L5 names hardware trade-offs). Scope:
+   integer quantization of weights. Objectives: write the
+   scale/zero-point formulas, quantize a toy by hand, and state the
+   error bound. Depends on R0.3, P15.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the weights are fp16,
+   can they be int8 at 1/2 the memory? Toy: w =
+   [-1.2, -0.3, 0.1, 0.7, 1.5]. Symmetric: scale = max|w| / 127,
+   q = round(w / scale).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Quantization is a grid snapped over the
+   numbers. The scale sets the grid spacing, rounding snaps each
+   value to the nearest grid point. Outliers stretch the grid and
+   punish everyone.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Scale s &gt; 0,
+   zero-point z (asymmetric). Symmetric: q = round(w / s),
+   w_hat = q * s. Error per value &lt;= s / 2. Assumption: the weight
+   distribution fits the grid, outliers are the enemy.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> s = max|w| / 127 maps the range to
+   [-127, 127]. Rounding error is uniform in [-s/2, s/2] for
+   well-spread values. Asymmetric adds z to handle skewed ranges
+   (activations). Per-channel scales (one s per row) beat
+   per-tensor when rows differ.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u04.py</code>:
+   s = 0.01181, q = [-102, -25, 8, 59, 127], max abs error
+   0.00551 (&lt;= s/2 = 0.00591, as theory says). Figure:
+   <img alt="u04_fig02" src="../assets/u04_fig02.png" title="u04_fig02" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>quantize(w)</code>:
+   s = abs(w).max() / 127, q = round(w / s).clip(-127, 127),
+   return q.astype(int8), s. Dequantize: q.astype(fp) * s. Six
+   lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: max error &lt;=
+   s/2, dequantize(quantize(w)) ~= w, the max-abs value maps to
+   +/-127. If error exceeds s/2, the clip or the scale is wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Memory halves (fp16 -&gt; int8). Compute needs int8 kernels to
+   realize speed, memory-bound decode benefits immediately.
+   Accuracy: usually &lt; 1 point on benchmarks for weights-only.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> int4 (more
+    compression, more risk). fp8 (wider range, newer hardware).
+    Per-channel vs per-tensor. Choose int8 per-channel as the safe
+    default, int4 with calibration for tight budgets.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: one scale fits all. Counterexample: a single
+    outlier channel stretches s and destroys the small weights,
+    per-channel scales or outlier-aware methods fix it.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Dettmers
+    et al. (2022, LLM.int8()) for the outlier story. Extension:
+    quantize a tiny model per-tensor vs per-channel, measure the
+    perplexity gap.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the symmetric formulas. Ladder: define the grid
+    -&gt; quantize the toy -&gt; justify s/2 -&gt; implement quantize -&gt;
+    predict the outlier failure. Transfer: quantize an audio
+    model&rsquo;s weights, state the calibration set.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: quantize
+    [-2, 0, 2] symmetric int8. E2: max error bound. E3: why
+    per-channel beats per-tensor. Key: <code>../keys/u04_answers.md</code>
+    R7-R9.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u04_fig02.png</code>: Shell 3, one rule (q = round(w/s)), before
+    fp32 weights, after int8 + scale. Source: original toy.
+    Numbers from <code>render_u04.py</code>. Alt text: &ldquo;Plate showing five
+    fp32 weights mapped to int8 with one scale.&rdquo;</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-hardware-efficiency">C04: hardware efficiency</h3>
+<p>Leaf id <code>cme295-U04-C04</code>. Claim class REQUESTED-BRANCH (L5 names
+hardware trade-offs, the roofline math here is the branch).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch from
+   L5 &ldquo;Hardware trade-offs&rdquo;. Scope: why some workloads are slow
+   despite low FLOPs. Objectives: define arithmetic intensity,
+   read a roofline, and compute MFU. Depends on P15, C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: decode does few
+   FLOPs but takes forever, training does many FLOPs and flies.
+   Why? Toy: decode loads 14 GB of weights to do 1e9 FLOPs:
+   intensity 0.07 FLOP/byte -&gt; memory-bound. Training reuses
+   weights over big batches: compute-bound.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Every kernel lives under a roof with two
+   slopes: memory bandwidth (bytes/second) and peak compute
+   (FLOP/s). Arithmetic intensity (FLOP per byte) decides which
+   slope binds. Below the ridge: waiting on memory. Above: waiting
+   on math.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Intensity I =
+   FLOPs / bytes moved. Attainable = min(peak, bandwidth * I).
+   MFU = achieved / peak. Assumption: the byte count includes
+   weights, activations, and the cache.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Time = max(bytes / bandwidth,
+   FLOPs / peak). Decode batch 1: bytes ~ weights (14 GB),
+   FLOPs ~ 2 * params per token: I ~= 0.07, so time ~=
+   bytes / bandwidth. Training batch 2048: weights reused 2048x,
+   I rises past the ridge, time ~= FLOPs / peak.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: bandwidth 2 TB/s, peak 300 TFLOP/s,
+   ridge at 150 FLOP/byte. Decode I = 0.07 -&gt; 0.14 TFLOP/s
+   effective (0.05% of peak!). Training I = 200 -&gt; 300 TFLOP/s.
+   Same chip, 2000x different efficiency. That is the whole
+   serving problem in one ratio.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>roofline(flops,
+   bytes, bw, peak)</code>: I = flops / bytes, return min(peak,
+   bw * I), I. Four lines. MFU = measured / peak.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: I &gt; 0,
+   attainable &lt;= peak, decode lands left of the ridge, training
+   right. If decode shows high MFU, the batch is large (it is
+   really training-shaped).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   The lesson is economic: serving cost is memory bandwidth, not
+   FLOPs. Quantization (C03) and MQA/GQA (U02) attack bytes, not
+   math.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Bigger
+    batches raise I (throughput vs latency trade). Speculative
+    decoding (U06) raises effective I. Choose the lever by the
+    binding slope.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: FLOP counts predict serving cost. Counterexample:
+    the decode toy above: 0.05% MFU makes FLOP-based pricing
+    nonsense. Always roofline before budgeting.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Williams
+    et al. (2009, roofline) and Pope et al. (2023). Extension:
+    measure tokens/s vs batch size on any GPU, find the knee where
+    the regime flips.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: define intensity and the ridge. Ladder: define I -&gt;
+    compute the 0.05% -&gt; justify the two regimes -&gt; implement
+    roofline -&gt; critique FLOP budgeting. Transfer: roofline for a
+    phone NPU, name the binding slope.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: I for 1e12
+    FLOPs, 5e11 bytes. E2: attainable at bw 1 TB/s, peak 100
+    TFLOP/s. E3: why does batching help decode? Key:
+    <code>../keys/u04_answers.md</code> R10-R12.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: intensity, ridge, regime. A roofline sketch (two
+    lines, one knee, two marked points) is the right medium.
+    Logged as a plate spec with the computed points.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-sft">C05: SFT</h3>
+<p>Leaf id <code>cme295-U04-C05</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L3
+   &ldquo;Supervised finetuning (SFT)&rdquo;. Scope: instruction tuning.
+   Objectives: write the SFT loss with masking, explain what SFT
+   teaches, and state its limits. Depends on C01, U01 C11.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the base model
+   completes text, how do you make it follow instructions? Toy:
+   pair (&ldquo;Summarize: <doc>&ldquo;, &ldquo;<summary>&ldquo;). Train the LM loss on
+   the summary tokens only.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> SFT is apprenticeship: show the model
+   thousands of (instruction, response) pairs. It learns the
+   format (how to answer), not new facts (what to say). The base
+   model holds the knowledge, SFT teaches manners.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Loss:
+   -sum over response tokens of log p. Prompt tokens are masked
+   out of the loss. Assumption: the pairs demonstrate the desired
+   behavior, quality beats quantity.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Masking the prompt means no
+   gradient for predicting the instruction (it is given). The
+   response tokens train normally. The model learns P(response |
+   instruction) as a conditional skill.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: 10k pairs, mean response 200
+   tokens: 2M training tokens. At 6ND with N = 7e9: 8.4e16
+   FLOPs, minutes on a cluster. SFT costs little compared with pretraining,
+   that is why everyone does it.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>sft_step(prompt,
+   response)</code>: ids = prompt + response, mask = 0 on prompt, 1 on
+   response, loss = masked lm_loss. Six lines. The mask is the
+   whole difference from pretraining.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: prompt
+   tokens contribute zero loss, response loss falls, a canary
+   instruction is followed after training. If prompt tokens
+   train, the mask is inverted.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Same per-token cost as pretraining, tiny data. Overfitting is
+   the risk: few epochs, low LR.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Prompting
+    (U03 C07) for per-request behavior. RLHF/DPO (U05) for
+    preferences beyond imitation. Choose SFT to install the
+    format, preference methods to refine it.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: SFT teaches facts. Counterexample: SFT on false
+    answers teaches confident falsehoods, the base model&rsquo;s
+    knowledge bounds what SFT can elicit. SFT elicits, it does
+    not create.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Ouyang et
+    al. (2022, InstructGPT) SFT sections and Zhou et al. (2023,
+    LIMA) on quality over quantity. Extension: SFT a tiny model
+    on 100 vs 10k pairs, measure format adherence vs knowledge.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: which tokens train? Ladder: define the mask -&gt;
+    compute the toy FLOPs -&gt; justify format-vs-fact -&gt; implement
+    sft_step -&gt; predict the falsehood failure. Transfer: SFT for
+    a code assistant, describe the pairs.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: training tokens
+    for 50k pairs at 300 tokens. E2: write the mask for a 10+20
+    split. E3: why few epochs? Key: <code>../keys/u04_answers.md</code>
+    R13-R15.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: prompt (masked), response (trained). Lesson plate:
+    before (full loss) -&gt; rule (mask the prompt) -&gt; after (loss
+    on response only). Logged as a plate spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-examplestemplates">C06: examples/templates</h3>
+<p>Leaf id <code>cme295-U04-C06</code>. Claim class OFFICIAL-SYLLABUS (part of the
+SFT topic).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L3
+   (SFT practice). Scope: chat templates and special tokens.
+   Objectives: write a template, name the special tokens, and
+   explain the train/serve match requirement. Depends on C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: how does the model
+   know where the user ends and the assistant begins? Toy:
+   &ldquo;&lt;|user|&gt;Hello&lt;|end|&gt;&lt;|assistant|&gt;Hi&lt;|end|&gt;&rdquo;. The markers are
+   ordinary tokens with agreed meanings.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The template is punctuation for dialogue.
+   Special tokens are reserved ids (added to the vocabulary).
+   Train and serve must use the identical template, or the model
+   reads a foreign format.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Special
+   tokens: &lt;|user|&gt;, &lt;|assistant|&gt;, &lt;|end|&gt; (names vary by model).
+   Template: deterministic string builder. Assumption: the
+   tokenizer encodes the markers as single ids.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: a format contract.
+   The SFT loss masks by role (train on assistant tokens). At
+   inference, the prompt ends with the assistant marker and the
+   model continues. Mismatched markers = the model never saw this
+   shape.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy vocab 32000 + 3 special tokens =
+   32003 rows in E. Template overhead per turn: ~10 tokens. On a
+   20-turn conversation: 200 template tokens of pure format.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>apply_template(turns)</code>:
+   for each (role, text): emit marker + text + end marker. Five
+   lines. Unit-test the exact strings.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: markers are
+   single ids, the rendered prompt matches training byte for
+   byte, role order is fixed. If the assistant rambles as the
+   user, the template is wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Negligible compute, the cost is brittleness. Template bugs are
+   silent quality killers.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Raw
+    &ldquo;Q:/A:&rdquo; formats (fragile, no roles). Choose the model&rsquo;s native
+    template always, never invent one at serve time.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: any template works. Counterexample: serving a
+    Llama-format prompt to a Mistral-tuned model: the markers are
+    unknown strings and behavior collapses.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read model
+    cards&rsquo; chat format sections. Extension: perturb one marker
+    string, measure the behavior change on a canary set.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: why must train and serve templates match? Ladder:
+    define the marker -&gt; build the toy -&gt; justify the contract -&gt;
+    implement apply_template -&gt; predict the mismatch failure.
+    Transfer: template for a tool-calling agent, name the extra
+    markers.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: render two
+    turns. E2: embedding rows after adding 3 tokens. E3: how do
+    you test the template? Key: <code>../keys/u04_answers.md</code> R16-R18.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: marker, turn, rendered prompt. A before/after string
+    pair is the right medium (no geometry). Logged as text.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-lora-factors">C07: LoRA factors</h3>
+<p>Leaf id <code>cme295-U04-C07</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L3
+   &ldquo;Parameter-efficient finetuning (LoRA)&rdquo;. Scope: the low-rank
+   update. Objectives: write dW = BA, count the parameters, and
+   explain the alpha/r scale. Depends on P04 (low rank), C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: full fine-tuning
+   moves 7B weights, what if the update is low-rank? Toy: W0
+   (8x8) frozen, B (8x2), A (2x8) trainable: 32 params instead of
+   64.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The update lives in a thin subspace. B and A
+   are two thin factors whose product is the change. The base
+   stays frozen, the adapter is the diff. Merge at deploy:
+   W = W0 + BA.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> B: (d, r),
+   A: (r, d), r &lt;&lt; d. Forward: h = W0 x + (alpha/r) B A x.
+   Assumption: the task&rsquo;s update is approximately rank-r.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Rank of BA &lt;= r by construction.
+   The alpha/r scale keeps the update magnitude stable as r
+   changes: without it, larger r would mean larger steps.
+   Gradients flow only into B, A, W0 needs no gradient storage.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u04.py</code>: d = 4096,
+   r = 8: full 16,777,216 vs LoRA 65,536, ratio 256. Figure:
+   <img alt="u04_fig01" src="../assets/u04_fig01.png" title="u04_fig01" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>lora_linear(x)</code>:
+   return W0 @ x + (alpha/r) * B @ (A @ x). Initialize A ~ N(0,
+   small), B = 0 so the adapter starts as the identity (dW = 0).
+   Six lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: at init the
+   adapter changes nothing (B = 0), merging gives identical
+   outputs to the adapter path, parameter count matches 2dr.
+   If init is nonzero, the model jumps at step 0.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Forward adds O(r d) per token, negligible. Memory: only B, A
+   and their optimizer states (C08). Rank is the capacity knob.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Full
+    fine-tune (C10) for max freedom. Adapters (bottleneck MLPs),
+    prefix tuning. Choose LoRA as the default PEFT, raise r when
+    the task needs more change.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: low rank suffices. Counterexample: tasks needing
+    genuinely new capabilities (new language, new modality) exceed
+    rank r, the adapter saturates and full tuning wins.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Hu et al.
+    (2021, LoRA). Extension: sweep r in {1, 2, 4, &hellip;, 64} on a
+    task, plot accuracy vs r and find the knee.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the forward equation. Ladder: define the factors
+    -&gt; count 65,536 -&gt; justify alpha/r -&gt; implement lora_linear
+    -&gt; predict the saturation. Transfer: LoRA for a vision
+    adapter, state which matrices get factors.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: params for
+    d = 1024, r = 16. E2: effective update at alpha = 16, r = 8.
+    E3: why B = 0 at init? Key: <code>../keys/u04_answers.md</code> R19-R21.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u04_fig01.png</code>: Shell 3, one rule (dW = BA), before full dW,
+    after rank-2 factors. Source: original toy. Numbers from
+    <code>render_u04.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-parameteroptimizer-savings">C08: parameter/optimizer savings</h3>
+<p>Leaf id <code>cme295-U04-C08</code>. Claim class OFFICIAL-SYLLABUS (part of the
+LoRA topic).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L3
+   (why LoRA matters). Scope: the memory budget. Objectives:
+   compute the Adam bill for full vs LoRA training and name every
+   term. Depends on C07, R0.2.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: where exactly do the
+   104 GB go in full fp32 Adam on 7B? Toy: weights 28 GB (fp32),
+   grads 28 GB, m+v 56 GB. LoRA: frozen bf16 base 14 GB + tiny
+   adapter states.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Adam triples the bill (weights + grads +
+   two states). Freezing the base deletes grads and states for
+   99.6% of parameters. The adapter&rsquo;s states are a rounding
+   error.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Bytes =
+   params * (b_w + b_g + b_opt). Full fp32: 4+4+8 = 16
+   bytes/param. LoRA: base 2 bytes/param (no grad, no state) +
+   adapter at full Adam. Assumption: the base truly freezes (no
+   accidental requires_grad).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The optimizer only allocates states
+   for parameters with gradients. Frozen parameters cost just
+   their storage. The saving is structural, not approximate.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u04.py</code>: full fp32
+   Adam on 7B = 104.3 GiB, frozen bf16 base + LoRA (0.4% of
+   weights) = 13.4 GiB. Figure: <img alt="u04_fig03" src="../assets/u04_fig03.png" title="u04_fig03" />.
+   Note: the lab toy (<code>labs/u04_lab_run.py</code> lab3) uses a smaller
+   adapter fraction, 0.06%, and prints 13.1 GiB. The two toys
+   state different assumptions, both are correct under their own.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>memory_bill(params,
+   trainable, dtype)</code>: sum the three terms, print the table. Six
+   lines. Run it before every training launch.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the bill
+   matches nvidia-smi within 20% (activations add the rest),
+   trainable fraction matches 2dr per adapted matrix. If the bill
+   is 8x too big, the base is not frozen.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   The bill is the fit/no-fit decision for the GPU. LoRA moves
+   7B training from 8xA100 to 1xA100 territory.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> 8-bit
+    optimizers, gradient checkpointing (trades compute for
+    memory). Choose freezing first (biggest win), then the rest.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the bill covers everything. Counterexample:
+    activations at long context can exceed the weights, the bill
+    needs an activation term for T &gt; 4k.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the LoRA
+    memory analysis (Hu et al., 2021, appendix). Extension:
+    measure real peak memory vs the bill at three context
+    lengths, fit the activation term.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name the three terms. Ladder: define the bill -&gt;
+    compute 104.3 GiB -&gt; justify freezing -&gt; implement
+    memory_bill -&gt; predict the activation surprise. Transfer:
+    bill for a 13B LoRA run, state the GPU.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: bill for 1B
+    params full fp32 Adam. E2: LoRA fraction at d = 4096, r = 8,
+    L = 32 (all QV adapted). E3: what does the bill omit?
+    Key: <code>../keys/u04_answers.md</code> R22-R24.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u04_fig03.png</code>: Shell 3, one rule (freeze + LoRA), before
+    full Adam blocks, after bf16 base + adapter. Source: original
+    toy. Numbers from <code>render_u04.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-numerical-precision">C09: numerical precision</h3>
+<p>Leaf id <code>cme295-U04-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: fp32/fp16/bf16. Objectives: state the range and
+   precision of each, explain loss scaling, and choose bf16 vs
+   fp16. Depends on P12, R0.3.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: fp16 halves memory,
+   why did early fp16 training diverge? Toy: gradient 1e-8 in
+   fp16 (min normal ~6e-5): rounds to zero. The update vanishes.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> fp32: the safe default. fp16: half the bits,
+   tiny range, needs loss scaling. bf16: half the bits, fp32-like
+   range, less precision: the modern default. Range kills, precision
+   merely blurs.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> fp16: 1 sign,
+   5 exp, 10 mantissa bits, range ~6e-5..6e4. bf16: 1/8/7,
+   range ~1e-38..3e38 (like fp32). Loss scale: multiply loss by S,
+   unscale gradients. Assumption: master weights in fp32 (or the
+   optimizer rounds updates to zero).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Loss scaling shifts gradients into
+   fp16&rsquo;s representable range: compute in fp16 with loss*S, then
+   divide gradients by S in fp32. bf16 needs no scaling because
+   its range covers the gradients. The mantissa difference (10 vs
+   7 bits) rarely matters for weights.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: true gradient 3e-6. fp16: 0
+   (underflow). With loss scale 1024: 3e-3, representable, unscale
+   recovers 3e-6. bf16: 3e-6 representable directly (min normal
+   ~1e-38).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>train_step_mp()</code>:
+   forward in bf16, loss.backward(), optimizer step in fp32 master
+   weights, copy back. Mixed precision is a dtype policy, not a
+   model change.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: loss matches
+   fp32 to 1e-3, no NaN, gradient norms sane. If NaN appears in
+   fp16, the loss scale or the range is wrong, switch to bf16.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Halves weight/activation memory. Speed needs tensor-core
+   support, memory-bound decode benefits regardless.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Pure fp32
+    (safe, 2x memory). fp8 (newer, narrower). Choose bf16 for
+    training, fp16/int8 for inference per hardware.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: less precision is always safe. Counterexample:
+    fp16 without loss scaling on a deep net: gradients underflow,
+    the model trains on noise. Precision is a budget, not a
+    free lunch.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Micikevicius
+    et al. (2018, mixed precision). Extension: train a tiny net in
+    fp16 without scaling vs bf16, report the divergence point.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: ranges of fp16 and bf16. Ladder: define the formats -&gt;
+    compute the underflow -&gt; justify loss scaling -&gt; implement
+    the policy -&gt; predict the no-scale failure. Transfer:
+    precision for a phone deployment, defend the choice.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: fp16 max and
+    min normal. E2: why does bf16 skip loss scaling? E3: master
+    weights: why fp32? Key: <code>../keys/u04_answers.md</code> R25-R27.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: format, range, mantissa. A table (format | bits |
+    range | needs scaling) is the right medium. Logged as
+    text-table.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-full-versus-peft">C10: full versus PEFT</h3>
+<p>Leaf id <code>cme295-U04-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: the tuning strategy decision. Objectives: state
+   when full fine-tuning wins, what it risks, and how adapters
+   merge. Depends on C05, C07, C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: LoRA is cheap, full
+   tuning is free, when is cheap wrong? Toy: adapting to a new
+   language (needs deep change) vs a new format (needs surface
+   change). Rank 8 cannot hold a language.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Full tuning: every weight may move, maximum
+   freedom, maximum bill, maximum forgetting risk. PEFT: a thin
+   diff on a frozen base, swappable, composable, bounded. The
+   choice is about how much must change.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Full: all N
+   params train. LoRA: 2drL&rsquo; params (L&rsquo; adapted layers).
+   Assumption: the base already knows the domain (else full
+   tuning or continued pretraining).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: a trade analysis.
+   Forgetting: full tuning overwrites pretraining knowledge,
+   PEFT confines change to the adapter. Merging: W = W0 + BA
+   gives zero-latency deploy. Adapters stack: swap per task.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>render_u04.py</code>: full moves
+   16.8M params per matrix-class vs LoRA 65k (ratio 256), Adam
+   104.3 GiB vs 13.4 GiB. Figure: <img alt="u04_fig04" src="../assets/u04_fig04.png" title="u04_fig04" />
+   (chapter plate).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>merge(adapter)</code>:
+   for each adapted layer: W.data += (alpha/r) * B @ A. Four
+   lines. Unmerge by subtracting. The merge is exact.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: merged
+   outputs equal adapter-path outputs to 1e-5, per-task adapters
+   swap without touching the base. If merge changes outputs, the
+   scale is wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Merge is O(dr^2)-ish once. Serving: merged = dense speed,
+   unmerged = adapter overhead per token.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Full tuning
+    for deep capability change with data and budget. PEFT for
+    format/style/task adapters. Choose by the depth of change
+    needed, not by cost alone.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: PEFT never forgets. Counterexample: a rank-64
+    adapter on a small base can still distort core behavior, and
+    full tuning with good data and low LR forgets little. Both
+    need evals (C11).</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Hu et al.
+    (2021) and the full-fine-tuning baselines in the Llama papers.
+    Extension: full vs LoRA on a format task and a knowledge
+    task, report where the gap appears.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name the three differences. Ladder: define the diff -&gt;
+    compute 256x -&gt; justify merging -&gt; implement merge -&gt;
+    predict the saturation. Transfer: adapter strategy for 10
+    customer tasks, defend shared vs separate.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: when does full
+    win? E2: merged vs unmerged latency. E3: why do adapters
+    compose? Key: <code>../keys/u04_answers.md</code> R28-R30.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Chapter
+    plate <code>u04_fig04.png</code>: left cost without the rule (full),
+    center the stored object (frozen base + adapter), right cost
+    with the rule (LoRA), footer the tradeoff. Source: original.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-regression-tests">C11: regression tests</h3>
+<p>Leaf id <code>cme295-U04-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: guarding behavior across tuning. Objectives:
+   design a canary set, state the gate metric, and separate
+   capability from safety checks. Depends on C05, C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the fine-tune
+   improved the task but broke refusals, how would you know before
+   shipping? Toy: 50 canary prompts (20 capability, 20 safety,
+   10 format). Gate: no canary regresses beyond tolerance.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Regression tests are a contract with the
+   past. Every tune must re-pass the old promises: answers stay
+   right, refusals stay firm, format stays valid. The canary set
+   is small, fixed, and run every time.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Canary set:
+   frozen prompts with expected behaviors (not exact strings).
+   Gate: pass rate with tolerance, plus judge-scored spot checks.
+   Assumption: the canaries cover what you promised.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: a process. Before
+   tune: record canary scores. After: re-run, any drop beyond
+   noise is a regression. Safety canaries (refusals, PII) are
+   zero-tolerance.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: capability 19/20 -&gt; 19/20 (pass),
+   safety 20/20 -&gt; 18/20 (FAIL: two refusals broke). The tune
+   ships only after the safety fix. The numbers are the gate.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>regression_run(model)</code>:
+   for each canary: generate with fixed seed, score by rule or
+   judge, compare with baseline, report diffs. Ten lines plus the
+   canary file.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the canary
+   file is versioned, seeds fixed, the baseline is recorded. If
+   canaries change with the tune, they are not canaries.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   50 generations per gate: minutes. The cost of skipping it is a
+   broken product.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Full
+    benchmark suites (slow, thorough). Choose canaries for every
+    tune, suites for releases.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the canaries cover everything. Counterexample: a
+    regression outside the canary set ships silently, canaries
+    need periodic renewal from real failures.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the eval
+    sections of production model cards for gate practice.
+    Extension: seed a known regression, measure whether the
+    canary set catches it.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: what are the three canary classes? Ladder: define the
+    gate -&gt; run the toy -&gt; justify zero-tolerance safety -&gt;
+    implement regression_run -&gt; predict the stale-canary failure.
+    Transfer: canaries for a code assistant, name five.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: write three
+    canaries for a summarizer. E2: gate rule for safety vs
+    capability. E3: when do canaries need renewal? Key:
+    <code>../keys/u04_answers.md</code> R31-R33.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: canary, gate, verdict. A table (canary | expected |
+    observed | verdict) is the right medium. Logged as text-table.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-resource-budget">C12: resource budget</h3>
+<p>Leaf id <code>cme295-U04-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: the full training budget sheet. Objectives: build
+   a budget (FLOPs, memory, time, cost) for a toy run and name the
+   binding constraint. Depends on C01, C04, C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: can we fine-tune 7B
+   with LoRA on one A100? Toy sheet: weights 14 GB (bf16), cache
+   and activations ~20 GB at T = 2048, adapter states ~1 GB:
+   fits in 40 GB. FLOPs: 2M SFT tokens * 6 * 7e9 = 8.4e16, ~1 hour
+   at 50% MFU.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The budget sheet has four rows: FLOPs, memory,
+   time, money. Compute each from first principles (this unit&rsquo;s
+   formulas). The binding row decides the plan, the others are
+   sanity checks.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> FLOPs ~=
+   6ND (train) / 2ND (inference). Memory: weights + optimizer +
+   activations + cache. Time = FLOPs / (GPUs * peak * MFU).
+   Assumption: MFU 30-50% is honest, 70% is a dream.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The sheet is arithmetic, not magic.
+   Memory decides fit (yes/no). FLOPs decide time. Time * GPU
+   price decides money. Change the plan until all four rows pass.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> The toy above: memory 35 GB &lt; 40 GB
+   (fits), time ~1 h, cost ~$2-3 on cloud. Full fine-tune of the
+   same: memory 104 GB (needs 3+ GPUs), time similar, cost 3x.
+   The sheet makes the LoRA decision obvious.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>budget(N, D, gpus,
+   gpu_mem, price)</code>: print FLOPs, memory rows, time, cost, and
+   the binding constraint. Fifteen lines. Run before any launch.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: memory &lt;
+   gpu_mem with 20% headroom, time within the deadline, the
+   binding row is named. If memory is over, the plan is fiction.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   The sheet costs nothing, skipping it costs a crashed run or a
+   surprise bill.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Cloud vs
+    owned hardware (price row changes). Choose by the binding
+    constraint, not by habit.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: MFU 70%. Counterexample: real runs hit 30-50%,
+    the sheet with 70% underestimates time 2x and the deadline
+    slips.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    Chinchilla cost analysis and cloud pricing pages (dated).
+    Extension: budget three plans (1xA100 LoRA, 8xA100 full,
+    8xA100 LoRA) and rank by cost per quality point.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name the four rows. Ladder: define each -&gt; compute
+    the toy -&gt; justify the MFU -&gt; implement budget -&gt; predict
+    the MFU-lie failure. Transfer: budget for pretraining 1B,
+    name the binding row.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: time for 8.4e16
+    FLOPs at 150 TFLOP/s effective. E2: memory rows for 13B LoRA.
+    E3: what changes on owned vs cloud hardware? Key:
+    <code>../keys/u04_answers.md</code> R34-R36.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: row, value, verdict. The budget sheet table is the
+    right medium. Logged as text-table with the toy values.</p>
+</li>
+</ol>
+      
+      <nav class="pager"><a href="../keys/u03_answers.html"><span class="lbl">← Previous</span>U03 · Answers</a><a href="../keys/u04_answers.html"><span class="lbl">Next →</span>U04 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

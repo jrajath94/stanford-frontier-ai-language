@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U08 · Prompting and efficient adaptation — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Lesson: Prompting and efficient adaptation.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u08" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08" class="active">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U08 · Prompting and efficient adaptation</nav>
+      <h1>U08 · Prompting and efficient adaptation</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u08-prompting-and-efficient-adaptation">U08 , Prompting and efficient adaptation</h1>
+<h2 id="local-remediation">Local remediation</h2>
+<p>Bridges: <code>../shared/prerequisites/p09_optimization.md</code> (P09, what
+fine-tuning optimizes), <code>../shared/prerequisites/p14_transformer.md</code>
+(P14, the weights being adapted). This unit is about changing
+behavior cheaply: with words (prompting) or with a few parameters
+(PEFT).</p>
+<p>R1. Rank: rank(BA) &lt;= r for B (d, r), A (r, d). A rank-8 delta to a
+4096x4096 matrix has 65536 params, not 16.7M. LoRA&rsquo;s whole trick.
+R2. Binomial majority: at p = 0.6, P(majority of 5) = 0.6826.
+Voting helps when errors are independent.
+R3. JSON validity: &lsquo;{&ldquo;ans&rdquo;: 4}&rsquo; parses, &lsquo;{&ldquo;ans&rdquo;: 5&rsquo; does not. Output
+validation checks syntax plus schema, not vibes.</p>
+<hr />
+<h3 id="c01-zerofew-shot">C01: zero/few-shot</h3>
+<p>Leaf id <code>cs224n-U08-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   prompting sessions of the Winter 2026 schedule (S12-S13 per
+   <code>course_map.md</code>). Scope: using the model without training.
+   Objectives: define zero/few-shot, explain why it works at all,
+   state its limit. Depends on U07 C01 (the instruction format).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: no gradients, no
+   data, just a prompt, how can the model do a new task? Toy: the
+   prompt contains the task description (zero-shot) or a few
+   examples (few-shot). The model continues the pattern: pretraining
+   taught it to continue, SFT taught it the format.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The prompt is the program. Zero-shot: describe
+   the task in words. Few-shot: show k examples, then the new
+   input. The model does pattern completion over the whole thing.
+   No weights change, the &ldquo;learning&rdquo; is in the context.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Prompt =
+   instruction + [examples] + query. k shots: k demonstrations.
+   Assumption: the task is in the model&rsquo;s pretraining distribution
+   (it cannot do what it never saw).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is C02&rsquo;s (in-context
+   learning), this concept is the interface. Zero-shot works when
+   the instruction names a known pattern, few-shot works by showing
+   the pattern. The limit: the context window bounds k, and the
+   model never truly learns (no weight updates).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): sentiment
+   with 2 shots (&ldquo;great -&gt; pos&rdquo;, &ldquo;awful -&gt; neg&rdquo;), query &ldquo;loved it&rdquo;.
+   The model continues &ldquo;pos&rdquo;. The computation is the model&rsquo;s, not
+   ours, the lesson is the setup.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>few_shot_prompt(task,
+   examples, query)</code>: format the prompt. ~8 lines. Test: the prompt
+   contains all k examples and the query last.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> k examples present,
+   query last, format consistent. Check: zero-shot is k = 0 (the
+   same function).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Inference only: no training cost. The cost is context:
+   k examples eat the window (U05 C10&rsquo;s n^2 bill applies).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    fine-tuning (C07-C10): permanent, costs training. Choose
+    prompting for exploration and low-volume tasks. Choose
+    fine-tuning when the behavior must be reliable and cheap at
+    inference.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;few-shot teaches the task.&rdquo; Counterexample: the
+    model mimics the examples&rsquo; surface (format, label words)
+    without the underlying rule, change the label words and
+    performance collapses. The examples steer the model, they do not train it.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: few-shot with shuffled labels vs true labels.
+    Predict: above chance either way (format helps), true labels
+    better. Falsifier: shuffled wins (then the task was in the
+    pretraining, check it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A1 (breadth), L1 (ladder:
+    define both, build the toy prompt, derive the limit, diagnose
+    the label-words collapse, design the shuffle test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: implement
+    <code>few_shot_prompt</code>, verify the format. E2: argue the
+    conditioning-vs-learning distinction. Keys in
+    <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a format (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-in-context-learning">C02: in-context learning</h3>
+<p>Leaf id <code>cs224n-U08-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12-S13.
+   Scope: why few-shot works. Objectives: describe the phenomenon,
+   state the leading explanations, name what is still open.
+   Depends on C01, U05 C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the weights are
+   frozen, where does the &ldquo;learning&rdquo; happen? Toy: the leading
+   account: the forward pass implements a learning algorithm over
+   the context (the examples are data, the attention is the
+   update). The honest version: this is an active research
+   question, not settled.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The context is a dataset, the forward pass is
+   the learner. Attention can implement gradient-like updates over
+   the examples (shown in simplified settings). The model was
+   meta-trained by pretraining: next-token prediction on diverse
+   text rewards the ability to pick up patterns fast.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The examples
+   in context, the query, the model&rsquo;s output. Assumption: none of
+   the proposed mechanisms is proven for full-scale models (stated
+   openly).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The sketch: linear attention can
+   implement one step of gradient descent on the context examples.
+   Real transformers are more complex, the sketch motivates, not
+   proves. The empirical facts: more shots help (to a point),
+   order matters, the effect saturates.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 0-shot 55
+   percent, 4-shot 72 percent, 16-shot 74 percent on a toy task.
+   The curve rises then flattens: the context teaches, then the
+   window fills. Illustrative, not a benchmark.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>icl_curve(shots,
+   accs)</code>: plot or tabulate. ~5 lines. The lab records a real
+   curve on a toy task with a fixed model (the learner&rsquo;s own
+   measurement).</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The curve is
+   nondecreasing then flat. Check: shuffling example order changes
+   the numbers (order sensitivity, C04).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Each shot costs context (U05 C10). The practical cost:
+   long prompts are slow and expensive, the curve tells you when
+   to stop adding shots.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    fine-tuning: the real learning. Choose ICL for flexibility
+    (change tasks per prompt). Choose fine-tuning for permanence.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;more shots always help.&rdquo; Counterexample: the toy
+    curve flattens, some tasks degrade past k (distraction, wrong
+    pattern reinforcement). Measure your curve, do not assume it.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: the learner&rsquo;s own ICL curve on 3 tasks. Predict:
+    rise then flatten, task-dependent. Falsifier: flat from 0
+    (then the task was already known, check 0-shot).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A2 (breadth), L2 (ladder:
+    describe the phenomenon, sketch the GD account, state the open
+    question, diagnose the flat curve, design the measurement).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E3: measure an ICL
+    curve on a toy task (learner&rsquo;s numbers). E4: test order
+    sensitivity. Keys in <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a curve (carried in text as the learner&rsquo;s measurement). Logged
+    as an honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-demonstrations">C03: demonstrations</h3>
+<p>Leaf id <code>cs224n-U08-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12-S13.
+   Scope: choosing the shots. Objectives: list what makes a good
+   demonstration, explain selection methods, state the diversity
+   point. Depends on C01, C02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: which k examples?
+   Random, or chosen? Toy: desiderata: correct, diverse, formatted
+   like the query, near the decision boundary. Selection: random
+   baseline, retrieval (nearest to the query), manual curation.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The demos are the training set you do not
+   train on. Same rules as U07 C02&rsquo;s instruction data, compressed
+   into k slots: diversity over repetition, format match, edge
+   cases included. Retrieval picks examples like the query, it
+   usually beats random.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A pool of
+   candidate demos, a selector, k slots. Assumption: the pool is
+   labeled (selection needs labels).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the mechanism is
+   coverage (U06 C04&rsquo;s argument at k scale). Retrieval: embed the
+   query, take nearest demos. The risk: near-duplicates of the
+   query teach copying, not the task.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): random 4-shot
+   68 percent, retrieved 4-shot 75 percent, curated 4-shot 78
+   percent. Selection matters, with diminishing returns.
+   Illustrative.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>retrieve(query,
+   pool, k)</code>: cosine similarity, top-k. ~8 lines. Test: returns k
+   demos, the nearest first.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> k returned, sorted
+   by similarity. Check: the query&rsquo;s nearest neighbor is itself
+   if present (exclude it: the leakage check).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Retrieval needs embeddings of the pool (one-time).
+   The cost is the pool: labeled demos, curated once.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    random: the honest baseline. Choose retrieval for the standard
+    gain. Choose curation when k is tiny (every slot counts).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the best demos are the most similar.&rdquo; Counterexample:
+    the nearest demos may all show one class, the set needs
+    diversity, not just similarity. Balance classes in the k.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: random vs retrieved vs curated on the learner&rsquo;s toy
+    task. Predict: curated &gt;= retrieved &gt; random. Falsifier:
+    random wins (then the pool was homogeneous).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A3 (breadth: name the
+    desiderata and the three selectors).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E5: implement
+    <code>retrieve</code>, verify top-k order. E6: argue the diversity point.
+    Keys in <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a selection argument (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-prompt-sensitivity">C04: prompt sensitivity</h3>
+<p>Leaf id <code>cs224n-U08-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12-S13.
+   Scope: the brittleness. Objectives: define sensitivity, give the
+   measurement protocol, state the mitigation. Depends on C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: rephrase the prompt,
+   does the answer change? Toy (protocol demo from
+   <code>compute_u08.py</code>): three paraphrases score 0.994, 0.919, 0.999
+   under a fixed toy scorer, std 0.036. The protocol: fixed task,
+   paraphrase set, score each, report the spread.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Prompts are brittle programs. Small rephrases
+   move accuracy by points, the model is sensitive to word choice,
+   order, and format. Sensitivity is measured, not assumed: the
+   protocol above is the measurement.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A paraphrase
+   set, a scorer, the std (or range) of scores. Assumption: the
+   toy scorer stands in for a real eval (the protocol is the
+   point, not the numbers).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the mechanism is the
+   model&rsquo;s sharp decision boundaries in prompt space (it was
+   trained on text, not on prompt-robustness). Mitigations:
+   average over paraphrases, tune the prompt on a dev set, or
+   fine-tune (which bakes the behavior in).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u08.py</code>: std 0.036 across 3
+   paraphrases. Small here (toy scorer), on real models the spread
+   is the number you report.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>sensitivity(prompts,
+   scorer)</code>: scores and std. ~6 lines. Test: the toy numbers.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 0.994/0.919/
+   0.999, std 0.036. Check: identical prompts give std 0.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> k paraphrases cost k evals. The cost of ignoring it: a
+   prompt that works on your examples and fails on the user&rsquo;s.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    one prompt, hope: the standard failure. Choose the protocol
+    (measure the spread). Choose fine-tuning when the spread must
+    be zero.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the tuned prompt generalizes.&rdquo; Counterexample:
+    prompts overfit the dev set like any hyperparameter. Hold out
+    prompt-dev data, or the tuning is theater.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: the learner measures a real spread on their toy
+    task. Predict: nonzero, task-dependent. Falsifier: zero (then
+    the paraphrases were too similar, widen them).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A4 (breadth), L4 (ladder:
+    define sensitivity, run the protocol, derive the mitigation,
+    diagnose the dev overfit, design the measurement).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E7: implement
+    <code>sensitivity</code>, match the toy. E8: widen the paraphrases and
+    re-measure. Keys in <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a spread (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-observable-reasoning-formats">C05: observable reasoning formats</h3>
+<p>Leaf id <code>cs224n-U08-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12-S13.
+   Scope: chain-of-thought and friends. Objectives: describe the
+   formats, explain why they help, state the faithfulness limit.
+   Depends on C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: &ldquo;think step by step&rdquo;
+   improves math scores, what changed? Toy: the prompt asks for
+   intermediate steps before the answer. The model generates
+   them, the extra tokens are extra computation (each step
+   conditions on the last).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Scratch paper. The format buys serial compute:
+   n reasoning tokens = n extra forward passes to work the
+   problem. It also exposes the work for checking. What it does
+   not buy: a guarantee that the steps caused the answer (the
+   faithfulness problem).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Formats:
+   chain-of-thought (steps then answer), self-ask, least-to-most.
+   The common core: intermediate tokens before the final.
+   Assumption: the task decomposes (not all do).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is compute + decomposability:
+   hard problems split into easy steps, and the model gets one
+   forward pass per step. The limit: the steps are generated text,
+   optimized to look right, not to be the true causal path.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 2-step
+   arithmetic, direct answer 61 percent, with steps 79 percent.
+   The gap is the scratch paper working. Illustrative.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>cot_prompt(q)</code>:
+   append &ldquo;think step by step&rdquo; + format. ~5 lines. Test: the
+   prompt requests steps before the answer.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Steps precede the
+   answer marker. Check: the answer is parseable after the steps
+   (C12&rsquo;s validation applies).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> n reasoning tokens cost n serial steps (U05 C10).
+   The cost of faith: do not treat the steps as an explanation
+   without testing (intervention, not inspection: U05 C01&rsquo;s rule).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    direct answer: cheaper, worse on hard tasks. Choose the format
+    for decomposable hard tasks. Choose direct for easy ones (the
+    steps add noise).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the steps show the model&rsquo;s reasoning.&rdquo;
+    Counterexample: models produce plausible steps for answers
+    they reached otherwise (post-hoc rationalization, shown by
+    intervention studies). Useful, not faithful.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: corrupt an early step, check whether the answer
+    changes. Predict: sometimes not (unfaithful). Falsifier:
+    always changes (then the steps are causal here).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A5 (breadth), L5 (ladder:
+    describe the formats, explain the compute, derive the limit,
+    diagnose the rationalization, design the corruption test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E9: implement
+    <code>cot_prompt</code>, verify the format. E10: argue the faithfulness
+    limit in three sentences. Keys in <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a format (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-self-consistency">C06: self-consistency</h3>
+<p>Leaf id <code>cs224n-U08-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12-S13.
+   Scope: voting over samples. Objectives: write the majority
+   math, compute the toy, state the independence assumption.
+   Depends on R2, C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: one sample might be
+   wrong, what do five say? Toy: p = 0.6 per sample, majority of 5
+   = 0.6826. Sample diverse reasoning paths, take the most common
+   answer.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> An election. Each sample is a vote, the
+   majority wins. The math is the binomial: it helps exactly when
+   errors are independent (different paths, different mistakes).
+   Correlated errors (the model always makes the same mistake)
+   vote the same wrong way.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> n samples,
+   per-sample p, majority threshold. P = sum_{k&gt;m} C(n,k) p^k
+   (1-p)^{n-k}. Assumption: independence (the load-bearing one).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The binomial sum: count the
+   outcomes where the majority is right. At p = 0.6, n = 5: k =
+   3,4,5 give 0.6826. The gain shrinks as p approaches 1 (already
+   right) and reverses below 0.5 (majority of wrong).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u08.py</code>: 0.6826.
+   <img alt="u08_fig02" src="../assets/u08_fig02.png" title="u08_fig02" /> draws the five votes and the majority.
+   The number is exact (binomial), not estimated.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>majority_p(p, n)</code>:
+   the binomial sum. ~4 lines. Test: 0.6826.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 0.6826. Check:
+   p = 1 gives 1, p = 0 gives 0. Check: n = 1 gives p.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> n samples cost n generations (serial or batched).
+   The cost is latency, the gain is accuracy on hard tasks.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    one greedy sample: cheap, no vote. Choose voting when p is
+    middling and errors are diverse. Skip it when p is near 1 or
+    errors correlate.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;voting always helps.&rdquo; Counterexample: p = 0.4:
+    majority of 5 = 0.3174, worse than one sample. Voting
+    amplifies the majority opinion, right or wrong.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: measure per-sample p and the majority accuracy on a
+    toy task. Predict: the binomial predicts the majority number.
+    Falsifier: majority underperforms the binomial (then errors
+    correlate, note it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A6 (breadth), L6 (ladder:
+    write the sum, compute 0.6826, derive the p &lt; 0.5 reversal,
+    diagnose the correlated errors, design the measurement).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E11: implement
+    <code>majority_p</code>, match 0.6826. E12: compute the n = 5 majority at
+    p = 0.4. Keys in <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u08_fig02" src="../assets/u08_fig02.png" title="u08_fig02" />: the vote, Shell 3, source original
+    toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-peft">C07: PEFT</h3>
+<p>Leaf id <code>cs224n-U08-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12-S13.
+   Scope: the PEFT methods. Objectives: define PEFT, list the
+   families, state the shared tradeoff. Depends on P09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: full fine-tuning
+   updates 7B params, what if the task needs 0.06 percent of that?
+   Toy: LoRA at r = 8 trains 4.19M params (0.060 percent of 7B).
+   The task-specific delta is small, the base model does the rest.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A small steering wheel on a big ship. PEFT
+   freezes the base weights and trains a tiny add-on: adapters
+   (C08), LoRA (C09), prefixes, prompt tuning. The add-on steers,
+   the ship (knowledge, fluency) stays.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Base W
+   (frozen), delta params (trained). Trainable count &lt;&lt; N.
+   Assumption: the task is near the base distribution (small
+   deltas suffice, far tasks need full tuning).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The shared mechanism: restrict the
+   update to a low-dimensional subspace (low-rank, bottleneck,
+   prefix). Fewer params = less memory (no optimizer states for
+   W: U06 fig03&rsquo;s 8 GB shrinks), less overfitting, cheaper
+   storage per task (one small delta each).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u08.py</code>: LoRA 4.19M
+   (0.060%), adapters 33.6M at b = 64. The numbers frame the
+   menu, C08/C09 detail two items.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>peft_params(kind,
+   d, ...)</code>: the counts. ~6 lines. Test: both numbers.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 4.19M/0.060%
+   and 33.6M. Check: r = d recovers full-rank (the method
+   degrades gracefully to full tuning).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Memory: optimizer states only for the delta (the big
+   win). Storage: one delta per task. The cost: capacity (far
+   tasks underfit) and the rank/bottleneck to tune.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    full fine-tuning (C10). Choose PEFT for many tasks, small
+    data, limited GPUs. Choose full tuning for far distributions
+    and abundant data.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;PEFT matches full tuning everywhere.&rdquo;
+    Counterexample: pretraining-new-domain tasks (new language):
+    the delta is not small, PEFT underfits. Match the method to
+    the distance.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: LoRA vs full tuning on near vs far tasks at fixed
+    data. Predict: near ties, far favors full. Falsifier: LoRA
+    wins far (then the &ldquo;far&rdquo; task was near, check it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A7 (breadth), L7 (ladder:
+    define PEFT, compute the counts, derive the memory win,
+    diagnose the far-task gap, design the comparison).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E13: implement
+    <code>peft_params</code>, match both numbers. E14: compute LoRA params at
+    r = 16. Keys in <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a menu (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-adapters">C08: adapters</h3>
+<p>Leaf id <code>cs224n-U08-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12-S13.
+   Scope: bottleneck adapters. Objectives: write the adapter,
+   count its params, state the inference cost. Depends on C07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: where does the small
+   module plug in? Toy: after attention and after the FFN: x +
+   Adapter(x), with Adapter = W_up relu(W_down x). Bottleneck b =
+   64 at d = 4096: 524288 params per adapter.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A detour. The signal passes through a narrow
+   corridor (down to b, back up to d) added residually. The
+   corridor is the only trained part. Two per layer (post-attn,
+   post-FFN) is the standard placement.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> W_down: (d,
+   b), W_up: (b, d). Params: 2db per adapter. Assumption: the
+   residual keeps the base path intact (remove the adapter, get
+   the base model back).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Down-project, activate, up-project,
+   add. The bottleneck forces a low-dimensional task
+   representation. Unlike LoRA, the adapter stays in the graph at
+   inference (extra latency: the honest cost).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u08.py</code>: per adapter
+   524288, per layer (x2) 1048576, 32 layers 3.36e7. Eight times
+   LoRA&rsquo;s count at these settings.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>adapter(x, Wd, Wu)</code>:
+   x + Wu relu(Wd x). ~4 lines. Test: shapes (n, d) in and out.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match the three
+   counts. Check: zero-initialized adapter = identity (start from
+   the base model exactly).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Inference: +2 small matmuls per adapter per token
+   (latency, unlike LoRA&rsquo;s merge). Training: same PEFT memory win.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    LoRA (C09): mergeable, no inference cost. Choose adapters when
+    the module must be swappable at runtime (multi-task serving).
+    Choose LoRA for single-task latency.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;adapters are free at inference.&rdquo; Counterexample:
+    the extra matmuls add latency per token per layer, at 32
+    layers x2 adapters it is measurable. LoRA merges, adapters do
+    not.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: time per-token latency with adapters on vs merged
+    LoRA. Predict: adapters slower. Falsifier: tie (then b was
+    tiny relative to d, check it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A8 (breadth: write the
+    adapter, count params, name the inference cost).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E15: implement
+    <code>adapter</code>, verify the identity init. E16: compute adapter
+    params at b = 16. Keys in <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a count (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-lora">C09: LoRA</h3>
+<p>Leaf id <code>cs224n-U08-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12-S13.
+   Scope: low-rank adaptation. Objectives: write the update, count
+   the params, explain the merge. Depends on R1, C07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the weight update
+   dW is (d, d), what if it is low-rank? Toy: dW = BA, B (d, r),
+   A (r, d), r = 8. Train A, B, freeze W. Forward: (W + BA)x.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A small rudder on a big weight. The update
+   lives in a rank-r subspace: 2dr params instead of d^2. At
+   inference, add BA into W once: the deployed model is one
+   matrix, zero extra latency. Initialize A random, B zero: the
+   delta starts at zero (base model at step 0).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> W: (d, d)
+   frozen. B: (d, r), A: (r, d) trained. Scale: often alpha/r.
+   Params per matrix: 2dr. Assumption: the needed update is
+   approximately low-rank (the bet).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> rank(BA) &lt;= r (R1). The gradient
+   flows only to A, B. Merging: W&rsquo; = W + (alpha/r) BA, computed
+   once, then A, B are discarded for serving. Dropout on the
+   delta is the usual regularizer.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u08.py</code>: per matrix 65536,
+   ratio 256:1 vs full. 32 layers Q+V: 4.19M, 0.060% of 7B.
+   <img alt="u08_fig01" src="../assets/u08_fig01.png" title="u08_fig01" /> draws W + BA. The numbers are the
+   lesson.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>lora_forward(x, W,
+   A, B, scale)</code>: Wx + scale * B(Ax). ~4 lines. Test: B = 0 gives
+   exactly Wx.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 65536/256x.
+   Check: zero-init B recovers the base model. Check: merged W&rsquo;
+   equals the unmerged forward (bit-for-bit-ish).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Training: forward through W (frozen, no grads) + the
+   small path. Memory: optimizer states for 0.06% of params (U06
+   fig03&rsquo;s stack shrinks to ~nothing). Inference: merged, free.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    adapters (C08): no merge, swappable. Choose LoRA as the
+    default PEFT (the standard). Raise r when the task is far,
+    the method degrades gracefully toward full tuning.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;rank 8 suffices for everything.&rdquo; Counterexample:
+    C07&rsquo;s far-task case: the true update is high-rank, r = 8
+    underfits. The rank is a capacity knob, tune it.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: LoRA at r in {2, 8, 32} on a near task. Predict:
+    diminishing returns past 8. Falsifier: 32 much better (then
+    the task was farther than assumed).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A9 (breadth), L9 (ladder:
+    write the update, count 65536, derive the merge, diagnose the
+    underfit, design the rank sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E17: implement
+    <code>lora_forward</code>, verify the B = 0 identity. E18: verify merged
+    equals unmerged numerically. Keys in <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u08_fig01" src="../assets/u08_fig01.png" title="u08_fig01" />: W + BA, Shell 3, source original toy.
+    Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-full-fine-tune-comparison">C10: full fine-tune comparison</h3>
+<p>Leaf id <code>cs224n-U08-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12-S13.
+   Scope: when PEFT is not enough. Objectives: compare full vs
+   PEFT on five axes, state the decision rule. Depends on C07-C09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the errors.md entry
+   (U08 T2) warns against unequal comparisons, what is the fair
+   fight? Toy: the five axes: params updated, memory, storage per
+   task, capacity, inference cost. The rule: compare at equal
+   data and equal tuning effort.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A menu, not a ranking. Full tuning: all
+   params, max capacity, max memory (U06 fig03: 12 GB at 1B),
+   one model per task. PEFT: delta only, less memory, one base +
+   many deltas, less capacity. The task&rsquo;s distance from base
+   decides.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The axes and
+   the rule. Assumption: the comparison holds data and tuning
+   fixed (else it measures the experimenter, not the method).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the mechanism is the
+   tradeoff table. Full tuning&rsquo;s advantage is capacity (any
+   update), PEFT&rsquo;s is efficiency (memory, storage, speed). The
+   fair comparison varies one thing: the update subspace.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy table (hand, labeled as such), 7B
+   model: full: 7B updated, ~100+ GB training memory, 14 GB per
+   task stored. LoRA r=8: 4.19M updated, base + delta memory, 8 MB
+   per task stored. Same data, same epochs: the honest setup.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>compare_table()</code>:
+   return the five-axis dict. ~10 lines. The lab fills it with
+   the unit&rsquo;s numbers.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Numbers match the
+   unit (4.19M, 0.060%, 12 GB at 1B scaled). Check: no axis
+   compares at unequal data.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The cost is the experiment: full tuning needs the
+   GPUs PEFT does not. Budget the comparison honestly.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> The
+    alternatives are the rows. Choose full for far tasks and
+    abundant data. Choose PEFT for near tasks, many tasks, small
+    GPUs. The errors.md rule: equal rank/tokens or no claim.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;PEFT won, so it is better.&rdquo; Counterexample: the
+    comparison used more tuning for PEFT (or less data for full).
+    Unequal effort is the most common fake win.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: the learner runs LoRA vs full on their toy task at
+    equal epochs. Predict: close on near tasks. Falsifier: far
+    apart (then check the tuning effort first).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A10 (breadth: recite
+    the five axes and the fairness rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E19: fill the
+    comparison table with the unit&rsquo;s numbers. E20: spot the
+    unfairness in a described comparison. Keys in
+    <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a table (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-forgetting">C11: forgetting</h3>
+<p>Leaf id <code>cs224n-U08-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12-S13.
+   Scope: catastrophic forgetting. Objectives: define it, show the
+   real numpy demo, list the mitigations. Depends on P09, C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: fine-tune on task B,
+   what happens to task A? Toy (real numpy run in
+   <code>compute_u08.py</code>): linear model, A: y = 2x, B: y = -x. Task A
+   loss 0.0 before B, 10.1885 after. One weight, two masters.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> New writing over old. Gradient descent on B
+   moves the weights toward B&rsquo;s optimum, away from A&rsquo;s. The
+   further B&rsquo;s optimum, the worse the forgetting. PEFT forgets
+   less (the base is frozen), full tuning forgets freely.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Task A loss
+   before/after B training. Assumption: the toy&rsquo;s tasks conflict
+   maximally (opposite slopes), real forgetting is partial.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is shared parameters:
+   w served A at 2.0, serves B at -1.0, it cannot be both. The
+   loss on A after B is E[(2x - (-x))^2] = 9 E[x^2] ~ 9 (10.19
+   measured, noise in the sample). Mitigations: replay (mix A
+   data), freeze (PEFT), regularize toward A (EWC, the named
+   method).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u08.py</code>: w ends at -1.000
+   (B&rsquo;s optimum), task A loss 0.0 -&gt; 10.1885.
+   <img alt="u08_fig03" src="../assets/u08_fig03.png" title="u08_fig03" /> draws the two bars. A real run, not a
+   sketch.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>forget_demo()</code>:
+   the two training loops from the script. ~12 lines. Test: the
+   two losses.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 0.0/10.1885.
+   Check: w = -1.000 after B. Check: replay (mix A batches into B
+   training) keeps A&rsquo;s loss small.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Replay costs A&rsquo;s data kept around. PEFT costs nothing
+   extra (the base never moves). The cost of ignoring it: a
+   specialist that lost its generality.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    multitask training (A + B jointly): no forgetting, needs both
+    datasets at once. Choose replay/PEFT for sequential tasks.
+    Choose multitask when all data is available.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;a little fine-tuning will not hurt.&rdquo; Counterexample:
+    the toy: full retraining on B erased A completely. Even
+    &ldquo;little&rdquo; tuning moves the shared weights, measure A after.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: add 10 percent replay of A to B&rsquo;s training.
+    Predict: A&rsquo;s loss stays small. Falsifier: still 10 (then the
+    replay was too little or the tasks too opposed).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A11 (breadth), L11
+    (ladder: define it, run the demo, derive the 9x, diagnose the
+    specialist, design the replay test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E21: implement
+    <code>forget_demo</code>, match both losses. E22: add replay, show A&rsquo;s
+    loss stays small. Keys in <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u08_fig03" src="../assets/u08_fig03.png" title="u08_fig03" />: the two bars, Shell 3, source original
+    toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-output-validation">C12: output validation</h3>
+<p>Leaf id <code>cs224n-U08-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> The unit&rsquo;s
+   close. Scope: trusting the outputs. Objectives: define
+   validation, implement the toy checker, state what validation
+   cannot do. Depends on R3, C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model must emit
+   JSON, how do you know it did? Toy: 5 outputs, 2 valid JSON.
+   Valid 2/5. The checker: parse, then schema (required keys,
+   types).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A bouncer at the door. Parse (is it JSON?),
+   schema (does it have the fields?), semantics (are the values
+   sane?). Each layer catches a different failure. Validation
+   does not make the model right, it makes wrong outputs visible.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Outputs,
+   a schema, the valid fraction. Assumption: the schema is known
+   (it is: you defined the format).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the mechanism is
+   layered checking. Parse errors (truncation), schema errors
+   (wrong keys), semantic errors (right shape, wrong content).
+   Retry with the error message appended (the standard loop).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u08.py</code>: 2/5 valid. The
+   failures: truncated JSON, non-JSON, empty value. Each is a
+   different layer&rsquo;s catch.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>validate(outs,
+   schema)</code>: parse, check keys, return the valid fraction and the
+   failure kinds. ~12 lines. Test: 2/5 with the right kinds.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 2/5. Check:
+   each failure is labeled by layer. Check: valid outputs pass
+   all layers.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Parsing is free next to generation. The cost is the
+   retry loop (more generations). The alternative (no validation)
+   costs silent corruption downstream.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    constrained decoding (force the format during generation):
+    stronger, more complex. Choose validation + retry as the
+    default. Choose constrained decoding when the format is
+    load-bearing.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;valid JSON means correct output.&rdquo; Counterexample:
+    &lsquo;{&ldquo;ans&rdquo;: 5}&rsquo; parses and fits the schema but may be the wrong
+    answer. Validation checks the shape, not the truth.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: add the retry loop, measure valid fraction vs
+    attempts. Predict: rises then plateaus. Falsifier: flat (then
+    the errors are systematic, fix the prompt).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u08_answers.md</code> A12 (breadth: name the
+    three layers and what each catches).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E23: implement
+    <code>validate</code>, match 2/5 with kinds. E24: write the one-paragraph
+    close of the course half (U01-U08 arc: from words to
+    assistants). Keys in <code>keys/u08_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u08_fig01" src="../assets/u08_fig01.png" title="u08_fig01" /> is reused as the unit&rsquo;s closing image:
+    the 0.060 percent is the unit&rsquo;s thesis. Logged in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="unit-visual-map">Unit visual map</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Claim</th>
+<th>Shell</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="u08_fig01" src="../assets/u08_fig01.png" title="u08_fig01" /></td>
+<td>LoRA trains 0.060 percent of params</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u08_fig02" src="../assets/u08_fig02.png" title="u08_fig02" /></td>
+<td>majority of 5 at p 0.6 gives 0.683</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u08_fig03" src="../assets/u08_fig03.png" title="u08_fig03" /></td>
+<td>task B training erases task A</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+</tbody>
+</table>
+      
+      <nav class="pager"><a href="../keys/u07_answers.html"><span class="lbl">← Previous</span>U07 · Answers</a><a href="../keys/u08_answers.html"><span class="lbl">Next →</span>U08 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

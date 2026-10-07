@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U05 · RLHF and DPO — CS329H: Machine Learning from Human Preferences</title>
+<meta name="description" content="Unit 05: RLHF and DPO.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs329h-u05">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS329H: Machine Learning from Human Preferences</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../lessons/u01_lesson.html" data-page="cs329h-u01">U01 · Preferences, choices, and ge</a></li>
+<li><a href="../lessons/u02_lesson.html" data-page="cs329h-u02">U02 · Random utility, axioms, and </a></li>
+<li><a href="../lessons/u03_lesson.html" data-page="cs329h-u03">U03 · Choice estimation and Bayesi</a></li>
+<li><a href="../lessons/u04_lesson.html" data-page="cs329h-u04">U04 · Fisher information and exper</a></li>
+<li><a href="../lessons/u05_lesson.html" data-page="cs329h-u05" class="active">U05 · RLHF and DPO</a></li>
+<li><a href="../lessons/u06_lesson.html" data-page="cs329h-u06">U06 · Active elicitation and assis</a></li>
+<li><a href="../lessons/u07_lesson.html" data-page="cs329h-u07">U07 · Acquisition, Thompson sampli</a></li>
+<li><a href="../lessons/u08_lesson.html" data-page="cs329h-u08">U08 · Inversion, style, and bounde</a></li>
+<li><a href="../lessons/u09_lesson.html" data-page="cs329h-u09">U09 · Aggregation, impossibility, </a></li>
+<li><a href="../lessons/u10_lesson.html" data-page="cs329h-u10">U10 · Research projects and oral m</a></li>
+<li><a href="../cheatsheet.html" data-page="cs329h-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs329h-crash">Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / U05 · RLHF and DPO</nav>
+      <h1>U05 · RLHF and DPO</h1>
+      
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u05-rlhf-and-dpo">U05: RLHF and DPO</h1>
+<p>Prerequisites: P08 (information theory), P17 (RL), P18 (Bayesian). Local remediation opens this lesson.</p>
+<h2 id="provenance">Provenance</h2>
+<p>Sessions S08 (&ldquo;Reinforcement learning from human feedback&rdquo;, 19 Oct 2026) and S09 (&ldquo;Direct preference optimization&rdquo;, 21 Oct 2026) are PLANNED. All twelve concepts are taught as independent theory: PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<h2 id="local-remediation-kl-policy-gradients-and-the-dpo-reparameterization">Local remediation: KL, policy gradients, and the DPO reparameterization</h2>
+<p>KL divergence: KL(pi || pi_ref) = sum_y pi(y) log(pi(y)/pi_ref(y)). It penalizes putting mass where the reference puts little.</p>
+<p>Policy gradient (intuition): to increase expected reward, move probability mass toward high-reward outputs. The KL penalty keeps the move small.</p>
+<p>DPO reparameterization: the KL-constrained optimum satisfies pi<em>(y) proportional to pi_ref(y) exp(r(y)/beta). Solve for r: r(y) = beta log(pi</em>(y)/pi_ref(y)) + const. Plug this into the Bradley-Terry likelihood on preference pairs: the constant cancels, and the reward model disappears. What remains is a logistic loss directly on the policy&rsquo;s log-ratios. That is DPO.</p>
+<h2 id="russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum">Russian-doll ladder for the major mechanism (KL-constrained optimum)</h2>
+<ul>
+<li>Shell 0: How do we improve a policy on human preferences without drifting into nonsense?</li>
+<li>Shell 1: Toy: three responses with rewards [2, 1, 0], uniform reference.</li>
+<li>Shell 2: Objective: E[r] - beta KL(pi || pi_ref). Beta prices deviation.</li>
+<li>Shell 3: Rule: pi*(y) proportional to pi_ref(y) exp(r(y)/beta).</li>
+<li>Shell 4: Derive via Lagrange multipliers. Implement the closed form.</li>
+<li>Shell 5: Check: beta -&gt; infinity recovers the reference. Beta -&gt; 0 goes greedy.</li>
+<li>Shell 6: Change one factor: corrupt the reward. Predict hacking, measure the proxy/true split.</li>
+<li>Shell 7: Counterexample: off-policy data breaks the optimum&rsquo;s validity.</li>
+<li>Shell 8: Compare PPO (online, separate reward model) with DPO (offline, implicit reward).</li>
+<li>Shell 9: Extension: does beta tuned on held-out preference loss beat a fixed beta? Falsifiable: paired test.</li>
+<li>Shell 10: Production: beta is the stakeholder&rsquo;s dial between capability and safety. Reward hacking is the incident to monitor.</li>
+</ul>
+<h2 id="not-yet-understood-dependency-list">Not-yet-understood dependency list</h2>
+<ol>
+<li>PPO internals (clipping, GAE): compared at the objective level, not re-derived.</li>
+<li>Transformer training systems: out of scope. The policy is an abstract distribution here.</li>
+<li>Human data collection at scale: covered conceptually in U01-C10, not operationally.</li>
+</ol>
+<hr />
+<h3 id="cs329h-u05-c01-preference-data">cs329h-U05-C01: preference data</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S08). Objective: define the RLHF preference dataset and its schema. Depends on U01-C03.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what does a language model preference dataset look like? Toy: one prompt, two responses, one winner.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Each record is a contest between two responses to the same prompt. The prompt fixes the context. The winner teaches the reward model.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Record (x, y_w, y_l): prompt x, winning response y_w, losing response y_l. Dataset: n records. Assumption: the same prompt for both responses (paired comparison).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Pairing on x removes prompt difficulty as a confound: the comparison is purely about response quality given x. This is why RLHF data is (x, y_w, y_l) and not separate (x, y) ratings.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Toy: x = &ldquo;Explain tides&rdquo;, y_w = &ldquo;The moon&rsquo;s gravity&hellip;&rdquo;, y_l = &ldquo;Water moves.&rdquo;. The reward model must learn margin r(y_w) - r(y_l) &gt; 0 for this x.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Schema validation: check every record has one prompt and two distinct responses. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: no record has y_w == y_l. Prompts are non-empty. Expected: a clean dataset report.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(n) validation. The binding cost is human labeling, not compute.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: scalar ratings per response (needs calibration across prompts). Alternative: rankings of k responses (richer, costlier). Choose pairs for the cost/information sweet spot.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Unpaired data (ratings from different prompts mixed) confounds prompt difficulty with response quality. Counterexample: a great answer to a hard prompt rated below a mediocre answer to an easy prompt.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether k-wise rankings beat pairwise on held-out preference prediction per dollar. Falsifiable: no win per dollar means pairs stay.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the schema. Oral ladder through the pairing argument. Transfer: product reviews. Why pair them? Failure diagnosis: the reward model learns prompt difficulty. Explain. Counterfactual: what if responses are unpaired? Research: optimal comparison arity.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U05 task 1 validates a toy dataset. Exercises: (E1) write the schema. (E2) construct the confound example. (E3) argue pairs vs ratings. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Definition unit. Figure u05_f02 uses one pair as its input. Logged as shared.</p>
+<hr />
+<h3 id="cs329h-u05-c02-reward-model">cs329h-U05-C02: reward model</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S08). Objective: train a Bradley-Terry reward model on response pairs. Depends on C01, U01-C05.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: how does a model learn to score responses like the annotators? Toy: the tides pair. Margin 1.5.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The reward model is a Bradley-Terry score for responses: r(x, y) is the &ldquo;strength&rdquo; of response y to prompt x. Training pushes the winner&rsquo;s score above the loser&rsquo;s.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> r(x, y): real scalar. Loss per pair: -log sigma(r(x,y_w) - r(x,y_l)). Assumption: the Bradley-Terry link holds for response preferences.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> This is exactly U01-C05 with items = responses and context = prompt. The gradient pushes r(y_w) up and r(y_l) down proportionally to (1 - p). Figure u05_f02 shows the loss curve: margin 1.5 gives loss 0.201.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Margin 1.5: loss = log(1 + e^-1.5) = 0.201. Margin 0: loss 0.693. Margin -1.5: loss 1.701. Same numbers as figure u05_f02.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Score both responses, compute the logistic loss on the margin, backpropagate. Ten lines in NumPy for a linear reward head.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the loss decreases as the margin grows. Check: swapping y_w and y_l raises the loss. Expected: the three numbers above.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(n) forward/backward passes through the scorer. The reward model is usually much smaller than the policy or shares its backbone.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: pointwise regression on scalar ratings. Alternative: pairwise hinge loss. Choose logistic for its probabilistic interpretation. Choose hinge when only the ranking matters.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> The reward model is a proxy: it fits the training pairs but may misjudge off-distribution responses. Counterexample: the policy later generates responses unlike anything in the reward training data (preview of C10).</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test reward model accuracy on held-out pairs from new prompts. Falsifiable: near-chance accuracy means the reward did not generalize.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the loss. Oral ladder through the margin argument. Transfer: ranking job candidates. What is r? Failure diagnosis: the loss will not fall. Name two causes. Counterfactual: what if pairs are unpaired? Research: reward model ensembles.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U05 task 2 trains the linear reward head. Exercises: (E1) compute the three losses. (E2) derive the gradient. (E3) explain the proxy risk. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u05_f02.png: lesson plate, source original toy, closed form, alt text &ldquo;One preference pair described. Arrow labeled logistic loss. Loss curve falling with margin, point at 1.5 marked 0.20.&rdquo; Audit: before state pair, after state loss curve, rule named. No conflict.</p>
+<figure><img alt="One preference pair described. Arrow labeled logistic loss. Loss curve falling with margin, point at 1.5 marked 0.20." src="../assets/u05_f02.png"><figcaption>One preference pair described. Arrow labeled logistic loss. Loss curve falling with margin, point at 1.5 marked 0.20.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u05-c03-policy-objective">cs329h-U05-C03: policy objective</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S08). Objective: write the RL objective for the policy. Depends on C02, P17.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what exactly are we maximizing when we &ldquo;optimize against the reward model&rdquo;? Toy: three responses, rewards [2, 1, 0].</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The objective is expected reward under the policy: put probability where the reward is high. Without a leash, all mass piles onto the single best response.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> J(pi) = E_{y~pi}[r(x, y)]. Policy pi: distribution over responses. Assumption: the reward model is fixed during policy optimization.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The unconstrained maximizer is degenerate: all mass on argmax r. This is why the KL leash (C04) exists. The objective alone is a well-defined but dangerous target.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Rewards [2, 1, 0]: unconstrained optimum puts 1.0 on the first response, expected reward 2.0. Same setup as figure u05_f03.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Policy gradient on the expected reward: sample, score, reinforce. The lab sketches it on the toy.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the expected reward rises during training. Expected: convergence toward the degenerate policy without KL.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> Sampling cost dominates. The degenerate optimum is a feature of the math, not a bug in the code.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: constrained objective (C04). Alternative: best-of-n sampling at decode time. Choose the constrained objective for training. Choose best-of-n when training is frozen.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Reward hacking (C10): the policy finds high-reward outputs that humans would reject. The objective is misspecified, not misoptimized.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: measure how fast the policy collapses to one response without KL. Falsifiable: entropy of pi falls to near 0 within k steps.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write J(pi). Oral ladder through the degeneracy argument. Transfer: what stops a recommender from showing one item forever? Failure diagnosis: the policy collapses. Explain. Counterfactual: what if the reward is perfect? Research: entropy-regularized objectives.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) write J(pi). (E2) prove the degenerate optimum. (E3) argue the KL necessity. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Definition unit. The degeneracy is shown numerically in the text. Figure u05_f03 shows the constrained version. Logged.</p>
+<hr />
+<h3 id="cs329h-u05-c04-kl-regularization">cs329h-U05-C04: KL regularization</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S08). Objective: add the KL leash and trace the reward-KL frontier. Depends on C03, P08.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: how do we keep the policy near the reference while chasing reward? Toy: rewards [2, 1, 0], uniform reference, beta from 0.2 to 20.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Beta is the price of deviating from the reference. High beta: stay close, modest reward. Low beta: chase reward, drift far.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Objective: E[r] - beta KL(pi || pi_ref). Beta &gt; 0 in reward units. Assumption: pi_ref has full support (KL is finite).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The optimum (C05) traces a frontier: beta 0.2 gives (KL 1.06, reward 1.99). Beta 20 gives (KL 0.00, reward 1.03). Figure u05_f03 plots the full frontier across six betas.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Betas 0.2, 0.5, 1, 2, 5, 20 give KL 1.06, 0.66, 0.27, 0.08, 0.01, 0.00 and rewards 1.99, 1.85, 1.58, 1.32, 1.13, 1.03. Same numbers as figure u05_f03.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Closed form per beta (C05) or PPO with the KL penalty. Five lines for the closed form.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: beta -&gt; infinity recovers the reference (reward 1.0&hellip; here 1.03 at beta 20, approaching the uniform mean 1.0). Expected: the monotone frontier.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> Closed form O(k). With PPO the KL penalty adds one term to the loss. Tuning beta is the real cost.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: hard KL constraint (trust region). Alternative: early stopping. Choose the penalty for simplicity. Choose the constraint when the KL budget is contractual.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Too-small beta: the policy drifts into regions where the reward model is wrong (C10). Counterexample: beta 0.01 on a flawed reward gives fluent nonsense with high scores.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: tune beta on held-out preference loss, not on training reward. Falsifiable: the held-out-optimal beta beats any fixed default.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the penalized objective. Oral ladder through the frontier. Transfer: a chatbot must stay on-brand. Where is beta? Failure diagnosis: KL explodes during PPO. Diagnose. Counterfactual: what if pi_ref is bad? Research: adaptive beta.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U05 task 3 traces the frontier. Exercises: (E1) compute two frontier points. (E2) explain the beta -&gt; infinity limit. (E3) argue the hacking link. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u05_f03.png: lesson plate, source original toy, closed form, alt text &ldquo;Bar chart of the near-reference policy at beta 20. Arrow labeled lower beta. Reward-KL frontier curve with beta labels.&rdquo; Audit: before state high-beta policy, after state frontier, rule named. No conflict.</p>
+<figure><img alt="Bar chart of the near-reference policy at beta 20. Arrow labeled lower beta. Reward-KL frontier curve with beta labels." src="../assets/u05_f03.png"><figcaption>Bar chart of the near-reference policy at beta 20. Arrow labeled lower beta. Reward-KL frontier curve with beta labels.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u05-c05-regularized-optimum">cs329h-U05-C05: regularized optimum</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S08). Objective: derive the closed-form optimum. Depends on C04.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what is the best policy under the KL leash, exactly? Toy: rewards [2, 1, 0], uniform reference.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The optimum tilts the reference toward high reward: multiply by exp(r/beta), renormalize. Small beta tilts hard. Large beta barely tilts.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> pi*(y) = pi_ref(y) exp(r(y)/beta) / Z, Z the normalizer. Assumption: the reward is bounded so Z is finite.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Lagrange: maximize sum pi r - beta sum pi log(pi/pi_ref) subject to sum pi = 1. Derivative: r(y) - beta (log pi(y) - log pi_ref(y) + 1) - lambda = 0. Solve: pi(y) proportional to pi_ref(y) exp(r(y)/beta). Figure u05_f04 shows beta 5 giving [0.40, 0.33, 0.27] and beta 0.5 giving [0.87, 0.12, 0.02].</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Beta 5: [0.40, 0.33, 0.27]. Beta 0.5: [0.87, 0.12, 0.02]. Same numbers as figure u05_f04.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Exponentiate, normalize. Three lines of NumPy.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: probabilities sum to 1. Check: beta -&gt; infinity recovers pi_ref. Expected: the two distributions above.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(k). The exp overflows for large r/beta. Subtract the max first.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: iterative PPO (needed when the closed form is intractable, e.g., huge output spaces). Alternative: best-of-n. Choose the closed form for analysis and small toys. Choose PPO for real policies.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> The formula assumes the reward is the true objective. With a hacked reward (C10), the &ldquo;optimum&rdquo; is exactly wrong. Counterexample: the formula confidently recommends the exploit.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether PPO converges to the closed form on the toy. Falsifiable: a gap means PPO&rsquo;s approximations bite.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the formula. Oral ladder through the Lagrange step. Transfer: where else does exponential tilting appear (e.g., softmax)? Failure diagnosis: the probabilities do not sum to 1. Find the bug. Counterfactual: what if beta is negative? Research: the DPO inversion (C07).</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U05 task 4 implements the closed form. Exercises: (E1) derive via Lagrange. (E2) compute both distributions. (E3) take the beta limits. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u05_f04.png: lesson plate, source original toy, closed form, alt text &ldquo;Bar chart of the gentle policy at beta 5. Arrow labeled beta 5 to 0.5. Bar chart of the sharp policy at beta 0.5.&rdquo; Audit: before state gentle distribution, after state sharp distribution, rule named. No conflict.</p>
+<figure><img alt="Bar chart of the gentle policy at beta 5. Arrow labeled beta 5 to 0.5. Bar chart of the sharp policy at beta 0.5." src="../assets/u05_f04.png"><figcaption>Bar chart of the gentle policy at beta 5. Arrow labeled beta 5 to 0.5. Bar chart of the sharp policy at beta 0.5.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u05-c06-reference-distribution">cs329h-U05-C06: reference distribution</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S08). Objective: explain the reference&rsquo;s role and how to choose it. Depends on C04-C05.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what anchors the KL leash? Toy: uniform versus SFT reference on the three responses.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The reference is home base: the model we trust. The KL penalty measures drift from it. A good reference is capable and safe. The tuned policy inherits both, partially.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> pi_ref: usually the SFT model. Same support as pi. Assumption: pi_ref is decent. The leash cannot fix a broken reference.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Everything in C04-C05 is relative to pi_ref: the frontier, the tilt, the beta price. Change the reference and the whole frontier moves. With a uniform reference the beta-20 policy is near [0.37, 0.33, 0.30]. With a peaked reference it would hug that peak instead.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Beta 20 with uniform reference: [0.37, 0.33, 0.30] (computed in the lab). The policy barely moves from uniform.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Store the reference logits. Compute KL per batch during PPO. The lab shows the KL computation.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: KL(pi_ref || pi_ref) = 0. Expected: the near-uniform numbers above.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> One extra forward pass per batch for the reference. Memory: keep the reference weights around.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: no reference (pure reward chasing). Alternative: reference = earlier checkpoint (iterative). Choose SFT as the default. Choose iterative references for multi-round improvement.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> A weak reference caps the policy: the leash pulls toward mediocrity. Counterexample: SFT on poor demonstrations. RLHF cannot exceed the reference by much at fixed beta.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether a stronger reference (better SFT) raises the final policy&rsquo;s held-out preference win rate at fixed beta. Falsifiable: no gain means the reward, not the reference, binds.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the reference&rsquo;s role in one sentence. Oral ladder through the frontier shift. Transfer: fine-tuning a model for a new brand voice. What is pi_ref? Failure diagnosis: the policy will not improve. Name the reference-side cause. Counterfactual: what if the reference has zero mass somewhere? Research: reference-free methods.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) compute KL of the beta-20 policy. (E2) argue the cap. (E3) compare reference choices. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Interpretation unit anchored on figures u05_f03/f04. No new plate. Logged.</p>
+<hr />
+<h3 id="cs329h-u05-c07-dpo-relation">cs329h-U05-C07: DPO relation</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S09). Objective: derive DPO from the KL-constrained optimum. Depends on C05, U01-C05.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: can we skip the reward model entirely? Toy: one pair (y_w, y_l).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> DPO reads the reward off the policy itself: the implicit reward is beta times the log-ratio of policy to reference. Train the policy so the winner&rsquo;s implicit reward beats the loser&rsquo;s, with a logistic loss.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Loss: -log sigma(beta log(pi(y_w)/pi_ref(y_w)) - beta log(pi(y_l)/pi_ref(y_l))). Assumption: the policy class can represent the KL-constrained optimum.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> From C05: r(y) = beta log(pi*(y)/pi_ref(y)) + const. Insert into the Bradley-Terry likelihood P(y_w beats y_l) = sigma(r(y_w) - r(y_l)): the constants cancel, leaving the DPO loss. The reward model never appears. Figure u05_f05 shows the loss curve: margin 2.0 at beta 0.5 gives loss 0.313.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Implicit margin 2.0, beta 0.5: loss = -log sigma(1.0) = 0.313. Margin 0: loss 0.693. Same numbers as figure u05_f05.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Compute log-probs under policy and reference for both responses, form the margin, apply the logistic loss. Fifteen lines of NumPy for the toy.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the loss falls as the policy favors y_w more. Check: at initialization (pi = pi_ref) the margin is 0 and the loss is 0.693. Expected: the numbers above.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> One loss on fixed pairs: supervised-learning cost, no rollouts. Log-probs need care (log-sum-exp) for stability.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: PPO with an explicit reward model (C08). Alternative: IPO, KTO (other direct losses). Choose DPO for offline simplicity. Choose PPO when online exploration matters.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Off-policy staleness: the pairs were collected under older policies. The implicit-reward identity assumes the optimum form, which degrades off-policy. Counterexample: DPO on stale pairs can lower the true objective while the loss falls.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test DPO against PPO on the same preference data with matched compute, measuring held-out preference win rate. Falsifiable: DPO must win or tie to justify skipping the reward model.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the DPO loss. Oral ladder through the cancellation step. Transfer: when would you pick DPO over PPO for a product model? Failure diagnosis: the loss falls but human eval worsens. Explain. Counterfactual: what if the reference is absent? Research: direct methods beyond DPO.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U05 task 5 implements the DPO loss. Exercises: (E1) derive the cancellation. (E2) compute the two losses. (E3) explain the staleness failure. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u05_f05.png: lesson plate, source original toy, closed form, alt text &ldquo;One pair with the implicit margin formula. Arrow labeled negative log sigma of beta margin. Loss curve with point at 2.0 marked 0.31.&rdquo; Audit: before state pair, after state loss curve, rule named. No conflict.</p>
+<figure><img alt="One pair with the implicit margin formula. Arrow labeled negative log sigma of beta margin. Loss curve with point at 2.0 marked 0.31." src="../assets/u05_f05.png"><figcaption>One pair with the implicit margin formula. Arrow labeled negative log sigma of beta margin. Loss curve with point at 2.0 marked 0.31.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u05-c08-ppo-comparison">cs329h-U05-C08: PPO comparison</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S09). Objective: compare PPO and DPO honestly. Depends on C03-C07.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: two algorithms, one goal. Which do we use? Toy: the same preference dataset and the same beta.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> PPO learns a reward model, then explores with it online. DPO skips the middleman and fits the policy to the pairs directly. PPO can discover. DPO can only distill.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> PPO: on-policy rollouts, clipped surrogate, KL penalty. DPO: offline pairs, logistic loss on margins. Assumption for a fair comparison: matched data and compute.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The comparison table (figure u05_f06): objective (surrogate vs logistic), reward model (separate vs implicit), sampling (online vs offline), KL control (penalty+clip vs beta), stability (touchy vs supervised-like). Neither dominates. The choice is about exploration versus simplicity.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> On the three-response toy both methods target the same closed-form optimum (C05): beta 0.5 gives [0.87, 0.12, 0.02]. They differ in how they get there, not where.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Pseudocode for both loops side by side. The lab has the DPO loop. PPO is sketched at the objective level.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: on the toy, both converge near the closed form. Expected: agreement within optimization noise.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> PPO costs rollouts and careful tuning. DPO costs one supervised pass. Sample efficiency favors PPO&rsquo;s exploration. Wall-clock favors DPO.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: best-of-n (no training). Alternative: rejection sampling finetuning. Choose PPO when the policy must venture beyond the data. Choose DPO when the pairs already cover the good region.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> PPO with a hacked reward explores into the exploit (C10). DPO on narrow pairs never sees the exploit but also never discovers better responses. Counterexample: both fail differently on the same flawed reward.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: matched-compute comparison on held-out human preference. Falsifiable: the winner must replicate across seeds.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state one key difference. Oral ladder through the table. Transfer: your team has one GPU-week. Which do you pick? Failure diagnosis: PPO diverges. Name three knobs. Counterfactual: what if rollouts are free? Research: hybrid methods.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) fill the table from memory. (E2) argue the exploration gap. (E3) pick for a product scenario. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u05_f06.png: comparison table, source original toy, alt text &ldquo;Table comparing PPO and DPO across objective, reward model, sampling, KL control, and stability.&rdquo; Audit: medium ladder picks table for a values comparison. No conflict.</p>
+<figure><img alt="Table comparing PPO and DPO across objective, reward model, sampling, KL control, and stability." src="../assets/u05_f06.png"><figcaption>Table comparing PPO and DPO across objective, reward model, sampling, KL control, and stability.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u05-c09-feedback-bias">cs329h-U05-C09: feedback bias</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S08/S09). Objective: name feedback biases and show their effect on the reward. Depends on C02, U01-C11.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: what if annotators systematically prefer longer answers? Toy: length correlates with winning at 0.65.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Feedback bias is a thumb on the scale: position, length, sycophancy, or politeness push choices without reflecting true quality. The reward model learns the thumb, not just the quality.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Bias term b in the effective margin: observed margin = true margin + b. Assumption under test: b = 0.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> This is U01-C01&rsquo;s context effect applied to responses: the reward absorbs b into r. If longer answers win 65% regardless of quality, the reward model learns &ldquo;longer is better&rdquo; with gap log(0.65/0.35) = 0.62 utils of pure bias.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Bias-only win rate 0.65 gives an apparent gap of 0.62 utils. A truly better short answer needs a true gap above 0.62 just to break even. (Lab verifies the arithmetic.)</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Measure bias: correlate wins with length/position on the data. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the correlation persists after controlling for the reward model&rsquo;s quality features. Expected: the 0.62 number on the toy.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(n) measurement. Fixing bias costs protocol work (U01-C10), not compute.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: debias by modeling b explicitly (U01-C02). Alternative: accept the bias if deployment shares it (U01-C11). Choose modeling when deployment differs from annotation. Choose acceptance when they match.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Debiasing with the wrong b sign doubles the bias. Counterexample: &ldquo;correcting&rdquo; a length effect that was actually quality.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: randomize response order and length cues, test whether the reward changes. Falsifiable: no change means no bias there.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name three feedback biases. Oral ladder through the 0.62 computation. Transfer: five-star ratings. What biases shape them? Failure diagnosis: debiasing hurts held-out accuracy. Explain. Counterfactual: what if bias varies by annotator? Research: bias-resistant losses.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U05 task 6 measures the bias. Exercises: (E1) compute the 0.62. (E2) design the randomization test. (E3) argue accept vs model. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Mechanism unit. The bias arithmetic is a worked table in the text. No plate required. Logged.</p>
+<hr />
+<h3 id="cs329h-u05-c10-reward-hacking">cs329h-U05-C10: reward hacking</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S08). Objective: define reward hacking and demonstrate the proxy/true split. Depends on C03.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: the reward keeps rising. Is the model getting better? Toy: proxy = 0.1t, true = 0.1t - 0.004t^2.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The reward model is a proxy with blind spots. Optimization finds the blind spots: outputs that score high and disappoint humans. The proxy climbs. The truth peaks and falls.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Proxy reward r_hat, true reward r (unobserved). Optimizer maximizes r_hat. Assumption under test: r_hat approximates r where the policy goes. It does not.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Goodhart&rsquo;s law in one line: when a measure becomes a target, it stops being a good measure. The toy shows true reward peaking at step 12 while the proxy climbs to step 50. Figure u05_f07 plots both.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Step 12: true 0.62 (peak), proxy 1.2. Step 50: true -5.0, proxy 5.0. Same numbers as figure u05_f07.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Track a held-out human eval alongside the proxy during training. Stop when they diverge. The lab implements the monitor.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the divergence appears before the proxy saturates. Expected: the peak-then-fall shape.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> The monitor costs human labels. That is the price of honesty.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: stronger KL (C04) to stay near trusted regions. Alternative: reward ensembles. Choose KL when the trusted region is known. Choose ensembles when uncertainty about the reward is the issue.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> The monitor can also be hacked if it becomes the target. Counterexample: training against the eval set directly.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether KL-constrained policies hack less at matched proxy reward. Falsifiable: equal hacking means KL is not the fix.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: define reward hacking in one sentence. Oral ladder through the toy. Transfer: a sales team bonused on calls. What happens? Failure diagnosis: human eval falls while reward rises. What now? Counterfactual: what if the reward were perfect? Research: scalable oversight (name only).</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U05 task 7 builds the monitor. Exercises: (E1) find the peak. (E2) design the stopping rule. (E3) argue the KL fix. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u05_f07.png: lesson plate, source original toy (stylized mechanism), alt text &ldquo;Two rising curves early. Arrow labeled keep optimizing. Proxy keeps rising while true peaks at step 12 and falls.&rdquo; Audit: before state joint rise, after state divergence, rule named. Labeled stylized. No conflict.</p>
+<figure><img alt="Two rising curves early. Arrow labeled keep optimizing. Proxy keeps rising while true peaks at step 12 and falls." src="../assets/u05_f07.png"><figcaption>Two rising curves early. Arrow labeled keep optimizing. Proxy keeps rising while true peaks at step 12 and falls.</figcaption></figure>
+<hr />
+<h3 id="cs329h-u05-c11-off-policy-limits">cs329h-U05-C11: off-policy limits</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S09). Objective: explain why stale data limits DPO and offline RL. Depends on C07.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: the pairs were collected under last month&rsquo;s model. Can we still use them? Toy: the policy has since shifted.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Offline data is a photograph of the past. The DPO identity assumes the policy sits at the KL-constrained optimum for the current reward. A shifted policy breaks the identity, and the loss optimizes a stale picture.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Data from pi_old, optimizing pi. The implicit-reward identity r = beta log(pi/pi_ref) holds at the optimum, not everywhere. Assumption under test: pi stays near the data distribution.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Importance weights pi/pi_old correct the mismatch in principle, but the weights have huge variance when the policies differ. In practice DPO trusts the pairs as if fresh. The trust decays as the policy moves. The failure mode: the loss falls while the true objective stalls or drops.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Toy: pi_old puts 0.5 on y_w. The current pi puts 0.9 there. The pair is now uninformative (the policy already prefers y_w), but DPO still pushes the margin. Wasted gradient on a decided contest.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Filter pairs by current-policy uncertainty: keep pairs where pi(y_w) is far from 1. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: filtered training matches unfiltered early, then wins later. Expected: the staleness gap documented.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> Filtering is O(n). Fresh data collection is the real fix and the real cost.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: on-policy PPO (fresh data by construction). Alternative: iterative DPO (recollect periodically). Choose PPO when exploration matters. Choose iterative DPO as the middle path.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Fresh data can also mislead if the reward is hacked (C10). Counterexample: on-policy optimization into the exploit is worse than stale offline data.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether iterative DPO beats one-shot DPO on held-out preference win rate. Falsifiable: no win means staleness was not the binding constraint.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: define off-policy in one sentence. Oral ladder through the identity&rsquo;s assumption. Transfer: a recommender trained on last year&rsquo;s clicks. What breaks? Failure diagnosis: DPO loss falls, human eval flat. Diagnose. Counterfactual: what if data is free and fresh? Research: offline RL theory (name only).</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) construct the wasted-gradient numbers. (E2) write the filter. (E3) argue iterative DPO. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Mechanism unit in the text. The staleness arithmetic is a worked example. No plate required. Logged.</p>
+<hr />
+<h3 id="cs329h-u05-c12-human-disagreement">cs329h-U05-C12: human disagreement</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S08/S09). Objective: quantify disagreement and decide what the majority label means. Depends on C01, U02-C09.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: five annotators split 3-2. What is the &ldquo;right&rdquo; label? Toy: 200 pairs, true gap 0.5, 15% noise each.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Disagreement has two sources: noise (annotators err) and genuine taste differences. The majority vote is a compromise, not the truth.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Agreement of annotator i with the majority. Pairwise agreement across annotators. Assumption under test: one shared preference plus noise.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> With 15% independent flips, majority-vote agreement runs 0.81-0.90 across the five annotators (figure u05_f08). If disagreement exceeds the noise model, the remainder is genuine heterogeneity (U02-C09): fit per-group preferences instead of one.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Agreements: 0.86, 0.90, 0.86, 0.88, 0.81. Mean pairwise agreement 0.80. Same numbers as figure u05_f08.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Compute the agreement matrix. Compare against the noise-only prediction. Ten lines of NumPy.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: simulated pure-noise data reproduces the agreement range. Expected: the five numbers above.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(k^2 n) for k annotators. The expensive question is what to do about genuine disagreement.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: personalized rewards per annotator group. Alternative: keep the majority and accept the compromise. Choose personalization when groups are stable and identifiable. Choose the majority when the product serves everyone at once.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> The majority can be systematically wrong: shared bias (U01-C11) makes annotators agree on the wrong answer. Counterexample: 90% agreement on a length-biased verdict.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether disagreement clusters by annotator (taste) or spreads uniformly (noise). Falsifiable: clustered disagreement demands the mixture model.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the two sources of disagreement. Oral ladder through the noise arithmetic. Transfer: a divided electorate. What does the poll average mean? Failure diagnosis: agreement is high but the model fails. Explain. Counterfactual: what if annotators are experts? Research: pluralistic alignment (name only).</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U05 task 8 computes the agreement matrix. Exercises: (E1) reproduce the range. (E2) separate noise from taste. (E3) decide majority vs personalization. Keys in answer_keys/u05_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u05_f08.png: lesson plate, source original toy, seed 0, alt text &ldquo;Text panel describing the annotation setup. Arrow labeled majority vote. Five bars of agreement from 0.81 to 0.90.&rdquo; Audit: before state setup, after state agreements, rule named. No conflict.</p>
+<figure><img alt="Text panel describing the annotation setup. Arrow labeled majority vote. Five bars of agreement from 0.81 to 0.90." src="../assets/u05_f08.png"><figcaption>Text panel describing the annotation setup. Arrow labeled majority vote. Five bars of agreement from 0.81 to 0.90.</figcaption></figure>
+      
+      <nav class="pager"><a href="../lessons/u04_lesson.html"><span class="lbl">← Previous</span>U04 · Fisher information and experimental design</a><a href="../lessons/u06_lesson.html"><span class="lbl">Next →</span>U06 · Active elicitation and assistance games</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

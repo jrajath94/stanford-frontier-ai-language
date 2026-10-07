@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capstone · Research — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Research capstone.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-cap-research">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cme295-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_attention_variants.html" data-page="cme295-u02">U02 · Transformer variants and posit</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_llm_generation.html" data-page="cme295-u03">U03 · LLM architecture and generatio</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_training_adaptation.html" data-page="cme295-u04">U04 · Training and efficient adaptat</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_preference_optimization.html" data-page="cme295-u05">U05 · Preference tuning and policy o</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_reasoning_scaling.html" data-page="cme295-u06">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_rag_agents.html" data-page="cme295-u07">U07 · RAG and agentic systems</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_llm_evaluation.html" data-page="cme295-u08">U08 · LLM evaluation and judging</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_trends_synthesis.html" data-page="cme295-u09">U09 · Current trends, exams, and syn</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="../interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="../interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="../interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="../interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="../interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cme295-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cme295-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/research_grpo_extension.html" data-page="cme295-cap-research" class="active">Capstone · Research</a></li>
+<li><a href="../capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / Capstone · Research</nav>
+      <h1>Capstone · Research</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="research-capstone-group-normalization-vs-baseline-reinforce">Research capstone , group normalization vs baseline REINFORCE</h1>
+<p>Status: EXECUTED on this machine (numpy, CPU, seeds 1-5). This is a
+modest replication on a synthetic task, not a claim about real LLM
+training. Proposed vs executed are separated below.</p>
+<h2 id="question">Question</h2>
+<p>Does GRPO-style per-prompt group normalization beat REINFORCE with a
+global moving baseline on a verifiable-outcome task, at matched
+sample budgets?</p>
+<h2 id="falsifiable-hypothesis">Falsifiable hypothesis</h2>
+<p>H1: Group normalization reaches higher mean reward than the moving
+baseline after 400 steps (20 prompts x 20 visits), G = 16, lr = 0.5.
+Kill: if the group-norm final mean is within 2 seed-std of the
+baseline mean, H1 is dead.</p>
+<p>H2 (extension): larger group size G always helps. Kill: if G = 64
+does not beat G = 16 beyond 2 seed-std, H2 is dead.</p>
+<h2 id="literature">Literature</h2>
+<p>GRPO (Shao et al., 2024): the group replaces the critic. U06 C03-C04
+of this course. The synthetic setup is original to this capstone.</p>
+<h2 id="data">Data</h2>
+<p>Synthetic: 20 prompts, each with a fixed skill in [-1.5, 1.5].
+Outcome per attempt: Bernoulli(sigmoid(theta + skill)). Verifiable
+in the toy sense: the reward is computed, not judged. No real data.</p>
+<h2 id="baselines">Baselines</h2>
+<p>REINFORCE with a global exponential moving baseline (b = 0.9b +
+0.1r). Same steps, same G, same lr, same seeds. Matched budgets by
+construction.</p>
+<h2 id="method">Method</h2>
+<p>Tabular policy: one logit theta per prompt. Per step: visit one
+prompt (uniform), sample G outcomes, form advantages (group-norm or
+r - b), gradient = mean(adv x (r - p)), theta += lr x grad. This is
+the exact score-function gradient for the Bernoulli policy.</p>
+<h2 id="metrics">Metrics</h2>
+<p>Mean reward over prompts, averaged over 5 seeds, reported with
+seed std. Primary readout at step 400.</p>
+<h2 id="controls">Controls</h2>
+<p>Same skill vectors per seed across modes. Same RNG streams per
+(seed, mode) pair. Same lr and steps. The only difference is the
+advantage estimator.</p>
+<h2 id="ablations">Ablations</h2>
+<p>The G sweep (4, 16, 64) is the ablation: it varies the group size
+holding everything else fixed.</p>
+<h2 id="seed-variation-and-uncertainty">Seed variation and uncertainty</h2>
+<p>Seeds 1-5. Std across seeds reported. H1 kill uses 2 seed-std.</p>
+<h2 id="failure-criteria">Failure criteria</h2>
+<p>Pre-registered: H1 dead if within 2 seed-std. H2 dead if G = 64
+does not clear G = 16 by 2 seed-std. Also dead on NaN or flat
+curves (rig check).</p>
+<h2 id="reproducibility">Reproducibility</h2>
+<p>Runner: <code>research_grpo_run.py</code>. numpy 1.26.4, CPython 3.12.3, CPU.
+Fixed seeds, no external data. Rerun prints the same numbers.</p>
+<h2 id="results-executed">Results (executed)</h2>
+<p>Observed:</p>
+<pre><code>group final mean reward: 0.9425 +- 0.0088
+baseline final mean reward: 0.8399 +- 0.0177
+G=4 final: 0.9100 +- 0.0126
+G=16 final: 0.9425 +- 0.0088
+G=64 final: 0.9572 +- 0.0019
+</code></pre>
+<p>Learning curve (group, G = 16, seed 1): 0.476 -&gt; 0.703 -&gt;
+0.834 -&gt; 0.898 -&gt; 0.930 across 400 steps.</p>
+<p>H1: SURVIVES. Gap 0.1026, over 5 seed-std. Group normalization
+wins clearly on this toy.</p>
+<p>H2: REJECTED as stated. G = 64 beats G = 16 by 0.0147 (about
+1.7 seed-std, under the 2-std kill bar, so strictly the kill
+criterion FIRES on H2 as stated). Honest verdict: larger G helps
+with diminishing returns (+0.0325 from 4-&gt;16, +0.0147 from
+16-&gt;64), and the pre-registered kill bar is not cleared. The
+refined claim: G helps with diminishing returns, and 4x the
+samples for +0.015 is usually not worth it.</p>
+<h2 id="negative-results">Negative results</h2>
+<p>H2 rejected as stated. Also noted: the baseline is not
+embarrassing (0.84), group norm is a real but bounded win, not
+magic. On this toy the skill vector dominates: both modes learn
+the easy prompts first.</p>
+<h2 id="limitations">Limitations</h2>
+<p>Tabular toy, not a language model. No chain-of-thought, no
+verifier noise, no KL term, no clipping. IID prompts, no
+difficulty curriculum. Do not generalize to LLM training.</p>
+<h2 id="ethical-considerations">Ethical considerations</h2>
+<p>None: synthetic data, no human subjects, no dual use.</p>
+<h2 id="figure">Figure</h2>
+<p><img alt="capstone_research_fig01" src="../assets/capstones/capstone_research_fig01.png" title="capstone_research_fig01" />: learning curves and the G
+sweep. Rendered by <code>render_capstone_research.py</code>, numbers from the
+runner output above.</p>
+      
+      <nav class="pager"><a href="../interview/keys-transfer.html"><span class="lbl">← Previous</span>Interview · Transfer keys</a><a href="../capstones/applied_rag_support.html"><span class="lbl">Next →</span>Capstone · Applied</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

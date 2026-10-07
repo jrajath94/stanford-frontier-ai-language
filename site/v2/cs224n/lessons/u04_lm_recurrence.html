@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U04 · Language models and recurrence — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Lesson: Language models and recurrence.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u04" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04" class="active">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U04 · Language models and recurrence</nav>
+      <h1>U04 · Language models and recurrence</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u04-language-models-and-recurrence">U04 , Language models and recurrence</h1>
+<p>Prerequisites: P11, P13. Bridge links in <code>prerequisites.md</code>.
+Session: S05 (Winter 2026: Thu Jan 15, Language Models and RNNs).
+Claim class: OFFICIAL-SOURCE for the session title and reading list
+(vanishing gradient papers, Attention Is All You Need, SRC-02),
+REQUESTED-BRANCH for the concept inventory. All leaves: PLANNED /
+SOURCE ATTRIBUTION PENDING unless noted. Notation: see
+<code>notation_and_shapes.md</code>. Figures: <img alt="u04_fig01" src="../assets/u04_fig01.png" title="u04_fig01" /> through
+<img alt="u04_fig03" src="../assets/u04_fig03.png" title="u04_fig03" />, rendered by <code>visuals/compute_u04.py</code>
+(executed 2026-10-06, CPython 3, numpy 1.26.4).</p>
+<h2 id="local-remediation-teacher-forcing-and-perplexity">Local remediation , teacher forcing and perplexity</h2>
+<p>Read this block first if the diagnostic items D6 or D7 were not full
+marks.</p>
+<p>Teacher forcing: during training, the model predicts word t+1 from
+the true prefix w_1..w_t. The inputs are gold, the model never sees
+its own mistakes. At test time the gold prefix is gone, so the model
+feeds its own predictions back in. The train/test mismatch is called
+exposure bias.</p>
+<p>Perplexity: exp of the mean negative log-likelihood per word. The
+toy RNN below reaches training loss 0.2824, so its training
+perplexity is exp(0.2824) = 1.326: barely more than one effective
+choice per word on training data. Do not compare this number with
+any other model&rsquo;s perplexity unless the tokenization matches.
+Assessment: if a model assigns probability 0.5 to each correct word,
+what is its perplexity? Key: <code>keys/u04_answers.md</code> R1.</p>
+<hr />
+<h3 id="c01-chain-rule-the-lm-factorization">C01: chain rule (the LM factorization)</h3>
+<p>Leaf id <code>cs224n-U04-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S05
+   and back to U01 C07. Scope: the probability factorization every
+   later unit assumes. Objectives: write the factorization, explain
+   why it makes training parallel and generation serial, compute a
+   toy likelihood. Depends on P06 (conditional probability).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: how do you assign a
+   probability to a whole sentence? Toy: P(the, cat, sat) = P(the)
+   x P(cat | the) x P(sat | the, cat). Three small predictions
+   compose into one sentence score. No independence assumed.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The chain rule turns a joint distribution into a
+   sequence of next-word bets. Training: all bets are placed at once
+   (the full sentence is known). Generation: bets are placed one at
+   a time, each depending on the last. This asymmetry, parallel
+   training vs serial generation, shapes every LM system.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Sequence
+   w_1..w_n. P(w_1..w_n) = product_t P(w_t | w_{&lt;t}). Log-likelihood:
+   sum of log terms. Assumption: none about independence, the
+   approximation lives inside each P(w_t | prefix), which the model
+   must compress.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The chain rule is exact: P(A, B) =
+   P(A) P(B | A), applied n - 1 times. The mechanism that matters:
+   the log turns the product into a sum, so the total loss is a sum
+   of per-position losses. Every position contributes equally, no
+   position is special.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy bigram numbers from U01: P(the) =
+   11/35 = 0.314, P(cat | the) = 0.24 (smoothed), P(sat | cat) =
+   0.158 (smoothed). Log-likelihood of &ldquo;the cat sat&rdquo; = log 0.314 +
+   log 0.24 + log 0.158 = -1.158 - 1.427 - 1.845 = -4.430. Perplexity
+   = exp(4.430/3) = 4.38. (Hand-computed from script counts, labeled
+   as such.)</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>seq_logprob(seq,
+   model)</code>: sum of log P(w_t | prefix). <code>seq_ppl</code>: exp of the mean.
+   ~10 lines on top of any next-word scorer.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match -4.430 and 4.38
+   on the toy. Check: shuffling the words changes the score (order
+   matters). Check: the empty prefix term P(w_1) uses the unigram.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Scoring a sequence: n forward passes (or one batched
+   pass). The statistical cost: long prefixes are rare, so their
+   conditionals are poorly estimated, every LM is a fight against
+   this sparsity.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    masked/bidirectional factorization (U06): predict missing words
+    from both sides. Choose autoregressive when the task generates
+    text left to right. Choose bidirectional when the task reads
+    whole inputs (classification, QA over a passage).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the factorization handles any order.&rdquo; Counterexample:
+    train left-to-right, then ask for the middle word given both
+    sides: the model cannot use the right side. The factorization
+    fixes the information flow, changing the task needs a new
+    factorization.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train identical models left-to-right and right-to-left
+    on the same corpus and compare perplexity. Predict: near-equal
+    (the chain rule is symmetric in principle). Falsifier: large gap
+    (points to an implementation asymmetry worth finding).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A1 (breadth), L1 (ladder:
+    write the factorization, compute the toy, derive the sum form,
+    explain the order failure, design the direction test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: implement
+    <code>seq_logprob</code>, match -4.430. E2: show that reversing the toy
+    sentence changes the bigram score. Keys in <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is a
+    factorization (a procedure), the numbers are carried in text.
+    Logged as an honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-teacher-forcing">C02: teacher forcing</h3>
+<p>Leaf id <code>cs224n-U04-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S05
+   and to P13. Scope: the training trick and its price. Objectives:
+   define teacher forcing, define exposure bias, measure the gap on
+   the toy. Depends on C01 and the remediation block.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: training feeds the
+   model perfect prefixes, what happens when the perfection stops?
+   Toy: at step t = 2 of &ldquo;the cat sat &hellip;&rdquo;, training feeds &ldquo;sat&rdquo;
+   (gold). Free running feeds the model&rsquo;s own prediction &ldquo;on&rdquo;. The
+   next state differs, and the KL between the two next-word
+   distributions is 2.9543 (computed).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Teacher forcing is like training wheels: the model
+   always rides on the true path, so it never learns to recover from
+   its own errors. At test time the wheels come off. Exposure bias is
+   the resulting drift: small errors compound because the model
+   visits states it never saw in training.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Training input
+   at step t: w_t (gold). Test input: ŵ_t (model&rsquo;s sample).
+   Assumption: the model&rsquo;s errors are small enough that the drift
+   stays manageable. This holds for good models on short sequences
+   and breaks otherwise.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The loss only ever evaluates
+   P(w_{t+1} | gold prefix). The test distribution is P(w_{t+1} |
+   model prefix). These are different distributions, minimizing the
+   first does not minimize the second. The gap grows with sequence
+   length: each step&rsquo;s error shifts the state, and the shift
+   accumulates.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u04.py</code>: at t = 2, forced
+   input &ldquo;sat&rdquo; vs free input &ldquo;on&rdquo; (the model&rsquo;s argmax). KL(forced ||
+   free) = 2.9543 nats: the two next-word distributions barely
+   overlap. <img alt="u04_fig03" src="../assets/u04_fig03.png" title="u04_fig03" /> shows the input swap.
+   One wrong word, one shifted state, one large KL.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>free_run(model,
+   seed, n)</code>: feed argmax (or sample) back for n steps.
+   <code>forced_run(model, seq)</code>: feed gold. Compare the two
+   distributions at each step with KL. ~15 lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> KL 2.9543 on the toy
+   step. Check: with a perfect model (argmax always correct), KL =</p>
+</li>
+<li>
+<p>Check: KL is non-negative and asymmetric, report the direction.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Teacher forcing trains in parallel over positions (fast).
+   Free running is serial (slow). The cost of the mismatch is paid
+   at deployment: degraded long generations. Mitigations: scheduled
+   sampling (mix gold and model inputs during training), beam
+   search, or simply short outputs.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    scheduled sampling (anneal from gold to model inputs). Choose
+    pure teacher forcing for stable, fast training (the default).
+    Choose scheduled sampling when long free-run quality matters and
+    you can afford the instability. Choose RL fine-tuning (U07)
+    when the task has a reward for whole sequences.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;low training loss means good generation.&rdquo;
+    Counterexample: the toy RNN has a training perplexity of 1.326
+    (excellent) yet its free-run KL at one step is 2.95 nats (the
+    distributions diverge). Training loss measures forced
+    performance, generation needs free-run evaluation.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train with teacher forcing vs scheduled sampling on
+    the toy corpus and compare free-run accuracy at length 10.
+    Predict: scheduled sampling wins on long runs, ties on short.
+    Falsifier: teacher forcing wins everywhere (then the toy is too
+    easy to show the bias).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A2 (breadth), L2 (ladder:
+    define both modes, compute the KL, derive the distribution
+    mismatch, diagnose the 1.326-vs-2.95 paradox, design the
+    scheduled-sampling test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E3: implement
+    <code>free_run</code>, reproduce KL 2.9543 at t = 2. E4: find the first
+    step where free-run argmax differs from gold on each toy
+    sentence. Keys in <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u04_fig03" src="../assets/u04_fig03.png" title="u04_fig03" />: gold input vs model input, one rule
+    (&ldquo;swap input&rdquo;), Shell 3, source original toy. Audit row in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-perplexity">C03: perplexity</h3>
+<p>Leaf id <code>cs224n-U04-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S05
+   and to U01 C07 (deeper treatment). Scope: the number, its
+   meaning, and its limits. Objectives: compute it, read it as
+   effective choices, list three ways it misleads. Depends on P08
+   (entropy) and the remediation block.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the RNN reports loss
+   0.2824, is that good? Toy: perplexity = exp(0.2824) = 1.326. On
+   the training sentences, the model is nearly certain. The number
+   is excellent and almost meaningless: it is the perplexity measured on the training data,
+   six sentences.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Perplexity is the size of the model&rsquo;s confusion:
+   1.326 means &ldquo;as confused as choosing among 1.3 equally likely
+   words.&rdquo; Uniform over V gives perplexity V. A model that
+   memorizes training text gets perplexity near 1. The number
+   measures fit to the evaluated distribution, nothing more.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> H: mean
+   negative log-likelihood, nats. Perplexity = exp(H).
+   Dimensionless. Assumption: the evaluated text comes from the
+   target distribution, leakage (U01 C09) breaks the reading.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> If P(w_t | prefix) = 1/k for all t,
+   H = log k, perplexity = k. In general, perplexity is the
+   geometric mean of 1/P(w_t | prefix): the average inverse
+   probability. Lower means the model put more mass on what
+   actually came next.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u04.py</code>: train loss 0.2824,
+   perplexity 1.326. Compare the U01 bigram: 5.137 on &ldquo;the cat sat&rdquo;.
+   The RNN beats the bigram on its training data, as expected: it
+   has far more capacity and the same six sentences to memorize.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>perplexity(model,
+   seqs)</code>: mean NLL over all positions, exp. Must exclude padding
+   (C09). ~8 lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 1.326 on the
+   toy training run. Check: perplexity &gt;= 1 always. Check: doubling
+   the test set does not change it (it is a mean).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> One forward pass per position. The statistical cost is
+   variance: perplexity on 6 sentences is noise, on 6 million it is
+   a measurement. Report the test size with the number.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    bits per byte/character (tokenizer-independent), accuracy@k,
+    human eval. Choose perplexity for quick model comparison on a
+    fixed tokenizer. Choose bits-per-byte when tokenizers differ.
+    Choose human eval when the decision matters.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;lower perplexity = better model.&rdquo; Three breaks:
+    (a) memorization (1.326 on training proves nothing), (b)
+    tokenizer mismatch (finer tokens inflate the count), (c) the
+    task gap (great perplexity, poor free-run, C02). The number is
+    a filter, not a verdict.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: compute train vs held-out perplexity for the toy RNN.
+    Predict: held-out is much worse (memorization). Falsifier: equal
+    (then the toy generalizes, which would be unexpected and worth
+    understanding).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A3 (breadth), L3 (ladder:
+    define it, compute 1.326, derive the uniform case, diagnose the
+    three breaks, design the held-out test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E5: implement
+    <code>perplexity</code>, match 1.326. E6: show that a model with constant
+    P = 0.5 per word has perplexity exactly 2. Keys in
+    <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a computed score, the 1.326 is carried in text. Logged as an
+    honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-rnn-state">C04: RNN state</h3>
+<p>Leaf id <code>cs224n-U04-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S05.
+   Scope: the recurrent state as memory. Objectives: write the
+   update, state the shapes, unroll three steps by hand. Depends on
+   P11 (recurrent state in the bridge) and C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: how does a fixed-size
+   network read an unbounded sentence? Toy: h_t = tanh(W_x x_t +
+   W_h h_{t-1} + b). The state h_t is a fixed d-dim vector that must
+   summarize the entire prefix. Everything the model knows about
+   the past lives in those d numbers.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The state is a running summary. Each step folds
+   the new word in and squeezes the result through tanh. The squeeze
+   keeps values bounded but also crushes information: d numbers
+   cannot hold n words losslessly. The state is a lossy compressor,
+   and its capacity is the model&rsquo;s memory.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> x_t: (d,)
+   input embedding. h_t: (d,) state. W_x: (d, d) here (embedding dim
+   = hidden dim in the toy), W_h: (d, d), b: (d,). Output:
+   y_t = softmax(W_y h_t + b_y), W_y: (d, V). Assumption: the same
+   matrices at every step (weight tying over time), this is what
+   makes it recurrent.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Unrolling: h_1 = f(x_1, h_0), h_2 =
+   f(x_2, h_1), &hellip; The network over time is a deep feedforward net
+   with tied weights. Gradients flow back through the unrolled
+   steps (C05). The tying is the point: one set of weights works for
+   any length.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand-unrolled, labeled as such): d =
+   2, W_x = I, W_h = 0.5 I, b = 0, x_1 = (1, 0), x_2 = (0, 1),
+   h_0 = (0, 0). h_1 = tanh((1,0)) = (0.762, 0) (exact 0.7616). h_2 =
+   tanh((0,1) + 0.5(0.7616, 0)) = tanh((0.3808, 1)) = (0.363, 0.762).
+   The state carries a decayed trace of x_1 into step 2.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>rnn_step(x, h,
+   Wx, Wh, b)</code>, <code>rnn_forward(seq, ...)</code>: loop, collect states.
+   ~12 lines. Must reproduce the hand unroll.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match (0.363, 0.762)
+   at step 2. Check: h_t shape is (d,) for every t. Check: with W_h
+   = 0 the state has no memory (h_t depends only on x_t).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Per step O(d^2). Total O(n d^2), serial over n (cannot
+   parallelize across time). Memory O(n d) to keep states for BPTT.
+   The serial cost is why transformers (U05) replaced RNNs at scale.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    feedforward with fixed window (no state), attention (U05, no
+    recurrence). Choose RNN when the sequence is processed online
+    and the state is a natural fit (streaming). Choose attention
+    when training speed and long-range access matter more.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the state remembers everything.&rdquo; Counterexample:
+    d = 2, n = 100: the state cannot hold 100 words, early words
+    are crushed by repeated tanh squeezes. The failure is
+    structural (C06 quantifies it). Longer sequences need larger d
+    or a different architecture.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train the toy RNN at d in {2, 8, 32} and measure
+    accuracy on the last word of length-10 vs length-3 sequences.
+    Predict: small d fails the long sequences first. Falsifier: d =
+    2 handles length 10 (then the task was too easy).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A4 (breadth), L4 (ladder:
+    write the update, unroll the toy, derive the tying, diagnose the
+    d=2/n=100 crush, design the d sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E7: implement
+    <code>rnn_step</code>/<code>rnn_forward</code>, match the hand unroll. E8: verify
+    that W_h = 0 kills memory (h_2 independent of x_1). Keys in
+    <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u04_fig01" src="../assets/u04_fig01.png" title="u04_fig01" />: one step, before/after state, one rule
+    (&ldquo;fold input in&rdquo;), Shell 3, source original toy. Audit row in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-bptt">C05: BPTT</h3>
+<p>Leaf id <code>cs224n-U04-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S05
+   (the vanishing-gradient readings motivate it). Scope:
+   backpropagation through time. Objectives: unroll, write the
+   gradient sum over time, state the truncation choice. Depends on
+   C04 and U03 C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the loss at step 10
+   depends on W_h through all 10 steps, how does the gradient reach
+   step 1? Toy: dL/dW_h = sum_{t=1..10} dL_t/dW_h, where each term
+   flows back through the unrolled chain from t to the start. Every
+   step contributes, early steps contribute through long chains.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Unroll the RNN into a 10-layer feedforward net
+   with tied weights, then run ordinary backprop. The twist: the
+   gradient for W_h is the sum of the per-layer gradients, because
+   W_h appears in every layer. One matrix, ten contributions.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Loss L =
+   sum_t L_t. dh_t/dh_{t-1} = diag(tanh&rsquo;) W_h: (d, d). dL/dW_h =
+   sum_t sum_{k&lt;=t} (dL_t/dh_t)(dh_t/dh_k)(dh_k/dW_h). Assumption:
+   the full unroll fits in memory, truncation (below) breaks this.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The double sum: for each loss term
+   L_t, the gradient flows back to every earlier step k, picking up
+   the product of Jacobians dh_t/dh_k = product_{i=k+1..t}
+   diag(tanh&rsquo;(i)) W_h. The products are the heart of C06: their
+   norms decide whether early steps learn.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u04.py</code>: the training loop
+   implements exactly this double loop (reversed time inner,
+   dh_next carried). After 300 epochs the loss falls 2.8011 -&gt;
+   0.2824: the summed gradients moved all matrices in a useful
+   direction. The script&rsquo;s inner loop is BPTT, not an approximation.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>bptt(seq, ...)</code>: the
+   reversed-time accumulation from the script, with comments naming
+   each term. Truncated variant: <code>bptt_k</code> stops the backward chain
+   every k steps (detach the state). ~25 lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Full BPTT matches the
+   script&rsquo;s loss curve. Check: with truncation k = 1, the gradient
+   for W_h uses only the current step (verify by comparing gradient
+   norms: truncated &lt; full). Check: finite differences on a 3-step
+   unroll agree.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Time O(n d^2), memory O(n d) for the states. Truncated
+   BPTT: O(k d^2) time, O(k d) memory per chunk, but gradients never
+   cross chunk boundaries: dependencies longer than k are unlearnable.
+   The truncation length is a real hyperparameter.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    real-time recurrent learning (forward-mode, O(d^3)): exact
+    online gradients, too expensive. Choose BPTT for training
+    (the standard). Choose truncated BPTT for long sequences that do
+    not fit in memory. The truncation is a bias/variance tradeoff on
+    the gradient itself.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;truncation only affects speed.&rdquo; Counterexample:
+    k = 5 on a task needing 20-step memory: the gradient for the
+    relevant dependency is cut, so the model cannot learn it no
+    matter how long it trains. Truncation is a memory limit on what
+    the model can learn, stated up front.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train the toy RNN with truncation k in {1, 3, 10} on
+    a task with a 8-step dependency (e.g. predict the first word at
+    the end). Predict: k = 1 and 3 fail, k = 10 succeeds.
+    Falsifier: k = 3 succeeds (then the dependency was shorter than
+    designed).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A5 (breadth), L5 (ladder:
+    define the unroll, write the double sum, derive the Jacobian
+    product, diagnose the k = 5 failure, design the k sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E9: implement the
+    reversed-time loop, match the script&rsquo;s first-epoch loss. E10:
+    implement <code>bptt_k</code> and show the gradient norm shrinks as k
+    shrinks. Keys in <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a gradient flow (a procedure), the loss curve is carried in
+    text. Logged as an honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-vanishing-and-exploding-gradients">C06: vanishing and exploding gradients</h3>
+<p>Leaf id <code>cs224n-U04-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S05
+   (the vanishing-gradient papers are on the official reading list:
+   Bengio et al., Pascanu et al.). Scope: why long dependencies are
+   hard. Objectives: derive the product bound, compute both regimes,
+   name the fixes. Depends on C05 and P05 (spectral radius
+   intuition).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the gradient for step
+   1 passes through 19 matrix products to reach the loss at step 20,
+   what is its size? Toy: linear RNN, dh_t/dh_{t-1} = rho I. Then
+   dh_20/dh_0 has norm rho^20. rho = 0.8 -&gt; 0.0115 (vanished). rho =
+   1.2 -&gt; 38.34 (exploded). The product decides, exponentially.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Each time step multiplies the gradient by a
+   Jacobian. Twenty multiplications by 0.8 give ~0.01: the early
+   steps get no learning signal. Twenty multiplications by 1.2 give
+   ~38: the updates explode. Only Jacobians with norm near 1.0 let
+   gradients travel. tanh&rsquo; &lt;= 1 helps, it cannot fix a bad W_h.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Jacobian
+   J_t = diag(tanh&rsquo;(t)) W_h, (d, d). Product norm &lt;= product of
+   norms &lt;= (max_t ||J_t||)^T. Assumption: the bound uses
+   submultiplicativity, the actual product can be smaller (tanh&rsquo;
+   shrinks it further).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> ||dh_T/dh_0|| = ||product J_t|| &lt;=
+   product ||J_t||. If every ||J_t|| &lt;= gamma &lt; 1, the norm decays
+   as gamma^T: exponential vanishing. If some exceed 1
+   consistently, exponential growth. The boundary gamma = 1 is a
+   knife edge, training lives near it and falls off both sides.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u04.py</code>: rho = 0.8 gives
+   norms 0.8, 0.3277, 0.1074, 0.0115 at T = 1, 5, 10, 20. rho = 1.2
+   gives 1.2, 2.4883, 6.1917, 38.3376. <img alt="u04_fig02" src="../assets/u04_fig02.png" title="u04_fig02" /> draws
+   both on a log scale against the norm = 1 line. The numbers are
+   the lesson.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>grad_norms(rho,
+   Ts)</code>: return rho^T. <code>spectral_check(Wh)</code>: report the largest
+   singular value (the honest version of rho for real matrices).
+   ~8 lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match the eight
+   printed norms. Check: rho = 1.0 gives 1.0 at every T. Check: the
+   singular value of 0.8 I is 0.8.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The analysis is free, the costs are in the fixes.
+   Vanishing: no signal reaches early steps, so long dependencies
+   are unlearnable (statistical cost). Exploding: nan losses
+   (numerical cost), clipping (C08) contains it.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative
+    explanations: none serious, the product bound is the mechanism.
+    Fixes: gradient clipping (exploding), LSTM/GRU gates
+    (vanishing, C07), orthogonal initialization (start near the
+    knife edge), attention (skip the product entirely, U05). Choose
+    the fix by the symptom: nan -&gt; clip, flat long-range learning -&gt;
+    gates.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;more steps of BPTT always help long dependencies.&rdquo;
+    Counterexample: rho = 0.8, T = 100: the gradient is 0.8^100 =
+    2e-10. No optimizer recovers a signal that small, the
+    information is gone, not just quiet. Longer unrolls cannot fix a
+    vanishing product.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> S05 readings
+    (titles only). Falsifiable extension: initialize the toy RNN&rsquo;s
+    W_h with spectral radius in {0.5, 1.0, 2.0} and measure
+    long-range accuracy after fixed training. Predict: 1.0 wins,
+    0.5 underfits long range, 2.0 nans without clipping.
+    Falsifier: 0.5 wins (then the task was short-range).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A6 (breadth), L6 (ladder:
+    define the product, compute both rows, derive the bound,
+    diagnose the 2e-10 case, design the radius sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E11: implement
+    <code>grad_norms</code>, match the eight numbers. E12: train the toy RNN
+    with W_h scaled to radius 2.0 without clipping and report the
+    first nan epoch. Keys in <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u04_fig02" src="../assets/u04_fig02.png" title="u04_fig02" />: log-scale bars, norm = 1 baseline,
+    Shell 3, source original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-lstm-and-gru-bridge">C07: LSTM and GRU bridge</h3>
+<p>Leaf id <code>cs224n-U04-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S05
+   as the classical fix for vanishing gradients. Scope: gates as
+   the mechanism. Objectives: write the LSTM update, explain the
+   constant error carousel, contrast GRU. Depends on C04 and C06.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the product of
+   Jacobians vanishes, can the architecture protect the gradient?
+   Toy: the LSTM cell state c_t = f_t * c_{t-1} + i_t * g_t. When
+   the forget gate f_t = 1, dc_t/dc_{t-1} = 1: the gradient flows
+   unchanged. The gate learns when to protect and when to forget.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Three gates, three jobs. Forget: what to erase
+   from memory. Input: what to write. Output: what to reveal. The
+   cell state is the protected conveyor belt, the gates are the
+   loaders and unloaders. GRU merges the belt and the output (two
+   gates instead of three): cheaper, usually as good.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> f_t, i_t, o_t:
+   (d,) sigmoids. g_t: (d,) tanh candidate. c_t: (d,) cell. h_t =
+   o_t * tanh(c_t). Assumption: gates are learned functions of
+   (x_t, h_{t-1}), they start near 0.5 (or forget near 1 with the
+   standard init trick).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> dc_t/dc_{t-1} = f_t (plus terms
+   through the gates, which the network can also learn). When f_t
+   is near 1, the gradient passes almost intact across the step:
+   the product in C06 gets factors near 1.0 instead of 0.8. This is
+   the constant error carousel: an explicit path with derivative 1.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand-computed, labeled as such): c_0
+   = 2.0, f = (1, 1, 1, 0.1) over 4 steps, i_t g_t = 0. c_4 = 2.0 x
+   1 x 1 x 1 x 0.1 = 0.2. Gradient dc_4/dc_0 = 0.1: the gate chose
+   to forget at step 4, and the gradient reflects the choice. With
+   f = 1 everywhere, the gradient would be exactly 1.0 across any
+   number of steps.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>lstm_step(x, h, c,
+   params)</code>: the four gates, cell update, hidden output. ~15 lines.
+   Test: with all gates forced to 1/0 patterns, the cell behaves as
+   the toy predicts.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match c_4 = 0.2 and
+   the gradient 0.1. Check: f = 1, i = 0 gives c_t = c_{t-1}
+   exactly (perfect memory). Check: shapes (d,) throughout.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Per step O(4 d^2) (four gate matrices): 4x the vanilla
+   RNN. Memory O(n d) for BPTT. The gates add parameters but buy
+   learnable memory, the tradeoff usually wins on long sequences.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    GRU (reset + update gates, no separate cell). Choose LSTM when
+    the task needs fine memory control and compute allows. Choose
+    GRU for a cheaper close substitute. Choose vanilla RNN almost
+    never (the teaching tool, not the production tool). All three
+    lose to attention at scale (U05).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;gates solve vanishing gradients completely.&rdquo;
+    Counterexample: the gates themselves are learned through the
+    same products, a badly initialized forget gate (near 0) wipes
+    memory every step and the gradient still vanishes. The
+    forget-gate init trick (bias 1.0) exists because of this
+    failure.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train LSTM vs GRU vs vanilla RNN on the long-range
+    toy task from C05&rsquo;s extension, fixed parameter budget. Predict:
+    LSTM ~= GRU &gt; RNN, with the gap growing in dependency length.
+    Falsifier: RNN wins (then the task was short-range).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A7 (breadth), L7 (ladder:
+    write the cell update, compute the toy, derive the carousel,
+    diagnose the zero-forget init, design the three-way race).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E13: implement
+    <code>lstm_step</code>, match c_4 = 0.2. E14: show that f = 1, i = 0 gives
+    exact memory across 10 steps. Keys in <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a gated path (a mechanism), the gradient numbers are carried in
+    text. Logged as an honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-clipping">C08: clipping</h3>
+<p>Leaf id <code>cs224n-U04-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S05
+   as the exploding-gradient fix. Scope: gradient clipping, done
+   right. Objectives: write the rule, prove direction is kept, state
+   what it does not fix. Depends on C06 and P09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the gradient norm is
+   29.0 and the loss just went nan, what now? Toy: g has norm
+   29.025. Clip at 1.0: g &lt;- g x (1.0/29.025). New norm exactly 1.0,
+   direction identical. The step is smaller, the compass is the same.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Clipping is a speed limit, not a rerouting. It
+   caps the step size when the gradient explodes, so one bad batch
+   cannot throw the parameters into nan territory. It does not fix
+   the cause (the product in C06), it contains the symptom.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> g: the full
+   gradient vector (all parameters). cap c: scalar (5.0 in the
+   script&rsquo;s training loop). Rule: if ||g|| &gt; c, g &lt;- g c / ||g||.
+   Assumption: the gradient direction is still useful when its norm
+   explodes, usually true for RNNs, not guaranteed.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The rescaled vector has norm exactly
+   c and the same direction: (g c/||g||) / ||g c/||g|||| = g/||g||.
+   One line of algebra, the script asserts it numerically
+   (allclose on the unit vectors). Per-parameter clipping (value
+   clipping) is the alternative, it changes direction and is
+   cruder.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u04.py</code>: random gradient norm
+   29.025, cap 1.0 -&gt; norm 1.000, direction kept (allclose True).
+   The training loop clips at 5.0 every step, without it, the
+   radius-2.0 run nans (E12).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>clip_grad(g, cap)</code>:
+   the rule above, ~4 lines. Apply to the concatenated gradient
+   (global norm), not per layer, so one exploding layer does not
+   hide behind quiet ones.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 29.025 -&gt;
+   1.000 and direction True. Check: norm below cap is untouched.
+   Check: cap = 0 raises (division by zero), document it.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> O(params) for the norm. Free compared to the backward
+   pass. Statistical note: clipping biases the gradient estimate
+   (large true gradients get cut), the bias is the price of
+   stability, and it is worth it.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    per-value clipping, adaptive clipping, smaller lr. Choose global
+    norm clipping as the default (direction kept). Choose per-value
+    when a few coordinates are pathological. Never rely on clipping
+    alone for a fundamentally unstable architecture.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;clipping fixes training.&rdquo; Counterexample: vanishing
+    gradients (norm 2e-10): clipping does nothing, the signal is
+    gone. Clipping contains explosions, it cannot create signal.
+    Diagnose first (which regime?), then treat.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train the radius-2.0 toy with caps in {1, 5, 50} and
+    record time-to-nan and final loss. Predict: cap 1 trains slowly
+    but never nans, cap 50 nans early. Falsifier: cap 50 trains
+    fine (then the explosion was mild).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A8 (breadth), L8 (ladder:
+    write the rule, compute the toy, prove direction kept, diagnose
+    the vanishing case, design the cap sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E15: implement
+    <code>clip_grad</code>, match the toy numbers. E16: show per-value
+    clipping changes direction on a 2-D example. Keys in
+    <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a rescaling, the two norms are carried in text. Logged as an
+    honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-padding">C09: padding</h3>
+<p>Leaf id <code>cs224n-U04-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S05
+   as the batching prerequisite. Scope: variable lengths in one
+   batch. Objectives: pad, mask, and exclude padding from the loss.
+   Depends on P12 (masks) and C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the batch has lengths
+   6, 5, 4, the tensor needs one shape. What fills the gaps, and
+   what stops the filler from training the model? Toy: pad id 0,
+   mask m_t = 1 for real tokens, 0 for pads. Loss = sum(m_t L_t) /
+   sum(m_t).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Padding is a scaffold: it makes the batch
+   rectangular, then the mask marks the scaffolding so the loss
+   ignores it. The model still processes pad tokens (wasted
+   compute), the mask only protects the loss. Forgetting the mask
+   trains the model to predict padding: a real, silent bug.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Batch (B, n_max)
+   ids, mask (B, n_max) in {0, 1}. Loss: sum over batch and time of
+   m_{b,t} L_{b,t}, divided by sum of m. Assumption: pad id never
+   occurs as a real token, the mask is built from lengths, not
+   guessed.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The masked mean is the mean over real
+   tokens only: E[L] over the true length distribution. Without the
+   mask, short sentences contribute pad predictions and the loss is
+   dominated by the easiest &ldquo;token&rdquo; (always predict pad). The
+   mechanism is one multiplication, the discipline is building the
+   mask from lengths every time.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand-computed, labeled as such):
+   lengths (3, 2), n_max = 3. Losses [[0.5, 0.4, 0.3], [0.6, 0.2,
+   9.9]] where 9.9 is the pad position&rsquo;s loss. Unmasked mean =
+   11.9/6 = 1.983. Masked mean = (0.5+0.4+0.3+0.6+0.2)/5 = 0.4.
+   The pad loss (9.9) dominates the unmasked number, the mask
+   removes it.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>pad_batch(seqs,
+   pad_id)</code>: return (padded, mask, lengths). <code>masked_ce(logits,
+   targets, mask)</code>: the masked mean. ~15 lines. Test on the toy:
+   masked 0.4, unmasked 1.983.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match both numbers.
+   Check: all-pad row contributes 0/0: guard with max(1, mask_sum).
+   Check: mask built from lengths equals (ids != pad_id) when the
+   pad id is reserved.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Padding wastes compute: a batch of lengths (100, 3)
+   spends 97% of the short row on pads. Bucketing (group similar
+   lengths) is the fix. Packing (concatenate sentences) is the
+   stronger fix at scale.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    no batching (one sequence at a time): no padding, no
+    vectorization. Choose padding+mask for the standard tradeoff.
+    Choose bucketing when length variance is high. The mask is
+    non-negotiable in all batched variants.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the model ignores padding by itself.&rdquo; Counterexample:
+    the toy: unmasked loss 1.983 vs masked 0.4, and the gradient
+    pushes the model to predict pad_id everywhere (it is the most
+    frequent &ldquo;token&rdquo; in a padded batch). The model learns the
+    scaffolding, not the language.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train the toy RNN with and without the mask on
+    variable-length sequences and compare held-out perplexity.
+    Predict: unmasked is worse and its top prediction is often the
+    pad id. Falsifier: no difference (then all sequences had equal
+    length, check the data).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A9 (breadth), L9 (ladder:
+    define pad and mask, compute the toy, derive the masked mean,
+    diagnose the pad-prediction, design the mask ablation).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E17: implement
+    <code>pad_batch</code> and <code>masked_ce</code>, match 0.4 vs 1.983. E18: measure
+    the wasted-flop fraction for lengths (100, 3) in a batch of 2.
+    Keys in <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a masking procedure, the two means are carried in text. Logged
+    as an honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-state-carry">C10: state carry</h3>
+<p>Leaf id <code>cs224n-U04-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S05
+   as the inference detail. Scope: what happens to the state between
+   sequences. Objectives: state the train/inference difference,
+   reset correctly, explain stateful training. Depends on C04 and
+   C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: after &ldquo;the cat sat&rdquo;,
+   the state holds the sentence, the next batch starts &ldquo;a dog
+   barked&rdquo;. Does the state carry over? Toy: yes by default (the
+   tensor persists), and that is a bug: the new sentence inherits
+   the old sentence&rsquo;s summary. Reset h_0 = 0 between sequences.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The state is short-term memory with no
+   expiration date. Training resets it per sequence (each example is
+   independent). Stateful training carries it across batches
+   deliberately (for very long sequences split into chunks), but
+   then the gradient must not cross the boundary (detach), or
+   batches become secretly dependent.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> h_0: (d,),
+   zeros at each sequence start (standard). Stateful: h_0 =
+   previous h_n, detached. Assumption: sequences are independent
+   unless the task says otherwise, the default is reset.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: this is a bookkeeping
+   rule with gradient consequences. If the state carries without
+   detach, BPTT spans batches: memory blows up and the &ldquo;independent
+   batch&rdquo; assumption behind shuffling breaks. Detach cuts the graph,
+   the state carries values, not gradients.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand-computed, labeled as such): two
+   sequences, d = 2. Reset: h_0 = (0, 0) for both. Carry by mistake:
+   seq 2 starts from seq 1&rsquo;s final state (0.363, 0.762) (from C04&rsquo;s
+   unroll), its first prediction shifts toward &ldquo;sat&rdquo;-continuations.
+   The bug is silent: no shape error, wrong conditioning.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>reset_state(batch)</code>:
+   zeros. Training loop: reset per batch (or per sequence with
+   masking). Stateful variant: carry + detach, with a comment
+   explaining why. ~8 lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> With reset, seq 2&rsquo;s
+   first-step distribution equals the standalone run. With carry,
+   it differs. Check: the test asserts equality under reset.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Reset is free. Stateful training complicates shuffling
+   (batches must stay in order) and is rarely worth it now, it
+   survives in streaming inference (keep the state across user
+   turns, which is correct there).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    transformers (U05) have no state to carry: the context is the
+    input. Choose reset RNN for standard training. Choose stateful
+    only for chunked long sequences with ordered batches. At
+    inference, carrying the state across a conversation is the
+    correct behavior (it is the memory).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the state resets itself.&rdquo; Counterexample: the toy
+    above. In real code the bug appears as mysteriously
+    order-dependent validation scores: shuffle the validation set
+    and the score changes, because the state leaked across
+    sequences.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train with and without reset on shuffled vs ordered
+    batches and compare. Predict: no-reset + shuffled is worst
+    (incoherent memory). Falsifier: no difference (then the state
+    carries little, check d).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A10 (breadth), L10
+    (ladder: state the rule, compute the toy shift, derive the
+    detach need, diagnose the order-dependent scores, design the
+    reset ablation).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E19: implement reset
+    and carry, show the first-step distribution differs. E20:
+    explain why detach is needed for stateful training, with the
+    memory argument. Keys in <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a bookkeeping rule, the distribution shift is carried in text.
+    Logged as an honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-decoding">C11: decoding</h3>
+<p>Leaf id <code>cs224n-U04-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S05
+   as the generation half. Scope: turn scores into sequences.
+   Objectives: implement greedy, temperature, top-k, state what
+   each controls. Depends on C01 and P06 (sampling).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model outputs
+   probabilities, how do you pick words? Toy: scores (2.0, 1.0,
+   0.5, 0.1) -&gt; probs (0.587, 0.216, 0.131, 0.079) at T = 1.
+   Greedy picks index 0 always. T = 0.5 sharpens: top prob 0.828.
+   T = 2.0 flattens: top prob 0.406. (Computed in the script.)</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Decoding is a risk knob. Greedy: no risk, often
+   dull and repetitive. Temperature: scales the logits before
+   softmax, low T sharpens (confident), high T flattens (wild).
+   Top-k / top-p: cut the tail, then sample. The knob trades
+   coherence for variety, there is no universally right setting.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Logits z: (V,).
+   Temperature T: positive scalar. p_i = softmax(z/T)_i. Top-k:
+   keep k largest, renormalize. Assumption: the model&rsquo;s probabilities
+   mean something (calibration is a separate problem).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> As T -&gt; 0, softmax(z/T) -&gt; one-hot on
+   the argmax (greedy). As T -&gt; infinity, it -&gt; uniform. The
+   derivation: dividing by T scales the gaps, exp amplifies scaled
+   gaps. Top-k truncates before sampling: the tail (often 90% of V)
+   gets exactly zero.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u04.py</code>: greedy -&gt; index 0.
+   T = 0.5: top prob 0.828. T = 2.0: top prob 0.406. Same logits,
+   three behaviors. The script prints all three.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>sample(logits, T,
+   k)</code>: temperature scale, top-k mask, sample. <code>greedy(logits)</code>:
+   argmax. ~12 lines. Test: T near 0 matches greedy, k = 1 matches
+   greedy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match the three
+   numbers. Check: probabilities sum to 1 after top-k. Check: T = 1
+   reproduces the plain softmax.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> O(V) per step for the softmax, the sampling is trivial.
+   The cost is serial: n steps, no parallelism (C01&rsquo;s asymmetry).
+   Repetition loops are the practical pathology of greedy decoding.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    beam search (keep k hypotheses, score sequences not words).
+    Choose greedy for speed and determinism. Choose sampling for
+    variety (stories, chat). Choose beam for quality under a
+    sequence-level score (translation). None fixes a bad model.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;higher temperature = more creative = better.&rdquo;
+    Counterexample: T = 2.0 on the toy: top prob 0.406, the tail
+    dominates, output is incoherent. Creativity without control is
+    noise. Tune T on the task, do not max it.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: generate 50 continuations at T in {0.5, 1.0, 1.5}
+    and have humans rate coherence vs interestingness. Predict:
+    coherence falls and interestingness rises then falls with T.
+    Falsifier: both rise monotonically (then the range was too
+    narrow).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A11 (breadth), L11
+    (ladder: define the knob, compute the three settings, derive
+    the T limits, diagnose the T = 2 incoherence, design the human
+    study).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E21: implement
+    <code>sample</code>, match the three numbers. E22: prove the T -&gt; 0 limit
+    is the argmax. Keys in <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a distribution reshape, the three top-probs are carried in text.
+    Logged as an honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-sequence-generalization">C12: sequence generalization</h3>
+<p>Leaf id <code>cs224n-U04-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> The unit&rsquo;s
+   synthesis: what the RNN learned and what it did not. Objectives:
+   probe length generalization, state the fixed-state limit, name
+   the successor. Depends on all of U04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: trained on
+   length-6 sentences, what happens on length-20? Toy: the state is
+   d = 16 numbers, a length-20 sentence must squeeze through the
+   same 16 numbers. Early words are crushed (C04). The model
+   generalizes across positions it saw, not across lengths it did
+   not.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> RNNs generalize along the training
+   distribution&rsquo;s support: new word orders, seen lengths. They fail
+   off-support: much longer sequences, novel compositions. The
+   fixed state is a hard ceiling, attention (U05) removes it by
+   giving every position direct access to every other.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Train lengths:
+   {4, 5, 6}. Test lengths: {6, 12, 24}. Metric: next-word accuracy
+   by position. Assumption: the test comes from the same
+   word-order process, only length changes.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the mechanism is C04&rsquo;s
+   lossy compression plus C06&rsquo;s vanishing products. Longer
+   sequences need more state capacity and cleaner gradient paths,
+   the architecture provides neither. The failure is predictable
+   from the unit&rsquo;s mechanisms, which is the point of the synthesis.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Projection from the toy (stated as a
+   prediction, not a measurement): the trained RNN scores 0.862
+   next-word accuracy on length-6 training sentences. On
+   length-12 continuations built from the same words, expect a drop,
+   the script does not measure this (six sentences cannot test
+   it honestly). Stated as a designed experiment, not a result.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>length_probe(model,
+   lengths)</code>: generate or collect sequences per length, report
+   accuracy by position. The lab runs it on the toy&rsquo;s length range
+   (4-6) as a smoke test.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Smoke test: accuracy
+   is flat across lengths 4-6 (in-support). Check: the probe
+   reports per-position accuracy, not just the mean (early vs late
+   positions tell different stories).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The probe costs one forward pass per sequence. The
+   finding it would produce (degradation off-support) is the
+   standard result, the value is in measuring your own model&rsquo;s
+   cliff, not in discovering the phenomenon.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    architectures without the bottleneck (attention, state-space
+    models). Choose RNNs where they fit (short sequences,
+    streaming). Choose attention when length generalization
+    matters. The unit&rsquo;s arc ends here: U05 is the answer to this
+    concept&rsquo;s problem.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;good training accuracy means the model learned the
+    language.&rdquo; Counterexample: 0.862 on six memorized sentences
+    (train perplexity 1.326). The model learned the sentences, not
+    the language. Generalization is measured off-support, never
+    on it.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: the length probe on a real corpus-trained RNN,
+    lengths 10 to 200. Predict: accuracy falls with length, steepest
+    past the training max. Falsifier: flat (then the model truly
+    generalized, publish it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u04_answers.md</code> A12 (breadth: state the
+    ceiling and the successor).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E23: implement
+    <code>length_probe</code>, run the smoke test on lengths 4-6. E24: write
+    the one-paragraph handoff from U04 to U05 (what breaks, what
+    replaces it). Keys in <code>keys/u04_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u04_fig02" src="../assets/u04_fig02.png" title="u04_fig02" /> is reused as the unit&rsquo;s closing image:
+    the product bound is why the ceiling exists. Logged in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="unit-visual-map">Unit visual map</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Claim</th>
+<th>Shell</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="u04_fig01" src="../assets/u04_fig01.png" title="u04_fig01" /></td>
+<td>one RNN step folds input into state</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u04_fig02" src="../assets/u04_fig02.png" title="u04_fig02" /></td>
+<td>gradient norm vs time, log scale</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u04_fig03" src="../assets/u04_fig03.png" title="u04_fig03" /></td>
+<td>teacher forcing vs free running</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+</tbody>
+</table>
+      
+      <nav class="pager"><a href="../keys/u03_answers.html"><span class="lbl">← Previous</span>U03 · Answers</a><a href="../keys/u04_answers.html"><span class="lbl">Next →</span>U04 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

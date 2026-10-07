@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U03 · LLM architecture and generation — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Lesson: LLM architecture and generation.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-u03">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cme295-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_attention_variants.html" data-page="cme295-u02">U02 · Transformer variants and posit</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_llm_generation.html" data-page="cme295-u03" class="active">U03 · LLM architecture and generatio</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_training_adaptation.html" data-page="cme295-u04">U04 · Training and efficient adaptat</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_preference_optimization.html" data-page="cme295-u05">U05 · Preference tuning and policy o</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_reasoning_scaling.html" data-page="cme295-u06">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_rag_agents.html" data-page="cme295-u07">U07 · RAG and agentic systems</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_llm_evaluation.html" data-page="cme295-u08">U08 · LLM evaluation and judging</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_trends_synthesis.html" data-page="cme295-u09">U09 · Current trends, exams, and syn</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="../interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="../interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="../interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="../interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="../interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cme295-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cme295-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/research_grpo_extension.html" data-page="cme295-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / U03 · LLM architecture and generation</nav>
+      <h1>U03 · LLM architecture and generation</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u03-llm-architecture-and-generation">U03 , LLM architecture and generation</h1>
+<p>Prerequisites: P13, P14, P15. Bridge links in <code>../prerequisites.md</code>.
+Lecture anchor: L2 (Oct 2, 2026). Claim class: OFFICIAL-SYLLABUS for
+LLM definition, MoE, context length, temperature, sampling strategies.
+REQUESTED-BRANCH for prompting, ICL, demonstration selection, reasoning
+prompting, self-consistency, evaluation limits. All leaves: PLANNED /
+SOURCE ATTRIBUTION PENDING until slide or transcript extraction
+verifies them.
+Notation: see <code>../notation_and_shapes.md</code>. Glossary: <code>../glossary.md</code>.</p>
+<h2 id="not-yet-understood">Not yet understood</h2>
+<p>Concepts this unit uses but does not teach. Each one arrives in a
+later unit.</p>
+<ol>
+<li>Training and adaptation (U04): SFT, LoRA, optimizer memory.</li>
+<li>Preference tuning (U05): DPO, RLHF, reward models.</li>
+<li>Reasoning RL (U06): GRPO, verifiers, test-time scaling.</li>
+<li>RAG and agents (U07): retrieval pipelines and ReAct loops.</li>
+<li>LLM evaluation (U08): judging, bias, calibration, intervals.</li>
+</ol>
+<h2 id="local-remediation-distributions-entropy-conditioning">Local remediation , distributions, entropy, conditioning</h2>
+<p>Do this block first if diagnostic items D2, D4, or D7 were not full
+marks.</p>
+<p><strong>R0.1 Reading a distribution.</strong> p = [0.7, 0.2, 0.1]. The top token
+wins with 70%. The tail holds 30%. Sampling draws from this p, argmax
+always picks the top. Temperature reshapes p before either acts.</p>
+<p><strong>R0.2 Entropy.</strong> H = -sum p log p. For [0.7, 0.2, 0.1] (natural log):
+0.250 + 0.322 + 0.230 = 0.802 nats. Sharp distributions have low
+entropy, flat ones have high entropy. Temperature moves entropy up
+and down.</p>
+<p><strong>R0.3 Conditioning.</strong> P(y | x) is a new distribution for each x. A
+prompt is a conditioner: it selects which distribution the model
+samples from. &ldquo;Prompting works&rdquo; means the conditioner selects well.</p>
+<hr />
+<h3 id="c01-llm-definition">C01: LLM definition</h3>
+<p>Leaf id <code>cme295-U03-C01</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;LLM definition and architecture&rdquo;. Scope: what the term covers
+   operationally. Objectives: define an LLM without hype, state its
+   three fixed artifacts, and separate definition from capability
+   claims. Depends on P13, P14.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: what exactly is the
+   object when someone says &ldquo;the model&rdquo;? Toy: weights W (numbers),
+   tokenizer T (string &lt;-&gt; id map), config C (d, L, h, T_max). The
+   LLM is the triple (W, T, C) plus the sampling code. Nothing more.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> An LLM is a decoder-only transformer trained to
+   predict the next token, large enough that the triple (W, T, C)
+   does the work. &ldquo;Large&rdquo; is about the triple&rsquo;s size, not about
+   understanding. Capabilities are measured, not defined.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> W: ~1e9-1e12
+   floats. T: vocabulary V ~ 32k-200k. C: d, L, h, T_max, RoPE base.
+   Assumption: the tokenizer at inference is the training
+   tokenizer (C02 in U01: mismatch breaks everything).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: a definition. The
+   operational content: text -&gt; ids (T) -&gt; forward pass (W, C) -&gt;
+   logits -&gt; sample -&gt; ids -&gt; text (T). Every LLM application is
+   this loop with different conditioners (prompts) and samplers.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy triple: V = 32000, d = 4096, L = 32.
+   Weights fp16: roughly 12 * d^2 * L = 12 * 4096^2 * 32 ~=
+   6.4e9 params -&gt; ~13 GB. The tokenizer table is kilobytes. The
+   loop above is the entire runtime.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>generate(prompt)</code>:
+   ids = tokenize(prompt), for step in range(n): logits =
+   forward(ids), next = sample(logits), ids.append(next), return
+   detokenize(ids). Eight lines. This is the whole interface.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: tokenize then
+   detokenize roundtrips, T = 0 sampling is deterministic, the same
+   triple gives the same outputs. If outputs differ at T = 0, the
+   triple changed.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Per step: O(T d^2 + T^2 d) with cache O(T d). Memory: weights +
+   cache (U02 C10). The definition says nothing about cost, the
+   triple&rsquo;s size does.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Encoder-only
+    (BERT) and encoder-decoder (T5) are not LLMs in this usage,
+    they lack open generation. Choose the decoder-only definition
+    when the task needs open text, the label is about the loop.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the name guarantees behavior. Counterexample: two
+    triples with the same architecture and size but different data
+    behave differently, &ldquo;LLM&rdquo; names the shape, not the skills.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the model
+    cards of public LLMs for how (W, T, C) is documented.
+    Extension: swap the tokenizer of a tiny model, keep W, measure
+    the perplexity explosion and report it.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name the three artifacts. Ladder: define the triple -&gt;
+    trace the loop -&gt; justify the tokenizer match -&gt; implement
+    generate -&gt; predict the swap failure. Transfer: define the
+    &ldquo;model&rdquo; for a diffusion image generator, name its triple.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: bytes of the toy
+    triple&rsquo;s weights in fp16. E2: what breaks first if T changes?
+    E3: why does sampling code belong in the definition? Key:
+    <code>../keys/u03_answers.md</code> R1-R3.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: W, T, C, loop. Architecture plate: named boxes (tokenizer,
+    forward, sampler) and named edges (ids, logits). Logged as a
+    plate spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-moe">C02: MoE</h3>
+<p>Leaf id <code>cme295-U03-C02</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;Mixture of experts&rdquo;. Scope: sparse expert layers. Objectives:
+   write the routing equation, compute a toy routing, and explain
+   the load-balancing loss. Depends on P14, U02 C08 (FFN).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: capacity costs
+   compute, can most weights sleep per token? Toy: 8 experts, top-2
+   routing. Each token wakes 2 of 8 FFNs, the other 6 cost nothing.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The router is a bouncer with a guest list of 2.
+   Each expert is a full FFN. The output is the weighted sum of the
+   chosen experts. Capacity (total parameters) grows, active
+   compute stays flat.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Router:
+   g = softmax(x W_g), W_g: (d, E). Top-k: keep k gates,
+   renormalize. Output: sum_i w_i Expert_i(x). Assumption: the
+   router balances load (enforced by an auxiliary loss), experts
+   specialize.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Without balancing, the router
+   collapses: one expert gets everything (rich get richer, since
+   chosen experts train faster). The aux loss penalizes the product
+   of the fraction of tokens routed to expert i and the mean gate
+   value: L_aux = E * sum_i f_i * P_i. It is added with a small
+   coefficient.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u03.py</code> (seed 11,
+   E = 8, d = 16, k = 2): gates
+   [0.030, 0.112, 0.087, 0.202, 0.431, 0.086, 0.028, 0.024],
+   chosen E4, E3 with weights [0.681, 0.319]. MoE output norm 2.746
+   vs dense (all experts) 1.838. Figure:
+   <img alt="u03_fig03" src="../assets/u03_fig03.png" title="u03_fig03" />. Public example: Mixtral 8x7B
+   (8 experts, top-2, public model fact).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>moe(x)</code>:
+   g = softmax(x @ W_g), top = argmax2(g), w = renormalize,
+   return sum w_i * expert_i(x). Add aux loss from routing
+   fractions. Twelve lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: exactly k
+   experts are active per token, weights sum to 1, expert usage is
+   within 2x of uniform. If one expert takes &gt; 50%, the aux
+   coefficient is too small.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Active compute ~= k/E of dense, memory holds all experts.
+   Communication: tokens route across devices (expert parallelism).
+   The router is a single point of failure for load balance.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Dense FFN
+    (simple, no routing risk). Switch (top-1, cheaper, weaker).
+    Choose MoE when capacity must grow faster than the compute
+    budget.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: experts specialize. Counterexample: without the aux
+    loss, or with a bad coefficient, experts stay redundant and the
+    model is a slow dense net. Specialization is enforced, not
+    emergent.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Shazeer et
+    al. (2017, MoE) and Fedus et al. (2022, Switch). Extension:
+    train a tiny MoE with and without the aux loss, measure expert
+    usage entropy and task accuracy.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the routing equation. Ladder: define the router
+    -&gt; compute the toy -&gt; justify the aux loss -&gt; implement moe -&gt;
+    predict the collapse. Transfer: MoE for a recommender with
+    user segments, defend E and k.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: active fraction
+    for E = 64, k = 2. E2: aux loss when one expert gets all
+    tokens. E3: why renormalize the top-k gates? Key:
+    <code>../keys/u03_answers.md</code> R4-R6.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u03_fig03.png</code>: Shell 3, one rule (route to 2 of 8), before
+    token + router, after weighted expert sum. Source: original
+    toy. Numbers from <code>render_u03.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-context-length">C03: context length</h3>
+<p>Leaf id <code>cme295-U03-C03</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;Context length&rdquo;. Scope: what T_max means and how to stretch it.
+   Objectives: state the three costs of longer context and explain
+   position interpolation. Depends on U02 C06, C11.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model trained at
+   4k tokens, the task needs 128k. What breaks, and what are the
+   fixes? Toy: RoPE angles at position 100000 with base 10000 were
+   never seen in training.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Context length is a triple constraint: memory
+   (T^2 scores, T cache), compute (T^2 d), and position codes
+   (unseen angles). Stretching context means paying all three or
+   cheating one.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> T_max: trained
+   length. Position interpolation: map position m to m / s for
+   stretch factor s (Chen et al., 2023). Assumption: the model can
+   reuse learned angle patterns at compressed positions.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Interpolation divides all RoPE angles
+   by s, keeping every angle inside the trained range. The cost:
+   local resolution drops (s positions share the patterns of one).
+   NTK-aware variants scale the base instead of the positions,
+   preserving high-frequency detail.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> s = 32 stretches 4k to 128k. Attention
+   memory at T = 128k, d = 4096, h = 32, fp16: scores per layer =
+   32 * 128k^2 * 2 bytes = 1 TB. The position fix is the easy part,
+   the memory is the wall. That number is why long context needs
+   kernels, not just interpolation.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>stretch(model, s)</code>:
+   scale position indices by 1/s (or scale the RoPE base by the
+   NTK rule), run a short fine-tune on long documents, evaluate
+   passkey retrieval. The fine-tune teaches the model the new
+   scale.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: perplexity at
+   4k is unchanged, passkey retrieval works at 128k, the score
+   memory matches the formula. If 4k perplexity moved, the
+   interpolation broke trained positions.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Memory O(T^2) scores, O(T) cache per layer. Fine-tuning on long
+   data is required, zero-shot stretch underperforms.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Larger RoPE
+    base (no fine-tune, weaker). Truncation/summarization (no model
+    change, loses information). RAG (U07) for knowledge, not for
+    reasoning over the full text. Choose interpolation when the
+    task needs the whole context in one pass.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: stretched context reasons as well as trained
+    context. Counterexample: &ldquo;lost in the middle&rdquo; (Liu et al.,
+    2023): models use the start and end of long contexts better
+    than the middle. Length is not comprehension.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Chen et
+    al. (2023, position interpolation) and Liu et al. (2023, lost
+    in the middle). Extension: measure passkey accuracy vs position
+    on a tiny stretched model, plot the U-shape.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name the three costs. Ladder: define T_max -&gt; compute
+    the 1 TB -&gt; justify interpolation -&gt; implement stretch -&gt;
+    predict lost-in-the-middle. Transfer: 1M-token genomics,
+    state the first wall.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: score memory at
+    T = 32768, h = 8, fp16. E2: s for 2k -&gt; 64k. E3: why does
+    interpolation need fine-tuning? Key: <code>../keys/u03_answers.md</code>
+    R7-R9.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: trained range, stretched range, memory wall. Lesson
+    plate: before (angles to 4k) -&gt; rule (divide by s) -&gt; after
+    (angles cover 128k). Logged as a plate spec with the 1 TB
+    computation.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-temperature">C04: temperature</h3>
+<p>Leaf id <code>cme295-U03-C04</code>. Claim class OFFICIAL-SYLLABUS.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;temperature&rdquo;. Scope: the softmax temperature. Objectives: compute
+   distributions at three temperatures, state both limits, and read
+   entropy off the result. Depends on R0.1, R0.2.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the logits are fixed,
+   how do you make the model more daring or more careful without
+   retraining? Toy: logits [3, 1, 0, -1] for [the, a, an, zebra].
+   Divide by T, then softmax.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Temperature is a volume knob on decisiveness.
+   T &lt; 1 turns it down (the winner takes more), T &gt; 1 turns it up
+   (everyone gets a share). T = 1 changes nothing.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> p_i =
+   exp(z_i / T) / sum exp(z_j / T). T &gt; 0, unitless. Assumption: the
+   logits are fixed, only the readout changes.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> As T -&gt; 0, the largest logit
+   dominates: p -&gt; one-hot on argmax (greedy). As T -&gt; infinity,
+   z_i / T -&gt; 0 for all i: p -&gt; uniform. Entropy rises
+   monotonically with T. The limits are exact, not approximate.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u03.py</code>: T = 0.5 -&gt;
+   [0.979, 0.018, 0.002, 0.000], entropy 0.110, T = 1.0 -&gt; [0.831,
+   0.112, 0.041, 0.015], entropy 0.595, T = 2.0 -&gt; [0.579, 0.213,
+   0.129, 0.078], entropy 1.110. Figure:
+   <img alt="u03_fig01" src="../assets/u03_fig01.png" title="u03_fig01" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>sample_temp(logits,
+   T)</code>: return categorical(softmax(logits / T)). Three lines. T =
+   0 is the special case argmax.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: T = 1
+   reproduces the plain softmax, probabilities sum to 1 at every T,
+   entropy rises with T. If T = 0 samples vary, the argmax has a
+   tie or the code path is wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   O(V) per step, negligible. Numerically: divide first, then the
+   stable softmax (R0.2 in U02). No training cost.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Top-k/top-p
+    (C05) cut the tail, temperature reshapes it. Use temperature
+    for the creativity dial, truncation for the safety rail. They
+    compose.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: higher T means more creative AND still coherent.
+    Counterexample: at T = 2 the tail (zebra at 0.078) fires often
+    enough to derail factual text, temperature without truncation
+    is a common source of &ldquo;confident nonsense&rdquo;.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    decoding sections of the GPT-2/GPT-3 papers for production
+    temperature practice. Extension: sweep T on a factual QA set
+    and a story set, report where accuracy peaks vs where human
+    preference peaks.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: state both limits. Ladder: define the knob -&gt; compute
+    the three distributions -&gt; justify the limits -&gt; implement
+    sample_temp -&gt; predict the high-T failure. Transfer: temperature
+    for a game AI&rsquo;s move selection, defend the setting.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: distribution at
+    T = 0.25 for logits [2, 0]. E2: entropy at T -&gt; infinity for
+    V = 4. E3: why does T = 0 need a special case in code? Key:
+    <code>../keys/u03_answers.md</code> R10-R12.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u03_fig01.png</code>: Shell 3, one rule (softmax(z/T)), before
+    logits, after three distributions. Source: original toy.
+    Numbers from <code>render_u03.py</code>. Alt text: &ldquo;Plate showing one logit
+    vector reshaped by three temperatures.&rdquo;</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-top-ktop-p">C05: top-k/top-p</h3>
+<p>Leaf id <code>cme295-U03-C05</code>. Claim class OFFICIAL-SYLLABUS (&ldquo;Sampling
+strategies&rdquo;).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;Sampling strategies&rdquo;. Scope: tail truncation. Objectives: apply
+   top-k and top-p by hand, renormalize, and contrast fixed-count vs
+   mass-based cuts. Depends on C04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: temperature flattens
+   the tail but never removes it, how do you forbid the junk
+   outright? Toy: 8-token distribution, top-k = 3 keeps 3 tokens,
+   top-p = 0.9 keeps the smallest set with mass &gt;= 0.9.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Truncation is a bouncer with a list. Top-k:
+   the list has k names, always. Top-p: the list holds enough names
+   to cover mass p, however many that takes. Both renormalize after
+   the cut.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> k: positive
+   integer. p in (0, 1]. Renormalize: divide kept probabilities by
+   their sum. Assumption: the tail holds the junk, the head holds
+   the sense.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Sort descending. Top-k: keep the
+   first k. Top-p (nucleus): accumulate until the sum &gt;= p, keep
+   those. Renormalization makes the kept set a distribution again.
+   Top-p adapts: sharp distributions keep few tokens, flat ones
+   keep many.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u03.py</code>: base top-3
+   [0.6082, 0.2238, 0.0823], top-k = 3 -&gt; [0.6652, 0.2447, 0.0900],
+   top-p = 0.9 keeps 3 -&gt; identical [0.6652, 0.2447, 0.0900] here.
+   (They differ when the mass concentrates differently, the toy
+   coincides.) Figure: <img alt="u03_fig02" src="../assets/u03_fig02.png" title="u03_fig02" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>top_k(logits, k)</code> /
+   <code>top_p(logits, p)</code>: sort, mask, renormalize, sample. Ten lines.
+   Apply after temperature, before sampling.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: kept set sums
+   to 1 after renormalization, top-k keeps exactly k, top-p keeps
+   mass &gt;= p with the minimal set. If the tail still samples, the
+   mask was applied to the wrong order.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   O(V log V) for the sort per step, fine at V ~ 1e5. The cut
+   changes the distribution the model was trained on: mild
+   truncation is safe, aggressive truncation distorts.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Temperature
+    alone (keeps the tail). Typical sampling / epsilon sampling
+    (finer cuts). Choose top-p as the default adaptive guard, add
+    top-k when a hard cap is needed.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: truncation only removes junk. Counterexample: at
+    top-p = 0.5 on a flat distribution, valid continuations are
+    cut and the model repeats itself, the &ldquo;safety rail&rdquo; becomes a
+    cage.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Holtzman
+    et al. (2020, nucleus sampling). Extension: sweep top-p on a
+    repetition metric and a quality metric, find the knee.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write both rules. Ladder: define the cut -&gt; compute
+    the toy -&gt; justify renormalization -&gt; implement top_p -&gt;
+    predict the cage failure. Transfer: truncation for a code
+    generator, defend p.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: top-k = 2 on
+    [0.5, 0.3, 0.15, 0.05]. E2: top-p = 0.8 on the same. E3: when
+    do top-k and top-p coincide? Key: <code>../keys/u03_answers.md</code>
+    R13-R15.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u03_fig02.png</code>: Shell 3, one rule (truncate, renormalize),
+    before full distribution, after top-k and top-p panels.
+    Source: original toy. Numbers from <code>render_u03.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-sampling-versus-argmax">C06: sampling versus argmax</h3>
+<p>Leaf id <code>cme295-U03-C06</code>. Claim class OFFICIAL-SYLLABUS (&ldquo;Sampling
+strategies&rdquo;).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L2
+   &ldquo;Sampling strategies&rdquo;. Scope: greedy vs stochastic decoding.
+   Objectives: state when each wins, name greedy&rsquo;s failure modes,
+   and explain why sampling needs guards. Depends on C04, C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: if the top token is
+   most likely, why ever sample anything else? Toy: distribution
+   [0.831, 0.112, 0.041, 0.015] (T = 1 from C04). Greedy always
+   picks token 0, sampling picks token 0 with 83% and explores
+   otherwise.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Argmax is the safe road: deterministic,
+   highest-probability, dull. Sampling is the side roads: diverse,
+   risky, sometimes brilliant. Open generation needs side roads,
+   closed tasks (math, code tests) usually want the safe road.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Greedy:
+   x_t = argmax p. Sampling: x_t ~ p (after T, top-k/p).
+   Assumption: the task&rsquo;s scoring matches the decoding (diversity
+   wanted -&gt; sample, exactness wanted -&gt; greedy).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: a decision rule.
+   Greedy failure: repetition loops (the model walks into a
+   high-probability cycle: &ldquo;the the the&rdquo;). Sampling failure: tail
+   junk (C04). Beam search (not covered deeply here) keeps k
+   hypotheses as a middle ground.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>render_u03.py</code>: greedy pick prob
+   1.000, sample entropy 0.595 nats at T = 1. The entropy is the
+   diversity budget: 0.595 nats means real choice exists.
+   Figure: <img alt="u03_fig04" src="../assets/u03_fig04.png" title="u03_fig04" /> (chapter plate).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>decode(logits,
+   mode)</code>: greedy -&gt; argmax, sample -&gt; categorical after
+   guards. Five lines. The mode is a config, not a model change.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: greedy is
+   deterministic across runs, sampling varies, repetition penalty
+   (optional) breaks loops. If greedy loops, the task needs
+   sampling or a penalty.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Same cost per step. The cost is in quality risk, not FLOPs.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Beam search
+    for translation-style tasks (keeps options, still
+    quasi-deterministic). Choose greedy for factual short answers,
+    sampling with guards for creative long text.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: greedy gives the most likely SEQUENCE. Counterexample:
+    greedy is locally optimal per token, the globally most likely
+    sequence needs search. Token-greedy != sequence-optimal.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    decoding analyses in the GPT papers and Holtzman et al. (2020)
+    on degeneration. Extension: measure repetition rate vs T on a
+    story prompt, find where loops vanish.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name one failure mode each. Ladder: define the modes -&gt;
+    read the entropy -&gt; justify the match to task -&gt; implement
+    decode -&gt; critique token-greedy. Transfer: decoding for a
+    chess engine&rsquo;s move picker, defend the mode.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: when does greedy
+    loop? Describe the mechanism. E2: entropy 0 vs 2 nats: what
+    does each imply for sampling? E3: why is beam search not
+    sampling? Key: <code>../keys/u03_answers.md</code> R16-R18.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Chapter
+    plate <code>u03_fig04.png</code>: left cost without the rule (greedy),
+    center the stored object (the distribution), right cost with
+    the rule (sampling), footer the tradeoff. Source: original.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-prompting">C07: prompting</h3>
+<p>Leaf id <code>cme295-U03-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch: the syllabus implies prompting via LLM usage but names
+   no prompting topic. Scope: prompts as conditioners. Objectives:
+   write a role-structured prompt, state what each part does, and
+   explain why prompts change behavior without weight changes.
+   Depends on R0.3, C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the weights are
+   frozen, how does text before the question change the answer?
+   Toy: &ldquo;Translate to French: hello&rdquo; vs &ldquo;hello&rdquo;. The first
+   conditions P(y | x) on a task frame, the second leaves the
+   distribution unsteered.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A prompt is a steering wheel, not an engine.
+   System: who the model is. User: the task. The model completes
+   the pattern the prompt sets. Change the pattern, change the
+   distribution.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Roles:
+   system, user, assistant (chat template, U04 C06). The prompt is
+   token ids prepended to the generation. Assumption: the model
+   saw similar framings in training (instruction tuning, U04 C05,
+   is what makes this reliable).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: conditioning. P(y |
+   prompt, x) differs from P(y | x) because the prompt tokens shift
+   the hidden states that the output reads. Instruction tuning
+   trains the model to obey common frames, the prompt selects among
+   learned behaviors.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: P(&ldquo;Bonjour&rdquo; | &ldquo;hello&rdquo;) = 0.02 vs
+   P(&ldquo;Bonjour&rdquo; | &ldquo;Translate to French: hello&rdquo;) = 0.91
+   (illustrative, not measured). The frame moves 89 points of
+   probability mass. That is the entire mechanism in one number.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>build_prompt(system,
+   user)</code>: concatenate role markers and texts per the chat template,
+   tokenize, check length &lt; T_max. Six lines. The template is part
+   of the model artifact (U04 C06).</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the template
+   matches training, the prompt fits in context, role markers are
+   exact strings. If the model ignores the system role, the
+   template mismatches the training format.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Prompt tokens cost prefill compute and cache (U02 C10). Long
+   system prompts are a standing tax on every request.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Fine-tuning
+    (U04) for permanent behavior, prompting for per-request
+    steering. Choose prompting when the behavior varies by request,
+    fine-tune when it is constant.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the model follows instructions. Counterexample:
+    prompt injection (U07 scope): untrusted text in the prompt
+    steers the model against the system instruction. The steering
+    wheel works for attackers too.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    instruction-tuning papers (Ouyang et al., 2022) for why frames
+    work. Extension: ablate the system prompt on a task set,
+    measure the accuracy delta the frame buys.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: what does each role do? Ladder: define conditioning -&gt;
+    compute the toy shift -&gt; justify the template -&gt; implement
+    build_prompt -&gt; predict the injection failure. Transfer: a
+    prompt frame for a medical triage bot, defend each line.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: write a
+    three-role prompt for summarization. E2: where does the frame
+    fail if the template is wrong? E3: cost of a 2000-token system
+    prompt per request (qualitative). Key: <code>../keys/u03_answers.md</code>
+    R19-R21.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: role, frame, distribution shift. Lesson plate: before
+    (bare input, flat distribution) -&gt; rule (add frame) -&gt; after
+    (steered distribution). Logged as a plate spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-icl">C08: ICL</h3>
+<p>Leaf id <code>cme295-U03-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: in-context learning. Objectives: define ICL,
+   write a few-shot prompt, and state what ICL is not. Depends on
+   C07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: can the model learn a
+   task from examples in the prompt, with zero weight updates? Toy:
+   &ldquo;eng: hello -&gt; fra: bonjour, eng: cat -&gt; fra: chat, eng: dog
+   -&gt;&rdquo;. The model continues the pattern with &ldquo;chien&rdquo;.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> ICL is pattern completion at the task level.
+   The examples define input-output mapping in context, the model
+   infers the function and applies it. No gradients flow, the
+   &ldquo;learning&rdquo; is all in the forward pass.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> k examples
+   (shots), each (input, output). Zero-shot: instruction only.
+   Assumption: the pattern is regular enough for the model to
+   infer, the examples fit in context.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No closed derivation, the leading
+   account is implicit Bayesian inference (Xie et al., 2022): the
+   prompt evidences a latent task, and the forward pass approximates
+   the posterior predictive. Treat it as a useful lens, not a
+   theorem.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: 3-shot translation above. With 0
+   shots the model guesses the task (maybe continues in English),
+   with 3 shots the format locks. The shot count is the lever,
+   returns diminish past ~8 on simple tasks (task-dependent,
+   reported pattern).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>few_shot(examples,
+   query)</code>: format each as &ldquo;in -&gt; out&rdquo; lines, append the query
+   with an open output, generate. Five lines. Example order and
+   format are hyperparameters.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: outputs
+   follow the example format, more shots do not hurt format
+   adherence, the label space matches the examples. If the model
+   ignores the examples, the format is ambiguous.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Each shot costs tokens (prefill + cache). ICL is sample-efficient
+   (no training) but token-hungry per request.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Fine-tuning
+    for permanent tasks, retrieval (U07) for knowledge. Choose ICL
+    when the task changes per request and examples are cheap.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: ICL learns like training. Counterexample: the
+    model is sensitive to example order and label noise in ways
+    training is not, &ldquo;learning&rdquo; overstates it. Call it
+    conditioning, and test order robustness.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Brown et
+    al. (2020, GPT-3) for few-shot and Xie et al. (2022) for the
+    Bayesian lens. Extension: permute example order on a
+    classification task, measure the accuracy spread.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: what changes between 0-shot and 3-shot? Ladder: define
+    ICL -&gt; write the toy -&gt; justify no weight updates -&gt; implement
+    few_shot -&gt; critique &ldquo;learning&rdquo;. Transfer: ICL for a made-up
+    cipher, state the shot count.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: write a 2-shot
+    prompt for sentiment. E2: why does order matter? E3: ICL vs
+    fine-tuning: when does each win? Key: <code>../keys/u03_answers.md</code>
+    R22-R24.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: example, pattern, continuation. Lesson plate: before
+    (bare query) -&gt; rule (add k examples) -&gt; after (pattern
+    continuation). Logged as a plate spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-demonstration-selection">C09: demonstration selection</h3>
+<p>Leaf id <code>cme295-U03-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: which examples to show. Objectives: rank
+   candidates by similarity, argue for diversity, and state the
+   order effect. Depends on C08, P19 (retrieval intuition).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: not all examples are
+   equal, which k help this query most? Toy: query &ldquo;dog -&gt; ?&rdquo;,
+   candidates scored by embedding cosine: &ldquo;cat -&gt; chat&rdquo; 0.91,
+   &ldquo;hello -&gt; bonjour&rdquo; 0.12. Pick the near ones.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Demonstrations are nearest neighbors in task
+   space. Similar examples teach the relevant mapping, diverse
+   examples cover the label space, order biases toward the recent.
+   Selection is retrieval applied to prompts.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Candidate pool,
+   similarity score (cosine of embeddings), diversity criterion,
+   order. Assumption: similarity in embedding space tracks task
+   relevance.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: a heuristic stack.
+   Similarity: embed query and candidates, take top-k cosine.
+   Diversity: maximal marginal relevance (penalize redundancy).
+   Order: place the most similar last (recency bias) or test both.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy cosines: [0.91, 0.73, 0.45, 0.12] for
+   4 candidates, k = 2 -&gt; pick [0.91, 0.73]. Diversity check: if
+   both show the same label, swap in 0.45 with the missing label.
+   The rule is explicit and auditable.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>select(query,
+   pool, k)</code>: embed all, cosine rank, MMR rerank for diversity,
+   order by recency. Ten lines around an embedding call.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: selected set
+   covers the label space, similarity scores are sane, order is
+   deterministic. If accuracy drops vs random selection, the
+   similarity metric mismatches the task.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   O(pool) embeddings per query, cache the pool embeddings. The
+   cost is per request, fine-tuning amortizes it.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Random
+    selection (baseline, sometimes competitive). Fixed curated set
+    (no retrieval cost). Choose dynamic selection when the pool is
+    large and queries vary.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: similar means helpful. Counterexample: near
+    duplicates teach nothing new, the model needs label coverage,
+    not clones. Similarity without diversity fails.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Liu et al.
+    (2022, what makes good in-context examples). Extension:
+    compare similarity-only vs MMR selection on a task, report the
+    gap.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name the three levers. Ladder: define selection -&gt;
+    rank the toy -&gt; justify diversity -&gt; implement select -&gt;
+    predict the clone failure. Transfer: demo selection for a
+    support bot, defend the pool.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: pick 2 from
+    cosines [0.9, 0.85, 0.2] with labels [A, A, B]. E2: why does
+    order matter? E3: when is random selection enough? Key:
+    <code>../keys/u03_answers.md</code> R25-R27.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: query, ranked candidates, ordered prompt. Lesson plate:
+    before (pool) -&gt; rule (rank + diversify + order) -&gt; after
+    (k-shot prompt). Logged as a plate spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-reasoning-prompting">C10: reasoning prompting</h3>
+<p>Leaf id <code>cme295-U03-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: chain-of-thought prompting. Objectives: write a
+   CoT prompt, explain why extra tokens help, and state the cost.
+   Depends on C07, C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model fails
+   multi-step arithmetic in one token, what changes if it may
+   &ldquo;think aloud&rdquo;? Toy: &ldquo;23 * 17&rdquo; with steps &ldquo;20<em>17=340,
+   3</em>17=51, total 391&rdquo;. The intermediate tokens are scratch space.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Each generated token is one computation step.
+   Forcing the answer in one token allows one step, chain-of-thought
+   buys as many steps as tokens. Reasoning is compute, and tokens
+   are the currency.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Trigger:
+   &ldquo;Let&rsquo;s think step by step&rdquo; (zero-shot) or worked examples
+   (few-shot CoT). Assumption: the task decomposes into steps the
+   model can each do reliably.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: an empirical
+   mechanism. The scratch tokens hold partial results in context,
+   so later tokens condition on them. Errors compound per step,
+   decomposition helps only when each step is easier than the
+   whole.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy arithmetic: direct answer accuracy on
+   2-digit multiplication ~30% (illustrative), with written steps
+   ~85% (illustrative pattern from the CoT literature). The gap is
+   the value of scratch space. Always label such numbers
+   illustrative when not measured here.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>cot(query)</code>:
+   append the trigger or few-shot worked examples, generate with
+   sampling guards, parse the final answer after the steps. Eight
+   lines plus a parser.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: steps precede
+   the answer, the answer parses, step count is bounded. If the
+   answer appears first, the prompt failed to induce thinking.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Cost: k extra tokens per query (prefill + decode + cache).
+   Benefit: accuracy on decomposable tasks. The trade is explicit.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Direct
+    answer for single-step tasks. Tool use / code execution (U07)
+    for exact arithmetic. Choose CoT when steps are checkable and
+    tokens are affordable.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the steps are faithful reasoning. Counterexample:
+    models produce plausible steps to a wrong answer, or right
+    answers with wrong steps. CoT is a useful trace, not a proof.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Wei et al.
+    (2022, CoT) and Kojima et al. (2022, zero-shot CoT).
+    Extension: measure step-faithfulness: perturb an intermediate
+    step and test whether the answer changes.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: why do extra tokens help? Ladder: define the scratch
+    -&gt; work the toy -&gt; justify the compute view -&gt; implement cot
+    -&gt; critique faithfulness. Transfer: CoT for a legal argument,
+    state the parsing rule.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: write a zero-shot
+    CoT prompt for a word problem. E2: token cost of 50-step
+    reasoning. E3: when does CoT hurt? Key: <code>../keys/u03_answers.md</code>
+    R28-R30.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: question, steps, answer. Lesson plate: before (one-shot
+    answer) -&gt; rule (emit steps) -&gt; after (stepped answer).
+    Logged as a plate spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-self-consistency">C11: self-consistency</h3>
+<p>Leaf id <code>cme295-U03-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: sampling multiple chains and voting. Objectives:
+   run the vote by hand, state when it helps, and compute its
+   cost. Depends on C06, C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: one chain can wander,
+   what if you ask five times and take the majority? Toy: answers
+   [391, 391, 382, 391, 390] -&gt; majority 391 (3/5).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Self-consistency is an election over reasoning
+   paths. Diverse chains explore different decompositions, the
+   majority filters one-off errors. It helps when errors are
+   uncorrelated across samples.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> N chains,
+   temperature &gt; 0 for diversity, majority (or weighted) vote.
+   Assumption: the correct answer is the modal answer, errors
+   scatter.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: a variance-reduction
+   heuristic. If each chain is right with probability p &gt; 0.5
+   independently, the majority is right with probability -&gt;
+   1 as N grows (Condorcet). Independence is the lie, the
+   heuristic survives it partially.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy votes [391 x3, 382, 390]: majority</p>
+</li>
+<li>
+<p>If p = 0.6 per chain, N = 5 majority accuracy =
+   sum_{k=3..5} C(5,k) 0.6^k 0.4^{5-k} = 0.683. The math shows the
+   gain and its limit.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>self_consistent(q,
+   N)</code>: sample N chains at T &gt; 0, parse answers, return the mode.
+   Six lines. Parse failures abstain.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: N answers
+   parsed, the mode exists (tie -&gt; abstain or more samples),
+   T &gt; 0 actually diversifies. If all chains agree trivially, T is
+   too low.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Cost: N x chain tokens. Benefit: accuracy on hard reasoning.
+   The cost is linear in N, use it where errors are expensive.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Single CoT
+    (cheap). Verifier reranking (U06 scope, needs a verifier).
+    Choose voting when no verifier exists and compute is
+    available.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: errors are independent. Counterexample: systematic
+    model bias makes all chains wrong the same way, voting then
+    confidently picks the wrong answer. Diversity of error is the
+    real requirement.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Wang et
+    al. (2023, self-consistency). Extension: measure chain
+    agreement vs correctness, test whether high agreement predicts
+    right answers.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: when does voting help? Ladder: define the vote -&gt;
+    compute the toy -&gt; justify the Condorcet math -&gt; implement -&gt;
+    predict the systematic-bias failure. Transfer: voting for
+    medical triage suggestions, state the abstention rule.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: majority of
+    [A, B, A, C, A]. E2: accuracy for p = 0.7, N = 3. E3: why must
+    T &gt; 0? Key: <code>../keys/u03_answers.md</code> R31-R33.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: chains, votes, winner. Lesson plate: before (one chain)
+    -&gt; rule (sample N, vote) -&gt; after (majority answer). Logged as
+    a plate spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-evaluation-limits">C12: evaluation limits</h3>
+<p>Leaf id <code>cme295-U03-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch (full evaluation science is U08). Scope: what generation
+   metrics cannot tell you. Objectives: name three limits of
+   automatic metrics and one contamination failure. Depends on C06,
+   U01 C11.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the benchmark score
+   rose 5 points, did the model get better? Toy: a model that
+   memorized the test set scores 100% and understands nothing.
+   The metric cannot see the difference.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Metrics are proxies. Perplexity measures
+   surprise, not truth. Benchmarks measure the benchmark, and the
+   benchmark may be in the training data. Human judgment is the
+   ground truth, everything else is a shadow.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Automatic
+   metric: function of (output, reference). Contamination: test
+   data in training. Assumption (often false): the test measures
+   generalization.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: a validity argument.
+   Goodhart&rsquo;s law: when a measure becomes a target, it ceases to
+   be a good measure. Contamination breaks the train/test split
+   that all generalization claims rest on.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: 100 test questions, 30 in the
+   training data. Reported accuracy 90%, decontaminated accuracy
+   70%. The 20-point gap is the contamination premium. Always
+   ask for the decontaminated number.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>eval_hygiene(model,
+   test)</code>: n-gram overlap test vs training data, canary strings,
+   report both raw and decontaminated scores. The procedure is the
+   product.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: overlap
+   report exists, scores are reported with confidence intervals,
+   the eval set is held out. If no contamination check ran, the
+   score is provisional.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Human eval is expensive and slow, automatic metrics are cheap
+   and gameable. Budget both.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> LLM judges
+    (U08) scale human-like judgment with their own biases. Choose
+    the metric by the decision it informs, and state its limits
+    next to the number.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: higher score = better model. Counterexample: the
+    contamination toy above. Scores without provenance are
+    marketing.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    contamination analyses (e.g., Sainz et al., 2023) and the U08
+    readings later. Extension: plant canaries in a tiny training
+    run, measure how fast the model memorizes them.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name three limits. Ladder: define the proxy -&gt; compute
+    the premium -&gt; justify Goodhart -&gt; implement the hygiene
+    check -&gt; separate score from capability. Transfer: eval for a
+    hiring-screening model, name the contamination analog.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: decontaminated
+    accuracy for 80/100 raw with 20 memorized. E2: why is
+    perplexity not truth? E3: one Goodhart example in ML eval.
+    Key: <code>../keys/u03_answers.md</code> R34-R36.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: score, contamination, true capability. A table (metric |
+    what it measures | what it misses) is the right medium. Logged
+    as text-table.</p>
+</li>
+</ol>
+      
+      <nav class="pager"><a href="../keys/u02_answers.html"><span class="lbl">← Previous</span>U02 · Answers</a><a href="../keys/u03_answers.html"><span class="lbl">Next →</span>U03 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

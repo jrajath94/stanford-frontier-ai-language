@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U05 · Preference tuning and policy optimization — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Lesson: Preference tuning and policy optimization.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-u05">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cme295-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_attention_variants.html" data-page="cme295-u02">U02 · Transformer variants and posit</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_llm_generation.html" data-page="cme295-u03">U03 · LLM architecture and generatio</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_training_adaptation.html" data-page="cme295-u04">U04 · Training and efficient adaptat</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_preference_optimization.html" data-page="cme295-u05" class="active">U05 · Preference tuning and policy o</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_reasoning_scaling.html" data-page="cme295-u06">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_rag_agents.html" data-page="cme295-u07">U07 · RAG and agentic systems</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_llm_evaluation.html" data-page="cme295-u08">U08 · LLM evaluation and judging</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_trends_synthesis.html" data-page="cme295-u09">U09 · Current trends, exams, and syn</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="../interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="../interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="../interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="../interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="../interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cme295-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cme295-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/research_grpo_extension.html" data-page="cme295-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / U05 · Preference tuning and policy optimization</nav>
+      <h1>U05 · Preference tuning and policy optimization</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u05-preference-tuning-and-policy-optimization">U05 , Preference tuning and policy optimization</h1>
+<p>Prerequisites: P08, P17, P18. Bridge links in <code>../prerequisites.md</code>.
+Lecture anchor: L3 (Oct 9, 2026) and L4 (Oct 16, 2026). Claim class:
+OFFICIAL-SYLLABUS for RLHF, DPO, reward design, policy gradients, PPO.
+REQUESTED-BRANCH for pairwise-label protocol detail, policy ratios, KL
+estimators, advantages, PPO variants, DPO derivation assumptions,
+reference-model mechanics, optimization pathologies, evaluation
+protocol. All leaves: PLANNED / SOURCE ATTRIBUTION PENDING until slide
+or transcript extraction verifies them.
+Notation: see <code>../notation_and_shapes.md</code>. Glossary: <code>../glossary.md</code>.</p>
+<h2 id="not-yet-understood">Not yet understood</h2>
+<p>Concepts this unit uses but does not teach. Each one arrives in a
+later unit.</p>
+<ol>
+<li>Reasoning RL (U06): GRPO, RLVR, verifiers, test-time scaling.</li>
+<li>RAG and agents (U07): retrieval pipelines and ReAct loops.</li>
+<li>LLM evaluation (U08): judging, bias, calibration, intervals.</li>
+</ol>
+<h2 id="local-remediation-bt-model-kl-policy-gradient">Local remediation , BT model, KL, policy gradient</h2>
+<p>Do this block first if diagnostic items D8 or D9 were not full marks.</p>
+<p><strong>R0.1 Bradley-Terry.</strong> Two items with scores r_w, r_l. P(w beats l)
+= sigmoid(r_w - r_l). The gap drives everything: gap 0 -&gt; 0.5,
+gap 2 -&gt; 0.88. The reward model learns scores that make observed
+choices likely.</p>
+<p><strong>R0.2 KL divergence.</strong> KL(P||Q) = sum P log(P/Q). It measures how
+far P drifts from Q, in nats. Direction matters: KL(pi||pi_ref)
+penalizes the new policy for leaving the reference.</p>
+<p><strong>R0.3 Policy gradient intuition.</strong> J = E[return]. The gradient
+pushes up the log-probability of actions with high return:
+dJ ~ E[return * d log pi(a|s)]. Advantages (return minus baseline)
+replace raw return to cut variance without adding bias.</p>
+<hr />
+<h3 id="c01-reward-modelling">C01: reward modelling</h3>
+<p>Leaf id <code>cme295-U05-C01</code>. Claim class OFFICIAL-SYLLABUS (&ldquo;Reward
+design&rdquo;, L4).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L4
+   &ldquo;Reward design&rdquo;. Scope: learning a scalar preference score.
+   Objectives: write the BT loss, compute it by hand, and state what
+   the reward means. Depends on P08, R0.1.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: human judgments are
+   comparisons (&ldquo;A better than B&rdquo;), but RL needs a number, how do
+   you convert? Toy: r(A) = 1.2, r(B) = 0.4. P(A wins) =
+   sigmoid(0.8) = 0.69. Loss = -log 0.69 = 0.371.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The reward model is a judge with one output:
+   a scalar. Training shows it pairs and the human&rsquo;s pick, the BT
+   loss adjusts scores so the picks become probable. The score has
+   no absolute meaning, only gaps matter.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> r_phi(x, y):
+   scalar, unitless. Data: triples (x, y_w, y_l). Loss:
+   -log sigmoid(r_w - r_l). Assumption: human choices follow the BT
+   model (transitive, noiseless enough).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Maximum likelihood on the BT model:
+   each pair contributes log P(y_w beats y_l). The gradient is
+   (1 - p) * (d r_w - d r_l): it widens the gap, with force
+   proportional to surprise. Architecture: the SFT model plus a
+   scalar head, trained on the pairs.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u05.py</code>: r_w = 1.2,
+   r_l = 0.4, P = 0.6900, loss = 0.3711. Figure:
+   <img alt="u05_fig01" src="../assets/u05_fig01.png" title="u05_fig01" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>rm_loss(r_w, r_l)</code>:
+   return -log(sigmoid(r_w - r_l)). Three lines. The data loader
+   yields (prompt, chosen, rejected) triples.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: loss falls,
+   accuracy (r_w &gt; r_l) rises above 50%, scores are not calibrated
+   probabilities. If accuracy is 50%, the labels are noise or
+   flipped.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   One more model to train (same size as the policy usually).
+   Labels are expensive, agreement rates bound the achievable
+   accuracy.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Direct
+    human scores (noisy, uncalibrated). AI feedback (cheaper,
+    biased). DPO (C09) skips the reward model. Choose a reward
+    model when RL needs dense scores.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the BT model holds. Counterexample: intransitive
+    or noisy human preferences break the scalar story, the reward
+    then encodes noise as signal. Check annotator agreement first.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Ouyang et
+    al. (2022) reward-model sections and Bradley-Terry (1952).
+    Extension: measure accuracy vs annotator agreement, find the
+    ceiling the noise imposes.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the BT loss. Ladder: define the score -&gt; compute
+    the toy -&gt; justify the gap gradient -&gt; implement rm_loss -&gt;
+    predict the noise failure. Transfer: reward model for code
+    quality, describe the pairs.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: loss for
+    r_w = 0.5, r_l = 0.5. E2: accuracy when scores are random. E3:
+    why are absolute scores meaningless? Key:
+    <code>../keys/u05_answers.md</code> R1-R3.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u05_fig01.png</code>: Shell 3, one rule (reward head + BT), before
+    human label, after BT probability. Source: original toy.
+    Numbers from <code>render_u05.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-pairwise-labels">C02: pairwise labels</h3>
+<p>Leaf id <code>cme295-U05-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch (label protocol detail). Scope: how preference data is
+   made. Objectives: write an annotation guideline, handle ties
+   and disagreement, and state the quality bar. Depends on C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: &ldquo;which response is
+   better&rdquo; is vague, how do you make 100 annotators agree? Toy
+   rubric: helpfulness, truthfulness, harmlessness, in that order.
+   Ties allowed, both-bad flagged.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Labels are manufactured, not found. The
+   guideline is the product spec: dimensions, priority order, tie
+   policy, escalation. Agreement rate measures the spec&rsquo;s clarity.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Label:
+   (x, y_a, y_b, choice in {a, b, tie}). Agreement: fraction of
+   pairs where two annotators agree. Assumption: the rubric
+   captures what the product wants.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: a process. Write the
+   rubric, pilot on 200 pairs, measure agreement, revise, scale.
+   70%+ agreement is workable, below that the reward learns noise.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: 1000 pairs, 720 agree, 180 tie, 100
+   disagree. Usable: 900 (ties train weakly or drop). The 10%
+   disagreement is the noise floor the reward model cannot beat.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>label_batch(pairs,
+   rubric)</code>: present side by side, blinded order, record choice
+   + confidence, adjudicate disagreements. The blinding (random
+   A/B order) removes position bias.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: agreement
+   rate reported, position bias ~50/50, tie rate sane. If one
+   side wins 80%, the presentation is biased.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Human time is the cost: minutes per pair. Quality beats
+   quantity, 10k good pairs beat 100k noisy ones.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> AI labels
+    (cheap, inherits model biases). Expert labels (expensive,
+    gold). Choose the mix by the budget and the stakes.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: annotators share the rubric&rsquo;s values. Counterexample:
+    cultural or domain differences in &ldquo;helpful&rdquo;, the reward then
+    encodes the annotator pool, not the user base. Match the pool
+    to the users.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    InstructGPT labeling appendix (Ouyang et al., 2022).
+    Extension: relabel 200 pairs with a different pool, measure
+    the reward model&rsquo;s score shift.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name the rubric dimensions. Ladder: define the label
+    -&gt; compute agreement -&gt; justify blinding -&gt; implement the
+    protocol -&gt; predict the pool-mismatch failure. Transfer:
+    labels for a medical QA bot, name the extra dimension.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: usable pairs
+    from 500 with 15% ties, 10% disagreement. E2: why blind the
+    order? E3: agreement 55%: what do you do? Key:
+    <code>../keys/u05_answers.md</code> R4-R6.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: pair, rubric, choice. A flow (pairs -&gt; rubric -&gt;
+    blinded choice -&gt; agreement) is the right medium, Mermaid
+    (&lt;= 8 nodes) fits. Logged as a diagram spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-rlhf">C03: RLHF</h3>
+<p>Leaf id <code>cme295-U05-C03</code>. Claim class OFFICIAL-SYLLABUS (L3
+&ldquo;Preference tuning (RLHF, DPO)&rdquo;, L4).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L3/L4. Scope: the three-stage pipeline. Objectives: name the
+   stages, state what each produces, and explain why all three
+   exist. Depends on C01, U04 C05, P17.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: SFT imitates, but
+   imitation cannot rank two good answers, how do you optimize
+   preference directly? Toy pipeline: SFT model -&gt; reward model
+   on pairs -&gt; PPO against the reward.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Stage 1 (SFT): learn the format. Stage 2
+   (RM): learn the judge. Stage 3 (RL): optimize the judge&rsquo;s
+   score with a KL leash to stage 1. Each stage fixes the previous
+   stage&rsquo;s blind spot.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> pi_sft,
+   r_phi, pi_theta (initialized from pi_sft). Objective:
+   E[r_phi] - beta KL(pi_theta || pi_sft). Assumption: the reward
+   generalizes beyond the pairs, the KL keeps the policy honest.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> RL fine-tuning maximizes expected
+   reward. Without the KL term the policy exploits reward flaws
+   (C11). PPO (C07) is the optimizer, the KL is the leash. The
+   three stages separate concerns: behavior, judgment, control.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: base reward 0.5, after RLHF 1.8,
+   KL 0.1 nats (illustrative magnitudes). The KL budget is the
+   dial: more KL, more reward, more risk. Figure:
+   <img alt="u05_fig04" src="../assets/u05_fig04.png" title="u05_fig04" /> (chapter plate, left
+   column).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>rlhf()</code>:
+   pi = sft(), rm = train_rm(pairs), pi = ppo(pi, rm, kl_coef).
+   Three calls. The engineering is in the third.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: reward rises
+   on held-out prompts, KL stays in budget, canary behaviors hold
+   (U04 C11). If reward rises and KL explodes, the leash broke.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Four models in memory (policy, ref, reward, value): the cost
+   driver. RL is sample-hungry and twitchy, that is the price of
+   direct optimization.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> DPO (C09):
+    no RL, one loss. Rejection sampling: simple, offline. Choose
+    RLHF when the reward needs online exploration, DPO when pairs
+    suffice.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: higher reward = better model. Counterexample:
+    reward hacking (C11): the policy finds the reward&rsquo;s blind
+    spots and the metric lies. The KL leash and evals are the
+    defense.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Ouyang et
+    al. (2022, InstructGPT) end to end. Extension: ablate the KL
+    term, measure reward vs human preference and find where they
+    diverge.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name the stages and their outputs. Ladder: define the
+    pipeline -&gt; trace the toy -&gt; justify the KL -&gt; implement rlhf
+    -&gt; predict the hacking failure. Transfer: RLHF for a
+    summarizer, name the reward&rsquo;s blind spot.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: why not skip
+    SFT? E2: why not skip the reward model (RL on human scores)?
+    E3: four models in memory: name them. Key:
+    <code>../keys/u05_answers.md</code> R7-R9.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Chapter
+    plate <code>u05_fig04.png</code>: left the RLHF column (3 stages, cost),
+    center the shared object (preference pairs), right DPO.
+    Source: original.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-policy-ratios">C04: policy ratios</h3>
+<p>Leaf id <code>cme295-U05-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: the ratio at the heart of PPO. Objectives: write
+   rho, explain importance weighting, and state when the ratio is
+   dangerous. Depends on P17, R0.3.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: PPO updates the
+   policy with data from the old policy, how do you correct for
+   the mismatch? Toy: rho = pi_new(a) / pi_old(a) = 0.8 / 0.4 =
+   2.0. The action is now twice as likely, weight its advantage
+   by 2.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The ratio is a currency converter between
+   policies. Data earned under pi_old spends under pi_new at the
+   rho exchange rate. Big rho means the converter is unreliable.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> rho_t =
+   pi_theta(a_t|s_t) / pi_old(a_t|s_t), unitless, per token.
+   Assumption: pi_old has support everywhere pi_theta goes
+   (else division by ~zero).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Importance sampling: E_{pi_new}[f] =
+   E_{pi_old}[rho f]. The surrogate objective rho * A_hat
+   estimates the new policy&rsquo;s advantage from old data. The
+   estimator is unbiased but its variance grows with rho.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: pi_old = 0.4, pi_new = 0.8, A = 1:
+   surrogate = 2.0. If pi_new = 0.04: rho = 0.1, surrogate 0.1.
+   The ratio amplifies moves away from old data, that is exactly
+   what PPO&rsquo;s clip (C07) restrains.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>ratio(new_logp,
+   old_logp)</code>: return exp(new_logp - old_logp). Compute in log
+   space for stability. Two lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: rho = 1 at
+   the first step (policies identical), mean rho ~= 1 early,
+   extreme rho values are rare. If mean rho drifts far from 1,
+   the policy moved too fast.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   O(1) per token. Statistically: the variance bomb. PPO exists
+   to defuse it.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Trust
+    regions (TRPO): hard KL constraint, second-order. Choose PPO&rsquo;s
+    clipped ratio for simplicity, TRPO when the constraint must be
+    exact.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the ratio stays near 1. Counterexample: after a
+    big update, rho hits 10+ and the surrogate explodes, the next
+    update wrecks the policy. The clip is the guardrail.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Schulman
+    et al. (2017, PPO). Extension: log the rho histogram during a
+    run, report the fraction outside [0.8, 1.2].</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write rho and its role. Ladder: define the ratio -&gt;
+    compute the toy -&gt; justify importance weighting -&gt; implement
+    ratio -&gt; predict the explosion. Transfer: ratios in
+    off-policy evaluation, state the same danger.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: rho for
+    new 0.9, old 0.3. E2: why log space? E3: what does mean
+    rho &gt;&gt; 1 signal? Key: <code>../keys/u05_answers.md</code> R10-R12.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: old prob, new prob, ratio. A number line (0.5 - 1 -
+    2, safe zone marked) is the right medium. Logged as a sketch
+    spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-kl">C05: KL</h3>
+<p>Leaf id <code>cme295-U05-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: the KL anchor in RLHF/PPO/DPO. Objectives: write
+   the KL penalty, compute it on a toy, and explain the direction.
+   Depends on P08, R0.2.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the reward says &ldquo;go&rdquo;,
+   what stops the policy from going insane? Toy: KL(pi||pi_ref) =
+   0.1 nats. Penalty beta * 0.1 subtracted from reward. The leash
+   has a price per nat.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> KL is the distance from home. The reference
+   policy is home (the SFT model). Every nat of drift costs beta.
+   The policy may wander, but it pays.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> KL(pi_theta ||
+   pi_ref) = E_{pi_theta}[log pi_theta - log pi_ref], nats, per
+   token averaged. Direction: new || old (forward KL is
+   mode-covering). Assumption: pi_ref is the trustworthy base.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The RLHF objective: max E[r] -
+   beta KL. The KL term is a Lagrange-style soft constraint:
+   beta is the exchange rate between reward and drift. Estimator
+   on samples: mean(log pi - log pi_ref). Schulman&rsquo;s unbiased
+   estimator: r - log r - 1 with r = pi_ref/pi (lower variance).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: pi = [0.7, 0.3], ref = [0.5, 0.5].
+   KL = 0.7 log(0.7/0.5) + 0.3 log(0.3/0.5) = 0.2356 - 0.1532 =
+   0.0824 nats. Small drift, small price.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>kl_penalty(logp,
+   ref_logp, beta)</code>: return beta * (logp - ref_logp).mean().
+   Three lines. The unbiased variant is one more line.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: KL &gt;= 0,
+   KL = 0 iff policies match, rises as training proceeds. If KL
+   is negative, the estimator or the direction is wrong.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Needs the reference model in memory (C10). Cheap per token,
+   expensive in VRAM.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Hard KL
+    constraint (TRPO). Adaptive beta controllers. Choose the fixed
+    penalty for simplicity, adapt beta when the KL drifts off
+    target.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: small KL means safe. Counterexample: the policy
+    can change behavior a lot within small KL (the reward hack
+    lives in the KL budget). KL bounds drift, not misbehavior.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Schulman
+    (2020, KL estimators blog). Extension: compare the naive and
+    unbiased KL estimators&rsquo; variance on a toy.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the penalty and its direction. Ladder: define
+    the leash -&gt; compute 0.0824 -&gt; justify the direction -&gt;
+    implement kl_penalty -&gt; predict the small-KL hack. Transfer:
+    KL anchor for a fine-tuned classifier, state the reference.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: KL for
+    pi = [1, 0], ref = [0.5, 0.5]. E2: why forward, not reverse?
+    E3: what does beta = 0 do? Key: <code>../keys/u05_answers.md</code>
+    R13-R15.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: home, drift, price. Lesson plate: before (policy at
+    home) -&gt; rule (pay beta per nat) -&gt; after (policy within
+    budget). Logged as a plate spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-advantages">C06: advantages</h3>
+<p>Leaf id <code>cme295-U05-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: variance reduction in policy gradients. Objectives:
+   define the advantage, compute it on a toy, and explain the
+   baseline. Depends on P17, R0.3.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: returns are noisy,
+   how do you know if an action was good or just lucky? Toy:
+   return 10, baseline (value) 6: advantage +4. The action beat
+   expectations by 4.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The advantage is the surprise: return minus
+   what was expected. Positive: do more of this. Negative: do
+   less. The baseline centers the signal so the gradient is not
+   drowned in the mean return.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A(s, a) =
+   Q(s, a) - V(s), unitless-ish (reward units). Estimated by GAE:
+   weighted sum of TD errors. Assumption: the value function is a
+   decent baseline (bias-variance trade).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Subtracting a state-dependent
+   baseline from the return leaves the policy gradient unbiased
+   (the baseline&rsquo;s expectation against d log pi is zero) and
+   cuts variance. GAE(lambda): A_t = sum (gamma lambda)^l
+   delta_{t+l}, lambda = 0 is TD (low variance, biased), lambda
+   = 1 is Monte Carlo (unbiased, noisy).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: rewards [0, 0, 10], gamma = 1,
+   values [3, 5, 8]. TD errors: delta_2 = 10 - 8 = 2,
+   delta_1 = 0 + 8 - 5 = 3, delta_0 = 0 + 5 - 3 = 2. GAE(1):
+   A_0 = 2 + 3 + 2 = 7. The advantage flows backward.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>gae(rewards,
+   values, gamma, lam)</code>: walk backward, accumulate
+   delta + gamma<em>lam</em>next. Eight lines. Normalize advantages per
+   batch (common practice).</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: with
+   lambda = 1 the advantages match Monte Carlo returns minus
+   values, mean advantage ~0 after normalization, no NaN.
+   If advantages explode, the value function diverged.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   O(T) per sequence. Needs a value head (another model output).
+   The variance cut is what makes PPO train at all.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Raw
+    returns (noisy). Reward-to-go minus mean (simple baseline).
+    Choose GAE as the default, tune lambda in [0.9, 0.99].</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the value function is accurate. Counterexample:
+    a bad value baseline biases every advantage, the policy
+    chases phantom signal. Value loss matters as much as policy
+    loss.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Schulman
+    et al. (2016, GAE). Extension: sweep lambda on a toy MDP,
+    plot bias vs variance of the gradient.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write A and the baseline argument. Ladder: define the
+    surprise -&gt; compute the toy -&gt; justify the baseline -&gt;
+    implement gae -&gt; predict the bad-value failure. Transfer:
+    advantages for a bidding agent, name the baseline.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: A for return
+    5, value 5. E2: GAE(0) equals what? E3: why normalize per
+    batch? Key: <code>../keys/u05_answers.md</code> R16-R18.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: return, baseline, advantage. Lesson plate: before
+    (noisy return) -&gt; rule (subtract baseline) -&gt; after (centered
+    signal). Logged as a plate spec with the toy numbers.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-ppo-clipping">C07: PPO clipping</h3>
+<p>Leaf id <code>cme295-U05-C07</code>. Claim class OFFICIAL-SYLLABUS (&ldquo;Preference
+tuning with PPO (RLHF)&rdquo;, L4).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L4.
+   Scope: the clipped surrogate objective. Objectives: write the
+   objective, compute it on a toy, and explain the min. Depends on
+   C04, C06.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the ratio can
+   explode (C04), how do you update safely anyway? Toy: rho = 2.0,
+   A = 1, eps = 0.2. Unclipped: 2.0. Clipped: 1.2. Objective:
+   min(2.0, 1.2) = 1.2.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> PPO is pessimism as an algorithm. Take the
+   surrogate rho*A, but cap rho at [1-eps, 1+eps], then take the
+   worse of the capped and uncapped. Improvements beyond the clip
+   earn nothing, the update stays in the trust zone.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> L =
+   E[min(rho A, clip(rho, 1-eps, 1+eps) A)]. eps = 0.2 typical.
+   Assumption: small steps from pi_old are safe, the clip defines
+   &ldquo;small&rdquo;.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The min is the pessimistic bound:
+   when A &gt; 0, min caps the upside at (1+eps)A, when A &lt; 0, the
+   clip binds on the downside. Either way the incentive to move
+   far vanishes past the clip. It is a first-order trust region.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u05.py</code> (A = 1,
+   eps = 0.2): ratios [0.5, 0.8, 1.0, 1.2, 1.5, 2.0] give
+   [0.5, 0.8, 1.0, 1.2, 1.2, 1.2]. The cap binds at 1.2. Figure:
+   <img alt="u05_fig02" src="../assets/u05_fig02.png" title="u05_fig02" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>ppo_loss(logp,
+   old_logp, adv, eps)</code>: rho = exp(logp - old_logp),
+   return -mean(min(rho<em>adv, clip(rho, 1-eps, 1+eps)</em>adv)).
+   Four lines. The negative: we minimize.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: at rho = 1
+   the loss equals -mean(adv), the clipped region activates past
+   1+eps, the loss never rewards rho &gt; 1+eps when A &gt; 0. If the
+   clip never binds, eps is too large or updates too small.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   O(1) per token over the ratio math. The stability is the
+   product: PPO rarely diverges catastrophically, which is why it
+   is the default.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> TRPO (hard
+    constraint, complex). A2C without clipping (twitchy). Choose
+    PPO for LLM RLHF, the clip is the whole reason.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: clipping guarantees monotonic improvement.
+    Counterexample: the guarantee is approximate (Schulman notes
+    it), bad value estimates or huge batches still break runs.
+    Clipping is a guardrail, not a proof.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Schulman
+    et al. (2017, PPO). Extension: sweep eps in {0.1, 0.2, 0.3}
+    on a toy bandit, report stability vs speed.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the objective. Ladder: define the ratio -&gt;
+    compute the toy -&gt; justify the min -&gt; implement ppo_loss -&gt;
+    predict the no-guarantee case. Transfer: clipping for a
+    recommendation policy, defend eps.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: objective for
+    rho = 0.5, A = -2, eps = 0.2. E2: when does the clip bind for
+    A &lt; 0? E3: why the min and not the max? Key:
+    <code>../keys/u05_answers.md</code> R19-R21.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u05_fig02.png</code>: Shell 3, one rule (clip the ratio), before
+    raw ratio x advantage, after pessimistic bound. Source:
+    original toy. Numbers from <code>render_u05.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-ppo-variants">C08: PPO variants</h3>
+<p>Leaf id <code>cme295-U05-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: the PPO family around the core. Objectives: name
+   three variants, state what each changes, and when to use it.
+   Depends on C07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: PPO works, but the
+   recipe has knobs, what are the common twists? Toy list:
+   PPO-ptx (adds pretraining loss), KL controllers (adaptive
+   beta), value clipping (same clip on the value loss).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Variants are guardrails on guardrails. PPO-ptx
+   keeps pretraining skills alive during RL. Adaptive beta holds
+   the KL near target. Value clipping stops the value head from
+   chasing noise.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> PPO-ptx:
+   L = L_ppo + gamma L_pretrain. KL controller: beta *= 1.5 if KL</p>
+<blockquote>
+<p>1.5*target (etc.). Value clip: same min-form on (v - v_old).
+   Assumption: the base skills are worth preserving.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new derivation: each variant
+   ports the clip idea to another term. PPO-ptx mixes gradients
+   from pretraining batches, the KL controller is a slow
+   feedback loop on beta.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: KL target 0.1, observed 0.2 -&gt;
+   beta *= 1.5. The controller reacts over tens of steps, not
+   one. Slow feedback is stable feedback.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>ppo_variant(...)</code>:
+   flags for ptx (mix a pretrain batch), adaptive beta (update
+   rule), value clip. The core loss stays C07&rsquo;s.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: KL hovers
+   near target, pretrain loss does not explode, value loss is
+   bounded. If beta oscillates wildly, the controller gains are
+   too high.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   PPO-ptx costs pretraining batches. The rest is routine record-keeping.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Plain PPO
+    when the pipeline is short. Choose ptx when RL runs long
+    enough to erode base skills, adaptive beta when KL drifts.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: more guardrails are always better. Counterexample:
+    PPO-ptx with too much pretrain weight stalls preference
+    learning, every coefficient is a trade.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Ouyang et
+    al. (2022) PPO details. Extension: ablate ptx on a long RL
+    run, measure base-task retention.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name the three variants. Ladder: define each -&gt;
+    trace the toy -&gt; justify the feedback -&gt; implement the flags
+    -&gt; predict the over-guarded failure. Transfer: variants for
+    a robotics PPO, pick two.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: beta update
+    for KL 0.3, target 0.1. E2: what does ptx mix in? E3: value
+    clip: write it. Key: <code>../keys/u05_answers.md</code> R22-R24.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: variant, knob, effect. A table (variant | change |
+    when) is the right medium. Logged as text-table.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-dpo-derivation-assumptions">C09: DPO derivation assumptions</h3>
+<p>Leaf id <code>cme295-U05-C09</code>. Claim class OFFICIAL-SYLLABUS (L3 &ldquo;DPO&rdquo;).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L3.
+   Scope: where the DPO loss comes from and what it assumes.
+   Objectives: derive the loss from the BT model plus the optimal
+   policy, and name the three assumptions. Depends on C01, C05,
+   P18.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: can you skip the
+   reward model and the RL entirely? Toy: the optimal policy for
+   the KL-regularized reward has a closed form, plug it into the
+   BT loss and the reward cancels out.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> DPO turns the policy into its own reward.
+   The &ldquo;implicit reward&rdquo; is beta * log(pi/pi_ref). The loss says:
+   make the implicit reward gap between chosen and rejected large.
+   No sampling, no value head, no clip.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Loss:
+   -log sigmoid(beta * [(log pi_w - log ref_w) - (log pi_l -
+   log ref_l)]). Assumptions: (1) BT models the preferences,
+   (2) the KL-regularized optimum is the right target, (3) the
+   reference is adequate.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Optimal policy for max E[r] - beta
+   KL: pi<em>(y|x) proportional to pi_ref(y|x) exp(r(x,y)/beta).
+   Invert: r(x,y) = beta log(pi</em>(y|x)/pi_ref(y|x)) + const. Plug
+   into the BT loss, the constant cancels in the gap. What
+   remains is pure policy terms: the DPO loss.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u05.py</code>: beta = 0.1,
+   logp_w = -2.0, logr_w = -2.2, logp_l = -3.5, logr_l = -2.3.
+   Margin = 0.1 * ((0.2) - (-1.2)) = 0.14. Sigmoid = 0.5349,
+   loss = 0.6256. Figure: <img alt="u05_fig03" src="../assets/u05_fig03.png" title="u05_fig03" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>dpo_loss(pi_logp_w,
+   pi_logp_l, ref_logp_w, ref_logp_l, beta)</code>: margin as above,
+   return -log(sigmoid(margin)). Five lines. Two forward passes
+   (policy, reference).</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: loss falls,
+   the margin grows, at beta -&gt; 0 the loss ignores the reference.
+   If the margin grows but quality drops, the BT assumption is
+   wrong for this data.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Two models in memory (policy + reference), no sampling loop.
+   Offline: the pairs are fixed. Cheap and stable, assumption-bound.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> RLHF/PPO
+    for online exploration. IPO/SimPO for different
+    assumptions. Choose DPO when pairs are good and the BT model
+    is plausible.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the BT model. Counterexample: noisy or
+    intransitive preferences make DPO confidently wrong, it has
+    no reward model to absorb the noise gracefully. Also: DPO
+    can decrease the chosen likelihood while increasing the gap
+    (the &ldquo;likelihood displacement&rdquo; pathology).</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Rafailov
+    et al. (2023, DPO). Extension: track log pi_w during DPO,
+    test whether it rises or falls, and relate it to quality.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: write the loss and the three assumptions. Ladder:
+    define the implicit reward -&gt; compute the toy -&gt; derive the
+    inversion -&gt; implement dpo_loss -&gt; predict the BT-break
+    failure. Transfer: DPO for a ranking model, state the
+    reference.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: margin for
+    beta = 0.5, gaps (0.2, -1.2). E2: what cancels in the gap?
+    E3: likelihood displacement: explain it. Key:
+    <code>../keys/u05_answers.md</code> R25-R27.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u05_fig03.png</code>: Shell 3, one rule (form the margin), before
+    log probs, after DPO loss. Source: original toy. Numbers from
+    <code>render_u05.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-reference-model">C10: reference model</h3>
+<p>Leaf id <code>cme295-U05-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: pi_ref&rsquo;s role and cost. Objectives: state what
+   the reference is, why it is frozen, and what it costs. Depends
+   on C05, C09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the KL needs a
+   &ldquo;home&rdquo;, what is it, and why does it double the memory? Toy:
+   pi_ref = the SFT model, frozen, one forward pass per batch to
+   get log ref(y|x).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The reference is the anchor tenant. It never
+   trains, it only scores. Every KL term and every DPO margin
+   measures drift from it. Its cost is pure memory and one forward
+   pass.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> pi_ref:
+   same architecture as pi_theta, frozen weights. Log-probs per
+   token, shape (B, T). Assumption: the reference is trustworthy
+   (usually the SFT model).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: a design choice. The
+   KL E[log pi - log pi_ref] needs both log-probs per token.
+   Freezing means no gradients, no optimizer states: just storage
+   and a forward pass.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: 7B policy in bf16 (14 GB) + 7B
+   reference (14 GB) = 28 GB before anything trains. DPO&rsquo;s &ldquo;two
+   models&rdquo; vs PPO&rsquo;s &ldquo;four models&rdquo; is this line item.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>ref_logps(batch)</code>:
+   with no_grad: return ref_model(batch).log_softmax at targets.
+   Three lines. Cache it when the reference never changes.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: ref log-probs
+   match the SFT model&rsquo;s, KL = 0 at init (policy = reference),
+   the reference never gets gradients. If KL &gt; 0 at step 0, the
+   models differ.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   One extra model in VRAM + one forward pass. The dominant cost
+   of DPO&rsquo;s simplicity.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> No
+    reference (unregularized: drifts). Weaker reference (smaller
+    model: cheaper, looser anchor). Choose the SFT model as the
+    default.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the reference is good. Counterexample: a weak SFT
+    reference anchors the policy to mediocrity, the KL then
+    punishes improvement. The anchor is only as good as the base.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the DPO
+    and PPO papers&rsquo; reference-model discussions. Extension: swap
+    the reference for a weaker model, measure the final quality
+    delta.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: what is pi_ref and why frozen? Ladder: define the
+    anchor -&gt; compute the 28 GB -&gt; justify freezing -&gt; implement
+    ref_logps -&gt; predict the weak-anchor failure. Transfer:
+    reference for a fine-tuned classifier, name it.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: memory for two
+    7B bf16 models. E2: KL at init: why 0? E3: when would you drop
+    the reference? Key: <code>../keys/u05_answers.md</code> R28-R30.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: policy, reference, drift. Lesson plate: before (policy
+    = reference) -&gt; rule (train with KL) -&gt; after (policy near
+    reference). Logged as a plate spec.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-optimization-pathologies">C11: optimization pathologies</h3>
+<p>Leaf id <code>cme295-U05-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: how preference optimization goes wrong.
+   Objectives: name four pathologies, their signatures, and their
+   guards. Depends on C03, C09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the reward climbs
+   and the model gets worse, what are the usual suspects? Toy
+   list: reward hacking, length bias, mode collapse, likelihood
+   displacement.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Every optimizer is a lawyer: it finds the
+   loopholes in the objective. Reward hacking exploits the
+   judge, length bias exploits the correlation, mode collapse
+   exploits the average, displacement exploits the gap.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Signatures:
+   hacking = reward up, human preference flat/down, length bias =
+   longer outputs score higher, collapse = diversity dies, displace-
+   ment = chosen likelihood falls while the gap rises. Assumption:
+   the pathology is in the optimization, not the data.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Length bias: the BT loss rewards
+   the gap, longer chosen responses accumulate more log-prob
+   terms, so the margin favors verbosity. Hacking: the reward
+   model is a fixed function, the policy is a universal
+   optimizer against it. Goodhart again (U03 C12).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: chosen length 50, rejected length
+   20, per-token logprob gap +0.01: margin contribution 0.5 from
+   length alone. The length, not the quality, drives the update.
+   Length-controlled evals (C12) exist for exactly this.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>pathology_scan(logs)</code>:
+   track reward, human spot scores, mean length, output entropy,
+   chosen likelihood. Five plots. The scan is the guard.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: length is
+   flat across training, entropy does not collapse, chosen
+   likelihood rises. If any trend breaks, stop and diagnose.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Diagnosis needs little logging. The cost is vigilance: these
+   checks run every experiment.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Length-
+    normalized rewards, diversity bonuses, early stopping on
+    human evals. Choose the guard by the signature.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the list is complete. Counterexample: new
+    pathologies appear with new objectives (sycophancy, etc.),
+    the meta-skill is the scan, not the list.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Gao et
+    al. (2023, reward hacking scaling) and the DPO follow-ups on
+    displacement. Extension: correlate length with reward over a
+    run, report R^2.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: name the four and their signatures. Ladder: define
+    hacking -&gt; compute the length toy -&gt; justify Goodhart -&gt;
+    implement the scan -&gt; separate data from optimization.
+    Transfer: pathologies for a recommender&rsquo;s click objective,
+    name two.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: which plot
+    catches length bias? E2: hacking vs genuine improvement:
+    how to tell? E3: displacement: what falls while what rises?
+    Key: <code>../keys/u05_answers.md</code> R31-R33.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: pathology, signature, guard. A table (pathology |
+    signature | guard) is the right medium. Logged as text-table.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-evaluation">C12: evaluation</h3>
+<p>Leaf id <code>cme295-U05-C12</code>. Claim class REQUESTED-BRANCH (full eval
+science is U08).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Requested
+   branch. Scope: judging preference-tuned models. Objectives:
+   run a win-rate eval, control for length, and state the human
+   protocol. Depends on C11, U03 C12.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the loss fell, did
+   humans actually prefer it? Toy: 100 prompts, model A wins 62,
+   ties 10, loses 28: win rate 62% (ties split or reported
+   separately).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Preference eval is an election: head-to-head
+   comparisons, blinded order, majority or Elo aggregation. Length
+   control: compare within length bands, or the verbosity bias
+   (C11) rigs the vote.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Win rate:
+   wins / (wins + losses), ties handled explicitly. Elo: pairwise
+   rating updates. Assumption: the judges represent the users,
+   the prompts represent the workload.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation: a protocol. Blind
+   the order (position bias), randomize, aggregate. Length-
+   controlled win rate (AlpacaEval style): fit win probability vs
+   length, report at fixed length.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: 62/28/10 -&gt; 68.9% excluding ties,
+   67.0% counting ties as half. Report both, the tie policy moves
+   the number by 2 points. That swing is why the policy must be
+   stated.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>win_rate(results)</code>:
+   count wins/losses/ties, report both conventions, bootstrap a
+   confidence interval. Eight lines. The CI is mandatory.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: order
+   randomized, ties reported, CI computed, length distribution
+   matched. If the CI spans 50%, the result is a tie.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Human evals are slow and expensive, AI judges are cheap and
+   biased (U08). Budget both, trust neither alone.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Benchmark
+    suites (fixed, gameable). Human eval (gold, slow). Choose the
+    mix by the decision&rsquo;s stakes.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the eval measures the product. Counterexample:
+    eval prompts drift from real usage, the win rate is real and
+    irrelevant. Refresh prompts from production.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    AlpacaEval papers for length control. Extension: run the same
+    eval with and without length control, report the delta.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: define win rate and the tie policy. Ladder: define
+    the election -&gt; compute the toy -&gt; justify length control -&gt;
+    implement win_rate -&gt; predict the drift failure. Transfer:
+    eval for a tutoring bot, name the judge pool.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: win rate for
+    70/20/10. E2: why bootstrap a CI? E3: length control: what
+    does it remove? Key: <code>../keys/u05_answers.md</code> R34-R36.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Atomic
+    units: matchup, verdict, aggregate. A table (model pair |
+    wins | ties | losses | CI) is the right medium. Logged as
+    text-table.</p>
+</li>
+</ol>
+      
+      <nav class="pager"><a href="../keys/u04_answers.html"><span class="lbl">← Previous</span>U04 · Answers</a><a href="../keys/u05_answers.html"><span class="lbl">Next →</span>U05 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

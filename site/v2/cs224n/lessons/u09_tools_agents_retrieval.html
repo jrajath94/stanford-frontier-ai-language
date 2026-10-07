@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U09 · Tools, agents, and retrieval — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Lesson: Tools, agents, and retrieval.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u09" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09" class="active">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U09 · Tools, agents, and retrieval</nav>
+      <h1>U09 · Tools, agents, and retrieval</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u09-tools-agents-and-retrieval">U09 , Tools, agents, and retrieval</h1>
+<h2 id="local-remediation">Local remediation</h2>
+<p>Bridges: <code>../shared/prerequisites/p19_retrieval.md</code> (P19, what a
+retriever scores), <code>../shared/prerequisites/p20_tools.md</code> (P20, tool
+interfaces and agent state), <code>../shared/prerequisites/p21_security.md</code>
+(P21, permissions and least privilege). This unit is about models
+that act: they call tools, read the results, and cite evidence. The
+math is small, the discipline is large.</p>
+<p>R1. Schema validity: a tool call is valid only when its arguments
+match the declared schema. The toy validator accepts 4 of 6 calls.
+Name, arity, types: all three must hold.
+R2. Recall at k: on the toy corpus (20 chunks, 3 relevant at ranks
+2, 5, 9), recall is 0.000 at k = 1, 0.333 at k = 3, 0.667 at k = 5,
+1.000 at k = 10. Recall never falls when k grows, precision does.
+R3. Split rate: for chunk size c, overlap o, answer span s, the
+fraction of spans split across a boundary is max(0, s - o) / (c - o).
+At c = 200, s = 30: o = 0 gives 0.15, o = 50 gives 0.00. Overlap
+at least the span length removes splits.</p>
+<hr />
+<h3 id="c01-react-pattern">C01: ReAct pattern</h3>
+<p>Leaf id <code>cs224n-U09-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   agents session of the Winter 2026 schedule (S12 per
+   <code>course_map.md</code>). Scope: the interleaved Thought / Action /
+   Observation loop that lets a model use tools. Objectives: define
+   the three step types, run a toy trace, state the stopping rule.
+   Depends on U08 C05 (observable reasoning formats) and P20.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model cannot
+   answer from its weights alone, how does it get the missing
+   fact? Toy: a 2-hop question (&ldquo;the mayor&rsquo;s party, then the
+   mayor&rsquo;s age&rdquo;). Trace: Thought (14 tokens), Action search
+   (8), Observation (22), Thought (10), Action search (8),
+   Observation (18), Answer (12). 7 steps, 92 tokens total.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The model narrates its plan, acts, reads the
+   result, then plans again. The loop turns a one-shot guess into
+   a program with feedback. The Observation is the only new
+   information in the loop, everything else is format.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Steps: T, A, O.
+   A tool set with typed schemas. A step budget B. Assumption: the
+   tools return what they claim (no verification yet, that is
+   C03). Assumption: the task decomposes into tool-sized steps.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   conditioning: each Thought sees all prior Observations, so the
+   context grows with facts, not with guesses. The loop is a
+   while-loop with the model as the loop body. Termination needs
+   an explicit rule (C11), the loop alone never guarantees it.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u09.py</code>: 7 steps, 92
+   tokens. The two Observations (22 + 18 = 40 tokens) carry the
+   new facts. The Answer costs 12 tokens. Reading results costs
+   more than acting.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>react_step(state,
+   tools)</code>: render the prompt from state, get the model&rsquo;s next
+   block, parse Thought / Action / Answer, execute the Action
+   through the tool schema, append the Observation. ~15 lines.
+   Test: the toy trace produces exactly the 7-step sequence.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The trace must
+   alternate T, A, O until an Answer or the budget B. Check: no
+   Action without a preceding Thought (parseable trace). Check:
+   token count matches the sum 92 on the toy.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Cost is linear in steps times context length, and the
+   context grows each step (U05 C10&rsquo;s attention bill). The
+   practical cost is the tool latency, which dominates tokens.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    plan-then-execute (one plan, then actions, no interleaving).
+    Choose ReAct when observations change the plan (search,
+    debugging). Choose plan-then-execute when the steps are known
+    up front and observations are cheap.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the loop stops on its own.&rdquo; Counterexample: a
+    tool returns &ldquo;no results&rdquo; forever and the model rephrases the
+    same query for 50 steps. The fix is a step cap and an answer
+    schema, never trust.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: interleave vs plan-then-execute on 40 two-hop
+    questions, equal tool-call budget. Predict: interleave wins
+    when the first search misses. Falsifier: tie (then the tasks
+    were too easy, harden them).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A1 (breadth), L1
+    (ladder: define the three steps, run the toy trace, derive
+    why observations are the only new info, diagnose the
+    50-step loop, design the interleave test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: implement
+    <code>react_step</code>, replay the toy trace. E2: add a step cap and
+    show the trace stops at B. Keys in <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u09_fig01" src="../assets/u09_fig01.png" title="u09_fig01" />: the 7-step trace, Shell 4, source
+    original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-tool-interfaces">C02: tool interfaces</h3>
+<p>Leaf id <code>cs224n-U09-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12.
+   Scope: how tools are declared to the model. Objectives: write a
+   schema, validate calls, name the three validity checks. Depends
+   on C01, P20.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model emits
+   <code>search("mayor")</code>, what makes that a real call instead of text?
+   Toy: the schema <code>{name: search, args: {q: string, k: int}}</code>.
+   Six toy calls: 4 valid, 2 invalid (wrong arity, unknown name).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The schema is a contract. The model proposes,
+   the validator disposes. A call that fails validation never
+   executes. This is the same as a type checker, only the
+   programmer is a language model.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A tool:
+   name, argument schema, return schema, side-effect class.
+   Assumption: the schema describes the real tool (a lie in the
+   schema is a lie to the model).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Validation is three checks: the
+   name exists, the arguments match the schema (types and
+   required fields), the caller&rsquo;s permissions cover the tool
+   (C10). Each check is decidable and cheap. The mechanism is
+   boring on purpose: boring is auditable.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u09.py</code>: 4 of 6 calls
+   valid. The invalid two: <code>search</code> with a missing argument,
+   <code>delete</code> which is not a declared tool. Validity is not a
+   vibe, it is the three checks.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>validate(call,
+   registry)</code>: check the name, check the args against the
+   schema, return valid/invalid plus the first failing check.
+   ~12 lines. Test: 4/6 with the right failure kinds.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 4/6. Check:
+   an unknown tool name fails the name check, not the arg check.
+   Check: extra arguments are rejected when the schema is closed.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Validation is constant time per call. The cost of
+   skipping it lets malformed calls reach real systems.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    free-text tools (the model writes anything, a parser guesses).
+    Choose schemas for anything with side effects. Choose free
+    text only for read-only toys where a miss costs nothing.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the model will respect the schema.&rdquo; Counterexample:
+    the model invents <code>search_v2</code> because it saw the name in a
+    hallucinated example. The validator must reject, the prompt
+    must show only real names.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: add a schema reminder after each invalid call vs
+    no reminder, count valid calls over 60 tasks. Predict:
+    reminders raise the valid rate. Falsifier: no change (then
+    the errors are semantic, fix the schema wording).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A2 (breadth), L2
+    (ladder: write a schema, run the validator, derive the
+    three checks, diagnose the invented tool, design the
+    reminder test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E3: implement
+    <code>validate</code>, match 4/6. E4: close the schema and show extra
+    args rejected. Keys in <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a contract (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-execution-feedback">C03: execution feedback</h3>
+<p>Leaf id <code>cs224n-U09-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12.
+   Scope: what the agent does with tool results, including errors.
+   Objectives: define the feedback loop, implement retry with the
+   error text, state when to stop retrying. Depends on C01, C02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the tool returns an
+   error, does the agent learn anything? Toy: <code>calc("2++2")</code>
+   returns <code>SyntaxError: unexpected +</code>. The next Thought quotes
+   the error and calls <code>calc("2+2")</code>. The error text is data.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The tool talks back. A good agent treats the
+   error message as an observation, not as a failure. Retry is
+   the loop&rsquo;s error handling. Two retries with new information
+   each time, then escalate.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> An error
+   string, a retry counter, a max-retry cap. Assumption: errors
+   are informative (a bare &ldquo;failed&rdquo; teaches nothing). Assumption:
+   the same call will not be retried verbatim.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is the context:
+   again: the error text enters the context, so the next
+   Thought can avoid the same mistake. The information gain is
+   the difference between &ldquo;it failed&rdquo; and &ldquo;it failed because&rdquo;.
+   Verbose errors are a feature.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): first call
+   fails with the syntax error above, second call succeeds. Two
+   calls, one error message, zero model changes. The feedback
+   did the work that training would have done.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>call_with_retry(
+   tool, args, cap=2)</code>: validate, execute, on error append the
+   message to the state and ask the model for a revised call.
+   ~10 lines. Test: the toy converges in 2 calls.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The retried call
+   must differ from the failed one (no verbatim retry). Check:
+   the cap stops the loop. Check: the error text appears in the
+   next Thought.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Retries multiply tool latency. The cap bounds the
+   worst case. The stability risk: the model &ldquo;fixes&rdquo; the call
+   by switching to a different tool with side effects.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    fail fast (no retry, report the error). Choose retry for
+    transient and formatting errors. Choose fail fast for
+    permission errors and destructive tools.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;errors are always informative.&rdquo; Counterexample:
+    the tool returns &ldquo;error 500&rdquo; and the model invents a new
+    theory each retry, burning the budget. Cap and escalate.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: verbose vs terse error messages, measure
+    success within 2 retries on 40 tasks. Predict: verbose
+    wins. Falsifier: tie (then the model ignores the text,
+    check the trace).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A3 (breadth: state
+    the retry rule and the cap).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E5: implement
+    <code>call_with_retry</code>, show convergence on the toy. E6: set
+    cap = 0 and show fail-fast. Keys in <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a loop rule (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-rag">C04: RAG</h3>
+<p>Leaf id <code>cs224n-U09-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12.
+   Scope: retrieve-then-read over a private corpus. Objectives:
+   define the pipeline, compute recall at k, state the stale
+   index failure. Depends on P19, C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the answer lives in
+   your documents, not in the model&rsquo;s weights, how do you get it
+   in? Toy: 20 chunks, 3 relevant at ranks 2, 5, 9. Retrieve k,
+   prepend to the prompt, generate. The generator never sees the
+   other 17 chunks.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The index is external memory. Retrieval is a
+   lookup, generation is the reader. The model is only as good
+   as what retrieval hands it: garbage in, fluent garbage out.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A chunk
+   store, an embedding index, a query encoder, top-k. Scores in
+   [0, 1] or unnormalized dots. Assumption: the answer exists in
+   the corpus (RAG cannot retrieve what was never written).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The pipeline factorizes:
+   P(answer | query) = sum over chunks of P(chunk | query) times
+   P(answer | chunk, query). Top-k approximates the sum with the
+   k best chunks. The approximation is good when the mass
+   concentrates on few chunks.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u09.py</code>: recall at k is
+   0.000 (k = 1), 0.333 (k = 3), 0.667 (k = 5), 1.000 (k = 10).
+   The first relevant chunk sits at rank 2, so k = 1 finds
+   nothing. k is a recall knob with a precision cost.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>rag_answer(
+   query, index, k)</code>: embed the query, take top-k, format the
+   context, generate with citations (C08). ~10 lines. Test: the
+   toy recall values.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The context must
+   contain exactly the top-k chunks, in rank order. Check: k = 1
+   yields recall 0.000 on the toy (the honest empty case).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Retrieval is sublinear in corpus size (index
+   lookup), generation pays the context bill for k chunks.
+   The practical cost is index freshness: a stale index
+   retrieves yesterday&rsquo;s truth.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    long-context stuffing (put everything in the window).
+    Choose RAG when the corpus exceeds the window or changes
+    often. Choose stuffing for small static corpora where
+    retrieval adds failure modes for no gain.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the top chunk is the right chunk.&rdquo;
+    Counterexample: the rank-1 chunk shares keywords but not
+    the answer, the model cites it confidently. Retrieve more,
+    rerank (C07), require citations (C08).</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: k in {1, 5, 20} on 60 questions, measure exact
+    match. Predict: rises then falls (distraction past some k).
+    Falsifier: monotone rise (then the generator is steady,
+    check the corpus size).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A4 (breadth), L4
+    (ladder: define the pipeline, compute the recall values,
+    derive the factorization, diagnose the rank-1 trap,
+    design the k sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E7: implement
+    <code>rag_answer</code> on the toy index, match the recall numbers.
+    E8: poison one chunk and show the stale answer. Keys in
+    <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u09_fig02" src="../assets/u09_fig02.png" title="u09_fig02" />: recall at k bars, Shell 3, source
+    original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-retrievergenerator-separation">C05: retriever/generator separation</h3>
+<p>Leaf id <code>cs224n-U09-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12.
+   Scope: keeping the two halves of RAG independently testable.
+   Objectives: state the separation, run the swap test, attribute
+   a failure. Depends on C04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the answer is
+   wrong, which half broke? Toy: fix the generator, swap two
+   retrievers (ranks [2,5,9] vs [1,2,3]): recall at k = 5 moves
+   from 0.667 to 1.000 with the generator untouched. The
+   retriever owned the failure.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Two machines, two contracts. The retriever&rsquo;s
+   contract: the right chunk is in the top-k. The generator&rsquo;s
+   contract: given the right chunk, the answer is right. Test
+   each contract with the other half frozen.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Recall at k
+   (retriever metric), faithfulness given gold chunks
+   (generator metric). Assumption: gold chunks exist for the
+   eval set (someone must label them).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The swap test is an ablation: hold
+   the generator fixed, vary the retriever, the delta in
+   end-to-end score is the retriever&rsquo;s contribution. No joint
+   training is needed to run it. This is Shell 6 thinking: one
+   factor changes.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): retriever
+   B puts all 3 relevant chunks in the top 3, recall at k = 3
+   goes from 0.333 to 1.000. Same generator, same questions.
+   Attribution: retriever.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>swap_test(
+   retrievers, generator, evalset)</code>: score each retriever with
+   the frozen generator, report deltas. ~8 lines. Test: the toy
+   delta is positive for B.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The generator
+   weights must be byte-identical across runs (frozen check).
+   Check: the delta&rsquo;s sign is stable across two eval halves.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The test costs one eval per retriever, no training.
+   The cost of not separating: every failure becomes a blame
+   game and both halves get &ldquo;fixed&rdquo; at once.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    end-to-end joint training of retriever and generator.
+    Choose separation for diagnosis and iteration speed. Choose
+    joint training only when retrieval itself must learn from
+    answer feedback.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;a better retriever always helps end to end.&rdquo;
+    Counterexample: the generator ignores the new chunks
+    (position bias toward its priors), end-to-end flat while
+    recall rises. Test the generator&rsquo;s contract too.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: freeze vs fine-tune the generator on gold
+    chunks, measure faithfulness. Predict: fine-tuning helps
+    when the generator ignores context. Falsifier: no gain
+    (then the retriever was the bottleneck, confirm with the
+    swap test).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A5 (breadth: name
+    the two contracts).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E9: run the swap
+    test on the toy index. E10: freeze the generator and show
+    byte-identical weights. Keys in <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a test protocol (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-chunking">C06: chunking</h3>
+<p>Leaf id <code>cs224n-U09-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12.
+   Scope: splitting documents into retrieval-sized pieces.
+   Objectives: compute chunk counts, derive the split rate,
+   choose overlap. Depends on C04, P19.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the answer spans
+   30 tokens, the chunker cuts every 200, what breaks? Toy: doc
+   1000 tokens. No overlap: 5 chunks, split rate 0.15. Overlap
+   50: 7 chunks, split rate 0.00.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The chunker is a cookie cutter. Every cut
+   risks slicing an answer in two. Overlap is insurance: pay
+   extra index tokens so no span falls in a crack.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Chunk size
+   c, overlap o, step c - o, span s. Assumption: answers are
+   short relative to c (true for factoid QA, false for
+   summaries).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Chunk count: 1 + ceil((doc - c) /
+   (c - o)). Split rate: max(0, s - o) / (c - o). When o &gt;= s,
+   the rate is zero: every span fits inside some chunk. The
+   derivation counts, it does not learn.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u09.py</code>: o = 0 gives 5
+   chunks and split rate 0.15, o = 50 gives 7 chunks and split
+   rate 0.00. Insurance costs 2 extra chunks (40 percent more
+   index tokens) and removes the failure class.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>chunk(doc, c,
+   o)</code>: slide the window, emit pieces. ~6 lines. Test: 5 and 7
+   chunks on the toy doc, split rates match.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Every token of
+   the doc appears in at least one chunk (coverage check).
+   Check: with o &gt;= s, no 30-token span is split (the R3
+   guarantee).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Index size grows as 1 + overlap fraction. The
+   statistical cost: duplicated text inflates term statistics in
+   sparse retrieval (C07&rsquo;s problem).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    semantic chunking (split at topic boundaries). Choose fixed
+    windows for speed and predictability. Choose semantic
+    splits when answers align with sections.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;smaller chunks are always better.&rdquo; Counterexample:
+    c = 50 splits every multi-sentence answer, recall collapses
+    even though precision per chunk looks fine. Size to the
+    answer, not to the index.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: c in {100, 200, 400} at fixed o, measure recall
+    on 60 questions. Predict: an interior optimum. Falsifier:
+    monotone (then the answers are all short, check).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A6 (breadth), L6
+    (ladder: define c and o, compute 5 vs 7, derive the split
+    rate, diagnose the c = 50 collapse, design the sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E11: implement
+    <code>chunk</code>, match both counts. E12: verify the zero-split
+    guarantee at o = 50. Keys in <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u09_fig03" src="../assets/u09_fig03.png" title="u09_fig03" />: the 7 chunks and the 0.00 split
+    rate, Shell 3, source original toy. Audit row in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-hybridrerank">C07: hybrid/rerank</h3>
+<p>Leaf id <code>cs224n-U09-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12.
+   Scope: combining sparse and dense retrieval, then reranking.
+   Objectives: define the fusion, compute a fused score, state
+   the rerank cost. Depends on C04, P19.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: dense retrieval
+   misses exact terms, sparse misses meaning, what now? Toy: a
+   chunk scores 0.72 sparse, 0.41 dense. Fused at w = 0.5: 0.565.
+   The fusion is a dial, not a discovery.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Two nets, one pool. Sparse catches the
+   keywords, dense catches the paraphrase. Rerank reads the
+   small pool carefully with a heavy model. Cheap breadth
+   first, expensive depth second.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Sparse
+   score, dense score, fusion weight w, rerank depth m.
+   Assumption: the two scores are on comparable scales (normalize
+   first, or w is meaningless).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Fused score = w times dense +
+   (1 - w) times sparse. The mechanism is a convex mix: w = 0
+   is pure sparse, w = 1 is pure dense. Rerank rescores the top
+   m with a cross-encoder and keeps the top k.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): scores
+   (0.72 sparse, 0.41 dense). w = 0.0 gives 0.720, w = 0.5
+   gives 0.565, w = 1.0 gives 0.410. The weight moves the
+   winner, tune it on a dev set.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>hybrid(query,
+   k, w, m)</code>: sparse top-m, dense top-m, fuse, rerank top-m,
+   return top-k. ~12 lines. Test: w = 0 reproduces sparse
+   ranking.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The fused pool
+   is the union, not the intersection (a chunk found by either
+   survives). Check: rerank never returns a chunk outside the
+   pool.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Rerank costs m heavy forward passes per query. The
+   budget rule: m small enough for latency, large enough to
+   contain the answer (recall at m bounds everything).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    dense only with a bigger index. Choose hybrid when queries
+    mix exact terms (codes, names) with paraphrase. Choose
+    dense only when the corpus is pure prose.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;rerank fixes bad retrieval.&rdquo; Counterexample:
+    the answer sits at rank 200, m = 50, rerank never sees it.
+    Rerank is a polish, not a rescue.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: sweep w in {0, 0.5, 1} on 60 queries, measure
+    recall at 10. Predict: 0.5 wins on mixed queries.
+    Falsifier: w = 0 wins (then the queries are keyword-heavy,
+    drop the dense index).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A7 (breadth: write
+    the fusion formula and the rerank rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E13: implement
+    <code>hybrid</code> on the toy index, match the three fused scores.
+    E14: show a rank-200 answer surviving at m = 50 or not.
+    Keys in <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a formula (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-evidencecitation">C08: evidence/citation</h3>
+<p>Leaf id <code>cs224n-U09-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12.
+   Scope: answers that point at their sources. Objectives: define
+   citation, compute citation precision on a toy, state what a
+   citation does not prove. Depends on C04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model answers
+   with a quote, how do you check it? Toy: 4 claims, 3 cite a
+   span that contains them, 1 cites a span that does not.
+   Citation precision 0.75.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A citation is a pointer, not a proof. It says
+   &ldquo;look here&rdquo;, and the reader (or the checker) can verify. A
+   system that cites is auditable, a system that does not is a
+   rumor.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A claim, a
+   span (doc id, start, end), a support relation. Assumption:
+   support is checkable by string match or by a judge (C10&rsquo;s
+   U10 cousin).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   span grounding: the generator must emit pointers into the
+   retrieved chunks, and a checker verifies each pointer
+   resolves to a span that entails the claim. Two failure
+   classes: dangling pointers, unsupported claims.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 3 of 4
+   citations supported, precision 0.75. The unsupported one
+   quotes the right document but the wrong paragraph. Near
+   is not support.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>check_cites(
+   answer, chunks)</code>: extract spans, test containment and a
+   simple entailment proxy (claim tokens subset of span
+   tokens). ~12 lines. Test: 0.75 on the toy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Every citation
+   resolves to a retrieved chunk (no dangling). Check: a claim
+   with no citation is flagged, not passed.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Checks are text work, cheap. The cost is
+   generation: citing models write longer answers.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    no citations, trust the model. Choose citations for
+    anything a human will act on. Choose bare answers for
+    low-stakes chat.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;a cited answer is a true answer.&rdquo; Counterexample:
+    the span supports the claim but the span itself is from a
+    poisoned chunk (C04&rsquo;s stale index). Citations move trust to
+    the corpus, they do not create it.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: require citations vs forbid them, measure user
+    error detection on 40 tasks. Predict: citations help users
+    catch model errors. Falsifier: no difference (then users
+    do not click, measure clicks).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A8 (breadth: name
+    the two citation failure classes).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E15: implement
+    <code>check_cites</code>, match 0.75. E16: craft the near-miss
+    citation and show it fails. Keys in <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a pointer relation (carried in text). Logged as an
+    honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-memory-versus-context">C09: memory versus context</h3>
+<p>Leaf id <code>cs224n-U09-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12.
+   Scope: what the agent remembers across turns and tasks.
+   Objectives: separate memory from context, compute a
+   compression ratio, state the eviction rule. Depends on C01,
+   U05 C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the conversation
+   is 12000 tokens, the window is 8000, what survives? Toy: a
+   summarizer compresses the raw log to 900 tokens, ratio 13.3.
+   The summary keeps decisions and facts, drops chatter.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Context is the desk, memory is the filing
+   cabinet. The desk holds what the current step needs. The
+   cabinet holds what future steps might need. Summarization
+   moves papers from the desk to the cabinet.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A context
+   budget B, a memory store, an eviction policy, a compression
+   ratio. Assumption: the summary preserves what matters (the
+   risky assumption, test it).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   lossy compression under a budget: keep the newest N tokens
+   verbatim (recency), summarize the rest (abstraction),
+   pin facts that must not change (anchors). Retrieval over
+   memory (C04&rsquo;s machinery) beats rereading the whole log.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u09.py</code>: 12000 tokens
+   compress to 900, ratio 13.3. The budget is 8000, so the raw
+   log does not fit but log + summary does (900 + 8000
+   headroom).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>compact(state,
+   budget)</code>: while over budget, summarize the oldest third,
+   keep anchors. ~10 lines. Test: the toy hits 900 tokens.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Anchors survive
+   compaction byte-identical (pin check). Check: total tokens
+   after compaction are under budget.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Summarization costs one extra generation per
+   compaction. The statistical cost: the summary is a lossy
+   bottleneck, details the summary drops are gone.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    sliding window (drop the oldest, no summary). Choose
+    summarization for long tasks with decisions to keep.
+    Choose the window for short tasks where old tokens are
+    truly dead.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the summary keeps what matters.&rdquo; Counterexample:
+    the summary drops the one constraint the user stated
+    (&ldquo;never email&rdquo;), the agent emails. Pin constraints as
+    anchors, never summarize them away.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: summary vs sliding window on 30 long tasks,
+    measure constraint violations. Predict: summary wins.
+    Falsifier: tie (then the summaries are bad, inspect them).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A9 (breadth: name
+    the three memory classes).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E17: implement
+    <code>compact</code>, match the 13.3 ratio on the toy. E18: pin an
+    anchor and show it survives. Keys in <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a budget (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-permissions">C10: permissions</h3>
+<p>Leaf id <code>cs224n-U09-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12.
+   Scope: what the agent is allowed to do. Objectives: define
+   scopes, implement the check, state the least-privilege rule.
+   Depends on C02, P21.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the agent wants to
+   run <code>delete</code>, who says yes? Toy: scopes {read, write}. The
+   <code>search</code> call passes (read), the <code>delete</code> call fails
+   validation at the permission check (not in scope).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Every tool call carries a badge. The badge
+   lists what this run may touch. No badge, no call. The human
+   issues the badge, the agent cannot upgrade it.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A scope
+   set, a tool&rsquo;s required scope, an approval gate for
+   destructive tools. Assumption: scopes are enforced in code,
+   not in the prompt (the model cannot be trusted with its own
+   leash).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The check is set membership:
+   required(tool) is a subset of granted(run). Destructive
+   tools add an approval step: pause, ask, resume. The
+   mechanism is access control, older than language models.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): granted
+   {read}. <code>search</code> requires {read}: pass. <code>delete</code> requires
+   {write}: fail. One set operation per call, zero model
+   judgment involved.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>authorize(call,
+   scopes)</code>: look up the tool&rsquo;s required scope, test subset,
+   route destructive calls to approval. ~8 lines. Test: the
+   toy pass/fail.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> A call with a
+   missing scope never executes (default deny). Check: the
+   approval gate triggers on the destructive class.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The check is O(1). The cost is friction: approvals
+   slow the loop. The cost of skipping it is the agent
+   deleting what it should only have read.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    prompt-only permissions (&ldquo;please do not delete&rdquo;). Choose
+    code enforcement for anything irreversible. Choose prompts
+    only for read-only sandboxes.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the model will ask before deleting.&rdquo; Counterexample:
+    the model deletes first and explains after, because the
+    prompt said &ldquo;be proactive&rdquo;. Enforcement lives outside the
+    model.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: code-enforced vs prompt-only scopes on 30 tasks
+    with a destructive tool present, count violations.
+    Predict: code wins by a wide margin. Falsifier: tie (then
+    the tasks never tempted deletion, harden them).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A10 (breadth: state
+    the subset rule and the default-deny rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E19: implement
+    <code>authorize</code>, match the toy. E20: mark <code>delete</code> destructive
+    and show the approval gate. Keys in <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is an access rule (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-loop-stopping">C11: loop stopping</h3>
+<p>Leaf id <code>cs224n-U09-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12.
+   Scope: when the agent loop ends. Objectives: define the two
+   stop conditions, compute the toy budget, state the no-stop
+   failure. Depends on C01, C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: who decides the
+   agent is done? Toy: stop when the Answer block validates
+   against the schema, or at 10 steps. The toy trace stops at
+   step 7 with a valid Answer.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Two exits: success (the answer parses) and
+   the fire escape (the step cap). Success is checked, the cap
+   is counted. An agent with only one exit is a gamble.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A step cap
+   B, an answer schema, a validator. Assumption: a valid answer
+   is a good answer (validation checks shape, U08 C12&rsquo;s lesson).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The loop is <code>while steps &lt; B and
+   not valid(answer)</code>. Termination is guaranteed by the cap,
+   correctness is attempted by the validator. The expected cost
+   is E[steps] times cost per step.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u09.py</code>: the toy stops
+   at 7 steps, 92 tokens, under the cap of 10. The 50-step
+   counterexample in C01 shows the cap binding.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>run_agent(task,
+   B)</code>: the while loop with both exits, returns the trace and
+   the stop reason. ~10 lines. Test: toy stops with reason
+   &ldquo;valid answer&rdquo;, the broken tool case stops with &ldquo;cap&rdquo;.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The stop reason
+   is always one of the two (no silent exits). Check: steps
+   never exceed B.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Worst-case cost is B times the per-step cost. Set B
+   from the latency budget, not from hope.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    model-decided stopping (&ldquo;I am done&rdquo;). Choose explicit
+    rules for production. Choose model-decided only in
+    research toys where the stop itself is studied.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the model knows when it is done.&rdquo; Counterexample:
+    the model emits &ldquo;Final answer&rdquo; three times with three
+    different answers. The validator, not the model, declares
+    done.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: B in {5, 10, 20} on 60 tasks, measure solved
+    within budget. Predict: diminishing returns past 10.
+    Falsifier: linear gains (then the tasks need the steps,
+    raise B).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A11 (breadth: name
+    the two exits).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E21: implement
+    <code>run_agent</code>, show both stop reasons. E22: remove the cap
+    and show the runaway on the broken tool. Keys in
+    <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a loop invariant (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-error-attribution">C12: error attribution</h3>
+<p>Leaf id <code>cs224n-U09-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S12.
+   Scope: blaming the right component for an agent failure.
+   Objectives: define the three classes, classify 10 failures,
+   state the fix order. Depends on C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the agent failed,
+   do you fix the retriever, the tool, or the prompt? Toy: 10
+   failures classified as R (retriever) 4, T (tool) 3, P
+   (policy/prompt) 3. The counts say where the budget goes.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Autopsy before surgery. Every failure gets
+   one label: the retriever handed the wrong chunk, the tool
+   errored or lied, or the policy chose badly. Fix the biggest
+   class first.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A failure
+   log, a classifier (often a human or a judge), class counts.
+   Assumption: failures have a single dominant cause (often
+   true, sometimes two).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is the
+   taxonomy plus the count: sort classes by frequency, fix in
+   order, re-measure. This is C05&rsquo;s swap test applied to
+   operations.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u09.py</code>: R 4, T 3, P 3
+   of 10. The retriever is the biggest class, so the next
+   sprint improves retrieval (C07), not the prompt.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>attribute(
+   failures)</code>: for each, test retriever (was the gold chunk in
+   top-k?), test tool (did it error?), else policy. ~12 lines.
+   Test: the toy 4/3/3 split.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Counts sum to
+   the number of failures. Check: re-running the classifier on
+   the same log gives the same labels (deterministic rules).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Attribution costs one inspection per failure. The
+   cost of skipping it: fixing the prompt when the retriever
+   was broken, twice.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    fix whatever the loudest user complained about. Choose the
+    taxonomy for systems with many failures. Choose vibes for
+    a demo with three users.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;one label always fits.&rdquo; Counterexample: the
+    retriever was fine and the tool was fine, but the policy
+    gave up after one try (C11&rsquo;s cap too tight). The taxonomy
+    needs the loop parameters as context.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: fix the top class only, re-measure the failure
+    rate on 40 new tasks. Predict: the rate falls by roughly
+    the class share. Falsifier: no fall (then the labels were
+    wrong, re-audit).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u09_answers.md</code> A12 (breadth: name
+    the three classes and the fix order), L12 (ladder: define
+    the classes, classify the toy, derive the fix order,
+    diagnose the mislabeled case, design the re-measure).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E23: implement
+    <code>attribute</code>, match 4/3/3. E24: write the sprint plan from
+    the counts. Keys in <code>keys/u09_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a count (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="unit-visual-map">Unit visual map</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Claim</th>
+<th>Shell</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="u09_fig01" src="../assets/u09_fig01.png" title="u09_fig01" /></td>
+<td>ReAct trace: 7 steps, 92 tokens</td>
+<td>4</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u09_fig02" src="../assets/u09_fig02.png" title="u09_fig02" /></td>
+<td>recall at k: 0.000, 0.333, 0.667, 1.000</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u09_fig03" src="../assets/u09_fig03.png" title="u09_fig03" /></td>
+<td>chunk 200 overlap 50: 7 chunks, split rate 0.00</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+</tbody>
+</table>
+      
+      <nav class="pager"><a href="../keys/u08_answers.html"><span class="lbl">← Previous</span>U08 · Answers</a><a href="../keys/u09_answers.html"><span class="lbl">Next →</span>U09 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

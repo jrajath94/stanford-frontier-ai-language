@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U01 · NLP history, tasks, and data — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Lesson: NLP history, tasks, and data.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u01" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01" class="active">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U01 · NLP history, tasks, and data</nav>
+      <h1>U01 · NLP history, tasks, and data</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u01-nlp-history-tasks-and-data">U01 , NLP history, tasks, and data</h1>
+<p>Prerequisites: P02, P06, P10, P13. Bridge links in <code>prerequisites.md</code>.
+Session: S01 (Winter 2026: Tue Jan 6, History of NLP, A1 out:
+Introduction to word vectors). Claim class: OFFICIAL-SOURCE for the
+session title and A1 title (SRC-02, SRC-03), REQUESTED-BRANCH for the
+concept inventory below. All leaves: PLANNED / SOURCE ATTRIBUTION
+PENDING unless noted. Notation: see <code>notation_and_shapes.md</code>. Glossary:
+<code>glossary.md</code>. Figures: <img alt="u01_fig01" src="../assets/u01_fig01.png" title="u01_fig01" /> through
+<img alt="u01_fig03" src="../assets/u01_fig03.png" title="u01_fig03" />, rendered by <code>visuals/compute_u01.py</code>
+(executed 2026-10-06, CPython 3, numpy 1.26.4).</p>
+<h2 id="local-remediation-n-gram-counting-and-split-discipline">Local remediation , n-gram counting and split discipline</h2>
+<p>Read this block first if the diagnostic items D2, D6, or D7 were not
+full marks.</p>
+<p>A corpus is a fixed collection of text. Tokenize it: split into atomic
+units. This unit uses words as tokens. A unigram count c(w) is the
+number of times word w occurs. A bigram count c(u, v) is the number of
+times v follows u. The maximum-likelihood estimate of P(v | u) is
+c(u, v) / c(u). Add-1 smoothing adds one phantom count to every bigram:
+P(v | u) = (c(u, v) + 1) / (c(u) + V), where V is the vocabulary size.</p>
+<p>Split discipline: choose train, validation, and test sets BEFORE you
+count anything. Vocabulary, counts, and hyperparameters come from train
+only. The validation set picks settings. The test set is read once, at
+the end. Any count that saw the test set leaks.</p>
+<p>Worked check: toy corpus below has 35 tokens, 14 types. c(the) = 11,
+c(the, cat) = 5. MLE P(cat | the) = 5/11 = 0.455. With add-1 smoothing:
+(5 + 1) / (11 + 14) = 6/25 = 0.24. Assessment: compute P(sat | cat) both
+ways from the counts in <code>compute_u01.py</code>. Key: <code>keys/u01_answers.md</code> R1.</p>
+<hr />
+<h3 id="c01-language-ambiguity">C01: language ambiguity</h3>
+<p>Leaf id <code>cs224n-U01-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01,
+   History of NLP: why language resists fixed rules. Scope: ambiguity
+   at word, phrase, and sentence level. Objectives: name three
+   ambiguity levels, draw two parses of one sentence, state why
+   ambiguity breaks rule-based pipelines. Depends on P13 (text units).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: why does &ldquo;visiting
+   relatives can be dull&rdquo; crash a naive parser? Toy: reading 1 takes
+   &ldquo;visiting relatives&rdquo; as one noun phrase (relatives who visit are
+   dull). Reading 2 takes &ldquo;visiting&rdquo; as the verb and &ldquo;relatives&rdquo; as
+   its object (the act of visiting bores). One string, two structures.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Ambiguity is not noise. It is the normal state of
+   language. Every level of analysis (sound, word, syntax, meaning,
+   intent) can branch. A system that picks one branch early fails
+   silently on the other.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Object: a parse, a
+   tree over the token sequence. Assumption for this unit: tokens are
+   fixed words, morphology is ignored. Unit of ambiguity: count of
+   valid parses (here, 2).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Attachment ambiguity: a phrase can attach
+   to more than one head. &ldquo;visiting&rdquo; attaches as a modifier of
+   &ldquo;relatives&rdquo; (reading 1) or as the main verb with &ldquo;relatives&rdquo; as
+   object (reading 2). The rule that forces the branch: English lets
+   -ing forms act as nouns or verbs. Remove that flexibility and one
+   reading dies.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy count from <code>compute_u01.py</code>: the toy
+   corpus has 14 types. In a 14-type toy, &ldquo;sat&rdquo; follows &ldquo;cat&rdquo; twice and
+   &ldquo;chased&rdquo; follows &ldquo;cat&rdquo; once (raw counts from the script: c(cat)=5).
+   Ambiguity is not about frequency, it is about structure. Two parses,
+   zero extra tokens.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> Parse enumeration is out
+   of scope for the toy, the implementation task is detection. Given a
+   list of bracket strings for one sentence, report the count of
+   distinct parses and the span where they first differ:
+   <code>first_diff(parse_a, parse_b)</code> returns the index of the first token
+   whose parent differs. U03 builds the parser that produces the
+   brackets.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> On the two readings of
+   the toy sentence, <code>first_diff</code> returns 0 (the sentences agree on
+   tokens, differ on structure from the first word). Expected: count 2,
+   diff index 0. A third reading with identical structure must not
+   inflate the count.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Parse count grows exponentially with sentence length in the
+   worst case (Catalan numbers for binary trees). Practical cost: a
+   parser must score parses, not enumerate them. Memory is linear in
+   sentence length for a transition-based parser (U03).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    semantic disambiguation by world knowledge (&ldquo;visiting relatives&rdquo;
+    as people vs act). Syntax-first parsing picks structure before
+    meaning, semantics-first picks meaning before structure. Choose
+    syntax-first when the grammar is strong and the domain is narrow,
+    choose joint models when both signals are weak. Modern neural
+    models learn the joint distribution and skip the staged choice.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the most frequent parse is the right parse.&rdquo; Toy
+    counterexample: in travel text, reading 2 (the act of visiting)
+    dominates, in a family newsletter, reading 1 (visiting relatives
+    as people) dominates. Frequency is corpus-relative. A model trained
+    on one genre picks the wrong branch on the other with full
+    confidence.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Suggested reading
+    from S01: the &ldquo;Human Language Understanding &amp; Reasoning&rdquo; essay
+    (title only, not claimed as read). Falsifiable extension: collect
+    200 naturally occurring -ing sentences, label both readings where
+    they exist, and test whether a parser&rsquo;s error rate correlates with
+    human reading-time slowdown. Predict: errors cluster where humans
+    slow down. Falsifier: no correlation.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A1 (breadth), L1 (oral
+    ladder: define ambiguity, toy it, explain the attachment rule,
+    predict the failure on a new -ing sentence, design the 200-sentence
+    test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: write three new
+    ambiguous sentences, one per level (word, phrase, discourse), and
+    give both readings. E2: implement <code>first_diff</code> and test it on the
+    toy pair. Keys in <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u01_fig01" src="../assets/u01_fig01.png" title="u01_fig01" />: before/after plate, one rule (&ldquo;reattach
+    visiting&rdquo;), Shell 2, source original toy. Audit row in
+    <code>visual_audit.md</code>. Alt text: two rows of word chips, the top row
+    groups &ldquo;visiting relatives&rdquo; as one noun phrase, the bottom row
+    colors &ldquo;visiting&rdquo; as verb and &ldquo;relatives&rdquo; as object.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-symbolic-statistical-and-neural-approaches">C02: symbolic, statistical, and neural approaches</h3>
+<p>Leaf id <code>cs224n-U01-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01,
+   the history arc of the field. Scope: three eras and what each
+   optimizes. Objectives: state the core object of each era (rules,
+   counts, vectors), name what each era fails at, place word2vec on the
+   timeline. Depends on P10 (features, loss, evaluation).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: why did the field abandon
+   hand-written rules? Toy: a rule &ldquo;not X = opposite of X&rdquo; handles &ldquo;not
+   good&rdquo; but fails on &ldquo;not bad&rdquo; (litotes), &ldquo;not just good but great&rdquo;
+   (scope), and &ldquo;yeah, not good&rdquo; (sarcasm). Each fix adds a rule, the
+   rule list grows without bound.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Symbolic systems store human insight as rules.
+   Statistical systems store corpus evidence as counts. Neural systems
+   store corpus evidence as vectors and functions. Each era moves the
+   knowledge from the linguist&rsquo;s head into the data, then into the
+   geometry.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Symbolic: rule set
+   R, each rule a pattern-action pair. Statistical: count tables
+   c(u, v), probabilities P(v | u). Neural: embedding matrix E in
+   R^{V x d}, differentiable maps. Assumption: more data helps the
+   latter two, rules do not improve with data.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism that separates the eras is
+   generalization. Rules generalize by author intent and break on unseen
+   patterns. Counts generalize by smoothing (add-1 above) and break on
+   unseen combinations. Vectors generalize by geometry: similar inputs
+   land near each other, so the model answers unseen combinations by
+   proximity. The toy corpus shows the start: P(sat | cat) = 0.158
+   smoothed, but a vector model can also answer P(sat | kitten) if
+   &ldquo;kitten&rdquo; lands near &ldquo;cat&rdquo;.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u01.py</code>: the corpus has 35
+   tokens. A bigram table over 14 types has 196 cells, only a handful
+   are nonzero. Sparsity is the statistical era&rsquo;s core pain: 196 cells
+   for a toy, V^2 cells for a real vocabulary, nearly all empty.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> Era classifier: given a
+   system description, label it symbolic, statistical, or neural by its
+   stored knowledge (rules / counts / vectors) and its update rule
+   (edit / recount / gradient step). Implement as a keyword decision
+   list with a test set of six historical systems.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Test: &ldquo;a decision tree
+   over word counts&rdquo; -&gt; statistical, &ldquo;a transformer fine-tuned on
+   reviews&rdquo; -&gt; neural, &ldquo;a regex cascade for dates&rdquo; -&gt; symbolic.
+   Expected: 6/6 correct. Edge case: &ldquo;Naive Bayes over embeddings&rdquo; -&gt;
+   statistical classifier on neural features, the label follows the
+   decision rule, not the features.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Rules: O(R) memory, zero training cost, unbounded authoring
+   cost. Counts: O(V^2) memory for bigrams, one corpus pass.
+   Vectors: O(V d) memory, gradient training cost, best sample
+   efficiency of the three because geometry shares statistics across
+   words.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Hybrid systems
+    (rules on top of neural models) are the live alternative. Choose
+    pure neural when data is plentiful and the output space is open.
+    Choose rules when the output must obey hard constraints (a date
+    parser for a legal form) or when data is near zero. Choose counts
+    when you need a transparent baseline in an hour.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;neural always beats symbolic.&rdquo; Counterexample: a
+    zip-code validator. A regex is exact, instant, and auditable, a
+    neural model guesses. The failure mode of era-chauvinism: a GPU
+    that approximates a lookup table.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> S01 suggested
+    reading (title only). Falsifiable extension: on a fixed low-resource
+    task (500 labeled examples), compare a rule baseline, a count
+    baseline, and a small neural model across five seeds. Predict: the
+    neural model wins on average but has the widest seed variance.
+    Falsifier: variance is smallest for the neural model.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A2 (breadth), L2 (ladder:
+    define the three eras, toy the rule failure, derive the sparsity
+    count, compare on the zip-code task, critique &ldquo;neural always wins&rdquo;).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E3: build the era
+    classifier and score 6/6. E4: compute bigram table sparsity for the
+    toy corpus (nonzero cells / 196). Keys in <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> No new
+    figure: the claim is a comparison of values, and the sparsity
+    number (nonzero cells over 196) is carried in text. Logged as an
+    honest exception in <code>visual_audit.md</code>: comparison-of-values claim,
+    table medium would apply, figure deferred to keep one claim per
+    plate elsewhere.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-corpora">C03: corpora</h3>
+<p>Leaf id <code>cs224n-U01-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01 and
+   to A1 (word vectors need a corpus). Scope: what a corpus is, how it
+   is built, what can go wrong. Objectives: define corpus, state three
+   corpus design decisions, spot two collection biases. Depends on P02
+   (files, text handling) and P10 (distribution shift).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: why do two models trained
+   on &ldquo;English&rdquo; disagree? Toy: corpus A is six pet sentences, corpus B
+   is six finance sentences. The word &ldquo;bank&rdquo; means a river edge in A
+   (absent) and a money store in B. Same language, disjoint evidence.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A corpus is a sample, not the language. Every
+   corpus over-represents its source genre, era, and author pool. The
+   model learns the sample. Claims about &ldquo;English&rdquo; from one corpus are
+   claims about that corpus.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Object: document
+   collection D = {d_1, &hellip;, d_N}. Units: documents, tokens, types.
+   Assumption: documents are drawn from some process, the IID
+   assumption is usually false (time order, author clusters) and must
+   be checked.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Collection pipeline: source selection -&gt;
+   crawling or licensing -&gt; cleaning (boilerplate removal, dedup) -&gt;
+   tokenization -&gt; split. Each arrow can inject bias. Dedup by exact
+   match misses near-duplicates, aggressive cleaning deletes dialect
+   text. The mechanism to remember: bias enters at collection, and no
+   later step removes it.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy corpus: 6 documents, 35 tokens, 14 types
+   (<code>compute_u01.py</code>). Type-token ratio = 14/35 = 0.40. A second toy
+   corpus of the same size from one repeated sentence would have ratio
+   near 0.14. The ratio measures lexical variety, not quality.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> Corpus profiler: input a
+   list of documents, output document count, token count, type count,
+   type-token ratio, top-10 types, and duplicate-document count by
+   exact match. Implement with a Counter, test on the toy corpus.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> On the toy corpus:
+   docs 6, tokens 35, types 14, ratio 0.40, top type &ldquo;the&rdquo; with 11,
+   duplicates 0. Expected: exact match with <code>compute_u01.py</code> output.
+   Edge: empty document contributes 0 tokens but still counts as a
+   document.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Profiling is one pass, O(total tokens) time, O(types)
+   memory. Dedup is the expensive step: O(N^2) naive, near-linear with
+   hashing. Practical cost: cleaning a web-scale corpus costs more
+   engineering time than training a small model on it.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    synthetic or generated corpora. Choose real corpora when the target
+    distribution is human text. Choose synthetic when the phenomenon is
+    rare (code-switching, specific syntax) and you need controlled
+    coverage. Never evaluate on synthetic and claim real-world
+    performance.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;bigger corpus = better model.&rdquo; Counterexample: add
+    one million machine-generated SEO pages to a clean corpus. Token
+    count triples, quality drops. The model learns the spam pattern.
+    Size without curation is a liability.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: fix model size and training steps, vary only the dedup
+    threshold on a fixed crawl, and measure downstream accuracy.
+    Predict: aggressive dedup helps up to a point, then hurts by
+    deleting useful repetition. Falsifier: monotonic improvement.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A3 (breadth), L3 (ladder:
+    define corpus, profile the toy, derive the ratio, predict the SEO
+    failure, design the dedup experiment).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E5: implement the corpus
+    profiler and match the expected numbers. E6: construct a two-genre
+    toy corpus and show &ldquo;bank&rdquo; has disjoint neighbors per genre. Keys
+    in <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u01_fig03" src="../assets/u01_fig03.png" title="u01_fig03" /> carries the rank-frequency plate (Shell 5):
+    the count table is the stored object, stopword removal is the rule.
+    Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-text-classification">C04: text classification</h3>
+<p>Leaf id <code>cs224n-U01-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01 as
+   the canonical first NLP task. Scope: map text to a fixed label set.
+   Objectives: write the task formulation, derive Naive Bayes, compute
+   a toy classification, state two failure modes. Depends on P06
+   (Bayes rule) and P10 (train/test, loss vs metric).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: how do you sort text
+   without reading it? Toy: four training documents, two classes
+   (pets, finance). Test document: &ldquo;cat bank&rdquo;. The classifier must
+   weigh &ldquo;cat&rdquo; (pets signal) against &ldquo;bank&rdquo; (finance signal).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Classification assigns a score: each class gets a
+   score for the document, the top score wins. Naive Bayes scores with
+   word likelihoods under a brutal independence assumption: words are
+   independent given the class. Brutal, fast, and often good enough.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Document d as a
+   word multiset. Class c in {pets, finance}. Parameters: P(c),
+   P(w | c) for each word. Core assumption: P(d | c) = product over
+   words of P(w | c). This is false (word order matters) and useful.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Bayes rule: P(c | d) proportional to
+   P(c) times product of P(w | c). Take logs: score(c) = log P(c) +
+   sum log P(w | c). With add-1 smoothing, P(w | c) = (count(w, c) + 1)
+   / (total words in c + V). The argmax over c is the prediction. The
+   log turns products into sums and prevents underflow.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u01.py</code>: priors 0.5 each.
+   Scores: pets -5.416, finance -5.011. Prediction: finance. Note the
+   honest result: the toy is so small that smoothing dominates and the
+   &ldquo;wrong-looking&rdquo; answer wins. This is computed, not hand-waved.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>nb_train(docs)</code> returns
+   class word counts and priors. <code>nb_predict(doc, model)</code> returns the
+   argmax class and the score dict. Use logs, not raw products.
+   ~25 lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> On the toy: scores match
+   (-5.416, -5.011) to 3 decimals, prediction &ldquo;finance&rdquo;. Check: scores
+   shift by a constant when the prior changes, the argmax must move
+   monotonically with the prior. Test with prior 0.9 for pets and
+   confirm the flip.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Train: one pass, O(total tokens). Predict: O(words x
+   classes). Memory: O(V x classes). Numerically stable in log space,
+   raw products underflow by the tenth word. Sample efficiency is high
+   for a linear model, which is why it survives as a baseline.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    logistic regression on the same counts (discriminative vs
+    generative). Choose Naive Bayes when data is tiny and you need a
+    baseline in minutes. Choose logistic regression when you have
+    enough data to estimate the decision boundary directly. Choose
+    neural classifiers when word order and composition matter.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;more training words always help.&rdquo; Counterexample: add
+    100 copies of &ldquo;the cat sat&rdquo; to pets. The word &ldquo;the&rdquo; piles up in
+    pets, and every finance document containing &ldquo;the&rdquo; gets
+    misclassified. Duplicated data is a silent class prior shift. The
+    toy prediction above is a second failure: with four documents,
+    smoothing outvotes evidence.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: on a fixed sentiment dataset, subsample training sizes
+    from 50 to 5000 and plot Naive Bayes vs logistic regression
+    accuracy with five seeds. Predict: Naive Bayes leads at tiny sizes,
+    logistic regression overtakes and stays ahead. Falsifier: Naive
+    Bayes never leads.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A4 (breadth), L4 (ladder:
+    define the task, score the toy by hand, derive the log form,
+    diagnose the duplicate-data failure, design the scaling test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E7: implement
+    <code>nb_train</code>/<code>nb_predict</code>, match the script scores. E8: find the
+    prior value that flips the toy prediction and report it. Keys in
+    <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is a
+    score comparison, carried as computed numbers in text. Logged as an
+    honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-parsing">C05: parsing</h3>
+<p>Leaf id <code>cs224n-U01-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01 as
+   a core task and forward to U03 (neural dependency parsing) and A2&rsquo;s
+   official title. Scope here: what a parse is and why the task is
+   hard. Objectives: define constituency vs dependency, read a
+   dependency arc, state why ambiguity (C01) makes parsing a search
+   problem. Depends on C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: who did what to whom in
+   &ldquo;the cat chased the mouse&rdquo;? Toy: arcs: chased -&gt; cat (subject),
+   chased -&gt; mouse (object), the -&gt; cat, the -&gt; mouse (determiners).
+   The parse is the sentence&rsquo;s skeleton, everything downstream (who
+   acts, who is acted on) reads it.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A dependency parse is a set of directed arcs from
+   heads to dependents, one head per word, no cycles, covering the
+   sentence. Think of it as wiring: each word plugs into exactly one
+   parent, and the verb is usually the root.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Sentence of n
+   words. Arc (h -&gt; d) with label (nsubj, obj, det). A tree has n - 1
+   arcs. Assumption for the toy: projective trees (no crossing arcs),
+   real languages break this and parsers must handle it.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Why search: n words admit exponentially
+   many trees. A parser scores candidate arcs and picks the best tree.
+   Transition-based parsing (U03) builds the tree left to right with a
+   stack and buffer, choosing SHIFT, LEFT-ARC, or RIGHT-ARC at each
+   step. The mechanism: local greedy or beam decisions compose into a
+   global tree.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: &ldquo;the cat sat&rdquo;. Arcs: sat -&gt; cat
+   (nsubj), cat -&gt; the (det). Tree score = sum of arc scores. With arc
+   scores {sat-&gt;cat: 2.1, cat-&gt;the: 1.7, sat-&gt;the: 0.2}, the correct
+   tree scores 3.8 vs 2.3 for the wrong attachment. Numbers are toy
+   scores for illustration, labeled as such.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> Arc-standard oracle:
+   given a gold tree and a parser state (stack, buffer), return the
+   correct action. Implement the three actions on lists, test that the
+   oracle reproduces the gold arcs for &ldquo;the cat sat&rdquo;.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Oracle on the toy must
+   emit: SHIFT, SHIFT, LEFT-ARC(det), SHIFT, RIGHT-ARC(nsubj)&hellip; (order
+   depends on the exact transition system, the check is that replaying
+   the actions yields the gold arc set). Expected: arc set equals gold,
+   no cycles, every word has exactly one head.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Transition-based: O(n) time, O(n) memory. Graph-based
+   (score all arcs, find max spanning tree): O(n^3) naive, O(n^2) with
+   care. Statistical efficiency: arc-labeled data is expensive, the
+   classic treebanks are small, which is why U03&rsquo;s neural parser
+   matters.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Constituency
+    parsing (phrase structure) vs dependency parsing (word-to-word
+    arcs). Choose dependency when you need predicate-argument
+    structure for downstream tasks (extraction, QA). Choose
+    constituency when phrase boundaries matter (some generation and
+    grammar-checking setups). Modern LLMs rarely run an explicit
+    parser, the parse is implicit in the representations.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the parser&rsquo;s top tree is trustworthy.&rdquo; Counterexample:
+    garden-path sentences (&ldquo;the horse raced past the barn fell&rdquo;) break
+    greedy parsers: the early attachment of &ldquo;raced&rdquo; as main verb is
+    wrong, and greedy decoding cannot backtrack. Beam search or global
+    inference is the fix, greedy is the trap.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: measure greedy vs beam-4 accuracy on garden-path vs
+    normal sentences. Predict: the gap concentrates on garden-path
+    items. Falsifier: uniform gap across both sets.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A5 (breadth), L5 (ladder:
+    define the arc set, wire the toy, explain the search blowup,
+    diagnose the garden-path failure, design the beam experiment).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E9: draw the dependency
+    arcs for two toy sentences and list the arc labels. E10: implement
+    the three transition actions and replay them on &ldquo;the cat sat&rdquo;.
+    Keys in <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is a
+    move (arc attachment), carried by the bracket plate in
+    <img alt="u01_fig01" src="../assets/u01_fig01.png" title="u01_fig01" /> (attachment change). Logged in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-translation">C06: translation</h3>
+<p>Leaf id <code>cs224n-U01-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01 as
+   a flagship task. Scope: what translation requires beyond
+   word-for-word mapping. Objectives: state the alignment problem, the
+   reordering problem, and how BLEU scores a translation. Depends on
+   C01 (ambiguity multiplies across languages).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: why is &ldquo;the cat sat on
+   the mat&rdquo; not translated word by word? Toy: French &ldquo;le chat s&rsquo;est
+   assis sur le tapis&rdquo;. &ldquo;s&rsquo;est assis&rdquo; is two words for one English
+   word, word order and morphology both shift. Translation is
+   structure mapping, not dictionary lookup.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Translation has three subproblems: what each
+   source word means (ambiguity, C01), which target words express it
+   (lexical choice), and in what order they go (reordering). Early
+   systems solved them with separate models, neural systems learn them
+   jointly.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Source sentence
+   x of length n, target y of length m. Alignment a: each target word
+   links to a source word (or null). Assumption: meaning is preserved,
+   the task breaks for untranslatable idioms and culture-bound terms.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> BLEU in one paragraph: for n = 1..4,
+   compute the fraction of candidate n-grams that appear in the
+   reference (precision), take the geometric mean, multiply by a
+   brevity penalty that punishes short candidates. BLEU = BP x
+   exp(mean log p_n). The brevity penalty exists because pure precision
+   rewards one-word correct guesses.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Candidate: &ldquo;the cat sat&rdquo;. Reference: &ldquo;the cat
+   sat on the mat&rdquo;. Unigram precision: 3/3 = 1.0. Bigram precision:
+   2/2 = 1.0 (&ldquo;the cat&rdquo;, &ldquo;cat sat&rdquo; both in reference). Brevity penalty:
+   exp(1 - 6/3) = exp(-1) = 0.368. BLEU-2 = 0.368 x exp((log 1 + log
+   1)/2) = 0.368. The penalty dominates: short and perfect still
+   scores low. Computed by hand here, the lab recomputes it in code.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>bleu2(candidate,
+   reference)</code>: tokenize by split, count clipped n-gram matches for n
+   = 1, 2, apply the brevity penalty, return the score. ~20 lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> On the toy: 0.368 to 3
+   decimals. Check: identical candidate and reference scores 1.0.
+   Check: empty candidate returns 0.0, not NaN (guard the log of zero).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> BLEU is O(candidate length) per sentence. Corpus BLEU
+   aggregates counts before the ratio (micro-average), which is more
+   stable than averaging sentence scores. Practical cost: zero
+   training, the cost is reference translations by humans.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternatives:
+    chrF (character n-grams, better for morphologically rich
+    languages), COMET (learned metric, needs a model). Choose BLEU
+    when you need a cheap repeatable number. Choose chrF for
+    morphologically rich targets. Choose human evaluation when the
+    decision matters (product launch), automatic metrics correlate
+    with humans but do not replace them.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;higher BLEU = better translation.&rdquo; Counterexample: a
+    candidate that copies the reference&rsquo;s n-grams in scrambled order
+    keeps unigram precision 1.0 while being unreadable, higher-order
+    n-grams catch some of this, not all. Metric hacking is real:
+    systems can climb BLEU while human quality stalls.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: rerank 50 system outputs by BLEU and by human rating on
+    200 sentences, compute rank correlation. Predict: correlation is
+    positive but below 0.6 on creative text, above 0.8 on technical
+    text. Falsifier: uniform correlation across genres.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A6 (breadth), L6 (ladder:
+    define the three subproblems, compute BLEU-2 by hand, explain the
+    brevity penalty, diagnose metric hacking, design the correlation
+    study).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E11: implement <code>bleu2</code>
+    and match 0.368. E12: construct a scrambled candidate with unigram
+    precision 1.0 and BLEU-2 below 0.5. Keys in <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is a
+    score decomposition, carried as computed numbers in text. Logged as
+    an honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-language-modelling">C07: language modelling</h3>
+<p>Leaf id <code>cs224n-U01-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01
+   and forward to S05 (Language Models and RNNs) and U04. Scope: the
+   task definition that powers everything after U04. Objectives: write
+   the factorization, define perplexity, compute both on the toy.
+   Depends on P06 (conditional probability) and P08 (entropy).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: what does it mean for a
+   machine to &ldquo;know English&rdquo;? Toy answer: assign a probability to
+   every string. P(&ldquo;the cat sat&rdquo;) should exceed P(&ldquo;cat the sat the&rdquo;).
+   A language model is a probability distribution over sequences.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Chain rule: P(w_1..w_n) = product of P(w_t |
+   w_1..w_{t-1}). The model predicts each word from its prefix. This
+   one factorization turns generation into repeated prediction and
+   evaluation into a single number.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Vocabulary size V.
+   Sequence w_1..w_n. Parameters of the model (counts now, weights in
+   U04). Assumption: the chain rule holds exactly, the approximation
+   is in P(w_t | prefix), which the model truncates or compresses.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Cross-entropy on a test sequence: H =
+   -(1/n) sum log P(w_t | prefix). Perplexity = exp(H). Derivation of
+   the meaning: if the model assigned uniform probability 1/k to each
+   next word, H = log k and perplexity = k. So perplexity reads as
+   &ldquo;the model&rsquo;s effective number of choices per word.&rdquo; Lower is
+   better, the floor is 1.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u01.py</code>: test &ldquo;the cat sat&rdquo;,
+   add-1 smoothed bigram. P(cat|the) = 0.24, P(sat|cat) = 0.1579.
+   H = -(log 0.24 + log 0.1579)/2 = 1.636 nats. Perplexity =
+   exp(1.636) = 5.137. The model is as confused as a 5-sided die.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>bigram_ppl(test,
+   train)</code>: build counts with add-1 smoothing, score the test
+   sequence, return perplexity. ~20 lines. Must match 5.137 on the toy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 5.137 to 3
+   decimals. Check: a test sentence of training bigrams seen often
+   scores lower perplexity than a novel one. Check: perplexity is
+   invariant to the log base only if exp/log match (nats here).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Bigram scoring is O(test length). The table is O(V^2)
+   memory. Statistical efficiency is poor: most bigrams are unseen, so
+   smoothing dominates. Numerical risk: raw products underflow, sum
+   logs instead.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    masked language modelling (predict missing words from both sides,
+    U06) vs autoregressive (left to right). Choose autoregressive when
+    the task is generation. Choose masked when the task is
+    understanding (classification over full inputs). Perplexity only
+    compares models over the same tokenization (trap T2 in errors.md).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;lower perplexity = better model for my task.&rdquo;
+    Counterexample: a model with great perplexity that copies training
+    text verbatim (memorization). Perplexity rewards fit to the test
+    distribution, if the test leaks into training, the number lies.
+    Split discipline (remediation block) is the guard.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train two bigram models, one on shuffled sentences
+    (order destroyed) and one intact, and compare perplexity on
+    grammatical vs ungrammatical test pairs. Predict: the intact model
+    separates them, the shuffled one does not. Falsifier: equal
+    separation.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A7 (breadth), L7 (ladder:
+    define the distribution, compute perplexity by hand, derive the
+    &ldquo;effective choices&rdquo; reading, diagnose memorization, design the
+    shuffle test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E13: implement
+    <code>bigram_ppl</code>, match 5.137. E14: show that doubling every count
+    leaves the MLE perplexity unchanged but changes the smoothed one,
+    explain why. Keys in <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is a
+    computed score, the before/after of smoothing (0.455 -&gt; 0.24) is
+    carried in text. Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-distributional-hypothesis">C08: distributional hypothesis</h3>
+<p>Leaf id <code>cs224n-U01-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01
+   and forward to S02 (Word Vectors) and U02. Scope: the hypothesis
+   that justifies all of U02. Objectives: state the hypothesis, build
+   a cooccurrence vector by hand, predict similarity from it. Depends
+   on P03 (vectors) and C03 (corpora).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: how can a machine learn
+   meaning without a dictionary? Toy: in the corpus, &ldquo;cat&rdquo; occurs near
+   {the, sat, on, chased, mouse}, &ldquo;dog&rdquo; occurs near {the, sat, on,
+   rug, barked, at}. The neighbor sets overlap heavily. The hypothesis
+   says: similar neighbors, similar meaning.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> &ldquo;You shall know a word by the company it keeps.&rdquo;
+   Meaning is not stored as a definition, it is read off from context
+   distributions. Two words with the same distribution are
+   interchangeable for the model&rsquo;s purposes, even if no human told the
+   model they are related.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Cooccurrence
+   vector of word w: counts of each context word in a window around w,
+   a vector in R^V. Assumption: the window (here width 2) captures the
+   relevant context, too narrow misses topic, too wide dilutes syntax.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Similarity = cosine between
+   cooccurrence vectors. cos(u, v) = u.v / (||u|| ||v||). High cosine
+   means the words keep the same company. The mechanism is purely
+   counting, U02 replaces raw counts with learned vectors that fix the
+   sparsity.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u01.py</code>: window width 2 around
+   the first &ldquo;cat&rdquo; (position 1) gives {the:1, sat:1, on:1}. Slide the
+   window to position 2 (&ldquo;sat&rdquo;) and the counts become {the:2, cat:1,
+   on:1}. <img alt="u01_fig02" src="../assets/u01_fig02.png" title="u01_fig02" /> shows the move: the count of &ldquo;the&rdquo;
+   rises from 1 to 2 because the window now covers two &ldquo;the&rdquo; tokens.
+   One rule, one changed number, computed.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>cooccur(toks, target,
+   width)</code>: return the Counter of context words. <code>cosine(u, v)</code> over
+   the union vocabulary. ~15 lines. Must reproduce the two count dicts
+   above.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match both dicts
+   exactly. Check: cosine of a vector with itself is 1.0. Check:
+   disjoint contexts give 0.0. Edge: target at position 0 has a
+   one-sided window, the code must clip, not wrap.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Building all vectors is O(tokens x width) time, O(V^2)
+   memory worst case. Raw counts are sparse and high-dimensional, the
+   cosine is cheap but the vectors are huge. This cost motivates U02&rsquo;s
+   dense learned vectors.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    hand-built lexical resources (WordNet-style synonym sets). Choose
+    distributional vectors when the corpus is large and the domain is
+    open. Choose hand-built resources when precision matters and the
+    domain is closed (medical ontologies). Hybrid: initialize from
+    resources, refine on corpus.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;similar contexts = similar meaning.&rdquo; Counterexample:
+    antonyms. &ldquo;hot&rdquo; and &ldquo;cold&rdquo; occur in near-identical contexts (&ldquo;the
+    soup is __&rdquo;, &ldquo;it feels __ today&rdquo;). Cosine calls them similar, a
+    human calls them opposites. Distributional similarity is
+    substitutability, not synonymy.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: build cooccurrence vectors on the toy corpus, rank word
+    pairs by cosine, and check against human similarity judgments for
+    the same pairs. Predict: correlation is positive but antonym pairs
+    are the top outliers. Falsifier: antonyms rank low.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A8 (breadth), L8 (ladder:
+    state the hypothesis, build the vector by hand, derive cosine,
+    explain the antonym failure, design the judgment study).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E15: implement
+    <code>cooccur</code> and <code>cosine</code>, match the two dicts. E16: find the
+    highest-cosine pair in the toy corpus that a human would call
+    unrelated, and explain the corpus cause. Keys in
+    <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u01_fig02" src="../assets/u01_fig02.png" title="u01_fig02" />: window slide, one rule, counts before and
+    after, Shell 3, source original toy. Audit row in
+    <code>visual_audit.md</code>. Alt text: two rows of word chips with the
+    target highlighted, count boxes below show &ldquo;the&rdquo; rising from 1 to 2
+    after the slide.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-data-splits">C09: data splits</h3>
+<p>Leaf id <code>cs224n-U01-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01
+   and to the remediation block above. Scope: why three splits exist
+   and what breaks when they mix. Objectives: assign each split its
+   job, detect two leak patterns, fix a leaky split. Depends on P10
+   (train/validation/test, leakage).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: why not train on all the
+   data and test on all the data? Toy: build the toy vocabulary from
+   all six sentences, then &ldquo;test&rdquo; on sentence 5 (&ldquo;the mouse ran from
+   the cat&rdquo;). Every word is known, OOV rate is 0%. Now build the
+   vocabulary from sentences 1-4 only: &ldquo;ran&rdquo; and &ldquo;from&rdquo; are unknown.
+   The first setup lies about generalization.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Three jobs, three sets. Train fits parameters.
+   Validation picks settings (smoothing, window width, model choice).
+   Test reports the number you claim. Touch the test set twice and the
+   second number is not a test number anymore, it is a second
+   validation number.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Split fractions
+   (e.g. 80/10/10) of documents, not of tokens: splitting mid-document
+   leaks context. Assumption: the splits come from the same
+   distribution (C03&rsquo;s warning applies: time drift breaks this).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Leakage mechanism 1: vocabulary built on
+   test. The model sees test words during training, so test perplexity
+   is optimistic. Leakage mechanism 2: near-duplicate documents across
+   splits (common in web text). The model memorizes the train copy and
+   &ldquo;generalizes&rdquo; to the test copy. Dedup before splitting, not after.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: vocab from sentences 1-4. Test sentence
+   5 has 6 tokens, 2 OOV (&ldquo;ran&rdquo;, &ldquo;from&rdquo;). OOV rate = 2/6 = 0.333. With
+   the leaky vocab (all six sentences), OOV rate = 0. The honest number
+   is 0.333. Computed from the corpus in <code>compute_u01.py</code>.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>split_docs(docs,
+   seed)</code>: shuffle with a fixed seed, split 80/10/10 by document.
+   <code>oov_rate(vocab, test)</code>: fraction of test tokens outside vocab.
+   Assert the vocab is built from train only. ~15 lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> On the toy with a fixed
+   split (first 4 train, 5th validation, 6th test): with train on
+   sentences 1-4 and test on sentence 5, OOV rate = 2/6 = 0.333 with
+   the clean vocab, 0.0 with the leaky vocab.
+   Expected: the function reports both, and an assertion fails if the
+   vocab builder ever sees a test document.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Splitting is O(documents). The cost of getting it wrong is
+   not compute, it is a false claim about generalization that survives
+   into deployment. Small datasets make the validation split noisy,
+   use cross-validation when documents number in the hundreds.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    time-based splits (train on old, test on new) vs random splits.
+    Choose random splits when the deployment distribution matches the
+    collection distribution. Choose time-based splits when the system
+    will face the future (news, markets), random splits are optimistic
+    there because they leak the future into training.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the test set measures generalization.&rdquo; Counterexample:
+    the test set is from the same crawl as training, full of
+    near-duplicates. The model scores 95% on test and 70% in
+    production. The split was clean, the collection was not. Splits
+    cannot fix a biased corpus (C03).</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: take a fixed dataset, create a random split and a
+    time-based split, train identical models, and compare the
+    test-production gap on a held-out future slice. Predict: the
+    time-based split predicts production accuracy better.
+    Falsifier: no difference.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A9 (breadth), L9 (ladder:
+    assign the three jobs, compute the OOV pair, explain the two leak
+    mechanisms, diagnose the duplicate-crawl failure, design the split
+    comparison).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E17: implement
+    <code>split_docs</code> and <code>oov_rate</code>, reproduce 0.333 vs 0.0. E18: plant a
+    near-duplicate across the split and show the test score inflating.
+    Keys in <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is a
+    discipline (a procedure), not a state change, the two OOV numbers
+    are carried in text. Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-task-formulation">C10: task formulation</h3>
+<p>Leaf id <code>cs224n-U01-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01:
+   before solving a task, write it down. Scope: the five slots every
+   NLP task needs. Objectives: fill the slots for two tasks, spot an
+   underspecified task. Depends on C04-C07 (example tasks).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: why do two teams both
+   &ldquo;do sentiment&rdquo; and get incomparable numbers? Toy: team A labels
+   movie reviews positive/negative, team B labels the same reviews on
+   a 1-5 scale. Same name, different label sets, different metrics.
+   The task was never formulated, so the numbers cannot be compared.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A task formulation has five slots: input, output,
+   data (with splits, C09), metric (C11), and the decision the output
+   drives. If any slot is blank, the task is a wish, not a task. The
+   decision slot is the one teams skip: who acts on the label, and
+   what happens when it is wrong?</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Input space X
+   (text), output space Y (labels, spans, sequences). Data
+   distribution D over X x Y. Metric M: Y x Y -&gt; number. Assumption:
+   the labels are well-defined enough that two annotators agree most
+   of the time, measure agreement before training.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Formulation as loss-vs-metric
+   separation (P10): the loss is what the optimizer sees
+   (differentiable), the metric is what the stakeholder sees
+   (task-meaningful). They must correlate, but they are not the same
+   object. The mechanism: choose the loss to approximate the metric
+   under optimization constraints, then verify the correlation on
+   validation.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy formulation for the NB classifier (C04):
+   input: one sentence, output: {pets, finance}, data: 4 train docs,
+   1 validation, 1 test, metric: accuracy, decision: route the
+   document to the right team queue. The computed test accuracy on one
+   test doc is 0 or 1: a reminder that tiny test sets make the metric
+   a coin flip.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> Task spec template as a
+   dict with the five slots and a <code>validate_spec</code> function that
+   rejects blanks, mismatched label sets between data and output slot,
+   and metrics that ignore the decision slot. ~20 lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The C04 toy spec passes.
+   A spec with output {pos, neg} but data labels {1..5} fails with
+   &ldquo;label set mismatch&rdquo;. A spec with no decision slot fails with
+   &ldquo;no decision&rdquo;. Expected: three specs, two rejections, one pass.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Formulation costs meeting time, not compute. Its absence
+   costs months: a team that trains before formulating rebuilds the
+   data pipeline twice. The cheapest experiment is a written spec.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    &ldquo;formulate by example&rdquo; (a few input-output pairs, no slots).
+    Choose full formulation when the task ships to users or when two
+    teams must agree. Choose by-example when exploring a new
+    capability where the output space is unknown (then graduate to the
+    five slots once it stabilizes).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the metric captures the task.&rdquo; Counterexample:
+    accuracy on a 99-to-1 imbalanced queue: a constant classifier
+    scores 99% and routes every finance document to pets. The metric
+    is high, the decision is catastrophic. C11 covers the fix, the
+    formulation must name the minority class cost up front.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: take three published &ldquo;sentiment&rdquo; datasets, fill the five
+    slots for each from their documentation, and test whether the
+    slots differ. Predict: at least one slot differs in every pair.
+    Falsifier: two datasets with identical slots.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A10 (breadth), L10 (ladder:
+    name the five slots, fill them for the toy, derive the loss/metric
+    split, diagnose the 99% accuracy trap, design the dataset audit).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E19: write the five-slot
+    spec for a spam filter and a QA task. E20: implement
+    <code>validate_spec</code> and pass the three-spec test. Keys in
+    <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is a
+    procedure template, carried in text. Logged as an honest exception
+    in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-task-specific-metrics">C11: task-specific metrics</h3>
+<p>Leaf id <code>cs224n-U01-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01 and
+   to C06 (BLEU) and C07 (perplexity) as instances. Scope: pick the
+   metric that matches the decision. Objectives: compute accuracy,
+   precision, recall, F1 on a toy, state when each lies. Depends on
+   P06 (rates) and C10 (the decision slot).</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the classifier scores
+   99%. Is it good? Toy: 100 documents, 99 pets, 1 finance. A constant
+   &ldquo;pets&rdquo; classifier: accuracy 0.99, finance recall 0.0. The headline
+   number is excellent, the system is useless for finance.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Metrics are lenses, not truths. Accuracy asks
+   &ldquo;how often right&rdquo;. Precision asks &ldquo;of the flagged, how many
+   correct&rdquo;. Recall asks &ldquo;of the true, how many found&rdquo;. F1 is their
+   harmonic mean: it punishes a model that sacrifices one for the
+   other. Pick the lens that matches the cost of the mistake.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Confusion counts:
+   TP, FP, FN, TN. Precision = TP/(TP+FP). Recall = TP/(TP+FN). F1 =
+   2PR/(P+R). Assumption: the positive class is named, swap the labels
+   and the numbers change meaning.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Why harmonic mean: the arithmetic mean
+   of P=1.0, R=0.0 is 0.5, which hides the total recall failure. The
+   harmonic mean is 0.0. Derivation: F1 = 2/(1/P + 1/R), when either
+   term is zero, F1 is zero. The metric is designed to refuse partial
+   credit for degenerate classifiers.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: constant &ldquo;pets&rdquo; classifier on the 99/1
+   split. Finance as positive: TP=0, FP=0, FN=1. Precision = 0/0:
+   define as 0.0 by convention (no positive predictions). Recall =
+   0/1 = 0.0. F1 = 0.0. Accuracy = 0.99. Four numbers, one story: the
+   accuracy lies, the F1 tells the truth.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>prf(tp, fp, fn)</code>
+   returns (precision, recall, f1) with the zero-division convention.
+   <code>bleu2</code> from C06 and <code>bigram_ppl</code> from C07 are the sequence-level
+   companions. ~10 lines.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> On the toy: (0.0, 0.0,
+   0.0). Check: perfect classifier gives (1.0, 1.0, 1.0). Check:
+   P=1.0, R=0.5 gives F1 = 2(0.5)/(1.5) = 0.667, below the arithmetic
+   mean 0.75, as designed.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> All O(test size). The statistical cost is in the test set:
+   with 1 positive example, recall is 0 or 1. Report confidence
+   intervals or admit the test set is too small, a point estimate on
+   n=1 is noise.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternatives:
+    ROC-AUC (ranking quality across thresholds), exact match (QA),
+    BLEU/chrF (generation). Choose F1 when classes are imbalanced and
+    both error types cost. Choose accuracy only when classes are
+    balanced and errors are symmetric. Choose ranking metrics when the
+    system outputs scores, not decisions.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the metric is the goal.&rdquo; Counterexample: Goodhart on
+    BLEU (C06): n-gram overlap climbs while humans judge quality flat.
+    The failure is organizational: once a metric becomes the target, it
+    stops measuring. Rotate metrics and keep a human-eval slice.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: on a fixed task, optimize directly for F1 vs accuracy
+    (threshold tuning on validation) and compare the chosen operating
+    points on a cost model with 10x minority-class cost. Predict: the
+    F1-tuned point has lower total cost. Falsifier: equal cost.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A11 (breadth), L11 (ladder:
+    define the four counts, compute the toy, derive the harmonic
+    choice, diagnose the 99% trap, design the cost-model test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E21: implement <code>prf</code>,
+    match the toy numbers. E22: compute corpus BLEU-2 vs mean
+    sentence BLEU-2 on two toy pairs and explain the difference. Keys
+    in <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is a
+    comparison of values, the four-number toy is carried in text.
+    Logged as an honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-history-and-source-context">C12: history and source context</h3>
+<p>Leaf id <code>cs224n-U01-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S01&rsquo;s
+   history arc and to the source honesty rules of this build. Scope:
+   place the eras on a timeline and state what this build claims and
+   does not claim. Objectives: order five milestones, state the Winter
+   2026 anchor, recite the honesty note. Depends on C02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: why does the course start
+   with history? Toy: the 2026 schedule itself. Week 1 is history and
+   word vectors, week 4 covers pretraining, week 5 covers post-training. The
+   order is the argument: you cannot understand RLHF (week 4) without
+   vectors (week 1). History is the dependency graph.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Five rough eras: rules (1950s-1980s), statistics
+   (1990s-2000s), neural networks (2010s), pretraining (2018-2022),
+   scale and alignment (2023-2026). Each era kept the previous era&rsquo;s
+   insights (counts became objectives, rules became constraints) and
+   dropped its bottlenecks.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Timeline objects:
+   milestone, year, contribution, limitation it removed. Assumption:
+   eras overlap, the dates are centers, not walls. No era &ldquo;ended.&rdquo;</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism of progress, stated
+   without hype: (a) more compute, (b) more data, (c) better
+   objectives, (d) architectures that parallelize. Every milestone
+   moves at least one of the four. Word2vec moved (c) and (d),
+   transformers moved (d), pretraining moved (b) and (c), RLHF moved
+   (c) toward human judgment.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy arithmetic on the schedule: 20 sessions
+   over 9 weeks, 4 assignments at 48% total, project at 49%,
+   participation at 3%. A1 is 6%, A2-A4 are 14% each. These numbers
+   come from the inspected official site (SRC-01), not from memory.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> Timeline builder: given
+   (milestone, year, contribution, limitation-removed) tuples, render
+   an ordered list and check that every limitation-removed names a
+   prior era&rsquo;s bottleneck. ~15 lines. Test on the five eras above.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Five milestones in
+   order, each with a named removed bottleneck. Check: no milestone
+   claims a capability without naming the mechanism (compute, data,
+   objective, architecture). A milestone that says &ldquo;solved language&rdquo;
+   fails the check.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Not a computational unit, the cost is epistemic. The
+   practical risk is presentism: judging 1990s statistical models by
+   2026 standards instead of by the compute and data they had.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative
+    framings: task-driven history (translation -&gt; QA -&gt; agents) vs
+    method-driven history (rules -&gt; counts -&gt; vectors). Choose
+    method-driven when learning mechanisms (this course). Choose
+    task-driven when scoping a product. Both are simplifications,
+    state which you use.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;progress was inevitable.&rdquo; Counterexample: the neural
+    winter of the 1990s-2000s. The ideas existed, the compute and data
+    did not. Progress needed all four mechanisms, ideas alone stalled
+    for a decade.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> The honesty
+    extension: this build&rsquo;s claims are classified per leaf
+    (OFFICIAL-SOURCE, REQUESTED-BRANCH, RESTRICTED-UNVIEWED,
+    EDITION-2024). Falsifiable check: pick any leaf, open the cited
+    artifact, and confirm the claim. If a leaf&rsquo;s class is wrong, file
+    it in <code>errors.md</code>. The audit pass owns this.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u01_answers.md</code> A12 (breadth: recite the
+    honesty note verbatim in your own words).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E23: build the
+    five-era timeline with the bottleneck check. E24: classify five
+    claims about the course (e.g. &ldquo;A2 covers dependency parsing&rdquo;) into
+    the four claim classes with artifact evidence. Keys in
+    <code>keys/u01_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u01_fig03" src="../assets/u01_fig03.png" title="u01_fig03" /> is the chapter plate for the unit: the
+    count table as stored object, stopword removal as the rule, the
+    tradeoff in one line. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="unit-visual-map">Unit visual map</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Claim</th>
+<th>Shell</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="u01_fig01" src="../assets/u01_fig01.png" title="u01_fig01" /></td>
+<td>one sentence, two parses</td>
+<td>2</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u01_fig02" src="../assets/u01_fig02.png" title="u01_fig02" /></td>
+<td>window slide moves counts</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u01_fig03" src="../assets/u01_fig03.png" title="u01_fig03" /></td>
+<td>rank-frequency, stopword rule</td>
+<td>5</td>
+<td>original toy</td>
+</tr>
+</tbody>
+</table>
+      
+      <nav class="pager"><a href="../crash-course.html"><span class="lbl">← Previous</span>Crash course</a><a href="../keys/u01_answers.html"><span class="lbl">Next →</span>U01 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

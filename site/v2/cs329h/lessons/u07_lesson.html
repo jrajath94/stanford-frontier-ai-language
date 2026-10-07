@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U07 · Acquisition, Thompson sampling, and dueling bandits — CS329H: Machine Learning from Human Preferences</title>
+<meta name="description" content="Unit 07: Acquisition, Thompson sampling, and dueling bandits.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs329h-u07">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS329H: Machine Learning from Human Preferences</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS329H: Machine Learning from Human Preferences</h3><ul>
+<li><a href="../index.html" data-page="cs329h-index">CS329H · Overview</a></li>
+<li><a href="../lessons/u01_lesson.html" data-page="cs329h-u01">U01 · Preferences, choices, and ge</a></li>
+<li><a href="../lessons/u02_lesson.html" data-page="cs329h-u02">U02 · Random utility, axioms, and </a></li>
+<li><a href="../lessons/u03_lesson.html" data-page="cs329h-u03">U03 · Choice estimation and Bayesi</a></li>
+<li><a href="../lessons/u04_lesson.html" data-page="cs329h-u04">U04 · Fisher information and exper</a></li>
+<li><a href="../lessons/u05_lesson.html" data-page="cs329h-u05">U05 · RLHF and DPO</a></li>
+<li><a href="../lessons/u06_lesson.html" data-page="cs329h-u06">U06 · Active elicitation and assis</a></li>
+<li><a href="../lessons/u07_lesson.html" data-page="cs329h-u07" class="active">U07 · Acquisition, Thompson sampli</a></li>
+<li><a href="../lessons/u08_lesson.html" data-page="cs329h-u08">U08 · Inversion, style, and bounde</a></li>
+<li><a href="../lessons/u09_lesson.html" data-page="cs329h-u09">U09 · Aggregation, impossibility, </a></li>
+<li><a href="../lessons/u10_lesson.html" data-page="cs329h-u10">U10 · Research projects and oral m</a></li>
+<li><a href="../cheatsheet.html" data-page="cs329h-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs329h-crash">Crash course</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS329H: Machine Learning from Human Preferences</a> / U07 · Acquisition, Thompson sampling, and dueling bandits</nav>
+      <h1>U07 · Acquisition, Thompson sampling, and dueling bandits</h1>
+      
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u07-acquisition-thompson-sampling-and-dueling-bandits">U07: Acquisition, Thompson sampling, and dueling bandits</h1>
+<p>Prerequisites: P07 (statistical estimation), P17 (RL), P18 (Bayesian). Local remediation opens this lesson.</p>
+<h2 id="provenance">Provenance</h2>
+<p>Sessions S12 (&ldquo;Acquisition functions and Thompson sampling&rdquo;, 2 Nov 2026) and S13 (&ldquo;Dueling bandits and preferential Bayesian optimization&rdquo;, 4 Nov 2026) are PLANNED. All twelve concepts are taught as independent theory: PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<h2 id="local-remediation-posterior-sampling-acquisition-functions-dueling-feedback">Local remediation: posterior sampling, acquisition functions, dueling feedback</h2>
+<p>Posterior sampling: sample theta from the posterior, then act optimally for the sample. Probability matching: P(action) = P(action is optimal). Uncertainty becomes exploration with no tuning knob.</p>
+<p>Acquisition functions: score each candidate query by expected usefulness. UCB is optimistic: mu + k*sd. EI is the expected gain over the best so far. PI is the chance of any gain.</p>
+<p>Dueling feedback: observe only which of two arms wins, never a numeric reward. The Bradley-Terry model turns strengths into win probabilities: P(i beats j) = sigma(s_i - s_j). One bit per duel.</p>
+<h2 id="russian-doll-ladder-for-the-major-mechanism-thompson-sampling">Russian-doll ladder for the major mechanism (Thompson sampling)</h2>
+<ul>
+<li>Shell 0: How do we explore without a hand-tuned exploration knob?</li>
+<li>Shell 1: Toy: 3-arm Bernoulli [0.7, 0.5, 0.4]. Beta(1,1) priors.</li>
+<li>Shell 2: Sample each arm mean from its posterior. Pull the argmax sample.</li>
+<li>Shell 3: Rule: probability matching. Uncertain arms are sampled in proportion to their chance of being best.</li>
+<li>Shell 4: Implement the Beta-Bernoulli update. Run T = 300, seed 23.</li>
+<li>Shell 5: Check: cumulative regret sublinear. Check: the best arm dominates pulls late.</li>
+<li>Shell 6: Change one factor: prior Beta(10,10). Predict slower learning, then measure it.</li>
+<li>Shell 7: Counterexample: non-stationary arms. The posterior concentrates on stale history and TS under-explores the changed arm.</li>
+<li>Shell 8: Compare with epsilon-greedy at matched T: less tuning, similar or better regret.</li>
+<li>Shell 9: Extension: does TS beat UCB on the dueling (pairwise) version? Falsifiable: run both, compare.</li>
+<li>Shell 10: Production: TS needs a posterior that samples fast. Conjugate models or approximate samplers.</li>
+</ul>
+<h2 id="not-yet-understood-dependency-list">Not-yet-understood dependency list</h2>
+<ol>
+<li>Information-directed sampling (beyond TS here).</li>
+<li>Gaussian process internals for preferential BO (used at the interface level).</li>
+<li>Regret proofs (statements, not proofs).</li>
+</ol>
+<hr />
+<h3 id="cs329h-u07-c01-posterior-sampling">cs329h-U07-C01: posterior sampling</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S12). Objective: define Thompson sampling. Depends on P18.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: how do we turn a posterior into actions? Toy: 3-arm Bernoulli, Beta posteriors (8,3), (4,4), (2,6).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Sample a world from the posterior, then act as if the sample were true. Uncertainty becomes exploration automatically.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Posterior p(theta | data). Action: a = argmax_a E[r_a | theta_sample]. Assumption: the posterior is honest.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Probability matching: P(pull a) = P(a is optimal | data). Arms that might be best are pulled in proportion to that chance. No epsilon to tune.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Toy: P(arm1 best) = 0.850 (20000 samples, seed 0). TS pulls arm 1 about that often.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Sample from each Beta, take the argmax, update with the observed reward. Fifteen lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: pull counts concentrate on the best arm over time. Check: early pulls spread across arms. Expected: the regret curve in u07_f02.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(arms) per round for conjugate models. Sampling cost dominates for complex posteriors.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: epsilon-greedy (tuned exploration). Alternative: UCB (deterministic optimism). Choose TS when a posterior sampler exists. Choose UCB when sampling is expensive.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the posterior is misspecified (wrong likelihood). TS confidently pulls a bad arm. Counterexample: Bernoulli model on heavy-tailed rewards.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test TS against epsilon-greedy on the toy across seeds. Falsifiable: overlapping regret bands mean no claim.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the algorithm in two sentences. Oral ladder through probability matching. Transfer: clinical trials. Failure diagnosis: TS never pulls arm 2. Explain. Counterfactual: what if the posterior collapsed? Research: TS under misspecification.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U07 task 1 implements TS. Exercises: (E1) state the loop. (E2) explain the PBEST pull share. (E3) argue the misspecification failure. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u07_f01.png: lesson plate, source original toy, alt text &ldquo;Posterior box. Arrow labeled sample a world. Argmax box. Arrow labeled act. Note: P(pull a) = P(a optimal).&rdquo; Audit: before state posterior, after state action, rule named. No conflict.</p>
+<figure><img alt="Posterior box. Arrow labeled sample a world. Argmax box. Arrow labeled act. Note: P(pull a) = P(a optimal)." src="../assets/u07_f01.png"><figcaption>Posterior box. Arrow labeled sample a world. Argmax box. Arrow labeled act. Note: P(pull a) = P(a optimal).</figcaption></figure>
+<h3 id="cs329h-u07-c02-explorationexploitation">cs329h-U07-C02: exploration/exploitation</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S12). Objective: frame the tradeoff and compare policies empirically. Depends on C01, P17.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: explore (learn) or exploit (earn)? Toy: 3-arm [0.7, 0.5, 0.4], T = 300, seed 23. TS vs epsilon-greedy (0.1) vs greedy.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Every pull both earns and teaches. Pure exploitation risks locking onto a suboptimal arm. Pure exploration wastes reward. Good policies earn while they learn.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Cumulative regret R(T). Policies: greedy, epsilon-greedy, TS. Assumption: stationary arms.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Greedy locks in early: regret grows linearly. Epsilon-greedy pays a constant exploration tax. TS explores in proportion to uncertainty: regret grows sublinearly.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Computed (seed 23): TS 4.0, epsilon-greedy 5.2, greedy 89.6. Same numbers as figure u07_f02.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Simulate all three with one seed. Twenty lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: all regrets non-decreasing. Check: TS pulls the best arm most. Expected: the three curves.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(policies x T x arms). Simulation is cheap, the ordering is the lesson.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: UCB. Alternative: explore-then-commit. Choose by the cost of exploration and the need for tuning.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the comparison uses one seed. The ordering may not replicate. Counterexample: greedy wins on a lucky seed. Always report seed variation (U10-C07).</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: replicate across 20 seeds, report mean and spread. Falsifiable: if TS does not win on average, the claim dies.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: define the tradeoff in one sentence. Oral ladder through the curves. Transfer: restaurant choice in a new city. Failure diagnosis: TS regret looks linear. Explain. Counterfactual: what if rewards were known? Research: best-of-both-worlds algorithms.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U07 task 2 runs the comparison. Exercises: (E1) define the tradeoff. (E2) explain the greedy lock-in. (E3) argue the single-seed failure. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u07_f02.png: lesson plate, source original toy, seed 23, alt text &ldquo;Three cumulative regret curves to T = 300. TS ends at 4.0, epsilon-greedy at 5.2, greedy at 89.6.&rdquo; Audit: before state untried arms, after state regret curves, rule named. No conflict.</p>
+<figure><img alt="Three cumulative regret curves to T = 300. TS ends at 4.0, epsilon-greedy at 5.2, greedy at 89.6." src="../assets/u07_f02.png"><figcaption>Three cumulative regret curves to T = 300. TS ends at 4.0, epsilon-greedy at 5.2, greedy at 89.6.</figcaption></figure>
+<h3 id="cs329h-u07-c03-acquisition-functions">cs329h-U07-C03: acquisition functions</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S12). Objective: define UCB, EI, PI and compute them on a toy. Depends on P18.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: score each candidate query by expected usefulness. Toy: f_best = 1.0, candidates (mu 1.2, sd 0.1), (mu 0.9, sd 0.5), (mu 0.5, sd 0.8).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> An acquisition function turns the posterior into a shopping list. UCB is optimistic (mean + k sd). EI is the expected gain over the best so far. PI is the chance of any gain.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> UCB(x) = mu(x) + k sd(x). EI(x) = E[max(0, f(x) - f_best)]. PI(x) = P(f(x) &gt; f_best). Units: reward. Assumption: Gaussian posterior.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> EI has a closed form under Gaussian posteriors: EI = sd (z Phi(z) + phi(z)), z = (mu - f_best)/sd. UCB needs a k. EI and PI need f_best.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Computed: UCB(k=2): 1.40, 1.90, 2.10. EI: 0.201, 0.153, 0.130. PI: 0.977, 0.421, 0.266. Same numbers as figure u07_f03.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Implement the three formulas. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: EI &gt;= 0. Check: PI in [0,1]. Expected: the ranking table.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(candidates). Closed form, no sampling needed.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: Thompson sampling (sampling, not scoring). Alternative: random. Choose UCB for theory, EI for practice, PI rarely (it ignores gain size).</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the Gaussian posterior is wrong, the scores misrank. Counterexample: heavy-tailed truth makes UCB with small k under-explore.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test which acquisition finds the optimum fastest on a synthetic 1D function across seeds. Falsifiable: the winner must replicate.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the three formulas. Oral ladder through the toy ranking. Transfer: choosing the next experiment in a lab. Failure diagnosis: EI always picks near the best. Explain. Counterfactual: what if uncertainty were zero? Research: acquisition under misspecification.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U07 task 3 computes the three. Exercises: (E1) write the formulas. (E2) compute the table. (E3) argue the misrank failure. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u07_f03.png: lesson plate, source original toy, closed form, alt text &ldquo;Posterior mean curve with sd band on [0,1]. UCB, EI, PI curves below. Markers at the three toy candidates.&rdquo; Audit: before state posterior, after state scores, rule named. No conflict.</p>
+<figure><img alt="Posterior mean curve with sd band on [0,1]. UCB, EI, PI curves below. Markers at the three toy candidates." src="../assets/u07_f03.png"><figcaption>Posterior mean curve with sd band on [0,1]. UCB, EI, PI curves below. Markers at the three toy candidates.</figcaption></figure>
+<h3 id="cs329h-u07-c04-regret-assumptions">cs329h-U07-C04: regret assumptions</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S12). Objective: state what regret bounds assume. Depends on C02, P22.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: when do the textbook regret guarantees hold? Toy: sqrt(T) versus linear curves, T = 1000.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Regret bounds are promises under assumptions: stationary rewards, bounded noise, a well-specified model. Break an assumption and the promise voids.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Frequentist regret R(T) = O(sqrt(T)) for TS/UCB under stationarity. Bayesian regret averages over the prior. Units: reward x rounds.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The sqrt(T) rate says average regret per round goes to zero: the policy learns. Linear regret says it does not. The figure shows both.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> At T = 1000: sqrt curve 31.6, linear curve 1000 (unit scale). The rates, not the constants, are the point.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Plot both rates. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: sqrt curve concave, linear straight. Expected: u07_f04.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1). The math is the point.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: finite-time bounds (constants included). Alternative: empirical regret only. Choose bounds for design insight, empirical for decisions.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: non-stationarity. The bound assumes a fixed best arm, a drifting world voids it. Counterexample: the best arm flips every 100 rounds, measured regret is linear despite the &ldquo;guarantee&rdquo;.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test the sqrt(T) shape empirically on the toy across seeds. Falsifiable: a linear fit means an assumption broke.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name three assumptions (stationarity, bounded noise, well-specified model). Oral ladder through the rates. Transfer: a warranty promise with fine print. Failure diagnosis: measured regret is linear. Explain. Counterfactual: what if data per round were infinite? Research: adaptive regret.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) name the assumptions. (E2) interpret sqrt(T). (E3) construct the non-stationary counterexample. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u07_f04.png: lesson plate, source original toy, closed form, alt text &ldquo;Concave sqrt(T) curve and straight linear curve to T = 1000. Assumption panel lists stationarity, bounded noise, well-specified model.&rdquo; Audit: before state assumptions, after state rates, rule named. No conflict.</p>
+<figure><img alt="Concave sqrt(T) curve and straight linear curve to T = 1000. Assumption panel lists stationarity, bounded noise, well-specified model." src="../assets/u07_f04.png"><figcaption>Concave sqrt(T) curve and straight linear curve to T = 1000. Assumption panel lists stationarity, bounded noise, well-specified model.</figcaption></figure>
+<h3 id="cs329h-u07-c05-pairwise-feedback">cs329h-U07-C05: pairwise feedback</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S13). Objective: define the dueling feedback model. Depends on U01-C05.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: we only see who wins a duel, never a score. Toy: 4 arms, strengths [1.2, 0.8, 0.3, -0.5], P(i beats j) = sigma(s_i - s_j).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Dueling feedback is a pairwise comparison, not a number. The Bradley-Terry model turns strengths into win probabilities. One bit per duel.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Win matrix W_ij = sigma(s_i - s_j). Skew-symmetric in logit space: W_ji = 1 - W_ij. Assumption: BT link, no ties.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> This is U01-C05 with items = arms. The duel is the query, the winner is the answer. Everything about BT estimation carries over.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> P(arm1 beats arm2) = sigma(0.4) = 0.599. P(arm1 beats arm4) = sigma(1.7) = 0.846. Full matrix computed in the script.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Build the win matrix from strengths. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: diagonal 0.5, W_ji = 1 - W_ij. Expected: the matrix in u07_f05.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(k^2). Tiny.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: numeric rewards (richer, often unavailable). Alternative: rankings (more than one bit). Choose duels when humans compare better than they score.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: intransitive strengths (rock-paper-scissors). BT forces transitivity, the matrix cannot fit cycles. Counterexample: W_12, W_23, W_31 all above 0.6.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test BT fit on real duel data via held-out log-loss. Falsifiable: bad fit means the link is wrong.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the win probability. Oral ladder through the matrix. Transfer: chess Elo. Failure diagnosis: estimated strengths flip with more data. Explain. Counterfactual: what if ties were allowed? Research: beyond BT.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U07 task 4 builds the matrix. Exercises: (E1) write the formula. (E2) compute P12 and P14. (E3) argue the cycle failure. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u07_f05.png: lesson plate, source original toy, closed form, alt text &ldquo;4x4 duel win-probability matrix from strengths [1.2, 0.8, 0.3, -0.5]. Diagonal 0.5, antisymmetric.&rdquo; Audit: before state strengths, after state matrix, rule named. No conflict.</p>
+<figure><img alt="4x4 duel win-probability matrix from strengths [1.2, 0.8, 0.3, -0.5]. Diagonal 0.5, antisymmetric." src="../assets/u07_f05.png"><figcaption>4x4 duel win-probability matrix from strengths [1.2, 0.8, 0.3, -0.5]. Diagonal 0.5, antisymmetric.</figcaption></figure>
+<h3 id="cs329h-u07-c06-winner-probability">cs329h-U07-C06: winner probability</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S13). Objective: compute win probabilities under posterior uncertainty. Depends on C05, P18.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: we are unsure about the strengths. What is P(arm i wins)? Toy: posterior samples of strengths, seed 0.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The winner probability averages the BT formula over the posterior: P(i beats j) = E[sigma(s_i - s_j)]. Uncertainty widens the probabilities toward 0.5.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Monte Carlo over S posterior samples: (1/S) sum sigma(s_i - s_j). Assumption: the posterior samples are honest.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Jensen: E[sigma(gap)] != sigma(E[gap]). With uncertain gaps the win probability sits closer to 0.5 than the plug-in estimate. The figure shows both.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Plug-in P(1 beats 2) = 0.599, posterior-averaged = 0.5930. Plug-in P(1 beats 4) = 0.846, averaged = 0.8360. Seed 0, S = 2000.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Sample strengths, average sigma of gaps. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: averaged probabilities lie between plug-in and 0.5. Check: matrix antisymmetry. Expected: u07_f06.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(S k^2). Sampling dominates.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: plug-in (fast, overconfident). Alternative: full predictive duel simulation. Choose averaging when uncertainty matters for the decision.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the posterior misses the true strength entirely, the average is confidently wrong. Counterexample: posterior centered at the wrong sign.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test calibration of averaged win probabilities on held-out duels. Falsifiable: miscalibration means the posterior is wrong.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: write the averaging formula. Oral ladder through the Jensen gap. Transfer: election forecasts. Failure diagnosis: averaged probabilities all near 0.5. Explain. Counterfactual: what if posterior spread were zero? Research: better than Monte Carlo?</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U07 task 5 computes both matrices. Exercises: (E1) write the formula. (E2) report the four numbers. (E3) argue the wrong-sign failure. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u07_f06.png: lesson plate, source original toy, seed 0, alt text &ldquo;Plug-in versus posterior-averaged win matrices side by side. Averaged values sit closer to 0.5.&rdquo; Audit: before state plug-in, after state averaged, rule named. No conflict.</p>
+<figure><img alt="Plug-in versus posterior-averaged win matrices side by side. Averaged values sit closer to 0.5." src="../assets/u07_f06.png"><figcaption>Plug-in versus posterior-averaged win matrices side by side. Averaged values sit closer to 0.5.</figcaption></figure>
+<h3 id="cs329h-u07-c07-dueling-bandit">cs329h-U07-C07: dueling bandit</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S13). Objective: define the dueling bandit problem and the Copeland winner. Depends on C05.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: pick two arms to duel each round, find the best arm. Toy: 4 arms, strengths [1.2, 0.8, 0.3, -0.5].</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> A dueling bandit chooses a pair per round and observes the winner. The goal: find the arm that beats the most others (Copeland winner) with few duels.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Copeland score C_i = mean_{j != i} P(i beats j). Winner: argmax C. Strong regret counts rounds where neither duelist is the winner. Assumption: a Condorcet winner exists (beats all others).</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Copeland on the toy: arm 1 beats all pairwise (strengths ordered), so C_1 is highest. Computed scores: COPE.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Copeland scores: 0.718, 0.603, 0.452, 0.226. Winner: arm 1.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Compute Copeland from the win matrix. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: scores in [0,1], ordered with strengths here. Expected: the bars in u07_f07.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(k^2).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: Borda (rank aggregation). Alternative: reduce to a standard bandit by dueling against a fixed benchmark. Choose Copeland for the standard definition. Choose the benchmark reduction for simplicity.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: no Condorcet winner (cycles). Copeland still ranks, but &ldquo;the best arm&rdquo; is ill-defined. Counterexample: rock-paper-scissors strengths.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether a dueling-TS policy finds the Copeland winner faster than uniform dueling. Falsifiable: run both, compare strong regret. (This is the capstone replication.)</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: define the Copeland winner. Oral ladder through the scores. Transfer: a round-robin tournament. Failure diagnosis: Copeland scores tie. Explain. Counterfactual: what if numeric rewards were available? Research: dueling with ties.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U07 task 6 computes Copeland. Exercises: (E1) write the score. (E2) report the four scores. (E3) argue the cycle failure. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u07_f07.png: lesson plate, source original toy, closed form, alt text &ldquo;Copeland bars: 0.718, 0.603, 0.452, 0.226. Arm 1 marked the winner.&rdquo; Audit: before state win matrix, after state scores, rule named. No conflict.</p>
+<figure><img alt="Copeland bars: 0.718, 0.603, 0.452, 0.226. Arm 1 marked the winner." src="../assets/u07_f07.png"><figcaption>Copeland bars: 0.718, 0.603, 0.452, 0.226. Arm 1 marked the winner.</figcaption></figure>
+<h3 id="cs329h-u07-c08-preferential-bayesian-optimization">cs329h-U07-C08: preferential Bayesian optimization</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S13). Objective: describe the preferential BO loop. Depends on C03, C05.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: optimize a function we can only compare, never evaluate. Toy: f(x) = -40(x-0.7)^2 on [0,1], 11-point grid, 20 duel rounds, seed 0.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Preferential BO: fit a surrogate to pairwise comparisons, pick the next duel by acquisition, repeat. The surrogate learns the shape, the acquisition picks informative pairs.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Surrogate: posterior win probabilities per pair (Beta model). Acquisition: duel the Copeland leader against the least-tried challenger. Assumption: f smooth enough that comparisons generalize.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Loop: (1) update pair posteriors, (2) pick leader vs challenger, (3) observe winner, (4) repeat. Best-so-far (true f of the estimated best) rises.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Computed (seed 0): best-so-far true f: start -19.600, end -1.600 (true optimum 0.0). Same numbers as figure u07_f08.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Implement the loop on the grid. Twenty lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: best-so-far is non-decreasing. Check: duels concentrate near the optimum late. Expected: u07_f08.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(rounds x k^2). The pair posteriors dominate.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: random dueling (baseline). Alternative: standard BO with numeric evals (needs scores). Choose preferential BO when only comparisons exist.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the surrogate is misspecified (true f not learnable from the pairs), the search chases a phantom optimum. Counterexample: bimodal f with duels only near one peak.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test preferential BO against random dueling across seeds. Falsifiable: the winner must replicate.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state the loop in four steps. Oral ladder through the curve. Transfer: tuning a recipe by taste tests. Failure diagnosis: best-so-far stalls early. Explain. Counterfactual: what if numeric scores were available? Research: acquisition for duels.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U07 task 7 runs the loop. Exercises: (E1) state the loop. (E2) report start/end. (E3) argue the phantom-optimum failure. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Figure visuals/u07_f08.png: lesson plate, source original toy, seed 0, alt text &ldquo;Best-so-far true f over 20 duel rounds, rising from -19.600 to -1.600.&rdquo; Audit: before state no duels, after state learned best, rule named. No conflict.</p>
+<figure><img alt="Best-so-far true f over 20 duel rounds, rising from -19.600 to -1.600." src="../assets/u07_f08.png"><figcaption>Best-so-far true f over 20 duel rounds, rising from -19.600 to -1.600.</figcaption></figure>
+<h3 id="cs329h-u07-c09-noisy-utility">cs329h-U07-C09: noisy utility</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S13). Objective: model noise in the latent utility behind duels. Depends on C05, U01-C08.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: the same duel twice can give different winners. Toy: gap 0.4, Gumbel noise: single-duel P = 0.599. Majority of 9: P = MAJ9.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> Noisy utility: U_i = u_i + eps_i. The winner is the argmax of noisy utilities. Noise sets the irreducible error: even the true best arm loses sometimes.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> With Gumbel noise, P(i beats j) = sigma(u_i - u_j) exactly (U02-C01). Noise scale 1 is the unit. Assumption: IID noise per duel.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The noise floor bounds learning: no policy identifies the best arm faster than the noise allows. More duels average it out at 1/sqrt(n).</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Gap 0.4: single-duel P = 0.599. Majority of 9 duels: P = 0.731 (binomial). Same numbers in the text.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Binomial tail computation. Five lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: majority probability exceeds single-duel probability. Check: it approaches 1 as duels grow. Expected: MAJ9.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(1).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: probit (Gaussian noise). Alternative: ignore noise (overconfident). Choose logit for the BT link, probit when Gaussian noise is the mechanism.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: noise is not IID (humans learn, tire). The 1/sqrt(n) averaging breaks. Counterexample: later duels noisier, the majority vote misleads.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test IID-ness by splitting duels into early/late halves. Falsifiable: different win rates mean non-stationarity.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: where does the 0.599 come from? Oral ladder through the majority vote. Transfer: best-of-7 playoff. Failure diagnosis: the underdog keeps winning. Explain. Counterfactual: what if noise were zero? Research: noise-tolerant dueling.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) write the Gumbel-max link. (E2) compute the majority probability. (E3) argue the non-IID failure. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the binomial arithmetic is worked in the text. No plate. Logged.</p>
+<h3 id="cs329h-u07-c10-stopping">cs329h-U07-C10: stopping</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S13). Objective: give stopping rules for elicitation and search. Depends on C03, U06-C10.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: when do we stop dueling? Toy: leader-focused duels, stop when P(arm 1 is the Copeland winner) &gt; 0.95, or at 300 duels. Computed stop: round STOPR.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> A stopping rule converts uncertainty into a decision: stop when the posterior is confident enough, or when the budget runs out, whichever comes first.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Rule A: max_i P(i is Copeland winner) &gt;= 1 - delta. Rule B: n &gt;= N_max. Units: probability, count. Assumption: the posterior is calibrated.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Rule A controls the error rate, rule B controls the cost. Together they bound both. Without rule B, a misspecified model can query forever.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Toy (seed 2, leader-focused duels): P(arm1 winner) crosses 0.95 at round 43. Budget 300 never binds here.</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Track the winner probability per round, stop at the threshold. Ten lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the rule fires once. Check: a lower threshold fires earlier. Expected: stop at STOPR.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(rounds x posterior cost).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: fixed budget (simple, no adaptivity). Alternative: stop on marginal VoI (U06-C10). Choose the confidence rule when errors have known costs. Choose fixed budget for operations simplicity.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: miscalibrated posterior stops too early with the wrong winner. Counterexample: posterior says 0.96 but true P is 0.6. Honest caveat: with uniform random duels the 0.95 rule never fires in 500 rounds here, the dueling policy and the stopping rule interact.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether the stopping rule error rate matches delta on synthetic winners. Falsifiable: mismatch means miscalibration.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: state both rules. Oral ladder through the toy. Transfer: when to stop interviewing candidates. Failure diagnosis: the rule never fires. Explain. Counterfactual: what if budget were infinite? Research: optimal stopping for duels.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Lab U07 task 8 implements the rule. Exercises: (E1) state the rules. (E2) report the stop round. (E3) argue the miscalibration failure. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit anchored on u07_f08 (the curve shows where stopping fires). Logged.</p>
+<h3 id="cs329h-u07-c11-compute-budget">cs329h-U07-C11: compute budget</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S12/S13). Objective: account the compute cost of acquisition and posterior updates. Depends on C01, C03.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: TS is elegant, can we afford it? Toy: cost table: conjugate update O(k), GP surrogate O(n^3), acquisition scan O(candidates).</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> The compute budget decides the algorithm: cheap posteriors allow TS, expensive ones force UCB-on-a-surrogate or random. Budget is a design constraint, not an afterthought.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Per-round costs: Beta-Bernoulli TS O(k). GP-based preferential BO O(n^3) refit. Units: flops per round. Assumption: naive implementations.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> The n^3 refit is why practical preferential BO refits lazily or uses sparse approximations. The budget trades statistical efficiency for wall-clock.</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Toy: n = 200 duels. GP refit order 200^3 = 8,000,000 flops. Beta TS: order k = 4 operations per round. Orders of magnitude apart (stated as orders).</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Time both on the toy with time.perf_counter. Report the ratio (measured, labeled as this-machine timing).</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: GP slower by orders of magnitude. Expected: the timing table.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> Measurement is machine-specific, report it as such.</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: sparse GPs, neural surrogates. Alternative: skip the surrogate (dueling TS on arms only). Choose by the budget.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the &ldquo;cheap&rdquo; method approximations void the theory (sparse GP undercovers). Counterexample: sparse posterior too narrow, TS under-explores.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: test whether a sparse surrogate matches the full GP duel choices on the toy. Falsifiable: disagreement means the approximation bites.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the three cost orders. Oral ladder through the ratio. Transfer: choosing a model for a phone app. Failure diagnosis: the loop is too slow per round. Explain. Counterfactual: what if compute were free? Research: scalable preferential surrogates.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) name the orders. (E2) compute the 8M vs 4. (E3) argue the undercoverage failure. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the timing table is worked in the text. No plate. Logged.</p>
+<h3 id="cs329h-u07-c12-experimental-comparison">cs329h-U07-C12: experimental comparison</h3>
+<p><strong>Contract 1. Source mapping, scope, objectives, dependencies.</strong> PLANNED / SOURCE ATTRIBUTION PENDING (S13). Objective: design a fair comparison of acquisition policies. Depends on P22, C02.</p>
+<p><strong>Contract 2. Motivating question and tiny toy.</strong> Question: TS vs UCB vs random: who wins? Toy: the protocol, not a verdict.</p>
+<p><strong>Contract 3. Plain-language mental model.</strong> A fair comparison fixes the world (same arms, same T), varies only the policy, multiplies seeds, and reports regret with uncertainty. Anything less is a demo, not an experiment.</p>
+<p><strong>Contract 4. Variables, units, shapes, assumptions.</strong> Protocol: same bandit, T = 300, 20 seeds, metric = cumulative regret, report mean +- 1.96 se. Assumption: seeds are the only randomness.</p>
+<p><strong>Contract 5. Justified derivation or mechanism.</strong> Checklist: matched T, matched arms, multiple seeds, uncertainty bars, preregistered metric, negative-result reporting (U10-C11).</p>
+<p><strong>Contract 6. Computed numerical example.</strong> Worked: with 20 seeds, se = sd/sqrt(20). If TS mean regret 12.3 sd 4.0: CI [10.5, 14.1] (protocol arithmetic, hypothetical values).</p>
+<p><strong>Contract 7. Algorithm and minimal implementation.</strong> Implement the comparison rig. Fifteen lines.</p>
+<p><strong>Contract 8. Correctness checks and expected output.</strong> Check: the rig runs all policies on the same seed set. Expected: the CI table.</p>
+<p><strong>Contract 9. Complexity, memory, statistical efficiency, stability, costs.</strong> O(policies x seeds x T x arms).</p>
+<p><strong>Contract 10. Nearest alternatives and selection boundaries.</strong> Alternative: single-seed demo (not an experiment). Alternative: Bayesian comparison (richer). Choose the frequentist rig for simplicity.</p>
+<p><strong>Contract 11. Failure case, broken assumption, counterexample.</strong> Failure: the policies see different worlds (seed not shared). The comparison is void. Counterexample: TS gets easy seeds.</p>
+<p><strong>Contract 12. Research reading and falsifiable extension.</strong> Extension: run the rig, report honestly including negative results. Falsifiable by construction.</p>
+<p><strong>Contract 13. Assessment.</strong> Breadth: name the five checklist items. Oral ladder through the CI arithmetic. Transfer: comparing two drugs. Failure diagnosis: CIs overlap. Explain. Counterfactual: what if policies were deterministic? Research: adaptive stopping for comparisons.</p>
+<p><strong>Contract 14. Lab and exercises.</strong> Exercises: (E1) name the checklist. (E2) compute the CI. (E3) argue the unshared-seed failure. Keys in answer_keys/u07_keys.md.</p>
+<p><strong>Contract 15. Visual units, provenance, accessibility, audit rows.</strong> Text unit: the protocol table is the artifact. No plate. Logged.</p>
+      
+      <nav class="pager"><a href="../lessons/u06_lesson.html"><span class="lbl">← Previous</span>U06 · Active elicitation and assistance games</a><a href="../lessons/u08_lesson.html"><span class="lbl">Next →</span>U08 · Inversion, style, and bounded rationality</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

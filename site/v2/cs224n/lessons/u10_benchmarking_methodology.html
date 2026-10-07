@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U10 · Benchmarking and research methodology — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Lesson: Benchmarking and research methodology.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u10" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10" class="active">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U10 · Benchmarking and research methodology</nav>
+      <h1>U10 · Benchmarking and research methodology</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u10-benchmarking-and-research-methodology">U10 , Benchmarking and research methodology</h1>
+<h2 id="local-remediation">Local remediation</h2>
+<p>Bridges: <code>../shared/prerequisites/p07_estimation.md</code> (P07, intervals
+and sample size), <code>../shared/prerequisites/p10_ml_foundations.md</code>
+(P10, train/test discipline), <code>../shared/prerequisites/p22_experiments.md</code>
+(P22, controls and falsification). This unit is about knowing what
+a number means: a score without an interval is a rumor, a benchmark
+without a contamination check is a hope.</p>
+<p>R1. Wilson interval: 78/100 scores 0.780 with 95 percent interval
+[0.689, 0.850]. Same score on 1000 items: [0.753, 0.805]. The
+score is fixed, the claim shrinks with n.
+R2. Contamination arithmetic: 200 items, 40 leaked at 0.95, 160
+clean at 0.70. Reported 0.75, clean-only 0.70. The leak is worth
+0.05 of pure inflation.
+R3. Sample size: margin 0.02 at 95 percent needs n = 2401 for
+p = 0.5. If your benchmark has 200 items, your margin is about
+0.07, say so.</p>
+<hr />
+<h3 id="c01-mmluhelm-families">C01: MMLU/HELM families</h3>
+<p>Leaf id <code>cs224n-U10-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   benchmarking session of the Winter 2026 schedule (S14 per
+   <code>course_map.md</code>, readings MMLU, HELM, AlpacaEval per the
+   schedule). Scope: what the big benchmark families measure.
+   Objectives: describe the families, state what each aggregates,
+   name the aggregation trap. Depends on P10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: model A scores 0.78,
+   model B scores 0.76, did A win? Toy: the toy Wilson interval
+   for 78/100 is [0.689, 0.850]. B&rsquo;s 0.76 sits inside A&rsquo;s
+   interval. No winner declared.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A benchmark is an exam with a fixed
+   syllabus. MMLU-style exams test many subjects with
+   multiple-choice questions. HELM-style harnesses test many
+   scenarios with many metrics. The family name tells you the
+   syllabus, not the truth.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A score in
+   [0, 1], an item count n, an aggregation (mean over tasks).
+   Assumption: the items represent the deployment (the big
+   assumption, C02 tests it).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is the mean: task
+   scores averaged, sometimes weighted. The trap: a mean hides
+   the slices (C08). Two models with the same mean can differ
+   by 0.26 on a slice, the toy shows exactly that.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u10.py</code>: 78/100 gives
+   [0.689, 0.850], 780/1000 gives [0.753, 0.805]. Ten times the
+   items, same point, honest claim.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>report(k, n)</code>:
+   point estimate plus Wilson interval, never the point alone.
+   ~8 lines. Test: the two toy intervals.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The interval must
+   contain the point and shrink with n. Check: at n = 2401 the
+   half-width is about 0.02 (R3).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Scoring is cheap, the items are the cost. The
+   practical cost is the items needed to make the interval
+   useful.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    a bespoke eval for your task. Choose public benchmarks for
+    comparability. Choose bespoke when the public syllabus
+    misses your deployment.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;higher mean means better model.&rdquo; Counterexample:
+    A wins the mean, B wins every slice that matters to you
+    (C08). Read the slices before the mean.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: correlate benchmark rank with deployment-task
+    rank on 12 models. Predict: positive but imperfect.
+    Falsifier: near zero (then the benchmark is the wrong
+    exam, build your own).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A1 (breadth), L1
+    (ladder: describe the families, compute the interval,
+    derive why n matters, diagnose the 0.78 vs 0.76 &ldquo;win&rdquo;,
+    design the rank-correlation test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: implement
+    <code>report</code>, match both intervals. E2: find n for margin
+    0.02, match 2401. Keys in <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u10_fig01" src="../assets/u10_fig01.png" title="u10_fig01" />: the two intervals, Shell 3,
+    source original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-task-coverage">C02: task coverage</h3>
+<p>Leaf id <code>cs224n-U10-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S14.
+   Scope: whether the benchmark covers your task. Objectives:
+   define coverage, build the coverage matrix, state the gap
+   rule. Depends on C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the benchmark has
+   50 tasks, yours is not among them, what does 0.78 mean for
+   you? Toy: a 3-by-3 coverage matrix (tasks vs capabilities):
+   your task needs capability X, no benchmark task tests X.
+   The score says nothing about X.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The benchmark is a map. Coverage asks
+   whether your territory is on it. A high score on the map is
+   not a high score on your ground.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A task
+   list, a capability list, a binary coverage matrix.
+   Assumption: capabilities transfer (the optimistic one).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is the
+   matrix: rows are benchmark tasks, columns are capabilities
+   your deployment needs. An empty column is an untested
+   capability. Fill it or admit it.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 50 tasks,
+   6 capabilities, column &ldquo;tool use under permission errors&rdquo;
+   empty. The benchmark&rsquo;s 0.78 covers 5 of 6. Report 5/6
+   covered, not 0.78.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>coverage(
+   tasks, caps)</code>: build the matrix, list empty columns. ~8
+   lines. Test: the toy finds the empty column.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Every deployment
+   capability appears as a column (completeness check). Check:
+   no column is empty in the final report.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The matrix is cheap. The cost is building the
+   missing evals for empty columns.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    assume transfer from nearby tasks. Choose the matrix when
+    the deployment is high-stakes. Choose assumption for
+    exploration.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;nearby tasks predict mine.&rdquo; Counterexample:
+    the model aces summarization benchmarks and fails your
+    meeting-notes task (different length, different noise).
+    Nearby is not same.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: predict deployment score from benchmark score
+    across 10 deployments. Predict: weak correlation where
+    coverage is thin. Falsifier: strong everywhere (then
+    coverage analysis was too pessimistic, check).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A2 (breadth: define
+    the coverage matrix and the gap rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E3: build the
+    matrix for the toy, find the empty column. E4: write the
+    one-line coverage statement for a report. Keys in
+    <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a matrix (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-judge-calibration">C03: judge calibration</h3>
+<p>Leaf id <code>cs224n-U10-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S14
+   (AlpacaEval-style judging per the schedule readings). Scope:
+   using a model as an evaluator. Objectives: define agreement
+   and calibration, compute kappa and Brier, state the bias
+   risk. Depends on C01, P07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the judge prefers
+   A over B, do you believe it? Toy: two judges agree on 78 of
+   100 items, kappa 0.551 (chance-corrected). The judge&rsquo;s
+   confidence bins miscalibrate with Brier 0.17.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A judge is a measuring instrument. Calibrate
+   it like one: agreement with humans (kappa), confidence
+   against reality (Brier, reliability). An uncalibrated judge
+   is an opinion with a GPU.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Observed
+   agreement p_o, chance agreement p_e, kappa = (p_o - p_e) /
+   (1 - p_e). Forecast f, outcome y, Brier = mean((f - y)^2).
+   Assumption: the human labels are the reference (C09
+   questions that).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Kappa removes the agreement that
+   chance would give: with yes-rates 0.60 and 0.55, chance
+   alone agrees 0.51 of the time, so 0.78 observed is kappa
+   0.551. Brier is mean squared error of probabilities.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u10.py</code>: kappa 0.551,
+   Brier 0.17. The reliability toy: stated 0.8, observed 0.67
+   in one bin. Overconfident.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>judge_stats(
+   a, b, f, y)</code>: kappa from the agreement table, Brier from
+   forecasts. ~10 lines. Test: 0.551 and 0.17 on the toys.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Kappa is 1 on
+   perfect agreement, near 0 at chance. Check: Brier is 0 on
+   perfect forecasts.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The stats are cheap. The cost is the human labels
+   for the calibration set.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    human eval for everything. Choose the judge for scale,
+    with calibration. Choose humans for the final gate.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the judge is neutral.&rdquo; Counterexample: the
+    judge prefers longer answers and the model&rsquo;s own style
+    (C09). Calibrate on style-balanced pairs.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: blind the judge to answer length vs not, measure
+    the win-rate shift. Predict: a shift toward concise.
+    Falsifier: no shift (then length was not the bias, test
+    style next).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A3 (breadth), L3
+    (ladder: define kappa, compute 0.551, derive the chance
+    correction, diagnose the length bias, design the blinding
+    test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E5: implement
+    <code>judge_stats</code>, match both numbers. E6: build the
+    reliability table for the toy. Keys in <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u10_fig03" src="../assets/u10_fig03.png" title="u10_fig03" />: reliability bins, Shell 3, source
+    original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-contamination">C04: contamination</h3>
+<p>Leaf id <code>cs224n-U10-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S14.
+   Scope: test items leaking into training. Objectives: define
+   contamination, compute the inflation, state the quarantine
+   rule. Depends on C01, U06 C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model saw the
+   test during training, what is the score worth? Toy: 40 of
+   200 items leaked. Leaked solved at 0.95, clean at 0.70.
+   Reported 0.75, honest 0.70.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Contamination is an open-book exam graded
+   as closed-book. The model is not smarter, the test is
+   compromised. The inflation equals the leak share times the
+   memorization gap.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Leak share
+   L, memorized score s_m, clean score s_c. Reported = L s_m +
+   (1 - L) s_c. Assumption: leaked items are solved by memory
+   (check with the canary test).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The formula is a mixture. With
+   L = 0.20, s_m = 0.95, s_c = 0.70: 0.20 times 0.95 + 0.80
+   times 0.70 = 0.75. The inflation is L times (s_m - s_c) =
+   0.05. Small leaks, measurable lies.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u10.py</code>: reported 0.75,
+   clean-only 0.70. Quarantine the 40, rescore, report 0.70
+   with the quarantine noted.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>decontaminate(
+   items, train)</code>: n-gram overlap probe, flag items above the
+   threshold, rescore on the clean set. ~12 lines. Test: the
+   toy flags the 40.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The flagged set
+   size matches the known leak on the toy. Check: the clean
+   score is below the reported score.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The probe matches strings over the train set,
+   the expensive part. The cost of skipping it: publishing
+   0.75.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    fresh held-out sets per evaluation. Choose quarantine when
+    the train set is fixed. Choose fresh sets for high-stakes
+    claims.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;overlap means memorization.&rdquo; Counterexample:
+    common phrases overlap without the answer leaking. The
+    probe needs the answer-bearing spans, not any n-gram.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: canary strings in training, measure extraction
+    rate vs reported score. Predict: extraction tracks the
+    inflation. Falsifier: no relation (then the probe is
+    wrong, fix the spans).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A4 (breadth), L4
+    (ladder: define contamination, compute the 0.05, derive
+    the mixture, diagnose the n-gram false positive, design
+    the canary test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E7: implement
+    <code>decontaminate</code> on the toy, match 0.70. E8: show the
+    common-phrase false positive. Keys in <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u10_fig02" src="../assets/u10_fig02.png" title="u10_fig02" />: reported vs clean bars, Shell 7,
+    source original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-uncertainty">C05: uncertainty</h3>
+<p>Leaf id <code>cs224n-U10-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S14.
+   Scope: reporting what a score does not pin down. Objectives:
+   compute intervals, state the n rule, refuse the bare number.
+   Depends on C01, P07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: how many items make
+   a claim? Toy: margin 0.02 at 95 percent needs n = 2401. Your
+   200-item benchmark has margin about 0.07. Say that.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Every score is a sample. The interval is the
+   honest claim, the point is the center. Small n, wide claim.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Wilson
+   interval, standard error sqrt(p(1-p)/n), margin z times SE.
+   Assumption: items are independent draws (often violated,
+   say so).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> SE at p = 0.5, n = 200: sqrt(0.25
+   / 200) = 0.035, margin 1.96 times that = 0.069. The n for
+   margin m: (z / m)^2 times 0.25 = 2401 at m = 0.02.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u10.py</code>: n = 2401. The
+   toy intervals [0.689, 0.850] vs [0.753, 0.805] show the
+   shrink.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>margin(n, p)</code>:
+   Wilson half-width. ~6 lines. Test: 0.069 at n = 200,
+   0.02 at n = 2401.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The margin falls
+   as 1/sqrt(n). Check: doubling n cuts the margin by about
+   0.707.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The math is free. The cost is the 2401
+   good items.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    bootstrap intervals. Choose Wilson for proportions.
+    Choose bootstrap for exotic metrics.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;items are independent.&rdquo; Counterexample: 200
+    items from 10 templates, the effective n is near 10. The
+    interval lies. Report the template count too.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: bootstrap vs Wilson on a templated benchmark.
+    Predict: bootstrap wider. Falsifier: same (then the
+    templates are diverse, check).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A5 (breadth: state
+    the n rule and the template caveat).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E9: implement
+    <code>margin</code>, match 0.069 and 0.02. E10: show the templated
+    effective-n trap. Keys in <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is an interval (carried in text, figure is C01&rsquo;s). Logged
+    as an honest exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-scoring-formats">C06: scoring formats</h3>
+<p>Leaf id <code>cs224n-U10-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S14.
+   Scope: how answers are scored (exact match, multiple choice,
+   judge). Objectives: define the formats, state what each
+   rewards, choose per task. Depends on C01, C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model answers
+   correctly but not exactly, what does exact match say? Toy:
+   &ldquo;Paris&rdquo; vs &ldquo;paris&rdquo;: exact match 0, normalized match 1. The
+   format is a judgment, not a fact.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The scorer is part of the benchmark. Exact
+   match rewards formatting obedience. Multiple choice rewards
+   the right letter. Judge scoring rewards whatever the judge
+   likes (C03&rsquo;s biases).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A
+   normalization (lowercase, strip), a choice extractor, a
+   judge prompt. Assumption: the format matches the task&rsquo;s
+   real tolerance.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is the
+   pipeline: generate, normalize, compare. Each stage can flip
+   the score. Report the normalization with the number.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 100
+   answers, 12 differ only by case. Exact: 0.78, normalized:
+   0.90. The 0.12 gap is format, not knowledge.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>score(ans,
+   gold, mode)</code>: exact, normalized, choice-letter. ~10 lines.
+   Test: the toy 0.78 vs 0.90.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Normalized score
+   is at least the exact score. Check: the choice extractor
+   handles &ldquo;B&rdquo; and &ldquo;B.&rdquo; alike.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> String work, cheap. The cost is disputes about the
+   normalization.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    always use a judge. Choose exact/normalized for factual
+    tasks. Choose the judge for open-ended tasks, calibrated.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;exact match is objective.&rdquo; Counterexample: the
+    0.12 case gap. Objectivity needs the normalization
+    stated.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: exact vs normalized vs judge on 100 items,
+    correlate with human grades. Predict: normalized tracks
+    humans best on factual tasks. Falsifier: judge wins (then
+    the answers need semantic grading, use it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A6 (breadth: name
+    the three formats and what each rewards).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E11: implement
+    <code>score</code>, match the toy. E12: add a normalization and show
+    the 0.12 move. Keys in <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a pipeline (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-baseline-replication">C07: baseline replication</h3>
+<p>Leaf id <code>cs224n-U10-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S14.
+   Scope: reproducing the baseline before claiming a win.
+   Objectives: define the replication bar, run the check, state
+   the tolerance. Depends on C01, P22.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: your method beats
+   the baseline by 0.03, did you run the baseline right? Toy:
+   the paper claims 0.78, your rerun gives 0.74 with interval
+   [0.65, 0.82]. The claim sits inside your interval: no
+   evidence of a difference.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The baseline is the control group. A win
+   against a broken baseline is a win against nothing. Replicate
+   first, then compare, with intervals on both sides.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The
+   reported number, your rerun, both intervals. Assumption: the
+   baseline code and data are available (often half-true).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is the
+   comparison: if the reported number falls outside your
+   rerun&rsquo;s interval, something differs (version, data, bug).
+   Debug before you innovate.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): reported
+   0.78, rerun 0.74, interval [0.65, 0.82]. 0.78 is inside.
+   Verdict: replicated within noise. Now the 0.03 win needs
+   its own interval.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>replicate(
+   reported, k, n)</code>: Wilson interval around your rerun, test
+   membership. ~6 lines. Test: the toy verdict.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The verdict is
+   one of: replicated, differs, or underpowered (interval too
+   wide to tell). Check: underpowered triggers more items,
+   not a claim.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> One extra eval run. The cost of skipping it:
+   months chasing a phantom win.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    trust the reported number. Choose replication for any
+    claim you will defend. Choose trust for exploration only.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the baseline in the paper is the baseline in
+    the code.&rdquo; Counterexample: the paper used a better prompt
+    than the released code. Replicate the artifact, not the
+    text.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: replicate 5 reported baselines, count how many
+    fall inside your intervals. Predict: fewer than 5.
+    Falsifier: all 5 (then the field is healthier than feared,
+    good).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A7 (breadth: state
+    the replication bar and the three verdicts).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E13: implement
+    <code>replicate</code>, match the toy verdict. E14: widen the
+    interval until the verdict is underpowered. Keys in
+    <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a verdict (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-slices">C08: slices</h3>
+<p>Leaf id <code>cs224n-U10-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S14.
+   Scope: scores broken down by subgroup. Objectives: define a
+   slice, compute deltas, state the mean-trap. Depends on C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the mean is 0.78,
+   is the model ready? Toy: slice A scores 0.52 (delta -0.26),
+   slice B 0.86 (delta +0.08). The mean hid a failing slice.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The mean is a summary, the slices are the
+   story. A model can be excellent on average and unusable for
+   your users. Cut by what matters: language, topic, difficulty.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Slice
+   scores, deltas from the mean, slice sizes. Assumption: the
+   slice labels are correct (label noise ruins slices).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Delta = slice score minus
+   overall. The mechanism is disaggregation: the same items,
+   grouped. Small slices need their own intervals (C05&rsquo;s n
+   rule applies per slice).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u10.py</code>: overall 0.78,
+   slice A 0.52 (delta -0.26), slice B 0.86 (delta +0.08). The
+   -0.26 is the headline, not the 0.78.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>slice_report(
+   items)</code>: group, score, delta, interval per slice. ~10 lines.
+   Test: the toy deltas.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Deltas sum to
+   zero when weighted by slice size. Check: no slice is
+   reported without its n.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Grouping is cheap. The cost is slice-labeled data.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    report the mean only. Choose slices for deployment
+    decisions. Choose the mean for quick comparisons.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the mean represents the slices.&rdquo; Counterexample:
+    the toy: -0.26 on slice A. The mean is a weighted lie when
+    the weights are not your users.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: track the worst slice vs the mean across 12
+    model versions. Predict: the mean rises faster than the
+    worst slice. Falsifier: they move together (then the
+    training is balanced, good).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A8 (breadth), L8
+    (ladder: define a slice, compute the deltas, derive the
+    weighted-zero check, diagnose the hidden -0.26, design the
+    worst-slice tracking).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E15: implement
+    <code>slice_report</code>, match the toy. E16: drop slice labels and
+    show the mean hiding the failure. Keys in <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a disaggregation (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-bias">C09: bias</h3>
+<p>Leaf id <code>cs224n-U10-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S14.
+   Scope: systematic skew in benchmarks and judges. Objectives:
+   name the bias classes, design the control, state the
+   correction limit. Depends on C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the judge prefers
+   model A, is A better or longer? Toy: blinding the judge to
+   length moves the win rate from 0.62 to 0.53. The 0.09 was
+   length bias.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Every instrument has a tilt. Benchmarks
+   tilt toward their items, judges tilt toward style. Name the
+   tilt, measure it, control it. Unmeasured tilt is a
+   confounder.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Bias
+   classes: length, position, style, self-preference. A
+   control: the blinded variant. Assumption: the control
+   removes only the bias (the hard part).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is comparison: the
+   win rate with and without the suspected bias factor. The
+   difference is the bias estimate. No fancy math, just the
+   control.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): unblinded
+   win rate 0.62, blinded 0.53, bias 0.09. The correction:
+   report the blinded number.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>bias_check(
+   pairs, factor)</code>: score with and without the factor, report
+   the delta. ~8 lines. Test: the toy 0.09.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The blinded
+   variant must be identical except for the factor (ceteris
+   paribus check). Check: the delta&rsquo;s sign is stable.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Two eval runs. The cost is the blinding design.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    ignore bias, report raw win rates. Choose controls for
+    published claims. Choose raw for internal iteration.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;blinding fixed it.&rdquo; Counterexample: the judge
+    prefers its own model&rsquo;s phrasing even blinded (style
+    survives blinding). Controls are iterative.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: test 4 bias factors on 3 judges, rank them.
+    Predict: length and self-preference top the list.
+    Falsifier: position wins (then the judge is lazy, check
+    the prompt order).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A9 (breadth: name
+    the four bias classes and the control).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E17: implement
+    <code>bias_check</code>, match 0.09. E18: blind position instead and
+    compare. Keys in <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a control (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-acceptance-criteria">C10: acceptance criteria</h3>
+<p>Leaf id <code>cs224n-U10-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S14.
+   Scope: deciding in advance what &ldquo;good enough&rdquo; means.
+   Objectives: write a criterion, separate it from the metric,
+   state the pre-registration rule. Depends on C01, C05, C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model scores
+   0.78, do you ship? Toy: the criterion was &ldquo;worst slice above
+   0.70 with n = 500 per slice&rdquo;. Slice A is 0.52. No ship,
+   regardless of the mean.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The criterion is the contract, the metric
+   is the measurement. Write the contract before you measure,
+   or you will negotiate with yourself after.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> A
+   threshold, a slice set, a sample size, a decision rule.
+   Assumption: the criterion reflects the deployment need
+   (the product question, not the ML question).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   pre-registration: the decision rule is fixed before the
+   numbers arrive. This blocks HARKing (hypothesizing after
+   the results are known).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): criterion
+   &ldquo;mean above 0.75 and no slice below 0.70&rdquo;. Result: mean
+   0.78, slice A 0.52. Verdict: fail. The mean passed, the
+   contract did not.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>decide(
+   report, criterion)</code>: check each clause, return pass/fail
+   with the binding clause. ~8 lines. Test: the toy fails on
+   slice A.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The decision is
+   reproducible from the report and the criterion (no judgment
+   calls at decision time). Check: the binding clause is
+   named.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Writing the criterion is the cost. The cost of
+   skipping it: shipping on a 0.78 that hides a 0.52.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    decide after seeing the numbers. Choose pre-registration
+    for ship decisions. Choose exploration for research.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the criterion was right.&rdquo; Counterexample: the
+    criterion demanded 0.95 on a task humans do at 0.80. The
+    criterion needs its own review.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: pre-registered vs post-hoc decisions on 10
+    ship calls, track regret. Predict: pre-registered has less
+    regret. Falsifier: tie (then the criteria were vacuous,
+    harden them).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A10 (breadth:
+    state the pre-registration rule and the contract/metric
+    split).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E19: implement
+    <code>decide</code>, match the toy verdict. E20: write a criterion
+    for a support-bot deployment. Keys in <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a contract (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-project-choice">C11: project choice</h3>
+<p>Leaf id <code>cs224n-U10-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S14
+   and the project sessions. Scope: picking a project worth
+   doing. Objectives: score a proposal, state the scope rule,
+   kill a bad project early. Depends on P22, C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: three project
+   ideas, four weeks, which one? Toy: the scorecard (feasible,
+   data, metric, compute, novelty): idea A scores 4/5, idea B
+   2/5. Pick A, kill B on paper.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A project is a bet. The scorecard prices
+   the bet: can you do it, can you measure it, does it matter.
+   Kill early, kill on paper, kill without shame.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Five
+   binary criteria, a total, a kill threshold. Assumption: the
+   scores are honest (the failure mode is self-deception).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is the
+   checklist: feasibility in the time box, data available,
+   metric defined, compute fits, some novelty. Below 3/5:
+   rescope or drop.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u15.py</code> (shared toy):
+   3/5. The missing two (metric defined, novelty) are exactly
+   the rescope targets.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>scorecard(
+   idea)</code>: five checks, total, verdict. ~8 lines. Test: the
+   toy 3/5.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Every &ldquo;1&rdquo; names
+   the evidence (which data, which metric). Check: no idea
+   scores 5/5 without a written metric.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> An hour of honesty. The cost of skipping it: four
+   weeks on idea B.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    follow curiosity, no scorecard. Choose the scorecard for
+    time-boxed work. Choose curiosity for open-ended research.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the scores are honest.&rdquo; Counterexample: &ldquo;data
+    available&rdquo; checked for a dataset that needs a license you
+    do not have. Evidence, not vibes.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: track scorecard vs outcome on 20 past projects.
+    Predict: 4-5/5 predicts completion. Falsifier: no relation
+    (then the criteria are wrong, revise).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A11 (breadth: name
+    the five criteria and the kill rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E21: score two
+    ideas, kill one. E22: rescope the 3/5 idea to 4/5. Keys in
+    <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a checklist (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-contribution-accounting">C12: contribution accounting</h3>
+<p>Leaf id <code>cs224n-U10-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S14.
+   Scope: honest credit for what the project actually did.
+   Objectives: separate the contribution from the scaffolding,
+   write the accounting, state the novelty bar. Depends on
+   P22, C07.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the project works,
+   what did you contribute? Toy: the accounting lists: baseline
+   (existing), data (existing), the one new thing (the
+   rerank rule), the measurement (new). One new thing, named.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The report has two columns: borrowed and
+   built. Borrowed is fine, it must be labeled. Built is the
+   contribution. A report with an empty built column is a
+   tutorial, not a project.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The
+   borrowed list, the built list, the novelty claim.
+   Assumption: the borrowed parts are cited (integrity).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is the
+   ledger: every component gets a source or an author. The
+   novelty bar: one falsifiable claim that was not known
+   before.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): borrowed:
+   transformer, BPE, Adam. Built: the chunk-size sweep and the
+   split-rate rule. The rule is the contribution.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>account(
+   components)</code>: label each borrowed/built, check the built
+   list is non-empty. ~6 lines. Test: the toy passes.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Every borrowed
+   item has a citation. Check: the built list has at least one
+   falsifiable claim.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> An honest hour. The cost of skipping it: a report
+   that claims the transformer.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    claim everything. Choose the ledger for anything public.
+    The alternative is misconduct.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;a negative result is not a contribution.&rdquo;
+    Counterexample: the rerank sweep that found nothing is a
+    contribution if the test was fair (negative results are
+    data, C07&rsquo;s lesson).</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none needed, this is the close. The extension
+    is the habit: keep the ledger from day one.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u10_answers.md</code> A12 (breadth:
+    state the two columns and the novelty bar), L12 (ladder:
+    define the ledger, build the toy, derive the bar,
+    diagnose the empty-built report, design the negative-
+    result writeup).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E23: write the
+    accounting for the U09 lab. E24: label one borrowed item
+    you almost claimed. Keys in <code>keys/u10_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a ledger (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="unit-visual-map">Unit visual map</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Claim</th>
+<th>Shell</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="u10_fig01" src="../assets/u10_fig01.png" title="u10_fig01" /></td>
+<td>0.78 on 100 items is [0.689, 0.850]</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u10_fig02" src="../assets/u10_fig02.png" title="u10_fig02" /></td>
+<td>40 leaked items inflate 0.70 to 0.75</td>
+<td>7</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u10_fig03" src="../assets/u10_fig03.png" title="u10_fig03" /></td>
+<td>judge stated 0.8, observed 0.67</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+</tbody>
+</table>
+      
+      <nav class="pager"><a href="../keys/u09_answers.html"><span class="lbl">← Previous</span>U09 · Answers</a><a href="../keys/u10_answers.html"><span class="lbl">Next →</span>U10 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

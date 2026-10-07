@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U14 · Multimodality and guest research — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Lesson: Multimodality and guest research.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u14" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14" class="active">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U14 · Multimodality and guest research</nav>
+      <h1>U14 · Multimodality and guest research</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u14-multimodality-and-guest-research">U14 , Multimodality and guest research</h1>
+<h2 id="local-remediation">Local remediation</h2>
+<p>Bridges: <code>../shared/prerequisites/p11_neural_nets.md</code> (P11, the
+blocks being fused), <code>../shared/prerequisites/p14_transformer.md</code>
+(P14, the shared stack), <code>../shared/prerequisites/p22_experiments.md</code>
+(P22, reading claims honestly). This unit adds a second sense:
+images next to text. The last three concepts are about honesty
+itself: how to handle guest research you have not inspected.</p>
+<p>R1. Fusion arithmetic: d = 1024, L = 24. Late fusion adds 5.03e7
+params (two projections per layer). Early fusion adds 0: the
+shared stack does the work.
+R2. Routing: 8 experts, loads [3,2,3,2,3,2,2,3], aux loss 1.04.
+Balanced routing keeps every expert useful.
+R3. Token budget: 256 image tokens + 512 text tokens, image share
+0.333. Images eat the window first.</p>
+<hr />
+<h3 id="c01-imagetext-representation">C01: image/text representation</h3>
+<p>Leaf id <code>cs224n-U14-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   multimodality guest session of the Winter 2026 schedule (S20
+   per <code>course_map.md</code>, guest Luke Zettlemoyer). Scope: how images
+   become tokens. Objectives: describe the patch encoding, state
+   the token budget, name the resolution trade. Depends on P14.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model reads
+   text as tokens, what is an image to it? Toy: a 224x224 image
+   cut into 16x16 patches: 196 patch tokens, each a linear
+   projection of pixels. The image becomes a sentence of 196
+   &ldquo;words&rdquo;.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The vision encoder is a translator: pixels
+   in, tokens out. After translation the transformer cannot
+   tell which tokens came from eyes and which from text. That
+   blindness is the point.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Patches
+   (P x P), patch tokens (N = HW/P^2, d), a projection matrix.
+   Assumption: the grid preserves what matters (fine detail
+   dies at 16x16).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is the patchify:
+   reshape the image into N patches, flatten, project to d.
+   Position embeddings mark the grid. After that it is tokens
+   all the way down.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 224/16 =
+   14 per side, 196 patches. At d = 1024, the image is 196
+   tokens before a word is read.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>patchify(img,
+   P)</code>: reshape, flatten, project. ~8 lines. Test: 196 tokens
+   on the toy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The patch count
+   is HW/P^2 exactly. Check: the projection output has dim d.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> 196 tokens per image at n^2 attention cost (U05
+   C10). The practical cost: images eat the window (R3).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    a separate vision tower with late fusion (C02). Choose
+    patch tokens for a unified stack. Choose the tower when
+    the vision task needs its own capacity.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the grid preserves detail.&rdquo; Counterexample:
+    small text in the image blurs past reading at 16x16.
+    Resolution is a choice, not a given.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: patch 16 vs 8 on a reading-heavy task.
+    Predict: 8 wins. Falsifier: tie (then the task does not
+    need the detail).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A1 (breadth), L1
+    (ladder: define patchify, compute 196, derive the token
+    cost, diagnose the blurred text, design the patch test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: implement
+    <code>patchify</code>, match 196. E2: halve P, show the 4x tokens.
+    Keys in <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a reshape (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-earlylate-fusion">C02: early/late fusion</h3>
+<p>Leaf id <code>cs224n-U14-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S20.
+   Scope: where the modalities meet. Objectives: define both
+   fusions, compute the param gap, choose per budget. Depends
+   on C01, R1.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: do image and text
+   mix at the input or at the output? Toy: early fusion: 0
+   extra params. Late fusion: 5.03e7 extra (d = 1024, L = 24).
+   The meeting point has a price.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Early fusion is one room: both modalities
+   enter the same stack as tokens. Late fusion is two rooms
+   with a door: separate towers, joined by projections at the
+   end.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The
+   projection matrices (d x d each), the layer count.
+   Assumption: the shared stack can learn both (capacity
+   question).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Late fusion adds 2 projections
+   per layer: 2 d^2 L params = 5.03e7. Early fusion adds the
+   patch projection only. The mechanism is the wiring
+   diagram.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u14.py</code>: 5.03e7 vs 0.
+   On a 7B model that is 0.7 percent: small but not free.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>fuse(early)</code>: the
+   wiring choice. ~6 lines. Test: the param counts.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The counts match
+   the formula. Check: early fusion&rsquo;s token stream mixes both
+   modalities.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Late fusion costs params, early fusion costs
+   context (image tokens in the shared window).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    frozen towers with adapters. Choose early for tight
+    integration. Choose late when the towers are pretrained
+    and frozen.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;early fusion is always cheaper.&rdquo; Counterexample:
+    the image tokens bloat every layer&rsquo;s attention to n^2.
+    Params are not the only bill.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: early vs late at equal total params, measure
+    the task gap. Predict: early wins on tight tasks.
+    Falsifier: tie (then the wiring matters less than the
+    data).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A2 (breadth), L2
+    (ladder: define both, compute 5.03e7, derive the wiring,
+    diagnose the attention bill, design the equal-param
+    test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E3: compute both
+    param counts. E4: price the attention bill for 196 image
+    tokens. Keys in <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u14_fig01" src="../assets/u14_fig01.png" title="u14_fig01" />: the wiring and the param gap,
+    Shell 8, source original toy. Audit row in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-mixed-modal-tokens">C03: mixed-modal tokens</h3>
+<p>Leaf id <code>cs224n-U14-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S20.
+   Scope: one token stream for both senses. Objectives: build
+   the mixed stream, compute the budget share, state the
+   ordering rule. Depends on C01, C02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the input is an
+   image plus a question, what does the model see first? Toy:
+   256 image tokens then 512 text tokens, image share 0.333.
+   Order matters: the question can attend to the image.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The stream is a mixed tape: image tokens,
+   then text, or interleaved. The transformer reads left to
+   right (causal) or all at once (bidirectional): the order
+   decides what can see what.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The token
+   budget, the image share, the order. Assumption: the
+   position embeddings distinguish the modalities (or the
+   model confuses them).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Share = image tokens over total.
+   The mechanism is concatenation with modality markers. In a
+   causal model, put the image first so the text can attend
+   to it.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u14.py</code>: 256 + 512 =
+   768, image share 0.333. A third of the window is vision.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>mixed_stream(
+   img_toks, txt_toks)</code>: concat with markers. ~5 lines.
+   Test: the share is 0.333.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The markers are
+   present and unambiguous. Check: the total fits the window.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The stream length sets the n^2 bill. The cost of
+   images: fewer text tokens fit.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    cross-attention (text attends to image features, no image
+    tokens). Choose the stream for simplicity. Choose cross-
+    attention when the image is large and the text is long.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;order does not matter.&rdquo; Counterexample: text
+    before image in a causal model: the question cannot see
+    the image. Order is architecture.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: image-first vs text-first, measure the VQA
+    gap. Predict: image-first wins. Falsifier: tie (then the
+    model is bidirectional, check).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A3 (breadth: state
+    the share and the ordering rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E5: build the
+    stream, match 0.333. E6: flip the order, show the causal
+    break. Keys in <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a stream (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-joint-generation">C04: joint generation</h3>
+<p>Leaf id <code>cs224n-U14-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S20.
+   Scope: generating in two modalities at once. Objectives:
+   define the joint objective, price the toy, state the
+   alignment problem. Depends on C01-C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model writes a
+   caption and draws the image, how? Toy: autoregressive text
+   (128 tokens at cost 1) plus diffusion image (20 steps at
+   cost 8): total 288. Two engines, one bill.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Joint generation is two craftsmen sharing
+   a shop: the text engine writes, the image engine draws,
+   and they must agree on the subject. Agreement is the hard
+   part.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Token
+   costs, step costs, the total. Assumption: the costs are
+   comparable units (the toy&rsquo;s simplification).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Total = text tokens times 1 +
+   diffusion steps times 8. The mechanism is the schedule:
+   generate text, condition the image on it (or jointly).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u14.py</code>: 128 + 160 =</p>
+</li>
+<li>
+<p>The image costs more than the text.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>joint_cost(
+   toks, steps)</code>: the sum. ~4 lines. Test: 288 on the toy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The cost splits
+   by modality (auditable). Check: zero steps gives text-
+   only cost.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Diffusion steps dominate. The practical cost: the
+   image engine&rsquo;s latency.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    text only, image retrieved (U09 C04&rsquo;s machinery). Choose
+    generation when the image must be novel. Choose retrieval
+    when it exists already.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the modalities agree.&rdquo; Counterexample: the
+    caption says &ldquo;red car&rdquo;, the image shows blue. Joint
+    training, not just joint billing, fixes agreement.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: joint vs pipeline (text then image), measure
+    agreement. Predict: joint wins. Falsifier: tie (then the
+    conditioning is enough).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A4 (breadth), L4
+    (ladder: define the joint, price 288, derive the split,
+    diagnose the red/blue case, design the agreement test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E7: implement
+    <code>joint_cost</code>, match 288. E8: price text-only vs joint.
+    Keys in <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a bill (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-diffusionautoregressive-mix">C05: diffusion/autoregressive mix</h3>
+<p>Leaf id <code>cs224n-U14-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S20.
+   Scope: the two generation paradigms side by side. Objectives:
+   contrast the paradigms, state when each wins, name the
+   interface. Depends on C04, U04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: text is
+   autoregressive, images are diffusion, why? Toy: text has a
+   natural order (left to right), images do not. The paradigm
+   follows the data&rsquo;s structure.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Autoregression tells a story: one token
+   at a time, each conditioned on the past. Diffusion is
+   sculpting: start from noise, refine everywhere at once.
+   Stories need order, pictures need global coherence.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Next-token
+   likelihood (AR), denoising steps (diffusion). Assumption:
+   the modality&rsquo;s structure matches the paradigm.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> AR factorizes the joint as a
+   product of conditionals. Diffusion learns to reverse a
+   noise process. The interface: AR text conditions the
+   diffusion (the prompt guides the sculpting).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): AR text
+   at 128 tokens, diffusion at 20 steps. The text is the
+   plan, the image is the execution.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>generate_mix(
+   prompt)</code>: AR text, then diffusion conditioned on it. ~8
+   lines. Test: both outputs produced.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The image
+   respects the text prompt (the agreement check). Check:
+   the text is fluent alone.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> AR is sequential, diffusion is parallel per step
+   but needs many steps. The bill: C04&rsquo;s 288.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    AR for everything (image as tokens). Choose diffusion
+    for image quality. Choose AR tokens for a unified
+    model.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the paradigms compose cleanly.&rdquo; Counterexample:
+    the diffusion ignores the AR text (weak conditioning).
+    Strengthen the conditioning, measure agreement.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: strong vs weak conditioning, measure the
+    agreement rate. Predict: strong wins. Falsifier: tie
+    (then the text was not the bottleneck).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A5 (breadth: name
+    the two paradigms and the interface).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E9: sketch the
+    mix pipeline. E10: list the failure if conditioning is
+    weak. Keys in <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a contrast (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-sparse-modality-experts">C06: sparse modality experts</h3>
+<p>Leaf id <code>cs224n-U14-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S20.
+   Scope: experts per modality. Objectives: define the
+   routing, compute the aux loss, state the collapse rule.
+   Depends on C02, R2.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: one stack for both
+   senses, or specialists? Toy: 8 experts (4 image, 4 text),
+   10 tokens routed as [3,2,3,2,3,2,2,3], aux loss 1.04.
+   Balanced, no collapse.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Experts are specialists, the router is the
+   receptionist. Image tokens go to image experts, text to
+   text experts. If the receptionist naps, one expert does
+   everything: collapse.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Expert
+   loads, the aux loss (mean squared normalized load).
+   Assumption: the router learns the split (it needs the aux
+   loss to do so).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Aux = mean((load / mean)^2).
+   Perfect balance gives 1.0. The mechanism: add the aux loss
+   to train time, the router spreads the load.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u14.py</code>: aux 1.04 on
+   the toy. Near 1.0: healthy.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>route(tokens,
+   experts)</code>: top-1 per token, aux loss. ~8 lines. Test: the
+   toy aux.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Loads sum to the
+   token count. Check: aux near 1.0.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Sparse means cheap per token (one expert), dear
+   in total params (all experts stored).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    dense shared stack. Choose experts for capacity without
+    per-token cost. Choose dense for simplicity.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the router balances.&rdquo; Counterexample: aux
+    weight 0, one expert takes all. The aux loss is
+    load-bearing.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: aux weight in {0, 0.01, 0.1}, measure the max
+    expert share. Predict: 0 collapses. Falsifier: no
+    collapse (then the data routes itself, check).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A6 (breadth), L6
+    (ladder: define routing, compute 1.04, derive the aux,
+    diagnose the collapse, design the weight sweep).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E11: implement
+    <code>route</code>, match the aux. E12: set aux weight 0, show the
+    collapse. Keys in <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u14_fig02" src="../assets/u14_fig02.png" title="u14_fig02" />: the expert loads, Shell 3,
+    source original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-multimodal-retrieval">C07: multimodal retrieval</h3>
+<p>Leaf id <code>cs224n-U14-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S20.
+   Scope: finding images with text and vice versa. Objectives:
+   define the joint space, compute the fused score, state the
+   weight rule. Depends on U09 C04, C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the query is text,
+   the answer is an image, how do they meet? Toy: text score
+   0.72, image score 0.41, fused at w = 0.5: 0.565. The joint
+   space is the meeting room.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> U09 C07&rsquo;s fusion, across senses: embed
+   text and images into one space, score by similarity. The
+   weight w dials which sense leads.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shares, assumptions.</strong> Text
+   score, image score, fusion weight w. Assumption: the joint
+   space aligns the senses (trained, not given).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Fused = w times image + (1 - w)
+   times text. The mechanism is the convex mix, same as U09
+   C07.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u14.py</code>: w = 0.0 gives
+   0.720, w = 0.5 gives 0.565, w = 1.0 gives 0.410. Tune w on
+   a dev set.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>mm_retrieve(
+   query, index, w)</code>: score both, fuse, rank. ~8 lines.
+   Test: the three toy scores.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> w = 0
+   reproduces text-only ranking. Check: the fused pool is the
+   union.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Two indexes, one fusion. The cost is the joint
+   embedding training.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    text-only retrieval with captions. Choose joint when
+    images lack captions. Choose captions when they exist
+    (cheaper).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the space aligns.&rdquo; Counterexample: the text
+    query matches the wrong image&rsquo;s caption-like region.
+    Alignment needs the training, check it.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: sweep w, measure recall. Predict: interior
+    optimum. Falsifier: w = 0 wins (then the images add
+    nothing, check the index).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A7 (breadth: write
+    the fusion and the weight rule).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E13: implement
+    <code>mm_retrieve</code>, match the scores. E14: sweep w. Keys in
+    <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a fusion (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-instruction-tuning">C08: instruction tuning</h3>
+<p>Leaf id <code>cs224n-U14-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S20.
+   Scope: teaching the multimodal model to follow instructions.
+   Objectives: define the format, state the data need, name
+   the eval. Depends on U07 C01, C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model sees
+   images and text, how does it learn to answer questions?
+   Toy: instruction triples (image, question, answer), SFT
+   loss on the answer tokens. Same recipe as U07, new
+   modality.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Instruction tuning is the same school,
+   new students: the format (image + instruction + response)
+   teaches the behavior. The vision encoder learns what the
+   questions need.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The triple
+   format, the SFT loss. Assumption: the triples cover the
+   behaviors (the data question again).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is U07 C01&rsquo;s: next-
+   token loss on the response, image tokens in context. The
+   gradients reach the vision encoder through the stack.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 10k
+   triples, loss falls, VQA accuracy rises 0.12. The format
+   teaches the task.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>mm_sft(
+   triples)</code>: format, loss on answers. ~8 lines. Test: the
+   loss falls on the toy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The loss masks
+   the instruction tokens (answers only). Check: image tokens
+   get gradients.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> SFT is cheap next to pretrain. The cost is the
+   triples: human-written multimodal data.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    zero-shot from the pretrained model. Choose tuning when
+    the behavior must be reliable. Choose zero-shot for
+    exploration.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;tuning teaches vision.&rdquo; Counterexample: the
+    model learns to answer from the text alone, ignoring the
+    image (the language prior). Test with image-ablated
+    inputs.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: ablate the image at test, measure the drop.
+    Predict: a drop (it uses vision). Falsifier: no drop
+    (then it is a text model with pictures).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A8 (breadth: state
+    the format and the prior trap).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E15: format the
+    triples. E16: ablate the image, show the drop (or not).
+    Keys in <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a format (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-reward-evaluation">C09: reward evaluation</h3>
+<p>Leaf id <code>cs224n-U14-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S20.
+   Scope: judging multimodal outputs. Objectives: define the
+   judge&rsquo;s job, state the agreement problem, name the
+   calibration need. Depends on U10 C03, C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model
+   describes an image, who grades it? Toy: a judge model
+   scores 100 descriptions, agrees with humans at kappa
+   0.55 (U10&rsquo;s number, reused honestly). The judge is an
+   instrument, calibrate it.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> U10 C03&rsquo;s judge, new modality: the judge
+   must see the image too. A blind judge grades text, not
+   the pair.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Judge
+   scores, human scores, kappa. Assumption: the humans are
+   the reference.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is U10 C03&rsquo;s:
+   kappa for agreement, Brier for calibration. The new part:
+   the judge needs the image input.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): kappa
+   0.55 with image, 0.31 without. The blind judge is worse.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>mm_judge(
+   desc, img)</code>: score with the image. ~6 lines. Test: the
+   toy kappas.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> The judge sees
+   the same image as the model. Check: kappa reported with
+   n.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The judge costs a multimodal forward pass per
+   grade. The cost of skipping calibration: U10&rsquo;s lesson.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    human grading. Choose the judge for scale, humans for the
+    gate.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the judge sees what the model saw.&rdquo;
+    Counterexample: different resolutions, different crops.
+    Match the inputs.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: judge with vs without image, measure kappa.
+    Predict: with wins. Falsifier: tie (then the text
+    carries the grade, check the task).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A9 (breadth: state
+    the judge&rsquo;s input requirement).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E17: score the
+    toy with and without image. E18: compute both kappas.
+    Keys in <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a judge (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-guest-tinkerlora-artifacts">C10: guest Tinker/LoRA artifacts</h3>
+<p>Leaf id <code>cs224n-U14-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> The
+   inventory names &ldquo;guest Tinker/LoRA artifacts&rdquo; as a requested
+   leaf. No artifact was inspected in this build: no slides,
+   no video, no paper. Scope: title-only handling. Objectives:
+   state exactly what is known (the title), mark everything
+   else unknown, write the card. Depends on C11, P22.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the leaf names a
+   guest artifact, what do you teach? Toy: the card reads
+   &ldquo;title: guest Tinker/LoRA artifacts (inventory label),
+   content: not inspected, claims: none&rdquo;. The card is the
+   whole lesson.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A title is a pointer to work you have not
+   seen. Teaching the pointer honestly means saying what it
+   points at (unknown) and how you would verify it (the
+   artifact list). This is U11 C03&rsquo;s reading card, stricter.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The card:
+   label, source (the inventory), inspection status (none),
+   claims (none). Assumption: none about the content.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   the boundary: the leaf stays open until an artifact is
+   inspected. C12 tracks it.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): the card
+   above. Nothing is computed because nothing is known.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>guest_card(
+   label)</code>: the four fields, status &ldquo;not inspected&rdquo;. ~5
+   lines. Test: the toy card.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> No content claim
+   appears under this leaf. Check: the card is referenced
+   wherever the label appears.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Five minutes. The cost of skipping it: inventing
+   a guest talk.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    drop the leaf. Choose the card: the leaf stays visible
+    and honest. Choose dropping only if the inventory
+    retires it.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;Tinker means the product.&rdquo; Counterexample:
+    the label could be a codename, a demo, or a typo. Do not
+    resolve ambiguity by guessing.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none until inspection. The extension is the
+    inspection itself.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A10 (breadth:
+    state the card and the no-claim rule), L10 (ladder:
+    define the card, write the toy, derive the boundary,
+    diagnose the codename guess, design the inspection).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E19: write the
+    card. E20: find one place the label tempts a claim, mark
+    it. Keys in <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a card (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-distinguish-actual-talk-content">C11: distinguish actual talk content</h3>
+<p>Leaf id <code>cs224n-U14-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Scope: the
+   method for handling guest sessions honestly. Objectives:
+   define the three content classes, classify a claim, state
+   the citation rule. Depends on P22.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: someone says &ldquo;the
+   guest showed X&rdquo;, how do you check? Toy: three classes:
+   (a) inspected artifact, (b) schedule title, (c) hearsay.
+   &ldquo;The guest showed X&rdquo; needs (a). The schedule gives (b).
+   Everything else is (c).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Claims have passports. Class (a) travels
+   anywhere, class (b) travels with its title stamp, class
+   (c) does not travel. Check the passport before repeating
+   the claim.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The three
+   classes, the citation each requires. Assumption: the
+   classifier is strict (when in doubt, demote).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   the routing: each claim about a talk gets a class, each
+   class has a citation format. Demote on doubt.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): &ldquo;S20 was
+   a guest session on multimodality&rdquo;: class (b), cite the
+   schedule. &ldquo;The guest showed early fusion&rdquo;: class (c),
+   do not repeat.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>classify_claim(
+   claim, evidence)</code>: the three classes. ~6 lines. Test: the
+   toy routing.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> No class-(c)
+   claim appears in a lesson as fact. Check: every guest
+   mention carries its class.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> A minute per claim. The cost of skipping it: the
+   telephone game.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    trust the retelling. Choose the classes for anything
+    cited. The alternative is how myths start.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the schedule title is the talk.&rdquo; Counterexample:
+    tentative schedules change (the course says so). The
+    title is a plan, not a transcript.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is method. The extension is the
+    habit.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A11 (breadth:
+    name the three classes), L11 (ladder: define the
+    classes, classify the toy, derive the demote rule,
+    diagnose the title-as-talk, design the citation
+    check).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E21: classify 6
+    toy claims. E22: demote one class-(c) claim. Keys in
+    <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+    is a method (carried in text). Logged as an honest
+    exception in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-source-gaps">C12: source gaps</h3>
+<p>Leaf id <code>cs224n-U14-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Scope: the
+   unit&rsquo;s close and the course&rsquo;s gap ledger. Objectives: list
+   the U14 gaps, state the closure rule, keep the ledger.
+   Depends on C10, C11.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: what is still
+   unknown after this unit? Toy: the ledger: S20 talk content
+   (uninspected), Tinker/LoRA artifacts (uninspected), all
+   C01-C09 mechanisms (requested-branch, toy-taught). Each
+   with its closure rule.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The gap ledger is the course&rsquo;s honesty
+   file. Every open item names what would close it. A course
+   without a ledger is a course that forgot what it does not
+   know.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Gap rows:
+   item, status, closure rule. Assumption: the ledger is
+   complete (audit it).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+   the row: status open until the named artifact is
+   inspected. C10&rsquo;s card feeds this ledger.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 3 open
+   rows for U14. The count is the deliverable.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>gap_ledger(
+   unit)</code>: rows with closure rules. ~6 lines. Test: the 3
+   toy rows.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Every PLANNED
+   leaf appears in the ledger. Check: no row closes without
+   the artifact.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Maintenance time. The cost of skipping it: the
+   audit fails.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    close gaps by assumption. Choose the ledger always. The
+    alternative is the audit finding.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the ledger is complete.&rdquo; Counterexample: the
+    gap you forgot. The audit (different agent) checks.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: none, this is the close. The extension is the
+    audit.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u14_answers.md</code> A12 (breadth:
+    state the ledger rule), L12 (ladder: define the ledger,
+    list the toy rows, derive the closure rule, diagnose the
+    assumed-closure, design the audit check).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E23: write the
+    U14 ledger. E24: close one row honestly (or mark why
+    not). Keys in <code>keys/u14_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u14_fig03" src="../assets/u14_fig03.png" title="u14_fig03" />: the claim-class plate, Shell 10,
+    source this build&rsquo;s lessons. Audit row in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="unit-visual-map">Unit visual map</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Claim</th>
+<th>Shell</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="u14_fig01" src="../assets/u14_fig01.png" title="u14_fig01" /></td>
+<td>early 0 vs late 5.03e7 params</td>
+<td>8</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u14_fig02" src="../assets/u14_fig02.png" title="u14_fig02" /></td>
+<td>routing aux loss 1.04</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u14_fig03" src="../assets/u14_fig03.png" title="u14_fig03" /></td>
+<td>U14: 12 requested-branch leaves</td>
+<td>10</td>
+<td>this build</td>
+</tr>
+</tbody>
+</table>
+      
+      <nav class="pager"><a href="../labs/u04_lab.html"><span class="lbl">← Previous</span>Lab 04 · Language models and recurrence</a><a href="../labs/u04_lab_key.html"><span class="lbl">Next →</span>Lab 04 · Keys</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

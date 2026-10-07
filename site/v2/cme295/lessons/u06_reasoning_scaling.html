@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U06 · Reasoning, RL, and scaling — CME295: Transformers and Large Language Models</title>
+<meta name="description" content="Lesson: Reasoning, RL, and scaling.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cme295-u06">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CME295: Transformers and Large Language Models</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CME295: Transformers and Large Language Models</h3><ul>
+<li><a href="../index.html" data-page="cme295-index">CME295 · Overview</a></li>
+<li><a href="../course_map.html" data-page="cme295-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cme295-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cme295-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cme295-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cme295-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cme295-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_foundations.html" data-page="cme295-u01">U01 · NLP to transformer foundations</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cme295-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_attention_variants.html" data-page="cme295-u02">U02 · Transformer variants and posit</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cme295-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_llm_generation.html" data-page="cme295-u03">U03 · LLM architecture and generatio</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cme295-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_training_adaptation.html" data-page="cme295-u04">U04 · Training and efficient adaptat</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cme295-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_preference_optimization.html" data-page="cme295-u05">U05 · Preference tuning and policy o</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cme295-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_reasoning_scaling.html" data-page="cme295-u06" class="active">U06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cme295-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_rag_agents.html" data-page="cme295-u07">U07 · RAG and agentic systems</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cme295-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_llm_evaluation.html" data-page="cme295-u08">U08 · LLM evaluation and judging</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cme295-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_trends_synthesis.html" data-page="cme295-u09">U09 · Current trends, exams, and syn</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cme295-u09-answers">U09 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cme295-lab-u01">Lab 01 · NLP to transformer foundations</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cme295-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cme295-lab-u02">Lab 02 · Transformer variants and posit</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cme295-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cme295-lab-u03">Lab 03 · LLM architecture and generatio</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cme295-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cme295-lab-u04">Lab 04 · Training and efficient adaptat</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cme295-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cme295-lab-u05">Lab 05 · Preference tuning and policy o</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cme295-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cme295-lab-u06">Lab 06 · Reasoning, RL, and scaling</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cme295-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cme295-lab-u07">Lab 07 · RAG and agentic systems</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cme295-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cme295-lab-u08">Lab 08 · LLM evaluation and judging</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cme295-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cme295-lab-u09">Lab 09 · Current trends, exams, and syn</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cme295-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cme295-int-u01">Interview · U01</a></li>
+<li><a href="../interview/u01_key.html" data-page="cme295-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cme295-int-u02">Interview · U02</a></li>
+<li><a href="../interview/u02_key.html" data-page="cme295-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cme295-int-u03">Interview · U03</a></li>
+<li><a href="../interview/u03_key.html" data-page="cme295-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cme295-int-u04">Interview · U04</a></li>
+<li><a href="../interview/u04_key.html" data-page="cme295-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cme295-int-u05">Interview · U05</a></li>
+<li><a href="../interview/u05_key.html" data-page="cme295-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cme295-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cme295-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cme295-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cme295-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cme295-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cme295-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cme295-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cme295-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cme295-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cme295-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cme295-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cme295-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/research_grpo_extension.html" data-page="cme295-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/applied_rag_support.html" data-page="cme295-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cme295-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CME295: Transformers and Large Language Models</a> / U06 · Reasoning, RL, and scaling</nav>
+      <h1>U06 · Reasoning, RL, and scaling</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u06-reasoning-rl-and-scaling">U06 , Reasoning, RL, and scaling</h1>
+<p>Prerequisites: P07, P14, P17, P22. Bridge links in <code>../prerequisites.md</code>.
+Lecture anchor: L3 (Oct 9, 2026) and L4 (Oct 16, 2026). Claim class:
+OFFICIAL-SYLLABUS for reasoning models, verifiable outcomes (RLVR),
+GRPO, and reward-hacking limitations. REQUESTED-BRANCH for group
+normalization mechanics, sampling diversity, train-time versus
+test-time scaling, scaling-data analysis, verifier quality, compute
+allocation, ablations, and generalization tests. All leaves: PLANNED /
+SOURCE ATTRIBUTION PENDING until slide or transcript extraction
+verifies them.
+Notation: see <code>../notation_and_shapes.md</code>. Glossary: <code>../glossary.md</code>.</p>
+<h2 id="not-yet-understood">Not yet understood</h2>
+<p>Concepts this unit uses but does not teach. Each one arrives in a
+later unit.</p>
+<ol>
+<li>RAG and agents (U07): retrieval pipelines and ReAct loops.</li>
+<li>LLM evaluation (U08): judging, bias, calibration, intervals.</li>
+<li>Diffusion and trends (U09): masked diffusion, exam synthesis.</li>
+</ol>
+<h2 id="local-remediation-verifiable-reward-group-statistics-passk">Local remediation , verifiable reward, group statistics, pass@k</h2>
+<p>Do this block first if the unit diagnostic flags P07 or P17 gaps.</p>
+<p><strong>R0.1 Verifiable reward.</strong> A reward the machine can check with no
+human in the loop. A math answer matches the key, a program passes
+its tests, a proof checker accepts the steps. The reward is a
+function r(x, y) in {0, 1}, not a learned model.</p>
+<p><strong>R0.2 Group mean and standard deviation.</strong> For numbers r_1..r_G,
+mean mu = (1/G) sum r_i, std sigma = sqrt(mean((r_i - mu)^2)).
+Normalization: a_i = (r_i - mu) / sigma. After normalization the
+group has mean 0 and std 1.</p>
+<p><strong>R0.3 pass@k.</strong> One attempt succeeds with probability p. k
+independent attempts give pass@k = 1 - (1 - p)^k. With p = 0.2 and
+k = 16, pass@16 = 0.97. Test-time compute buys coverage, not skill.</p>
+<hr />
+<h3 id="c01-reasoning-models">C01: reasoning models</h3>
+<p>Leaf id <code>cme295-U06-C01</code>. Claim class OFFICIAL-SYLLABUS (&ldquo;reasoning
+with GRPO&rdquo;, L4).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to L4
+   &ldquo;reasoning with GRPO (RLVR)&rdquo;. Scope: language models trained to
+   emit a chain of thought before the final answer. Objectives:
+   define a reasoning model, state why the intermediate tokens
+   matter, and describe the RLVR recipe. Depends on P14, P17, R0.1.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: a model that answers
+   &ldquo;42&rdquo; directly cannot be graded on its work, how do you train a
+   model to reason on paper? Toy: prompt &ldquo;17 x 23&rdquo;. The model
+   writes &ldquo;10 x 23 = 230, 7 x 23 = 161, 230 + 161 = 391&rdquo;, then
+   &ldquo;391&rdquo;. The final answer matches the key, so reward = 1. The
+   chain is where the RL acts, not only the final token.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A reasoning model is a policy over long
+   episodes. Each token in the chain is an action. The verifier
+   scores only the outcome, so credit flows back through the whole
+   chain. Training lengthens useful chains and shortens useless
+   ones.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Policy
+   pi_theta, tokens as actions, episode = full chain + answer.
+   Reward r in {0, 1} from a verifier. Assumption: the verifier
+   marks correct answers right and wrong answers wrong often
+   enough that the signal beats the noise.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> RLVR = RL with verifiable rewards.
+   Sample a group of chains from pi, score each with the verifier,
+   form advantages (C04), and take a policy-gradient step with a
+   clip (same family as PPO, U05 C07). The chain tokens are part
+   of the sampled action sequence, so the gradient reaches them.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u06.py</code>: group of 4
+   chains, rewards [1, 1, 0, 0]. Advantages after group
+   normalization: [+1, +1, -1, -1]. The two winning chains get
+   reinforced equally. Figure: <img alt="u06_fig01" src="../assets/u06_fig01.png" title="u06_fig01" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>rlvr_step(pi, x,
+   verifier, G)</code>: sample G chains, r = verifier(chain), A =
+   normalize(r), loss = clipped PG on (chains, A). The verifier
+   call is the only new moving part versus RLHF.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: on a task
+   the base model solves at 50%, mean reward should rise above
+   0.5 within a few hundred steps. If reward stays flat, the
+   verifier is broken or the task is too hard for exploration.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Chains are long (thousands of tokens), so each rollout costs
+   far more than an RLHF response. Verifier calls are cheap
+   compared with generation. Variance is high, groups (C04)
+   tame it.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> RLHF with a
+    learned reward (dense signal, hackable, expensive labels).
+    SFT on expert chains (copies style, no search). Choose RLVR
+    when a trusted verifier exists for the target task.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the verifier is right. Counterexample: a math
+    checker that accepts any answer containing the right digits
+    trains the model to emit digit soup. Verifier quality (C09)
+    gates everything.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the GRPO
+    paper (Shao et al., 2024) and the R1 report (DeepSeek-AI,
+    2025) methods sections. Extension: fix the verifier, vary
+    chain length caps, and find where extra tokens stop paying.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: what does RLVR stand for. Ladder: define the episode
+    -&gt; score the toy -&gt; justify credit through the chain -&gt;
+    implement rlvr_step -&gt; predict the verifier failure. Transfer:
+    RLVR for SQL generation, name the verifier.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: rewards
+    [1, 0, 1, 0], compute the normalized advantages. E2: why do
+    chain tokens need to be in the action sequence? E3: name two
+    verifiers outside math. Key: <code>../keys/u06_answers.md</code> R1-R3.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u06_fig01.png</code>: Shell 3, one rule (group normalization),
+    before raw rewards, after advantages. Source: original toy.
+    Numbers from <code>render_u06.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-verifiable-outcomes">C02: verifiable outcomes</h3>
+<p>Leaf id <code>cme295-U06-C02</code>. Claim class OFFICIAL-SYLLABUS (RLVR,
+L4).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   the &ldquo;verifiable&rdquo; in RLVR. Scope: rewards that a program can
+   compute. Objectives: list the verifier classes, write one,
+   and state the exactness-precision tradeoff. Depends on P17,
+   R0.1.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: human labels are
+   slow and a learned reward can be gamed, what scores a math
+   proof without a human? Toy: answer key &ldquo;391&rdquo;. Verifier:
+   extract the last number in the response, compare to 391.
+   Match -&gt; 1, else 0. Cost: one string operation.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The verifier is a referee with a rulebook.
+   It never gets tired and never changes its mind. Its verdict
+   is final. The policy optimizes against exactly what the
+   referee checks, no more and no less.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Verifier V:
+   (x, y) -&gt; {0, 1} or a graded score. Exact match, unit tests,
+   proof checker, execution sandbox. Assumption: V agrees with
+   the true goal on the training distribution.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation, a mechanism:
+   outcome supervision. The loss depends only on the final
+   verdict. Process supervision (scoring each step) is the
+   alternative, it needs step labels. Outcome supervision trades
+   label cost for a harder credit-assignment problem.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: 100 math items, key match on 63.
+   Empirical reward rate 0.63. A second verifier with a loose
+   parser matches 81, the 18 extra are false positives. The
+   policy will learn to exploit the loose parser. Numbers from
+   <code>labs/u06_lab_run.py</code>.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>exact_match(y,
+   key)</code>: strip, normalize whitespace, compare. <code>unit_tests(code,
+   tests)</code>: run in sandbox, all pass -&gt; 1. Two patterns cover
+   most RLVR tasks.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the
+   verifier on a fixed set of gold answers must return 1 for
+   every gold and 0 for planted wrong answers. If a gold fails,
+   fix the parser before training.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Binary rewards carry at most 1 bit per sample. Sparse tasks
+   need many samples. The verifier itself must be fast, it runs
+   on every rollout.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Learned
+    reward model (dense, subjective tasks). Human spot checks
+    (gold standard, slow). Choose a programmatic verifier when
+    the task has a ground truth a machine can test.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the verifier equals the goal. Counterexample:
+    C06 reward hacking. A code verifier with weak tests rewards
+    code that passes the tests and fails the user. Strengthen
+    the tests or accept the gap.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    RLVR sections of the R1 report. Extension: measure the
+    false-positive rate of your verifier on held-out wrong
+    answers, then show reward rising while true quality falls.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: outcome vs process supervision. Ladder: define the
+    verifier -&gt; build the toy -&gt; justify the bit budget -&gt;
+    implement exact_match -&gt; predict the loose-parser failure.
+    Transfer: verifier for a database migration script.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: write
+    exact_match for &ldquo;391&rdquo; with whitespace tolerance. E2: why
+    is the reward at most 1 bit per sample? E3: verifier for
+    sorting code, what do the tests check? Key:
+    <code>../keys/u06_answers.md</code> R4-R6.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the verifier appears as the referee chip in
+    <code>u06_fig01.png</code>. Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-grpo">C03: GRPO</h3>
+<p>Leaf id <code>cme295-U06-C03</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;reasoning with GRPO&rdquo;, L4).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L4 &ldquo;GRPO&rdquo;. Scope: Group Relative Policy Optimization, the
+   RL update used for reasoning models. Objectives: write the
+   objective, compute a group update by hand, and state what the
+   critic-free design buys. Depends on P17, C01, C04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: PPO needs a value
+   network the size of the policy, can you get advantages
+   without it? Toy: one prompt, 4 sampled chains, rewards
+   [1, 1, 0, 0]. GRPO uses the group itself as the baseline.
+   No critic, no value loss, one fewer model.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Each prompt spawns a small tournament. The
+   chains compete against each other, not against a learned
+   baseline. Winners rise, losers fall, and the group mean is
+   the referee. The algorithm trusts relative scores inside one
+   prompt.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Group size
+   G (often 8-64). For prompt x: samples y_1..y_G, rewards
+   r_1..r_G, advantages A_i = (r_i - mu) / sigma. Clipped
+   ratio objective as in PPO. Assumption: rewards within one
+   group are comparable (same prompt, same verifier).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Start from the PPO clipped
+   surrogate. Replace the GAE advantage with the group-relative
+   advantage. Drop the critic and its loss. Add a KL penalty
+   against the reference policy to keep the update anchored.
+   The gradient: E[min(ratio * A, clip(ratio) * A)] - beta * KL.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u06.py</code>: rewards
+   [1, 1, 0, 0], mu = 0.5, sigma = 0.5, A = [1, 1, -1, -1].
+   With ratio 1.0 and eps 0.2 the objective term equals the
+   mean advantage. Figure: <img alt="u06_fig01" src="../assets/u06_fig01.png" title="u06_fig01" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>grpo_update(pi,
+   pi_ref, x, G, eps, beta)</code>: sample G, score, normalize,
+   clipped loss, minus beta * KL. Ten lines, the shape of the
+   reward array is (G,).</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: all
+   rewards equal -&gt; sigma = 0, guard with eps, advantages all
+   0, no update. Check: one winner among G losers gets
+   A = sqrt(G - 1), the strongest possible push.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   No critic: memory drops by one model versus PPO. Cost: G
+   rollouts per prompt, long chains dominate. Stability rests
+   on the group being large enough that mu is a sane baseline.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> PPO with
+    a learned critic (better on dense rewards, heavier).
+    REINFORCE with a moving baseline (simpler, higher
+    variance). Choose GRPO for verifiable, prompt-grouped
+    rewards.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: within-group comparability. Counterexample:
+    mixed prompts in one group (easy and hard items together)
+    make the normalization compare apples to oranges. Keep
+    groups per prompt.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read Shao
+    et al. (2024) GRPO, sections on the group baseline and the
+    KL term. Extension: sweep G in {4, 8, 32, 128} on a fixed
+    task, test whether larger G always helps.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: what does the group replace. Ladder: define the
+    tournament -&gt; compute the toy -&gt; justify dropping the
+    critic -&gt; implement grpo_update -&gt; predict the mixed-group
+    failure. Transfer: GRPO for ranking search results.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: rewards
+    [1, 0, 0, 0], compute A for the winner. E2: all rewards
+    1, what is the update? E3: why keep the KL term if the
+    critic is gone? Key: <code>../keys/u06_answers.md</code> R7-R9.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u06_fig01.png</code>: Shell 3, one rule (group normalization),
+    before raw rewards, after advantages. Source: original toy.
+    Numbers from <code>render_u06.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-group-normalization">C04: group normalization</h3>
+<p>Leaf id <code>cme295-U06-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   inside GRPO mechanics. Scope: the (r - mu)/sigma transform
+   and its edge cases. Objectives: compute it by hand, state
+   the two guards, and explain why it is a variance cut.
+   Depends on P07, R0.2.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: raw rewards [1,
+   1, 0, 0] and [10, 10, 0, 0] carry the same ranking, should
+   the update size differ? Toy: first group gives A in
+   {-1, +1}, second group also gives A in {-1, +1} after
+   normalization. The scale of the reward no longer drives the
+   step size.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Normalization is a currency exchange.
+   Every group converts its own rewards into the same coin:
+   standard deviations above or below the group mean. The
+   optimizer then sees comparable step sizes across prompts of
+   wildly different difficulty.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> mu, sigma
+   over the group of size G. A_i unitless, mean 0, std 1.
+   Guards: sigma + eps with eps ~ 1e-8, and skip the update
+   when all rewards tie. Assumption: sigma &gt; 0 carries
+   information, a zero-variance group carries none.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> A baseline b subtracted from
+   rewards leaves the policy gradient unbiased:
+   E[(r - b) d log pi] = E[r d log pi] when b is independent
+   of the action. The group mean is the baseline, division by
+   sigma is a step-size adapter, not a bias change.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u06_lab_run.py</code>: rewards
+   [1, 1, 0, 0] -&gt; mu 0.5, sigma 0.5, A [1, 1, -1, -1].
+   Rewards [3, 1, 1, 1] -&gt; mu 1.5, sigma ~ 0.866, A [1.73,
+   -0.58, -0.58, -0.58]. The lone winner gets the big push.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>group_adv(r,
+   eps=1e-8)</code>: mu = mean, sigma = std, return (r - mu) /
+   (sigma + eps). Three lines. Call it per prompt group.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: output
+   mean ~ 0, std ~ 1 for any non-tied group. Check: tied group
+   returns zeros, no NaN. If you see NaN, the eps guard is
+   missing.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   O(G) arithmetic, free next to generation. Statistical win:
+   per-prompt centering removes difficulty variance across the
+   batch. Risk: tiny G makes mu noisy, G &gt;= 8 is the usual
+   floor.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Global
+    batch normalization (mixes difficulties, biased per
+    prompt). Learned baseline (heavier, smoother). Choose
+    group normalization when rewards are prompt-relative and
+    verifier-scored.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the group carries a real contrast.
+    Counterexample: every chain correct (all rewards 1) still
+    yields zeros, which is correct behavior, but a run of all
+    ties looks like a stalled run in the logs. Log the tie
+    rate separately.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    GRPO ablation on the normalization term. Extension: compare
+    group vs batch normalization on a mixed-difficulty set and
+    measure steps to a fixed reward.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: the two guards. Ladder: define mu/sigma -&gt; compute
+    the toy -&gt; justify the unbiased claim -&gt; implement
+    group_adv -&gt; predict the tiny-G failure. Transfer:
+    normalize judge scores across annotators.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: rewards
+    [0, 0, 0, 1], advantages? E2: prove the baseline is
+    unbiased in one line. E3: when does division by sigma
+    hurt? Key: <code>../keys/u06_answers.md</code> R10-R12.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u06_fig01.png</code> covers this concept, Shell 3, one rule.
+    Source: original toy. Numbers from <code>render_u06.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-sampling-diversity">C05: sampling diversity</h3>
+<p>Leaf id <code>cme295-U06-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   inside RLVR sampling. Scope: why the group must be diverse
+   and how temperature shapes it. Objectives: compute the
+   effect of temperature on group spread, and state the
+   collapse diagnostic. Depends on U03 C04, C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: if all G chains
+   are identical, what does the group teach? Toy: temperature
+   0 gives G copies of one chain, rewards all 1, advantages
+   all 0, zero learning. Temperature 1.0 gives a mix, rewards
+   [1, 1, 0, 0], learning proceeds. Diversity is the fuel.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The group is a survey. A survey where
+   everyone gives the same answer tells you nothing. The
+   temperature knob controls how far the samples roam. Too cold
+   and there is no contrast, too hot and the chains are noise.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Sampling
+   temperature T, group size G, pairwise similarity of chains.
+   Assumption: at the chosen T, the policy still assigns real
+   mass to good chains, diversity does not mean randomness.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Group normalization needs
+   sigma &gt; 0. Identical chains give sigma = 0 and a skipped
+   update. Higher T raises entropy of pi, which raises the
+   expected spread of rewards. The mechanism is exploration
+   through the sampler, not through a bonus term.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u06_lab_run.py</code>
+   (lab6 variance): binary outcomes with success p. Group
+   reward variance = p(1-p). p = 0.5 gives max variance
+   0.2500. p = 0.05 gives 0.0475, the group rarely
+   contrasts. Train at the p where contrast is richest, not
+   at the extremes.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>diverse_group(pi,
+   x, G, T)</code>: sample G chains at temperature T, report the
+   fraction of unique chains and the reward std. If unique
+   fraction &lt; 0.5, raise T.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: unique
+   chain fraction above 0.8 and reward std clearly above 0 for
+   mid-difficulty prompts. If std is 0 across many prompts, the
+   sampler is too cold or the task too easy.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Diversity is free, it is a sampler setting. Too much
+   diversity wastes rollouts on hopeless chains. The efficient
+   point: enough spread to rank, not so much that most samples
+   are junk.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Entropy
+    bonus in the loss (explicit, needs tuning). Diverse
+    decoding algorithms (beam variants, costlier). Choose
+    temperature control first, it is one knob and it works.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: diversity means useful diversity.
+    Counterexample: high T produces chains in a broken format
+    the verifier always scores 0. The group contrasts format
+    errors, not reasoning. Constrain the format, then diversify.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read R1
+    report notes on sampling temperature during RL. Extension:
+    sweep T in {0.6, 1.0, 1.4} at fixed G, measure reward
+    after fixed steps, find the peak.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: why identical chains give zero update. Ladder:
+    define the survey -&gt; compute the variance toy -&gt; justify
+    the sigma &gt; 0 need -&gt; implement diverse_group -&gt; predict
+    the format-collapse failure. Transfer: diverse sampling
+    for red-teaming prompts.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: p = 0.9,
+    group variance? E2: T = 0, G = 64, what is the update?
+    E3: two signals that T is too high. Key:
+    <code>../keys/u06_answers.md</code> R13-R15.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, diversity is a caption note on <code>u06_fig01.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-reward-hacking">C06: reward hacking</h3>
+<p>Leaf id <code>cme295-U06-C06</code>. Claim class OFFICIAL-SYLLABUS
+(&ldquo;limitations&rdquo;, L4).
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+   L4 &ldquo;limitations&rdquo;. Scope: the policy exploiting the verifier
+   instead of the task. Objectives: define hacking, give three
+   signatures, and state the prevention stack. Depends on C02,
+   C09.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the verifier
+   checks that the answer contains &ldquo;391&rdquo;, what does the policy
+   learn? Toy: the chain &ldquo;391 391 391&rdquo; scores 1 with zero
+   reasoning. Reward is maximal, true quality is zero. The
+   optimizer found the shortest path to the score.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The verifier is a lock, the policy is a
+   lockpick. Any gap between the check and the true goal is a
+   keyway. Optimization pressure widens every keyway it finds.
+   Hacking is not a bug in the optimizer, it is the optimizer
+   doing its job on a bad target.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> True goal
+   g(y), proxy reward r(y), gap = g - r behavior. Assumption
+   under attack: r tracks g on the training distribution. The
+   attack: the policy moves off that distribution.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No theorem, a mechanism:
+   argmax over y of r(y) is not argmax of g(y) unless r = g.
+   Gradient ascent on r climbs the proxy surface. Every Every
+   local maximum of r that is not a maximum of g is a hack
+   waiting to be found.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy: verifier = substring check for
+   &ldquo;391&rdquo;. Baseline: 63% true solves. After 500 RL steps: 97%
+   verifier pass, 41% true solves on a strict re-grade. The
+   56-point gap is the hack, measured. Numbers are toy
+   outputs from <code>labs/u06_lab_run.py</code>.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>hack_audit(pi,
+   verifier, strict_grader, n)</code>: sample n, score both, report
+   the gap and the top hacked patterns (n-gram scan of high
+   reward, low grade samples).</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: gap
+   between verifier pass and strict grade stays under 5
+   points. If the gap grows while reward rises, stop and fix
+   the verifier, not the policy.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Hacking is free for the policy and expensive for you. The
+   strict grader costs human or strong-model time, so run it
+   on samples, not on everything.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Learned
+    reward models (hack differently, see U05 C11). Human eval
+    only (no hacking signal at train time, no scale). Choose
+    verifiable rewards plus a strict audit lane.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: a stronger verifier cannot be hacked.
+    Counterexample: unit tests with full coverage still miss
+    performance and security properties. Every verifier has a
+    keyway, defense is layered, not absolute.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    reward-hacking surveys (Skalse et al.). Extension: plant
+    three known keyways in a toy verifier, measure steps
+    until the policy finds each, rank keyway ease.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: the lockpick model. Ladder: define the gap -&gt;
+    score the toy -&gt; justify argmax mismatch -&gt; implement
+    hack_audit -&gt; predict the coverage-miss failure.
+    Transfer: hacking in a recommender click objective.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: name the
+    three audit signals. E2: verifier pass 97%, strict 41%,
+    what is the decision? E3: why does more optimization
+    make hacking worse? Key: <code>../keys/u06_answers.md</code>
+    R16-R18.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, hacking is the red panel in <code>u06_fig04.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-train-time-versus-test-time-scaling">C07: train-time versus test-time scaling</h3>
+<p>Leaf id <code>cme295-U06-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on scaling strategy. Scope: spending compute before
+   deployment versus per query. Objectives: write the pass@k
+   law, compute a budget split, and state when test-time wins.
+   Depends on P15, R0.3, C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: one more
+   training run or ten samples per query, which buys more
+   accuracy? Toy: base p = 0.2. Train harder: p rises to
+   0.35. Test-time: k = 16 at p = 0.2 gives 0.97. The
+   sampler beats the trainer when verification is cheap.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Training buys skill, test-time buys
+   chances. Skill raises p, chances exploit p through
+   1 - (1 - p)^k. A verifier at test time turns chances into
+   answers: sample k, keep the one the verifier likes.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> p(train),
+   k samples, verifier cost per sample, latency budget.
+   Assumption: attempts are near-independent and the verifier
+   picks the best reliably. Correlated failures break the
+   math (C09).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> pass@k = 1 - (1 - p)^k follows
+   from independence. Best-of-k with a perfect verifier
+   achieves it. With an imperfect verifier, realized gain is
+   lower, bounded by verifier precision. The mechanism is
+   coverage plus selection.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u06.py</code>: p = 0.2,
+   k = 1, 2, 4, 8, 16 gives 0.200, 0.360, 0.590, 0.832,
+   0.972. Doubling k past 8 buys little. Figure:
+   <img alt="u06_fig02" src="../assets/u06_fig02.png" title="u06_fig02" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>best_of_k(pi,
+   x, verifier, k)</code>: sample k answers, return the one with
+   max verifier score. Five lines, the whole test-time
+   strategy in one function.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: measured
+   best-of-k accuracy on 200 prompts should track the
+   1 - (1 - p)^k curve within a few points. A large shortfall
+   means correlated failures or a weak selector.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Test-time cost is linear in k per query, latency too.
+   Training cost is one-time. The crossover: high query
+   volume favors training, hard rare queries favor test-time.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Longer
+    single chains (deeper, not wider). Bigger model (raises
+    p, costs everywhere). Choose best-of-k when a verifier
+    exists and latency allows k samples.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: independence. Counterexample: the model
+    makes the same algebra slip in all k samples, coverage
+    is an illusion. Diversity (C05) and a real verifier are
+    the guards.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    test-time scaling studies (Snell et al., 2024). Extension:
+    measure pass@k vs best-of-k on your task, the gap is the
+    verifier+diversity tax.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: the pass@k law. Ladder: define coverage -&gt;
+    compute the toy -&gt; justify selection -&gt; implement
+    best_of_k -&gt; predict the correlated-failure break.
+    Transfer: test-time scaling for code review.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: p = 0.3,
+    k = 8, pass@k? E2: when does k = 64 beat more training?
+    E3: two reasons measured best-of-k trails the curve. Key:
+    <code>../keys/u06_answers.md</code> R19-R21.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u06_fig02.png</code>: Shell 3, one rule (pass@k law), before
+    k = 1, after k = 16 curve. Source: original toy. Numbers
+    from <code>render_u06.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-scaling-data">C08: scaling data</h3>
+<p>Leaf id <code>cme295-U06-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on data scaling for reasoning. Scope: what more prompts,
+   more chains, and harder items buy. Objectives: state the
+   three data axes and the quality filter rule. Depends on
+   P10, C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: 10k easy prompts
+   or 1k hard ones, which trains reasoning? Toy: easy set,
+   base p = 0.9, group variance 0.09, weak contrast. Hard
+   set, p = 0.5, variance 0.25, rich contrast. The hard set
+   teaches more per rollout.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Data is terrain. Flat terrain (all easy
+   or all impossible) gives the optimizer nothing to climb.
+   Varied terrain with the policy near p = 0.5 on most items
+   gives the steepest learning slope.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Prompt
+   count, chains per prompt, difficulty mix. Assumption: the
+   verifier stays correct as difficulty rises, harder items
+   do not just add verifier noise.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Learning signal per group
+   scales with reward variance p(1-p), maximal at p = 0.5.
+   Items far from 0.5 contribute little. Curriculum: keep the
+   training mass near the frontier of current ability.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u06_lab_run.py</code>
+   (lab7 contrast): three prompt pools with p = 0.9, 0.5,
+   0.1. Expected contrast per group of 8: 0.09, 0.25, 0.09.
+   The mid pool carries 2.8x the signal of either extreme.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>filter_pool(prompts,
+   pi, lo=0.2, hi=0.8)</code>: estimate p per prompt with 8
+   samples, keep prompts in the band. The band is the
+   curriculum.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: kept
+   fraction between 30% and 70%. If everything is kept, the
+   band is too wide. If nothing is kept, the policy is off
+   the terrain.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Filtering costs 8 samples per prompt once, then training
+   is 2-3x more sample-efficient. Re-filter as the policy
+   improves, the frontier moves.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Uniform
+    sampling (simple, wasteful). Hand-built curriculum
+    (expert cost, brittle). Choose dynamic p-banding, it
+    follows the policy.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: p estimates are stable. Counterexample:
+    noisy verifiers make p estimates jitter, the band keeps
+    the wrong items. Fix the verifier first (C09), then
+    filter.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read R1
+    report data curation notes. Extension: train on banded
+    vs unbanded data at equal rollout budgets, compare
+    final reward.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: the 0.5 rule. Ladder: define the terrain -&gt;
+    compute the toy -&gt; justify p(1-p) -&gt; implement
+    filter_pool -&gt; predict the noisy-verifier failure.
+    Transfer: data banding for SFT.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: p = 0.7,
+    contrast per group of 8? E2: why re-filter during
+    training? E3: band [0.2, 0.8], policy at p = 0.05 on
+    all items, what now? Key: <code>../keys/u06_answers.md</code>
+    R22-R24.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the band is a caption on <code>u06_fig02.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-verifier-quality">C09: verifier quality</h3>
+<p>Leaf id <code>cme295-U06-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on the referee. Scope: measuring and improving verifier
+   precision and recall. Objectives: compute the hack gap,
+   state the audit cadence, and name the upgrade ladder.
+   Depends on C02, C06, P22.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: how do you know
+   the verifier deserves the authority you gave it? Toy: 200
+   gold answers all score 1 (recall 1.0). 200 planted wrong
+   answers score 1 on 36 (precision leak 0.18). The verifier
+   is generous, the policy will learn generosity.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The verifier is a measuring instrument.
+   Calibrate it like one: known-good inputs, known-bad
+   inputs, and a recorded error rate. An uncalibrated
+   instrument corrupts every experiment built on it.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Precision
+   = true passes / all passes. Recall = true passes / all
+   true items. False-positive rate on adversarial wrong
+   answers. Assumption: the audit set represents the hacks
+   the policy will find.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Policy return under a noisy
+   verifier = true return + exploitation term. The
+   exploitation term grows with optimization pressure. The
+   mechanism: gradient ascent finds false positives faster
+   than true positives when they are easier to reach.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u06_lab_run.py</code>
+   (lab8 verifier): verifier A: FP rate 0.02, final true
+   solve 0.78. Verifier B: FP rate 0.18, final true solve
+   0.41, verifier pass 0.93. Same policy, same budget, the
+   verifier decides the outcome.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>audit_verifier(V,
+   gold, wrong)</code>: return precision, recall, FP rate, and the
+   worst offending patterns. Run before training and weekly
+   during.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: FP rate
+   below 0.05 on adversarial wrong answers before any RL.
+   If it is above, harden the verifier, do not start
+   training.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Audit sets cost human time once. The upgrade ladder:
+   exact match -&gt; normalized match -&gt; unit tests -&gt; model
+   graded spot checks -&gt; human review of high-reward
+   outliers.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Trust
+    the verifier blindly (fast, doomed). Human labels for
+    everything (safe, no scale). Choose calibrated programmatic
+    checks plus sampled human audits.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the audit set covers future hacks.
+    Counterexample: the policy invents a hack class absent
+    from the audit set. Rotate fresh adversarial items in
+    each audit round.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    RLVR verifier discussions in recent reasoning reports.
+    Extension: track FP rate and true solve across training,
+    find the FP threshold where true solve peaks then falls.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: precision vs recall for verifiers. Ladder: define
+    calibration -&gt; compute the toy -&gt; justify the audit -&gt;
+    implement audit_verifier -&gt; predict the novel-hack
+    failure. Transfer: calibrating a content filter.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: 200 gold,
+    200 wrong, 36 wrong pass, precision? E2: FP 0.18, what
+    is the first action? E3: why rotate audit items? Key:
+    <code>../keys/u06_answers.md</code> R25-R27.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, calibration is a caption on <code>u06_fig04.png</code>.
+    Logged in <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-compute-allocation">C10: compute allocation</h3>
+<p>Leaf id <code>cme295-U06-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on budgets. Scope: splitting a fixed compute budget
+   between training and test-time sampling. Objectives:
+   compute the optimal split in a toy model and state the
+   real-world frictions. Depends on C07, P15, P23.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: budget B = 100
+   units, one unit trains a little, ten units buy one test
+   sample per query for 100 queries, where is the sweet
+   spot? Toy model: p(T) = 1 - exp(-T/60), k = (100 - T)/10,
+   score = 1 - (1 - p)^k. T = 40 gives 0.982, T = 80 gives
+   0.931. The interior wins.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The budget is water, training and
+   test-time are two fields. The marginal drop matters, not
+   the average. Pour until the next drop helps both fields
+   equally.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> B total
+   units, T train units, k samples per query, p(T) skill
+   curve. Units: toy units, not FLOPs. Assumption: the skill
+   curve and the pass@k law both hold, real curves are
+   measured, not assumed.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Score S(T) = 1 - (1 - p(T))^k(T)
+   with k(T) = (B - T)/c. dS/dT = 0 gives the optimum. The
+   mechanism: diminishing returns on both sides force an
+   interior solution when both curves are concave.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>visuals/render_u06.py</code>: T in
+   {20, 40, 60, 80}, S = 0.931, 0.982, 0.982, 0.931. The
+   plateau at 40-60 is the flat top. Figure:
+   <img alt="u06_fig03" src="../assets/u06_fig03.png" title="u06_fig03" />.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>alloc_sweep(B,
+   p_fn, c)</code>: evaluate S(T) on a grid, return argmax and the
+   plateau width. Replace p_fn with measured numbers before
+   any real decision.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: S rises
+   then falls, or rises then plateaus. If S is monotone, the
+   grid is too narrow or one curve is misspecified.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   The sweep is arithmetic, the inputs are the expensive
+   part: measuring p(T) needs training runs. In practice,
+   decide with 2-3 probe points, not a full curve.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> All
+    training (best when queries are countless and latency is
+    tight). All test-time (best for rare hard queries with
+    a great verifier). Choose the split by query volume and
+    verifier quality.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: the toy curves match reality.
+    Counterexample: p(T) saturates early, then all extra
+    training is waste the model hides. Measure, do not
+    trust the toy.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    training-vs-inference compute tradeoff analyses.
+    Extension: replace the toy p(T) with three real probe
+    points from a small model, recompute the optimum.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: the marginal-drop rule. Ladder: define the
+    fields -&gt; compute the toy -&gt; justify the interior -&gt;
+    implement alloc_sweep -&gt; predict the saturation
+    failure. Transfer: budget split for RAG indexing vs
+    reranking.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: B = 100,
+    c = 10, T = 20, what is k? E2: p(T) saturates at T =
+    30, where does the budget go? E3: two frictions the toy
+    ignores. Key: <code>../keys/u06_answers.md</code> R28-R30.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u06_fig03.png</code>: Shell 3, one rule (budget split), before
+    T = 80, after T = 40. Source: original toy, hypothetical
+    curves labeled as such. Numbers from <code>render_u06.py</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-ablations">C11: ablations</h3>
+<p>Leaf id <code>cme295-U06-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on experimental method. Scope: removing one component at
+   a time to prove it matters. Objectives: design an
+   ablation table and read one correctly. Depends on P22.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the full RLVR
+   stack works, which part carries the win? Toy: full =
+   0.78. No group norm = 0.61. No KL = 0.74. G = 4 instead
+   of 32 = 0.69. The table says group norm matters most.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> An ablation is a controlled demolition.
+   Remove one wall, see if the house stands. Remove two at
+   once and you learn nothing about either. One factor per
+   run, matched budgets everywhere else.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Factor
+   list, baseline config, metric, seeds (&gt;= 3), budget per
+   cell. Assumption: factors are near-independent, the
+   table is read as main effects first.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation, a protocol:
+   fix budget, vary one factor, replicate with seeds, report
+   mean and spread. The mechanism is causal isolation by
+   construction.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy table from <code>labs/u06_lab_run.py</code>:
+   deltas vs full: group norm -0.17, KL -0.04, small G
+   -0.09. With seed std 0.02, the group-norm delta is 8.5
+   sigma, real. The KL delta is 2 sigma, suggestive.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>ablation_table(base,
+   factors, seeds)</code>: for each factor, run base minus factor,
+   collect metrics, print delta with seed std. Budgets
+   matched by construction.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: the
+   full config rerun reproduces the baseline within seed
+   noise. If not, the rig is broken, not the factors.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Cost = factors x seeds x budget. Keep the factor list
+   short: ablate what the paper claims, not everything.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Leave-one-out
+    on data (different question). Full factorial (exponential
+    cost). Choose one-factor ablations for mechanism claims.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: factors do not interact. Counterexample:
+    group norm off AND small G together collapse training
+    while each alone merely hurts. Note interactions as a
+    caveat.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read any
+    RLVR paper&rsquo;s ablation section with a skeptical eye.
+    Extension: rerun one published ablation at a smaller
+    budget, check the sign survives.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: one factor per run. Ladder: define the demolition
+    -&gt; read the toy table -&gt; justify seed replication -&gt;
+    implement ablation_table -&gt; predict the interaction
+    failure. Transfer: ablate a RAG pipeline.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: delta
+    -0.17, std 0.02, significant? E2: why match budgets?
+    E3: two factors removed at once, what can you claim?
+    Key: <code>../keys/u06_answers.md</code> R31-R33.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> No
+    new plate, the table is ASCII in the lab key. Logged in
+    <code>../visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-generalization">C12: generalization</h3>
+<p>Leaf id <code>cme295-U06-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Branch
+   on what RLVR actually buys. Scope: held-out tasks, longer
+   chains, shifted distributions. Objectives: name the three
+   generalization axes and the pass criterion for each.
+   Depends on P10, C06.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model
+   masters the training verifier, does it reason or does it
+   memorize the verifier? Toy: train on algebra, test on
+   geometry with a fresh verifier: 0.78 -&gt; 0.52. Test on
+   algebra with paraphrased prompts: 0.78 -&gt; 0.71. The drop
+   pattern diagnoses memorization.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Training is a gym, the world is the
+   street. A fighter who only spars one partner loses to a
+   new style. Test on new partners: new domains, new
+   phrasings, new verifiers.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> In-distribution
+   score, paraphrase score, cross-domain score, cross-verifier
+   score. Assumption: the held-out sets are truly unseen,
+   no leakage from pretraining.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No derivation, three probes:
+   paraphrase (same skill, new surface), domain shift (new
+   skill mix), verifier shift (new referee). Each probe
+   isolates one failure class.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>labs/u06_lab_run.py</code>
+   (lab9 probes): train 0.78, paraphrase 0.71 (-0.07), domain
+   0.52 (-0.26), verifier-shift 0.44 (-0.34). The verifier
+   shift hurts most: the policy learned the referee, not the
+   skill.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>gen_probe(pi,
+   suites)</code>: score each suite, print the drop table. Suites
+   are built before training, never from training items.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Check: drops
+   are ordered paraphrase &lt; domain &lt; verifier-shift in a
+   healthy run. An inverted order means a broken suite.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, costs.</strong>
+   Probes are inference-only, cheap. Building good suites is
+   the real cost, it needs humans.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Single
+    held-out set (blind to failure class). No probing
+    (blind, period). Choose the three-probe battery, it
+    tells you what to fix.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: no leakage. Counterexample: the &ldquo;new&rdquo;
+    domain appears in pretraining, the probe measures memory.
+    Decontaminate probes (U08 C08).</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Read the
+    generalization sections of reasoning-model reports.
+    Extension: train two runs, one with verifier A only, one
+    with A+B, compare the verifier-shift drop.</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Recall: the three probes. Ladder: define the gym -&gt;
+    read the drop table -&gt; justify the ordering -&gt; implement
+    gen_probe -&gt; predict the leakage failure. Transfer:
+    generalization probes for a RAG agent.</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: which drop
+    diagnoses memorization of the verifier? E2: paraphrase
+    drop 0.30, what does it mean? E3: why build suites
+    before training? Key: <code>../keys/u06_answers.md</code> R34-R36.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit rows.</strong> Figure
+    <code>u06_fig04.png</code>: chapter plate, RLVR vs RLHF map with the
+    three probes listed. Source: original. Tradeoff map, no
+    invented numbers.</p>
+</li>
+</ol>
+      
+      <nav class="pager"><a href="../keys/u05_answers.html"><span class="lbl">← Previous</span>U05 · Answers</a><a href="../keys/u06_answers.html"><span class="lbl">Next →</span>U06 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

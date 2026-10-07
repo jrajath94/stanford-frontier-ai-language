@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.remove('no-js');</script>
+<title>U06 · Pretraining, scaling, systems, data — CS224N: NLP with Deep Learning</title>
+<meta name="description" content="Lesson: Pretraining, scaling, systems, data.">
+<link rel="stylesheet" href="../assets/vendor/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-page="cs224n-u06" class="page-lesson">
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <a class="brand" href="../index.html">CS224N: NLP with Deep Learning</a>
+  <div class="topbar-search">
+    <input id="searchBox" type="search" placeholder="Search lessons, concepts, papers…" autocomplete="off" aria-label="Search">
+    <div id="searchResults" class="search-results" hidden></div>
+  </div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">◐</button>
+</header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+    <h3>CS224N: NLP with Deep Learning</h3><ul>
+<li><a href="../index.html" data-page="cs224n-index">CS224N · Overview</a></li>
+<li><a href="../course_map.html" data-page="cs224n-course-map">Course map</a></li>
+<li><a href="../prerequisites.html" data-page="cs224n-prereqs">Prerequisites</a></li>
+<li><a href="../notation_and_shapes.html" data-page="cs224n-notation">Notation</a></li>
+<li><a href="../glossary.html" data-page="cs224n-glossary">Glossary</a></li>
+<li><a href="../cheatsheet.html" data-page="cs224n-cheatsheet">Cheatsheet</a></li>
+<li><a href="../crash-course.html" data-page="cs224n-crash">Crash course</a></li>
+<li><a href="../lessons/u01_nlp_history.html" data-page="cs224n-u01">U01 · NLP history, tasks, and data</a></li>
+<li><a href="../keys/u01_answers.html" data-page="cs224n-u01-answers">U01 · Answers</a></li>
+<li><a href="../lessons/u02_word_vectors.html" data-page="cs224n-u02">U02 · Word vectors and cooccurrence</a></li>
+<li><a href="../keys/u02_answers.html" data-page="cs224n-u02-answers">U02 · Answers</a></li>
+<li><a href="../lessons/u03_neural_parsing.html" data-page="cs224n-u03">U03 · Neural fundamentals and depend</a></li>
+<li><a href="../keys/u03_answers.html" data-page="cs224n-u03-answers">U03 · Answers</a></li>
+<li><a href="../lessons/u04_lm_recurrence.html" data-page="cs224n-u04">U04 · Language models and recurrence</a></li>
+<li><a href="../keys/u04_answers.html" data-page="cs224n-u04-answers">U04 · Answers</a></li>
+<li><a href="../lessons/u05_attention_transformer.html" data-page="cs224n-u05">U05 · Attention and transformers</a></li>
+<li><a href="../keys/u05_answers.html" data-page="cs224n-u05-answers">U05 · Answers</a></li>
+<li><a href="../lessons/u06_pretraining_scaling.html" data-page="cs224n-u06" class="active">U06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../keys/u06_answers.html" data-page="cs224n-u06-answers">U06 · Answers</a></li>
+<li><a href="../lessons/u07_posttraining.html" data-page="cs224n-u07">U07 · Post-training and preferences</a></li>
+<li><a href="../keys/u07_answers.html" data-page="cs224n-u07-answers">U07 · Answers</a></li>
+<li><a href="../lessons/u08_prompting_peft.html" data-page="cs224n-u08">U08 · Prompting and efficient adapta</a></li>
+<li><a href="../keys/u08_answers.html" data-page="cs224n-u08-answers">U08 · Answers</a></li>
+<li><a href="../lessons/u09_tools_agents_retrieval.html" data-page="cs224n-u09">U09 · Tools, agents, and retrieval</a></li>
+<li><a href="../keys/u09_answers.html" data-page="cs224n-u09-answers">U09 · Answers</a></li>
+<li><a href="../lessons/u10_benchmarking_methodology.html" data-page="cs224n-u10">U10 · Benchmarking and research meth</a></li>
+<li><a href="../keys/u10_answers.html" data-page="cs224n-u10-answers">U10 · Answers</a></li>
+<li><a href="../labs/u01_lab.html" data-page="cs224n-lab-u01">Lab 01 · NLP history, tasks, and data</a></li>
+<li><a href="../lessons/u11_reasoning_testtime.html" data-page="cs224n-u11">U11 · Reasoning and test-time comput</a></li>
+<li><a href="../labs/u01_lab_key.html" data-page="cs224n-lab-u01-keys">Lab 01 · Keys</a></li>
+<li><a href="../keys/u11_answers.html" data-page="cs224n-u11-answers">U11 · Answers</a></li>
+<li><a href="../labs/u02_lab.html" data-page="cs224n-lab-u02">Lab 02 · Word vectors and cooccurrence</a></li>
+<li><a href="../lessons/u12_tokenization_multilingual.html" data-page="cs224n-u12">U12 · Tokenization and multilinguali</a></li>
+<li><a href="../labs/u02_lab_key.html" data-page="cs224n-lab-u02-keys">Lab 02 · Keys</a></li>
+<li><a href="../keys/u12_answers.html" data-page="cs224n-u12-answers">U12 · Answers</a></li>
+<li><a href="../labs/u03_lab.html" data-page="cs224n-lab-u03">Lab 03 · Neural fundamentals and depend</a></li>
+<li><a href="../lessons/u13_interpretability_impacts.html" data-page="cs224n-u13">U13 · Interpretability and social im</a></li>
+<li><a href="../labs/u03_lab_key.html" data-page="cs224n-lab-u03-keys">Lab 03 · Keys</a></li>
+<li><a href="../keys/u13_answers.html" data-page="cs224n-u13-answers">U13 · Answers</a></li>
+<li><a href="../labs/u04_lab.html" data-page="cs224n-lab-u04">Lab 04 · Language models and recurrence</a></li>
+<li><a href="../lessons/u14_multimodality_guest.html" data-page="cs224n-u14">U14 · Multimodality and guest resear</a></li>
+<li><a href="../labs/u04_lab_key.html" data-page="cs224n-lab-u04-keys">Lab 04 · Keys</a></li>
+<li><a href="../keys/u14_answers.html" data-page="cs224n-u14-answers">U14 · Answers</a></li>
+<li><a href="../labs/u05_lab.html" data-page="cs224n-lab-u05">Lab 05 · Attention and transformers</a></li>
+<li><a href="../lessons/u15_projects_open_questions.html" data-page="cs224n-u15">U15 · Project tutorials and open que</a></li>
+<li><a href="../labs/u05_lab_key.html" data-page="cs224n-lab-u05-keys">Lab 05 · Keys</a></li>
+<li><a href="../keys/u15_answers.html" data-page="cs224n-u15-answers">U15 · Answers</a></li>
+<li><a href="../labs/u06_lab.html" data-page="cs224n-lab-u06">Lab 06 · Pretraining, scaling, systems,</a></li>
+<li><a href="../labs/u06_lab_key.html" data-page="cs224n-lab-u06-keys">Lab 06 · Keys</a></li>
+<li><a href="../labs/u07_lab.html" data-page="cs224n-lab-u07">Lab 07 · Post-training and preferences</a></li>
+<li><a href="../labs/u07_lab_key.html" data-page="cs224n-lab-u07-keys">Lab 07 · Keys</a></li>
+<li><a href="../labs/u08_lab.html" data-page="cs224n-lab-u08">Lab 08 · Prompting and efficient adapta</a></li>
+<li><a href="../labs/u08_lab_key.html" data-page="cs224n-lab-u08-keys">Lab 08 · Keys</a></li>
+<li><a href="../labs/u09_lab.html" data-page="cs224n-lab-u09">Lab 09 · Tools, agents, and retrieval</a></li>
+<li><a href="../labs/u09_lab_key.html" data-page="cs224n-lab-u09-keys">Lab 09 · Keys</a></li>
+<li><a href="../labs/u10_lab.html" data-page="cs224n-lab-u10">Lab 10 · Benchmarking and research meth</a></li>
+<li><a href="../labs/u10_lab_key.html" data-page="cs224n-lab-u10-keys">Lab 10 · Keys</a></li>
+<li><a href="../interview/u01_questions.html" data-page="cs224n-int-u01">Interview · U01</a></li>
+<li><a href="../labs/u11_lab.html" data-page="cs224n-lab-u11">Lab 11 · Reasoning and test-time comput</a></li>
+<li><a href="../interview/u01_key.html" data-page="cs224n-int-u01-keys">Interview · U01 keys</a></li>
+<li><a href="../labs/u11_lab_key.html" data-page="cs224n-lab-u11-keys">Lab 11 · Keys</a></li>
+<li><a href="../interview/u02_questions.html" data-page="cs224n-int-u02">Interview · U02</a></li>
+<li><a href="../labs/u12_lab.html" data-page="cs224n-lab-u12">Lab 12 · Tokenization and multilinguali</a></li>
+<li><a href="../interview/u02_key.html" data-page="cs224n-int-u02-keys">Interview · U02 keys</a></li>
+<li><a href="../labs/u12_lab_key.html" data-page="cs224n-lab-u12-keys">Lab 12 · Keys</a></li>
+<li><a href="../interview/u03_questions.html" data-page="cs224n-int-u03">Interview · U03</a></li>
+<li><a href="../labs/u13_lab.html" data-page="cs224n-lab-u13">Lab 13 · Interpretability and social im</a></li>
+<li><a href="../interview/u03_key.html" data-page="cs224n-int-u03-keys">Interview · U03 keys</a></li>
+<li><a href="../labs/u13_lab_key.html" data-page="cs224n-lab-u13-keys">Lab 13 · Keys</a></li>
+<li><a href="../interview/u04_questions.html" data-page="cs224n-int-u04">Interview · U04</a></li>
+<li><a href="../labs/u14_lab.html" data-page="cs224n-lab-u14">Lab 14 · Multimodality and guest resear</a></li>
+<li><a href="../interview/u04_key.html" data-page="cs224n-int-u04-keys">Interview · U04 keys</a></li>
+<li><a href="../labs/u14_lab_key.html" data-page="cs224n-lab-u14-keys">Lab 14 · Keys</a></li>
+<li><a href="../interview/u05_questions.html" data-page="cs224n-int-u05">Interview · U05</a></li>
+<li><a href="../labs/u15_lab.html" data-page="cs224n-lab-u15">Lab 15 · Project tutorials and open que</a></li>
+<li><a href="../interview/u05_key.html" data-page="cs224n-int-u05-keys">Interview · U05 keys</a></li>
+<li><a href="../labs/u15_lab_key.html" data-page="cs224n-lab-u15-keys">Lab 15 · Keys</a></li>
+<li><a href="../interview/u06_questions.html" data-page="cs224n-int-u06">Interview · U06</a></li>
+<li><a href="../interview/u06_key.html" data-page="cs224n-int-u06-keys">Interview · U06 keys</a></li>
+<li><a href="../interview/u07_questions.html" data-page="cs224n-int-u07">Interview · U07</a></li>
+<li><a href="../interview/u07_key.html" data-page="cs224n-int-u07-keys">Interview · U07 keys</a></li>
+<li><a href="../interview/u08_questions.html" data-page="cs224n-int-u08">Interview · U08</a></li>
+<li><a href="../interview/u08_key.html" data-page="cs224n-int-u08-keys">Interview · U08 keys</a></li>
+<li><a href="../interview/u09_questions.html" data-page="cs224n-int-u09">Interview · U09</a></li>
+<li><a href="../interview/u09_key.html" data-page="cs224n-int-u09-keys">Interview · U09 keys</a></li>
+<li><a href="../interview/u10_questions.html" data-page="cs224n-int-u10">Interview · U10</a></li>
+<li><a href="../interview/u10_key.html" data-page="cs224n-int-u10-keys">Interview · U10 keys</a></li>
+<li><a href="../interview/u11_questions.html" data-page="cs224n-int-u11">Interview · U11</a></li>
+<li><a href="../interview/u11_key.html" data-page="cs224n-int-u11-keys">Interview · U11 keys</a></li>
+<li><a href="../interview/u12_questions.html" data-page="cs224n-int-u12">Interview · U12</a></li>
+<li><a href="../interview/u12_key.html" data-page="cs224n-int-u12-keys">Interview · U12 keys</a></li>
+<li><a href="../interview/u13_questions.html" data-page="cs224n-int-u13">Interview · U13</a></li>
+<li><a href="../interview/u13_key.html" data-page="cs224n-int-u13-keys">Interview · U13 keys</a></li>
+<li><a href="../interview/u14_questions.html" data-page="cs224n-int-u14">Interview · U14</a></li>
+<li><a href="../interview/u14_key.html" data-page="cs224n-int-u14-keys">Interview · U14 keys</a></li>
+<li><a href="../interview/u15_questions.html" data-page="cs224n-int-u15">Interview · U15</a></li>
+<li><a href="../interview/u15_key.html" data-page="cs224n-int-u15-keys">Interview · U15 keys</a></li>
+<li><a href="../interview/oral-defenses.html" data-page="cs224n-int-oral">Interview · Oral</a></li>
+<li><a href="../interview/keys-oral.html" data-page="cs224n-int-oral-keys">Interview · Oral keys</a></li>
+<li><a href="../interview/transfer-sets.html" data-page="cs224n-int-transfer">Interview · Transfer</a></li>
+<li><a href="../interview/keys-transfer.html" data-page="cs224n-int-transfer-keys">Interview · Transfer keys</a></li>
+<li><a href="../capstones/capstone_a_report.html" data-page="cs224n-cap-research">Capstone · Research</a></li>
+<li><a href="../capstones/capstone_b_report.html" data-page="cs224n-cap-applied">Capstone · Applied</a></li>
+<li><a href="../keys/diagnostic_key.html" data-page="cs224n-diagnostic-keys">Diagnostic · Keys</a></li>
+</ul>
+  </nav>
+  <main class="content" id="main">
+    <article>
+      <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U06 · Pretraining, scaling, systems, data</nav>
+      <h1>U06 · Pretraining, scaling, systems, data</h1>
+      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u06-pretraining-scaling-systems-data">U06 , Pretraining, scaling, systems, data</h1>
+<h2 id="local-remediation">Local remediation</h2>
+<p>Bridges: <code>../shared/prerequisites/p10_ml_foundations.md</code> (P10, loss
+and optimization), <code>../shared/prerequisites/p14_transformer.md</code>
+(P14, the architecture), <code>../shared/prerequisites/p15_hardware.md</code>
+(P15, GPUs and memory). This unit is where the architecture meets
+the budget: data, compute, and memory decide what trains.</p>
+<p>R1. Cross-entropy on one token: -log p(true). p = 0.614 gives loss
+0.487. Pretraining losses are means of this number.
+R2. Expectation of masking: 15 percent of 512 is 76.8, about 77
+tokens per sequence carry the MLM loss. The rest are context.
+R3. Byte arithmetic: fp16 = 2 bytes per number, fp32 = 4. 1e9
+params in fp16 = 2 GB. Every memory claim in this unit is this
+multiplication.</p>
+<hr />
+<h3 id="c01-bertmasked-objectives">C01: BERT/masked objectives</h3>
+<p>Leaf id <code>cs224n-U06-C01</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+   pretraining sessions of the Winter 2026 schedule (S08-S09 per
+   <code>course_map.md</code>). Scope: masked language modeling. Objectives:
+   write the MLM procedure, compute one masked loss, state what the
+   bidirectionality buys. Depends on R1, R2, U05 C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the encoder sees the
+   whole sentence, how do you train it without letting it copy the
+   answer? Toy: mask &ldquo;sat&rdquo; in &ldquo;the cat sat on the mat&rdquo;, predict it
+   from both sides. Loss 0.487 at p(true) = 0.614.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Fill in the blank with both eyes open. 15
+   percent of tokens are masked (80 percent [MASK], 10 percent
+   random, 10 percent unchanged: the standard recipe), the model
+   predicts them from full bidirectional context. The loss touches
+   only masked positions.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Input (n, d)
+   with masks. Loss = mean over masked positions of -log p(true).
+   Of n = 512, ~77 positions train per pass. Assumption: masking is
+   random per epoch (different masks each pass, so all positions
+   train over time).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The 80/10/10 recipe: 80 percent
+   [MASK] (the task), 10 percent random token (robustness: do not
+   trust the mask token), 10 percent unchanged (robustness: the
+   model must still predict a visible word). Without the recipe the
+   model learns &ldquo;[MASK] means predict&rdquo;, a train-only artifact.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u06.py</code>: masked &ldquo;sat&rdquo;, loss
+   0.487, p(true) 0.614. <img alt="u06_fig01" src="../assets/u06_fig01.png" title="u06_fig01" /> draws the mask and
+   the prediction. The number is the lesson: one token, one loss.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>mask_batch(ids,
+   p=0.15)</code>: sample mask, apply 80/10/10, return masked ids and
+   targets. <code>mlm_loss(logits, targets, mask)</code>: masked mean CE.
+   ~15 lines. Test: ~15 percent masked, loss matches the toy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match loss 0.487.
+   Check: masking twice gives different masks (random per call).
+   Check: unmasked positions contribute exactly 0 to the loss.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Statistical cost: only 15 percent of tokens train per
+   pass (C02&rsquo;s comparison). Compute: same as the forward pass, the
+   masking is free. The bidirectionality is the product: full
+   context both ways.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    autoregressive (C02): all tokens train, one direction. Choose
+    MLM for understanding tasks (classification, extraction). Choose
+    AR for generation. The objective shapes the model more than the
+    architecture does.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the model sees [MASK] at test time too.&rdquo; Counterexample:
+    fine-tuning has no masks, a model trained on 100 percent [MASK]
+    faces a train/test skew. The 80/10/10 recipe exists because of
+    this failure.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train the toy MLM with 100 percent [MASK] vs 80/10/10
+    and compare a no-mask downstream probe. Predict: 80/10/10 wins.
+    Falsifier: tie (then the probe was too easy).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A1 (breadth), L1 (ladder:
+    write the recipe, compute the toy loss, derive the 80/10/10,
+    diagnose the skew, design the recipe ablation).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E1: implement
+    <code>mask_batch</code>, verify ~15 percent masked. E2: reproduce loss
+    0.487 on the toy. Keys in <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u06_fig01" src="../assets/u06_fig01.png" title="u06_fig01" />: mask before/after, Shell 3, source
+    original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c02-autoregressive-objectives">C02: autoregressive objectives</h3>
+<p>Leaf id <code>cs224n-U06-C02</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S08-S09.
+   Scope: next-token pretraining. Objectives: write the AR loss,
+   compare its signal to MLM, state why it won. Depends on C01 and
+   U04 C01.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: MLM trains on 15
+   percent of tokens, what trains on 100 percent? Toy: n = 512, AR
+   predicts all 512 next tokens, MLM predicts ~77 masked ones.
+   Ratio 6.74x more training signal per pass.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Read and predict, every step. The AR loss is
+   U04 C01&rsquo;s factorization at scale: P(w_t | prefix) for every t.
+   One direction, every token, no masks, no recipes. The simplicity
+   is the point: the objective scales without special cases.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Loss = mean
+   over t of -log P(w_t | w_&lt;t). n predictions per sequence of
+   length n. Assumption: causal mask on (U05 C04), the data is
+   plain text, no labels needed.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The chain rule again, now as a
+   pretraining objective: every prefix is a training example, every
+   token a label. The 6.74x is arithmetic (512/76), not a claim
+   about quality: AR sees more signal, MLM sees both directions.
+   The tradeoff is signal volume vs context richness.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u06.py</code>: n = 512, AR 512
+   training tokens, MLM 76, ratio 6.74x. The number frames the
+   choice, it does not settle it.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>ar_loss(logits,
+   ids)</code>: shift by one, CE over all positions. ~6 lines. Test: n
+   predictions for length n.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 512/76/6.74.
+   Check: position 1 has no prefix (usually skipped or handled).
+   Check: the loss equals U04&rsquo;s training loss on the same data.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Same compute as MLM per pass, 6.74x the signal. The
+   cost is directionality: no right context (the price of
+   generation-readiness).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    MLM (C01). Choose AR for generation and for scale (the modern
+    default). Choose MLM when bidirectional context matters more
+    than signal volume (small understanding models).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;more signal per pass means better models.&rdquo;
+    Counterexample: early AR models underperformed MLM on
+    understanding benchmarks at small scale, the signal advantage
+    shows at scale with the right data. Volume is not quality.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: pretrain tiny AR and MLM models at fixed FLOPs, probe
+    both directions. Predict: AR wins generation probes, MLM wins
+    fill-in probes. Falsifier: one wins both (then the probes were
+    mislabeled).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A2 (breadth), L2 (ladder:
+    write the loss, compute the ratio, derive the tradeoff,
+    diagnose the small-scale result, design the fixed-FLOP race).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E3: implement
+    <code>ar_loss</code>, verify n predictions. E4: compute the signal ratio
+    for n = 2048. Keys in <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a ratio (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c03-contextual-embeddings">C03: contextual embeddings</h3>
+<p>Leaf id <code>cs224n-U06-C03</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S08-S09.
+   Scope: what pretraining puts into the vectors. Objectives:
+   contrast static vs contextual, compute the toy, state the
+   consequence for U02&rsquo;s word vectors. Depends on C01, C02, U02.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: U02 gave &ldquo;bank&rdquo; one
+   vector, what does &ldquo;bank&rdquo; mean in &ldquo;river bank&rdquo; vs &ldquo;bank loan&rdquo;?
+   Toy: bank|river = (0.9, 0.2), bank|money = (0.2, 0.9),
+   bank|river2 = (0.85, 0.25). Same-sense cos 0.998, cross-sense
+   0.424.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> One word, many vectors. The transformer&rsquo;s
+   output at a position blends the word with its context (U05), so
+   the representation is word-in-context, not word-in-vocabulary.
+   Static embeddings (U02) are the special case with no context.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Token embedding
+   (static): (d,). Contextual: the layer output at the position:
+   (d,), a function of the whole sequence. Assumption: the toy
+   vectors are hand-set to show the geometry, not measured.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is U05&rsquo;s: attention
+   mixes positions, so position i&rsquo;s output depends on all
+   positions. Same input word + different context = different
+   output vector. The cosine gap (0.998 vs 0.424) is what
+   disambiguation looks like geometrically.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u06.py</code>: same-sense 0.998,
+   cross-sense 0.424. The numbers are the lesson: context moves the
+   vector more than the word identity does.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>contextual_cos(v1,
+   v2)</code>: cosine similarity, ~3 lines. Test: the two numbers.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 0.998/0.424.
+   Check: identical contexts give cos ~1. Check: the static
+   embedding would give cos = 1 for both (no disambiguation).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Contextual costs a forward pass per sentence (U02&rsquo;s
+   vectors are a lookup). The price of disambiguation is compute.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    static embeddings (U02): cheap, one vector per word. Choose
+    contextual when ambiguity matters (most tasks). Choose static
+    for cheap features at scale.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;contextual always beats static.&rdquo; Counterexample:
+    on tiny data, static embeddings with a simple model can win
+    (fewer parameters, less overfitting). Context is capacity, it
+    needs data.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: nearest-neighbor probe of &ldquo;bank&rdquo; vectors across
+    senses in a trained model. Predict: neighbors split by sense.
+    Falsifier: mixed neighbors (then the layer is too shallow,
+    check depth).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A3 (breadth), L3 (ladder:
+    define both, compute the cosines, derive the mixing,
+    diagnose the tiny-data result, design the neighbor probe).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E5: implement the
+    cosine check, match both numbers. E6: show a static embedding
+    gives cos = 1 across senses. Keys in <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a cosine pair (carried in text). Logged as an honest exception
+    in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c04-corpus-curation">C04: corpus curation</h3>
+<p>Leaf id <code>cs224n-U06-C04</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S08-S09.
+   Scope: what the model reads. Objectives: list the curation steps,
+   compute the dedup toy, state why data beats architecture at
+   scale. Depends on P10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the web is 100 TB of
+   mixed quality, what survives into training? Toy: 6 docs, 3 exact
+   duplicates, 3 unique. Dedup by hash: keep one copy. The pipeline:
+   filter, dedup, mix, decontaminate.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The corpus is the curriculum. Filtering removes
+   boilerplate and toxicity (classifiers, heuristics). Dedup removes
+   repeats (exact hash, near-dup MinHash). Mixing sets domain ratios.
+   Decontamination removes test-set overlap (C08). Each step is a
+   judgment call with a measurable effect.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Documents with
+   hashes, duplicate sets, domain weights summing to 1. Assumption:
+   the toy uses exact-match hashing (real pipelines add fuzzy
+   matching).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Why dedup matters: duplicates get
+   memorized (the model sees them k times, gradient k times),
+   memorization wastes capacity and leaks (C08). Hash the normalized
+   text, keep first occurrence. Near-dup: MinHash/LSH on shingles.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u06.py</code>: 6 docs, 3 exact
+   duplicates, 3 unique. Half the toy corpus was waste. At scale
+   the fractions are smaller but the mechanism is identical.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>dedup(docs)</code>:
+   hash, keep first, count drops. ~8 lines. Test: 6 -&gt; 3.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 3 unique.
+   Check: order preserved (first occurrence kept). Check: the
+   dropped docs are exactly the repeats.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Dedup is O(corpus) hashing: cheap once, saves training
+   FLOPs forever. The cost is recall: aggressive filters drop good
+   data (the precision/recall of curation itself).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    train on raw web: cheaper pipeline, worse model, memorization
+    risk. Choose curation always (the standard). The question is
+    how aggressive, not whether.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;more data is always better.&rdquo; Counterexample:
+    adding low-quality or duplicated data at fixed compute hurts
+    (it displaces good tokens). Quality per FLOP beats bytes.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: train tiny models on deduped vs raw toy corpora at
+    fixed FLOPs. Predict: deduped wins on held-out. Falsifier: raw
+    wins (then the filter dropped good data, check it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A4 (breadth: name the
+    four steps and what each removes).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E7: implement
+    <code>dedup</code>, match 3 unique. E8: argue the memorization mechanism
+    in two sentences. Keys in <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a count (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c05-tokendatamodel-compute">C05: token/data/model compute</h3>
+<p>Leaf id <code>cs224n-U06-C05</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S08-S09.
+   Scope: the compute budget. Objectives: write C = 6ND, compute
+   the toy, derive the 20:1 ratio&rsquo;s meaning. Depends on R3, U05 C10.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: you have 1e18 FLOPs,
+   how big a model on how much data? Toy: N = 1e8 params, D = 2e9
+   tokens, C = 6 x 1e8 x 2e9 = 1.20e18 FLOPs. Tokens per param: 20.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> One budget, two dials. C = 6ND: 6 FLOPs per
+   param per token (2 forward, 4 backward, the standard estimate).
+   Spend on N (bigger model) or D (more data). The 20:1 finding:
+   at fixed C, loss is minimized near D/N = 20 (the
+   compute-optimal ratio from the scaling literature).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> N: parameters.
+   D: training tokens. C: FLOPs = 6ND. Units: multiply-adds.
+   Assumption: dense transformer, the 6x factor is the standard
+   estimate (stated, not derived here).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Forward: ~2ND (one multiply-add per
+   param per token, x2). Backward: ~4ND (gradients for activations
+   and params). Total 6ND. The ratio result comes from fitting loss
+   as a function of N and D and minimizing at fixed C: the
+   empirical optimum sits near 20 tokens per param.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u06.py</code>: 1.20e18 FLOPs,
+   20.0 tokens/param. Double the model at fixed C: D halves to 1e9
+   (10:1, undertrained data). Double the data: N halves (overtrained
+   small model). The ratio is the balance point.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>budget(N, D)</code>:
+   return 6<em>N</em>D and D/N. ~3 lines. Test: the toy numbers.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 1.20e18 and
+   20.0. Check: N=2e8, D=1e9 gives the same C (the tradeoff is
+   exact in the formula).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> The formula is free, the FLOPs are not. Practical cost:
+   most published models are undertrained by this ratio (bigger N
+   than 20:1 allows) because inference favors big models on fewer
+   tokens (a deployment tradeoff, stated).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    Kaplan-style (bigger models, less data): the older optimum.
+    Choose 20:1 for training efficiency. Choose larger N when
+    inference cost dominates the lifetime bill (the deployment
+    argument).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the ratio is a law of nature.&rdquo; Counterexample:
+    it is a fit to specific data and architectures, new data mixes
+    or architectures shift it. Treat it as a starting point, then
+    fit your own (C06).</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: two runs at fixed C, ratios 10:1 and 40:1, same data
+    mix. Predict: 20:1 beats both (interpolate). Falsifier: 40:1
+    wins (then the data quality favored it, note it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A5 (breadth), L5 (ladder:
+    write the formula, compute the toy, derive the tradeoff,
+    diagnose the deployment choice, design the ratio test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E9: implement
+    <code>budget</code>, match the toy. E10: find N, D at C = 1e21 and 20:1.
+    Keys in <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a budget (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c06-scaling-assumptions">C06: scaling assumptions</h3>
+<p>Leaf id <code>cs224n-U06-C06</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S08-S09.
+   Scope: what scaling laws assume. Objectives: write the power-law
+   form, compute the doubling effect, list what breaks the law.
+   Depends on C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: loss falls smoothly
+   with size, what is the functional form, and when does it lie?
+   Toy: L = 10 N^{-0.05}. Doubling N multiplies loss by 0.9659: a
+   3.4 percent cut per doubling. Smooth, slow, predictable.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> A ruler, not a crystal ball. Power laws fit
+   loss vs N, D, C on a log-log line within the fitted range. They
+   predict the next point, not the next paradigm. Extrapolation
+   past the data, new architectures, and data exhaustion all break
+   the fit.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> L(N) = a
+   N^{-b}: a sets the level, b the slope (0.05 here, illustrative).
+   Assumption: the fit range covers the prediction, the data
+   distribution is fixed, the architecture is fixed.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is empirical: fit log L
+   = log a - b log N by least squares on runs at several N. The
+   doubling ratio 2^{-b} follows directly. There is no first-principles
+   derivation, the honesty is in the residuals and the range.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u06.py</code>: N = 1e8 -&gt; 3.9811,
+   2e8 -&gt; 3.8455, 4e8 -&gt; 3.7145, 8e8 -&gt; 3.5879. Doubling ratio
+   0.9659. <img alt="u06_fig02" src="../assets/u06_fig02.png" title="u06_fig02" /> draws the line (labeled
+   illustrative functional form).</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>power_law(N, a, b)</code>:
+   return a * N^-b. ~2 lines. Test: the four values.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match all four.
+   Check: ratio of consecutive values = 0.9659. Check: log-log is
+   straight (the definition of the form).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Fitting costs a few small runs (the point: predict big
+   from small). The practical cost of believing the fit too far: a
+   10x extrapolation that misses.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    no law (guess): worse. Choose power-law fits for planning
+    within 10x of the data. Beyond that, run the experiment.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the law holds forever.&rdquo; Counterexample: data
+    exhaustion (repeating tokens breaks the D scaling), architecture
+    changes (the a and b refit), and emergent jumps at the task
+    level (loss is smooth, capabilities are not). The law is about
+    loss, not about what the model can do.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: fit b on N in {1e8, 2e8}, predict 8e8, compare.
+    Predict: within a few percent. Falsifier: far off (then the
+    range was too narrow or the data changed).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A6 (breadth), L6 (ladder:
+    write the form, compute the ratio, derive 2^{-b}, diagnose the
+    miss, design the fit-predict test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E11: implement
+    <code>power_law</code>, match the four values. E12: fit b from the first
+    two points, predict the fourth. Keys in <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u06_fig02" src="../assets/u06_fig02.png" title="u06_fig02" />: the illustrative form, Shell 3, source
+    original toy. Audit row in <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c07-batchdistribution">C07: batch/distribution</h3>
+<p>Leaf id <code>cs224n-U06-C07</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S08-S09.
+   Scope: how big runs actually train. Objectives: explain batch
+   scaling, compute the allreduce bytes, state the memory limit.
+   Depends on P15, C05.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: one GPU holds 1B
+   params but not the batch, how do 8 GPUs train one model? Toy:
+   data-parallel, batch split 8 ways, gradients averaged via ring
+   allreduce: 1.75 GB per step for a 1 GB model on 8 GPUs.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Split the data, share the model. Each GPU runs
+   its shard, computes gradients, then allreduce averages them so
+   every GPU takes the same step. The communication is the tax:
+   2(p-1)/p x size per step, independent of the batch.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> p workers,
+   model size S bytes. Ring allreduce: 2(p-1)/p x S bytes moved per
+   worker per step. Gradient noise variance falls as 1/batch (the
+   toy: 1.026 -&gt; 0.0299 at batch 32, ratio 34.3).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> Ring allreduce: p-1 scatter-reduce
+   rounds + p-1 allgather rounds, each moving S/p: total 2(p-1)S/p.
+   Approaches 2S as p grows: the tax is bounded. Batch scaling:
+   bigger batches, less noise, larger stable step (up to the
+   critical batch size, then returns diminish).</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u06.py</code>: p = 8, S = 1 GB -&gt;
+   1.75 GB/step. Noise: single-sample var 1.026, batch-32 0.0299.
+   The tax is per step, the noise cut is per batch.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>allreduce_bytes(p,
+   S)</code>: 2<em>(p-1)/p</em>S. ~2 lines. Test: 1.75 GB.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 1.75 GB.
+   Check: p = 1 gives 0 (no communication). Check: large p
+   approaches 2S.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Communication overlaps with compute (pipelined), the
+   limit is interconnect bandwidth. Memory per GPU: full model +
+   shard of batch (data-parallel replicates the model, FSDP shards
+   it, the U06 systems extension).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    model-parallel (split the model): for models bigger than one
+    GPU. Choose data-parallel when the model fits one GPU. Combine
+    both at scale (the standard 3-D parallelism, named here).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;more GPUs = proportionally faster.&rdquo; Counterexample:
+    the 1.75 GB tax per step at fixed batch: small batches make
+    communication dominate. Scale the batch with p, or the speedup
+    stalls.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: measure step time vs p at fixed total batch. Predict:
+    sublinear speedup, the gap explained by the allreduce bytes /
+    bandwidth. Falsifier: superlinear (then the baseline was
+    memory-bound, note it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A7 (breadth), L7 (ladder:
+    write the tax, compute 1.75 GB, derive 2S limit, diagnose the
+    stall, design the scaling measurement).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E13: implement
+    <code>allreduce_bytes</code>, match 1.75. E14: at what p does the tax pass
+    1.9 GB for S = 1 GB. Keys in <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a tax (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c08-leakage">C08: leakage</h3>
+<p>Leaf id <code>cs224n-U06-C08</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S08-S09.
+   Scope: contamination. Objectives: define leakage, explain
+   decontamination, state the consequence of skipping it. Depends
+   on C04.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the test set is on the
+   web, the training set is the web. What happens? Toy: a benchmark
+   question appears verbatim in training. The model memorizes the
+   answer, the benchmark measures recall, not ability.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The exam leaked. Decontamination: n-gram
+   overlap between train and test, drop or flag matches. The
+   discipline: decide the rule before training, publish it with the
+   model card (C10). Post-hoc excuses do not count.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Test items,
+   training docs, overlap threshold (e.g. 13-gram match). Assumption:
+   verbatim or near-verbatim overlap is the detectable case,
+   paraphrased leakage is harder (stated limit).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the mechanism is
+   memorization (C04&rsquo;s duplicates argument, stronger). A leaked
+   item gets gradient updates toward its answer, at test time the
+   model retrieves. The score inflates by the leaked fraction
+   times the memorization rate.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): 1000 test
+   items, 50 leaked verbatim, model memorizes all 50, gets 400 of
+   the rest right. Reported: 450/1000 = 45 percent. Clean: 400/950
+   = 42.1 percent. The leak bought 2.9 points.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>contaminated(test,
+   train, n=13)</code>: n-gram set overlap, return flagged items. ~10
+   lines. Test: flags the toy leak.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Flags the planted
+   leak. Check: no flags on disjoint sets. Check: the threshold
+   trades recall for precision (report both).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> O(test x train) naive, indexed in practice. The cost is
+   paid once, before training. Skipping it invalidates every
+   benchmark number after.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    private held-out tests (never on the web): the gold standard.
+    Choose decontamination as the minimum. Choose private tests
+    when the claim matters (capabilities, safety).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;our data is too big to contain the test.&rdquo; Counterexample:
+    benchmark text is duplicated across the web (papers, blogs,
+    GitHub), big data contains more copies, not fewer. Scale
+    increases the risk.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: plant canaries (unique strings) in training, test
+    recall. Predict: verbatim canaries are recalled. Falsifier: not
+    recalled (then memorization was weaker than assumed here).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A8 (breadth: define,
+    detect, disclose).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E15: implement
+    <code>contaminated</code>, flag the toy leak. E16: compute the inflated vs
+    clean scores. Keys in <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a score gap (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c09-transfer">C09: transfer</h3>
+<p>Leaf id <code>cs224n-U06-C09</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S08-S09.
+   Scope: why pretraining helps downstream. Objectives: explain the
+   transfer mechanism, state when it fails, name the probe that
+   tests it. Depends on C01-C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the model read the
+   web, now it must classify medical notes with 500 labels. Why
+   does the web help? Toy: the pretrained vectors already separate
+   senses (C03: 0.998 vs 0.424), the classifier learns a boundary
+   on good features instead of from scratch.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Pretraining builds the workshop, fine-tuning
+   builds the furniture. The lower layers learn reusable features
+   (syntax, word sense), the task head learns the decision. Transfer
+   works when the features overlap the task, it fails on
+   distribution shift (the honest boundary).</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Pretrained
+   body + task head. Probe: freeze the body, train a linear head
+   (measures feature quality). Fine-tune: train all (measures
+   adaptability). Assumption: enough task data to fit the head
+   without destroying the body.</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No new math: the mechanism is
+   feature reuse. The probe/fine-tune gap diagnoses it: probe close
+   to fine-tune means the features did the work, a big gap means
+   the task needed the body to change.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): sense probe
+   on frozen vectors: 92 percent (the 0.998/0.424 geometry). Random
+   vectors: 55 percent. The gap is the transfer, measured.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>linear_probe(X, y)</code>:
+   fit a linear classifier on frozen features, report accuracy.
+   ~10 lines. Test: the toy gap.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Probe 92 percent vs
+   55 percent baseline. Check: shuffling labels gives chance
+   (the probe is honest). Check: fine-tune &gt;= probe (adaptability
+   adds, rarely subtracts).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Probing is cheap (linear). Fine-tuning costs the full
+   backward pass. The practical rule: probe first (diagnosis),
+   fine-tune second (performance).</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    train from scratch: wins only with abundant task data and no
+    relevant pretraining. Choose transfer as the default. Choose
+    scratch when the domain is alien (the features do not apply).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;pretraining always helps.&rdquo; Counterexample:
+    negative transfer: pretraining on the wrong domain can hurt
+    (the body must unlearn). Check with the probe before
+    committing to fine-tuning.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: probe vs fine-tune vs scratch on the sense task.
+    Predict: fine-tune &gt;= probe &gt; scratch. Falsifier: scratch wins
+    (then the pretraining domain was alien, note it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A9 (breadth: define
+    probe vs fine-tune and what the gap means).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E17: implement
+    <code>linear_probe</code>, reproduce the toy gap. E18: state the negative
+    transfer check. Keys in <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a gap (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c10-model-cards">C10: model cards</h3>
+<p>Leaf id <code>cs224n-U06-C10</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S08-S09.
+   Scope: documentation as a deliverable. Objectives: list what a
+   card must contain, explain why each item matters, write a toy
+   card. Depends on C04, C08.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: you download weights,
+   what do you need to know before trusting them? Toy card: data
+   (what, deduped how, decontaminated against what), training
+   (objective, C = 6ND, steps), eval (which benchmarks, which are
+   clean), limits (languages, known failures), intended use.</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> The card is the model&rsquo;s passport. Data
+   provenance, training recipe, evaluation scope, and known limits,
+   in one place. A model without a card is an unlabeled chemical:
+   usable, but you own the risk.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Sections:
+   identity, data, training, evaluation, limitations, use. Each with
+   facts, not adjectives. Assumption: the card is written by the
+   trainers (only they know the data).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> No math: the mechanism is
+   accountability. The card forces the decisions (C04&rsquo;s mix, C08&rsquo;s
+   rule) into writing, where they can be checked. Undocumented
+   choices are uncheckable choices.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy card (hand, labeled as such): &ldquo;toy-1e8:
+   AR objective, N = 1e8, D = 2e9, C = 1.20e18. Data: web mix,
+   exact-deduped, decontaminated vs bench-X (13-gram). Eval:
+   perplexity 3.59 held-out (clean). Limits: English only, no
+   math. Use: research.&rdquo; Every number traceable to this unit.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>card_template()</code>:
+   return the section list with prompts. ~10 lines. The lab fills
+   it for the toy.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> All six sections
+   present, numbers match the unit&rsquo;s toys. Check: no section says
+   &ldquo;various&rdquo; (facts only).</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Writing the card costs an hour, the cost of skipping it
+   is paid by every downstream user who guesses.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    no card: faster release, hidden risk. Choose the card always
+    (the professional standard). This is not a tradeoff.</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;the paper covers it.&rdquo; Counterexample: papers
+    describe the idea, cards describe the artifact (the exact data
+    mix, the exact eval). Different documents, both needed.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: audit three public models for the six sections.
+    Predict: most miss decontamination details. Falsifier: all
+    complete (then the ecosystem improved, good).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A10 (breadth: recite the
+    six sections).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E19: fill the template
+    for the toy model. E20: find one missing section in a real
+    public card (cite it). Keys in <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a template (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c11-pretraining-evaluation">C11: pretraining evaluation</h3>
+<p>Leaf id <code>cs224n-U06-C11</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to S08-S09.
+   Scope: knowing whether pretraining worked. Objectives: list the
+   eval levels, explain what perplexity does and does not say,
+   state the decontamination requirement. Depends on C08, U04 C03.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: the loss fell to 3.59,
+   is the model good? Toy: perplexity = exp(mean NLL), the number
+   measures fit to the held-out distribution, not ability. Probes and
+   benchmarks measure ability, both need clean data (C08).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Three levels. Intrinsic: held-out perplexity
+   (did it learn the distribution). Probes: linear heads on frozen
+   features (what is in the representations). Benchmarks: task
+   scores (what it can do). Each level answers a different
+   question, none substitutes for the others.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Held-out set
+   (disjoint, decontaminated). Perplexity: exp(mean NLL). Probe
+   accuracy. Benchmark scores with contamination flags. Assumption:
+   the held-out set matches the training distribution (else the
+   number is meaningless).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> The mechanism is U04 C03&rsquo;s, at scale:
+   perplexity is per-token fit. The gap: a memorizer gets low
+   perplexity on leaked data (C08&rsquo;s 2.9 points). Clean eval is the
+   prerequisite, not the garnish.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> Toy (hand, labeled as such): train NLL
+   3.40 (ppl 30.0), held-out NLL 3.59 (ppl 36.2), leaked-held-out
+   NLL 3.10 (ppl 22.2). The leak looks like a win, it is fraud.
+   Report all three or report nothing.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>eval_report(train,
+   heldout, leaked)</code>: perplexities and the contamination flag. ~8
+   lines. Test: the three numbers.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 30.0/36.2/22.2.
+   Check: leaked &lt; held-out always (memorization helps recall).
+   Check: the flag is set on the leaked number.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Eval is a forward pass over the held-out set: cheap
+   next to the pretraining run. The cost is discipline: separate, clean,
+   fixed-before-training eval sets.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    train-set eval only: worthless (memorization). Choose the three
+    levels. Choose private benchmarks when the claim is
+    capabilities (C08).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;low perplexity means a good model.&rdquo; Counterexample:
+    the toy: 22.2 (leaked) &lt; 30.0 (train). Perplexity without
+    provenance is a number without meaning.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: correlate perplexity with probe accuracy across
+    checkpoints. Predict: correlated but imperfect (the gap is the
+    interesting part). Falsifier: perfect correlation (then the
+    probes added nothing, simplify).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A11 (breadth), L11
+    (ladder: name the levels, compute the toy, derive the fraud,
+    diagnose the 22.2, design the correlation test).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E21: implement
+    <code>eval_report</code>, match the three perplexities. E22: explain why
+    the leaked number must carry a flag. Keys in <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim is
+    a triplet (carried in text). Logged as an honest exception in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h3 id="c12-systems-bridge">C12: systems bridge</h3>
+<p>Leaf id <code>cs224n-U06-C12</code>. Claim class REQUESTED-BRANCH.
+Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<ol>
+<li>
+<p><strong>Source mapping, scope, objectives, dependencies.</strong> The unit&rsquo;s
+   handoff to systems. Scope: training at scale as a systems
+   problem. Objectives: stack the memory (C07&rsquo;s numbers), name the
+   parallelisms, state the inference handoff. Depends on C05, C07,
+   U05 C11.</p>
+</li>
+<li>
+<p><strong>Motivating question and toy.</strong> Question: 1B params need 12 GB
+   to train (fig03) but the GPU has 40 GB, what breaks first at
+   100B? Toy: 100B params: weights 200 GB, grads 200 GB, Adam 800
+   GB = 1.2 TB. No single GPU holds it: shard the model (FSDP),
+   shard the batch (data-parallel), split layers (pipeline).</p>
+</li>
+<li>
+<p><strong>Mental model.</strong> Three axes of splitting. Data-parallel: split
+   the batch (C07). Tensor-parallel: split layers across GPUs.
+   Pipeline-parallel: split layers along depth. FSDP: shard
+   weights, grads, and optimizer states, gather on demand. The
+   art is the combination: 3-D parallelism.</p>
+</li>
+<li>
+<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Memory per GPU
+   = (model + grads + states + activations) / shards. Communication:
+   allreduce (C07) + allgather (FSDP) + point-to-point (pipeline).
+   Assumption: the toy arithmetic scales linearly (it does, to
+   first order).</p>
+</li>
+<li>
+<p><strong>Derivation / mechanism.</strong> FSDP: each GPU holds 1/p of each
+   tensor, before a layer&rsquo;s compute, allgather the full weights
+   (communication 1.5x per step vs data-parallel&rsquo;s allreduce).
+   Activations: recompute (trading compute for memory) or shard.
+   The mechanism is always the same: move bytes to save memory.</p>
+</li>
+<li>
+<p><strong>Computed example.</strong> From <code>compute_u06.py</code> fig03: 1B params =
+   12 GB (2 + 2 + 8). Scaled by hand to 100B: 1.2 TB. With FSDP
+   across 32 GPUs: 37.5 GB each (plus activations). The arithmetic
+   is the lesson.</p>
+</li>
+<li>
+<p><strong>Algorithm and reference implementation.</strong> <code>shard_memory(total,
+   p)</code>: per-GPU bytes. ~3 lines. Test: 1.2 TB / 32 = 37.5 GB.</p>
+</li>
+<li>
+<p><strong>Correctness checks and expected output.</strong> Match 37.5 GB.
+   Check: p = 1 recovers 1.2 TB. Check: the sum across GPUs
+   equals the total.</p>
+</li>
+<li>
+<p><strong>Complexity, memory, statistical efficiency, stability, practical
+   costs.</strong> Communication grows with sharding, the limit is
+   interconnect. The handoff: training systems (this concept) vs
+   inference systems (U05 C11&rsquo;s cache, U07&rsquo;s serving): different
+   bottlenecks, different tricks.</p>
+</li>
+<li>
+<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+    bigger GPUs: simpler, capped by hardware. Choose parallelism
+    past one GPU&rsquo;s memory. Choose FSDP as the default sharding
+    (the modern standard).</p>
+</li>
+<li>
+<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+    assumption: &ldquo;sharding is free.&rdquo; Counterexample: FSDP&rsquo;s
+    allgather adds communication per layer, at small models it can
+    be slower than data-parallel. Shard only what does not fit.</p>
+</li>
+<li>
+<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+    extension: time data-parallel vs FSDP on a model that fits one
+    GPU. Predict: data-parallel wins (less communication).
+    Falsifier: FSDP wins (then the measurement included something
+    else, check it).</p>
+</li>
+<li>
+<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+    Assessment block: <code>keys/u06_answers.md</code> A12 (breadth: name the
+    three axes and what each splits).</p>
+</li>
+<li>
+<p><strong>Lab/exercises with answers separated.</strong> E23: implement
+    <code>shard_memory</code>, match 37.5 GB. E24: write the one-paragraph
+    handoff from training systems to inference systems. Keys in
+    <code>keys/u06_answers.md</code>.</p>
+</li>
+<li>
+<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+    <img alt="u06_fig03" src="../assets/u06_fig03.png" title="u06_fig03" /> is reused as the unit&rsquo;s closing image:
+    the memory stack is the systems problem. Logged in
+    <code>visual_audit.md</code>.</p>
+</li>
+</ol>
+<hr />
+<h2 id="unit-visual-map">Unit visual map</h2>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th>Claim</th>
+<th>Shell</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img alt="u06_fig01" src="../assets/u06_fig01.png" title="u06_fig01" /></td>
+<td>mask 15 percent, predict masked</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u06_fig02" src="../assets/u06_fig02.png" title="u06_fig02" /></td>
+<td>power-law form, doubling cuts 3.4 percent</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+<tr>
+<td><img alt="u06_fig03" src="../assets/u06_fig03.png" title="u06_fig03" /></td>
+<td>Adam states dominate training memory</td>
+<td>3</td>
+<td>original toy</td>
+</tr>
+</tbody>
+</table>
+      
+      <nav class="pager"><a href="../keys/u05_answers.html"><span class="lbl">← Previous</span>U05 · Answers</a><a href="../keys/u06_answers.html"><span class="lbl">Next →</span>U06 · Answers</a></nav>
+    </article>
+    <footer class="pagefoot">
+      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+    </footer>
+  </main>
+</div>
+<script src="../assets/vendor/katex.min.js"></script>
+<script src="../assets/vendor/mermaid.min.js"></script>
+<script>window.SITE_ROOT = "../";</script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U05 · Preference optimization: Interactive companion</title>
+<style>
+:root{--ink:#1c1a17}
+:root{--paper:#faf7f0}
+:root{--paper2:#f3eee2}
+:root{--line:#ddd3bd}
+:root{--muted:#7a7160}
+:root{--clay:#b3541e}
+:root{--indigo:#2f4b8f}
+:root{--indigosoft:#e8edfb}
+:root{--sage:#4f7a52}
+:root{--sagesoft:#e6f0e6}
+:root{--amber:#a97b12}
+:root{--serif:"Iowan Old Style",Georgia,"Times New Roman",serif}
+:root{--sans:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+:root{--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:19px}
+body{line-height:1.62}
+.wrap{max-width:860px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband{padding:10px 0}
+.topband .wrap{padding:0 24px}
+header.hero{padding:52px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+.kicker{margin:0 0 10px}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:0 0 14px}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{line-height:1.5}
+.dek{color:#3d382e}
+.dek{max-width:680px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll{max-width:860px}
+.navscroll{margin:0 auto}
+.navscroll{padding-left:24px}
+.navscroll{padding-right:24px}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-family:var(--sans)}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:26px 0}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+figcaption{font-size:16px}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+img.lessonfig{width:100%}
+img.lessonfig{border-radius:10px}
+img.lessonfig{border:1px solid var(--line)}
+img.lessonfig{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 60px}
+footer.prov{font-size:16px}
+footer.prov{color:#3d382e}
+footer.prov p{margin:.7em 0}
+.small{font-size:15px}
+.capleft{text-align:left}
+.capleft{padding-bottom:8px}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CME295 · Transformers and Large Language Models · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">Unit 05 · Preference optimization</p>
+<h1>The judge, the leash, and the lawyer</h1>
+<p class="dek">Twelve concepts turn imitation into preference: reward models, pairwise labels, the RLHF pipeline, policy ratios, the KL leash, advantages, PPO clipping, PPO variants, DPO, the reference model, optimization pathologies, and honest evaluation. Every number below comes from the lesson.</p>
+</header>
+<div class="legend">
+<p><strong>How to read this page.</strong> Three tags separate fact from invention.</p>
+<p><span class="tag tag-lesson">From the lesson</span> A claim, number, or figure that appears in the lesson source, with its section cited.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with values you supply, or a what-if. Never lesson content.</p>
+<p><span class="tag tag-companion">Companion</span> Editorial framing or a transferable principle. The lesson did not say it this way.</p>
+</div>
+</div>
+<nav class="sticky"><div class="navscroll">
+<a href="#s1">1 Reward model</a>
+<a href="#s2">2 Labels</a>
+<a href="#s3">3 RLHF</a>
+<a href="#s4">4 Ratios</a>
+<a href="#s5">5 KL</a>
+<a href="#s6">6 Advantages</a>
+<a href="#s7">7 PPO clip</a>
+<a href="#s8">8 Variants</a>
+<a href="#s9">9 DPO</a>
+<a href="#s10">10 Reference</a>
+<a href="#s11">11 Pathologies</a>
+<a href="#s12">12 Eval</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<div class="wrap">
+<figure>
+<img class="illus" src="assets/u05-hero.webp" alt="Watercolor of a balance scale weighing two paper slips against a brass weight">
+<figcaption><span class="tag tag-toy">Illustration</span> The unit in one image: human comparisons become a scalar, and the scalar becomes the target. Watercolor, original to this companion.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>The reward model: a judge with one output</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 2-6</span></p>
+<p>Human judgments are comparisons, A better than B. But RL needs a number. How do you convert? The Bradley-Terry model: P(A wins) = sigmoid(r_A minus r_B). The toy: r(A) = 1.2, r(B) = 0.4. P(A wins) = sigmoid(0.8) = 0.69. Loss = minus log 0.69 = 0.371. The lesson's computed values: P = 0.6900, loss = 0.3711. Training shows the model pairs and the human's pick, and the BT loss adjusts scores so the picks become probable. The score has no absolute meaning. Only gaps matter.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 5, 9, 11</span></p>
+<p>The gradient is (1 minus p) times (d r_w minus d r_l): it widens the gap, with force proportional to surprise. The architecture is the SFT model plus a scalar head. Labels are expensive, and agreement rates bound the achievable accuracy. The BT assumption can break: intransitive or noisy human preferences break the scalar story, and the reward then encodes noise as signal. Check annotator agreement first.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Sigmoid curve of win probability versus score gap with the toy marked">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">P(win) = sigmoid(gap) (C01 item 6, R0.1)</text>
+<path d="M 60 250 C 200 250 260 150 350 150 C 440 150 500 50 640 50" fill="none" stroke="#2f4b8f" stroke-width="3"/>
+<circle cx="430" cy="105" r="7" fill="#b3541e"/>
+<g font-family="sans-serif" font-size="13" fill="#7a7160">
+<text x="60" y="280">gap 0: 0.50</text>
+<text x="300" y="280">gap 0.8: 0.69</text>
+<text x="520" y="280">gap 2: 0.88</text>
+</g>
+<g font-family="monospace" font-size="14" fill="#1c1a17">
+<text x="445" y="100">toy: 0.6900</text>
+</g>
+<text x="350" y="306" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The gap drives everything. Loss 0.3711 on the toy.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 item 6</span> The lesson's computed toy. The lesson's plate u05_fig01 shows the same reward head plus BT rule. The lab asks for r_w = r_l = 0.5: loss 0.6931.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 4, 7</span> BT bench: win probability and loss on your scores.</p>
+<p><input class="text" id="btw" type="number" value="1.2" step="0.1" aria-label="r_w"> <input class="text" id="btl" type="number" value="0.4" step="0.1" aria-label="r_l"> <button class="btn" id="btbtn">Compute BT</button></p>
+<div class="chips" id="btout"></div>
+<p class="small muted">Reproduce the lesson: 1.2 and 0.4 give P = 0.6900, loss = 0.3711. Try equal scores and watch the loss hit 0.6931.</p>
+</div>
+<div class="nugget" id="w1">
+<h4>Nugget 01 · Only gaps matter</h4>
+<p class="big">The reward score means nothing alone. The gap between two scores means everything. Train the gap, doubt the absolute.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson converts comparisons to scalars via Bradley-Terry, computes P = 0.6900 and loss 0.3711 on the toy, and derives the gap-widening gradient.</dd>
+<dt>Why it matters</dt><dd>Absolute scores are meaningless, so score thresholds are fiction. And the BT model assumes transitive, clean preferences: check agreement before you trust the judge.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When humans give comparisons, model the comparison, not a phantom absolute. The gap is the signal. The rest is decoration.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>Labels are manufactured, not found</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 2-6</span></p>
+<p>Which response is better is vague. How do you make 100 annotators agree? The toy rubric: helpfulness, truthfulness, harmlessness, in that order. Ties allowed, both-bad flagged. The guideline is the product spec: dimensions, priority order, tie policy, escalation. Agreement rate measures the spec's clarity. The toy: 1000 pairs, 720 agree, 180 tie, 100 disagree. Usable: 900 (ties train weakly or drop). The 10% disagreement is the noise floor the reward model cannot beat. 70%+ agreement is workable. Below that, the reward learns noise.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 7, 9, 11</span></p>
+<p>Present pairs side by side with blinded order: random A/B removes position bias. If one side wins 80%, the presentation is biased. Human time is the cost, minutes per pair. Quality beats quantity: 10k good pairs beat 100k noisy ones. And the annotator pool matters: cultural or domain differences in helpful mean the reward encodes the pool, not the user base. Match the pool to the users.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of label outcomes: 720 agree, 180 tie, 100 disagree">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">1000 pairs labeled (C02 item 6)</text>
+<rect x="130" y="70" width="110" height="180" fill="#2f4b8f" rx="4"/>
+<rect x="295" y="190" width="110" height="60" fill="#7a8fc4" rx="4"/>
+<rect x="460" y="210" width="110" height="40" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="185" y="60">720 agree</text>
+<text x="350" y="180">180 tie</text>
+<text x="515" y="200">100 disagree</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="185" y="270">train</text>
+<text x="350" y="270">weak or drop</text>
+<text x="515" y="270">noise floor</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Usable 900. The 10% disagreement caps the reward model's accuracy.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 6</span> The lesson's toy label counts. The lab variant: 500 pairs at 15% ties and 10% disagreement give 375 usable.</figcaption>
+</figure>
+<div class="nugget" id="w2">
+<h4>Nugget 02 · The rubric is the product</h4>
+<p class="big">Agreement measures the spec's clarity. Below 70%, you produce noise, not labels.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the annotation protocol, prices 1000 pairs at 900 usable, and sets the 70% workability bar.</dd>
+<dt>Why it matters</dt><dd>The reward model cannot beat its labels' noise floor. Every point of disagreement is a point of accuracy permanently lost. Pilot, measure, revise, then scale.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Data quality is a spec problem before it is a volume problem. Write the rubric, measure agreement, and only then buy scale.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>RLHF: three stages, three blind spots</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 2-6</span></p>
+<p>SFT imitates, but imitation cannot rank two good answers. How do you optimize preference directly? The toy pipeline: SFT model to reward model on pairs to PPO against the reward. Stage 1 (SFT): learn the format. Stage 2 (RM): learn the judge. Stage 3 (RL): optimize the judge's score with a KL leash to stage 1. Each stage fixes the previous stage's blind spot. The objective: expected reward minus beta times KL(pi || pi_sft). The lesson's toy magnitudes: base reward 0.5, after RLHF 1.8, KL 0.1 nats. <span class="tag tag-toy">Illustration</span> The lesson marks these illustrative magnitudes. The KL budget is the dial: more KL, more reward, more risk.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 8-9, 11</span></p>
+<p>Four models in memory: policy, reference, reward, value. That is the cost driver. RL is sample-hungry and twitchy: the price of direct optimization. And higher reward does not mean a better model: reward hacking finds the judge's blind spots and the metric lies. The KL leash and evals are the defense. The lesson's chapter plate u05_fig04 shows the RLHF column.</p>
+</div>
+<div class="nugget" id="w3">
+<h4>Nugget 03 · Separate behavior, judgment, and control</h4>
+<p class="big">SFT teaches the format, the reward model learns the judge, RL optimizes under a KL leash. Skip a stage and its blind spot ships with you.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson names the three stages and their outputs, writes the KL-regularized objective, and prices the four-model memory cost.</dd>
+<dt>Why it matters</dt><dd>The pipeline is a separation of concerns. Each stage exists because the previous one cannot do its job. The KL leash is what keeps optimization honest.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When one stage cannot see what another optimizes, split them and leash the optimizer. Unleashed optimization finds the loopholes.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>The ratio: a currency converter between policies</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 2-6</span></p>
+<p>PPO updates the policy with data from the old policy. How do you correct for the mismatch? Importance sampling: expected value under the new policy equals expected rho times f under the old, with rho = pi_new(a) / pi_old(a). The toy: 0.8 / 0.4 = 2.0. The action is now twice as likely: weight its advantage by 2. If pi_new = 0.04, rho = 0.1 and the surrogate is 0.1. The ratio amplifies moves away from old data. The estimator is unbiased, but its variance grows with rho. That variance bomb is what PPO's clip restrains.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 7-8, 11</span></p>
+<p>Compute in log space for stability: rho = exp(new_logp minus old_logp). Checks: rho = 1 at the first step, mean rho near 1 early, extreme values rare. If mean rho drifts far from 1, the policy moved too fast. After a big update, rho hits 10+ and the surrogate explodes: the next update wrecks the policy. The lab asks for new 0.9, old 0.3: rho = 3.0.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 260" role="img" aria-label="Number line of rho with safe zone marked around 1">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">The ratio rho, safe zone marked (C04)</text>
+<line x1="60" y1="140" x2="640" y2="140" stroke="#1c1a17" stroke-width="2"/>
+<rect x="255" y="120" width="190" height="40" fill="#e6f0e6" opacity="0.8"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="120" y="110">0.1</text><text x="255" y="110">0.8</text><text x="350" y="110">1.0</text><text x="445" y="110">1.2</text><text x="560" y="110">2.0</text><text x="620" y="110">10+</text>
+</g>
+<circle cx="560" cy="140" r="7" fill="#b3541e"/>
+<circle cx="350" cy="140" r="7" fill="#2f4b8f"/>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="350" y="190">safe zone [0.8, 1.2]: the clip's territory</text>
+<text x="560" y="190">toy rho 2.0, amplified</text>
+</g>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 5, 11</span> The lesson's toy ratio and the variance warning. Big rho means the converter is unreliable.</figcaption>
+</figure>
+<div class="nugget" id="w4">
+<h4>Nugget 04 · Watch the converter's rate</h4>
+<p class="big">Rho converts old data to new-policy terms. Near 1 it is honest. At 10 it is a rumor with a multiplier.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives importance weighting, computes rho = 2.0 on the toy, and shows the explosion past big updates.</dd>
+<dt>Why it matters</dt><dd>Unbiased with infinite variance is not useful. The ratio's honesty decays with distance from 1, which is exactly what the clip enforces.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Every correction factor has a range where it works. Monitor the factor itself, not just the corrected result.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>KL: the distance from home</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 2-6</span></p>
+<p>The reward says go. What stops the policy from going insane? The toy: KL(pi || pi_ref) = 0.1 nats. Penalty beta times 0.1 subtracted from reward. The leash has a price per nat. KL is the distance from home, and the reference policy is home (the SFT model). Every nat of drift costs beta. The policy may wander, but it pays. Direction matters: forward KL, new || old, is mode-covering. The RLHF objective: maximize expected reward minus beta KL. Beta is the exchange rate between reward and drift.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 6</span></p>
+<p>The toy: pi = [0.7, 0.3], ref = [0.5, 0.5]. KL = 0.7 log(0.7/0.5) + 0.3 log(0.3/0.5) = 0.2356 minus 0.1532 = 0.0824 nats. Small drift, small price. Schulman's lower-variance estimator: r minus log r minus 1 with r = pi_ref/pi. Checks: KL >= 0, KL = 0 iff policies match. The lab asks for pi = [1, 0], ref = [0.5, 0.5]: KL = 0.6931 nats.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u05-leash.webp" alt="Watercolor of a small dog on a long leash reaching toward a trophy, held by a calm hand">
+<figcaption><span class="tag tag-toy">Illustration</span> The KL leash in one image: wander if you must, but every nat costs beta. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 4, 7</span> KL bench: the lesson's penalty on your distributions.</p>
+<p><input class="text" id="klp" type="text" value="0.7, 0.3" aria-label="pi probs"> <input class="text" id="klr" type="text" value="0.5, 0.5" aria-label="ref probs"> <input class="text" id="klb" type="number" value="0.1" step="0.05" min="0" max="2" aria-label="beta"> <button class="btn" id="klbtn">Compute KL price</button></p>
+<div class="chips" id="klout"></div>
+<p class="small muted">Reproduce the lesson: the defaults give 0.0824 nats. Try the lab: 1, 0 against 0.5, 0.5 gives 0.6931.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 11</span></p>
+<p>Small KL does not mean safe. The policy can change behavior a lot within small KL: the reward hack lives in the KL budget. KL bounds drift, not misbehavior.</p>
+</div>
+<div class="nugget" id="w5">
+<h4>Nugget 05 · The leash prices drift, not virtue</h4>
+<p class="big">Beta per nat is the exchange rate. But the budget can be spent wisely or spent on hacks. Watch what the drift buys.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the KL penalty, computes 0.0824 nats on the toy, and gives the low-variance estimator.</dd>
+<dt>Why it matters</dt><dd>A leash bounds distance, not direction. The most dangerous failures happen inside the budget, where the metric looks fine.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Constraints bound how far, never how wrong. Audit the direction of movement, not just its size.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>Advantages: the surprise, not the return</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 2-6</span></p>
+<p>Returns are noisy. How do you know if an action was good or just lucky? The toy: return 10, baseline (value) 6, advantage +4. The action beat expectations by 4. The advantage is the surprise: return minus what was expected. Positive: do more of this. Negative: do less. The baseline centers the signal so the gradient is not drowned in the mean return. Subtracting a state-dependent baseline leaves the policy gradient unbiased and cuts variance.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 item 6</span></p>
+<p>The toy: rewards [0, 0, 10], gamma = 1, values [3, 5, 8]. TD errors: delta_2 = 10 minus 8 = 2, delta_1 = 0 + 8 minus 5 = 3, delta_0 = 0 + 5 minus 3 = 2. GAE(1): A_0 = 2 + 3 + 2 = 7. The advantage flows backward. GAE(lambda) trades bias and variance: lambda = 0 is TD (low variance, biased), lambda = 1 is Monte Carlo (unbiased, noisy). Tune lambda in [0.9, 0.99].</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of TD errors 2, 3, 2 flowing backward into advantage 7">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">TD errors to advantage (C06 item 6)</text>
+<rect x="120" y="190" width="100" height="60" fill="#2f4b8f" rx="4"/>
+<rect x="270" y="160" width="100" height="90" fill="#2f4b8f" rx="4"/>
+<rect x="420" y="190" width="100" height="60" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="170" y="180">d0=2</text>
+<text x="320" y="150">d1=3</text>
+<text x="470" y="180">d2=2</text>
+<text x="620" y="120">A0=7</text>
+</g>
+<rect x="570" y="70" width="100" height="180" fill="#b3541e" rx="4"/>
+<text x="350" y="280" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">GAE(1) sums the errors backward: 2 + 3 + 2 = 7.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 item 6</span> The lesson's computed errors. Normalize advantages per batch, a common practice.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 item 11</span></p>
+<p>A bad value baseline biases every advantage. The policy then chases phantom signal. Value loss matters as much as policy loss.</p>
+</div>
+<div class="nugget" id="w6">
+<h4>Nugget 06 · Center the signal</h4>
+<p class="big">Raw returns drown the gradient in their mean. Subtract the baseline and the surprise stands out.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines the advantage, derives the unbiased baseline argument, and computes the backward-flowing toy.</dd>
+<dt>Why it matters</dt><dd>Variance is what makes policy gradients train at all or not at all. The baseline is not a refinement. It is the difference between signal and noise.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Compare against expectations, not against zero. The surprise is the information. The raw number is mostly context.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>PPO: pessimism as an algorithm</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 2-6</span></p>
+<p>The ratio can explode. How do you update safely anyway? The toy: rho = 2.0, A = 1, eps = 0.2. Unclipped: 2.0. Clipped: 1.2. Objective: min(2.0, 1.2) = 1.2. Take the surrogate rho times A, cap rho at [1 minus eps, 1 plus eps], then take the worse of the capped and uncapped. Improvements beyond the clip earn nothing. The update stays in the trust zone. The min is the pessimistic bound: when A is positive it caps the upside at (1+eps)A, when A is negative the clip binds on the downside.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 6</span></p>
+<p>The lesson sweeps ratios [0.5, 0.8, 1.0, 1.2, 1.5, 2.0] at A = 1, eps = 0.2: objectives [0.5, 0.8, 1.0, 1.2, 1.2, 1.2]. The cap binds at 1.2. It is a first-order trust region. The lab asks for rho = 0.5, A = -2, eps = 0.2: min(-1.0, -1.6) = -1.6.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Line chart of the clipped objective flattening at 1.2">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Clipped objective vs ratio, A = 1, eps = 0.2 (C07 item 6)</text>
+<polyline points="80,230 170,190 260,150 350,110 440,110 530,110 620,110" fill="none" stroke="#b3541e" stroke-width="3"/>
+<polyline points="80,230 170,190 260,150 350,110 440,70 530,30 620,-10" fill="none" stroke="#ddd3bd" stroke-width="2" stroke-dasharray="6,4"/>
+<g font-family="sans-serif" font-size="12" fill="#7a7160">
+<text x="80" y="260">0.5</text><text x="260" y="260">1.0</text><text x="350" y="260">1.2</text><text x="530" y="260">1.5</text><text x="620" y="260">2.0</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#1c1a17">
+<text x="480" y="140">clipped: flat at 1.2</text>
+<text x="480" y="60" fill="#7a7160">unclipped: keeps rising</text>
+</g>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 6</span> The lesson's computed sweep. The lesson's plate u05_fig02 shows the same clip rule.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 4, 7</span> PPO bench: the clipped objective on your rho, A, eps.</p>
+<p><input class="text" id="ppr" type="number" value="2" step="0.1" aria-label="rho"> <input class="text" id="ppa" type="number" value="1" step="0.5" aria-label="A"> <input class="text" id="ppe" type="number" value="0.2" step="0.05" min="0.05" max="0.5" aria-label="eps"> <button class="btn" id="ppbtn">Compute objective</button></p>
+<div class="chips" id="ppout"></div>
+<p class="small muted">Reproduce the lesson: rho 2.0, A 1, eps 0.2 gives 1.2. Try the lab: rho 0.5, A -2 gives -1.6.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 11</span></p>
+<p>Clipping does not guarantee monotonic improvement. The guarantee is approximate: bad value estimates or huge batches still break runs. Clipping is a guardrail, not a proof.</p>
+</div>
+<div class="nugget" id="w7">
+<h4>Nugget 07 · Take the worse of the two</h4>
+<p class="big">The min makes PPO pessimistic by construction. Beyond the clip, moving further earns nothing, so the policy stays in the trust zone.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the clipped surrogate, justifies the min for both signs of A, and sweeps the toy to the flat cap.</dd>
+<dt>Why it matters</dt><dd>PPO rarely diverges catastrophically, which is why it is the default. But approximate guarantees still break. The clip is a guardrail, and guardrails need their own monitoring.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Pessimism is a design choice. When the cost of overshoot is ruin, optimize the worst case, not the expected one.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>PPO variants: guardrails on guardrails</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 2-6</span></p>
+<p>PPO works, but the recipe has knobs. Three common twists: PPO-ptx adds the pretraining loss (L = L_ppo + gamma L_pretrain) to keep base skills alive during RL. KL controllers adapt beta: if KL exceeds 1.5 times target, beta times 1.5. Value clipping ports the clip to the value loss. The toy: KL target 0.1, observed 0.2, beta times 1.5. The controller reacts over tens of steps, not one. Slow feedback is stable feedback.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 item 11</span></p>
+<p>More guardrails are not always better. PPO-ptx with too much pretrain weight stalls preference learning. Every coefficient is a trade.</p>
+</div>
+<table class="data">
+<caption class="small muted capleft"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 3-5</span> Variant, change, when.</caption>
+<tr><th>Variant</th><th>Change</th><th>When</th></tr>
+<tr><td>PPO-ptx</td><td class="num">Add gamma times pretrain loss</td><td>Long RL runs eroding base skills</td></tr>
+<tr><td>KL controller</td><td class="num">Adapt beta to hold KL near target</td><td>KL drifts off target</td></tr>
+<tr><td>Value clipping</td><td class="num">Clip the value loss like the policy</td><td>Value head chases noise</td></tr>
+</table>
+<div class="nugget" id="w8">
+<h4>Nugget 08 · Every coefficient is a trade</h4>
+<p class="big">Guardrails stack, but each new knob trades one failure for another. Tune the trade, do not just add rails.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson names three variants, gives the beta update rule, and warns about over-guarding.</dd>
+<dt>Why it matters</dt><dd>Stability work is never free. The ptx weight that saves base skills can stall the very learning you wanted. Feedback needs gains, not just loops.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Safety mechanisms compose, and their interactions are the new risk. Audit the stack, not just the parts.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>DPO: the policy is its own reward</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 2-6</span></p>
+<p>Can you skip the reward model and the RL entirely? The optimal policy for the KL-regularized reward has a closed form: pi* proportional to pi_ref times exp(r/beta). Invert it: r = beta log(pi*/pi_ref) plus a constant. Plug into the BT loss and the constant cancels in the gap. What remains is pure policy terms. The implicit reward is beta times log(pi/pi_ref). The loss says: make the implicit reward gap between chosen and rejected large. No sampling, no value head, no clip.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 4, 6</span></p>
+<p>The loss: minus log sigmoid(beta times [(log pi_w minus log ref_w) minus (log pi_l minus log ref_l)]). Three assumptions: BT models the preferences, the KL-regularized optimum is the right target, the reference is adequate. The toy: beta = 0.1, logp_w = -2.0, logr_w = -2.2, logp_l = -3.5, logr_l = -2.3. Margin = 0.1 times ((0.2) minus (-1.2)) = 0.14. Sigmoid = 0.5349, loss = 0.6256.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Bar chart of the DPO margin components">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">The margin, beta = 0.1 (C09 item 6)</text>
+<rect x="150" y="180" width="110" height="70" fill="#2f4b8f" rx="4"/>
+<rect x="300" y="110" width="110" height="140" fill="#2f4b8f" rx="4"/>
+<rect x="450" y="150" width="110" height="100" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="205" y="170">chosen gap 0.2</text>
+<text x="355" y="100">rejected gap -1.2</text>
+<text x="505" y="140">margin 0.14</text>
+</g>
+<text x="350" y="280" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">0.1 times (0.2 minus (-1.2)). Sigmoid 0.5349, loss 0.6256.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 6</span> The lesson's computed margin. The lesson's plate u05_fig03 shows the same margin formation.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 4, 7</span> DPO bench: margin and loss on your log-probs.</p>
+<p><input class="text" id="dpb" type="number" value="0.1" step="0.05" min="0.01" max="2" aria-label="beta"> <input class="text" id="dppw" type="number" value="-2.0" step="0.1" aria-label="logp_w"> <input class="text" id="dprw" type="number" value="-2.2" step="0.1" aria-label="logr_w"> <input class="text" id="dppl" type="number" value="-3.5" step="0.1" aria-label="logp_l"> <input class="text" id="dprl" type="number" value="-2.3" step="0.1" aria-label="logr_l"> <button class="btn" id="dpbtn">Compute DPO</button></p>
+<div class="chips" id="dpout"></div>
+<p class="small muted">Reproduce the lesson: the defaults give margin 0.14, loss 0.6256. Try the lab: beta 0.5 with gaps 0.2 and -1.2 gives margin 0.7.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 11</span></p>
+<p>DPO can decrease the chosen likelihood while increasing the gap: the likelihood displacement pathology. And noisy or intransitive preferences make DPO confidently wrong, with no reward model to absorb the noise gracefully. If the margin grows but quality drops, the BT assumption is wrong for this data.</p>
+</div>
+<div class="nugget" id="w9">
+<h4>Nugget 09 · Assumptions are the price of simplicity</h4>
+<p class="big">DPO deletes the reward model and the RL loop, and inherits three assumptions. When the margin rises and quality falls, the assumptions broke.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson inverts the optimal policy, cancels the constant in the gap, and computes margin 0.14 and loss 0.6256.</dd>
+<dt>Why it matters</dt><dd>Cheap and stable is not free. The BT model, the KL optimum, and the reference must all hold. Displacement shows the gap can grow while the chosen answer gets worse.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Every simplification moves complexity somewhere. Name what the simple version assumes, and monitor exactly that.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>The reference: the anchor is only as good as the base</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 2-6</span></p>
+<p>The KL needs a home. What is it, and why does it double the memory? pi_ref is the SFT model, frozen, one forward pass per batch to get log ref(y|x). The reference is the anchor tenant: it never trains, it only scores. Every KL term and every DPO margin measures drift from it. Its cost is pure memory and one forward pass. The toy: 7B policy in bf16 (14 GB) plus 7B reference (14 GB) = 28 GB before anything trains. DPO's two models vs PPO's four models is this line item.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 8, 11</span></p>
+<p>Checks: ref log-probs match the SFT model's, KL = 0 at init, the reference never gets gradients. The failure: a weak SFT reference anchors the policy to mediocrity, and the KL then punishes improvement. The anchor is only as good as the base.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of memory: DPO two models versus PPO four models">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Models in memory, 7B bf16 (C10 item 6)</text>
+<rect x="150" y="150" width="130" height="100" fill="#2f4b8f" rx="4"/>
+<rect x="420" y="70" width="130" height="180" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="215" y="140">28 GB</text>
+<text x="485" y="60">56 GB</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="215" y="270">DPO: policy + ref</text>
+<text x="485" y="270">PPO: + reward + value</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The reference doubles the bill before anything trains.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 item 6</span> The lesson's memory line item. Cache the ref log-probs when the reference never changes.</figcaption>
+</figure>
+<div class="nugget" id="w10">
+<h4>Nugget 10 · Anchor to something worth staying near</h4>
+<p class="big">The reference costs 14 GB and never trains. A weak anchor punishes improvement. Choose the base before you choose the leash.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines pi_ref, prices the 28 GB, and shows the weak-anchor failure.</dd>
+<dt>Why it matters</dt><dd>Regularization toward a bad target is anti-learning. The KL budget spent returning to mediocrity is budget not spent on quality.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Every anchor is a bet on the base. If the base is weak, the leash is a liability, not a guardrail.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Pathologies: every optimizer is a lawyer</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 2-6</span></p>
+<p>The reward climbs and the model gets worse. The usual suspects: reward hacking, length bias, mode collapse, likelihood displacement. Every optimizer is a lawyer: it finds the loopholes in the objective. Reward hacking exploits the judge. Length bias exploits the correlation. Mode collapse exploits the average. Displacement exploits the gap. The length toy: chosen length 50, rejected length 20, per-token logprob gap +0.01. The chosen side accumulates 0.5 from length alone. The length, not the quality, drives the update. Length-controlled evals exist for exactly this.</p>
+</div>
+<table class="data">
+<caption class="small muted capleft"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 2-4</span> Pathology, signature, guard.</caption>
+<tr><th>Pathology</th><th>Signature</th><th>Guard</th></tr>
+<tr><td>Reward hacking</td><td class="num">Reward up, human preference flat or down</td><td>KL leash, human spot evals</td></tr>
+<tr><td>Length bias</td><td class="num">Longer outputs score higher</td><td>Length-controlled evals</td></tr>
+<tr><td>Mode collapse</td><td class="num">Output diversity dies</td><td>Track entropy, early stop</td></tr>
+<tr><td>Likelihood displacement</td><td class="num">Chosen likelihood falls, gap rises</td><td>Track log pi_w, not just margin</td></tr>
+</table>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 7-8, 11</span></p>
+<p>The scan is the guard: track reward, human spot scores, mean length, output entropy, chosen likelihood. Five plots, every experiment. And the list is not complete: new pathologies appear with new objectives. The meta-skill is the scan, not the list.</p>
+</div>
+<div class="nugget" id="w11">
+<h4>Nugget 11 · Scan, do not memorize</h4>
+<p class="big">Four named pathologies, one meta-skill: watch reward, length, entropy, and chosen likelihood on every run.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson names four pathologies with signatures, derives the length-bias mechanism, and prescribes the five-plot scan.</dd>
+<dt>Why it matters</dt><dd>Goodhart never sleeps. The optimizer will find the next loophole, which is not on today's list. The scan catches what the list cannot name.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Monitor the objective's loopholes, not just the objective. What gets measured gets gamed. What gets scanned gets caught.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Win rates: state the tie policy</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 2-6</span></p>
+<p>The loss fell. Did humans actually prefer it? The toy: 100 prompts, model A wins 62, ties 10, loses 28. Win rate 62% with ties reported separately. Excluding ties: 68.9%. Counting ties as half: 67.0%. Report both. The tie policy moves the number by 2 points. That swing is why the policy must be stated. Preference eval is an election: head-to-head comparisons, blinded order, majority or Elo aggregation. Length control compares within length bands, or the verbosity bias rigs the vote.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 7-8, 11</span></p>
+<p>The procedure: count wins, losses, ties, report both conventions, bootstrap a confidence interval. The CI is mandatory. If the CI spans 50%, the result is a tie. And eval prompts drift from real usage: the win rate can be real and irrelevant. Refresh prompts from production. The lab asks for 70/20/10: 77.8% excluding ties, 75.0% as half.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of win rate under two tie conventions">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Win rate, 62/28/10 (C12 item 6)</text>
+<rect x="180" y="90" width="110" height="160" fill="#2f4b8f" rx="4"/>
+<rect x="410" y="100" width="110" height="150" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="235" y="80">68.9%</text>
+<text x="465" y="90">67.0%</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="235" y="270">ties excluded</text>
+<text x="465" y="270">ties as half</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Two conventions, two points apart. State the policy with the number.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 item 6</span> The lesson's toy. Human evals are slow and expensive, AI judges cheap and biased. Budget both, trust neither alone.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 4, 7</span> Win-rate bench: both conventions on your counts.</p>
+<p><input class="text" id="wrw" type="number" value="62" min="0" aria-label="wins"> <input class="text" id="wrl" type="number" value="28" min="0" aria-label="losses"> <input class="text" id="wrt" type="number" value="10" min="0" aria-label="ties"> <button class="btn" id="wrbtn">Compute win rates</button></p>
+<div class="chips" id="wrout"></div>
+<p class="small muted">Reproduce the lesson: 62/28/10 gives 68.9% and 67.0%. Try the lab: 70/20/10 gives 77.8% and 75.0%.</p>
+</div>
+<div class="nugget" id="w12">
+<h4>Nugget 12 · The convention is part of the number</h4>
+<p class="big">Two honest conventions differ by two points. Report both, bootstrap the CI, and refresh the prompts from production.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines the win-rate election, computes both tie conventions, and mandates the CI and length control.</dd>
+<dt>Why it matters</dt><dd>A win rate without its tie policy is incomparable. A CI spanning 50% is a tie wearing a number. And stale prompts measure a product that no longer exists.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Every aggregate hides a convention. Publish the convention with the number, or the number means nothing.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Twelve nuggets, one unit</h2>
+<ol class="wisdom">
+<li><a href="#w1"><span class="wnum">01</span>Only gaps matter</a></li>
+<li><a href="#w2"><span class="wnum">02</span>The rubric is the product</a></li>
+<li><a href="#w3"><span class="wnum">03</span>Separate behavior, judgment, and control</a></li>
+<li><a href="#w4"><span class="wnum">04</span>Watch the converter's rate</a></li>
+<li><a href="#w5"><span class="wnum">05</span>The leash prices drift, not virtue</a></li>
+<li><a href="#w6"><span class="wnum">06</span>Center the signal</a></li>
+<li><a href="#w7"><span class="wnum">07</span>Take the worse of the two</a></li>
+<li><a href="#w8"><span class="wnum">08</span>Every coefficient is a trade</a></li>
+<li><a href="#w9"><span class="wnum">09</span>Assumptions are the price of simplicity</a></li>
+<li><a href="#w10"><span class="wnum">10</span>Anchor to something worth staying near</a></li>
+<li><a href="#w11"><span class="wnum">11</span>Scan, do not memorize</a></li>
+<li><a href="#w12"><span class="wnum">12</span>The convention is part of the number</a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cme295/lessons/u05_preference_optimization.md</code>, locally authored bridge content for Stanford CME295 (2026-10-06). The lesson marks reward design, RLHF, PPO clipping, and DPO OFFICIAL-SYLLABUS, and pairwise labels, policy ratios, KL, advantages, PPO variants, the reference model, optimization pathologies, and evaluation REQUESTED-BRANCH. Every leaf is PLANNED / SOURCE ATTRIBUTION PENDING until slide or transcript extraction verifies it. No lecture transcript exists for this unit, so no lecture anecdotes appear and no sentence here reproduces an instructor's words. The RLHF stage magnitudes are the lesson's own illustrative values, labeled Illustration. Lesson figures u05_fig01 and u05_fig03 are the lesson's own computed plates, embedded where cited. Charts on this page re-plot the lesson's computed numbers with section citations. Interactive toys run the lesson's rules on values you supply. The two watercolor illustrations are original to this companion, generated with Muse native tools, and labeled Illustration. No official course video exists for this unit, so no video is embedded.</p>
+<p><strong>Quoted words.</strong> Quoted words from the lesson source: 0. This companion paraphrases the lesson throughout and uses no quotation marks in visible text, tooltips, or labels. Numbers carry their lesson section above each figure and table.</p>
+<p><a href="../index.html">Back to the CME295 index</a></p>
+</footer>
+</div>
+<script>
+function el(tag,cls,text){
+var e=document.createElement(tag)
+if(cls){e.className=cls}
+if(text!=null){e.textContent=text}
+return e
+}
+function parseNums(id){
+var raw=document.getElementById(id).value
+var parts=raw.split(",")
+var out=[]
+var i=0
+while(i<parts.length){
+var v=parseFloat(parts[i])
+if(!isNaN(v)){out.push(v)}
+i=i+1
+}
+return out
+}
+function sigmoid(x){
+return 1/(1+Math.exp(-x))
+}
+function runBt(){
+var rw=parseFloat(document.getElementById("btw").value)
+var rl=parseFloat(document.getElementById("btl").value)
+var out=document.getElementById("btout")
+out.textContent=""
+if(isNaN(rw)||isNaN(rl)){
+out.appendChild(el("span","chip plain","Enter r_w and r_l."))
+return
+}
+var p=sigmoid(rw-rl)
+var loss=-Math.log(p)
+out.appendChild(el("span","chip plain","P = "+p.toFixed(4)))
+out.appendChild(el("span","chip plain","loss = "+loss.toFixed(4)))
+}
+function runKl(){
+var pi=parseNums("klp")
+var rf=parseNums("klr")
+var beta=parseFloat(document.getElementById("klb").value)
+var out=document.getElementById("klout")
+out.textContent=""
+if(pi.length!==rf.length||pi.length<2){
+out.appendChild(el("span","chip plain","Enter two distributions of equal length."))
+return
+}
+var kl=0
+var i=0
+while(i<pi.length){
+if(!(pi[i]>0)||!(rf[i]>0)){
+out.appendChild(el("span","chip plain","Probabilities must be positive."))
+return
+}
+kl=kl+pi[i]*Math.log(pi[i]/rf[i])
+i=i+1
+}
+out.appendChild(el("span","chip plain","KL = "+kl.toFixed(4)+" nats"))
+out.appendChild(el("span","chip plain","price = "+(beta*kl).toFixed(4)))
+}
+function runPpo(){
+var rho=parseFloat(document.getElementById("ppr").value)
+var adv=parseFloat(document.getElementById("ppa").value)
+var eps=parseFloat(document.getElementById("ppe").value)
+var out=document.getElementById("ppout")
+out.textContent=""
+if(isNaN(rho)||isNaN(adv)||!(eps>0)){
+out.appendChild(el("span","chip plain","Enter rho, A, eps > 0."))
+return
+}
+var lo=1-eps
+var hi=1+eps
+var cr=rho
+if(cr<lo){cr=lo}
+if(cr>hi){cr=hi}
+var unc=rho*adv
+var cl=cr*adv
+var obj=unc
+if(cl<obj){obj=cl}
+out.appendChild(el("span","chip plain","unclipped = "+unc.toFixed(3)))
+out.appendChild(el("span","chip plain","clipped = "+cl.toFixed(3)))
+out.appendChild(el("span","chip plain","objective = "+obj.toFixed(3)))
+}
+function runDpo(){
+var beta=parseFloat(document.getElementById("dpb").value)
+var pw=parseFloat(document.getElementById("dppw").value)
+var rw=parseFloat(document.getElementById("dprw").value)
+var pl=parseFloat(document.getElementById("dppl").value)
+var rl=parseFloat(document.getElementById("dprl").value)
+var out=document.getElementById("dpout")
+out.textContent=""
+if(isNaN(beta)||isNaN(pw)||isNaN(rw)||isNaN(pl)||isNaN(rl)){
+out.appendChild(el("span","chip plain","Enter all five values."))
+return
+}
+var margin=beta*((pw-rw)-(pl-rl))
+var p=sigmoid(margin)
+var loss=-Math.log(p)
+out.appendChild(el("span","chip plain","margin = "+margin.toFixed(4)))
+out.appendChild(el("span","chip plain","sigmoid = "+p.toFixed(4)))
+out.appendChild(el("span","chip plain","loss = "+loss.toFixed(4)))
+}
+function runWr(){
+var w=parseFloat(document.getElementById("wrw").value)
+var l=parseFloat(document.getElementById("wrl").value)
+var t=parseFloat(document.getElementById("wrt").value)
+var out=document.getElementById("wrout")
+out.textContent=""
+if(!(w>=0)||!(l>=0)||!(t>=0)||w+l+t===0){
+out.appendChild(el("span","chip plain","Enter non-negative counts, not all zero."))
+return
+}
+var excl=w/(w+l)*100
+var half=(w+t/2)/(w+l+t)*100
+out.appendChild(el("span","chip plain","ties excluded = "+excl.toFixed(1)+"%"))
+out.appendChild(el("span","chip plain","ties as half = "+half.toFixed(1)+"%"))
+}
+document.getElementById("btbtn").addEventListener("click",runBt)
+document.getElementById("klbtn").addEventListener("click",runKl)
+document.getElementById("ppbtn").addEventListener("click",runPpo)
+document.getElementById("dpbtn").addEventListener("click",runDpo)
+document.getElementById("wrbtn").addEventListener("click",runWr)
+runBt()
+runKl()
+runPpo()
+runDpo()
+runWr()
+</script>
+</body>
+</html>

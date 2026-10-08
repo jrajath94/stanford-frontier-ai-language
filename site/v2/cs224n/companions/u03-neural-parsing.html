@@ -437,8 +437,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-companion">companion</span> Companion voice: the idea above the tag is from the lesson. The generalization below it is the companion’s.</p>
 <p class="small muted">Provenance: no full lecture transcript exists for this session. The 2026 lecture videos are restricted and unviewed, and the 2024 playlist was not viewed. This page narrates the lesson document, not a video. The session title (S04, Backpropagation and Neural Network Basics) and the A2 title are OFFICIAL-SOURCE via SRC-02 and SRC-03. The concept inventory is REQUESTED-BRANCH.</p>
 </div>
-</header><figure class="paint wide" data-entrance="bloom" data-hero="1">
-<div class="frame"><div class="stage"><img alt="Watercolor of a plumbing network with blue forward flow and amber pressure gauges" class="base" fetchpriority="high" loading="lazy" src="assets/u03-hero.jpg"/></div></div>
+</header><figure data-phase2="1" data-scene="u03-neural-parsing-hero" class="paint wide" data-entrance="bloom" data-hero="1">
+<div class="frame"><div class="stage"><img alt="Watercolor of a plumbing network with blue forward flow and amber pressure gauges" class="base" fetchpriority="high" loading="lazy" src="assets/u03-hero.jpg"/><img alt="" aria-hidden="true" class="ly mul" data-obj="hero-subject" data-depth="14" loading="lazy" src="assets/u03-neural-parsing-hero-layer.png" style="left:5%;top:5%;width:90%"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The U03 idea in one image: forward values flow through the pipes, and backward pressure splits at every junction by the local derivative. The graph is the plumbing. Watercolor, original to this companion.</figcaption></figure>
 <section class="block col" data-chapter="1" data-title="The graph works like plumbing" id="s1"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">1</span></div><div><p class="ch-meta"><span class="ts">Unit 1</span> · C01</p><h2>The graph works like plumbing</h2></div></div>
 <div class="prose-narrow">
@@ -451,7 +451,7 @@ span.ptag, .ptag {
 <div id="chart-grads"></div>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 §6</span> The blame split on f = (x + y) × z, from <code>compute_u03.py</code> (executed 2026-10-06): df/dx = 4, df/dy = 4, df/dz = 5. The z gradient is the whole a node (5). The x gradient is z times the local derivative of the add (4 × 1).</figcaption>
 </figure>
-<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-plumbing"><div class="tag-price"><span class="tag-big">1</span><span class="tag-unit">Nugget 1 · From the lesson C01 §3, §5</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 §3, §5</div><div class="tag-eye">The lesson</div><p class="">The chain rule is the only mechanism. Every gradient is a product of local derivatives along the path.</p><p><b>Why it matters. </b>Reverse mode costs O(edges) regardless of parameter count. That is why a billion parameters are trainable: one backward pass prices them all.</p><p><b>Transfer. </b>Choose reverse mode when parameters outnumber outputs, which is always in deep learning. Choose forward mode when inputs are few and outputs are many. The chain rule is the same. Only the multiplication order differs.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-plumbing"><div class="tag-price"><span class="tag-big">1 backward</span><span class="tag-unit">pass prices them all · From the lesson C01 §3, §5</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 §3, §5</div><div class="tag-eye">The lesson</div><p class="">The chain rule is the only mechanism. Every gradient is a product of local derivatives along the path.</p><p><b>Why it matters. </b>Reverse mode costs O(edges) regardless of parameter count. That is why a billion parameters are trainable: one backward pass prices them all.</p><p><b>Transfer. </b>Choose reverse mode when parameters outnumber outputs, which is always in deep learning. Choose forward mode when inputs are few and outputs are many. The chain rule is the same. Only the multiplication order differs.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 §11</span></p>
 <p>The broken assumption is that the graph handles all control flow. A Python if on a tensor value records the taken branch only, and the gradient cannot flow through the untaken branch. Silent wrong gradients are the failure. Dynamic control flow needs special handling.</p>
@@ -525,7 +525,7 @@ span.ptag, .ptag {
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
 <p>When is a straight line not enough? Eight points in 2-D with XOR-like labels: (0,0)→0, (0,1)→1, (1,0)→1, (1,1)→0. No single line separates the 1s from the 0s. A linear classifier draws one straight boundary. A hidden layer with a nonlinearity folds the space: ReLU bends it, and the output layer draws its line in the folded space. Depth buys representational power, and the nonlinearity is what makes depth more than a deeper linear map (which would collapse to one matrix).</p>
-<figure class="paint inset" data-entrance="sketch">
+<figure data-phase2="1" data-scene="u03-neural-parsing-s2" class="paint inset" data-entrance="sketch">
 <div class="frame"><div class="stage"><img alt="Watercolor of a sheet of paper folding, bringing same-colored dots together" class="base" loading="lazy" src="assets/u03-fold.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The C06 idea as watercolor: the hidden layer folds the sheet, and the output layer draws its straight line on the folded space. The fold is the nonlinearity. Watercolor, original to this companion.</figcaption></figure>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §6</span></p>
@@ -535,13 +535,13 @@ span.ptag, .ptag {
 <div id="chart-mlpacc"></div>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §6</span> Accuracy on the XOR-like toy, from <code>compute_u03.py</code> (executed 2026-10-06): MLP 0.375 → 1.000 over 2000 steps, linear stuck at 0.500. The linear model cannot move off the majority class.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="nugget-dividend"><div class="tag-price"><span class="tag-big">6</span><span class="tag-unit">Nugget 6 · From the lesson C06 §3, §6</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C06 §3, §6</div><div class="tag-eye">The lesson</div><p class="">The nonlinearity is what makes depth more than a deeper linear map. Without it, the stack collapses to one matrix.</p><p><b>Why it matters. </b>Always try linear first. If the problem is linearly separable, the linear model is the answer, and the MLP is theater.</p><p><b>Transfer. </b>Capacity without data is memorization. Width 100 on 8 points memorizes the noise, and test accuracy drops. Regularization or less width is the fix, not more width.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
+<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="nugget-dividend"><div class="tag-price"><span class="tag-big">8 points</span><span class="tag-unit">memorizes the noise and test accuracy drops · From the lesson C06 §3, §6</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C06 §3, §6</div><div class="tag-eye">The lesson</div><p class="">The nonlinearity is what makes depth more than a deeper linear map. Without it, the stack collapses to one matrix.</p><p><b>Why it matters. </b>Always try linear first. If the problem is linearly separable, the linear model is the answer, and the MLP is theater.</p><p><b>Transfer. </b>Capacity without data is memorization. Width 100 on 8 points memorizes the noise, and test accuracy drops. Regularization or less width is the fix, not more width.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="The parser’s workbench and inbox" id="s7"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">7</span></div><div><p class="ch-meta"><span class="ts">Unit 7</span> · C07</p><h2>The parser’s workbench and inbox</h2></div></div>
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
 <p>How do you build a tree left to right without search? Take “the cat sat”. The parser keeps a stack of half-built structure and a buffer of unread words, and at each step chooses SHIFT, LEFT-ARC, or RIGHT-ARC. The stack is the workbench: words being wired. The buffer is the inbox: words not yet seen. SHIFT moves one word from inbox to workbench. LEFT-ARC wires the top two workbench words and removes the dependent. RIGHT-ARC wires them the other way. Six actions parse the toy sentence, each action O(1).</p>
-<figure class="paint inset" data-entrance="bloom">
+<figure data-phase2="1" data-scene="u03-neural-parsing-s3" class="paint inset" data-entrance="bloom">
 <div class="frame"><div class="stage"><img alt="Watercolor of a workbench with a paper stack and an inbox tray" class="base" loading="lazy" src="assets/u03-workbench.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The parser’s state as watercolor: the workbench holds half-built structure, the inbox holds unread words, and each action moves one piece. Watercolor, original to this companion.</figcaption></figure>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 §5, §6</span></p>
@@ -1488,5 +1488,43 @@ runQuad()
   });
 })();
 
-</script></body>
+</script><script>
+(function(){if(!window.CompanionFX)return;var FX=window.CompanionFX;
+FX.registerScene('u03-neural-parsing-hero',{
+ init:function(F,FX){
+  F._m=FX.motes(F.stage,F.W,F.H,24,7);
+  F._g=FX.glows(F.stage,F.W,F.H,[[F.W*0.5,F.H*0.30,Math.min(F.W,F.H)*0.22]],'screen','#E8A94B')[0];
+ },
+ pose:function(S,FX){
+  var F=S.F;F._m.tick(S.t);
+  F._g.style.opacity=(0.20+0.10*FX.flicker(S.t,3)).toFixed(3);
+  return {'hero-subject':{x:7*Math.sin(S.t*0.6),y:5*Math.sin(S.t*0.83+1),r:0,s:1,o:1}};
+ } });
+FX.registerScene('u03-neural-parsing-s2',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+FX.registerScene('u03-neural-parsing-s3',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+})();
+</script>
+</body>
 </html>

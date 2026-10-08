@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U02 · Transformer variants and positional mechanisms: Interactive companion</title>
+<style>
+:root{--ink:#1c1a17}
+:root{--paper:#faf7f0}
+:root{--paper2:#f3eee2}
+:root{--line:#ddd3bd}
+:root{--muted:#7a7160}
+:root{--clay:#b3541e}
+:root{--indigo:#2f4b8f}
+:root{--indigosoft:#e8edfb}
+:root{--sage:#4f7a52}
+:root{--sagesoft:#e6f0e6}
+:root{--amber:#a97b12}
+:root{--serif:"Iowan Old Style",Georgia,"Times New Roman",serif}
+:root{--sans:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+:root{--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:19px}
+body{line-height:1.62}
+.wrap{max-width:860px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband{padding:10px 0}
+.topband .wrap{padding:0 24px}
+header.hero{padding:52px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+.kicker{margin:0 0 10px}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:0 0 14px}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{line-height:1.5}
+.dek{color:#3d382e}
+.dek{max-width:680px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll{max-width:860px}
+.navscroll{margin:0 auto}
+.navscroll{padding-left:24px}
+.navscroll{padding-right:24px}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-family:var(--sans)}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:26px 0}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+figcaption{font-size:16px}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+img.lessonfig{width:100%}
+img.lessonfig{border-radius:10px}
+img.lessonfig{border:1px solid var(--line)}
+img.lessonfig{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 60px}
+footer.prov{font-size:16px}
+footer.prov{color:#3d382e}
+footer.prov p{margin:.7em 0}
+.small{font-size:15px}
+.capleft{text-align:left}
+.capleft{padding-bottom:8px}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CME295 · Transformers and Large Language Models · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">Unit 02 · Transformer variants and positional mechanisms</p>
+<h1>Heads, sharing, and the geometry of position</h1>
+<p class="dek">Twelve concepts attack the two walls of the transformer: the quadratic cost of attention and the question of where each token sits. Approximation, MHA, MQA, GQA, sinusoids, RoPE, ALiBi, layouts, the BERT family, caches, the complexity ledger, and the failure gallery. Every number below comes from the lesson.</p>
+</header>
+<div class="legend">
+<p><strong>How to read this page.</strong> Three tags separate fact from invention.</p>
+<p><span class="tag tag-lesson">From the lesson</span> A claim, number, or figure that appears in the lesson source, with its section cited.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with values you supply, or a what-if. Never lesson content.</p>
+<p><span class="tag tag-companion">Companion</span> Editorial framing or a transferable principle. The lesson did not say it this way.</p>
+</div>
+</div>
+<nav class="sticky"><div class="navscroll">
+<a href="#s1">1 Approximation</a>
+<a href="#s2">2 MHA</a>
+<a href="#s3">3 MQA</a>
+<a href="#s4">4 GQA</a>
+<a href="#s5">5 Sinusoids</a>
+<a href="#s6">6 RoPE</a>
+<a href="#s7">7 ALiBi</a>
+<a href="#s8">8 Layouts</a>
+<a href="#s9">9 BERT</a>
+<a href="#s10">10 Caches</a>
+<a href="#s11">11 Complexity</a>
+<a href="#s12">12 Failures</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<div class="wrap">
+<figure>
+<img class="illus" src="assets/u02-hero.webp" alt="Watercolor of four magnifying lenses with different thread patterns converging on one shared spool">
+<figcaption><span class="tag tag-toy">Illustration</span> The unit in one image: many query heads, one shared spool of keys and values. Watercolor, original to this companion.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>Approximation: never form the T by T matrix</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 2-5</span></p>
+<p>Exact attention costs O(T^2 d). What if we never form the T by T matrix? The lesson answers with a kernel trick: replace exp(q dot k) with phi(q) dot phi(k) for a feature map phi. Then attention becomes phi(Q) times (phi(K)^T V), computed right to left in O(T d^2). The softmax kernel is a similarity function. Approximate the similarity with an inner product of random features, the matrix product associates the other way, and the quadratic term disappears. Randomness buys speed. Variance is the price.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 5-6</span></p>
+<p>The Performer draws random directions w_i and sets phi(x) = exp(w^T x minus |x|^2/2) / sqrt(m). Then the expected value of phi(q)^T phi(k) equals exp(q^T k): the approximation is unbiased. On the toy (T = 4096, d = 512), exact attention costs about 8.6e9 toy FLOPs and the linear form about 1.1e9, a ratio of 8.0. The ratio grows with T: at T = 32768 the gap is 64x. The minus |x|^2/2 term stabilizes the exponential features against overflow.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Bar chart of exact versus linear attention FLOPs at two sequence lengths">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">FLOP ratio: exact vs linear attention (C01 item 6)</text>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="175" y="270">T = 4096</text>
+<text x="525" y="270">T = 32768</text>
+</g>
+<rect x="120" y="80" width="55" height="170" fill="#b3541e" rx="4"/>
+<rect x="185" y="220" width="55" height="30" fill="#2f4b8f" rx="4"/>
+<rect x="470" y="60" width="55" height="190" fill="#b3541e" rx="4"/>
+<rect x="535" y="238" width="55" height="12" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="13" text-anchor="middle" fill="#1c1a17">
+<text x="147" y="70">8.6e9</text>
+<text x="212" y="210">1.1e9</text>
+<text x="497" y="50">64x gap</text>
+<text x="562" y="228">linear</text>
+</g>
+<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Clay bars: exact. Indigo bars: linear form. The gap widens with T.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 item 6</span> The lesson's computed toy FLOPs. Time is O(T m d), memory O(m d + T m). The lesson's chapter plate u02_fig04 shows the same tradeoff.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 item 11</span></p>
+<p>Unbiased does not mean good. At small m the variance swamps the signal and training diverges. Unbiasedness says nothing about any single run. Always report m and seed sweeps.</p>
+</div>
+<div class="nugget" id="w1">
+<h4>Nugget 01 · Associate the other way</h4>
+<p class="big">The quadratic cost lives in the order of multiplication. Compute phi(K)^T V first and the T by T matrix never exists.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson replaces the softmax kernel with random features, proves unbiasedness, and prices the win at 8x for T = 4096 and 64x for T = 32768.</dd>
+<dt>Why it matters</dt><dd>Approximation trades exactness for speed, and the currency is variance. Small m gives a noisy estimator that can diverge a run. The honest report names m and sweeps seeds.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Unbiased is a statement about the average over runs, not about your run. Whenever randomness buys speed, budget for variance explicitly.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>MHA: parallel workers with private lenses</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 2-5</span></p>
+<p>One attention pattern must track syntax, coreference, and position at once. Can it? Multi-head attention answers by splitting the work. The toy: d = 64, h = 4, so d_k = 16. Each head learns its own Q, K, V maps and its own pattern, and the outputs concatenate. Heads are parallel attention workers with private projections. Each sees the same input through different lenses. Concatenation plus a final projection mixes their votes.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 5-6</span></p>
+<p>The 1/sqrt(d_k) scale keeps dot products O(1) at init. The lesson's scale check: q, k drawn from N(0, 1) in 16 dims give q dot k distributed as N(0, 16). Dividing by sqrt(16) = 4 restores unit scale, so the softmax starts diffuse instead of saturated. Per-head parameters at d = 64, h = 4: 3 times 64 times 16 = 3072 for QKV, plus 64 times 64 = 4096 for W_o, total 7168 per layer.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of MHA parameter counts per layer">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">MHA parameters per layer, d = 64, h = 4 (C02 item 6)</text>
+<rect x="180" y="150" width="110" height="100" fill="#2f4b8f" rx="4"/>
+<rect x="410" y="110" width="110" height="140" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="235" y="140">3072</text>
+<text x="465" y="100">4096</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="235" y="270">QKV, 4 heads</text>
+<text x="465" y="270">W_o mix</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Total 7168 per layer. Time O(T^2 d), memory O(h T^2) for scores.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 6, 9</span> The lesson's count. More heads at fixed d means thinner heads. Past about d_k = 32 the heads starve.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 4, 6</span> Head arithmetic bench: the lesson's d_k and parameter rules, on your d and h.</p>
+<p><input class="text" id="mhad" type="number" value="64" min="8" max="4096" aria-label="d, model width"> <input class="text" id="mhah" type="number" value="4" min="1" max="64" aria-label="h, head count"> <button class="btn" id="mhabtn">Compute d_k and params</button></p>
+<div class="chips" id="mhaout"></div>
+<p class="small muted">Try d = 768, h = 12 (lab E1 gives d_k = 64), then d = 128, h = 4 (lab E2). Watch d_k shrink as h grows at fixed d.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 11</span></p>
+<p>Heads do not always specialize. On some tasks they learn redundant copies, and pruning studies remove most heads with small loss. Specialization is an opportunity, not a guarantee.</p>
+</div>
+<div class="nugget" id="w2">
+<h4>Nugget 02 · Scale the dots before the softmax</h4>
+<p class="big">Divide by sqrt(d_k) so the scores start diffuse. An unscaled softmax saturates at init and the heads learn nothing.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives the head equations, checks the init scale (N(0,16) divided by 4), and counts 7168 parameters per layer.</dd>
+<dt>Why it matters</dt><dd>Init scale decides what the model can learn first. Saturated scores mean frozen gradients on day one. One division fixes it.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Architecture gives opportunity, not guarantees. Heads may specialize or copy each other. Measure the diversity. Do not assume it.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>MQA: one bulletin board for every head</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 2-5</span></p>
+<p>At decode time the bottleneck is the KV cache load, not math. What if all query heads shared one KV head? The toy: 32 query heads, 1 KV head. The cache shrinks 32x and the queries keep their private projections. Queries stay diverse. Keys and values become a shared bulletin board. Every head reads the same board with its own question. Memory traffic falls. Representational bandwidth falls too.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 5-6</span></p>
+<p>Cache bytes = 2 (K and V) times layers times kv_heads times d_k times T times bytes. On the toy (32 layers, 32 query heads, d_k = 128, T = 2048, fp16): MHA cache 1024 MiB, MQA cache 32 MiB, ratio 32.0. The attention math is unchanged per head. Only the K and V projections are shared.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 340" role="img" aria-label="Bar chart of KV cache sizes: MHA 1024 MiB, GQA 256 MiB, MQA 32 MiB">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">KV cache, 32 layers, T = 2048, fp16 (C03 item 6, C04 item 6)</text>
+<rect x="90" y="70" width="110" height="180" fill="#b3541e" rx="4"/>
+<rect x="295" y="190" width="110" height="60" fill="#2f4b8f" rx="4"/>
+<rect x="500" y="232" width="110" height="18" fill="#4f7a52" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="145" y="60">1024 MiB</text>
+<text x="350" y="180">256 MiB</text>
+<text x="555" y="222">32 MiB</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="145" y="270">MHA, 32 KV</text>
+<text x="350" y="270">GQA, 8 groups</text>
+<text x="555" y="270">MQA, 1 KV</text>
+</g>
+<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Sharing cuts the serving memory wall. Arithmetic barely changes.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 6, C04 item 6</span> The lesson's computed cache sizes. Decode memory traffic falls about 32x in the toy.</figcaption>
+</figure>
+<figure>
+<img class="lessonfig" src="../assets/u02_fig01.png" alt="Plate showing KV head counts and cache sizes for MHA, GQA, and MQA">
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 15, figure u02_fig01</span> The lesson's own plate: one rule (share the KV head), before (MHA, 32 KV heads), after (MQA, 1 KV head). Cache bytes computed in the lesson's render script.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 5</span> Cache bench: the lesson's cache formula, on your config.</p>
+<p><input class="text" id="clyr" type="number" value="32" min="1" max="128" aria-label="layers"> <input class="text" id="ckv" type="number" value="1" min="1" max="64" aria-label="kv heads"> <input class="text" id="cdk" type="number" value="128" min="8" max="512" aria-label="d_k"> <input class="text" id="ct" type="number" value="2048" min="64" max="131072" aria-label="T"> <button class="btn" id="cbtn">Compute cache MiB</button></p>
+<div class="chips" id="cout"></div>
+<p class="small muted">Reproduce the lesson: 32 layers, kv 32 vs 1, d_k 128, T 2048 gives 1024 vs 32 MiB. Then try the lab: 24 layers, kv 1, d_k 64, T 4096 gives 24 MiB.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 11</span></p>
+<p>Sharing is not free. Small models trained with MQA from scratch underperform MHA on benchmarks. The capacity cut bites when the model is already small. Large models absorb the sharing.</p>
+</div>
+<div class="nugget" id="w3">
+<h4>Nugget 03 · Serving is a memory problem wearing a math costume</h4>
+<p class="big">Decode time is dominated by loading the KV cache, not by arithmetic. Share the KV heads and the wall moves 32x.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives the cache formula, prices MHA at 1024 MiB and MQA at 32 MiB on the toy, and shows the arithmetic barely changes.</dd>
+<dt>Why it matters</dt><dd>Optimizing the wrong bottleneck is the classic serving mistake. Profile memory traffic first. The 32x win comes from one shared projection, not from faster math.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Name the true bottleneck before you optimize. When the cost is data movement, not arithmetic, share the data.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>GQA: the dial between quality and economy</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 2-5</span></p>
+<p>MQA is fast but costs quality. MHA is quality but slow. Is there a dial? The toy: 32 query heads in 8 groups, each group of 4 shares one KV head. The cache falls 4x vs MHA. The group count G is the knob: G = h gives MHA, G = 1 gives MQA. On the same toy as C03, GQA with G = 8 gives 256 MiB against MHA 1024 MiB and MQA 32 MiB. The lesson notes as public knowledge, not course content, that Llama-2 70B uses G = 8 groups.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 5, 11</span></p>
+<p>Upcasting converts an MHA checkpoint to GQA by mean-pooling KV heads within each group. But pooling without continued training drops quality. The free-conversion story needs the recovery run. At G = 8 the gap to MHA is small in published reports.</p>
+</div>
+<div class="nugget" id="w4">
+<h4>Nugget 04 · The knob needs a recovery run</h4>
+<p class="big">GQA turns a binary choice into a dial. But mean-pooling KV heads is not free: the short continued-training run is what restores quality.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson places GQA between MHA (1024 MiB) and MQA (32 MiB) at 256 MiB, defines the G knob, and documents the upcast recipe.</dd>
+<dt>Why it matters</dt><dd>Conversion recipes hide steps. Pooling alone degrades the model. The recovery run is the difference between a trick and a method.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When a recipe claims a free lunch, find the step that pays. It is usually a short, unglamorous run that nobody puts in the headline.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Sinusoids: name tags for slots</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 2-5</span></p>
+<p>Attention is permutation invariant. How does position 5 know it is fifth? The lesson's toy: add a position vector p_m to each token vector. Learned codes make p_m a table row. Fixed codes build p_m from sines and cosines: p at (m, 2i) = sin(m / 10000^{2i/d}), p at (m, 2i+1) = cos(m / 10000^{2i/d}). Position codes are name tags for slots. Learned tags adapt to the data but stop at the trained length. Fixed sinusoid tags follow a formula, so they extend to any length, with different frequencies tracking coarse vs fine position.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 5-6</span></p>
+<p>Wavelength of pair i: lambda_i = 2 pi times 10000^{2i/d}. Low i gives short waves that track exact offsets. High i gives long waves that track coarse region. On the toy (d = 6) the lesson computes wavelengths 6.3, 135.4, 2916.4. The curves over 64 positions show the fast pair oscillating and the slow pair barely moving.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Bar chart of sinusoid wavelengths 6.3, 135.4, 2916.4 on a log scale">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Sinusoid wavelengths, d = 6 (C05 item 6)</text>
+<rect x="130" y="215" width="110" height="35" fill="#2f4b8f" rx="4"/>
+<rect x="295" y="165" width="110" height="85" fill="#2f4b8f" rx="4"/>
+<rect x="460" y="60" width="110" height="190" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="185" y="205">6.3</text>
+<text x="350" y="155">135.4</text>
+<text x="515" y="50">2916.4</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="185" y="270">pair 0</text>
+<text x="350" y="270">pair 1</text>
+<text x="515" y="270">pair 2</text>
+</g>
+<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Log-spaced by construction: each pair stretches about 21x wider.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 6</span> The lesson's computed wavelengths. Fixed codes cost no parameters. Learned codes cost T_max times d and hit a hard wall at T_max.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 9, 11</span></p>
+<p>Learned positions carry a hard wall: position T_max + 5 has no trained row, the model sees garbage, and generation degrades. The lab prices a table at T_max = 512, d = 768: 393,216 parameters. Extrapolation needs relative codes, which is where the next two sections go.</p>
+</div>
+<div class="nugget" id="w5">
+<h4>Nugget 05 · Frequencies are a zoom lens</h4>
+<p class="big">Short waves pin down exact offsets. Long waves name coarse regions. One formula gives the model both, with zero parameters.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the sinusoid, computes wavelengths 6.3, 135.4, 2916.4 for d = 6, and contrasts fixed codes with learned tables.</dd>
+<dt>Why it matters</dt><dd>Learned tables memorize positions up to T_max and then face garbage. The formula extends forever. When length must grow, prefer the rule over the table.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> A formula extrapolates where a table ends. When a system must handle inputs beyond its training range, encode the structure as a rule, not as rows.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>RoPE: spin the vectors, keep the distances</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 2-5</span></p>
+<p>Absolute codes leave an absolute residue in the dot product. Can position enter through relative offsets only? RoPE spins each 2D slice of Q and K by an angle proportional to position. Pair (x_0, x_1) at position m rotates by m times theta. Two vectors from positions m and n meet with relative angle (m minus n) times theta. Absolute position disappears from the dot product. Only distance survives. The rotation applies to Q and K only, never to V.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 5-6</span></p>
+<p>The proof is one line of rotation algebra: the transpose flips the sign, rotations compose by addition, and the result is a function of (n minus m). The toy: x = (1, 0), m = 1, theta = 1.0 gives y = (0.5403, 0.8415), which is (cos 1, sin 1). The relative check R(1) R(2)^T against R(minus 1) holds with max error 1.11e-16: exact to machine precision. The angle per pair is theta_i = base^{minus 2i/d}, with base often 10000.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u02-rope.webp" alt="Watercolor of a compass rose with two arrows rotating at different angles">
+<figcaption><span class="tag tag-toy">Illustration</span> RoPE in one image: positions are angles, and only the angle between vectors survives the dot product. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 700 340" role="img" aria-label="Diagram of the vector (1,0) rotated by angle 1 to (0.5403, 0.8415)">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">RoPE toy: rotate (1, 0) by m theta = 1 (C06 item 6)</text>
+<circle cx="350" cy="180" r="110" fill="none" stroke="#ddd3bd" stroke-width="2"/>
+<line x1="350" y1="180" x2="460" y2="180" stroke="#2f4b8f" stroke-width="3"/>
+<line x1="350" y1="180" x2="409" y2="88" stroke="#b3541e" stroke-width="3"/>
+<path d="M 430 180 A 80 80 0 0 0 388 108" fill="none" stroke="#7a7160" stroke-width="1.5"/>
+<g font-family="monospace" font-size="14" fill="#1c1a17">
+<text x="470" y="185">(1, 0)</text>
+<text x="415" y="80">(0.5403, 0.8415)</text>
+<text x="440" y="140">1 rad</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160">
+<text x="350" y="310" text-anchor="middle">Norm preserved. Relative check error 1.11e-16.</text>
+</g>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 item 6</span> The lesson's computed rotation. Extra cost O(T d), zero parameters. The lesson's plate u02_fig02 shows the same before and after.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 4, 7</span> RoPE bench: rotate a 2D pair by m times theta, the lesson's rule.</p>
+<p><input class="text" id="rpx" type="number" value="1" step="0.1" aria-label="x0"> <input class="text" id="rpy" type="number" value="0" step="0.1" aria-label="x1"> <input class="text" id="rpm" type="number" value="1" step="1" aria-label="position m"> <input class="text" id="rpt" type="number" value="1" step="0.1" aria-label="theta"> <button class="btn" id="rpbtn">Rotate</button></p>
+<div class="chips" id="rpout"></div>
+<p class="small muted">Reproduce the lesson: (1, 0), m = 1, theta = 1 gives (0.5403, 0.8415). Then try the lab: (0, 1), m = 2, theta = 0.5. Check the norm never changes.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 item 11</span></p>
+<p>RoPE does not extrapolate to any length. Positions far past training see angle combinations never seen, and perplexity explodes. Fixes: a larger base, or position interpolation.</p>
+</div>
+<div class="nugget" id="w6">
+<h4>Nugget 06 · Make position relative by construction</h4>
+<p class="big">Rotate Q and K by position-dependent angles and the dot product keeps only the offset. Absolute position never enters the score.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson proves the relative property from rotation algebra, verifies it to 1.11e-16, and prices the toy rotation at (0.5403, 0.8415).</dd>
+<dt>Why it matters</dt><dd>Structure beats learning: the relative property holds by construction at every length seen in training. But unseen angle combinations still break it, so extrapolation needs its own fix.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When you need an invariant, build it into the geometry. Do not ask the model to learn what the math can guarantee.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>ALiBi: tax distance directly</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 2-5</span></p>
+<p>RoPE's angles still wrap past training length. Is there a scheme with no angles at all? ALiBi answers: score s_{ij} = q_i dot k_j minus m_h times |i minus j|. Far pairs pay a linear penalty. No position vector exists. Relative schemes tax distance directly. T5 adds a learned bucketed bias per offset (32 buckets, log-spaced past 128). ALiBi subtracts a fixed per-head slope times distance, with slopes m_h = 2^{minus 8h/H}. Both make far mean unlikely without any absolute code.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 5-6</span></p>
+<p>The toy: 4 positions, head slope m = 0.5. Distance 3 costs 1.5 logit points, a factor exp(minus 1.5) of about 0.22 in weight. The near field dominates by construction. Because the rule uses only i minus j, it applies at any length: extrapolation is structural, not learned.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Bar chart of ALiBi penalty and weight factor versus distance">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">ALiBi penalty, slope 0.5 (C07 item 6)</text>
+<rect x="100" y="230" width="80" height="20" fill="#b3541e" rx="4"/>
+<rect x="230" y="180" width="80" height="70" fill="#b3541e" rx="4"/>
+<rect x="360" y="130" width="80" height="120" fill="#b3541e" rx="4"/>
+<rect x="490" y="80" width="80" height="170" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="13" text-anchor="middle" fill="#1c1a17">
+<text x="140" y="220">0</text>
+<text x="270" y="170">0.5</text>
+<text x="400" y="120">1.0</text>
+<text x="530" y="70">1.5</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="140" y="270">d=0, x1.00</text>
+<text x="270" y="270">d=1, x0.61</text>
+<text x="400" y="270">d=2, x0.37</text>
+<text x="530" y="270">d=3, x0.22</text>
+</g>
+<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Logit penalty (bars) and the resulting weight factor. Bias added before softmax.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 6</span> The lesson's computed penalty. Check: B[i,i] = 0, B symmetric in |i minus j|, larger slopes penalize harder.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 11</span></p>
+<p>The penalty that helps extrapolation hurts retrieval. Tasks needing exact far recall, like long-range copying, suffer under strong slopes. Distance penalty is not free.</p>
+</div>
+<div class="nugget" id="w7">
+<h4>Nugget 07 · Extrapolation by construction, paid in recall</h4>
+<p class="big">A fixed distance tax works at any length with zero parameters. The same tax that tames far positions starves far recall.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the ALiBi bias and the T5 bucketed bias, prices distance 3 at 0.22x weight, and shows extrapolation falling out of the rule.</dd>
+<dt>Why it matters</dt><dd>Every position scheme trades something. RoPE keeps fine distance control but wraps. ALiBi extrapolates but taxes recall. Choose by which failure you can afford.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Structural guarantees travel. Learned ones do not. But every structural guarantee has a scope. Name what it costs inside that scope.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>Layouts: the mask is the architecture</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 2-5</span></p>
+<p>BERT reads both ways, GPT reads left to right, T5 has two stacks. Which wiring does what? The lesson's toy sentence is <em>the cat sat</em>. Encoder: every position sees every position. Decoder: position i sees positions up to i. Encoder-decoder: the decoder queries the encoder's final states. The mask is the layout.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 4-6</span></p>
+<p>Encoder self scores: (T, T), unmasked. Decoder self scores: (T, T), causal. Cross scores: (T_dec, T_enc), with queries from the decoder and keys and values from the encoder. On shapes S = 16, T = 8, d = 64, h = 4, cross scores are (B, 4, 8, 16). The encoder runs once. The decoder runs per step. That asymmetry is why decoders dominate serving cost.</p>
+</div>
+<table class="data">
+<caption class="small muted capleft"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 3-4, 8</span> The three layouts: mask and wiring.</caption>
+<tr><th>Layout</th><th>Self mask</th><th>Cross</th><th>Best for</th></tr>
+<tr><td>Encoder-only (BERT)</td><td class="num">none, bidirectional</td><td class="num">none</td><td>Understanding, classification</td></tr>
+<tr><td>Decoder-only (GPT)</td><td class="num">causal</td><td class="num">none</td><td>Open generation</td></tr>
+<tr><td>Encoder-decoder (T5)</td><td class="num">none + causal</td><td class="num">(T_dec, T_enc)</td><td>Sequence-to-sequence</td></tr>
+</table>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 item 11</span></p>
+<p>Bidirectional is not always better. For generation, bidirectional targets leak the future. The layout must match the task's causality.</p>
+</div>
+<div class="nugget" id="w8">
+<h4>Nugget 08 · Match the mask to the causality</h4>
+<p class="big">Encoder reads, decoder writes, encoder-decoder reads then writes. Pick the layout whose information flow matches the task.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines the three masks, traces cross-attention shapes (B, 4, 8, 16), and prices the encoder-once vs decoder-per-step asymmetry.</dd>
+<dt>Why it matters</dt><dd>The wrong mask is not a small inefficiency. Bidirectional generation leaks the target. Layout is a correctness choice before it is a speed choice.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Information flow is architecture. Before choosing components, draw what may see what. The drawing usually decides.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>The BERT family: learn by hiding</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 2-5</span></p>
+<p>No labels exist for raw text. How does an encoder learn anything? The toy: <em>the [MASK] sat</em>. The model predicts <em>cat</em> from both sides. That is masked language modeling. MLM hides 15% of tokens and predicts them from context. The original BERT added NSP: predict whether sentence B follows A. RoBERTa dropped NSP, trained longer, used bigger batches and more data. DistilBERT trains a small student to mimic a big teacher's outputs, and the soft targets carry the teacher's uncertainty, the dark knowledge.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 6, 9</span></p>
+<p>Mask 15% of T = 128: about 19 positions train per sequence, 109 are context only. Only 15% of positions produce loss, which is sample-inefficient next to causal LM where 100% of positions train. Bidirectional context is the compensation. The lesson cites as public knowledge, not course content, that DistilBERT keeps about 97% of BERT's GLUE score at 40% of the parameters.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of training versus context positions under 15 percent masking">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">MLM: who trains at T = 128 (C09 item 6)</text>
+<rect x="180" y="190" width="110" height="60" fill="#b3541e" rx="4"/>
+<rect x="410" y="60" width="110" height="190" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="235" y="180">19 train</text>
+<text x="465" y="50">109 context</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="235" y="270">masked 15%</text>
+<text x="465" y="270">context only</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The mask selects the training positions. The 80/10/10 rule handles the train-test mismatch.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 6</span> The lesson's arithmetic. Loss flows only through masked positions.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 11</span></p>
+<p>NSP did not help. RoBERTa removed it with no loss, and later work showed the signal was mostly topic, not order. Pretext tasks need ablations, not faith.</p>
+</div>
+<div class="nugget" id="w9">
+<h4>Nugget 09 · Ablate the pretext task</h4>
+<p class="big">MLM works because predicting hidden tokens from both sides is a real task. NSP looked useful until someone removed it. Test every auxiliary loss by deletion.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines MLM and NSP, counts 19 training positions at T = 128, and records RoBERTa's deletion of NSP.</dd>
+<dt>Why it matters</dt><dd>Auxiliary objectives accumulate by tradition. Each one costs signal and complexity. The honest question is always: what breaks if we delete it?</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Complexity needs a defender. For every extra loss, head, or task, demand the ablation. Tradition is not evidence.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Caches: the past, materialized</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 2-5</span></p>
+<p>Generating token 500 recomputes keys for tokens 1 through 499 unless we store them. What exactly is stored? Per layer: K_cache and V_cache at (B, kv_heads, T_cached, d_k). Prefill processes the prompt in parallel and writes all K and V. Decode handles one new token at a time: project one Q, K, V, append, attend over the cache. The cache turns O(T^2) rework into O(T) appends. Attention over the cache stays O(T) per step, because the new token must read the past, but the projections stop repeating.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 6, 9</span></p>
+<p>The C03 toy again: MHA 1024 MiB, GQA-8 256 MiB, MQA 32 MiB at T = 2048. Encoder-decoder adds asymmetry: the encoder cache is written once for S positions and read by every decode step, while the decoder self-cache grows per step. Per step the cost is O(T d) attention plus O(d^2) projections. The cache is the serving memory wall. That is why MQA and GQA exist.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 item 11</span></p>
+<p>Prefix caching has a correctness trap. A stale entry can serve another user's context. Cache keys must include the full prefix identity. Correctness first, sharing second.</p>
+</div>
+<div class="nugget" id="w10">
+<h4>Nugget 10 · Cache the past, key it exactly</h4>
+<p class="big">Prefill writes once in parallel. Decode appends one token at a time. The cache is exact past K and V, and its key must identify the full prefix.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines the cache tensors, splits prefill from decode, and re-prices the C03 toy across layouts.</dd>
+<dt>Why it matters</dt><dd>Sharing prefixes across requests multiplies the win, but a stale prefix is a correctness bug with security flavor. Identity the key fully or do not share.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Every cache is a bet that the past still describes the present. Write down exactly what the key covers. The bugs live in the uncovered part.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>The complexity ledger: find the dominant term</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 4-6</span></p>
+<p>Which term kills you first at T = 8192, d = 4096: the scores or the weights? The lesson builds the ledger. QK^T costs O(T^2 d): each of T^2 outputs is a d-dot product. Softmax is O(T^2). Attention times V is another T^2 d. Projections are O(T d^2). The crossover: T^2 d beats T d^2 exactly when T beats d. On the toy (T = 4096, d = 512): T^2 d = 8.6e9, T d^2 = 1.1e9, scores dominate 8 to 1. At T = 128, d = 4096: T d^2 = 2.1e9 vs T^2 d = 6.7e7, and the FFN and projections dominate. The regime flips at T = d.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 2, 9</span></p>
+<p>Memory first, compute second. Scores at (h, T, T) with h = 8, T = 8192: 8 times 8192^2 = 5.4e8 floats = 2.1 GB in fp32 per layer, while weights are fixed. Flash Attention attacks the memory wall without changing the FLOP count: same math, far less IO.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 340" role="img" aria-label="Bar chart of score versus projection FLOPs in two regimes">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">The T = d crossover (C11 item 6)</text>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="175" y="270">T=4096, d=512</text>
+<text x="525" y="270">T=128, d=4096</text>
+</g>
+<rect x="120" y="60" width="55" height="190" fill="#b3541e" rx="4"/>
+<rect x="185" y="222" width="55" height="28" fill="#2f4b8f" rx="4"/>
+<rect x="470" y="222" width="55" height="28" fill="#b3541e" rx="4"/>
+<rect x="535" y="90" width="55" height="160" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="12" text-anchor="middle" fill="#1c1a17">
+<text x="147" y="50">8.6e9</text>
+<text x="212" y="212">1.1e9</text>
+<text x="497" y="212">6.7e7</text>
+<text x="562" y="80">2.1e9</text>
+</g>
+<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Clay: T^2 d scores. Indigo: T d^2 projections. Dominance flips at T = d.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 6</span> The lesson's computed ledger. Doubling T quadruples the score term: the signature of T^2.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 4-5</span> Ledger bench: the lesson's per-layer terms, on your T and d.</p>
+<p><input class="text" id="lgt" type="number" value="4096" min="16" max="131072" aria-label="T"> <input class="text" id="lgd" type="number" value="512" min="16" max="16384" aria-label="d"> <button class="btn" id="lgbt">Compute ledger</button></p>
+<div class="chips" id="lgout"></div>
+<p class="small muted">Reproduce the lesson: T = 4096, d = 512 gives 8.6e9 vs 1.1e9. Then flip to T = 128, d = 4096 and watch the winner change.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 11</span></p>
+<p>Fewer FLOPs does not mean faster. An approximation with fewer FLOPs but poor memory locality runs slower than dense attention with a fused kernel. FLOPs are not time.</p>
+</div>
+<div class="nugget" id="w11">
+<h4>Nugget 11 · Count FLOPs for design, measure time for truth</h4>
+<p class="big">The ledger names the dominant term and the T = d crossover. The profiler names the winner. They disagree whenever memory locality decides.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives O(T^2 d + T d^2), computes the 8 to 1 split at T = 4096, and shows the flip at T = 128, d = 4096.</dd>
+<dt>Why it matters</dt><dd>Architecture choice runs on the ledger. Serving budgets run on the profiler. Confusing the two is how a theoretically faster kernel ships slower.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Big-O chooses the design. Measurement chooses the deployment. Run both, and believe the measurement when they fight.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Failure gallery: diagnose by signature</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 2-5</span></p>
+<p>The model trains fine at 2k context and collapses at 8k. What are the suspects? The lesson collects five: length extrapolation, attention sink, rank collapse, RoPE base mismatch, head redundancy. Every efficient choice buys a failure mode. Diagnose by signature, not by guess. Rank collapse: repeated attention plus residual, without enough FFN and norm diversity, drives token representations toward a rank-1 matrix. The residual path and the FFN are the counterforce. Attention sink: the softmax needs somewhere to dump mass when nothing matches, and position 0 becomes the dump.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 6, 8</span></p>
+<p>The sink toy: scores [5, 0, 0, 0] for a query with no good match give softmax [0.981, 0.006, 0.006, 0.006]. Position 0 absorbs 98% of the mass without meaning anything. That is the signature in one row. The diagnostic order: perplexity vs length curve, mean attention mass on position 0, effective rank of layer outputs, head map diversity. A cliff at exactly T_max points at positions. A gradual rise points at capacity.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of the attention sink: position 0 takes 98 percent of the mass">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Attention sink: softmax([5, 0, 0, 0]) (C12 item 6)</text>
+<rect x="120" y="70" width="110" height="180" fill="#b3541e" rx="4"/>
+<rect x="270" y="238" width="110" height="12" fill="#2f4b8f" rx="4"/>
+<rect x="420" y="238" width="110" height="12" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="175" y="60">0.981</text>
+<text x="325" y="228">0.006</text>
+<text x="475" y="228">0.006</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="175" y="270">position 0</text>
+<text x="325" y="270">position 1</text>
+<text x="475" y="270">position 2</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Fourth bar 0.006 omitted for space. The dump is the diagnosis.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 item 6</span> The lesson's computed row. Bounded sink mass is healthy. Exploding sink mass with length is the failure.</figcaption>
+</figure>
+<table class="data">
+<caption class="small muted capleft"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 2-4</span> The five failures: signature and fix direction.</caption>
+<tr><th>Failure</th><th>Signature</th><th>Fix direction</th></tr>
+<tr><td>Length extrapolation</td><td class="num">Perplexity cliff past trained length</td><td>Larger RoPE base, position interpolation</td></tr>
+<tr><td>Attention sink</td><td class="num">Position 0 absorbs mass with length</td><td>Bound the dump, check the curve</td></tr>
+<tr><td>Rank collapse</td><td class="num">Token vectors converge, rank falls</td><td>Residual path and FFN diversity</td></tr>
+<tr><td>RoPE base mismatch</td><td class="num">Wrong base for the target length</td><td>Retune the base for the length</td></tr>
+<tr><td>Head redundancy</td><td class="num">Near-identical attention maps</td><td>Measure diversity, prune or retrain</td></tr>
+</table>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 item 11</span></p>
+<p>The list is not complete, and data shift mimics every architectural signature. Always run the same diagnostics on a length-matched in-domain sample first.</p>
+</div>
+<div class="nugget" id="w12">
+<h4>Nugget 12 · Rule out the data before you blame the architecture</h4>
+<p class="big">Five signatures, five fixes. But distribution shift wears every mask in the gallery. The control experiment comes first.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson names five failures with signatures, computes the sink row, and orders the diagnostic: length curve, sink mass, rank, diversity.</dd>
+<dt>Why it matters</dt><dd>Debugging without a control is guesswork. A length-matched in-domain sample separates data shift from architecture in one run.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Diagnose by signature, fix by signature, and always run the control first. The cheapest experiment is the one that rules out half the suspects.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Twelve nuggets, one unit</h2>
+<ol class="wisdom">
+<li><a href="#w1"><span class="wnum">01</span>Associate the other way</a></li>
+<li><a href="#w2"><span class="wnum">02</span>Scale the dots before the softmax</a></li>
+<li><a href="#w3"><span class="wnum">03</span>Serving is a memory problem wearing a math costume</a></li>
+<li><a href="#w4"><span class="wnum">04</span>The knob needs a recovery run</a></li>
+<li><a href="#w5"><span class="wnum">05</span>Frequencies are a zoom lens</a></li>
+<li><a href="#w6"><span class="wnum">06</span>Make position relative by construction</a></li>
+<li><a href="#w7"><span class="wnum">07</span>Extrapolation by construction, paid in recall</a></li>
+<li><a href="#w8"><span class="wnum">08</span>Match the mask to the causality</a></li>
+<li><a href="#w9"><span class="wnum">09</span>Ablate the pretext task</a></li>
+<li><a href="#w10"><span class="wnum">10</span>Cache the past, key it exactly</a></li>
+<li><a href="#w11"><span class="wnum">11</span>Count FLOPs for design, measure time for truth</a></li>
+<li><a href="#w12"><span class="wnum">12</span>Rule out the data before you blame the architecture</a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cme295/lessons/u02_attention_variants.md</code>, locally authored bridge content for Stanford CME295 (2026-10-06). The lesson marks MHA, MQA, GQA, position embeddings, and model families OFFICIAL-SYLLABUS, and attention approximation, cache math detail, complexity analysis, and failure cases REQUESTED-BRANCH. Every leaf is PLANNED / SOURCE ATTRIBUTION PENDING until slide or transcript extraction verifies it. No lecture transcript exists for this unit, so no lecture anecdotes appear and no sentence here reproduces an instructor's words. The Llama-2 group count and the DistilBERT figures appear with the lesson's own caveat: public knowledge, not course content. Lesson figures u02_fig01 and u02_fig02 are the lesson's own computed plates, embedded where cited. Charts on this page re-plot the lesson's computed numbers with section citations. Interactive toys run the lesson's rules on values you supply. The two watercolor illustrations are original to this companion, generated with Muse native tools, and labeled Illustration. No official course video exists for this unit, so no video is embedded.</p>
+<p><strong>Quoted words.</strong> Quoted words from the lesson source: 0. This companion paraphrases the lesson throughout and uses no quotation marks in visible text, tooltips, or labels. Numbers carry their lesson section above each figure and table.</p>
+<p><a href="../index.html">Back to the CME295 index</a></p>
+</footer>
+</div>
+<script>
+function el(tag,cls,text){
+var e=document.createElement(tag)
+if(cls){e.className=cls}
+if(text!=null){e.textContent=text}
+return e
+}
+function runMha(){
+var d=parseFloat(document.getElementById("mhad").value)
+var h=parseFloat(document.getElementById("mhah").value)
+var out=document.getElementById("mhaout")
+out.textContent=""
+if(!(d>=1)||!(h>=1)){
+out.appendChild(el("span","chip plain","Enter d >= 1 and h >= 1."))
+return
+}
+var dk=d/h
+var qkv=3*d*dk
+var wo=d*d
+out.appendChild(el("span","chip plain","d_k = "+String(dk)))
+out.appendChild(el("span","chip plain","QKV = "+String(qkv)))
+out.appendChild(el("span","chip plain","W_o = "+String(wo)))
+out.appendChild(el("span","chip plain","total = "+String(qkv+wo)))
+out.appendChild(el("span","chip plain","scale = 1/sqrt("+String(dk)+")"))
+}
+function runCache(){
+var lyr=parseFloat(document.getElementById("clyr").value)
+var kv=parseFloat(document.getElementById("ckv").value)
+var dk=parseFloat(document.getElementById("cdk").value)
+var t=parseFloat(document.getElementById("ct").value)
+var out=document.getElementById("cout")
+out.textContent=""
+if(!(lyr>=1)||!(kv>=1)||!(dk>=1)||!(t>=1)){
+out.appendChild(el("span","chip plain","Enter positive values."))
+return
+}
+var bytes=2*lyr*kv*dk*t*2
+var mib=bytes/1048576
+out.appendChild(el("span","chip plain","bytes = "+String(bytes)))
+out.appendChild(el("span","chip plain","MiB = "+mib.toFixed(1)))
+}
+function runLedger(){
+var t=parseFloat(document.getElementById("lgt").value)
+var d=parseFloat(document.getElementById("lgd").value)
+var out=document.getElementById("lgout")
+out.textContent=""
+if(!(t>=1)||!(d>=1)){
+out.appendChild(el("span","chip plain","Enter T >= 1 and d >= 1."))
+return
+}
+var scores=t*t*d
+var proj=t*d*d
+out.appendChild(el("span","chip plain","T^2 d = "+scores.toExponential(2)))
+out.appendChild(el("span","chip plain","T d^2 = "+proj.toExponential(2)))
+if(scores>proj){
+out.appendChild(el("span","chip plain","Scores dominate. Attention regime."))
+}else{
+out.appendChild(el("span","chip plain","Projections dominate. FFN regime."))
+}
+}
+function runRope(){
+var x0=parseFloat(document.getElementById("rpx").value)
+var x1=parseFloat(document.getElementById("rpy").value)
+var m=parseFloat(document.getElementById("rpm").value)
+var th=parseFloat(document.getElementById("rpt").value)
+var out=document.getElementById("rpout")
+out.textContent=""
+if(isNaN(x0)||isNaN(x1)||isNaN(m)||isNaN(th)){
+out.appendChild(el("span","chip plain","Enter numbers in all four boxes."))
+return
+}
+var a=m*th
+var c=Math.cos(a)
+var s=Math.sin(a)
+var y0=c*x0-s*x1
+var y1=s*x0+c*x1
+var n0=Math.sqrt(x0*x0+x1*x1)
+var n1=Math.sqrt(y0*y0+y1*y1)
+out.appendChild(el("span","chip plain","angle = "+a.toFixed(4)))
+out.appendChild(el("span","chip plain","y = ("+y0.toFixed(4)+", "+y1.toFixed(4)+")"))
+out.appendChild(el("span","chip plain","norm "+n0.toFixed(4)+" to "+n1.toFixed(4)))
+}
+document.getElementById("mhabtn").addEventListener("click",runMha)
+document.getElementById("cbtn").addEventListener("click",runCache)
+document.getElementById("lgbt").addEventListener("click",runLedger)
+document.getElementById("rpbtn").addEventListener("click",runRope)
+runMha()
+runCache()
+runLedger()
+runRope()
+</script>
+</body>
+</html>

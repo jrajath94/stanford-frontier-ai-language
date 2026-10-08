@@ -437,8 +437,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-companion">companion</span> Companion voice: the idea above the tag is from the lesson. The generalization below it is the companion’s.</p>
 <p class="small muted">Provenance: no full lecture transcript exists for this session. The 2026 lecture videos are restricted and unviewed, and the 2024 playlist was not viewed. This page narrates the lesson document, not a video. The concept inventory is REQUESTED-BRANCH. The reading list is OFFICIAL-SOURCE via SRC-02.</p>
 </div>
-</header><figure class="paint wide" data-entrance="bloom" data-hero="1">
-<div class="frame"><div class="stage"><img alt="Watercolor of a lighthouse beam blending three boats reflections into one glowing path" class="base" fetchpriority="high" loading="lazy" src="assets/u05-hero.jpg"/></div></div>
+</header><figure data-phase2="1" data-scene="u05-attention-transformer-hero" class="paint wide" data-entrance="bloom" data-hero="1">
+<div class="frame"><div class="stage"><img alt="Watercolor of a lighthouse beam blending three boats reflections into one glowing path" class="base" fetchpriority="high" loading="lazy" src="assets/u05-hero.jpg"/><img alt="" aria-hidden="true" class="ly mul" data-obj="hero-subject" data-depth="14" loading="lazy" src="assets/u05-attention-transformer-hero-layer.png" style="left:5%;top:5%;width:90%"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The U05 idea in one image: the query is the beam, the keys are the boats, and the output is the blend of their reflections. A retrieval system made of light. Watercolor, original to this companion.</figcaption></figure>
 <section class="block col" data-chapter="1" data-title="A retrieval system made of vectors" id="s1"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">1</span></div><div><p class="ch-meta"><span class="ts">Unit 1</span> · C01</p><h2>A retrieval system made of vectors</h2></div></div>
 <div class="prose-narrow">
@@ -459,7 +459,7 @@ span.ptag, .ptag {
 <p><button class="btn" id="atbtn">Attend</button></p>
 <p class="small" id="atnote"></p>
 </div>
-<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-retrieval"><div class="tag-price"><span class="tag-big">1</span><span class="tag-unit">Nugget 1 · From the lesson C01 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Attention is a retrieval system: the query is the question, the keys are the index, the values are the documents. Attention weights explain the routing. They do not explain the model.</p><p><b>Why it matters. </b>Different weight matrices can give the same output, because the values carry the content and the weights are one factor. Weights are a clue, not an explanation. Do not ship interpretability claims on weights alone.</p><p><b>Transfer. </b>Choose attention when any position may need any other (long range). Choose the RNN when n is huge and locality suffices. The retrieval framing tells you which regime you are in.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-retrieval"><div class="tag-price"><span class="tag-big">1 factor</span><span class="tag-unit">From the lesson C01 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Attention is a retrieval system: the query is the question, the keys are the index, the values are the documents. Attention weights explain the routing. They do not explain the model.</p><p><b>Why it matters. </b>Different weight matrices can give the same output, because the values carry the content and the weights are one factor. Weights are a clue, not an explanation. Do not ship interpretability claims on weights alone.</p><p><b>Transfer. </b>Choose attention when any position may need any other (long range). Choose the RNN when n is huge and locality suffices. The retrieval framing tells you which regime you are in.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="The scale is a calibration knob" id="s2"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">2</span></div><div><p class="ch-meta"><span class="ts">Unit 2</span> · C02</p><h2>The scale is a calibration knob</h2></div></div>
 <div class="prose-narrow">
@@ -494,7 +494,7 @@ span.ptag, .ptag {
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
 <p>The decoder predicts w_4 from w_1..w_3, but the full (n, n) score matrix lets position 3 see position 5. How is the future hidden? Add −1e9 above the diagonal, then softmax. The upper triangle becomes exactly 0. A one-way mirror. The causal mask blinds each position to the future, the padding mask blinds all positions to filler. Both are added to the scores before softmax: −inf becomes 0 weight. After softmax is too late: the mass already moved, and renormalizing leaks rank information.</p>
-<figure class="paint inset" data-entrance="sketch">
+<figure data-phase2="1" data-scene="u05-attention-transformer-s2" class="paint inset" data-entrance="sketch">
 <div class="frame"><div class="stage"><img alt="Watercolor of a one-way mirror with light passing one way and blocked the other" class="base" loading="lazy" src="assets/u05-mirror.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The causal mask as watercolor: a one-way mirror. Light (information) passes left to right and is blocked the other way. The arrow of time, painted. Watercolor, original to this companion.</figcaption></figure>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 §5, §6</span></p>
@@ -527,7 +527,7 @@ span.ptag, .ptag {
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
 <p>Attention is a set operation: permute the input, permute the output identically. Where did word order go? “Dog bites man” versus “man bites dog” have the same multiset. Without positions, the model cannot tell them apart. Add a position vector to each token embedding (or bias the scores, as in relative schemes). The model then has both “what” and “where”. Sinusoids give a fixed ruler, learned encodings give a fitted ruler. Both break at unseen lengths.</p>
-<figure class="paint inset" data-entrance="bloom">
+<figure data-phase2="1" data-scene="u05-attention-transformer-s3" class="paint inset" data-entrance="bloom">
 <div class="frame"><div class="stage"><img alt="Watercolor of a ruler decorated with alternating fast and slow sine waves" class="base" loading="lazy" src="assets/u05-ruler.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The sinusoid as watercolor: a ruler of waves. The fast wave moves a lot per step, the slow wave barely moves. Together they name every position. Watercolor, original to this companion.</figcaption></figure>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §5, §6</span></p>
@@ -553,7 +553,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 §11</span></p>
 <p>The broken assumption is that the FFN is just a nonlinearity. Remove it and keep attention: the model loses most of its capacity (2/3 of params) and per-position depth. Ablations show the drop. It is half the block, not a garnish.</p>
 </div>
-<aside class="tag" data-chapter="s7" data-sign-label="Unit" data-sign-num="7" id="nugget-desk"><div class="tag-price"><span class="tag-big">7</span><span class="tag-unit">Nugget 7 · From the lesson C07 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C07 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Attention is the meeting. The FFN is the desk work after. Remove the FFN and you lose two thirds of the parameters and all per-position depth.</p><p><b>Why it matters. </b>The 4x expansion is the capacity knob. Shrink it (2x) when parameters are the budget, but know the shrink removes half the block capacity.</p><p><b>Transfer. </b>When a component looks like a garnish, ablate it before dismissing it. The FFN’s share of the FLOP bill (8.59 of 11.3 GFLOP at n = 512, d = 1024) says it is the main course.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 07</span></div></div></aside>
+<aside class="tag" data-chapter="s7" data-sign-label="Unit" data-sign-num="7" id="nugget-desk"><div class="tag-price"><span class="tag-big tight">8.59 of 11.3</span><span class="tag-unit">From the lesson C07 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C07 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Attention is the meeting. The FFN is the desk work after. Remove the FFN and you lose two thirds of the parameters and all per-position depth.</p><p><b>Why it matters. </b>The 4x expansion is the capacity knob. Shrink it (2x) when parameters are the budget, but know the shrink removes half the block capacity.</p><p><b>Transfer. </b>When a component looks like a garnish, ablate it before dismissing it. The FFN’s share of the FLOP bill (8.59 of 11.3 GFLOP at n = 512, d = 1024) says it is the main course.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 07</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Three floor plans from one brick" id="s8"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">8</span></div><div><p class="ch-meta"><span class="ts">Unit 8</span> · C08</p><h2>Three floor plans from one brick</h2></div></div>
 <div class="prose-narrow">
@@ -586,7 +586,7 @@ span.ptag, .ptag {
 <div id="chart-cost"></div>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 §6</span> The FLOP bill at n = 512, d = 1024, one layer, hand-computed and labeled illustrative: attention 0.54, FFN 8.59, projections 2.15 GFLOP. Total about 11.3. The FFN dominates until n ~ 8d.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s10" data-sign-label="Unit" data-sign-num="10" id="nugget-bills"><div class="tag-price"><span class="tag-big">8</span><span class="tag-unit">Nugget 8 · From the lesson C10 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 8 · From the lesson C10 §3, §11</div><div class="tag-eye">The lesson</div><p class="">FLOPs do not predict speed. At small n the model is memory-bandwidth bound (loading weights), not compute bound. Roofline thinking beats FLOP counting for inference.</p><p><b>Why it matters. </b>Doubling d barely changes step time when the bottleneck is weight movement. Count the bytes moved, not just the multiplies.</p><p><b>Transfer. </b>Choose the standard transformer when quality comes first. Choose linear attention or SSMs when n is extreme (100k+) and the bill dominates.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 10</span></div></div></aside>
+<aside class="tag" data-chapter="s10" data-sign-label="Unit" data-sign-num="10" id="nugget-bills"><div class="tag-price"><span class="tag-big">100k</span><span class="tag-unit">From the lesson C10 §3, §10, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 8 · From the lesson C10 §3, §10, §11</div><div class="tag-eye">The lesson</div><p class="">FLOPs do not predict speed. At small n the model is memory-bandwidth bound (loading weights), not compute bound. Roofline thinking beats FLOP counting for inference.</p><p><b>Why it matters. </b>Doubling d barely changes step time when the bottleneck is weight movement. Count the bytes moved, not just the multiplies.</p><p><b>Transfer. </b>Choose the standard transformer when quality comes first. Choose linear attention or SSMs when n is extreme (100k+) and the bill dominates.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 10</span></div></div></aside>
 <div class="toy">
 <p><span class="ptag ptag-illustration">Illustration</span> Bill calculator. The FLOP formulas are C10’s. The sizes are yours. Prefilled with the lesson’s toy.</p>
 <p>n (sequence length) <input aria-label="Sequence length" class="text" id="cn" value="512"/></p>
@@ -1439,5 +1439,43 @@ runPE()
   });
 })();
 
-</script></body>
+</script><script>
+(function(){if(!window.CompanionFX)return;var FX=window.CompanionFX;
+FX.registerScene('u05-attention-transformer-hero',{
+ init:function(F,FX){
+  F._m=FX.motes(F.stage,F.W,F.H,24,7);
+  F._g=FX.glows(F.stage,F.W,F.H,[[F.W*0.5,F.H*0.30,Math.min(F.W,F.H)*0.22]],'screen','#E8A94B')[0];
+ },
+ pose:function(S,FX){
+  var F=S.F;F._m.tick(S.t);
+  F._g.style.opacity=(0.20+0.10*FX.flicker(S.t,3)).toFixed(3);
+  return {'hero-subject':{x:7*Math.sin(S.t*0.6),y:5*Math.sin(S.t*0.83+1),r:0,s:1,o:1}};
+ } });
+FX.registerScene('u05-attention-transformer-s2',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+FX.registerScene('u05-attention-transformer-s3',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+})();
+</script>
+</body>
 </html>

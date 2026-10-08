@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 <!DOCTYPE html>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -432,8 +434,8 @@ span.ptag, .ptag {
 <h1>Yesterday's belief, today's data</h1>
 <p class="dek">How do we fit parameters when some of the data never arrives, and how do we combine what we believed before with what the data says? This unit starts at the maximum likelihood peak, climbs it with EM when labels are hidden, and then lets a prior pull the peak toward yesterday's belief.</p>
 </header>
-<figure class="paint inset" data-entrance="bloom">
-<div class="frame"><div class="stage"><img alt="Watercolor of three overlapping bell curves in indigo, clay, and sage" class="base" loading="lazy" src="assets/u03-hero.jpg"/></div></div>
+<figure class="paint inset" data-entrance="bloom" data-hero="" data-scene="p2-h-u03-hero">
+<div class="frame"><div class="stage"><img alt="Watercolor of three overlapping bell curves in indigo, clay, and sage" class="base" fetchpriority="high" height="1280" loading="lazy" src="assets/u03-hero.jpg" width="1920"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> Prior, likelihood, posterior: three curves, one update. Multiply the first two, renormalize, and you get the third. Watercolor, original to this companion.</figcaption></figure>
 <div class="notice">
 <p><strong>Sourcing.</strong> No full transcript exists for sessions S05 and S06. This companion narrates <code>content/v2/cs329h/lessons/u03_lesson.md</code>. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING.</p>
@@ -466,21 +468,21 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 · Contract 11, C02 · Contract 3, 5, 11</span></p>
 <p>Two limits. Under misspecification the MLE converges to the family member closest in KL divergence, not to the truth. Fitting a single coin bias to mixture data is the counterexample. And when the data comes from two hidden groups, a latent variable is a missing column in the spreadsheet: sum over its possible values to get the likelihood of what you saw. Direct optimization is hard because the log of a sum does not split. EM handles it by working with the complete-data likelihood instead. The non-identifiable warning: a mixture of two Bernoullis observed only through binary outcomes has a flat likelihood. The lesson build verified it: every start gave -277.0138. The latent variable adds nothing identifiable there.</p>
 </div>
-<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-peak"><div class="tag-price"><span class="tag-big">1</span><span class="tag-unit">Nugget 1 · From the lesson C01 · Contract 3, 9</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 · Contract 3, 9</div><div class="tag-eye">The lesson</div><p class="">The MLE is a peak-finder that uses the data and nothing else. Fast, consistent, and noisy at small n.</p><p><b>Why it matters. </b>0.70 against a truth of 0.65 is not a failure. It is the expected wobble of ten trials, priced at a standard error of 0.145.</p><p><b>Transfer. </b>Estimate click-through from 70 clicks in 100 shows. The MLE is 0.70, and the honest report includes the error bar.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-peak"><div class="tag-price"><span class="tag-big">0.70±0.145</span><span class="tag-unit">MLE at n=10, wobble included</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 · Contract 3, 9</div><div class="tag-eye">The lesson</div><p class="">The MLE is a peak-finder that uses the data and nothing else. Fast, consistent, and noisy at small n.</p><p><b>Why it matters. </b>0.70 against a truth of 0.65 is not a failure. It is the expected wobble of ten trials, priced at a standard error of 0.145.</p><p><b>Transfer. </b>Estimate click-through from 70 clicks in 100 shows. The MLE is 0.70, and the honest report includes the error bar.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="EM climbs, never slips" id="s2"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">2</span></div><div><p class="ch-meta"><span class="ts">Unit 2</span> · C03</p><h2>EM climbs, never slips</h2></div></div>
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 · Contract 3, 5, 6</span></p>
 <p>EM guesses the labels softly, fits the parameters to the soft labels, then re-guesses. Each round explains the data better than the last. The E-step sets the lower bound to touch the true likelihood by using the posterior over the latent labels. The M-step maximizes the bound. Since the bound touches and then rises, the true likelihood rises too: monotone ascent. The lesson toy fits 400 scores from two Gaussians with hidden group labels. Over 40 iterations the log-likelihood climbs from -775.9 to -738.2, monotone, recovering means -0.99 and 1.97 against truths of -1.0 and 2.0. Lesson figure u03_f02 draws the rising curve.</p>
 </div>
-<figure class="paint inset" data-entrance="sketch">
-<div class="frame"><div class="stage"><img alt="Watercolor of a switchback path climbing a hill to a flag at the summit" class="base" loading="lazy" src="assets/u03-climb.jpg"/></div></div>
+<figure class="paint inset" data-entrance="sketch" data-scene="p2-h-u03-climb">
+<div class="frame"><div class="stage"><img alt="Watercolor of a switchback path climbing a hill to a flag at the summit" class="base" height="1280" loading="lazy" src="assets/u03-climb.jpg" width="1920"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> EM as a climb: the E-step finds the footing, the M-step takes the step, and the path never goes down. Watercolor, original to this companion.</figcaption></figure>
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 · Contract 8, 11</span></p>
 <p>The correctness check is an assertion on the diffs: the likelihood never decreases. With true labels supplied, one M-step gives the supervised MLE. The failure mode is local optima. Different starts give different answers, and symmetric starts in a symmetric mixture never break symmetry. The lesson verified the trap: Bernoulli starts all stuck at -277.0. The fix is multiple random restarts, kept honest by held-out likelihood.</p>
 </div>
-<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-em"><div class="tag-price"><span class="tag-big">2</span><span class="tag-unit">Nugget 2 · From the lesson C03 · Contract 5, 11</span></div><div class="tag-body"><div class="tag-title">Nugget 2 · From the lesson C03 · Contract 5, 11</div><div class="tag-eye">The lesson</div><p class="">The log of a sum does not split. EM climbs a touching lower bound instead, and the likelihood can only rise.</p><p><b>Why it matters. </b>Monotone ascent is a debugging superpower. If your likelihood ever falls, the bug is in the M-step, and you know exactly where to look.</p><p><b>Transfer. </b>Missing annotation labels are latent variables. EM fits the annotator model and the labels together, softly.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
+<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-em"><div class="tag-price"><span class="tag-big">↑ only</span><span class="tag-unit">the likelihood can only rise</span></div><div class="tag-body"><div class="tag-title">Nugget 2 · From the lesson C03 · Contract 5, 11</div><div class="tag-eye">The lesson</div><p class="">The log of a sum does not split. EM climbs a touching lower bound instead, and the likelihood can only rise.</p><p><b>Why it matters. </b>Monotone ascent is a debugging superpower. If your likelihood ever falls, the bug is in the M-step, and you know exactly where to look.</p><p><b>Transfer. </b>Missing annotation labels are latent variables. EM fits the annotator model and the labels together, softly.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Prior times likelihood" id="s3"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">3</span></div><div><p class="ch-meta"><span class="ts">Unit 3</span> · C04, C05, C06</p><h2>Prior times likelihood</h2></div></div>
 <div class="prose-narrow">
@@ -517,12 +519,12 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 · Contract 6</span> Same numbers as lesson figure u03_f04. The prior washes out as n grows, but at n = 10 it does real work.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-map"><div class="tag-price"><span class="tag-big">3</span><span class="tag-unit">Nugget 3 · From the lesson C05 · Contract 3, 5</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C05 · Contract 3, 5</div><div class="tag-eye">The lesson</div><p class="">MAP is the MLE with the prior pulling. The penalty is the prior in disguise.</p><p><b>Why it matters. </b>Every regularized objective is a MAP estimate with the prior written out. Naming the prior makes the shrinkage honest.</p><p><b>Transfer. </b>Ridge regression is MAP with a Gaussian prior. Lambda is the prior strength, and the path above is its price curve.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
+<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-map"><div class="tag-price"><span class="tag-big">1 prior</span><span class="tag-unit">the penalty is the prior in disguise</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C05 · Contract 3, 5</div><div class="tag-eye">The lesson</div><p class="">MAP is the MLE with the prior pulling. The penalty is the prior in disguise.</p><p><b>Why it matters. </b>Every regularized objective is a MAP estimate with the prior written out. Naming the prior makes the shrinkage honest.</p><p><b>Transfer. </b>Ridge regression is MAP with a Gaussian prior. Lambda is the prior strength, and the path above is its price curve.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 · Contract 3, 5, 6</span></p>
 <p>The point prediction plugs one number in. The predictive distribution averages over every plausible number, weighted by the posterior. The average keeps the uncertainty. For the Beta-Binomial the integral collapses to the posterior mean 0.643, but the spread matters: the 90 percent interval is 0.423 to 0.830 from 5000 posterior draws, so reporting 0.64 alone overstates confidence badly. The full predictive distribution over the probability itself is the Beta(9,5) density. Lesson figure u03_f05 shows the histogram with the interval.</p>
 </div>
-<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-predictive"><div class="tag-price"><span class="tag-big">4</span><span class="tag-unit">Nugget 4 · From the lesson C06 · Contract 3, 5</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C06 · Contract 3, 5</div><div class="tag-eye">The lesson</div><p class="">The point prediction hides the spread. Average over the posterior when the decision needs the uncertainty.</p><p><b>Why it matters. </b>0.64 with an interval of 0.42 to 0.83 is a different claim than 0.64 alone. The first invites caution. The second invites overconfidence.</p><p><b>Transfer. </b>When should a chatbot abstain? When the predictive interval is wide, not when the point estimate is low.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
+<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-predictive"><div class="tag-price"><span class="tag-big">0.42-0.83</span><span class="tag-unit">the interval around 0.64</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C06 · Contract 3, 5</div><div class="tag-eye">The lesson</div><p class="">The point prediction hides the spread. Average over the posterior when the decision needs the uncertainty.</p><p><b>Why it matters. </b>0.64 with an interval of 0.42 to 0.83 is a different claim than 0.64 alone. The first invites caution. The second invites overconfidence.</p><p><b>Transfer. </b>When should a chatbot abstain? When the predictive interval is wide, not when the point estimate is low.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
 <div class="toy">
 <p><span class="ptag ptag-illustration">Illustration</span> Pull the prior strength and watch the MAP slide from the data toward the prior. The formula is the lesson's C05 closed form. The slider is yours.</p>
 <p><label>Prior strength a <input id="pra" max="50" min="1" step="1" type="range" value="2"/></label> <code id="prav">2</code></p>
@@ -554,7 +556,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 · Contract 6</span> Same numbers as lesson figure u03_f06. Too much lambda kills real signal: at lambda = 10 the gap is 0.48 though the data strongly supports a large gap. Pick lambda by held-out log-loss, not by the path plot.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-budget"><div class="tag-price"><span class="tag-big">5</span><span class="tag-unit">Nugget 5 · From the lesson C08 · Contract 3, 11</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C08 · Contract 3, 11</div><div class="tag-eye">The lesson</div><p class="">Regularization is a budget on parameter size. The fit spends it where the data insists, and overspending returns the prior, not the truth.</p><p><b>Why it matters. </b>The same penalty that tames the separable-data divergence can erase genuine signal. Lambda = 10 on strong data is not caution. It is deletion.</p><p><b>Transfer. </b>Weight decay in neural nets. Lambda is the budget, and the budget needs a held-out justification.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
+<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-budget"><div class="tag-price"><span class="tag-big">λ=10</span><span class="tag-unit">on strong data, that is deletion</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C08 · Contract 3, 11</div><div class="tag-eye">The lesson</div><p class="">Regularization is a budget on parameter size. The fit spends it where the data insists, and overspending returns the prior, not the truth.</p><p><b>Why it matters. </b>The same penalty that tames the separable-data divergence can erase genuine signal. Lambda = 10 on strong data is not caution. It is deletion.</p><p><b>Transfer. </b>Weight decay in neural nets. Lambda is the budget, and the budget needs a held-out justification.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5, 6</span></p>
 <p>Calibration means the probabilities mean what they say. Bin the predictions, check each bin's hit rate, and plot predicted versus empirical. The diagonal is the goal. Overconfidence comes from sharp gaps: multiplying true gaps by 1.3 pushes predictions toward 0 and 1 faster than reality. The lesson toy: 2000 fresh pairs, a slightly overconfident model, 10 bins, mean absolute gap 0.044. Lesson figure u03_f07 shows the reliability curve sagging below the diagonal.</p>
@@ -566,7 +568,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C09 · Contract 10, 11</span></p>
 <p>The quick fix is temperature scaling: one parameter. The nonparametric fix is isotonic regression, for miscalibration with shape. And calibration on the training set lies: the model is calibrated where it overfit. Perfect train calibration with terrible test calibration is the counterexample to skip.</p>
 </div>
-<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-calibration"><div class="tag-price"><span class="tag-big">6</span><span class="tag-unit">Nugget 6 · From the lesson C09 · Contract 3, 11</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C09 · Contract 3, 11</div><div class="tag-eye">The lesson</div><p class="">The model says 0.80. Does the event happen 80 percent of the time? If not, the number is decoration.</p><p><b>Why it matters. </b>Decisions consume probabilities as facts. An uncalibrated 0.80 spends confidence the model does not have.</p><p><b>Transfer. </b>A medical risk score. Calibration is not a nicety there. It is the difference between a number and a lie.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
+<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-calibration"><div class="tag-price"><span class="tag-big">0.80?</span><span class="tag-unit">does the event happen 80% of the time</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C09 · Contract 3, 11</div><div class="tag-eye">The lesson</div><p class="">The model says 0.80. Does the event happen 80 percent of the time? If not, the number is decoration.</p><p><b>Why it matters. </b>Decisions consume probabilities as facts. An uncalibrated 0.80 spends confidence the model does not have.</p><p><b>Transfer. </b>A medical risk score. Calibration is not a nicety there. It is the difference between a number and a lie.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="What is absent, what is uncertain" id="s5"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">5</span></div><div><p class="ch-meta"><span class="ts">Unit 5</span> · C10, C11, C12</p><h2>What is absent, what is uncertain</h2></div></div>
 <div class="prose-narrow">
@@ -597,7 +599,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C11 · Contract 6</span> Same arithmetic as the lesson lab. <span class="ptag ptag-illustration">Illustration</span> The companion's ratio from the lesson's two numbers: the bar lengths say fourteen times more noise than ignorance.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-uncertainty"><div class="tag-price"><span class="tag-big">7</span><span class="tag-unit">Nugget 7 · From the lesson C11 · Contract 3, 9</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C11 · Contract 3, 9</div><div class="tag-eye">The lesson</div><p class="">Data shrinks ignorance, never randomness. Split the uncertainty before you decide whether to collect more data.</p><p><b>Why it matters. </b>Collecting data against aleatoric noise wastes budget. The 0.218 term does not move no matter how many labels you buy.</p><p><b>Transfer. </b>More annotation or better prompts? The decomposition answers: epistemic high means annotate, aleatoric high means rewrite the prompt.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
+<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-uncertainty"><div class="tag-price"><span class="tag-big">0.218</span><span class="tag-unit">the term no label budget moves</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C11 · Contract 3, 9</div><div class="tag-eye">The lesson</div><p class="">Data shrinks ignorance, never randomness. Split the uncertainty before you decide whether to collect more data.</p><p><b>Why it matters. </b>Collecting data against aleatoric noise wastes budget. The 0.218 term does not move no matter how many labels you buy.</p><p><b>Transfer. </b>More annotation or better prompts? The decomposition answers: epistemic high means annotate, aleatoric high means rewrite the prompt.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 · Contract 3, 5, 6</span></p>
 <p>Cross-validation is a tournament: each fold takes a turn as the unseen test. The mean score and its spread are the honest report. The lesson toy: 500 comparisons, true gap 1.0, five folds. Accuracies 0.74, 0.61, 0.79, 0.73, 0.65. Mean 0.704, sd 0.062. In-sample accuracy 0.73 sits inside the fold spread. The failure case is leakage across folds: the same annotator's pairs in train and test inflate accuracy, and time-ordered data shuffled naively lets the future leak into the past. Lesson figure u03_f08 draws the five bars with mean and spread.</p>
@@ -616,7 +618,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 · Contract 6</span> Same numbers as lesson figure u03_f08. Stratify by outcome when classes are imbalanced. One held-out split is cheaper and noisier. k-fold is for model comparison.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-honest"><div class="tag-price"><span class="tag-big">8</span><span class="tag-unit">Nugget 8 · From the lesson C12 · Contract 3, C06 · Contract 3</span></div><div class="tag-body"><div class="tag-title">Nugget 8 · From the lesson C12 · Contract 3, C06 · Contract 3</div><div class="tag-eye">The lesson</div><p class="">Report the mean, the spread, and what varies. A number without its uncertainty is a rumor.</p><p><b>Why it matters. </b>The fold spread 0.062 is information, not embarrassment. It says how much the verdict could move on a different split.</p><p><b>Transfer. </b>A clinical trial readout. Mean effect, confidence interval, and the protocol that produced both, or the result does not travel.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
+<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-honest"><div class="tag-price"><span class="tag-big">0.062</span><span class="tag-unit">fold spread is information</span></div><div class="tag-body"><div class="tag-title">Nugget 8 · From the lesson C12 · Contract 3, C06 · Contract 3</div><div class="tag-eye">The lesson</div><p class="">Report the mean, the spread, and what varies. A number without its uncertainty is a rumor.</p><p><b>Why it matters. </b>The fold spread 0.062 is information, not embarrassment. It says how much the verdict could move on a different split.</p><p><b>Transfer. </b>A clinical trial readout. Mean effect, confidence interval, and the protocol that produced both, or the result does not travel.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
 </section>
 <section class="col" id="playbook-sec">
 <h3 class="sub">The playbook</h3>
@@ -1290,5 +1292,46 @@ updMap()
   });
 })();
 
-</script></body>
+</script><script>
+<script>
+/* Phase 2 scenes (Builder 2): CompanionFX overlay life. Pure code, zero image cost. */
+(function(){
+var FX = window.CompanionFX; if(!FX) return;
+FX.registerScene("p2-h-u03-hero", {
+  init: function(F, FX) {
+    F._fx_glows = FX.glows(F.stage, F.W, F.H, [[960, 640, 200]], 'screen', '#FFE9B0');
+    F._fx_spark = FX.sparkles(F.stage, F.W, F.H, [[700, 500, 20], [1200, 700, 20]]);
+  },
+  pose: function(S, FX) {
+    var t = S.t, F = S.F, et = S.et;
+    F._fx_glows.forEach(function(c,i){
+      c.style.opacity = (0.3+0.22*FX.flicker(t, i*2.3)).toFixed(3);
+    });
+    var k = FX.smoothstep(0, 1, Math.min(1, et/1.4));
+    F._fx_spark.forEach(function(st,i){
+      var tw = 0.55 + 0.45*FX.flicker(t, i*1.7);
+      st.style.transform = 'scale(' + (k*tw).toFixed(3) + ')';
+    });
+    return {};
+  }
+});
+FX.registerScene("p2-h-u03-climb", {
+  init: function(F, FX) {
+    F._fx_motes = FX.motes(F.stage, F.W, F.H, 10, 23);
+    F._fx_spark = FX.sparkles(F.stage, F.W, F.H, [[700, 600, 20]]);
+  },
+  pose: function(S, FX) {
+    var t = S.t, F = S.F, et = S.et;
+    F._fx_motes.tick(t);
+    var k = FX.smoothstep(0, 1, Math.min(1, et/1.4));
+    F._fx_spark.forEach(function(st,i){
+      var tw = 0.55 + 0.45*FX.flicker(t, i*1.7);
+      st.style.transform = 'scale(' + (k*tw).toFixed(3) + ')';
+    });
+    return {};
+  }
+});
+})();
+</script>
+</body>
 </html>

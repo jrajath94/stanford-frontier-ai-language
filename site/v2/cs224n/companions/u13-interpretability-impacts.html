@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS224N U13: Interpretability and social impacts, a companion</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+<p class="kicker">CS224N · Companion artifact U13 of 15</p>
+<h1>Interpretability and social impacts</h1>
+<p class="dek">Two halves: how we look inside models (sections 1 to 6) and what the models do to the world (sections 7 to 12). The first half is science, the second is responsibility. Both need numbers.</p>
+<div class="legend" aria-label="Source tags">
+<span class="tag tag-lesson">From the lesson</span>
+<span class="tag tag-toy">Illustration</span>
+<span class="tag tag-companion">Companion</span>
+</div>
+<p class="small muted">“From the lesson” marks facts from <code>lessons/u13_interpretability_impacts.md</code>. “Illustration” marks interactive toys that run the lesson’s rules over tiny inputs. “Companion” marks advice from the companion author. Tags after each section name the lesson leaf, for example C04.</p>
+</header>
+<nav class="small" aria-label="Sections">
+<p><strong>On this page:</strong> 1 · the flashlight finds predictors · 2 · the scoreboard and the replay · 3 · intervention is the trial · 4 · boxes and clouds · 5 · every knob has a range · 6 · the ladder stops early · 7 · fluency is not truth · 8 · the smoke alarm · 9 · the lossy archive · 10 · the red-team matrix · 11 · unaudited confidence is decoration · 12 · the receipt · <a href="#wisdom">wisdom index</a></p>
+</nav>
+<figure>
+<img class="illustration" src="assets/u13-flashlight.jpg" alt="Watercolor illustration of a flashlight beam revealing faint geometric lines in darkness">
+<figcaption><span class="tag tag-toy">Illustration</span> The probe is a flashlight: it finds the direction that separates your examples.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>The flashlight finds predictors</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>Does the model have a "truth" direction? Concepts are directions in activation space. The probe is a flashlight: it finds the direction that separates your labeled examples. Finding it is not understanding it. The probe is logistic regression on activations. The mechanism is correlation.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: collect activations for true vs false statements, fit a linear probe, accuracy 0.83 against baseline 0.50. The direction exists in the toy. Choose probes when you know what to look for. Choose unsupervised discovery (clustering, sparse autoencoders) when you do not.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that the probe found the concept. The probe may find a correlated proxy (sentence length, not truth). Probes find predictors, not meanings (C04). Control for the proxy (length-matched pairs) and re-run: accuracy should fall.</p>
+</div>
+<div class="nugget" id="nugget-flashlight">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">A probe finds what predicts your labels, not what the concept means. Control for the obvious proxy before you believe the direction.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose probes for exploration. Choose interventions (C03) for causal claims.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Correlation is the suspect, not the verdict. Every discovered pattern needs a confound check.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>The scoreboard and the replay</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>The model answers correctly. Does it "know" the rule? Behavior is the scoreboard, mechanism is the replay. The scoreboard tells you it works, the replay tells you why. You need both: behavior without mechanism is alchemy, mechanism without behavior is trivia.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 90 percent behavioral on the task, but the ablation (C03) shows the "rule" circuit is unused: the model uses a shortcut. The scoreboard lied about the how. Behavioral claims need behavioral tests (held-out, adversarial). Mechanistic claims need interventions.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p>The broken assumption is that high accuracy means the right mechanism. Accuracy is not understanding.</p>
+</div>
+<div class="nugget" id="nugget-replay">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §3, §11</span></h4>
+<p class="big">The scoreboard can lie about the how. A shortcut gives the right answers through the wrong mechanism.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose both kinds of evidence when the claim is about understanding. Choose behavior alone when only the score matters.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Test the mechanism separately from the outcome. Right answers do not certify the process.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Intervention is the trial</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>The direction predicts the concept. Does it cause the behavior? Correlation is the suspect, intervention is the trial. Remove the component and watch the behavior. If nothing changes, the component was not the cause. Effect = metric(before) - metric(after).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4, §5</span></p>
+<p>From <code>compute_u13.py</code>: ablate the concept direction, the logit gap falls from 2.1 to 0.6, effect 1.5. The direction carried the concept. The gap mostly lived in that direction.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §11</span></p>
+<p>The broken assumption is that no effect means no role. Backup circuits take over (redundancy). The test is one-sided: effect proves contribution, no effect proves little.</p>
+</div>
+<figure>
+<div id="chart-ablate"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4</span> The intervention, from <code>compute_u13.py</code> (executed 2026-10-06): logit gap 2.1 before, 0.6 after. Effect 1.5.</figcaption>
+</figure>
+<div class="nugget" id="nugget-trial">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §3, §11</span></h4>
+<p class="big">Remove the component, watch the behavior. The trial is one-sided: an effect proves contribution, silence proves little.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose interventions for causal claims. Choose probes for exploration.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Counterfactuals beat correlations. Same input, component removed, measure the delta.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The intervention meter. The effect rule is C03’s. The gaps are yours. Prefilled with the lesson toy.</p>
+<p>gap before <input class="text" id="ivb" value="2.1" aria-label="Gap before"></p>
+<p>gap after <input class="text" id="iva" value="0.6" aria-label="Gap after"></p>
+<p><button class="btn" id="ivbtn">Intervene</button></p>
+<p class="small" id="ivnote"></p>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Boxes and clouds</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>The probe found a direction. What do you call it? The direction fires on "truth", but also on confident tone. "Truth direction" is a story, the activations are the fact. Our words are boxes, the model's concepts are clouds. Sometimes a cloud fits a box, often it does not. Naming the cloud after the box is the oldest error in the field.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 20 mismatches in 200: confident lies fire the "truth" direction. The label is wrong 10 percent of the time. The mismatch test: find inputs where the label says yes and the direction says no (and vice versa). The mismatches are the honest boundary of the label.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that the name is the concept. The map is not the territory.</p>
+</div>
+<div class="nugget" id="nugget-boxes">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §3, §11</span></h4>
+<p class="big">Labels are hypotheses with mismatches shown. The firing set is the fact. The name is a story about it.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose labels as hypotheses with mismatches shown. Choose label-free description when the set resists naming.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Report the mismatches alongside the name. The boundary of a label is part of the finding.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Every knob has a range</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>You found the direction. Can you turn the knob? Steering is the intervention run in reverse: instead of removing the direction, you add it. h' = h + alpha times v. The model leans where you push. Push gently, measure the lean and the damage.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: alpha = 2.0 moves the gap 1.5, perplexity rises 0.3. Alpha = 10 moves the gap 4.0, perplexity rises 5.0: the knob breaks the model past some point. The side effects grow with alpha.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that steering is clean. Every knob has a range: find it.</p>
+</div>
+<figure>
+<div id="chart-knob"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4</span> The knob, hand-set and labeled illustrative: at alpha 2.0 the gap moves 1.5 and perplexity rises 0.3. At alpha 10 the gap moves 4.0 and perplexity rises 5.0.</figcaption>
+</figure>
+<div class="nugget" id="nugget-knob">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §3, §11</span></h4>
+<p class="big">Push gently, measure the lean and the damage. The knob works until it breaks the model.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose steering for quick, reversible tests. Choose training for durable changes.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Sweep every control to its breaking point on a toy before trusting it in production.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The steering knob. Interpolates between the lesson’s two anchor points (alpha 2.0 and 10). Labeled illustrative.</p>
+<p>alpha <input class="text" id="stn" value="2" aria-label="Alpha"></p>
+<p><button class="btn" id="stb">Steer</button></p>
+<p class="small" id="stnote"></p>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>The ladder stops early</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>After all this, what do you actually know? Attribution is a ladder: correlation, causation, control. Each rung is real, none reaches meaning. Climb honestly, stop where the evidence stops. Each rung's test gates the next claim.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: the three numbers from C01, C03, C05 (0.83, 1.5, the knob). The honest summary: "a steerable correlate of truth-like text". You know a direction correlates, causes, and steers. You do not know what it "means".</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §11</span></p>
+<p>The broken assumption is that the ladder is complete. The backup-circuit case (C03): causation missed it. Ladders have gaps too.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u13-ladder.jpg" alt="Watercolor illustration of a ladder with three rungs leading into fog, the fourth rung missing">
+<figcaption><span class="tag tag-toy">Illustration</span> Attribution is a ladder: correlation, causation, control. None reaches meaning.</figcaption>
+</figure>
+<div class="nugget" id="nugget-ladder">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §3, §11</span></h4>
+<p class="big">Climb the ladder honestly and stop where the evidence stops. Claiming meaning past the evidence is hype.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the ladder for science. Claim understanding only with all three rungs tested.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>State the strongest claim your evidence supports, then stop. The next rung is a new experiment.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Fluency is not truth</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>The model states a false fact fluently. What broke? The model predicts plausible text, not true text. Plausible and true overlap often, and that is the trap: the overlap teaches trust, the gap teaches harm.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 100 answers, 18 contain a false claim (fact-checked). Rate 0.18. With retrieval grounding: 7/100 = 0.07. Grounding helps, it does not solve. The mitigations: retrieval grounding (U09 C04), citations (U09 C08), uncertainty flags (C11).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §11</span></p>
+<p>The broken assumption is that grounding fixes it. The 0.07 remainder says otherwise. Grounded models still err.</p>
+</div>
+<figure>
+<div id="chart-truth"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4</span> The false-claim rate, hand-set and labeled illustrative: 0.18 bare, 0.07 with retrieval grounding.</figcaption>
+</figure>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>The smoke alarm</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>The screen passes group A at 0.42 and group B at 0.28. Is that fair? The ratio is the smoke alarm. It does not prove discrimination, it demands an explanation. The explanation is either legitimate (different qualifications) or the model (fix it).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4, §5</span></p>
+<p>From <code>compute_u13.py</code>: 0.42, 0.28, 0.39, ratio min/max = 0.667. Far from 1.0 demands an explanation. The fixes: balance the data, constrain the model, change the threshold per group (each with trade-offs).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that the ratio proves bias. Different base rates with a perfect predictor give a low ratio too. The ratio is the alarm, not the verdict.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u13-alarm.jpg" alt="Watercolor illustration of a smoke alarm with a wisp of smoke">
+<figcaption><span class="tag tag-toy">Illustration</span> The disparity ratio is the smoke alarm: it demands an explanation, not a verdict.</figcaption>
+</figure>
+<figure>
+<div id="chart-ratio"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4</span> Selection rates, from <code>compute_u13.py</code> (executed 2026-10-06): 0.42, 0.28, 0.39. Ratio 0.667.</figcaption>
+</figure>
+<div class="nugget" id="nugget-alarm">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">A ratio far from 1.0 demands an explanation. It is the alarm, not the verdict: explain or fix.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose measurement for any consequential decision. Ignoring the ratio is negligence.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A disparity metric starts the investigation, it does not end it. Base rates first.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The alarm. The min/max rule is C08’s. The rates are yours. Prefilled with the lesson toy.</p>
+<p>rates (comma separated) <input class="text" id="dra" value="0.42,0.28,0.39" aria-label="Rates" style="width:170px"></p>
+<p><button class="btn" id="drb">Check ratio</button></p>
+<p class="small" id="drnote"></p>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>The lossy archive</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>Can the model recite your data? Training data is not forgotten, it is compressed. Rare strings compress poorly and stick out. The model is a lossy archive with a search function.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4, §5</span></p>
+<p>From <code>compute_u13.py</code>: 200 canary strings planted in training, 37 extracted verbatim. Rate 0.185. Nearly one in five canaries leaks. The mechanism is the prompt: prefix the canary, the model completes it. Deduplication and differential privacy are the defenses.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is that deduplication fixes it. The canary appears once and still extracts (rare + long = memorable). Dedup helps, it does not solve.</p>
+</div>
+<figure>
+<div id="chart-leak"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4</span> The canary test, from <code>compute_u13.py</code> (executed 2026-10-06): 37 of 200 extracted, rate 0.185.</figcaption>
+</figure>
+<div class="nugget" id="nugget-archive">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §11</span></h4>
+<p class="big">Memorization is real: nearly one in five planted canaries leaks. Assume the model remembers, then defend.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the canary test for any model trained on sensitive data. The alternative is hope.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Rare and long is memorable. Plant canaries to measure what your training actually retains.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>The red-team matrix</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>The model can help with harm. What do you do? Capability is dual-use. The same model that debugs code helps break it. Red-teaming probes the boundary, it does not remove the capability. The mechanism is the matrix: harm classes vs tests, coverage per class.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §4, §5</span></p>
+<p>From <code>compute_u13.py</code>: misinfo 6/8, bias 4/8, privacy 2/8, misuse 3/8. Thin coverage is the finding: the report leads with the thinnest. Privacy is the thinnest cover.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p>The broken assumption is that the red team found everything. The next attacker is smarter. Coverage is a lower bound on safety, not a certificate.</p>
+</div>
+<figure>
+<div id="chart-red"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §4</span> Red-team coverage, from <code>compute_u13.py</code> (executed 2026-10-06): 6/8, 4/8, 2/8, 3/8. Privacy is thinnest.</figcaption>
+</figure>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Unaudited confidence is decoration</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>The model says 0.9. Should you believe 0.9? Confidence is a claim about accuracy. ECE audits the claim: mean absolute gap between stated and observed. An unaudited confidence is decoration.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §4, §5</span></p>
+<p>From <code>compute_u13.py</code>: ECE 0.425. The model's 0.9s are right about half the time: no, do not believe 0.9. The mechanism is the binning: group by stated confidence, compare to observed rate.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p>The broken assumption is that calibration transfers. The model is calibrated on quiz questions and wild on yours. Calibrate on your distribution.</p>
+</div>
+<div class="nugget" id="nugget-ece">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §3, §11</span></h4>
+<p class="big">Report ECE before any deployment claim. A 0.9 that means 0.5 is a lie the model tells fluently.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose numbers for decisions. Choose hedges for chat. Calibrate on your distribution, per slice.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Audit every confidence claim. Stated confidence without observed accuracy is decoration.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The ECE audit. Give (stated, observed) pairs, one per line. Prefilled to reproduce the lesson’s 0.425.</p>
+<p><textarea class="text" id="ecp" rows="4" style="width:100%" aria-label="Pairs">0.9,0.475
+0.7,0.275</textarea></p>
+<p><button class="btn" id="ecb">Audit</button></p>
+<p class="small" id="ecnote"></p>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>The receipt</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>The system ships. What did you check? The report is the receipt. It lists what was measured, what was found, what is absent. A system without a receipt is an experiment on the users.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4, §5</span></p>
+<p>From <code>compute_u13.py</code>: the checklist (data provenance, bias test, misuse eval, privacy review, uncertainty report, rollback plan) scores 4/6. Missing: misuse eval, uncertainty report. The 2 missing are the ship-blockers. Below 6/6, the missing items are named blockers.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §11</span></p>
+<p>The broken assumption is that the report is done at 6/6. The world changes, the report ages. Revisit per release.</p>
+</div>
+<figure>
+<div id="chart-check"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4</span> The checklist, from <code>compute_u13.py</code> (executed 2026-10-06): 4 of 6 done, misuse eval and uncertainty report missing.</figcaption>
+</figure>
+<div class="nugget" id="nugget-receipt">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §3, §11</span></h4>
+<p class="big">Ship the receipt with the system. What was measured, what was found, what is absent: the absent part blocks the ship.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the report for anything with users. Shipping without it is an experiment on them.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Name the missing checks as blockers, not as follow-ups. Revisit the report every release.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The receipt printer. Check the items you completed and see the score.</p>
+<p class="small">Check the items you completed:</p>
+<p><label><input type="checkbox" class="rpitem" checked> data provenance</label><br>
+<label><input type="checkbox" class="rpitem" checked> bias test</label><br>
+<label><input type="checkbox" class="rpitem"> misuse eval</label><br>
+<label><input type="checkbox" class="rpitem" checked> privacy review</label><br>
+<label><input type="checkbox" class="rpitem"> uncertainty report</label><br>
+<label><input type="checkbox" class="rpitem" checked> rollback plan</label></p>
+<p><button class="btn" id="rpb">Print receipt</button></p>
+<p class="small" id="rpnote"></p>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-flashlight"><span class="wnum">01</span>Probes find predictors <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-replay"><span class="wnum">02</span>The scoreboard can lie <span class="muted">· C02</span></a></li>
+<li><a href="#nugget-trial"><span class="wnum">03</span>Intervention is the trial <span class="muted">· C03</span></a></li>
+<li><a href="#nugget-boxes"><span class="wnum">04</span>The name is a story <span class="muted">· C04</span></a></li>
+<li><a href="#nugget-knob"><span class="wnum">05</span>Every knob has a range <span class="muted">· C05</span></a></li>
+<li><a href="#nugget-ladder"><span class="wnum">06</span>Stop where the evidence stops <span class="muted">· C06</span></a></li>
+<li><a href="#nugget-alarm"><span class="wnum">07</span>The ratio is the alarm <span class="muted">· C08</span></a></li>
+<li><a href="#nugget-archive"><span class="wnum">08</span>Assume the model remembers <span class="muted">· C09</span></a></li>
+<li><a href="#nugget-ece"><span class="wnum">09</span>Unaudited confidence is decoration <span class="muted">· C11</span></a></li>
+<li><a href="#nugget-receipt"><span class="wnum">10</span>Ship the receipt <span class="muted">· C12</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u13_interpretability_impacts.md</code> (CS224N, Unit 13). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The concept inventory is REQUESTED-BRANCH, the reading list OFFICIAL-SOURCE via SRC-02. Every computed number traces to the lesson’s script <code>visuals/compute_u13.py</code> (executed 2026-10-06). Hand-set toys are labeled as such in the text. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+<p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
+<p class="small">Built as Companion 13 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 250
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function runIntervene() {
+  const b = parseFloat(document.getElementById("ivb").value)
+  const a = parseFloat(document.getElementById("iva").value)
+  const note = document.getElementById("ivnote")
+  if (isNaN(b) || isNaN(a)) {
+    note.textContent = "Give both gaps."
+    return
+  }
+  note.textContent = "Effect = " + (b - a).toFixed(2) + ". The lesson toy: 2.1 to 0.6, effect 1.5. An effect proves contribution, silence proves little."
+}
+
+function runSteer() {
+  const al = parseFloat(document.getElementById("stn").value)
+  const note = document.getElementById("stnote")
+  if (!(al > 0)) {
+    note.textContent = "Alpha must be positive."
+    return
+  }
+  const eff = 1.5 + (al - 2) * (4.0 - 1.5) / (10 - 2)
+  const side = 0.3 + (al - 2) * (5.0 - 0.3) / (10 - 2)
+  note.textContent = "Alpha " + al + ": gap moves about " + eff.toFixed(2) + ", perplexity rises about " + side.toFixed(2) + ". Illustrative interpolation between the lesson anchors (2.0 and 10). Every knob has a range."
+}
+
+function runRatio() {
+  const parts = document.getElementById("dra").value.split(",")
+  const note = document.getElementById("drnote")
+  const vals = parts.map(function(x) { return parseFloat(x) }).filter(function(v) { return !isNaN(v) && v > 0 })
+  if (vals.length < 2) {
+    note.textContent = "Give at least two positive rates."
+    return
+  }
+  const mn = Math.min.apply(null, vals)
+  const mx = Math.max.apply(null, vals)
+  const r = mn / mx
+  const verdict = r < 0.8 ? "the alarm rings: explain or fix." : "near 1.0: no alarm."
+  note.textContent = "Ratio " + r.toFixed(3) + ": " + verdict + " The lesson toy: 0.667."
+}
+
+function runECE() {
+  const lines = document.getElementById("ecp").value.split("\n").map(function(x) { return x.trim() }).filter(function(x) { return x.length > 0 })
+  const note = document.getElementById("ecnote")
+  let sum = 0
+  let n = 0
+  let bad = false
+  lines.forEach(function(x) {
+    const parts = x.split(",")
+    const s = parseFloat(parts[0])
+    const o = parseFloat(parts[1])
+    if (isNaN(s) || isNaN(o)) { bad = true } else { sum = sum + Math.abs(s - o), n = n + 1 }
+  })
+  if (bad || n === 0) {
+    note.textContent = "Give clean (stated, observed) pairs."
+    return
+  }
+  note.textContent = "ECE = " + (sum / n).toFixed(3) + " over " + n + " bins. The lesson toy: 0.425. Stated 0.9 means observed about 0.5 here."
+}
+
+function runReceipt() {
+  const boxes = document.querySelectorAll(".rpitem")
+  let done = 0
+  boxes.forEach(function(b) { if (b.checked) { done = done + 1 } })
+  const note = document.getElementById("rpnote")
+  const miss = 6 - done
+  note.textContent = "Receipt: " + done + "/6 done. " + (miss === 0 ? "Complete: revisit per release." : miss + " missing: name them as ship-blockers, not follow-ups.") + " The lesson toy scores 4/6."
+}
+
+document.getElementById("ivbtn").addEventListener("click", runIntervene)
+document.getElementById("stb").addEventListener("click", runSteer)
+document.getElementById("drb").addEventListener("click", runRatio)
+document.getElementById("ecb").addEventListener("click", runECE)
+document.getElementById("rpb").addEventListener("click", runReceipt)
+
+barChart("chart-ablate", [["before", 2.1, INDIGO], ["after ablation", 0.6, CLAY]], 2.3, "")
+barChart("chart-knob", [["alpha 2: gap move", 1.5, SAGE], ["alpha 2: ppl rise", 0.3, AMBER], ["alpha 10: gap move", 4.0, INDIGO], ["alpha 10: ppl rise", 5.0, CLAY]], 5.2, "")
+barChart("chart-truth", [["bare", 0.18, CLAY], ["grounded", 0.07, SAGE]], 0.2, "")
+barChart("chart-ratio", [["group A", 0.42, INDIGO], ["group B", 0.28, CLAY], ["group C", 0.39, SAGE]], 0.45, "")
+barChart("chart-leak", [["extracted", 37, CLAY], ["not extracted", 163, SAGE]], 200, " of 200")
+barChart("chart-red", [["misinfo", 6, AMBER], ["bias", 4, AMBER], ["privacy", 2, CLAY], ["misuse", 3, AMBER]], 8, " of 8")
+barChart("chart-check", [["done", 4, SAGE], ["missing", 2, CLAY]], 6, " of 6")
+</script>
+</body>
+</html>

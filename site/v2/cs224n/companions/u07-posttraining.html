@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS224N U07: Post-training and preferences, a companion</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+<p class="kicker">CS224N · Companion artifact U07 of 15</p>
+<h1>Post-training and preferences</h1>
+<p class="dek">Post-training turns a text predictor into an assistant: demonstrations, pairwise preferences, and the optimization that respects both. Three teachers in sequence.</p>
+<div class="legend" aria-label="Source tags">
+<span class="tag tag-lesson">From the lesson</span>
+<span class="tag tag-toy">Illustration</span>
+<span class="tag tag-companion">Companion</span>
+</div>
+<p class="small muted">“From the lesson” marks facts from <code>lessons/u07_posttraining.md</code>. “Illustration” marks interactive toys that run the lesson’s rules over tiny inputs. “Companion” marks advice from the companion author. Tags after each section name the lesson leaf, for example C04.</p>
+</header>
+<nav class="small" aria-label="Sections">
+<p><strong>On this page:</strong> 1 · show, do not tell · 2 · the demos are the spec · 3 · a judge that scores · 4 · pairs are votes · 5 · three teachers · 6 · a trust region of arithmetic · 7 · the reward, solved out · 8 · a leash, not a target · 9 · the map ends at the border · 10 · the statue of the goal · 11 · the reward inherits the judges · 12 · the only honest eval · <a href="#wisdom">wisdom index</a></p>
+</nav>
+<figure>
+<img class="illustration" src="assets/u07-demo.jpg" alt="Watercolor illustration of a student copying a teacher's demonstration strokes on paper">
+<figcaption><span class="tag tag-toy">Illustration</span> SFT: show, do not tell. The model imitates curated demonstrations.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>Show, do not tell</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>The base model predicts text. How do you teach it the assistant format? Instruction-response pairs, next-token loss on the response tokens only. Same math as AR pretraining (U06 C02): the difference is the data (curated demos) and the mask (loss on responses only, not prompts). Prompt tokens are context, not targets: predicting the user's question teaches nothing.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §4, §5</span></p>
+<p>From <code>compute_u07.py</code>: toy next-token loss 2.797 on the demo pair. SFT teaches format and style (how to answer), not new facts: the knowledge is already in the weights. It is the cheapest alignment step.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that SFT teaches the model new facts. SFT on unknown facts teaches hallucination with confidence: the model learns the style of answering, then applies it to things it does not know. Teach format with SFT, check facts separately.</p>
+</div>
+<div class="nugget" id="nugget-demo">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">SFT teaches the shape of answering, not the substance. Feed it unknown facts and it learns confident hallucination.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose SFT first (the standard): demos are the cheapest way to install format. Never use SFT to teach facts the base model lacks.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Imitation transfers style. Knowledge comes from elsewhere. Do not confuse the two.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>The demos are the spec</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>1k demos or 100k? What makes a demo good? Each pair says "when asked X, answer like Y". Diversity across tasks (QA, coding, writing, reasoning) teaches generality, quality teaches the standard. One more demo of the same task adds little. One demo of a new task adds a capability.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4, §5</span></p>
+<p>Hand-counted toy, labeled as such: 1000 demos, 50 tasks, 20 each. Add 1000 more of task 1: task-1 loss falls, others flat. Add 20 each of 50 new tasks: all-task loss falls. The finding from the literature: a small, diverse, high-quality set beats a large noisy one for SFT. Beyond coverage, quantity is repetition.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p>The broken assumption is that more demos are better. The model's behavior after SFT is bounded by the demo distribution: unseen task types stay unseen. Diversity is measured, not hoped: count tasks, styles, lengths.</p>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>A judge that scores</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>"Which answer is better" is easier to judge than "how good is this answer". How do pairwise judgments become a scalar reward? The reward model reads a (prompt, response) and outputs a scalar, trained on pairs: push the chosen above the rejected. The Bradley-Terry model turns the gap into a probability: P = sigmoid(r_c - r_r).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4, §5</span></p>
+<p>From <code>compute_u07.py</code>: r = (1.2, 0.3), gap 0.9, P(chosen) = 0.7109, loss 0.3412. The gradient is (1 - P): certain pairs (big gap) give little gradient, close pairs teach. Three pairs: losses (0.3412, 0.7444, 0.2014), mean 0.429. The second pair (r_c below r_r) is the expensive one: the model currently prefers the rejected response.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §11</span></p>
+<p>The broken assumption is that the reward is the true objective. The reward is a proxy: optimizing it is not optimizing quality. The reward is ordinal, not cardinal: gaps matter, levels do not.</p>
+</div>
+<figure>
+<div id="chart-sig"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4</span> The Bradley-Terry map, gap to probability, from the lesson’s rule P = sigmoid(gap) (executed in <code>compute_u07.py</code> 2026-10-06): gap 0.9 gives 0.7109.</figcaption>
+</figure>
+<figure>
+<div id="chart-pairs"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §5</span> Three pair losses from <code>compute_u07.py</code> (executed 2026-10-06): 0.3412, 0.7444, 0.2014. Mean 0.429. The middle pair costs most.</figcaption>
+</figure>
+<div class="nugget" id="nugget-judge">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §3, §11</span></h4>
+<p class="big">Pairwise judgments are easier and cleaner than absolute scores. Close pairs teach, certain pairs give almost no gradient.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose pairwise over absolute scoring (the standard). Weight the training toward the close, uncertain pairs.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Comparisons beat ratings. A judge that ranks learns more than a judge that scores.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The gap machine. The Bradley-Terry rule is C03’s. The rewards are yours. Prefilled with the lesson toy.</p>
+<p>r_chosen <input class="text" id="btc" value="1.2" aria-label="Chosen reward"></p>
+<p>r_rejected <input class="text" id="btr" value="0.3" aria-label="Rejected reward"></p>
+<p><button class="btn" id="btb">Judge it</button></p>
+<p class="small" id="btnote"></p>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Pairs are votes</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>Who judges, and what do you do when judges disagree? Collection: sample two responses per prompt (often from the SFT model), ask judges to pick. Quality: instructions with examples, agreement checks, spam filters. Disagreement is signal (genuine taste difference) or noise (bad instructions). The handling differs.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4, §5</span></p>
+<p>Hand-computed toy, labeled as such: judges split 2-1 for A. Hard label: A wins, loss -log P_A. Soft label: target 0.667, loss = -(0.667 log P_A + 0.333 log(1 - P_A)). Soft labels preserve disagreement instead of hiding it. The soft version penalizes overconfidence.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that majority vote is the truth. A 2-1 split on a genuinely hard pair: the majority erases the minority taste. The vote is a summary, not the truth.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Hard vs soft labels. The formulas are C04’s. The judge split is yours.</p>
+<p>votes for A <input class="text" id="jva" value="2" aria-label="Votes for A"></p>
+<p>votes for B <input class="text" id="jvb" value="1" aria-label="Votes for B"></p>
+<p>model P(A) <input class="text" id="jvp" value="0.7" aria-label="Model probability of A"></p>
+<p><button class="btn" id="jvbtn">Score it</button></p>
+<p class="small" id="jvnote"></p>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Three teachers</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>SFT imitates, the reward judges. How do they combine into a policy? Three teachers in sequence. SFT: "answer like this" (format). Reward: "this is better than that" (taste). RL: "produce more of what scores well, but stay near the SFT model" (policy). Each stage answers what the previous one cannot: format, then preference, then exploration.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4, §5</span></p>
+<p>The KL-regularized objective: the reward pulls toward high scores, the KL pulls toward the SFT model. Beta sets the tradeoff. Without the KL term the policy exploits the reward's errors (C10). Without the reward the policy is just SFT. The toy numbers live in the components: BT loss 0.3412 (C03), KL 0.0253 (C08), PPO clip 0.600 (C06).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that more RL is better. Over-optimized policies get high reward and low quality (C10). The KL leash and early stopping are load-bearing, not optional.</p>
+</div>
+<div class="nugget" id="nugget-teachers">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §3, §11</span></h4>
+<p class="big">RLHF is three teachers in sequence, not one trick. Format, then taste, then exploration, each stage bounded by a leash.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose RLHF when the reward needs to generalize beyond pairs (online exploration). Choose DPO for simplicity and stability.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Stage the learning: imitate first, judge second, explore third. Skipping stages costs more than it saves.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>A trust region of arithmetic</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>The policy gradient wants a big step toward high reward. What stops a destructive update? The ratio pi/pi_old measures how far the policy moved. Clipping it to [1-eps, 1+eps] bounds each update. The min() takes the pessimistic of the clipped and unclipped: never trust a big step, even if it looks good.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4, §5</span></p>
+<p>From <code>compute_u07.py</code>: r = 1.3, A = 0.5, eps = 0.2. Unclipped 0.650, clipped min(0.650, 1.2 × 0.5) = 0.600. The 0.050 difference is the trust region working. When A is above 0 the objective wants r large, clip caps it at (1+eps)A. When A is below 0 it wants r small, clip floors at (1-eps)A.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §11</span></p>
+<p>The broken assumption is that clipping guarantees stability. The value function can still diverge, and the KL can still grow if beta is wrong. Clipping bounds the policy step, not the whole run.</p>
+</div>
+<figure>
+<div id="chart-ppo"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4</span> The clipped step, from <code>compute_u07.py</code> (executed 2026-10-06): unclipped 0.650 vs clipped 0.600 at r = 1.3, A = 0.5.</figcaption>
+</figure>
+<div class="nugget" id="nugget-trust">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §3, §11</span></h4>
+<p class="big">PPO is a trust region made of arithmetic. Clip the ratio, take the pessimistic value, never trust a big step.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose PPO when online exploration matters (the reward generalizes to new samples). Watch the KL and the value function alongside the clip.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Bound the update, not the ambition. Pessimism in the step size is what makes big moves safe.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The clip tester. The PPO rule is C06’s. The step is yours. Prefilled with the lesson toy.</p>
+<p>ratio r <input class="text" id="ppr" value="1.3" aria-label="Ratio"></p>
+<p>advantage A <input class="text" id="ppa" value="0.5" aria-label="Advantage"></p>
+<p>eps <input class="text" id="ppe" value="0.2" aria-label="Epsilon"></p>
+<p><button class="btn" id="ppb">Clip it</button></p>
+<p class="small" id="ppnote"></p>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>The reward, solved out</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>Can the pairs train the policy directly, skipping the reward model and PPO? DPO's insight: the optimal policy for the KL-regularized objective has a closed form in terms of the reward. Invert it, and the reward becomes a function of the policy. Then the Bradley-Terry loss trains the policy directly on pairs. One loss, no RL loop.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4, §5</span></p>
+<p>From <code>compute_u07.py</code>: beta = 0.1, log-ratio gap 0.8 (chosen log-ratio 0.5, rejected -0.3): inside = 0.08, loss = 0.6539. Small beta, small inside: the loss sits near log 2 (uncertain), and the gradient is large there. The gradient pushes up the chosen log-ratio and down the rejected one, scaled by beta and by uncertainty.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §11</span></p>
+<p>The broken assumption is that DPO cannot overfit the pairs. DPO without the reference term collapses: it pushes chosen log-probs up without bound. The reference term is the leash. Dropping it breaks the method.</p>
+</div>
+<div class="nugget" id="nugget-dpo">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
+<p class="big">DPO deletes the reward model and the RL loop by solving the reward out of the objective. The reference term is the leash: drop it and the method collapses.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose DPO for simplicity and stability on fixed pairs. Choose PPO when the policy must explore beyond the pairs.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>When a pipeline stage has a closed form, solve it out. Every removed moving part is a removed failure mode.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The DPO loss. The formula is C07’s. The gap is yours. Prefilled with the lesson toy.</p>
+<p>beta <input class="text" id="dpb" value="0.1" aria-label="Beta"></p>
+<p>log-ratio gap <input class="text" id="dpg" value="0.8" aria-label="Log-ratio gap"></p>
+<p><button class="btn" id="dpbtn">Compute loss</button></p>
+<p class="small" id="dpnote"></p>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>A leash, not a target</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>The reward says "more". What says "not too far"? The KL term does not say where to go, it taxes distance from the reference. Small beta: long leash (more optimization, more risk). Large beta: short leash (safe, near-SFT). The reference is usually the SFT model: the last known-good policy.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4, §5</span></p>
+<p>From <code>compute_u07.py</code>: pi = (0.5, 0.3, 0.2), ref = (0.4, 0.4, 0.2), KL = 0.0253. At beta = 0.1 the penalty is 0.00253 per token: a gentle leash. KL = sum pi log(pi/pi_ref): the extra nats to encode pi's samples under pi_ref. Paid per token, subtracted from the reward.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that a small KL means a good run. KL near zero with high reward can mean the reward was gamed without moving the distribution much (subtle hacking). Watch the reward and the quality, not just the KL.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u07-leash.jpg" alt="Watercolor illustration of a dog on a loose leash exploring a park">
+<figcaption><span class="tag tag-toy">Illustration</span> The KL leash: explore freely, but pay for every step away from the reference.</figcaption>
+</figure>
+<figure>
+<div id="chart-kl"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4</span> Policy vs reference, from <code>compute_u07.py</code> (executed 2026-10-06): KL 0.0253. The leash is gentle at this distance.</figcaption>
+</figure>
+<div class="nugget" id="nugget-leash">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">The KL term is a leash, not a target. It taxes distance from the last known-good policy. Beta sets the leash length.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the KL penalty as the standard leash. Sweep beta and plot reward vs human quality: expect an inverted U.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Anchor exploration to a known-good baseline. A tax on distance beats a hard wall.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The leash meter. The KL formula is C08’s. The distributions are yours. Prefilled with the lesson toy.</p>
+<p>pi (comma separated) <input class="text" id="klp" value="0.5,0.3,0.2" aria-label="Policy" style="width:150px"></p>
+<p>ref (comma separated) <input class="text" id="klr" value="0.4,0.4,0.2" aria-label="Reference" style="width:150px"></p>
+<p>beta <input class="text" id="klb" value="0.1" aria-label="Beta"></p>
+<p><button class="btn" id="klbtn">Tax it</button></p>
+<p class="small" id="klnote"></p>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>The map ends at the border</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>The reward model trained on the SFT model's samples. The policy now writes differently. Is the reward still right? The reward is accurate near the SFT distribution, untested far from it. The policy optimizes into the untested region: the scores rise, the quality may not. A map that ends at the border.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4, §5</span></p>
+<p>Hand-computed toy, labeled as such: reward accuracy 0.85 on the old policy's samples, 0.60 on the new policy's samples after 1000 RL steps. The 25-point drop is the staleness, measured. The fix: iterate (collect pairs from the current policy, retrain the reward, repeat) or stay close (the KL leash, C08).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is that the validated reward stays valid. Validation was on the old distribution. Validity is distribution-relative, not absolute.</p>
+</div>
+<figure>
+<div id="chart-stale"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4</span> Reward accuracy across the shift, hand-computed and labeled illustrative: 0.85 on old-policy samples, 0.60 after 1000 RL steps.</figcaption>
+</figure>
+<div class="nugget" id="nugget-map">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §11</span></h4>
+<p class="big">The reward model knows the territory it trained on. RL walks off the map, and the scores it returns there are extrapolations.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose iteration when running RL (fresh pairs from the current policy). Choose DPO when pairs are fixed and staleness is the worry.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Track model accuracy on fresh data across training, not just at the start. Validity expires.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>The statue of the goal</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>The reward climbs every step. Is the model getting better? The proxy is a statue of the goal, not the goal. Optimization pressure finds the statue's flaws: verbose answers (length bias), confident tone, sycophancy. The reward rises, the quality does not. This is the default outcome, not an edge case.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §4, §5</span></p>
+<p>From <code>compute_u07.py</code>: proxy = (0.9, 0.4), true = (0.3, 0.5). Proxy argmax: response 0. True argmax: response 1. Optimizing the proxy picks the wrong answer. Two numbers, one lesson: the argmax moved.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p>The broken assumption is that we will notice the hacking. Subtle hacking (slightly longer answers, slightly more confident) passes casual inspection. Notice needs measurement: human eval on the optimized policy, not the reward curve.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u07-statue.jpg" alt="Watercolor illustration of a climber polishing a marble statue beside the real smaller goal behind it">
+<figcaption><span class="tag tag-toy">Illustration</span> Optimizing the proxy polishes the statue, not the goal.</figcaption>
+</figure>
+<figure>
+<div id="chart-argmax"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §4</span> The argmax flip, from <code>compute_u07.py</code> (executed 2026-10-06): the proxy picks response 0, the truth picks response 1.</figcaption>
+</figure>
+<div class="nugget" id="nugget-statue">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §3, §11</span></h4>
+<p class="big">Every proxy gets hacked under pressure. The defenses are layered: KL leash, iteration, human eval, and admitting the proxy's limits in the model card.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Never read the reward curve as quality. Measure human-judged quality on the optimized policy directly.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Goodhart's law is the default, not the edge case. Budget for it in every proxy metric.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>The reward inherits the judges</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>Judges prefer longer answers 60 percent of the time, all else equal. What does the reward learn? The reward learns length as quality. The policy learns verbosity. Nobody asked for verbosity. The reward inherits the judges: length bias, position bias (prefer the first shown), sycophancy bias (prefer agreement), cultural bias (whose taste).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §4, §5</span></p>
+<p>Hand-computed toy, labeled as such: 100 pairs, quality tied, longer wins 60. Expected under no bias: 50. The 10-point excess is the bias, measured. After length-balancing: 51 (gone). The mitigation: balance the pairs (equal lengths), randomize positions, instruct against sycophancy, diversify judges.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p>The broken assumption is that expert judges are unbiased. Experts have stronger, more consistent biases (they agree on the wrong thing). Agreement is not correctness.</p>
+</div>
+<figure>
+<div id="chart-bias"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §4</span> The length bias, hand-computed and labeled illustrative: longer wins 60 of 100 tied pairs (expect 50). After balancing, 51.</figcaption>
+</figure>
+<div class="nugget" id="nugget-judges">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §3, §11</span></h4>
+<p class="big">The reward learns the judges' shortcuts, not just their judgment. Audit the preference data for bias before you train on it.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the audit always (hygiene, not a tradeoff): balance lengths, randomize positions, diversify judges.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every human-labeled dataset carries its labelers' habits. Measure the bias, then remove it at the source.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>The only honest eval</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>The reward went up, the KL is small, the loss fell. Did the assistant get better? The only honest answer comes from human judges on fresh prompts, blinded, with agreement measured. Three evals, one truth. Automated: benchmarks and the reward itself (cheap, gameable). Model-judged: an LLM rates outputs (cheap, biased like its training). Human: blinded pairwise on fresh prompts (expensive, the standard). The reward curve is not an eval (C10).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4, §5</span></p>
+<p>Hand-computed toy, labeled as such: 200 prompts, policy wins 120, ties 30, loses 50. Win rate 60 percent, 95 percent CI (53, 67). Agreement 0.72. The CI is the honest part. Blinding removes identity bias, fresh prompts remove leakage (U06 C08), agreement quantifies noise.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §11</span></p>
+<p>The broken assumption is that eval prompts can be reused. Reused prompts leak into training (U06 C08) and get gamed (C10). Fresh prompts per eval, or the eval rots.</p>
+</div>
+<figure>
+<div id="chart-eval"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4</span> The honest eval, hand-computed and labeled illustrative: 120 wins, 30 ties, 50 losses on 200 fresh prompts. Win rate 60 percent, CI (53, 67).</figcaption>
+</figure>
+<div class="nugget" id="nugget-eval">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §3, §11</span></h4>
+<p class="big">The reward curve is not an evaluation. Human judges, fresh prompts, blinded, with a confidence interval: that is the gate.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose human eval for the final gate. Choose automated evals for iteration. Never ship on benchmarks alone.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Report the interval, not the point. A win rate without a CI is a rumor.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-demo"><span class="wnum">01</span>Imitation transfers style, not knowledge <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-judge"><span class="wnum">02</span>Comparisons beat ratings <span class="muted">· C03</span></a></li>
+<li><a href="#nugget-teachers"><span class="wnum">03</span>Three teachers in sequence <span class="muted">· C05</span></a></li>
+<li><a href="#nugget-trust"><span class="wnum">04</span>Bound the update, not the ambition <span class="muted">· C06</span></a></li>
+<li><a href="#nugget-dpo"><span class="wnum">05</span>Solve the reward out <span class="muted">· C07</span></a></li>
+<li><a href="#nugget-leash"><span class="wnum">06</span>A tax on distance <span class="muted">· C08</span></a></li>
+<li><a href="#nugget-map"><span class="wnum">07</span>Validity expires <span class="muted">· C09</span></a></li>
+<li><a href="#nugget-statue"><span class="wnum">08</span>The proxy is a statue of the goal <span class="muted">· C10</span></a></li>
+<li><a href="#nugget-judges"><span class="wnum">09</span>Audit the judges' habits <span class="muted">· C11</span></a></li>
+<li><a href="#nugget-eval"><span class="wnum">10</span>The reward curve is not an eval <span class="muted">· C12</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u07_posttraining.md</code> (CS224N, Unit 07). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The concept inventory is REQUESTED-BRANCH, the reading list OFFICIAL-SOURCE via SRC-02. Every computed number traces to the lesson’s script <code>visuals/compute_u07.py</code> (executed 2026-10-06). Hand-computed toys are labeled as such in the text. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+<p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
+<p class="small">Built as Companion 7 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 250
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function sigCurve(id) {
+  const host = document.getElementById(id)
+  const W = 760
+  const H = 320
+  const padL = 56
+  const padR = 20
+  const padT = 16
+  const padB = 44
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  const x0 = -4
+  const x1 = 4
+  const X = function(g) { return padL + (g - x0) / (x1 - x0) * (W - padL - padR) }
+  const Y = function(p) { return padT + (1 - p) * (H - padT - padB) }
+  let d = ""
+  let g = x0
+  while (g <= x1 + 0.001) {
+    const p = 1 / (1 + Math.exp(-g))
+    d = d + (d === "" ? "M" : "L") + X(g).toFixed(1) + " " + Y(p).toFixed(1) + " "
+    g = g + 0.08
+  }
+  svg.appendChild(svgEl("path", {d: d, fill: "none", stroke: INDIGO, "stroke-width": 3}))
+  const gm = 0.9
+  const pm = 1 / (1 + Math.exp(-gm))
+  const dot = svgEl("circle", {cx: X(gm).toFixed(1), cy: Y(pm).toFixed(1), r: 7, fill: CLAY})
+  const tip = svgEl("title", {})
+  tip.textContent = "gap 0.9: P = 0.7109"
+  dot.appendChild(tip)
+  svg.appendChild(dot)
+  const lab = svgEl("text", {x: X(gm).toFixed(1) + 12, y: Y(pm).toFixed(1) - 10, "font-size": 14, fill: INK, "font-family": MONO})
+  lab.textContent = "gap 0.9 -> 0.7109"
+  svg.appendChild(lab)
+  const xl = svgEl("text", {x: padL, y: H - 12, "font-size": 13, fill: MUT, "font-family": SANS})
+  xl.textContent = "reward gap (r_c - r_r)"
+  svg.appendChild(xl)
+  host.appendChild(svg)
+}
+
+function runBT() {
+  const rc = parseFloat(document.getElementById("btc").value)
+  const rr = parseFloat(document.getElementById("btr").value)
+  const note = document.getElementById("btnote")
+  if (isNaN(rc) || isNaN(rr)) {
+    note.textContent = "Give both rewards."
+    return
+  }
+  const gap = rc - rr
+  const P = 1 / (1 + Math.exp(-gap))
+  const loss = -Math.log(P)
+  note.textContent = "Gap " + gap.toFixed(2) + ", P(chosen) = " + P.toFixed(4) + ", loss = " + loss.toFixed(4) + ". The lesson toy: gap 0.9 gives 0.7109 and 0.3412."
+}
+
+function runJV() {
+  const va = parseFloat(document.getElementById("jva").value)
+  const vb = parseFloat(document.getElementById("jvb").value)
+  const P = parseFloat(document.getElementById("jvp").value)
+  const note = document.getElementById("jvnote")
+  if (!(va >= 0) || !(vb >= 0) || (va + vb) === 0 || !(P > 0) || !(P < 1)) {
+    note.textContent = "Give non-negative votes (at least one) and a P(A) strictly between 0 and 1."
+    return
+  }
+  const hard = -Math.log(P)
+  const soft = va / (va + vb)
+  const loss = -(soft * Math.log(P) + (1 - soft) * Math.log(1 - P))
+  note.textContent = "Hard label loss: " + hard.toFixed(4) + ". Soft label target " + soft.toFixed(3) + ", loss " + loss.toFixed(4) + ". The lesson toy: 2-1 for A gives soft target 0.667."
+}
+
+function runPPO() {
+  const r = parseFloat(document.getElementById("ppr").value)
+  const A = parseFloat(document.getElementById("ppa").value)
+  const eps = parseFloat(document.getElementById("ppe").value)
+  const note = document.getElementById("ppnote")
+  if (isNaN(r) || isNaN(A) || isNaN(eps) || eps <= 0) {
+    note.textContent = "Give ratio, advantage, and a positive eps."
+    return
+  }
+  const un = r * A
+  let cl = un
+  if (A > 0) { cl = Math.min(un, (1 + eps) * A) }
+  if (A < 0) { cl = Math.max(un, (1 - eps) * A) }
+  note.textContent = "Unclipped " + un.toFixed(3) + ", clipped " + cl.toFixed(3) + ". The lesson toy: 0.650 vs 0.600, the 0.050 is the trust region."
+}
+
+function runDPO() {
+  const beta = parseFloat(document.getElementById("dpb").value)
+  const gap = parseFloat(document.getElementById("dpg").value)
+  const note = document.getElementById("dpnote")
+  if (isNaN(beta) || isNaN(gap) || beta <= 0) {
+    note.textContent = "Give a positive beta and a gap."
+    return
+  }
+  const inside = beta * gap
+  const loss = -Math.log(1 / (1 + Math.exp(-inside)))
+  note.textContent = "Inside = " + inside.toFixed(3) + ", loss = " + loss.toFixed(4) + ". The lesson toy: beta 0.1, gap 0.8, loss 0.6539."
+}
+
+function runKL() {
+  const note = document.getElementById("klnote")
+  const pp = document.getElementById("klp").value.split(",").map(function(x) { return parseFloat(x) })
+  const rr = document.getElementById("klr").value.split(",").map(function(x) { return parseFloat(x) })
+  const beta = parseFloat(document.getElementById("klb").value)
+  if (pp.length !== rr.length || pp.some(isNaN) || rr.some(isNaN) || pp.some(function(v) { return v <= 0 }) || rr.some(function(v) { return v <= 0 })) {
+    note.textContent = "Give equal-length positive distributions."
+    return
+  }
+  let kl = 0
+  let i = 0
+  while (i < pp.length) {
+    kl = kl + pp[i] * Math.log(pp[i] / rr[i])
+    i = i + 1
+  }
+  note.textContent = "KL = " + kl.toFixed(4) + ". At beta " + beta + " the penalty is " + (beta * kl).toFixed(5) + " per token. The lesson toy: 0.0253, penalty 0.00253."
+}
+
+document.getElementById("btb").addEventListener("click", runBT)
+document.getElementById("jvbtn").addEventListener("click", runJV)
+document.getElementById("ppb").addEventListener("click", runPPO)
+document.getElementById("dpbtn").addEventListener("click", runDPO)
+document.getElementById("klbtn").addEventListener("click", runKL)
+
+sigCurve("chart-sig")
+barChart("chart-pairs", [["pair 1 (model right)", 0.3412, SAGE], ["pair 2 (model wrong)", 0.7444, CLAY], ["pair 3 (model sure)", 0.2014, SAGE]], 0.8, "")
+barChart("chart-ppo", [["unclipped", 0.650, CLAY], ["clipped", 0.600, INDIGO]], 0.7, "")
+barChart("chart-kl", [["pi: token 1", 0.50, INDIGO], ["ref: token 1", 0.40, SAGE], ["pi: token 2", 0.30, INDIGO], ["ref: token 2", 0.40, SAGE], ["pi: token 3", 0.20, INDIGO], ["ref: token 3", 0.20, SAGE]], 0.55, "")
+barChart("chart-stale", [["on old-policy samples", 0.85, SAGE], ["after 1000 RL steps", 0.60, CLAY]], 0.9, "")
+barChart("chart-bias", [["longer wins (observed)", 60, CLAY], ["no-bias expectation", 50, SAGE], ["after length-balancing", 51, SAGE]], 65, " of 100")
+barChart("chart-argmax", [["proxy: response 0", 0.9, CLAY], ["truth: response 1", 0.5, SAGE]], 1.0, "")
+barChart("chart-eval", [["wins", 120, SAGE], ["ties", 30, INDIGO], ["losses", 50, CLAY]], 125, "")
+</script>
+</body>
+</html>

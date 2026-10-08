@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS224N U15: Project tutorials and open questions, a companion</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+<p class="kicker">CS224N · Companion artifact U15 of 15</p>
+<h1>Project tutorials and open questions</h1>
+<p class="dek">This unit turns the course into a project: the tutorials, the default project recipe, the project machinery, and the open horizon.</p>
+<div class="legend" aria-label="Source tags">
+<span class="tag tag-lesson">From the lesson</span>
+<span class="tag tag-toy">Illustration</span>
+<span class="tag tag-companion">Companion</span>
+</div>
+<p class="small muted">“From the lesson” marks facts from <code>lessons/u15_projects_open_questions.md</code>. “Illustration” marks interactive toys that run the lesson’s rules over tiny inputs. “Companion” marks advice from the companion author. Sections cite the lesson leaves, for example C04.</p>
+</header>
+<nav class="small" aria-label="Sections">
+<p><strong>On this page:</strong> 1 · the loop is the trap · 2 · you write the forward · 3 · pin everything · 4 · the recipe, miniature · 5 · template numbers are not findings · 6 · a gate without a claim is a status meeting · 7 · cut scope, never the control · 8 · provenance, not cosmetics · 9 · report the spread · 10 · a claim without a leash · 11 · the dated list · 12 · the rubric scores evidence · <a href="#wisdom">wisdom index</a></p>
+</nav>
+<figure>
+<img class="illustration" src="assets/u15-conductor.jpg" alt="Watercolor illustration of a conductor leading an orchestra of tiny geometric instruments">
+<figcaption><span class="tag tag-toy">Illustration</span> Python is the conductor, numpy is the orchestra. Conduct, do not play.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>The loop is the trap</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>The loop over 1M tokens takes minutes, the vectorized version takes a second. Why? Python is the conductor, numpy is the orchestra. The conductor waves (calls), the orchestra plays (C loops). Conduct, do not play. The mechanism is where the loop runs: C for numpy, Python for the for-loop. Same arithmetic, 200x the speed.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: numpy dot on 1M floats: 0.002 s. Python loop: 0.4 s. Measure on your machine. The ratio holds.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that vectorized is always faster. Tiny arrays: the call overhead dominates. Vectorize the big loops.</p>
+</div>
+<div class="nugget" id="nugget-loop">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">Conduct, do not play. Push the loop into C, then profile before optimizing anything else.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose numpy for CPU labs. Choose torch for GPUs and autograd. Profile before optimizing.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>The cost hides in the loop, not the arithmetic. Measure where the loop runs.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The 200x estimator. The factor and the hand-set times are C01’s. The array size is yours.</p>
+<p>array size (floats) <input class="text" id="ves" value="1000000" aria-label="Array size"></p>
+<p><button class="btn" id="veb">Estimate</button></p>
+<p class="small" id="venote"></p>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>You write the forward</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>Who computes the gradient? PyTorch records what you did (the graph) and replays it backwards (the gradient). You write the forward, it writes the backward. The mechanism is U03's chain rule, automated: each op knows its local derivative, the engine multiplies them.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: x = tensor(2.0, requires_grad=True), y = x**2, y.backward(): x.grad is 4.0. Autograd did the chain rule: dy/dx = 2x = 4.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p>The broken assumption is that the graph is free. Keeping the graph for 1000 steps eats memory. Detach or lose the graph.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The grad checker. The chain rule is C02’s. The function is yours. Try x = 2 with y = x**2.</p>
+<p>x <input class="text" id="grx" value="2" aria-label="x"></p>
+<p>y = <input class="text" id="gry" value="x*x" aria-label="y expression"></p>
+<p><button class="btn" id="grb">Check grad</button></p>
+<p class="small" id="grnote"></p>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Pin everything</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>You need a pretrained model in 5 lines. How? The hub is a library, the API is the librarian. You ask for a model by name and version. You get weights and config. The mechanism is the pipeline: tokenize, batch, forward, decode. Each stage has a contract (shapes, padding).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: batch of 4, length 7, vocab 50: logits (4, 7, 50). The shapes are the contract (U03 C11's lesson).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §11</span></p>
+<p>The broken assumption is that the name is the model. The revision moved, your numbers changed. Pin everything.</p>
+</div>
+<div class="nugget" id="nugget-pin">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §3, §11</span></h4>
+<p class="big">Pin the version or the library moves under you. The name is not the model.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the hub for standard models. Choose raw for custom architectures. Keep a version log.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every dependency is a moving part until pinned. The plumbing is the product.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The shape contract. The (4, 7, 50) rule is C03’s. The batch and length are yours.</p>
+<p>batch <input class="text" id="shb" value="4" aria-label="Batch"></p>
+<p>length <input class="text" id="shl" value="7" aria-label="Length"></p>
+<p>vocab <input class="text" id="shv" value="50" aria-label="Vocab"></p>
+<p><button class="btn" id="shbb">Contract</button></p>
+<p class="small" id="shnote"></p>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>The recipe, miniature</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>What is the least you can build and call it GPT-2? GPT-2 is embeddings plus transformer blocks plus a head, trained to predict the next token. The miniature has every part, just small. Scale is a dial, not a different machine. Params = embeddings (Vd + nd) + L times (attention + MLP). The loss is U04's next-token cross-entropy.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4, §5</span></p>
+<p>From <code>compute_u15.py</code>: V = 1000, n = 128, d = 8, L = 4, ffn = 512: 44,928 params. The toy loss falls 1.164 to 1.043 on random data (the probe learns the mean, honestly labeled).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that the miniature predicts the full model. Capabilities emerge with scale (U06). The miniature teaches mechanics, not emergence.</p>
+</div>
+<figure>
+<div id="chart-params"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4</span> The 44,928 params by part, from <code>compute_u15.py</code> (executed 2026-10-08): embeddings 9,024, attention x4 1,056, MLP x4 34,848. Log scale.</figcaption>
+</figure>
+<figure>
+<div id="chart-loss"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4</span> Toy loss on random data, from <code>compute_u15.py</code> (executed 2026-10-08): 1.164 to 1.043. The probe learns the mean.</figcaption>
+</figure>
+<div class="nugget" id="nugget-dial">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §3, §11</span></h4>
+<p class="big">Scale is a dial, not a different machine. The miniature teaches mechanics. Emergence comes later.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the miniature for understanding. Choose the default project for the grade.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Build the small version first. It carries every part of the recipe.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The param counter. The formula is C04’s. The sizes are yours. Prefilled with the lesson toy.</p>
+<p>V <input class="text" id="pmv" value="1000" aria-label="V"></p>
+<p>n <input class="text" id="pmn" value="128" aria-label="n"></p>
+<p>d <input class="text" id="pmd" value="8" aria-label="d"></p>
+<p>L <input class="text" id="pml" value="4" aria-label="L"></p>
+<p>ffn <input class="text" id="pmf" value="512" aria-label="ffn"></p>
+<p><button class="btn" id="pmb">Count</button></p>
+<p class="small" id="pmnote"></p>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Template numbers are not findings</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>The model is trained. Now what? Pretraining is school, downstream tasks are the jobs. The template: attach a head, fine-tune a little, report with intervals (U10's discipline).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4, §5</span></p>
+<p>From <code>compute_u15.py</code> (labeled toy): three tasks with toy scores: paraphrase 0.81 +/- 0.03, sentiment 0.93 +/- 0.01, QA 0.68 +/- 0.05. QA's 0.05 SE is the widest: the task needs more items.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that the toy scores are real. They are template numbers. Never cite them as findings.</p>
+</div>
+<figure>
+<div id="chart-tasks"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4</span> Toy scores with SE whiskers, from <code>compute_u15.py</code> (executed 2026-10-08), labeled toy: paraphrase 0.81 +/- 0.03, sentiment 0.93 +/- 0.01, QA 0.68 +/- 0.05. Never cite as findings.</figcaption>
+</figure>
+<div class="nugget" id="nugget-template">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §3, §11</span></h4>
+<p class="big">Template numbers are not findings. Report with intervals, and widen the task when the SE is wide.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose fine-tuning for reliability. Choose prompting for speed. Report with U10's intervals.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>The widest interval points at the weakest measurement. Fix the measurement first.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>A gate without a claim is a status meeting</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>The project is 4 weeks. How do you not drift? The gates are the project's spine: the proposal promises, the milestone shows progress, the poster communicates, the report archives. The mechanism is the gate: each document answers "what did you claim, what did you find, what changed". The report is U10 C12's accounting plus U13 C12's impact.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4, §5</span></p>
+<p>From <code>compute_u15.py</code>: four gates from SRC-04: proposal, milestone, poster, report. Hand-set toy, labeled as such: the proposal claims "k=5 beats k=1 on our QA", the milestone shows the first numbers (k=5: 0.667 vs k=1: 0.000), the report's verdict. The numbers from U09's toys, reused honestly.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §11</span></p>
+<p>The broken assumption is that the proposal survives. The data kills the claim at the milestone. Change the claim, log the change, continue.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u15-gates.jpg" alt="Watercolor illustration of four garden gates leading to a small building">
+<figcaption><span class="tag tag-toy">Illustration</span> Four gates from SRC-04: proposal, milestone, poster, report. Each gate needs a falsifiable claim.</figcaption>
+</figure>
+<figure>
+<div id="chart-gates"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4</span> The four project gates, from <code>compute_u15.py</code> (executed 2026-10-08), from SRC-04.</figcaption>
+</figure>
+<div class="nugget" id="nugget-gates">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §3, §11</span></h4>
+<p class="big">A gate without a claim is a status meeting. When the data kills the claim, change the claim and log the change.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the gates for a team or a grade. Choose the single report for solo exploration.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every checkpoint needs a falsifiable claim, or the checkpoint adds nothing.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Cut scope, never the control</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>The idea needs 8 weeks, you have 4. What goes? U10 C11's scorecard, applied: scope is the art of the shippable. The mechanism is subtraction: list everything, cut until it fits the time box, keep the falsifiable core. A project that does one thing well beats a project that does three things badly.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4, §5</span></p>
+<p>From <code>compute_u15.py</code>: the scorecard reads 3/5 (missing: metric defined, novelty). Define the metric: 4/5. Cut the novelty: ship the measurement.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §11</span></p>
+<p>The broken assumption is that the cut kept the claim. The cut may remove the control group. Cut scope, never the control.</p>
+</div>
+<figure>
+<div id="chart-scope"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4</span> The scorecard, from <code>compute_u15.py</code> (executed 2026-10-08): 3/5, then 4/5 after the metric is defined. Cut novelty, ship the measurement.</figcaption>
+</figure>
+<div class="nugget" id="nugget-scope">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
+<p class="big">Cut scope, never the control. Subtraction keeps the falsifiable core inside the time box.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose scoping always. The alternative is the crunch. One thing done well beats three done badly.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Cut the work, not the evidence. The control group is never the cut.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The scope card. The five items are C07’s. The checks are yours. Prefilled with the lesson toy at 3/5.</p>
+<p><label><input type="checkbox" class="spitem" checked> feasible in 4 weeks</label><br>
+<label><input type="checkbox" class="spitem" checked> data available</label><br>
+<label><input type="checkbox" class="spitem"> metric defined</label><br>
+<label><input type="checkbox" class="spitem" checked> compute fit</label><br>
+<label><input type="checkbox" class="spitem"> novelty</label></p>
+<p class="small" id="spnote"></p>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>Provenance, not cosmetics</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>The project says "implement". What does that allow? Implementation is translation: spec to code. The spec is cited, the code is yours. Copying the translation is not translation. The mechanism is the test: shape checks (U03 C11), grad checks (U03 C10), the toy numbers. Tests are the proof of understanding.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: your attention matches the spec's shapes (4, 7, 50) and the grad check passes. The code is yours, the idea is cited.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that clean code means your code. Renamed variables on copied code are cosmetics. The policy cares about provenance, not cosmetics.</p>
+</div>
+<div class="nugget" id="nugget-provenance">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">Original code, cited ideas. Provenance, not cosmetics: tests are the proof of understanding.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose implementation for the parts you must understand. Choose the library for the plumbing.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Shape checks and grad checks turn translation into proof. Cosmetics turn it into nothing.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Report the spread</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>Your partner reruns your code and gets a different number. What broke? Reproducibility is the receipt: seeds, versions, data, commands. A result without a receipt is a story. The mechanism is the seed sweep: run k seeds, report mean and std. The tolerance is the std: differences inside it are noise.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4, §5</span></p>
+<p>From <code>compute_u15.py</code>: 5 seeds give mean 0.8045, std 0.0203. A rerun at 0.79 is consistent, at 0.70 is not. One seed is an anecdote, five are evidence.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is "same seed, same number". GPU nondeterminism and library versions break it. Log those too.</p>
+</div>
+<figure>
+<div id="chart-seeds"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4</span> Seed accuracies and the mean, from <code>compute_u15.py</code> (executed 2026-10-08): 0.8069, 0.8038, 0.8408, 0.7870, 0.7840. Mean 0.8045, std 0.0203.</figcaption>
+</figure>
+<div class="nugget" id="nugget-spread">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §11</span></h4>
+<p class="big">Report the spread. One seed is an anecdote, five are evidence, and the std is the tolerance.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the sweep for any claim. Choose one seed for debugging. Keep the receipt: seeds, versions, data, commands.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Noise has a measured size. Anything inside it is not a difference.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The rerun judge. The rule is C09’s: inside ±2 std of 0.8045 is consistent. The rerun score is yours.</p>
+<p>rerun score <input class="text" id="sdv" value="0.79" aria-label="Rerun score"></p>
+<p><button class="btn" id="sdb">Judge</button></p>
+<p class="small" id="sdnote"></p>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>A claim without a leash</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>The project worked. What did it not do? Limitations are the report's immune system: they stop the reader from overclaiming your work. The mechanism is the ranking: the limit that most threatens the claim goes first.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: four limits, ranked: toy data (not real) first, then 5 seeds (not 50), one language (not twelve), no human eval. Toy data first: it threatens everything.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p>The broken assumption is that the list is complete. The limit you forgot is the risk. Have someone else read it.</p>
+</div>
+<div class="nugget" id="nugget-leash">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §3, §11</span></h4>
+<p class="big">Limitations are the report's immune system. Rank them by threat. A missing section is a claim without a leash.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose honesty always. The alternative is the rebuttal.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>The limit that most threatens the claim goes first. Name it before someone else does.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>The dated list</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3, §4</span></p>
+<p>What is still unknown? Open questions are the field's todo list. This course ends where research begins. The list is dated: October 2026. It will age. The criterion: each question names the experiment that would answer it.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §5</span></p>
+<p>Hand-set toy, labeled as such: the ICL mechanism (U08), faithful reasoning (U11), the scaling limit (U06), multilingual parity (U12), mechanistic understanding (U13). Each open, each with a closing experiment.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p>The broken assumption is that the list is the field. The question nobody asked yet is the counterexample. Lists are partial.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u15-horizon.jpg" alt="Watercolor illustration of an open notebook with question marks rising as hot air balloons toward a horizon">
+<figcaption><span class="tag tag-toy">Illustration</span> The open horizon: each question names the experiment that would answer it.</figcaption>
+</figure>
+<div class="card">
+<p class="card-title">Open questions · dated October 2026 (hand-set, from the lesson)</p>
+<dl class="card-dl">
+<dt>ICL mechanism (U08)</dt><dd>closing: the construction or the refutation, with the experiment</dd>
+<dt>faithful reasoning (U11)</dt><dd>closing: the intervention that separates correlation from cause</dd>
+<dt>the scaling limit (U06)</dt><dd>closing: the measured break in the scaling curve</dd>
+<dt>multilingual parity (U12)</dt><dd>closing: the parity test across twelve languages</dd>
+<dt>mechanistic understanding (U13)</dt><dd>closing: the causal test on a labeled circuit</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>The rubric scores evidence</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>Can you defend your project out loud? The defense is the course in miniature: say what you did, show the numbers, name the limits, answer the changed scenario. If you can defend it, you know it. The oral ladder: define, compute, derive, diagnose, design.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: the defense of the U09 lab: claim (recall at k), evidence (0.000/0.333/0.667/1.000), limit (toy corpus), transfer (hourly updates). Four points, no slides needed.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §11</span></p>
+<p>The broken assumption is that fluent means correct. The fluent rationalization (U11 C12) is the counterexample. The rubric scores evidence, not fluency.</p>
+</div>
+<figure>
+<div id="chart-recall"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4</span> The U09 lab evidence, hand-set toy labeled as such (U09's numbers, reused honestly): recall at k 0.000/0.333/0.667/1.000.</figcaption>
+</figure>
+<div class="nugget" id="nugget-rubric">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §3, §11</span></h4>
+<p class="big">The rubric scores evidence, not fluency. Claim stated, evidence shown, limit named, transfer answered: four points.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose oral for depth. Choose written for scale. The interview banks are the practice ground.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Fluency is not correctness. Grade the evidence chain, not the delivery.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The defense grader. The four points are C12’s. The checks are yours.</p>
+<p><label><input type="checkbox" class="dfitem"> claim stated</label><br>
+<label><input type="checkbox" class="dfitem"> evidence shown</label><br>
+<label><input type="checkbox" class="dfitem"> limit named</label><br>
+<label><input type="checkbox" class="dfitem"> transfer answered</label></p>
+<p><button class="btn" id="dfb">Grade</button></p>
+<p class="small" id="dfnote"></p>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>The ten nuggets</h2>
+<ol class="nugget-list">
+<li><a href="#nugget-loop">Conduct, do not play (§1)</a></li>
+<li><a href="#nugget-pin">Pin the version or the library moves under you (§3)</a></li>
+<li><a href="#nugget-dial">Scale is a dial, not a different machine (§4)</a></li>
+<li><a href="#nugget-template">Template numbers are not findings (§5)</a></li>
+<li><a href="#nugget-gates">A gate without a claim is a status meeting (§6)</a></li>
+<li><a href="#nugget-scope">Cut scope, never the control (§7)</a></li>
+<li><a href="#nugget-provenance">Provenance, not cosmetics (§8)</a></li>
+<li><a href="#nugget-spread">Report the spread (§9)</a></li>
+<li><a href="#nugget-leash">Limitations are the report's immune system (§10)</a></li>
+<li><a href="#nugget-rubric">The rubric scores evidence, not fluency (§12)</a></li>
+</ol>
+</section>
+</div>
+<footer class="wrap">
+<p class="small">PROVENANCE · CS224N companion artifact U15 of 15 · Project tutorials and open questions.</p>
+<p class="small">Narrated from <code>lessons/u15_projects_open_questions.md</code> (requested branch). Transcript status: NONE (official site inspected. 2026 videos restricted-unviewed. 2024 playlist not viewed). Numbers from <code>visuals/compute_u15.py</code>, executed 2026-10-08. Param count at V=1000, n=128, d=8, L=4, ffn=512: 44,928 (embeddings 9,024, attention x4 1,056, MLP x4 34,848). Toy loss 1.164 to 1.043 on random data. Downstream toy scores: paraphrase 0.81 +/- 0.03, sentiment 0.93 +/- 0.01, QA 0.68 +/- 0.05. Scorecard 3/5 to 4/5. Seed accuracies 0.8069, 0.8038, 0.8408, 0.7870, 0.7840 (mean 0.8045, std 0.0203). Four gates from SRC-04: proposal, milestone, poster, report. Hand-set toys labeled as such: 0.002 s vs 0.4 s vectorization, logits (4, 7, 50), U09 lab recall 0.000/0.333/0.667/1.000 (U09's numbers, reused honestly), the five open questions dated October 2026. Quote budget: 0 quoted words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted.</p>
+<p class="small">Historical photos: none. No verifiable candidate found. Illustrations only, generated via the image pipeline and labeled as such.</p>
+</footer>
+<script>
+function el(id) { return document.getElementById(id) }
+function num(id, fb) {
+  var v = parseFloat(el(id).value)
+  return isNaN(v) ? fb : v
+}
+function fmt(n) {
+  if (n >= 1e9) { return (n/1e9).toFixed(2) + "e9" }
+  if (n >= 1e6) { return (n/1e6).toFixed(2) + "e6" }
+  if (n >= 1e3) { return (n/1e3).toFixed(1) + "k" }
+  return String(Math.round(n * 1000) / 1000)
+}
+function logBar(id, labels, values, unit) {
+  var host = el(id)
+  var w = 720
+  var rowH = 46
+  var top = 26
+  var labW = 190
+  var bot = 30
+  var h = top + rowH * values.length + bot
+  var maxL = 0
+  values.forEach(function(v) {
+    var l = Math.log10(Math.max(v, 1))
+    if (l > maxL) { maxL = l }
+  })
+  var s = '<svg class="chart" viewBox="0 0 ' + w + ' ' + h + '" role="img">'
+  s = s + '<text class="chart-label" x="' + (labW + 4) + '" y="14">log scale . ' + unit + '</text>'
+  values.forEach(function(v, i) {
+    var l = Math.log10(Math.max(v, 1))
+    var bw = (l / maxL) * (w - labW - 60)
+    var y = top + i * rowH
+    s = s + '<text class="chart-label" x="0" y="' + (y + 22) + '">' + labels[i] + '</text>'
+    s = s + '<rect x="' + labW + '" y="' + y + '" width="' + bw.toFixed(1) + '" height="30" fill="' + (i === 0 ? "#9d5c63" : "#1e5a8a") + '"/>'
+    s = s + '<text class="chart-label" x="' + (labW + bw + 8) + '" y="' + (y + 22) + '">' + fmt(v) + '</text>'
+  })
+  s = s + '</svg>'
+  host.innerHTML = s
+}
+function barChart(id, rows, maxV, unit) {
+  var host = el(id)
+  var w = 720
+  var h = rows.length * 44 + 60
+  var s = '<svg class="chart" viewBox="0 0 ' + w + ' ' + h + '" role="img">'
+  s = s + '<text class="chart-label" x="0" y="16">' + unit + '</text>'
+  rows.forEach(function(r, i) {
+    var y = 30 + i * 44
+    var bw = (r[1] / maxV) * (w - 190)
+    s = s + '<text class="chart-label" x="0" y="' + (y + 24) + '">' + r[0] + '</text>'
+    s = s + '<rect x="180" y="' + y + '" width="' + bw.toFixed(1) + '" height="28" fill="' + r[3] + '"/>'
+    s = s + '<text class="chart-label" x="' + (186 + bw) + '" y="' + (y + 20) + '">' + r[2] + '</text>'
+  })
+  s = s + '</svg>'
+  host.innerHTML = s
+}
+function whisker(id, rows, maxV, unit) {
+  var host = el(id)
+  var w = 720
+  var h = rows.length * 52 + 60
+  var s = '<svg class="chart" viewBox="0 0 ' + w + ' ' + h + '" role="img">'
+  s = s + '<text class="chart-label" x="0" y="16">' + unit + '</text>'
+  rows.forEach(function(r, i) {
+    var y = 34 + i * 52
+    var cx = 180 + (r[1] / maxV) * (w - 260)
+    var hw = (r[2] / maxV) * (w - 260)
+    s = s + '<text class="chart-label" x="0" y="' + (y + 4) + '">' + r[0] + '</text>'
+    s = s + '<line x1="' + (cx - hw) + '" y1="' + y + '" x2="' + (cx + hw) + '" y2="' + y + '" stroke="#1e5a8a" stroke-width="3"/>'
+    s = s + '<line x1="' + (cx - hw) + '" y1="' + (y - 8) + '" x2="' + (cx - hw) + '" y2="' + (y + 8) + '" stroke="#1e5a8a" stroke-width="3"/>'
+    s = s + '<line x1="' + (cx + hw) + '" y1="' + (y - 8) + '" x2="' + (cx + hw) + '" y2="' + (y + 8) + '" stroke="#1e5a8a" stroke-width="3"/>'
+    s = s + '<circle cx="' + cx + '" cy="' + y + '" r="6" fill="#9d5c63"/>'
+    s = s + '<text class="chart-label" x="' + (cx + hw + 12) + '" y="' + (y + 5) + '">' + r[1].toFixed(2) + " +/- " + r[2].toFixed(2) + '</text>'
+  })
+  s = s + '</svg>'
+  host.innerHTML = s
+}
+function onload() {
+  logBar("chart-params", ["embeddings 9,024", "attention x4 1,056", "MLP x4 34,848"], [9024, 1056, 34848], "params")
+  barChart("chart-loss", [["first step","1.164","1.164","#9d5c63"],["last step","1.043","1.043","#1e5a8a"]], 1.164, "loss")
+  whisker("chart-tasks", [["paraphrase", 0.81, 0.03], ["sentiment", 0.93, 0.01], ["QA", 0.68, 0.05]], 1.0, "toy score +/- SE")
+  barChart("chart-gates", [["proposal","1","1","#1e5a8a"],["milestone","1","1","#9d5c63"],["poster","1","1","#d9a441"],["report","1","1","#1e5a8a"]], 1, "gate")
+  barChart("chart-scope", [["before: 3/5","3","3","#9d5c63"],["after defining the metric: 4/5","4","4","#1e5a8a"]], 5, "points")
+  barChart("chart-seeds", [["seed 1","0.8069","0.8069","#1e5a8a"],["seed 2","0.8038","0.8038","#1e5a8a"],["seed 3","0.8408","0.8408","#9d5c63"],["seed 4","0.7870","0.7870","#1e5a8a"],["seed 5","0.7840","0.7840","#1e5a8a"],["mean","0.8045","0.8045","#d9a441"]], 0.8408, "accuracy")
+  barChart("chart-recall", [["k=1","0.000","0.000","#9d5c63"],["k=2","0.333","0.333","#d9a441"],["k=3","0.667","0.667","#1e5a8a"],["k=4","1.000","1.000","#1e5a8a"]], 1.0, "recall at k (hand toy)")
+}
+function runVec() {
+  var n = Math.max(1000, Math.round(num("ves", 1000000)))
+  var vec = (n / 1000000) * 0.002
+  var loop = vec * 200
+  el("venote").textContent = "At " + n + " floats: vectorized about " + vec.toFixed(4) + " s, Python loop about " + loop.toFixed(3) + " s. Hand-set at 1M: 0.002 s vs 0.4 s. Measure on your machine. The ratio holds."
+}
+function runGrad() {
+  var x = num("grx", 2)
+  var expr = el("gry").value
+  var clean = expr.replace(/\s+/g, "").replace(/\^/g, "**")
+  var ok = /^[x0-9*+\-\/.()** ]+$/.test(clean)
+  if (!ok) {
+    el("grnote").textContent = "Use only x, digits, *, +, -, /, parentheses. Try x*x."
+    return
+  }
+  var f = new Function("x", "return " + clean)
+  var h = 1e-6
+  var g = (f(x + h) - f(x - h)) / (2 * h)
+  el("grnote").textContent = "At x = " + x + ": dy/dx about " + g.toFixed(4) + ". Lesson toy: x = 2, y = x^2, grad 4.0. Run grad checks on every new op."
+}
+function runShapes() {
+  var b = Math.max(1, Math.round(num("shb", 4)))
+  var l = Math.max(1, Math.round(num("shl", 7)))
+  var v = Math.max(1, Math.round(num("shv", 50)))
+  el("shnote").textContent = "Logits shape: (" + b + ", " + l + ", " + v + "). Lesson toy: (4, 7, 50). The shapes are the contract."
+}
+function runParams() {
+  var V = Math.max(1, Math.round(num("pmv", 1000)))
+  var n = Math.max(1, Math.round(num("pmn", 128)))
+  var d = Math.max(1, Math.round(num("pmd", 8)))
+  var L = Math.max(1, Math.round(num("pml", 4)))
+  var ffn = Math.max(1, Math.round(num("pmf", 512)))
+  var emb = V * d + n * d
+  var attn = 4 * d * d + d
+  var mlp = 2 * d * ffn + ffn + d
+  var total = emb + L * (attn + mlp)
+  el("pmnote").textContent = "embeddings " + emb + ", attention per block " + attn + ", MLP per block " + mlp + ", total " + total + ". Lesson toy: 44,928."
+}
+function runScope() {
+  var boxes = document.querySelectorAll(".spitem")
+  var done = 0
+  boxes.forEach(function(b) { if (b.checked) { done = done + 1 } })
+  el("spnote").textContent = "Score: " + done + "/5. Lesson toy: 3/5, missing metric defined and novelty. Define the metric for 4/5, then cut the novelty and ship."
+}
+function runSeeds() {
+  var v = num("sdv", 0.79)
+  var diff = Math.abs(v - 0.8045)
+  var tol = 2 * 0.0203
+  el("sdnote").textContent = "Rerun " + v + ": " + (diff <= tol ? "consistent (inside noise)." : "inconsistent (outside noise).") + " Lesson toy: 0.79 consistent, 0.70 not."
+}
+function runDefense() {
+  var boxes = document.querySelectorAll(".dfitem")
+  var done = 0
+  boxes.forEach(function(b) { if (b.checked) { done = done + 1 } })
+  var missing = []
+  var labels = ["claim stated", "evidence shown", "limit named", "transfer answered"]
+  boxes.forEach(function(b, i) { if (!b.checked) { missing.push(labels[i]) } })
+  el("dfnote").textContent = "Defense: " + done + "/4." + (missing.length === 0 ? " Complete: now defend it out loud." : " Missing: " + missing.join(", ") + ".")
+}
+function bindScope() {
+  var boxes = document.querySelectorAll(".spitem")
+  boxes.forEach(function(b) { b.addEventListener("change", runScope) })
+  runScope()
+}
+function onready() {
+  onload()
+  el("veb").addEventListener("click", runVec)
+  el("grb").addEventListener("click", runGrad)
+  el("shbb").addEventListener("click", runShapes)
+  el("pmb").addEventListener("click", runParams)
+  el("sdb").addEventListener("click", runSeeds)
+  el("dfb").addEventListener("click", runDefense)
+  bindScope()
+}
+window.addEventListener("DOMContentLoaded", onready)
+</script>
+</body>
+</html>

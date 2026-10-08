@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U01 Companion: Preferences, choices, and generalization · CS329H</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:900px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband a{color:var(--paper)}
+header.hero{padding:52px 0 6px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:660px}
+.notice{border:1px solid var(--line)}
+.notice{background:var(--paper2)}
+.notice{border-radius:10px}
+.notice{padding:16px 20px}
+.notice{margin:26px 0}
+.notice{font-size:16px}
+.notice p{margin:.45em 0}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:16px 20px}
+.legend{margin:26px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-interp{background:transparent}
+.tag-interp{color:var(--indigo)}
+.tag-interp{border:1.5px solid var(--indigo)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+section.block{padding:34px 0 10px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.12em}
+.secnum{text-transform:uppercase}
+.secnum{color:var(--clay)}
+.secnum{margin:0 0 4px}
+h2{font-size:32px}
+h2{line-height:1.2}
+h2{margin:.1em 0 .5em}
+h3{font-size:22px}
+h3{margin:1.2em 0 .4em}
+.prose-narrow{max-width:720px}
+figure{margin:28px 0}
+figure{background:#fff}
+figure{border:1px solid var(--line)}
+figure{border-radius:10px}
+figure{padding:18px 18px 8px}
+figcaption{font-size:15px}
+figcaption{color:var(--muted)}
+figcaption{padding:10px 4px 12px}
+figcaption{line-height:1.55}
+img.illus{width:100%}
+img.illus{border-radius:8px}
+img.illus{display:block}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:5px solid var(--clay)}
+.nugget{background:#fff}
+.nugget{border-radius:8px}
+.nugget{padding:18px 22px}
+.nugget{margin:30px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:14px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:20px}
+.nugget .big{line-height:1.5}
+.nugget .big{margin:.2em 0 .6em}
+.nugget dl{margin:0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{margin:10px 0 2px}
+.nugget dd{margin:0 0 6px}
+.nugget dd{font-size:16.5px}
+.lab{border:1px dashed var(--amber)}
+.lab{background:var(--ambersoft)}
+.lab{border-radius:10px}
+.lab{padding:18px 22px}
+.lab{margin:28px 0}
+.toy{border:1px solid var(--indigo)}
+.toy{background:var(--indigosoft)}
+.toy{border-radius:10px}
+.toy{padding:18px 22px}
+.toy{margin:28px 0}
+.toy input[type=number]{width:64px}
+.toy input[type=number]{font-family:var(--mono)}
+.toy input[type=number]{font-size:15px}
+.toy input[type=number]{padding:4px 6px}
+.toy input[type=number]{margin:2px 6px 2px 2px}
+.toy label{font-family:var(--sans)}
+.toy label{font-size:14px}
+.btn{font-family:var(--sans)}
+.btn{font-size:15px}
+.btn{background:var(--ink)}
+.btn{color:var(--paper)}
+.btn{border:none}
+.btn{border-radius:8px}
+.btn{padding:10px 18px}
+.btn{cursor:pointer}
+.btn{margin:8px 8px 8px 0}
+.btn.ghost{background:transparent}
+.btn.ghost{color:var(--ink)}
+.btn.ghost{border:1.5px solid var(--ink)}
+table.data{border-collapse:collapse}
+table.data{margin:14px 0}
+table.data{font-size:16px}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.06em}
+table.data th{text-align:left}
+table.data th{padding:8px 14px 8px 0}
+table.data td{padding:8px 14px 8px 0}
+table.data td{border-top:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+code{font-family:var(--mono)}
+code{font-size:.88em}
+code{background:var(--paper2)}
+code{padding:1px 6px}
+code{border-radius:5px}
+.wisdom ol{padding-left:22px}
+.wisdom li{margin:10px 0}
+.wisdom a{color:var(--clay)}
+footer{background:var(--ink)}
+footer{color:var(--paper)}
+footer{margin-top:56px}
+footer{padding:40px 0 60px}
+footer p{font-size:15.5px}
+footer{line-height:1.6}
+footer code{background:rgba(255,255,255,.12)}
+footer a{color:var(--paper)}
+.backlink{font-family:var(--sans)}
+.backlink{font-size:15px}
+.backlink{margin:34px 0 0}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CS329H · Stanford · Interactive companion · <a href="../index.html">course index</a></div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">U01 · Preferences, choices, and generalization</p>
+<h1>What the win hides</h1>
+<p class="dek">Pairwise win records look like facts. This unit turns them into scores, then shows everything that distorts them: context, noise, thin data, and the choices of the person who built the model. Twelve concepts, one engine, and the discipline to read a score honestly.</p>
+</header>
+<figure>
+<img class="illus" src="assets/u01-hero.jpg" alt="Watercolor of a balance scale weighing two blank cards">
+<figcaption><span class="tag tag-toy">Illustration</span> The unit in one image: every comparison is a weighing, and the scale itself is part of the measurement. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="notice">
+<p><strong>Sourcing.</strong> No full transcript exists for session S02. This companion narrates <code>content/v2/cs329h/lessons/u01_lesson.md</code>. Concepts C01 through C09 map to S02 at title level. Concepts C10, C11, and C12 are requested extensions: the lesson marks them PLANNED / SOURCE ATTRIBUTION PENDING, and they are taught here as independent theory with that label.</p>
+<p><strong>How to read the tags.</strong> Every number carries its lesson section. Anything the companion computes is tagged <span class="tag tag-toy">Illustration</span>. A <span class="tag tag-interp">Interpretation</span> tag marks the companion's own reading of the lesson. Where the lesson leaves a value out, the page says so in words.</p>
+</div>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> A fact, number, or mechanism from the lesson.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-interp">Interpretation</span> The companion's reading of why a lesson fact matters. The fact is the lesson's, the gloss is ours.</p>
+<p><span class="tag-ref">C01 · Contract 6</span> Points to the exact lesson section behind a claim or number.</p>
+</div>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">Choice vs preference</a>
+<a href="#s2">The pairwise record</a>
+<a href="#s3">Bradley-Terry engine</a>
+<a href="#s4">Noise and generalization</a>
+<a href="#s5">Protocol and fairness</a>
+<a href="#wisdom">Wisdom index</a>
+<a href="#provenance">Provenance</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01, C02</p>
+<h2>A choice is not a preference</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 2</span></p>
+<p>An annotator picks A in the morning and B in the evening. One person, two choices, one preference to infer. The lesson refuses the naive reading. A preference answers what someone would want with full information and no pressure. A choice answers what they picked, here, now. The choice equals the preference plus context plus noise.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 5, 6</span></p>
+<p>The mechanism is explicit. The model writes the win probability as a logistic function of a latent score plus a context term: P(y=1) = sigma(s + b*c). When b = 0, choices reveal preference directly. When b differs from 0, raw win counts confound the two. On the lesson toy, 200 choices with A shown first and 200 with B shown first give observed fractions 0.69 and 0.54. The fit separates the parts: latent preference s = 0.80, context shift b = -0.66. Same numbers as the lesson figure u01_f01.</p>
+<p><span class="tag tag-interp">Interpretation</span> This split is the unit's founding discipline. Every later concept is a refinement of it: a new term for context, a new model for noise, a new test for when the split itself fails. If you remember one sentence from this unit, remember that a win record is a mixture, not a readout.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Observed choice fractions by context and the fitted split into preference and context effect">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Observed: fraction choosing A</text>
+<g><title>A shown first: 0.69</title><rect x="60" y="120" width="120" height="132" fill="#a94f27" rx="4"/><text x="120" y="112" text-anchor="middle" font-size="15" font-family="Georgia">0.69</text><text x="120" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">A shown first</text></g>
+<g><title>B shown first: 0.54</title><rect x="220" y="165" width="120" height="87" fill="#c98a5e" rx="4"/><text x="280" y="157" text-anchor="middle" font-size="15" font-family="Georgia">0.54</text><text x="280" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">B shown first</text></g>
+<text x="420" y="28" font-size="15" font-family="Georgia" font-weight="bold">Fitted: preference plus context</text>
+<g><title>Latent preference s = 0.80 utils</title><rect x="420" y="95" width="180" height="30" fill="#31405e" rx="4"/><text x="510" y="116" text-anchor="middle" font-size="14" font-family="Georgia" fill="#faf6ee">s = 0.80</text></g>
+<g><title>Context shift b = -0.66 utils</title><rect x="420" y="140" width="180" height="30" fill="#8a5a17" rx="4"/><text x="510" y="161" text-anchor="middle" font-size="14" font-family="Georgia" fill="#faf6ee">b = -0.66</text></g>
+<text x="420" y="200" font-size="13" font-family="Georgia" fill="#6f6355">The same raw gap, split into</text>
+<text x="420" y="220" font-size="13" font-family="Georgia" fill="#6f6355">a stable preference and a</text>
+<text x="420" y="240" font-size="13" font-family="Georgia" fill="#6f6355">context effect that moves it.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 6</span> Two contexts, two observed fractions, one fitted split. Toy data, n = 400. The naive read says preference changed across contexts. The fitted model says the preference stayed at s = 0.80 while context moved it by b = -0.66 utils.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 8, 11</span></p>
+<p>The fit has two honesty checks. Fix b at 0 and the preference estimate must equal the log-odds of the pooled fraction. Shuffle the context labels and the b estimate must fall to 0. The failure case is sharp: with only one context observed, s and b collapse into a single number and any split between them is arbitrary. Two parameters need two contexts.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 5, 6</span></p>
+<p>Context generalizes the idea. The lesson extends the score gap with a weighted context vector, so the model stays logistic in a wider feature space. The computed example is small and pointed: two summaries with score gap 0.3. The win probability is sigma(0.3) = 0.574. One recorded wording factor adds 0.5, the probability moves to sigma(0.8) = 0.690. A single recorded factor flips a close call.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 260" role="img" aria-label="Win probability moves from 0.574 to 0.690 when a wording factor adds 0.5 to the gap">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">One recorded context factor flips a close call</text>
+<g><title>Gap 0.3, win probability 0.574</title><rect x="80" y="120" width="180" height="100" fill="#5d7050" rx="4"/><text x="170" y="112" text-anchor="middle" font-size="15" font-family="Georgia">0.574</text><text x="170" y="240" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">gap 0.3, no factor</text></g>
+<g><title>Gap 0.8, win probability 0.690</title><rect x="360" y="82" width="180" height="138" fill="#31405e" rx="4"/><text x="450" y="74" text-anchor="middle" font-size="15" font-family="Georgia">0.690</text><text x="450" y="240" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">gap 0.8, wording +0.5</text></g>
+<line x1="270" y1="150" x2="350" y2="150" stroke="#a94f27" stroke-width="2" marker-end="url(#ah1)"/>
+<defs><marker id="ah1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#a94f27"/></marker></defs>
+<text x="310" y="140" text-anchor="middle" font-size="13" font-family="Georgia" fill="#a94f27">+0.5</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 6</span> The same two summaries. The wording of the question is recorded as a context factor worth 0.5 utils, and the predicted winner changes decisively.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 10, 11</span></p>
+<p>There is a fork in the road. Model the context when you cannot control it, as with logs from production. Randomize it away when you design the annotation task: shuffle order, fix wording. The failure mode of modeling is unrecorded context that correlates with the items. If harder prompts always show A first, the order coefficient absorbs item difficulty and the model learns the wrong thing with full confidence.</p>
+</div>
+<div class="nugget" id="nugget-context">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, C02 · Contract 3</span></h4>
+<p class="big">Raw win counts are a mixture. Read them as preference plus context plus noise, and estimate the parts separately.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The lesson's toy shows a naive read inventing a preference change where only the presentation order changed. Every ranking built on raw counts inherits this error.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>An LLM judge that prefers the first answer shown is the same phenomenon at production scale. Estimate its position bias before you trust its verdicts.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C03, C04</p>
+<h2>The smallest honest record</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 4, 6</span></p>
+<p>A pairwise record is one contest with one winner: the triple (a, b, y), where y = 1 means a won. The lesson toy has three records: A beats B twice, B beats A once, B beats C three times. The win-count matrix W holds W[A,B] = 2, W[B,A] = 1, W[B,C] = 3. The key result: the likelihood uses only these counts. The order of the records carries no information. Many contests rank the field the way many games rank teams.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 11</span></p>
+<p>The independence assumption is the fragile part. Ten judgments of the same pair by the same annotator are not ten independent contests. Duplicates inflate confidence without adding information. The lesson's falsifiable check: compare within-annotator and between-annotator agreement rates. Equal rates support independence.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 5</span></p>
+<p>Then the unit draws its most useful distinction. Ordinal is the ranking. Cardinal is the ranking plus the gaps. Pairwise win records are ordinal. Scores with meaningful gaps are cardinal. From ordinal data alone, any monotone transform of the scores preserves every order. The logistic link picks one cardinal scale: gaps map to probabilities through sigma. Two pairs with the same order but gaps 0.8 and 3.0 give P = 0.69 and 0.95. Same numbers as the lesson figure u01_f07.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 280" role="img" aria-label="Gap 0.8 gives win probability 0.69, gap 3.0 gives 0.95, same order">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Same order, different confidence</text>
+<g><title>Gap 0.8 utils, win probability 0.69</title><rect x="80" y="140" width="200" height="92" fill="#5d7050" rx="4"/><text x="180" y="132" text-anchor="middle" font-size="15" font-family="Georgia">0.69</text><text x="180" y="252" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">gap 0.8</text></g>
+<g><title>Gap 3.0 utils, win probability 0.95</title><rect x="360" y="94" width="200" height="138" fill="#31405e" rx="4"/><text x="460" y="86" text-anchor="middle" font-size="15" font-family="Georgia">0.95</text><text x="460" y="252" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">gap 3.0</text></g>
+<text x="320" y="150" text-anchor="middle" font-size="13" font-family="Georgia" fill="#a94f27">order identical</text>
+<text x="320" y="170" text-anchor="middle" font-size="13" font-family="Georgia" fill="#a94f27">strength differs</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 6</span> Both pairs agree on who beats whom. Only the cardinal scale, fixed by the logistic link, says how confidently. The link is an assumption, not a fact: with one comparison per pair, cardinal gaps are pure prior and the data only orders.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 9, 10</span></p>
+<p>Cardinal claims cost more data. The standard error of a gap scales as 1 over the square root of the pair count, so halving the error needs four times the comparisons. The selection rule follows: choose scores when downstream use needs confidence, as with thresholds or active selection. Choose ranks when only the order matters and data is thin.</p>
+</div>
+<div class="nugget" id="nugget-cardinal">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 4, 11</span></h4>
+<p class="big">Ordinal data supports ordinal claims. Cardinal gaps are a model assumption wearing a number.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The logistic link is one choice among many. If the true noise is heavy-tailed, small gaps are overstated and every downstream threshold inherits the error.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Five-star movie ratings are ordinal. Averaging them into 4.3 stars quietly assumes a cardinal scale the raters never agreed to.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C05, C06, C07</p>
+<h2>The Bradley-Terry engine</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 4, 5</span></p>
+<p>Each item gets a hidden strength number. The chance A beats B depends only on the difference of strengths, pushed through an S-shaped curve: P(a beats b) = sigma(s_a - s_b). Big difference means near-certain win. Zero difference means a coin flip. The learning rule is the whole model in one line: each comparison nudges the winner's score up by (1 - p) and the loser's down by p, where p is the current predicted probability. Surprising wins move scores more than expected wins.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 6</span></p>
+<p>The lesson fits the rule on a three-player toy: A beats B twice, B beats C three times, A beats C once. After fitting with a sum-zero anchor the scores are s = [2.72, 2.03, -4.76]. C never wins, so its score drops hard. The check closes the loop: P(A beats B) = sigma(0.69) = 0.666, matching A's 2-0 record against B. Lesson figure u01_f02 draws this fit as a number line plate.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u01-logistic.jpg" alt="Watercolor of an S-shaped curve with ink dots scattered along it">
+<figcaption><span class="tag tag-toy">Illustration</span> The logistic link as watercolor: differences in, probabilities out. The dots are comparisons. The curve decides how much each one moves the score. Original to this companion.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 5, 6</span></p>
+<p>The likelihood asks which score gap makes the observed wins most probable. For A beating B five times and losing once, the log-likelihood is 5 log sigma(d) + log(1 - sigma(d)). Differentiate, set to zero, and the maximizer falls out: sigma(d) = 5/6, so d = log 5 = 1.609. The general rule: for one pair, the MLE gap equals the log-odds of the observed win rate. A grid search agrees, marking the minimum of the negative log-likelihood at 1.61 with value 2.703.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Negative log-likelihood curve with minimum at gap 1.61">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Five wins, one loss: which gap fits best?</text>
+<polyline points="60.0,53.0 81.7,70.1 103.3,86.9 125.0,103.3 146.7,119.3 168.3,134.6 190.0,149.3 211.7,163.1 233.3,176.0 255.0,187.8 276.7,198.4 298.3,207.8 320.0,215.8 341.7,222.4 363.3,227.7 385.0,231.7 406.7,234.5 428.3,236.2 450.0,237.0 471.7,236.9 493.3,236.2 515.0,234.9 536.7,233.1 558.3,230.9 580.0,228.4" fill="none" stroke="#31405e" stroke-width="2.5"/>
+<line x1="460" y1="237" x2="460" y2="262" stroke="#a94f27" stroke-width="2"/>
+<circle cx="460" cy="237" r="5" fill="#a94f27"><title>Minimum at gap 1.61, value 2.703</title></circle>
+<text x="460" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#a94f27">gap 1.61, NLL 2.703</text>
+<text x="60" y="282" font-size="13" font-family="Georgia" fill="#6f6355">gap -3</text>
+<text x="560" y="282" font-size="13" font-family="Georgia" fill="#6f6355">gap 3</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 6</span> The U-shaped negative log-likelihood for the 5-1 toy. Closed form gives log 5 = 1.609. The curve is flat near the bottom, which is why the standard error is wide here: about 1.095 on only six trials. Lesson figure u01_f03 plots the same curve.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 11, C07 · Contract 5, 6</span></p>
+<p>Two sharp edges. First, six wins and zero losses: the MLE gap is infinite, the likelihood keeps rising as the gap grows, and any optimizer just stops somewhere arbitrary. The fix is a prior or regularization, deferred to U03. Second, the additive constant: sigma((s_a + c) - (s_b + c)) = sigma(s_a - s_b), so the likelihood is flat along the all-ones direction. The lesson shows s = [0.5, 0.0, -0.3] and s = [1.5, 1.0, 0.7] giving identical probabilities 0.622, 0.690, 0.574. Only gaps enter the model. The data sees differences. The absolute level is invisible.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 320" role="img" aria-label="Two score vectors differing by a constant give identical win probabilities">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Add 1.0 to every score: nothing observable changes</text>
+<text x="60" y="60" font-size="13" font-family="Georgia" fill="#6f6355">scores [0.5, 0.0, -0.3]</text>
+<g><title>P(A beats B) = 0.622</title><rect x="60" y="75" width="140" height="26" fill="#31405e" rx="4"/><text x="208" y="94" font-size="13" font-family="Georgia">0.622</text></g>
+<g><title>P(A beats C) = 0.690</title><rect x="60" y="108" width="156" height="26" fill="#31405e" rx="4"/><text x="224" y="127" font-size="13" font-family="Georgia">0.690</text></g>
+<g><title>P(B beats C) = 0.574</title><rect x="60" y="141" width="130" height="26" fill="#31405e" rx="4"/><text x="198" y="160" font-size="13" font-family="Georgia">0.574</text></g>
+<text x="400" y="60" font-size="13" font-family="Georgia" fill="#6f6355">scores [1.5, 1.0, 0.7]</text>
+<g><title>P(A beats B) = 0.622</title><rect x="400" y="75" width="140" height="26" fill="#8a5a17" rx="4"/><text x="548" y="94" font-size="13" font-family="Georgia">0.622</text></g>
+<g><title>P(A beats C) = 0.690</title><rect x="400" y="108" width="156" height="26" fill="#8a5a17" rx="4"/><text x="564" y="127" font-size="13" font-family="Georgia">0.690</text></g>
+<g><title>P(B beats C) = 0.574</title><rect x="400" y="141" width="130" height="26" fill="#8a5a17" rx="4"/><text x="538" y="160" font-size="13" font-family="Georgia">0.574</text></g>
+<text x="320" y="220" text-anchor="middle" font-size="14" font-family="Georgia" fill="#a94f27">The constant cancels term by term.</text>
+<text x="320" y="245" text-anchor="middle" font-size="14" font-family="Georgia" fill="#a94f27">Anchor after each step: s minus its mean.</text>
+<text x="320" y="290" font-size="13" font-family="Georgia" fill="#6f6355">Without an anchor the solution wanders along the constant direction across runs.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 6</span> Identical predictions from two different score vectors. The MLE is a line, not a point. One line of anchoring makes it unique. Lesson figure u01_f04 shows the same twin bars.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 11</span></p>
+<p>Partial identifiability is the nastier cousin. If items split into two groups with no cross-group comparisons, each group carries its own free constant, and the gap between the blocks is unidentified. The falsifiable check: report the number of connected components of the comparison graph as the number of free constants.</p>
+</div>
+<div class="nugget" id="nugget-surprise">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 5</span></h4>
+<p class="big">Surprising wins move scores most. The gradient is (y - p): a win the model already expected teaches almost nothing.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The update rule explains why rankings change fastest on upsets. Expected wins are already priced into the scores.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>LLM arena rankings work the same way. A long-shot win against a top model shifts its score more than a routine win ever could.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-anchor">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 4, 5</span></h4>
+<p class="big">Only gaps are real. Anchor the scores, or they drift by a constant every run and nobody can compare results.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Two runs of the same fitter can report different raw scores for identical data. The difference is meaningless, but it looks like a discovery.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Word embeddings carry the same translation invariance. Every field that fits relative structure needs an anchor convention.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Fit Bradley-Terry scores yourself. Enter win counts for three items and press Fit. The code runs the lesson's gradient rule in your browser. The mechanism follows C05. The numbers you enter are yours.</p>
+<p><label>A beats B <input type="number" id="wAB" value="2" min="0"></label><label>B beats A <input type="number" id="wBA" value="0" min="0"></label></p>
+<p><label>B beats C <input type="number" id="wBC" value="3" min="0"></label><label>C beats B <input type="number" id="wCB" value="0" min="0"></label></p>
+<p><label>A beats C <input type="number" id="wAC" value="1" min="0"></label><label>C beats A <input type="number" id="wCA" value="0" min="0"></label></p>
+<p><button class="btn" id="fitbtn">Fit scores</button></p>
+<p class="small" id="fitout">Scores appear here.</p>
+<p class="small muted"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 6</span> The defaults match the lesson toy. Expect scores near 2.72, 2.03, -4.76 with a sum-zero anchor. Try 6 wins and 0 losses for A over B and watch the gap refuse to settle: the separable-data divergence from C06.</p>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C08, C09</p>
+<h2>Noise shrinks, data teaches</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 5, 6</span></p>
+<p>Label noise mixes the two outcomes toward 50/50. The model sees a weaker signal than the truth and estimates a smaller gap. Noise never creates preference. It only hides it. The mechanism is attenuation: with flip probability q, the observed log-odds shrink, and at q = 0.3 the lesson toy shows the estimated gap falling from 1.46 to 0.58. The full path: true gap 1.5, n = 2000, estimated gaps 1.46, 1.11, 0.93, 0.58 at q = 0.0, 0.1, 0.2, 0.3. Monotone shrinkage, seed 0.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Estimated gap falls from 1.46 to 0.58 as label noise rises from 0 to 0.3">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Noise shrinks the estimated gap</text>
+<polyline points="80,88 240,140 400,168 560,222" fill="none" stroke="#a94f27" stroke-width="2.5"/>
+<g><title>q = 0.0, estimated gap 1.46</title><circle cx="80" cy="88" r="6" fill="#31405e"/><text x="80" y="72" text-anchor="middle" font-size="14" font-family="Georgia">1.46</text><text x="80" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">q = 0.0</text></g>
+<g><title>q = 0.1, estimated gap 1.11</title><circle cx="240" cy="140" r="6" fill="#31405e"/><text x="240" y="124" text-anchor="middle" font-size="14" font-family="Georgia">1.11</text><text x="240" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">q = 0.1</text></g>
+<g><title>q = 0.2, estimated gap 0.93</title><circle cx="400" cy="168" r="6" fill="#31405e"/><text x="400" y="152" text-anchor="middle" font-size="14" font-family="Georgia">0.93</text><text x="400" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">q = 0.2</text></g>
+<g><title>q = 0.3, estimated gap 0.58</title><circle cx="560" cy="222" r="6" fill="#31405e"/><text x="560" y="206" text-anchor="middle" font-size="14" font-family="Georgia">0.58</text><text x="560" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">q = 0.3</text></g>
+<line x1="60" y1="70" x2="60" y2="260" stroke="#e2d7c2" stroke-width="1"/>
+<text x="40" y="80" font-size="12" font-family="Georgia" fill="#6f6355">true 1.5</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 6</span> True gap 1.5 throughout. The estimator sees less and less of it as the flip rate rises. Estimating the noise rate itself needs repeated items: without repeats, q and the gap are confounded. Lesson figure u01_f05 computes the same path.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 11, C09 · Contract 5, 6</span></p>
+<p>Adversarial noise breaks even this: flips that target close pairs do not attenuate uniformly, and the ranking itself can invert. Then the unit turns to generalization. The model fits training comparisons well, but does it predict new ones? The MLE minimizes train loss by construction, so train loss is optimistic. Test loss is the unbiased estimate of the population risk. The lesson toy fits Bradley-Terry on few comparisons and tests on 5000 fresh ones from the same true gap of 1.0: test log-loss 0.627, 0.588, 0.582 at n = 20, 100, 1000, while train log-loss at n = 20 is 0.423. The optimism gap is 0.204 nats, and the curves meet near n = 1000.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Test log-loss falls from 0.627 to 0.582 as n grows, train starts at 0.423">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Train loss runs below test loss</text>
+<polyline points="100,120 320,168 540,176" fill="none" stroke="#31405e" stroke-width="2.5"/>
+<g><title>Test log-loss at n = 20: 0.627</title><circle cx="100" cy="120" r="6" fill="#31405e"/><text x="100" y="104" text-anchor="middle" font-size="14" font-family="Georgia">0.627</text><text x="100" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">n = 20</text></g>
+<g><title>Test log-loss at n = 100: 0.588</title><circle cx="320" cy="168" r="6" fill="#31405e"/><text x="320" y="152" text-anchor="middle" font-size="14" font-family="Georgia">0.588</text><text x="320" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">n = 100</text></g>
+<g><title>Test log-loss at n = 1000: 0.582</title><circle cx="540" cy="176" r="6" fill="#31405e"/><text x="540" y="160" text-anchor="middle" font-size="14" font-family="Georgia">0.582</text><text x="540" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">n = 1000</text></g>
+<g><title>Train log-loss at n = 20: 0.423</title><circle cx="100" cy="238" r="6" fill="#a94f27"/><text x="100" y="258" text-anchor="middle" font-size="14" font-family="Georgia" fill="#a94f27">0.423</text></g>
+<text x="170" y="200" font-size="13" font-family="Georgia" fill="#a94f27">optimism gap 0.204</text>
+<text x="420" y="140" font-size="13" font-family="Georgia" fill="#6f6355">test loss, nats per comparison</text>
+<text x="170" y="240" font-size="13" font-family="Georgia" fill="#a94f27">train loss at n = 20</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 6</span> Points from the lesson toy, true gap 1.0, seed 0. <span class="tag tag-toy">Illustration</span> The connecting test curve is the companion's interpolation. The 0.204 optimism gap is the companion's subtraction from the lesson's two numbers at n = 20. Lesson figure u01_f06 shows both curves.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 11</span></p>
+<p>Distribution shift breaks the story. Test pairs from new items or new annotators need not follow the training distribution, and a model with great held-out loss on old annotators can fail on a new annotator pool. The falsifiable extension: if cross-pool loss exceeds within-pool loss by more than 0.05 nats, the pool shift matters.</p>
+</div>
+<div class="nugget" id="nugget-noise">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 9</span></h4>
+<p class="big">Noise never creates preference. It only hides it, and the hiding is monotone in the noise rate.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>A shrunken gap looks like a weak preference, but the truth may be strong and merely mislabeled. Without repeat judgments you cannot tell the two apart.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Noisy click logs in search understate true preference strength. Debias the labels before you rank on the scores.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-optimism">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5</span></h4>
+<p class="big">Train loss measures fit to the past. Test loss measures skill on the future. With little data the two disagree, and the disagreement is the optimism you must price in.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The lesson toy shows train loss 0.423 against test loss 0.627 at n = 20. Reporting the first number as performance is an error, not a rounding choice.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A recommender trained on US users and launched in Japan needs the cross-pool measurement first. The within-pool number is not the product's number.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C10, C11, C12</p>
+<h2>From clicks to responsibility</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-interp">Interpretation</span> The last three concepts are requested extensions. The lesson marks them PLANNED / SOURCE ATTRIBUTION PENDING, and this section teaches them as independent theory with that label, not as lecture content.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 5, 6</span></p>
+<p>An annotation protocol is a contract with the annotator: what to judge, how to judge it, and how you verify the work. Three mechanisms control quality. Calibration examples anchor the scale. Gold questions with obvious answers estimate attention. Repeats estimate noise: re-ask 10 percent of pairs and measure self-consistency, which bounds the flip rate from C08. The lesson toy: 1000 pairs, 10 percent repeats, 5 percent gold. Annotator A shows gold accuracy 0.98 and self-consistency 0.93. Annotator B shows 0.80 and 0.70. Keep A, retrain or drop B. The cost of quality control is 15 percent extra judgments.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 11</span></p>
+<p>Gold questions can leak. Annotators share the gold answers and game the metric. The signature: high gold accuracy with low self-consistency, which signals memorized golds rather than careful work.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 5, 6</span></p>
+<p>Choices carry social meaning. Politeness, effort, and what the annotator thinks you want to hear all shape the recorded choice. The lesson's inversion example: under time pressure, longer answers win 65 percent of judgments because they look more thorough. Under careful judgment, shorter answers win 60 percent. A model trained on the pressured data learns that longer is better, inverting the careful preference. The careful judgment may itself be artificial, which is the honest counterpoint: nobody reads that carefully in real use, so optimizing for it can hurt the actual experience.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u01-groups.jpg" alt="Watercolor of two groups of figures, one in amber and one in indigo">
+<figcaption><span class="tag tag-toy">Illustration</span> One pooled number, two different groups. The model serves the majority pattern. The question is who it leaves out. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 5, 6</span></p>
+<p>Fairness asks three questions with teeth: whose judgments trained the model, does accuracy or calibration differ by group, and whose preference should the deployed system reflect. The lesson figure u01_f08 shows the second question numerically: pooled accuracy 0.73 hides 0.87 on group 1 and 0.59 on group 2, n = 600 per group. The gap is 0.28, far above noise with standard error about 0.02. The falsifiable follow-up: fit per-group scores. If the score vectors agree up to noise, the gap is noise, not disagreement, and the repair differs.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Pooled accuracy 0.73 hides group accuracies 0.87 and 0.59">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The pooled number hides the gap</text>
+<g><title>Pooled accuracy 0.73</title><rect x="80" y="130" width="120" height="122" fill="#6f6355" rx="4"/><text x="140" y="122" text-anchor="middle" font-size="15" font-family="Georgia">0.73</text><text x="140" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">pooled</text></g>
+<g><title>Group 1 accuracy 0.87</title><rect x="280" y="88" width="120" height="164" fill="#31405e" rx="4"/><text x="340" y="80" text-anchor="middle" font-size="15" font-family="Georgia">0.87</text><text x="340" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">group 1</text></g>
+<g><title>Group 2 accuracy 0.59</title><rect x="480" y="172" width="120" height="80" fill="#a94f27" rx="4"/><text x="540" y="164" text-anchor="middle" font-size="15" font-family="Georgia">0.59</text><text x="540" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">group 2</text></g>
+<text x="340" y="40" text-anchor="middle" font-size="13" font-family="Georgia" fill="#a94f27">gap 0.28, standard error about 0.02</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 6</span> Same lesson figure u01_f08 numbers: overall 0.73, group 1 0.87, group 2 0.59, n = 600 per group, seed 0. The per-group report card is the minimum honest output.</figcaption>
+</figure>
+<div class="nugget" id="nugget-protocol">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5</span></h4>
+<p class="big">Fix the data before the model. Calibration examples, gold questions, and repeats are cheaper than any algorithmic repair.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The lesson prices quality control at 15 percent extra judgments. That buys a per-annotator report that separates careful workers from careless ones before they poison the fit.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Labeling medical images needs the same three mechanisms. The stakes are higher, the protocol is identical.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-pooled">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 3, 5</span></h4>
+<p class="big">A pooled model serves the majority pattern. Report per-group performance, or the headline number is a choice to hide the gap.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>0.73 looks fine until you see 0.87 and 0.59. The decision of whether to slice the report is a fairness decision, not a statistics decision.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A hiring tool trained on past decisions faces the same three questions: whose judgments, whose performance, whose target.</dd>
+</dl>
+</div>
+</section>
+<section class="block wisdom" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Eight nuggets, indexed</h2>
+<ol>
+<li><a href="#nugget-context">Raw win counts are a mixture.</a> Preference plus context plus noise. Estimate the parts separately.</li>
+<li><a href="#nugget-cardinal">Ordinal data supports ordinal claims.</a> Cardinal gaps are a model assumption wearing a number.</li>
+<li><a href="#nugget-surprise">Surprising wins move scores most.</a> The gradient is (y - p).</li>
+<li><a href="#nugget-anchor">Only gaps are real.</a> Anchor the scores or they drift.</li>
+<li><a href="#nugget-noise">Noise never creates preference.</a> It only hides it, monotonically.</li>
+<li><a href="#nugget-optimism">Train loss is optimistic.</a> Test loss is the honest number.</li>
+<li><a href="#nugget-protocol">Fix the data before the model.</a> Protocols beat repairs.</li>
+<li><a href="#nugget-pooled">Pooled numbers hide people.</a> Slice the report.</li>
+</ol>
+<p class="backlink"><a href="../index.html">Back to the CS329H course index</a></p>
+</section>
+</div>
+<footer id="provenance"><div class="wrap">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cs329h/lessons/u01_lesson.md</code>. No full lecture transcript exists for S02, and no lecture anecdotes appear. Concepts C01 through C09 map to S02 at title level. Concepts C10, C11, and C12 are requested extensions marked PLANNED / SOURCE ATTRIBUTION PENDING in the lesson. Quoted words from the lesson source: 0, counted by <code>companions/tools/quote_recount.py</code> with the blockquote plus quoted-phrase method, footer excluded. Lesson figures u01_f01 through u01_f08 are referenced where the lesson places them. The charts on this page re-plot the lesson's computed toy numbers with concept and contract citations. The interactive fitter runs the lesson's C05 gradient rule on user-entered counts. No official source video is on record for this session, so no embed appears. The three watercolors are original illustrations made for this companion.</p>
+</div></footer>
+<script>
+function sigmoid(z){return 1/(1+Math.exp(-z))}
+function fitBT(){
+var ids=["wAB","wBA","wBC","wCB","wAC","wCA"]
+var w={}
+for(const id of ids){w[id]=Math.max(0,parseInt(document.getElementById(id).value)||0)}
+var pairs=[[0,1,w.wAB],[1,0,w.wBA],[1,2,w.wBC],[2,1,w.wCB],[0,2,w.wAC],[2,0,w.wCA]]
+var s=[0,0,0]
+var lr=0.1
+var steps=2000
+var t=0
+while(t<steps){
+var g=[0,0,0]
+for(const pr of pairs){
+var a=pr[0]
+var b=pr[1]
+var n=pr[2]
+if(n===0){continue}
+var p=sigmoid(s[a]-s[b])
+g[a]+=n*(1-p)
+g[b]-=n*p
+}
+s[0]+=lr*g[0]
+s[1]+=lr*g[1]
+s[2]+=lr*g[2]
+var m=(s[0]+s[1]+s[2])/3
+s[0]-=m
+s[1]-=m
+s[2]-=m
+t++
+}
+var out="Scores, sum-zero anchor: A="+s[0].toFixed(2)+" B="+s[1].toFixed(2)+" C="+s[2].toFixed(2)
+out+=". P(A beats B)="+sigmoid(s[0]-s[1]).toFixed(3)
+out+=", P(B beats C)="+sigmoid(s[1]-s[2]).toFixed(3)
+out+=", P(A beats C)="+sigmoid(s[0]-s[2]).toFixed(3)
+document.getElementById("fitout").textContent=out
+}
+document.getElementById("fitbtn").addEventListener("click",fitBT)
+</script>
+</body>
+</html>

@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U08 · LLM evaluation: Interactive companion</title>
+<style>
+:root{--ink:#1c1a17}
+:root{--paper:#faf7f0}
+:root{--paper2:#f3eee2}
+:root{--line:#ddd3bd}
+:root{--muted:#7a7160}
+:root{--clay:#b3541e}
+:root{--indigo:#2f4b8f}
+:root{--indigosoft:#e8edfb}
+:root{--sage:#4f7a52}
+:root{--sagesoft:#e6f0e6}
+:root{--amber:#a97b12}
+:root{--serif:"Iowan Old Style",Georgia,"Times New Roman",serif}
+:root{--sans:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+:root{--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:19px}
+body{line-height:1.62}
+.wrap{max-width:860px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband{padding:10px 0}
+.topband .wrap{padding:0 24px}
+header.hero{padding:52px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+.kicker{margin:0 0 10px}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:0 0 14px}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{line-height:1.5}
+.dek{color:#3d382e}
+.dek{max-width:680px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll{max-width:860px}
+.navscroll{margin:0 auto}
+.navscroll{padding-left:24px}
+.navscroll{padding-right:24px}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-family:var(--sans)}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:26px 0}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+figcaption{font-size:16px}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+img.lessonfig{width:100%}
+img.lessonfig{border-radius:10px}
+img.lessonfig{border:1px solid var(--line)}
+img.lessonfig{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 60px}
+footer.prov{font-size:16px}
+footer.prov{color:#3d382e}
+footer.prov p{margin:.7em 0}
+.small{font-size:15px}
+.capleft{text-align:left}
+.capleft{padding-bottom:8px}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CME295 · Transformers and Large Language Models · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">Unit 08 · LLM evaluation and judging</p>
+<h1>The court, the blur, and the thermometer</h1>
+<p class="dek">Twelve concepts keep evaluation honest: judge rubrics, pointwise and pairwise judging, position and verbosity bias, calibration, nondeterminism, human checks, blind evaluation, contamination, appropriate metrics, uncertainty, cost and latency, and benchmark interpretation. Every number below comes from the lesson.</p>
+</header>
+<div class="legend">
+<p><strong>How to read this page.</strong> Three tags separate fact from invention.</p>
+<p><span class="tag tag-lesson">From the lesson</span> A claim, number, or figure that appears in the lesson source, with its section cited.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with values you supply, or a what-if. Never lesson content.</p>
+<p><span class="tag tag-companion">Companion</span> Editorial framing or a transferable principle. The lesson did not say it this way.</p>
+</div>
+</div>
+<nav class="sticky"><div class="navscroll">
+<a href="#s1">1 Rubrics</a>
+<a href="#s2">2 Pairwise</a>
+<a href="#s3">3 Bias</a>
+<a href="#s4">4 Calibration</a>
+<a href="#s5">5 Repeatability</a>
+<a href="#s6">6 Humans</a>
+<a href="#s7">7 Blinding</a>
+<a href="#s8">8 Contamination</a>
+<a href="#s9">9 Metrics</a>
+<a href="#s10">10 Uncertainty</a>
+<a href="#s11">11 Cost</a>
+<a href="#s12">12 Benchmarks</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<div class="wrap">
+<figure>
+<img class="illus" src="assets/u08-hero.webp" alt="Watercolor of a blindfolded judge's hand weighing two paper slips on a balance scale beside a rulebook">
+<figcaption><span class="tag tag-toy">Illustration</span> The unit in one image: the rubric is the law, the judge is the court, and the blindfold keeps it honest. Watercolor, original to this companion.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>Judge rubrics: the rubric is the law</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 2-6</span></p>
+<p>A bare which-answer-is-better prompt gets shrugs from the judge. What fixes it? The toy rubric: correctness (does it solve the task), completeness (no missing steps), clarity (a reader can follow). Each scored 1-5 with one anchor example per level. The rubric is the law, the judge is the court. Vague law gives arbitrary verdicts. Each criterion needs a definition and an anchor, or the judge invents its own. The design rule: one criterion per valued property, anchors from real examples, pilot on 50 items, revise where judges disagree.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 6, 11</span></p>
+<p>The computed example: vague rubric, inter-judge agreement 0.58. Anchored rubric, agreement 0.81. The anchors bought 0.23 of agreement. Figure u08_fig01 shows the before and after. The check: two judge runs on 50 items agree above 0.75. Below that, the rubric is vague or the task is subjective. The broken assumption: criteria cover user value. The rubric that scores style while users care about correctness must be validated against human preference first.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of inter-judge agreement 0.58 vague versus 0.81 anchored">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Inter-judge agreement (C01 item 6)</text>
+<rect x="200" y="150" width="110" height="100" fill="#ddd3bd" rx="4"/>
+<rect x="390" y="90" width="110" height="160" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="255" y="140">0.58</text>
+<text x="445" y="80">0.81</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="255" y="270">vague rubric</text>
+<text x="445" y="270">anchored rubric</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The anchors bought 0.23 of agreement.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 item 6</span> The lesson's toy numbers. Every vague criterion costs agreement on every future eval.</figcaption>
+</figure>
+<div class="nugget" id="w1">
+<h4>Nugget 01 · Anchor every criterion</h4>
+<p class="big">One anchor example per level bought 0.23 of agreement. Disagreement is the revision signal.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the three-criterion toy rubric and prices the anchored-vs-vague gap.</dd>
+<dt>Why it matters</dt><dd>Rubric writing costs expert hours once. Vague criteria tax every future eval. Pilot on 50, revise where judges disagree.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When a judge must repeat a verdict, write the law down with examples. Ambiguity is a tax on every later decision.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>Pointwise and pairwise: rulers and scales</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 2-6</span></p>
+<p>Is 7/10 or A beats B the better verdict? The toy: pointwise gives A 7, B 6, but the judge's 7 means different things on different days. Pairwise asks directly, A wins 62 of 100. The comparison is the stabler signal. Pointwise is a ruler, pairwise is a scale. Rulers need calibration, scales just compare. The cost: n models need n(n-1)/2 pairs for a full round robin, O(n^2), versus n scores pointwise. The computed example: 4 models, 6 pairs, 100 items each. Bradley-Terry scores (mean-centered MLE): A 0.41, B 0.20, C -0.09, D -0.51. Ranking is stable across seeds.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 8-9, 11</span></p>
+<p>The check: win rates sum sensibly, w_AB + w_BA = 1 with ties handled. Cycles (A>B>C>A) get flagged, not hidden. The price: 10 models and 500 items mean 22,500 judge calls. Budget accordingly. The broken assumption: transitivity. Rock-paper-scissors model strengths make the ranking meaningless. Report cycles, do not average them away. The lab asks: 5 models need 10 pairs. w_AB = 0.62 with w_BA = 0.30 leaves 0.08 ties.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 340" role="img" aria-label="Bars of Bradley-Terry scores: A 0.41, B 0.20, C -0.09, D -0.51">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Bradley-Terry scores, 4 models (C02 item 6)</text>
+<rect x="120" y="115" width="110" height="95" fill="#2f4b8f" rx="4"/>
+<rect x="280" y="164" width="110" height="46" fill="#2f4b8f" rx="4"/>
+<rect x="440" y="210" width="110" height="21" fill="#b3541e" rx="4"/>
+<rect x="590" y="210" width="110" height="118" fill="#b3541e" rx="4"/>
+<line x1="60" y1="210" x2="660" y2="210" stroke="#1c1a17" stroke-width="1"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="175" y="105">0.41</text><text x="335" y="154">0.20</text><text x="495" y="245">-0.09</text><text x="645" y="240">-0.51</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="175" y="250">A</text><text x="335" y="250">B</text><text x="495" y="290">C</text><text x="645" y="290">D</text>
+</g>
+<text x="350" y="330" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Mean-centered MLE. The ranking is stable across seeds.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 6</span> The lesson's computed scores. Choose full pairwise under 6 models, sampled beyond.</figcaption>
+</figure>
+<div class="nugget" id="w2">
+<h4>Nugget 02 · Use the scale for ranking</h4>
+<p class="big">Pairwise comparisons are the stabler signal. They cost O(n^2), so price the round robin before you run it.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines the two modes, computes BT scores on 4 models, and prices 22,500 calls.</dd>
+<dt>Why it matters</dt><dd>Absolute scores drift between days. Comparisons hold. But cycles break the ranking, so flag them.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When absolute scales wobble, compare directly. And when comparisons cycle, say so instead of averaging.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Position and verbosity bias: the tired reader</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 2-6</span></p>
+<p>A beats B 70% when A is first, but only 45% when B is first. Which number is true? The toy: debiased estimate = (0.70 + (1 - 0.45)) / 2 = 0.625. The swap averages out the position effect. The judge is a tired reader. It likes what it sees first and what fills the page. Present each pair twice, both orders. True preference p, position bias b toward first: observed p + b and (1 - p) + b. The mean of (obs1, 1 - obs2) equals p. The algebra cancels b. Swapping doubles judge calls, halves the bias.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 6, 11</span></p>
+<p>The computed example: A-first 0.70, B-first A wins 0.45, debiased 0.625. Verbosity: +200 tokens buys +0.08 win rate with no quality change. Length caps tame it. Figure u08_fig02. The check: the two orders disagree by less than 0.1 on most pairs. Large gaps flag strong position bias. The broken assumption: symmetric bias. The judge that favors first AND longer, with longer correlating with second, needs length controlled before swapping.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of A-first 0.70, B-first 0.45, debiased 0.625">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Swap correction (C03 item 6)</text>
+<rect x="150" y="100" width="110" height="150" fill="#ddd3bd" rx="4"/>
+<rect x="300" y="160" width="110" height="90" fill="#ddd3bd" rx="4"/>
+<rect x="450" y="120" width="110" height="130" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="205" y="90">0.70</text><text x="355" y="150">0.45</text><text x="505" y="110">0.625</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="205" y="270">A first</text><text x="355" y="270">B first</text><text x="505" y="270">debiased</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The mean of (obs1, 1 - obs2). The algebra cancels the bias.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 6</span> The lesson's computed correction. The lab asks: orders give 0.70 and 0.45, debiased 0.625.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 5, 7</span> Swap bench: the lesson's debiasing algebra.</p>
+<p><input class="text" id="db1" type="number" value="0.70" step="0.05" min="0" max="1" aria-label="order 1 win rate"> <input class="text" id="db2" type="number" value="0.45" step="0.05" min="0" max="1" aria-label="order 2 win rate"> <button class="btn" id="dbbtn">Debias</button></p>
+<div class="chips" id="dbout"></div>
+<p class="small muted">Reproduce the lesson: 0.70 and 0.45 give 0.625.</p>
+</div>
+<div class="nugget" id="w3">
+<h4>Nugget 03 · Swap and average</h4>
+<p class="big">Judge both orders and average. The algebra cancels the position bias, and length caps tame the verbosity bias.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives the swap correction, computes 0.625, and prices the verbosity effect.</dd>
+<dt>Why it matters</dt><dd>Unswapped rankings inherit the judge's reading habits. Double the calls, halve the bias.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When the judge has habits, rotate the presentation and average. Measure the habit first.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Calibration: honesty about doubt</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 2-6</span></p>
+<p>The judge says 90% confident and is right 78% of the time. Do you trust the 90? The toy bins: confidence 0.9, accuracy 0.78. The judge is overconfident, discount its certainty. Calibration is honesty about doubt. A calibrated judge's 70% comes true 70% of the time. An overconfident judge's 90% is a boast. ECE = sum over bins of (fraction in bin) times |accuracy - confidence|. It is a weighted honesty gap.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 6, 11</span></p>
+<p>The computed example: 5 bins, accuracies [0.55, 0.62, 0.68, 0.75, 0.78] at confidences [0.55, 0.65, 0.75, 0.85, 0.95]. ECE = 0.074. The top bin is the liar. Figure u08_fig03. The fix: fit a recalibration mapping on a held-out set, and check ECE on a fresh set. The broken assumption: calibration transfers. The judge calibrated on math is wild on poetry. Recalibrate per domain. The lab asks: bin conf 0.85, acc 0.75, weight 0.2, contribution 0.02.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Grouped bars of accuracy versus confidence across five bins">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Accuracy vs confidence (C04 item 6)</text>
+<rect x="90" y="130" width="50" height="120" fill="#2f4b8f" rx="4"/>
+<rect x="150" y="130" width="50" height="120" fill="#ddd3bd" rx="4"/>
+<rect x="230" y="150" width="50" height="100" fill="#2f4b8f" rx="4"/>
+<rect x="290" y="140" width="50" height="110" fill="#ddd3bd" rx="4"/>
+<rect x="370" y="160" width="50" height="90" fill="#2f4b8f" rx="4"/>
+<rect x="430" y="130" width="50" height="120" fill="#ddd3bd" rx="4"/>
+<rect x="510" y="170" width="50" height="80" fill="#2f4b8f" rx="4"/>
+<rect x="570" y="110" width="50" height="140" fill="#ddd3bd" rx="4"/>
+<g font-family="monospace" font-size="12" text-anchor="middle" fill="#1c1a17">
+<text x="295" y="120">gap 0.10</text><text x="595" y="100">gap 0.17</text>
+</g>
+<g font-family="sans-serif" font-size="12" fill="#7a7160" text-anchor="middle">
+<text x="145" y="270">0.55</text><text x="285" y="270">0.65</text><text x="425" y="270">0.75</text><text x="565" y="270">0.85-0.95</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Blue accuracy, tan confidence. ECE 0.074. The top bin is the liar.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 6</span> The lesson's computed bins. Bins need 50+ items each for stable estimates.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 5, 7</span> ECE bench: the weighted honesty gap on your bins.</p>
+<p><input class="text" id="ecca" type="text" value="0.55, 0.62, 0.68, 0.75, 0.78" aria-label="accuracies"> <input class="text" id="eccc" type="text" value="0.55, 0.65, 0.75, 0.85, 0.95" aria-label="confidences"> <button class="btn" id="ecbtn">Compute ECE</button></p>
+<div class="chips" id="ecout"></div>
+<p class="small muted">Reproduce the lesson: equal-weighted bins give 0.074. Try the lab: one bin, conf 0.85, acc 0.75, weight 0.2, gives 0.02.</p>
+</div>
+<div class="nugget" id="w4">
+<h4>Nugget 04 · Discount the boast</h4>
+<p class="big">90% confident and right 78% of the time is overconfidence. Recalibrate per domain and check on fresh data.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines ECE, computes 0.074 on the toy, and names the domain-shift failure.</dd>
+<dt>Why it matters</dt><dd>Confidences drive decisions. Dishonest certainty is worse than no certainty. The top bin lies the most.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Measure whether stated confidence matches outcomes. Then discount, per context.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Nondeterminism: the die that remembers</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 2-6</span></p>
+<p>The eval says 0.72 on Monday and 0.69 on Friday. Did the model change? The toy: temperature 0.7, two runs, 3 of 100 verdicts flip. The model did not change, the sampler did. The judge is a die that remembers its last roll. Sampling temperature, batching, and backend updates all shake it. The protocol: temperature 0 for judging, fixed seed, pinned model version, log all three. Measure run-to-run agreement on 100 items before trusting a delta.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 6, 11</span></p>
+<p>The computed example: temp 0, agreement 0.97 across 2 runs. Temp 0.7, agreement 0.88. A 0.03 metric delta is noise at temp 0.7, signal at temp 0. The broken assumption: temp 0 is deterministic. Batched inference with nondeterministic kernels still jitters. Verify, do not assume. The lab asks: agreement 0.88, delta 0.03. Noise.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of run-to-run agreement 0.97 at temp 0 versus 0.88 at temp 0.7">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Run-to-run agreement (C05 item 6)</text>
+<rect x="200" y="70" width="110" height="180" fill="#2f4b8f" rx="4"/>
+<rect x="390" y="90" width="110" height="160" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="255" y="60">0.97</text>
+<text x="445" y="80">0.88</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="255" y="270">temp 0</text>
+<text x="445" y="270">temp 0.7</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">A 0.03 delta is noise at temp 0.7, signal at temp 0.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 6</span> The lesson's toy numbers. Backends change under you, re-measure agreement monthly.</figcaption>
+</figure>
+<div class="nugget" id="w5">
+<h4>Nugget 05 · Pin the judge</h4>
+<p class="big">Temperature 0, fixed seed, pinned version. Then verify the pin holds, because kernels can still jitter.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson names the three nondeterminism sources, gives the pinning protocol, and prices the noise.</dd>
+<dt>Why it matters</dt><dd>A metric delta smaller than the judge's own jitter is not a finding. Measure agreement before you trust a delta.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Fix the instrument before you read it. Then check that the fix held.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>Human checks: the intern and the partners</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 2-6</span></p>
+<p>The judge says the new model wins. Do you ship on its word alone? The toy: 1000 pairs judged by model, 100 sampled for humans. Humans agree on 78. The 22 disagreements are the audit report. The judge is an intern, humans are the partners. The intern does the volume, the partners spot check. No partner review, no signature. Three gates: rubric validation (humans approve the rubric), spot checks (humans re-judge a sample), disagreement review (humans read every systematic disagreement class).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 6, 11</span></p>
+<p>The computed example: model win rate 0.62, human sample win rate 0.58, agreement 0.78. The 0.04 gap is within the Wilson band (n=100), ship with the caveat logged. The check: agreement above 0.75 and no systematic disagreement class above 10% of the sample. The broken assumption: the sample represents the set. The sample that misses the long-tail task where the judge is worst must be stratified by task type. The lab asks: agreement 0.78. Ship.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of model win rate 0.62, human sample 0.58, agreement 0.78">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Model vs human sample (C06 item 6)</text>
+<rect x="140" y="120" width="110" height="130" fill="#7a8fc4" rx="4"/>
+<rect x="300" y="130" width="110" height="120" fill="#2f4b8f" rx="4"/>
+<rect x="460" y="90" width="110" height="160" fill="#5a7d5a" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="195" y="110">0.62</text><text x="355" y="120">0.58</text><text x="515" y="80">0.78</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="195" y="270">model win rate</text><text x="355" y="270">human win rate</text><text x="515" y="270">agreement</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The 0.04 gap is within the Wilson band. Ship with the caveat logged.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 item 6</span> The lesson's audit toy. 100 items per eval round is the usual price of trust.</figcaption>
+</figure>
+<div class="nugget" id="w6">
+<h4>Nugget 06 · No partner review, no signature</h4>
+<p class="big">The intern does the volume, the partners spot check. Agreement 0.78 with the gap inside the band means ship, with the caveat logged.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the three human gates and works the audit toy.</dd>
+<dt>Why it matters</dt><dd>Sampled audits are the middle path between gold-plated and blind. Stratify, or the sample misses the long tail.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Automate the volume, keep humans on the sample. The disagreements are the audit report.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Blind evaluation: the blindfold on the judge</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 2-6</span></p>
+<p>The judge gives your house model higher scores. Is it better or just familiar? The toy: blinded, house wins 0.52. Unblinded, house wins 0.61. The 0.09 is self-preference, not skill. Blinding is a blindfold on the judge. No names, no styles, no tells. Strip names, shuffle order, normalize formatting. Measure the blind vs unblind gap on a calibration set. The gap is the bias you removed.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 6, 11</span></p>
+<p>The computed example: blind 0.52, unblind 0.61, gap 0.09. After style normalization, unblind 0.55, gap 0.03. Formatting was half the tell. The check: a classifier cannot guess the model from the anonymized text above chance. If it can, the blindfold leaks. The broken assumption: the blindfold holds. The model that says the telltale phrase unblinds itself. Scrub known tells.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of blind 0.52, unblind 0.61, and normalized 0.55">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Self-preference gap (C07 item 6)</text>
+<rect x="170" y="140" width="110" height="110" fill="#2f4b8f" rx="4"/>
+<rect x="330" y="110" width="110" height="140" fill="#b3541e" rx="4"/>
+<rect x="490" y="130" width="110" height="120" fill="#7a8fc4" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="225" y="130">0.52</text><text x="385" y="100">0.61</text><text x="545" y="120">0.55</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="225" y="270">blind</text><text x="385" y="270">unblind</text><text x="545" y="270">normalized</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Gap 0.09, then 0.03. Formatting was half the tell.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 6</span> The lesson's blinding toy. New tells appear with new models, vigilance is eternal.</figcaption>
+</figure>
+<div class="nugget" id="w7">
+<h4>Nugget 07 · Blindfold every internal comparison</h4>
+<p class="big">The 0.09 self-preference gap is not skill. Strip names, shuffle order, normalize formatting, and verify the blindfold holds.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson measures the blind-vs-unblind gap and shows style normalization halving it.</dd>
+<dt>Why it matters</dt><dd>House models get house points. Without blinding, the eval measures familiarity, not quality.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Hide identity before judgment. Then test that the hiding worked.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>Contamination: the open-book exam</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 2-6</span></p>
+<p>The model aces the benchmark. Did it learn or did it memorize? The toy: perplexity on benchmark items 8.2, on fresh paraphrases 24.6. The 3x gap smells like memorization. Contamination is an open book passed off as a closed exam. The score measures the leak, not the learning. Quarantine the test set like a crime scene. Three signals: perplexity far lower on benchmark than on paraphrases, verbatim n-gram matches with training data, canary strings (planted unique tokens) appearing in outputs.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 6, 11</span></p>
+<p>The computed example: benchmark ppl 8.2, paraphrase ppl 24.6, gap 3.0x. Clean model: 18.4 vs 21.2, gap 1.15x. Figure u08_fig04. The check: gap below 1.3x on a known-clean model. Above 2x, investigate before publishing the score. The broken assumption: paraphrases are fresh. The paraphraser trained on the same data leaks too. Generate fresh items from scratch. Canaries are free, plant them early.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u08-thermo.webp" alt="Watercolor of a thermometer with a blurred reading, held skeptically, with a quarantine tag">
+<figcaption><span class="tag tag-toy">Illustration</span> Contamination in one image: the thermometer reads fine, but the test set is quarantined like a crime scene. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of perplexity gap 3.0x for the suspect model versus 1.15x for the clean model">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Perplexity gap, bench vs paraphrase (C08 item 6)</text>
+<rect x="170" y="70" width="110" height="180" fill="#b3541e" rx="4"/>
+<rect x="330" y="200" width="110" height="50" fill="#2f4b8f" rx="4"/>
+<rect x="490" y="210" width="110" height="40" fill="#7a8fc4" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="225" y="60">3.0x</text><text x="385" y="190">1.15x</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="225" y="270">suspect model</text><text x="385" y="270">clean model</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Below 1.3x is clean. Above 2x, investigate before publishing.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 item 6</span> The lesson's computed gaps. The lab asks: ppl 8.2 vs 24.6, verdict: memorization.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 4, 7</span> Contamination bench: the gap ratio on your perplexities.</p>
+<p><input class="text" id="ctb" type="number" value="8.2" step="0.1" min="0.1" aria-label="bench ppl"> <input class="text" id="ctp" type="number" value="24.6" step="0.1" min="0.1" aria-label="paraphrase ppl"> <button class="btn" id="ctbtn">Compute gap</button></p>
+<div class="chips" id="ctout"></div>
+<p class="small muted">Reproduce the lesson: 8.2 and 24.6 give 3.0x. Try the clean model: 18.4 and 21.2 give 1.15x.</p>
+</div>
+<div class="nugget" id="w8">
+<h4>Nugget 08 · Quarantine the test set</h4>
+<p class="big">A 3x perplexity gap smells like memorization. Plant canaries early, and investigate above 2x before publishing any score.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson names the three detection signals and prices the clean-vs-suspect gap.</dd>
+<dt>Why it matters</dt><dd>A leaked benchmark measures the leak, not the learning. The ranking can invert on fresh items.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Guard the test before you trust the score. A secret exam is the only honest exam.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Appropriate metrics: shoes for the feet</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 2-6</span></p>
+<p>BLEU says the summary is bad, humans love it. Who is wrong? The toy: the metric counts n-gram overlap, the human reads meaning. The metric is wrong for the task, change the metric. Metrics are shoes, tasks are feet. Exact match fits short answers, judges fit open generation, task success fits agents. The ladder: exact match, overlap, model judge, human, task outcome. Higher rungs cost more, so pick the cheapest rung that decides the question. The selection rule: the metric must vary with what you change and be blind to what you do not.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 6, 11</span></p>
+<p>The computed example: metric A correlates 0.91 with human ranks, metric B 0.43. Ship A. Cost: A needs a judge call per item, B is free. The 0.48 correlation gap justifies the cost. Validate each metric against human judgment on 100 items before adopting it, and adopt if the correlation is above 0.8. The check: the metric moves when the model improves on human review. A metric that never moves is decoration. The broken assumption: correlation transfers. The metric that correlates on easy items can fail on hard ones. Validate across difficulty bands. Figure u08_fig05 carries the ladder.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of rank correlation 0.91 versus 0.43">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Rank correlation with humans (C09 item 6)</text>
+<rect x="200" y="70" width="110" height="180" fill="#2f4b8f" rx="4"/>
+<rect x="390" y="170" width="110" height="80" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="255" y="60">0.91</text>
+<text x="445" y="160">0.43</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="255" y="270">metric A</text>
+<text x="445" y="270">metric B</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The 0.48 gap justifies the judge-call cost. Adopt above 0.8.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 6</span> The lesson's validation toy. The lab asks: 0.91 vs 0.43, ship A.</figcaption>
+</figure>
+<div class="nugget" id="w9">
+<h4>Nugget 09 · Validate the rung</h4>
+<p class="big">The wrong metric costs every decision made on it. Correlate with humans on 100 items, adopt above 0.8, validate across difficulty bands.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the metric ladder, prices the correlation gap, and names the difficulty-band failure.</dd>
+<dt>Why it matters</dt><dd>A cheap metric that decides wrong is the most expensive thing in the building. Validation costs 100 labels once.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Match the measure to the question, then prove the measure works. Decorations do not count.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Uncertainty: the photo with the blur marked</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 2-6</span></p>
+<p>Win rate 0.62 on 100 items. Is that better than 0.55? The toy: Wilson [0.522, 0.709] vs [0.452, 0.644]. The bands overlap, the verdict is not sure, not A wins. A point estimate is a photo, an interval is a photo with the blur marked. Report the blur or the photo lies by omission. Width shrinks as 1/sqrt(n): four times the items halves the band. The computed example: n = 100, w = 62 gives [0.522, 0.709]. n = 400, w = 248 gives [0.572, 0.666]. Same rate, half the band.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 5, 11</span></p>
+<p>Honesty note, from the lesson itself: an earlier revision taught p +/- 1.96 sqrt(p(1-p)/n) as the Wilson interval. That formula is the Wald interval, misnamed. The lesson, runner, and cheatsheet now use the true Wilson score interval. The broken assumption: independence. 100 items from 5 prompts have effective n near 5. Cluster your items. The lab asks: n = 100, w = 62. The interval is [0.522, 0.709].</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Interval bars: wide band at n=100 versus narrow band at n=400">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Wilson bands, same rate 0.62 (C10 item 6)</text>
+<line x1="200" y1="140" x2="500" y2="140" stroke="#b3541e" stroke-width="8"/>
+<line x1="320" y1="190" x2="380" y2="190" stroke="#2f4b8f" stroke-width="8"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="350" y="120">[0.522, 0.709]</text>
+<text x="350" y="230">[0.572, 0.666]</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="120" y="144">n = 100</text><text x="120" y="194">n = 400</text>
+</g>
+<text x="350" y="280" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Same rate, half the band. Report the interval with every win rate.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 item 6</span> Numbers observed from the lesson's runner. Overlapping bands mean the verdict is not sure.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 5, 7</span> Wilson bench: the true score interval on your counts.</p>
+<p><input class="text" id="wiw" type="number" value="62" min="0" aria-label="w"> <input class="text" id="win" type="number" value="100" min="1" aria-label="n"> <button class="btn" id="wibtn">Compute interval</button></p>
+<div class="chips" id="wiout"></div>
+<p class="small muted">Reproduce the lesson: 62 of 100 gives [0.522, 0.709]. Try 248 of 400 for [0.572, 0.666].</p>
+</div>
+<div class="nugget" id="w10">
+<h4>Nugget 10 · Report the blur</h4>
+<p class="big">Overlapping bands mean not sure. Four times the items halves the band, and clustered items shrink the effective n.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the Wilson interval, computes both toys, and discloses its own earlier misnaming of Wald as Wilson.</dd>
+<dt>Why it matters</dt><dd>Half your wins become ties once the blur is marked. That humility is the honest verdict.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Never report a naked point estimate. The interval is part of the number.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Cost and latency: price the eval</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 2-6</span></p>
+<p>Full pairwise on 10 models costs how much? The toy: 45 pairs x 500 items = 22,500 judge calls. At $0.002 per call: $45. Doubled for swapped orders: $90. The bill is knowable before you run. Evals are a market. Price every design before you buy it. Bill = pairs x items x orders x price. Latency = calls / throughput. The computed example: 10 models, 500 items, swapped: 45,000 calls, $90 at $0.002. Sampled 100 items: $18, interval 2.2x wider. The tradeoff is explicit.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 11</span></p>
+<p>The broken assumption: price is stable. The provider doubles the price mid-quarter. Re-price before big runs. The check: actual spend within 10% of the bill. Overruns mean retries or price changes. The lab asks: 6 models, 200 items, swapped, $0.002. The bill is $12.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of eval bills: 90 dollars full, 18 dollars sampled">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Eval bill (C11 item 6)</text>
+<rect x="200" y="70" width="110" height="180" fill="#b3541e" rx="4"/>
+<rect x="390" y="210" width="110" height="40" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="255" y="60">$90</text>
+<text x="445" y="200">$18</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="255" y="270">full, swapped</text>
+<text x="445" y="270">sampled 100</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Sampled is 2.2x wider. The tradeoff is explicit.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 6</span> The lesson's bill toy. Pricing the eval is free, skipping it is how $90 becomes $900.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 5, 7</span> Bill bench: the lesson's price model on your design.</p>
+<p><input class="text" id="bim" type="number" value="10" min="2" aria-label="models"> <input class="text" id="bii" type="number" value="500" min="1" aria-label="items"> <input class="text" id="bio" type="number" value="2" min="1" max="2" aria-label="orders"> <input class="text" id="bip" type="number" value="0.002" step="0.001" min="0" aria-label="price"> <button class="btn" id="bibtn">Price it</button></p>
+<div class="chips" id="biout"></div>
+<p class="small muted">Reproduce the lesson: 10 models, 500 items, 2 orders at $0.002 gives $90. Try the lab: 6 models, 200 items gives $12.</p>
+</div>
+<div class="nugget" id="w11">
+<h4>Nugget 11 · Price every design</h4>
+<p class="big">The bill is knowable before you run. Sampled pairs are the discount rack, and the interval tells you what the discount costs.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the bill formula, prices the full and sampled designs, and names the price-change failure.</dd>
+<dt>Why it matters</dt><dd>Unpriced evals are how $90 becomes $900. Run the bill function before every eval design.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Price the measurement before you buy it. Precision is a budget line.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Benchmark interpretation: the thermometer</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 2-6</span></p>
+<p>Model X scores 92 on the benchmark, model Y scores 91. Is X better? The toy: with n = 500 the band is +/- 0.024, the gap is noise. A benchmark is a thermometer. It reads temperature, not health. A broken thermometer reads whatever it wants. Five caveats: bands (C10), contamination (C08), saturation (everyone near 100), gaming (training to the test), construct validity (does it test the skill). Check all five before quoting a number.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 6, 11</span></p>
+<p>The computed example: 92 vs 91 on n = 500: bands [0.893, 0.941] and [0.882, 0.932], overlap. Verdict: tie. Saturation: 5 models above 0.90, the benchmark no longer separates them. The check: no naked scores in any report, every number carries its band and its contamination status. The broken assumption: the benchmark is clean. Half the items in the training set inverts the ranking on fresh items. Quarantine first.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Overlapping interval bars for 92 versus 91">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">92 vs 91, n = 500 (C12 item 6)</text>
+<line x1="230" y1="120" x2="470" y2="120" stroke="#2f4b8f" stroke-width="8"/>
+<line x1="240" y1="180" x2="460" y2="180" stroke="#b3541e" stroke-width="8"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="350" y="100">[0.893, 0.941]</text>
+<text x="350" y="220">[0.882, 0.932]</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="150" y="124">X 0.92</text><text x="150" y="184">Y 0.91</text>
+</g>
+<text x="350" y="280" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Overlap. Verdict: tie.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 item 6</span> The lesson's tie verdict. 5 models above 0.90 means the benchmark is saturated.</figcaption>
+</figure>
+<div class="nugget" id="w12">
+<h4>Nugget 12 · Check all five caveats</h4>
+<p class="big">Bands, contamination, saturation, gaming, construct validity. 92 vs 91 with overlap is a tie, not a leaderboard.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the five caveats, computes the overlapping bands, and names the saturation rule.</dd>
+<dt>Why it matters</dt><dd>Leaderboard worship is simple and wrong. Every reported score carries its band and its contamination status.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Read instruments with their caveats attached. A number without its context is a rumor.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Twelve nuggets, one unit</h2>
+<ol class="wisdom">
+<li><a href="#w1"><span class="wnum">01</span>Anchor every criterion</a></li>
+<li><a href="#w2"><span class="wnum">02</span>Use the scale for ranking</a></li>
+<li><a href="#w3"><span class="wnum">03</span>Swap and average</a></li>
+<li><a href="#w4"><span class="wnum">04</span>Discount the boast</a></li>
+<li><a href="#w5"><span class="wnum">05</span>Pin the judge</a></li>
+<li><a href="#w6"><span class="wnum">06</span>No partner review, no signature</a></li>
+<li><a href="#w7"><span class="wnum">07</span>Blindfold every internal comparison</a></li>
+<li><a href="#w8"><span class="wnum">08</span>Quarantine the test set</a></li>
+<li><a href="#w9"><span class="wnum">09</span>Validate the rung</a></li>
+<li><a href="#w10"><span class="wnum">10</span>Report the blur</a></li>
+<li><a href="#w11"><span class="wnum">11</span>Price every design</a></li>
+<li><a href="#w12"><span class="wnum">12</span>Check all five caveats</a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cme295/lessons/u08_llm_evaluation.md</code>, locally authored bridge content for Stanford CME295 (2026-10-06). The lesson marks judge rubrics, pointwise and pairwise judging, position and verbosity bias, human checks, appropriate metrics, and benchmark interpretation OFFICIAL-SYLLABUS, and calibration, nondeterminism, blind evaluation, contamination, uncertainty, and cost and latency REQUESTED-BRANCH. Every leaf is PLANNED / SOURCE ATTRIBUTION PENDING until slide or transcript extraction verifies it. No lecture transcript exists for this unit, so no lecture anecdotes appear and no sentence here reproduces an instructor's words. The C10 section carries the lesson's own correction: an earlier revision misnamed the Wald interval as Wilson, and the lesson now uses the true Wilson score interval. Lesson figures u08_fig01, u08_fig02, u08_fig03, u08_fig04, and u08_fig05 are the lesson's own plates, cited where they appear. Charts on this page re-plot the lesson's computed numbers with section citations. Interactive toys run the lesson's rules on values you supply. The two watercolor illustrations are original to this companion, generated with Muse native tools, and labeled Illustration. No official course video exists for this unit, so no video is embedded.</p>
+<p><strong>Quoted words.</strong> Quoted words from the lesson source: 0. This companion paraphrases the lesson throughout and uses no quotation marks in visible text, tooltips, or labels. Numbers carry their lesson section above each figure and table.</p>
+<p><a href="../index.html">Back to the CME295 index</a></p>
+</footer>
+</div>
+<script>
+function el(tag,cls,text){
+var e=document.createElement(tag)
+if(cls){e.className=cls}
+if(text!=null){e.textContent=text}
+return e
+}
+function parseNums(id){
+var raw=document.getElementById(id).value
+var parts=raw.split(",")
+var out=[]
+var i=0
+while(i<parts.length){
+var v=parseFloat(parts[i])
+if(!isNaN(v)){out.push(v)}
+i=i+1
+}
+return out
+}
+function runDb(){
+var o1=parseFloat(document.getElementById("db1").value)
+var o2=parseFloat(document.getElementById("db2").value)
+var out=document.getElementById("dbout")
+out.textContent=""
+if(!(o1>=0)||!(o1<=1)||!(o2>=0)||!(o2<=1)){
+out.appendChild(el("span","chip plain","Enter both rates in [0, 1]."))
+return
+}
+out.appendChild(el("span","chip plain","debiased = "+((o1+(1-o2))/2).toFixed(3)))
+}
+function runEc(){
+var a=parseNums("ecca")
+var c=parseNums("eccc")
+var out=document.getElementById("ecout")
+out.textContent=""
+if(a.length!==c.length||a.length<1){
+out.appendChild(el("span","chip plain","Enter two equal-length lists."))
+return
+}
+var ece=0
+var i=0
+while(i<a.length){
+ece=ece+Math.abs(a[i]-c[i])
+i=i+1
+}
+ece=ece/a.length
+out.appendChild(el("span","chip plain","ECE = "+ece.toFixed(3)))
+}
+function runCt(){
+var b=parseFloat(document.getElementById("ctb").value)
+var p=parseFloat(document.getElementById("ctp").value)
+var out=document.getElementById("ctout")
+out.textContent=""
+if(!(b>0)||!(p>0)){
+out.appendChild(el("span","chip plain","Enter positive perplexities."))
+return
+}
+var g=p/b
+out.appendChild(el("span","chip plain","gap = "+g.toFixed(2)+"x"))
+if(g>2){
+out.appendChild(el("span","chip plain","Investigate before publishing."))
+}
+else if(g<1.3){
+out.appendChild(el("span","chip plain","Clean."))
+}
+else{
+out.appendChild(el("span","chip plain","Watch it."))
+}
+}
+function runWi(){
+var w=parseFloat(document.getElementById("wiw").value)
+var n=parseFloat(document.getElementById("win").value)
+var out=document.getElementById("wiout")
+out.textContent=""
+if(!(w>=0)||!(n>=1)||w>n){
+out.appendChild(el("span","chip plain","Enter 0 <= w <= n, n >= 1."))
+return
+}
+var z=1.96
+var p=w/n
+var denom=1+z*z/n
+var center=(p+z*z/(2*n))/denom
+var hw=z*Math.sqrt(p*(1-p)/n+z*z/(4*n*n))/denom
+out.appendChild(el("span","chip plain","["+((center-hw).toFixed(3))+", "+((center+hw).toFixed(3))+"]"))
+}
+function runBi(){
+var m=parseFloat(document.getElementById("bim").value)
+var it=parseFloat(document.getElementById("bii").value)
+var o=parseFloat(document.getElementById("bio").value)
+var pr=parseFloat(document.getElementById("bip").value)
+var out=document.getElementById("biout")
+out.textContent=""
+if(!(m>=2)||!(it>=1)||!(o>=1)||!(pr>=0)){
+out.appendChild(el("span","chip plain","Enter models >= 2, items >= 1, orders >= 1."))
+return
+}
+var pairs=m*(m-1)/2
+var calls=pairs*it*o
+out.appendChild(el("span","chip plain","calls = "+calls))
+out.appendChild(el("span","chip plain","bill = $"+(calls*pr).toFixed(2)))
+}
+document.getElementById("dbbtn").addEventListener("click",runDb)
+document.getElementById("ecbtn").addEventListener("click",runEc)
+document.getElementById("ctbtn").addEventListener("click",runCt)
+document.getElementById("wibtn").addEventListener("click",runWi)
+document.getElementById("bibtn").addEventListener("click",runBi)
+runDb()
+runEc()
+runCt()
+runWi()
+runBi()
+</script>
+</body>
+</html>

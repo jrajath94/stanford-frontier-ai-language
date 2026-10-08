@@ -1,624 +1,655 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>U02 Companion: Word Vectors and Cooccurrence · CS224N</title>
-<style>
-:root{--paper:#faf6ee}
-:root{--paper2:#f3ecdd}
-:root{--ink:#221a12}
-:root{--muted:#6f6355}
-:root{--line:#e2d7c2}
-:root{--clay:#a94f27}
-:root{--claysoft:#f6e3d3}
-:root{--indigo:#31405e}
-:root{--indigosoft:#e2e7f0}
-:root{--sage:#5d7050}
-:root{--sagesoft:#e4e9da}
-:root{--amber:#8a5a17}
-:root{--ambersoft:#f7ecd4}
-:root{--serif:Georgia,"Times New Roman",serif}
-:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
-:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
-html{scroll-behavior:smooth}
-body{background:var(--paper)}
-body{color:var(--ink)}
-body{font-family:var(--serif)}
-body{font-size:18px}
-body{line-height:1.65}
-body{margin:0}
-.wrap{max-width:880px}
-.wrap{margin:0 auto}
-.wrap{padding:0 24px}
-.topband{background:var(--ink)}
-.topband{color:var(--paper)}
-.topband{padding:10px 0}
-.topband{font-family:var(--sans)}
-.topband{font-size:13px}
-.topband{letter-spacing:.12em}
-.topband{text-transform:uppercase}
-header.hero{padding:56px 0 8px}
-.kicker{font-family:var(--sans)}
-.kicker{font-size:13px}
-.kicker{letter-spacing:.14em}
-.kicker{text-transform:uppercase}
-.kicker{color:var(--clay)}
-h1{font-size:46px}
-h1{line-height:1.12}
-h1{margin:.35em 0 .3em}
-h1{font-weight:700}
-.dek{font-size:21px}
-.dek{color:var(--muted)}
-.dek{max-width:640px}
-.legend{border:1px solid var(--line)}
-.legend{background:var(--paper2)}
-.legend{border-radius:10px}
-.legend{padding:18px 22px}
-.legend{margin:28px 0}
-.legend{font-size:16px}
-.legend p{margin:.4em 0}
-.tag{display:inline-block}
-.tag{font-family:var(--sans)}
-.tag{font-size:11px}
-.tag{font-weight:700}
-.tag{letter-spacing:.1em}
-.tag{text-transform:uppercase}
-.tag{padding:3px 10px}
-.tag{border-radius:20px}
-.tag{margin-right:8px}
-.tag{vertical-align:2px}
-.tag-lesson{background:var(--ink)}
-.tag-lesson{color:var(--paper)}
-.tag-toy{background:transparent}
-.tag-toy{color:var(--amber)}
-.tag-toy{border:1.5px solid var(--amber)}
-.tag-ref{font-family:var(--mono)}
-.tag-ref{font-size:12px}
-.tag-ref{color:var(--muted)}
-.tag-ref{margin-left:6px}
-.tag-companion{background:transparent}
-.tag-companion{color:var(--muted)}
-.tag-companion{border:1.5px solid var(--muted)}
-nav.sticky{position:sticky}
-nav.sticky{top:0}
-nav.sticky{z-index:50}
-nav.sticky{background:var(--paper)}
-nav.sticky{border-top:1px solid var(--line)}
-nav.sticky{border-bottom:1px solid var(--line)}
-nav.sticky{font-family:var(--sans)}
-.navscroll{display:flex}
-.navscroll{gap:4px}
-.navscroll{overflow-x:auto}
-.navscroll{padding:8px 0}
-.navscroll{white-space:nowrap}
-.navscroll a{color:var(--muted)}
-.navscroll a{text-decoration:none}
-.navscroll a{font-size:13px}
-.navscroll a{padding:6px 10px}
-.navscroll a{border-radius:16px}
-.navscroll a:hover{background:var(--paper2)}
-.navscroll a:hover{color:var(--ink)}
-section.block{padding:44px 0 8px}
-section.block{border-top:1px solid var(--line)}
-section.block{margin-top:36px}
-.secnum{font-family:var(--sans)}
-.secnum{font-size:13px}
-.secnum{letter-spacing:.14em}
-.secnum{color:var(--clay)}
-.secnum{text-transform:uppercase}
-h2{font-size:32px}
-h2{margin:.25em 0 .5em}
-h2{line-height:1.2}
-h3{font-size:22px}
-h3{margin:1.6em 0 .5em}
-p{margin:.7em 0}
-.prose-narrow{max-width:680px}
-figure{margin:28px 0}
-figure{padding:0}
-figcaption{font-family:var(--sans)}
-figcaption{font-size:13px}
-figcaption{color:var(--muted)}
-figcaption{margin-top:10px}
-figcaption{line-height:1.5}
-img.illus{width:100%}
-img.illus{border-radius:10px}
-img.illus{border:1px solid var(--line)}
-img.illus{display:block}
-.nugget{border:1px solid var(--line)}
-.nugget{border-left:6px solid var(--clay)}
-.nugget{background:#fffdf8}
-.nugget{border-radius:8px}
-.nugget{padding:20px 24px}
-.nugget{margin:26px 0}
-.nugget h4{font-family:var(--sans)}
-.nugget h4{font-size:15px}
-.nugget h4{letter-spacing:.06em}
-.nugget h4{text-transform:uppercase}
-.nugget h4{color:var(--clay)}
-.nugget h4{margin:0 0 8px}
-.nugget .big{font-size:22px}
-.nugget .big{line-height:1.35}
-.nugget .big{margin:.3em 0}
-.nugget dl{margin:.6em 0 0}
-.nugget dt{font-family:var(--sans)}
-.nugget dt{font-size:13px}
-.nugget dt{font-weight:700}
-.nugget dt{letter-spacing:.08em}
-.nugget dt{text-transform:uppercase}
-.nugget dt{color:var(--muted)}
-.nugget dt{margin-top:10px}
-.nugget dd{margin:2px 0 0 0}
-table.data{border-collapse:collapse}
-table.data{width:100%}
-table.data{margin:20px 0}
-table.data{font-size:16px}
-table.data{background:#fffdf8}
-table.data th{font-family:var(--sans)}
-table.data th{font-size:13px}
-table.data th{text-transform:uppercase}
-table.data th{letter-spacing:.08em}
-table.data th{text-align:left}
-table.data th{padding:10px 12px}
-table.data th{border-bottom:2px solid var(--ink)}
-table.data td{padding:9px 12px}
-table.data td{border-bottom:1px solid var(--line)}
-table.data td.num{font-family:var(--mono)}
-table.data td.num{font-size:15px}
-code{font-family:var(--mono)}
-code{font-size:.86em}
-code{background:var(--paper2)}
-code{padding:2px 6px}
-code{border-radius:4px}
-pre{background:var(--ink)}
-pre{color:var(--paper)}
-pre{padding:18px 20px}
-pre{border-radius:8px}
-pre{overflow-x:auto}
-pre{font-size:14.5px}
-pre{line-height:1.55}
-pre code{background:transparent}
-pre code{color:var(--paper)}
-pre code{padding:0}
-.toy{border:1.5px dashed var(--amber)}
-.toy{border-radius:10px}
-.toy{padding:20px 22px}
-.toy{margin:24px 0}
-.toy{background:#fffdf6}
-.lab{border:1px solid var(--line)}
-.lab{border-radius:10px}
-.lab{padding:20px 22px}
-.lab{margin:24px 0}
-.lab{background:#fffdf8}
-.chips{display:flex}
-.chips{flex-wrap:wrap}
-.chips{gap:8px}
-.chips{margin:14px 0}
-.chip{font-family:var(--mono)}
-.chip{font-size:15px}
-.chip{background:var(--indigosoft)}
-.chip{border:1px solid var(--indigo)}
-.chip{color:var(--indigo)}
-.chip{padding:6px 12px}
-.chip{border-radius:6px}
-.chip.plain{background:var(--paper2)}
-.chip.plain{border-color:var(--line)}
-.chip.plain{color:var(--ink)}
-button.btn{font-family:var(--sans)}
-button.btn{font-size:15px}
-button.btn{font-weight:600}
-button.btn{background:var(--ink)}
-button.btn{color:var(--paper)}
-button.btn{border:none}
-button.btn{border-radius:8px}
-button.btn{padding:10px 18px}
-button.btn{cursor:pointer}
-button.btn{margin:6px 8px 6px 0}
-button.btn:hover{background:var(--clay)}
-button.btn.ghost{background:transparent}
-button.btn.ghost{color:var(--ink)}
-button.btn.ghost{border:1.5px solid var(--ink)}
-input.text{font-family:var(--mono)}
-input.text{font-size:16px}
-input.text{padding:10px 14px}
-input.text{border:1.5px solid var(--line)}
-input.text{border-radius:8px}
-input.text{width:100%}
-input.text{max-width:420px}
-input.text{background:#fffdf8}
-.callout{border-left:4px solid var(--indigo)}
-.callout{padding:6px 0 6px 18px}
-.callout{margin:20px 0}
-.callout{color:var(--ink)}
-.wisdom{list-style:none}
-.wisdom{padding:0}
-.wisdom li{border-bottom:1px solid var(--line)}
-.wisdom li{padding:12px 0}
-.wisdom a{color:var(--ink)}
-.wisdom a{text-decoration:none}
-.wisdom a:hover{color:var(--clay)}
-.wisdom .wnum{font-family:var(--sans)}
-.wisdom .wnum{font-size:12px}
-.wisdom .wnum{color:var(--clay)}
-.wisdom .wnum{font-weight:700}
-.wisdom .wnum{margin-right:10px}
-footer.prov{border-top:2px solid var(--ink)}
-footer.prov{margin-top:56px}
-footer.prov{padding:28px 0 64px}
-footer.prov{font-size:15px}
-footer.prov{color:var(--muted)}
-svg.chart{width:100%}
-svg.chart{height:auto}
-svg.chart{display:block}
-svg.chart{background:#fffdf8}
-svg.chart{border:1px solid var(--line)}
-svg.chart{border-radius:10px}
-.tip{font-family:var(--sans)}
-.tip{font-size:13px}
-.small{font-size:15px}
-.muted{color:var(--muted)}
-.cols{display:grid}
-.cols{grid-template-columns:1fr 1fr}
-.cols{gap:18px}
-@media(max-width:700px){.cols{grid-template-columns:1fr}}
-@media(max-width:700px){h1{font-size:34px}}
-@media(max-width:700px){h2{font-size:26px}}
-</style>
-</head>
-<body>
-<div class="topband"><div class="wrap">Stanford CS224N · Unit 02 · Interactive companion</div></div>
-<div class="wrap">
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&amp;family=Barlow+Semi+Condensed:ital,wght@0,400;0,500;0,600;1,400&amp;family=Libre+Caslon+Display&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&amp;display=swap" rel="stylesheet"/>
+<style id="template-theme">
+/* =====================================================================
+   Companion template theme — extracted verbatim from the reference artifact
+   (~/workspace/companions/reference/index.html), with two additions:
+     (a) provenance components the reference lacks: .src-legend, provenance
+         tag pills, .quote-count, and the colophon block styles;
+     (b) a clearly-marked LEGACY section carrying forward old pilot content
+         classes (pull quotes, stat cards, toys) so build.py can swap the
+         <style> block without orphaning existing content.
+   Per-course accent override is NOT in this file: build.py injects a second
+   <style id="course-accent"> after this one, setting only --apron,
+   --apron-wash, --apron-text (+ dark variants). Later rules win.
+   ===================================================================== */
+
+/* ---------- design tokens (reference §a, verbatim) ---------- */
+:root {
+  --paper: #F7F2E8;        /* page = the watercolor paper */
+  --print: #F7F2E8;        /* paintings always sit on paper, in both themes */
+  --surface: #FFFCF5;      /* shelf tags, cards */
+  --ink: #2A231E;          /* sepia-black, same as the pen in the paintings */
+  --ink-2: #5C534A;
+  --muted: #7E7469;
+  --rule: #DDD3C3;
+  --rule-2: #ECE4D6;
+  --apron: #D9581A;        /* the accent: marks, never body text */
+  --apron-wash: rgba(217, 88, 26, .12);
+  --apron-text: #A6400B;   /* accent that clears contrast as text on paper */
+  --on-apron: #FFFFFF;
+  --blue: #2462A6;         /* blueprint blue: the second series */
+  --blue-wash: rgba(36, 98, 166, .12);
+  --grey: #7E786F;         /* neutral benchmark series */
+  --tape: #F0C537;
+  --tape-ink: #2A231E;
+  --frame-pad: 0px;
+  --frame-shadow: none;
+  --frame-radius: 0px;
+  --stage-bg: #EEE6D6;      /* full-screen chart panels on phones */
+  --f-display: "Libre Caslon Display", "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --f-body: "Newsreader", Georgia, "Times New Roman", serif;
+  --f-ui: "Barlow Semi Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-sign: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --col: 37rem;
+  --wide: 68rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #181512; --surface: #221D19; --ink: #EEE6DA; --ink-2: #C3B9AC; --muted: #978D81;
+    --rule: #3B342D; --rule-2: #2A2520; --apron: #D8612A; --apron-wash: rgba(216, 97, 42, .2);
+    --apron-text: #F2925A; --on-apron: #FFFFFF; --blue: #4F8DD6; --blue-wash: rgba(79, 141, 214, .2);
+    --grey: #938D84; --tape: #D9B12E; --tape-ink: #1A1611;
+    --frame-pad: 14px; --frame-shadow: 0 18px 44px rgba(0, 0, 0, .5); --frame-radius: 3px; --stage-bg: #211D19;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181512; --surface: #221D19; --ink: #EEE6DA; --ink-2: #C3B9AC; --muted: #978D81;
+  --rule: #3B342D; --rule-2: #2A2520; --apron: #D8612A; --apron-wash: rgba(216, 97, 42, .2);
+  --apron-text: #F2925A; --on-apron: #FFFFFF; --blue: #4F8DD6; --blue-wash: rgba(79, 141, 214, .2);
+  --grey: #938D84; --tape: #D9B12E; --tape-ink: #1A1611;
+  --frame-pad: 14px; --frame-shadow: 0 18px 44px rgba(0, 0, 0, .5); --frame-radius: 3px; --stage-bg: #211D19;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-padding-top: 6rem; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.125rem/1.62 var(--f-body);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: inherit; text-decoration-color: var(--apron); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+a:hover { color: var(--apron-text); }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 2px; }
+.wrap { padding-inline: 20px; padding-block: 0 4rem; }
+.col { max-width: var(--col); margin-inline: auto; }
+.wide { max-width: var(--wide); margin-inline: auto; }
+.col > p { margin: 0 0 1.05em; }
+.col > p + p { text-indent: 0; }
+em { font-style: italic; }
+.ui { font-family: var(--f-ui); }
+
+/* ---------- tape measure bar ---------- */
+.tapebar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  display: grid; grid-template-columns: minmax(11rem, 15rem) 1fr; align-items: center; gap: 14px;
+  padding: 8px 20px 6px;
+}
+.tape-read { font-family: var(--f-ui); line-height: 1.15; min-width: 0; }
+.tape-time { font: 600 1.15rem var(--f-sign); letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; flex: none; }
+.tape-time small { font: 500 .78rem var(--f-ui); color: var(--muted); letter-spacing: .04em; margin-left: .35rem; }
+.tape-ch { font-size: .86rem; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#tape { display: block; width: 100%; height: 42px; cursor: pointer; touch-action: pan-y; }
+#tape:focus-visible { outline-offset: 1px; }
+.tape-hint { position: absolute; right: 22px; bottom: -1.35rem; font: 500 .72rem var(--f-ui); color: var(--muted); }
+@media (max-width: 640px) {
+  .tapebar { grid-template-columns: 1fr; gap: 2px; padding: 6px 16px 4px; }
+  .tape-read { display: flex; gap: .6rem; align-items: baseline; }
+  #tape { height: 36px; }
+}
+
+/* ---------- hero ---------- */
+.hero { padding-block: 3.2rem 1rem; }
+.kicker { font: 600 .8rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--apron-text); margin: 0 0 1.2rem; }
+h1 {
+  font: 400 clamp(2.8rem, 7.6vw, 5.6rem)/0.98 var(--f-display);
+  letter-spacing: -.012em; margin: 0 0 1.4rem; text-wrap: balance;
+}
+.dek { font: italic 400 clamp(1.2rem, 2.4vw, 1.5rem)/1.42 var(--f-body); color: var(--ink-2); margin: 0 0 1.6rem; text-wrap: pretty; max-width: 34rem; }
+.byline { font: 500 .88rem/1.5 var(--f-ui); color: var(--muted); letter-spacing: .02em; display: flex; flex-wrap: wrap; gap: .25rem 1.1rem; }
+.byline b { color: var(--ink-2); font-weight: 600; }
+
+/* ---------- paintings ---------- */
+figure { margin: 0; }
+.paint { margin-block: 2.2rem 2.6rem; }
+.paint .frame {
+  background: var(--print); padding: var(--frame-pad); box-shadow: var(--frame-shadow);
+  border-radius: var(--frame-radius); isolation: isolate;
+}
+/* each painting: a static base on paper, plus separately painted layers that move */
+.stage { position: relative; background: var(--print); isolation: isolate; overflow: hidden; }
+.stage img.base { display: block; width: 100%; height: auto; max-width: 100%; mix-blend-mode: multiply; }
+.stage .ly { position: absolute; display: block; max-width: none; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.stage .ly.mul { mix-blend-mode: multiply; }
+.stage .ly[hidden] { display: none; }
+.stage .ov { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.stage .spark { fill: #FFF8E2; transform-box: fill-box; transform-origin: center; }
+.stage .ripple { fill: none; stroke: #5F7F96; stroke-width: 2.5; }
+.stage .ov.glow-screen { mix-blend-mode: screen; }
+.stage .ring path { fill: none; stroke: #2A231E; stroke-width: 4; stroke-linecap: round; }
+/* first arrival, second kind: the picture develops from a pencil sketch into colour */
+.paint .stage.sketch { filter: grayscale(1) sepia(.3) contrast(1.12); }
+.paint .stage.sketch.develop { filter: grayscale(0) sepia(0) contrast(1); transition: filter 2.4s cubic-bezier(.45, .05, .35, 1) .15s; }
+/* first arrival: the picture blooms onto the paper like a wet wash.
+   The reference used an external bleed.png; the template embeds an organic
+   turbulence-edged mask as a data URI so the effect works on ANY image with
+   zero external files (single-file, file://-clean). */
+.paint .bleed {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='b' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.016' numOctaves='3' seed='7' result='n'/%3E%3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.72'/%3E%3CfeComposite operator='in' in2='SourceGraphic'/%3E%3C/filter%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='52%25' stop-color='black'/%3E%3Cstop offset='80%25' stop-color='black' stop-opacity='0'/%3E%3C/radialGradient%3E%3Crect width='400' height='400' fill='url(%23g)' filter='url(%23b)'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat; -webkit-mask-position: 50% 50%; -webkit-mask-size: 1% auto;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='b' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.016' numOctaves='3' seed='7' result='n'/%3E%3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.72'/%3E%3CfeComposite operator='in' in2='SourceGraphic'/%3E%3C/filter%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='52%25' stop-color='black'/%3E%3Cstop offset='80%25' stop-color='black' stop-opacity='0'/%3E%3C/radialGradient%3E%3Crect width='400' height='400' fill='url(%23g)' filter='url(%23b)'/%3E%3C/svg%3E");
+  mask-repeat: no-repeat; mask-position: 50% 50%; mask-size: 1% auto;
+}
+.paint .bleed.bloom {
+  -webkit-mask-size: 270% auto; mask-size: 270% auto;
+  transition: -webkit-mask-size 1.9s cubic-bezier(.5, .05, .4, 1), mask-size 1.9s cubic-bezier(.5, .05, .4, 1);
+}
+.pinbox { position: relative; }
+/* phones: each painting takes the screen and the view travels across it as you scroll */
+@media (max-width: 700px) {
+  figure.paint.pin, figure.paint.drift { margin: 1.6rem -20px 1.8rem; max-width: none; }
+  figure.paint.pin { height: 200vh; height: 200svh; }
+  figure.paint.drift { scroll-snap-align: start; }
+  figure.paint.pin .pinbox { position: sticky; top: var(--barH, 60px); }
+  figure.paint.pin .pinbox, figure.paint.drift .pinbox { height: calc(100vh - var(--barH, 60px)); height: calc(100svh - var(--barH, 60px)); display: flex; flex-direction: column; }
+  figure.paint.pin .frame, figure.paint.drift .frame { flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden; padding: 0; box-shadow: none; border-radius: 0; background: var(--print); }
+  figure.paint.pin .stage, figure.paint.drift .stage { position: absolute; left: 0; top: 0; height: 100%; width: auto; max-width: none; aspect-ratio: var(--ar); transform-origin: 0 0; }
+  figure.paint.pin .stage img.base, figure.paint.drift .stage img.base { width: 100%; height: 100%; max-width: none; }
+  figure.paint.pin figcaption, figure.paint.drift figcaption { margin: 0; padding: .6rem 20px .75rem; max-width: none; background: var(--paper); border-top: 1px solid var(--rule); }
+}
+.paint figcaption, .fig-note {
+  font: italic 400 .92rem/1.45 var(--f-body); color: var(--muted); margin-top: .7rem; max-width: var(--col);
+}
+.paint.wide figcaption { margin-inline: auto; }
+.paint.inset { max-width: 46rem; margin-inline: auto; }
+/* breakout: figures that stay in-flow inside the 37rem column can still
+   open up to inset/wide widths on large screens (Phase 1 may hoist them
+   to true siblings instead; visually identical). */
+@media (min-width: 50rem) {
+  .col > figure.paint.inset, .col > figure.photo.inset { width: 46rem; max-width: none; margin-inline: calc((var(--col) - 46rem) / 2); }
+}
+@media (min-width: 74rem) {
+  .col > figure.paint.wide, .col > figure.photo.wide, .col > section.fig.wide { width: var(--wide); max-width: none; margin-inline: calc((var(--col) - var(--wide)) / 2); }
+}
+/* real photographs: no watercolor entrance, honest framing */
+.photo { margin-block: 2.2rem 2.6rem; }
+.photo img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 3px; }
+.photo.inset { max-width: 46rem; margin-inline: auto; }
+.photo figcaption { font: italic 400 .92rem/1.45 var(--f-body); color: var(--muted); margin-top: .7rem; }
+.photo figcaption .credit { font-style: normal; font-family: var(--f-ui); font-size: .8rem; color: var(--ink-2); }
+
+/* ---------- chapter heads: hanging aisle signs ---------- */
+.chapter { padding-top: 3.4rem; }
+.ch-head { display: flex; gap: 1.2rem; align-items: flex-start; margin-bottom: 1.5rem; }
+.aisle {
+  flex: none; position: relative; margin-top: 1.5rem;
+  width: 4.4rem; padding: .35rem 0 .45rem; text-align: center;
+  background: var(--apron); color: var(--on-apron); border-radius: 2px;
+  font-family: var(--f-sign); line-height: 1;
+}
+.aisle::before, .aisle::after {
+  content: ""; position: absolute; bottom: 100%; width: 1px; height: 1.5rem; background: var(--muted);
+}
+.aisle::before { left: 22%; } .aisle::after { right: 22%; }
+.aisle .l { display: block; font-size: .68rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; }
+.aisle .n { display: block; font-size: 2.35rem; font-weight: 700; margin-top: .12rem; }
+.aisle.analysis { background: var(--ink); }
+.ch-meta { font: 600 .8rem var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: .2rem 0 .4rem; }
+.ch-meta .ts { color: var(--apron-text); font-variant-numeric: tabular-nums; }
+.ch-meta .dec { text-transform: none; }
+h2 { font: 400 clamp(2rem, 4.8vw, 3.15rem)/1.02 var(--f-display); margin: 0; text-wrap: balance; letter-spacing: -.005em; }
+h3.sub { font: 400 1.7rem/1.1 var(--f-display); margin: 2.4rem 0 .8rem; text-wrap: balance; }
+.part-break { text-align: center; margin: 5rem 0 0; font: 600 .82rem var(--f-ui); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.part-break span { display: inline-block; padding: 0 1rem; background: var(--paper); position: relative; }
+.part-break::before { content: ""; display: block; height: 1px; background: var(--rule); position: relative; top: .62rem; }
+
+/* ---------- lesson tags: shelf labels ---------- */
+aside.tag {
+  display: grid; grid-template-columns: minmax(8.4rem, 10.5rem) 1fr;
+  background: var(--surface); border: 1px solid var(--rule); border-top: 6px solid var(--apron);
+  border-radius: 3px; margin: 2.1rem 0 2.3rem; box-shadow: 0 1px 0 var(--rule);
+}
+.tag-price { padding: 1rem .9rem 1rem 1rem; border-right: 1px dashed var(--rule); display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.tag-big { font: 700 2.3rem/1 var(--f-sign); color: var(--ink); letter-spacing: -.01em; white-space: nowrap; }
+.tag-big.tight { font-size: 1.55rem; }
+.tag-unit { font: 500 .82rem/1.25 var(--f-ui); color: var(--ink-2); margin-top: .35rem; }
+.tag-body { padding: .95rem 1.15rem 1rem; min-width: 0; }
+.tag-eye { font: 600 .74rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--apron-text); }
+.tag-body p { margin: .3rem 0 .6rem; font: 500 1.08rem/1.45 var(--f-body); text-wrap: pretty; }
+.tag-sku { display: flex; align-items: center; gap: .7rem; font: 500 .74rem var(--f-ui); color: var(--muted); letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.bars { display: inline-block; height: 15px; width: 78px; }
+@media (max-width: 520px) {
+  aside.tag { grid-template-columns: 1fr; }
+  .tag-price { border-right: 0; border-bottom: 1px dashed var(--rule); flex-direction: row; align-items: baseline; gap: .7rem; padding-bottom: .8rem; }
+  .tag-unit { margin-top: 0; }
+}
+
+/* ---------- figures / charts ---------- */
+.fig { margin-block: 2.4rem 2.8rem; }
+.fig-head { margin-bottom: .9rem; }
+.fig-title { font: 600 1.12rem/1.3 var(--f-ui); margin: 0; letter-spacing: .005em; }
+.fig-sub { font: 400 .95rem/1.4 var(--f-ui); color: var(--ink-2); margin: .2rem 0 0; }
+.fig-note { font-style: normal; font-family: var(--f-ui); font-size: .82rem; }
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--f-ui); fill: var(--ink-2); font-size: 12px; }
+.chart .tick text { fill: var(--muted); font-variant-numeric: tabular-nums; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; shape-rendering: crispEdges; }
+.chart .axis { stroke: var(--muted); stroke-width: 1; shape-rendering: crispEdges; }
+.chart .lbl-strong { fill: var(--ink); font-weight: 600; }
+.legend { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; font: 500 .85rem var(--f-ui); color: var(--ink-2); margin: .3rem 0 .6rem; }
+.legend i { display: inline-block; width: 16px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: .4rem; }
+.legend i.sq { height: 10px; width: 10px; border-radius: 2px; }
+.ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1.2rem; margin: .4rem 0 1rem; font: 500 .9rem var(--f-ui); color: var(--ink-2); }
+.ctrl label { display: flex; align-items: center; gap: .55rem; }
+.ctrl output { font: 600 1rem var(--f-sign); color: var(--ink); min-width: 3.2rem; font-variant-numeric: tabular-nums; }
+input[type="range"] { accent-color: var(--apron); width: 11rem; max-width: 100%; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 2px; background: var(--surface); }
+.seg button, .btn {
+  font: 600 .86rem var(--f-ui); color: var(--ink-2); background: transparent; border: 0; border-radius: 999px;
+  padding: .32rem .85rem; cursor: pointer; letter-spacing: .02em;
+}
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.btn { border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--apron); border-color: var(--apron); color: var(--on-apron); }
+details.table { margin-top: .8rem; font: 400 .88rem var(--f-ui); color: var(--ink-2); }
+details.table summary { cursor: pointer; color: var(--muted); font-weight: 600; letter-spacing: .03em; }
+.tbl-wrap { overflow-x: auto; max-height: 22rem; margin-top: .5rem; border: 1px solid var(--rule); border-radius: 3px; }
+.tbl-wrap table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+.tbl-wrap th, .tbl-wrap td { padding: .3rem .7rem; text-align: right; border-bottom: 1px solid var(--rule-2); white-space: nowrap; }
+.tbl-wrap th:first-child, .tbl-wrap td:first-child { text-align: left; }
+.tbl-wrap th { position: sticky; top: 0; background: var(--surface); color: var(--ink); font-weight: 600; }
+
+#tip {
+  position: fixed; z-index: 50; pointer-events: none; max-width: 17rem;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: 4px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .14); padding: .5rem .7rem; font: 400 .85rem/1.35 var(--f-ui);
+}
+#tip b { display: block; font: 600 1.05rem/1.2 var(--f-sign); font-variant-numeric: tabular-nums; }
+#tip .k { display: inline-block; width: 12px; height: 2px; vertical-align: middle; margin-right: .35rem; border-radius: 1px; }
+#tip .row { display: flex; justify-content: space-between; gap: 1rem; }
+#tip .row span:last-child { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* hero number */
+.hero-num { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem 2.5rem; margin: 1.6rem 0 .6rem; }
+.hero-num .lab { font: 600 .78rem var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.hero-num .val { font: 600 clamp(2.2rem, 4.4vw, 3rem)/1 var(--f-ui); letter-spacing: -.01em; margin-top: .35rem; white-space: nowrap; }
+.hero-num .val.hd { color: var(--ink); }
+.hero-num .val.sp { color: var(--ink-2); }
+.hero-num .val.tick { animation: valtick .45s cubic-bezier(.2, 1.6, .4, 1); transform-origin: left center; }
+@keyframes valtick { from { transform: scale(1.08); color: var(--apron-text); } }
+.hero-num .mark { display: inline-block; width: 22px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: .5rem; }
+.hero-num .note { font: 400 .9rem var(--f-ui); color: var(--ink-2); margin-top: .35rem; }
+
+/* cast badges */
+.cast { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 1rem; margin: 1.6rem 0 1rem; }
+.badge { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
+.badge-top { background: var(--apron); color: var(--on-apron); font: 600 .72rem var(--f-ui); letter-spacing: .16em; text-transform: uppercase; padding: .35rem .8rem; }
+.badge-body { padding: .7rem .9rem .9rem; display: flex; flex-direction: column; gap: .15rem; flex: 1; }
+.badge-name { font: 400 1.5rem/1.1 var(--f-display); }
+.badge-role { font: 600 .78rem var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--apron-text); }
+.badge-body p { margin: .35rem 0 0; font: 400 .95rem/1.4 var(--f-ui); color: var(--ink-2); }
+.cameos { font: 400 .92rem/1.5 var(--f-ui); color: var(--ink-2); }
+.cameos b { color: var(--ink); font-weight: 600; }
+
+/* playbook */
+.playbook { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: .9rem; margin-top: 1.4rem; }
+.pb { display: block; text-decoration: none; background: var(--surface); border: 1px solid var(--rule); border-top: 4px solid var(--apron); border-radius: 3px; padding: .75rem .9rem .8rem; color: var(--ink); }
+.pb:hover { border-color: var(--muted); border-top-color: var(--apron); color: var(--ink); }
+.pb .a { font: 600 .72rem var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--apron-text); }
+.pb .big { font: 700 1.5rem/1.05 var(--f-sign); margin: .25rem 0 .15rem; }
+.pb p { margin: 0; font: 400 .95rem/1.4 var(--f-body); color: var(--ink-2); }
+
+.sources { font: 400 .9rem/1.5 var(--f-ui); color: var(--ink-2); }
+.sources h3 { font: 600 .82rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 2rem 0 .5rem; }
+.sources ul { padding-left: 1.1rem; margin: 0; }
+.sources li { margin: .2rem 0; }
+footer.colophon { border-top: 1px solid var(--rule); margin-top: 4rem; padding-top: 1.5rem; }
+
+/* ---------- chart motion ---------- */
+.chart g.pop { transition: opacity .35s ease, transform .5s cubic-bezier(.2, 1.5, .4, 1); transform-box: fill-box; transform-origin: center; }
+.chart g.pop.off { opacity: 0; transform: scale(.2); }
+.era-lab { transition: opacity .45s ease; }
+.score .sl { stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 1.1s cubic-bezier(.4, 0, .2, 1) .25s; }
+.score .sl-end { transition: opacity .35s ease 1.2s; }
+.score .score-card { transition: opacity .5s ease, transform .5s ease; }
+.score.pre .score-card { opacity: 0; transform: translateY(12px); transition: none; }
+.score.pre .sl { stroke-dashoffset: 1; transition: none; }
+.score.pre .sl-end { opacity: 0; transition: none; }
+.cap-seg { transition: transform .9s cubic-bezier(.2, .8, .2, 1); transform-origin: left center; }
+.cap-bar.pre .cap-seg { transform: scaleX(0); transition: none; }
+.eq > * { transition: opacity .45s ease, transform .45s ease; }
+.eq.pre > * { opacity: 0; transform: translateY(10px); transition: none; }
+.eq-result { transition: opacity .7s ease; }
+.eq-result.pre { opacity: 0; transition: none; }
+/* phones: charts take the whole screen, and the page settles onto them */
+@media (max-width: 700px) {
+  html { scroll-snap-type: y proximity; scroll-padding-top: var(--barH, 60px); }
+  .fig.fs {
+    min-height: calc(100vh - var(--barH, 60px)); min-height: calc(100svh - var(--barH, 60px));
+    margin: 2rem -20px; padding: 1.4rem 20px 1.5rem; background: var(--stage-bg);
+    display: flex; flex-direction: column; justify-content: center; scroll-snap-align: start;
+  }
+  .fig.fs > * { margin-left: 0 !important; margin-right: 0 !important; width: 100%; max-width: none !important; }
+  .fig.fs .chart { max-width: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; scroll-snap-type: none !important; }
+  .pyr-g { transition: none; }
+  .paint .bleed { -webkit-mask: none; mask: none; }
+  .paint .stage.sketch { filter: none; }
+}
+
+/* =====================================================================
+   PROVENANCE COMPONENTS — the reference lacks these; the template carries
+   them for every artifact (COMPANION_PROMPT.md honesty laws).
+   ===================================================================== */
+/* SOURCE / INTERPRETATION legend */
+.src-legend {
+  border: 1px solid var(--rule); background: var(--surface); border-radius: 6px;
+  padding: 1rem 1.2rem; margin: 1.8rem 0; font: 400 .95rem/1.5 var(--f-ui); color: var(--ink-2);
+}
+.src-legend p { margin: .35rem 0; }
+.src-legend .lede { font: 600 .78rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: .5rem; }
+/* provenance tag pills (inline, element-qualified so they never clash with aside.tag) */
+span.ptag, .ptag {
+  display: inline-block; font: 700 .68rem var(--f-ui); letter-spacing: .1em; text-transform: uppercase;
+  padding: .18rem .6rem; border-radius: 999px; margin-right: .5rem; vertical-align: .12em; white-space: nowrap;
+}
+.ptag-src { background: var(--ink); color: var(--paper); }
+.ptag-illustration { background: transparent; color: var(--apron-text); border: 1.5px solid var(--apron); }
+.ptag-companion { background: transparent; color: var(--muted); border: 1.5px solid var(--muted); }
+.ptag-ref { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .72rem; font-weight: 500; color: var(--muted); margin-left: .4rem; letter-spacing: 0; text-transform: none; }
+/* mechanical quote-count footer block */
+.quote-count {
+  border: 1px dashed var(--rule); border-radius: 6px; padding: .9rem 1.1rem; margin: 2rem 0;
+  font: 400 .9rem/1.5 var(--f-ui); color: var(--ink-2); background: transparent;
+}
+.quote-count b { color: var(--ink); }
+.quote-count .n { font: 700 1.3rem var(--f-sign); color: var(--apron-text); font-variant-numeric: tabular-nums; }
+/* colophon: "About this page" + sources + provenance wording */
+.colophon .about p { font: 400 .95rem/1.55 var(--f-ui); color: var(--ink-2); }
+.colophon .about .prov-line { border-left: 3px solid var(--apron); padding-left: .9rem; }
+
+/* =====================================================================
+   LEGACY pilot content classes — carried forward so the build.py <style>
+   swap never orphans existing content. New artifacts should use the
+   reference components above instead.
+   ===================================================================== */
+.pull { margin: 2rem 0; padding: 1.2rem 1.4rem; border-left: 4px solid var(--apron); background: var(--surface); border-radius: 0 6px 6px 0; }
+.pull blockquote { margin: 0; font: italic 400 1.35rem/1.4 var(--f-display); color: var(--ink); text-wrap: pretty; }
+.pull .who { margin: .6rem 0 0; font: 500 .85rem var(--f-ui); color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1rem; margin: 1.6rem 0; }
+.stat { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: .8rem 1rem; }
+.stat .n { font: 700 1.9rem/1.1 var(--f-sign); color: var(--ink); font-variant-numeric: tabular-nums; }
+.stat .l { font: 500 .9rem/1.35 var(--f-ui); color: var(--ink-2); margin-top: .25rem; }
+.stat .s { font: 500 .75rem var(--f-ui); color: var(--muted); margin-top: .3rem; letter-spacing: .04em; }
+.caption { font: italic 400 .92rem/1.45 var(--f-body); color: var(--muted); margin-top: .6rem; }
+.eyebrow { font: 600 .78rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--apron-text); margin: 0 0 .4rem; }
+.video { position: relative; width: 100%; aspect-ratio: 16 / 9; margin: 2rem 0; background: var(--stage-bg); border-radius: 6px; overflow: hidden; }
+.video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in { opacity: 1; transform: none; }
+.takeaways { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 1.1rem 1.3rem; margin: 2rem 0; }
+.takeaways h3 { font: 400 1.4rem/1.2 var(--f-display); margin: 0 0 .6rem; }
+.takeaways ol { margin: 0; padding-left: 1.2rem; font-size: 1rem; }
+.takeaways li { margin: .35rem 0; }
+.prose-narrow { max-width: var(--col); }
+.secnum { font: 600 .8rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 .5rem; }
+.chips, .stepdots { display: flex; flex-wrap: wrap; gap: .45rem; }
+.toy { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 1rem 1.2rem; margin: 1.6rem 0; }
+.toy .data { font-variant-numeric: tabular-nums; }
+.wisdom ol { font-size: 1rem; }
+.nugget-legacy { border: 1px solid var(--rule); border-radius: 6px; padding: 1rem 1.2rem; margin: 1.6rem 0; background: var(--surface); }
+
+</style><style id="course-accent">
+/* course accent: Parse-tree green #2E7D32 (cs224n) */
+:root{--apron:#2E7D32;--apron-wash:rgba(46,125,50,.12);--apron-text:#2E7D32;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--apron:#44B94A;--apron-wash:rgba(68,185,74,.2);--apron-text:#37923B;}}
+:root[data-theme="dark"]{--apron:#44B94A;--apron-wash:rgba(68,185,74,.2);--apron-text:#37923B;}
+</style></head>
+<body><div class="tapebar" data-mode="progress" data-sign-label="Unit" id="tapebar"><div aria-live="off" class="tape-read"><div class="tape-time" id="tapeTime"></div><div class="tape-ch" id="tapeCh"></div></div><svg aria-label="Position in the companion. Use arrow keys to move between sections." aria-valuemax="12" aria-valuemin="1" aria-valuenow="1" id="tape" role="slider" tabindex="0"></svg></div><div hidden="" id="tip"></div><div class="wrap">
 <header class="hero" id="top">
 <p class="kicker">Companion 2 of 15 · narrated from the lesson document</p>
 <h1>Word vectors and cooccurrence</h1>
 <p class="dek">Words become addresses in a space, and the space learns meaning from company. This companion walks the full arc of Unit 02: from one-hot name tags to skip-gram, negative sampling, GloVe, the PMI identity, analogies, and the honest limits of the plot.</p>
-<div class="legend">
-<p><span class="tag tag-lesson">From the lesson</span> The idea, and every number beside it, comes from the cited section of <code>lessons/u02_word_vectors.md</code>. The phrasing is the companion’s.</p>
-<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
-<p><span class="tag tag-companion">companion</span> Companion voice: the idea above the tag is from the lesson. The generalization below it is the companion’s.</p>
+<div class="legend src-legend">
+<p><span class="ptag ptag-src">From the lesson</span> The idea, and every number beside it, comes from the cited section of <code>lessons/u02_word_vectors.md</code>. The phrasing is the companion’s.</p>
+<p><span class="ptag ptag-illustration">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="ptag ptag-companion">companion</span> Companion voice: the idea above the tag is from the lesson. The generalization below it is the companion’s.</p>
 <p class="small muted">Provenance: no full lecture transcript exists for this session. The 2026 lecture videos are restricted and unviewed, and the 2024 playlist was not viewed. This page narrates the lesson document, not a video. The session title (S02, Word Vectors) and the reading list (word2vec, negative sampling, GloVe paper titles) are OFFICIAL-SOURCE via SRC-02. The concept inventory is REQUESTED-BRANCH.</p>
 </div>
-<figure>
-<img class="illus" src="assets/u02-hero.jpg" alt="Watercolor of glowing word-dots clustered into constellations in deep indigo space">
-<figcaption><span class="tag tag-toy">Illustration</span> The U02 idea in one image: every word is a point of light, and similar words gather into constellations. The geometry is the meaning. Watercolor, original to this companion.</figcaption>
-</figure>
-</header>
-<nav class="sticky" aria-label="Sections"><div class="navscroll">
-<a href="#s1">1 Name tags</a>
-<a href="#s2">2 Skip-gram</a>
-<a href="#s3">3 Neg sampling</a>
-<a href="#s4">4 Hier softmax</a>
-<a href="#s5">5 GloVe</a>
-<a href="#s6">6 PMI</a>
-<a href="#s7">7 Analogy</a>
-<a href="#s8">8 Polysemy</a>
-<a href="#s9">9 Evaluation</a>
-<a href="#s10">10 Derivatives</a>
-<a href="#s11">11 Freq bias</a>
-<a href="#s12">12 Plot limits</a>
-<a href="#wisdom">Wisdom index</a>
-</div></nav>
-<section class="block" id="s1">
-<p class="secnum">Section 1 · C01</p>
-<h2>One-hot is a name tag. Dense is a profile.</h2>
+</header><figure class="paint wide" data-entrance="bloom" data-hero="1">
+<div class="frame"><div class="stage"><img alt="Watercolor of glowing word-dots clustered into constellations in deep indigo space" class="base" fetchpriority="high" loading="lazy" src="assets/u02-hero.jpg"/></div></div>
+<figcaption><span class="ptag ptag-illustration">Illustration</span> The U02 idea in one image: every word is a point of light, and similar words gather into constellations. The geometry is the meaning. Watercolor, original to this companion.</figcaption></figure>
+<section class="block col" data-chapter="1" data-title="One-hot is a name tag. Dense is a profile." id="s1"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">1</span></div><div><p class="ch-meta"><span class="ts">Unit 1</span> · C01</p><h2>One-hot is a name tag. Dense is a profile.</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
 <p>How do you give a word a numerical address? With a vocabulary of 14 words, one-hot “cat” is (0,1,0,...,0): a 14-dim vector with a single 1. Distributed “cat” is (0.21, −0.44, 0.09, 0.33, ...): an 8-dim vector of learned numbers. One-hot is a name tag: it says which word, and nothing else. Distributed is a profile: each dimension is a learned feature, and similarity between profiles means similarity between words. The name tag cannot express that “cat” is closer to “dog” than to “mat”. The profile can.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §5, §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 §5, §6</span></p>
 <p>The lookup is a matrix product in disguise: the embedding matrix times a one-hot picks row w. The mechanism that matters: the embedding matrix is a parameter, not a fixed table. Gradients flow into it during training, so the vectors move to positions that help the objective. One-hot vectors never move. They have no parameters. From <code>compute_u02.py</code>: after 400 epochs of skip-gram training, the learned “cat” vector starts (0.21, −0.44, ...). Its cosine with “dog” is 0.816, with “mat” it is 0.679. The one-hot cosine between any two distinct words is 0.0. The learned vectors separate related from unrelated. The name tags cannot.</p>
 </div>
 <figure>
 <div id="chart-cos"></div>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §6</span> Cosine similarity after 400 epochs of skip-gram on the toy corpus, from <code>compute_u02.py</code> (executed 2026-10-06): cos(cat, dog) = 0.816, cos(cat, mouse) = 0.808, cos(cat, mat) = 0.679, one-hot = 0.0. The learned vectors rank correctly.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 §6</span> Cosine similarity after 400 epochs of skip-gram on the toy corpus, from <code>compute_u02.py</code> (executed 2026-10-06): cos(cat, dog) = 0.816, cos(cat, mouse) = 0.808, cos(cat, mat) = 0.679, one-hot = 0.0. The learned vectors rank correctly.</figcaption>
 </figure>
-<div class="nugget" id="nugget-profile">
-<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §6</span></h4>
-<p class="big">One-hot is a name tag. Dense is a profile. The profile can say “cat is closer to dog than to mat”. The tag can only say “cat”.</p>
-<dl>
-<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Parameters are what move. The embedding matrix learns because gradients reach it. One-hot vectors have no parameters, so they can never rearrange themselves into meaning.</dd>
-<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Ask what moves under training in any representation. Fixed encodings carry only what the designer put in. Learned encodings carry what the objective needed.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-profile"><div class="tag-price"><span class="tag-big">1</span><span class="tag-unit">Nugget 1 · From the lesson C01 §3, §6</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 §3, §6</div><div class="tag-eye">The lesson</div><p class="">One-hot is a name tag. Dense is a profile. The profile can say “cat is closer to dog than to mat”. The tag can only say “cat”.</p><p><b>Why it matters. </b>Parameters are what move. The embedding matrix learns because gradients reach it. One-hot vectors have no parameters, so they can never rearrange themselves into meaning.</p><p><b>Transfer. </b>Ask what moves under training in any representation. Fixed encodings carry only what the designer put in. Learned encodings carry what the objective needed.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 §11</span></p>
 <p>The broken assumption is that distributed vectors capture all meaning. The counterexample is “cat” the animal versus “cat” the jazz musician. One vector per word form forces both senses into one address. The profile is a mixture, and the mixture can mislead. (C08 returns to this.)</p>
 </div>
 </section>
-<section class="block" id="s2">
-<p class="secnum">Section 2 · C02</p>
-<h2>Skip-gram and CBOW: opposite arrows</h2>
+<section class="block col" data-chapter="1" data-title="Skip-gram and CBOW: opposite arrows" id="s2"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">2</span></div><div><p class="ch-meta"><span class="ts">Unit 2</span> · C02</p><h2>Skip-gram and CBOW: opposite arrows</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
 <p>Where do the vectors come from? Skip-gram takes center “cat” and predicts each context word (“the”, “sat”, “on”). CBOW takes the context words and predicts center “cat”. Same window, opposite arrows. Skip-gram treats each (center, context) pair as a training example, so rare words get many updates from their few occurrences. CBOW averages the context words into one prediction: faster and smoother, but the averaging washes out rare words.</p>
-<figure>
-<img class="illus" src="assets/u02-arrows.jpg" alt="Watercolor of outward arrows from one center circle and inward arrows in a mirror panel">
-<figcaption><span class="tag tag-toy">Illustration</span> The two arrows of C02 as watercolor: skip-gram radiates one center outward to many contexts, CBOW gathers many contexts inward to one center. Same window, opposite arrows. Watercolor, original to this companion.</figcaption>
-</figure>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §5</span></p>
+<figure class="paint inset" data-entrance="sketch">
+<div class="frame"><div class="stage"><img alt="Watercolor of outward arrows from one center circle and inward arrows in a mirror panel" class="base" loading="lazy" src="assets/u02-arrows.jpg"/></div></div>
+<figcaption><span class="ptag ptag-illustration">Illustration</span> The two arrows of C02 as watercolor: skip-gram radiates one center outward to many contexts, CBOW gathers many contexts inward to one center. Same window, opposite arrows. Watercolor, original to this companion.</figcaption></figure>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C02 §5</span></p>
 <p>The softmax probability: P(o | c) = exp(u_o · v_c) / sum_w exp(u_w · v_c). Loss for one pair: −log P(o | c) = −u_o · v_c + log sum_w exp(u_w · v_c). The first term pulls u_o toward v_c, the second term pushes all u_w away from v_c. That push-pull is the whole mechanism. C03 and C04 are cheaper ways to compute the push.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C02 §6</span></p>
 <p>From <code>compute_u02.py</code>: 18 training tokens (stopwords removed), 66 (center, context) pairs, window 2. Mean negative-sampling loss falls from 0.6934 to 0.6471 over 400 epochs. The loss is per binary decision, not per word, so 0.69 is the chance-level start (log 2).</p>
 </div>
 <figure>
 <div id="chart-loss"></div>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §6</span> Mean negative-sampling loss over 400 epochs, from <code>compute_u02.py</code> (executed 2026-10-06): 0.6934 at epoch 0 (chance level, log 2) down to 0.6471 at epoch 400. The model learns, slowly, on a toy.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C02 §6</span> Mean negative-sampling loss over 400 epochs, from <code>compute_u02.py</code> (executed 2026-10-06): 0.6934 at epoch 0 (chance level, log 2) down to 0.6471 at epoch 400. The model learns, slowly, on a toy.</figcaption>
 </figure>
-<div class="nugget" id="nugget-pushpull">
-<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §5</span></h4>
-<p class="big">Push-pull is the whole mechanism. One term pulls the true context vector toward the center, one term pushes every other vector away. Everything in this unit is a cheaper way to compute the push.</p>
-<dl>
-<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The gradient of the log-sum-exp is a softmax: the push is distributed by how wrong the model is. When you see a new word2vec variant, look for the pull and the push first.</dd>
-<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Contrastive objectives are all push-pull. Name the positive and name what stands in for “everything else”, and you have the algorithm.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-pushpull"><div class="tag-price"><span class="tag-big">2</span><span class="tag-unit">Nugget 2 · From the lesson C02 §5</span></div><div class="tag-body"><div class="tag-title">Nugget 2 · From the lesson C02 §5</div><div class="tag-eye">The lesson</div><p class="">Push-pull is the whole mechanism. One term pulls the true context vector toward the center, one term pushes every other vector away. Everything in this unit is a cheaper way to compute the push.</p><p><b>Why it matters. </b>The gradient of the log-sum-exp is a softmax: the push is distributed by how wrong the model is. When you see a new word2vec variant, look for the pull and the push first.</p><p><b>Transfer. </b>Contrastive objectives are all push-pull. Name the positive and name what stands in for “everything else”, and you have the algorithm.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C02 §11</span></p>
 <p>The broken assumption is that more pairs always help. Window 10 on the toy corpus covers whole sentences, so every word pairs with every other word, the “context” becomes the document, and all vectors collapse toward each other. Window width is a real hyperparameter, not a free lunch.</p>
 </div>
 <div class="toy">
-<p><span class="tag tag-toy">Illustration</span> Softmax stability toy. The shift is the lesson’s remediation block. Try large values and watch the naive version fail.</p>
-<p>z1 <input class="text" id="sm1" value="1000" aria-label="First score"></p>
-<p>z2 <input class="text" id="sm2" value="1001" aria-label="Second score"></p>
-<p>z3 <input class="text" id="sm3" value="1002" aria-label="Third score"></p>
+<p><span class="ptag ptag-illustration">Illustration</span> Softmax stability toy. The shift is the lesson’s remediation block. Try large values and watch the naive version fail.</p>
+<p>z1 <input aria-label="First score" class="text" id="sm1" value="1000"/></p>
+<p>z2 <input aria-label="Second score" class="text" id="sm2" value="1001"/></p>
+<p>z3 <input aria-label="Third score" class="text" id="sm3" value="1002"/></p>
 <p><button class="btn" id="smbtn">Compare naive vs shifted</button></p>
 <p class="small" id="smnote"></p>
 </div>
 </section>
-<section class="block" id="s3">
-<p class="secnum">Section 3 · C03</p>
-<h2>Negative sampling: a sample stands in for the sum</h2>
+<section class="block col" data-chapter="1" data-title="Negative sampling: a sample stands in for the sum" id="s3"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">3</span></div><div><p class="ch-meta"><span class="ts">Unit 3</span> · C03</p><h2>Negative sampling: a sample stands in for the sum</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
 <p>The softmax sums over all V words per pair. At V = 10,000, training crawls. What is the cheapest way to keep the push-pull? Instead of pushing all 13 wrong words away, push k = 2 sampled wrong words away. The sample stands in for the sum. Turn prediction into a game: for each true (center, context) pair, the model must say “real” while saying “fake” to k noise words. The noise words come from a fixed distribution (unigram to the 0.75 power).</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §5</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 §5</span></p>
 <p>Gradient wrt v_c: −(1 − σ(u_o · v_c)) u_o + sum over noise of (1 − σ(−u_i · v_c)) u_i. The first term pulls v_c toward the true context vector with strength (1 − σ): large when the model is wrong, near zero when confident. Each noise term pushes v_c away from the noise vector. Same push-pull as C02, at O(k d) cost instead of O(V d).</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 §6</span></p>
 <p>From <code>compute_u02.py</code>: one explicit step with v_c = (0.30, −0.20), u_o = (0.10, 0.40), learning rate 0.5. After the step v_c = (0.386, 0.043): the distance to u_o shrank, so the vector moved toward the positive context. Finite-difference check of the gradient: max error 2.76e-10, so the analytic gradient is correct.</p>
 </div>
 <figure>
 <div id="chart-step"></div>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §6</span> One negative-sampling gradient step, from <code>compute_u02.py</code>: v_c moves from (0.30, −0.20) to (0.386, 0.043), toward u_o = (0.10, 0.40). The arrow is one pull. Executed 2026-10-06.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 §6</span> One negative-sampling gradient step, from <code>compute_u02.py</code>: v_c moves from (0.30, −0.20) to (0.386, 0.043), toward u_o = (0.10, 0.40). The arrow is one pull. Executed 2026-10-06.</figcaption>
 </figure>
-<div class="nugget" id="nugget-sample">
-<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></h4>
-<p class="big">A sample stands in for the sum. Push 2 sampled wrong words away instead of all 13, and the vectors still learn.</p>
-<dl>
-<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The noise distribution matters: uniform noise almost never samples rare words as negatives, so their vectors drift. The 0.75 power oversamples rare words relative to raw frequency. Computed noise probs on the training tokens: cat 0.228, sat 0.155, dog 0.115.</dd>
-<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Whenever you replace a sum with a sample, the sampler is part of the algorithm. A careless sampler teaches the model the wrong task.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-sample"><div class="tag-price"><span class="tag-big">3</span><span class="tag-unit">Nugget 3 · From the lesson C03 §2, §3</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C03 §2, §3</div><div class="tag-eye">The lesson</div><p class="">A sample stands in for the sum. Push 2 sampled wrong words away instead of all 13, and the vectors still learn.</p><p><b>Why it matters. </b>The noise distribution matters: uniform noise almost never samples rare words as negatives, so their vectors drift. The 0.75 power oversamples rare words relative to raw frequency. Computed noise probs on the training tokens: cat 0.228, sat 0.155, dog 0.115.</p><p><b>Transfer. </b>Whenever you replace a sum with a sample, the sampler is part of the algorithm. A careless sampler teaches the model the wrong task.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
 </section>
-<section class="block" id="s4">
-<p class="secnum">Section 4 · C04</p>
-<h2>Hierarchical softmax: three coin flips</h2>
+<section class="block col" data-chapter="1" data-title="Hierarchical softmax: three coin flips" id="s4"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">4</span></div><div><p class="ch-meta"><span class="ts">Unit 4</span> · C04</p><h2>Hierarchical softmax: three coin flips</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
 <p>Can we keep a true probability distribution but avoid the O(V) sum? Put 8 words as leaves of a binary tree of depth 3. P(word | center) is the product of 3 binary decisions along the root-to-leaf path. Three sigmoids replace a 14-way softmax. Each internal node holds a vector. Going left or right at a node is a coin flip whose bias depends on the dot product of the node vector with the center vector. Frequent words get short paths (Huffman tree), so common predictions stay cheap.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 §6</span></p>
 <p>Toy numbers, hand-computed and labeled as such: depth 3, path turns (+1, −1, +1), dot products (0.5, −0.2, 0.8). σ(0.5) = 0.622, σ(0.2) = 0.550, σ(0.8) = 0.690. P = 0.622 × 0.550 × 0.690 = 0.236. Three sigmoids, one product.</p>
 </div>
 <figure>
 <div id="chart-hsoft"></div>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §6</span> The toy path product, hand-computed and labeled illustrative: three turn probabilities 0.622, 0.550, 0.690 multiply to P = 0.236. A true distribution, no V-wide sum.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 §6</span> The toy path product, hand-computed and labeled illustrative: three turn probabilities 0.622, 0.550, 0.690 multiply to P = 0.236. A true distribution, no V-wide sum.</figcaption>
 </figure>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §10, §11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 §10, §11</span></p>
 <p>Choose hierarchical softmax when you need proper probabilities and V is moderate. Choose negative sampling when V is huge and you only need good vectors, not probabilities. In practice negative sampling won for embeddings, and hierarchical softmax survives in some decoders. The broken assumption is that the tree shape does not matter: a degenerate chain tree costs O(V d) per pair, worse than the flat softmax, with vanishing gradients through L sigmoids.</p>
 </div>
 <div class="toy">
-<p><span class="tag tag-toy">Illustration</span> Path-product toy. The tree walk is C04’s. The dot products are yours. Prefilled with the lesson’s illustrative numbers.</p>
-<p>Dot 1 <input class="text" id="hs1" value="0.5" aria-label="First dot product"></p>
-<p>Dot 2 <input class="text" id="hs2" value="-0.2" aria-label="Second dot product"></p>
-<p>Dot 3 <input class="text" id="hs3" value="0.8" aria-label="Third dot product"></p>
+<p><span class="ptag ptag-illustration">Illustration</span> Path-product toy. The tree walk is C04’s. The dot products are yours. Prefilled with the lesson’s illustrative numbers.</p>
+<p>Dot 1 <input aria-label="First dot product" class="text" id="hs1" value="0.5"/></p>
+<p>Dot 2 <input aria-label="Second dot product" class="text" id="hs2" value="-0.2"/></p>
+<p>Dot 3 <input aria-label="Third dot product" class="text" id="hs3" value="0.8"/></p>
 <p><button class="btn" id="hsbtn">Walk the path</button></p>
 <p class="small" id="hsnote"></p>
 </div>
 </section>
-<section class="block" id="s5">
-<p class="secnum">Section 5 · C05</p>
-<h2>GloVe: regression on log-counts</h2>
+<section class="block col" data-chapter="1" data-title="GloVe: regression on log-counts" id="s5"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">5</span></div><div><p class="ch-meta"><span class="ts">Unit 5</span> · C05</p><h2>GloVe: regression on log-counts</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
 <p>Word2vec scans the corpus with a sliding window. Can we use the count table directly? The cooccurrence matrix X holds X_cat,sat = 2: they cooccur twice in the window. GloVe fits vectors so that w_cat · w~_sat + b_cat + b~_sat approximates log X_cat,sat. GloVe is regression on log-counts. Rare pairs get downweighted because their counts are noisy, and zero pairs are skipped because log 0 is undefined.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §5</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 §5</span></p>
 <p>Why log? Ratios of cooccurrence probabilities carry meaning: P(solid|ice) / P(solid|steam) is large, P(gas|ice) / P(gas|steam) is small. The log turns ratios into differences: log X_ik − log X_jk = (w_i − w_j) · w~_k. Vector differences encode probability ratios. That is the whole point of the dot-product form.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 §6</span></p>
 <p>Toy, hand-computed and labeled as such: X_cat,sat = 2, log 2 = 0.693. With w_cat · w~_sat = 0.5, b_cat = 0.1, b~_sat = 0.05: residual = 0.5 + 0.1 + 0.05 − 0.693 = −0.043. Weight f(2) = (2/100)^0.75 = 0.053. Loss contribution = 0.053 × 0.043^2 = 9.8e-5. Small weight, small residual: the pair barely moves the vectors, as designed.</p>
 </div>
-<div class="nugget" id="nugget-ratios">
-<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §5, §11</span></h4>
-<p class="big">Ratios become differences. The log turns “ice versus steam for the word solid” into a vector offset. That is the whole point of the dot-product form.</p>
-<dl>
-<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>X_ij = 1 versus X_ij = 2 looks like a huge difference in log space (0 versus 0.693), but both counts are noise. The weighting function exists to distrust small counts. Without it, rare-pair noise dominates training.</dd>
-<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose GloVe when you want global counts used once and cleanly. Choose skip-gram for streaming or huge corpora where building X is awkward. Both give similar vectors: the choice is an engineering call.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-ratios"><div class="tag-price"><span class="tag-big">4</span><span class="tag-unit">Nugget 4 · From the lesson C05 §5, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C05 §5, §11</div><div class="tag-eye">The lesson</div><p class="">Ratios become differences. The log turns “ice versus steam for the word solid” into a vector offset. That is the whole point of the dot-product form.</p><p><b>Why it matters. </b>X_ij = 1 versus X_ij = 2 looks like a huge difference in log space (0 versus 0.693), but both counts are noise. The weighting function exists to distrust small counts. Without it, rare-pair noise dominates training.</p><p><b>Transfer. </b>Choose GloVe when you want global counts used once and cleanly. Choose skip-gram for streaming or huge corpora where building X is awkward. Both give similar vectors: the choice is an engineering call.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
 <div class="toy">
-<p><span class="tag tag-toy">Illustration</span> GloVe residual toy. The formula is C05’s. The counts are yours. Prefilled with the lesson’s illustrative numbers.</p>
-<p>Cooccurrence count X <input class="text" id="gx" value="2" aria-label="Cooccurrence count"></p>
-<p>Dot product <input class="text" id="gdot" value="0.5" aria-label="Dot product"></p>
-<p>Biases b + b~ <input class="text" id="gbias" value="0.15" aria-label="Sum of biases"></p>
+<p><span class="ptag ptag-illustration">Illustration</span> GloVe residual toy. The formula is C05’s. The counts are yours. Prefilled with the lesson’s illustrative numbers.</p>
+<p>Cooccurrence count X <input aria-label="Cooccurrence count" class="text" id="gx" value="2"/></p>
+<p>Dot product <input aria-label="Dot product" class="text" id="gdot" value="0.5"/></p>
+<p>Biases b + b~ <input aria-label="Sum of biases" class="text" id="gbias" value="0.15"/></p>
 <p><button class="btn" id="gbtn">Fit the residual</button></p>
 <p class="small" id="gnote"></p>
 </div>
 </section>
-<section class="block" id="s6">
-<p class="secnum">Section 6 · C06</p>
-<h2>The PMI identity: word2vec in disguise</h2>
+<section class="block col" data-chapter="1" data-title="The PMI identity: word2vec in disguise" id="s6"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">6</span></div><div><p class="ch-meta"><span class="ts">Unit 6</span> · C06</p><h2>The PMI identity: word2vec in disguise</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
 <p>Are learned vectors doing something principled, or just fitting? PMI measures surprise: PMI(w, c) = log(P(w, c) / (P(w) P(c))). Positive means the pair cooccurs more than chance, negative means less. The result: skip-gram with k negatives implicitly factorizes the matrix M_w,c = PMI(w, c) − log k. At the optimum, u_c · v_w = PMI(w, c) − log k. Word2vec is matrix factorization in disguise.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §6</span></p>
 <p>From <code>compute_u02.py</code>: PMI(cat, sat) = 1.569 nats on the toy corpus. With k = 2, the implicit target is 1.569 − 0.693 = 0.876. So the trained dot product u_sat · v_cat should land near 0.876 at convergence. The script’s 400-epoch run is far from convergence (loss 0.6471): the number is the target, not the achievement. Stated honestly.</p>
 </div>
 <figure>
 <div id="chart-pmi"></div>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6</span> The implicit target, from <code>compute_u02.py</code>: PMI(cat, sat) = 1.569 nats, minus log 2 = 0.693 for k = 2, gives the optimum target 0.876 for the dot product. Executed 2026-10-06.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §6</span> The implicit target, from <code>compute_u02.py</code>: PMI(cat, sat) = 1.569 nats, minus log 2 = 0.693 for k = 2, gives the optimum target 0.876 for the dot product. Executed 2026-10-06.</figcaption>
 </figure>
-<div class="nugget" id="nugget-disguise">
-<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §11</span></h4>
-<p class="big">Word2vec is matrix factorization in disguise. The vectors are a low-rank factorization of a shifted PMI matrix.</p>
-<dl>
-<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The result is an asymptote, not a description of any real training run. Finite data, finite dimensions, finite steps: all three break the equality. The toy run never reaches the target, and the lesson says so.</dd>
-<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose implicit (skip-gram) when the corpus streams or V is huge. Choose explicit SVD on the PPMI matrix when the corpus is fixed and you want reproducibility with theory that matches exactly.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="nugget-disguise"><div class="tag-price"><span class="tag-big">5</span><span class="tag-unit">Nugget 5 · From the lesson C06 §2, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C06 §2, §11</div><div class="tag-eye">The lesson</div><p class="">Word2vec is matrix factorization in disguise. The vectors are a low-rank factorization of a shifted PMI matrix.</p><p><b>Why it matters. </b>The result is an asymptote, not a description of any real training run. Finite data, finite dimensions, finite steps: all three break the equality. The toy run never reaches the target, and the lesson says so.</p><p><b>Transfer. </b>Choose implicit (skip-gram) when the corpus streams or V is huge. Choose explicit SVD on the PPMI matrix when the corpus is fixed and you want reproducibility with theory that matches exactly.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
 </section>
-<section class="block" id="s7">
-<p class="secnum">Section 7 · C07</p>
-<h2>Analogy: algebra with meanings</h2>
+<section class="block col" data-chapter="1" data-title="Analogy: algebra with meanings" id="s7"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">7</span></div><div><p class="ch-meta"><span class="ts">Unit 7</span> · C07</p><h2>Analogy: algebra with meanings</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
 <p>Can you do algebra with meanings? v(king) − v(man) + v(woman) should land near v(queen). The offset (king − man) is supposed to encode “royalty”: adding it to “woman” should give royalty plus female. The parallelogram assumes the relation is a constant vector offset, the same everywhere in the space. That is a strong linearity claim. Where relations are linear, the arithmetic works. Where they are not, it fails, and the failure is informative.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §5, §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 §5, §6</span></p>
 <p>Why it can work, via C06: if PMI factorizes and the relation corresponds to a consistent shift in cooccurrence distributions, the shift appears as a constant vector offset. From <code>compute_u02.py</code> (toy 2-D vectors, stated explicitly): king − man + woman = (0.20, 1.40). Cosine with the queen vector (0.25, 1.35) = 0.9992. The parallelogram closes almost exactly, because the toy vectors were placed that way. The number demonstrates the computation, not a discovery.</p>
-<figure>
-<img class="illus" src="assets/u02-parallelogram.jpg" alt="Watercolor of an abstract parallelogram with a ghost copy beside it">
-<figcaption><span class="tag tag-toy">Illustration</span> The parallelogram as watercolor: four points, one offset, and its ghost. The shape only closes where the relation is a constant offset. Watercolor, original to this companion.</figcaption>
-</figure>
+<figure class="paint inset" data-entrance="bloom">
+<div class="frame"><div class="stage"><img alt="Watercolor of an abstract parallelogram with a ghost copy beside it" class="base" loading="lazy" src="assets/u02-parallelogram.jpg"/></div></div>
+<figcaption><span class="ptag ptag-illustration">Illustration</span> The parallelogram as watercolor: four points, one offset, and its ghost. The shape only closes where the relation is a constant offset. Watercolor, original to this companion.</figcaption></figure>
 </div>
 <figure>
 <div id="chart-analogy"></div>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §6</span> The toy parallelogram, from <code>compute_u02.py</code>: king − man + woman lands at (0.20, 1.40), the queen vector sits at (0.25, 1.35), cosine 0.9992. The toy vectors were placed to close the shape. Executed 2026-10-06.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 §6</span> The toy parallelogram, from <code>compute_u02.py</code>: king − man + woman lands at (0.20, 1.40), the queen vector sits at (0.25, 1.35), cosine 0.9992. The toy vectors were placed to close the shape. Executed 2026-10-06.</figcaption>
 </figure>
-<div class="nugget" id="nugget-parallel">
-<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
-<p class="big">The parallelogram assumes the relation is a constant vector offset. Where the assumption holds, the arithmetic works. Where it fails, the failure is the lesson.</p>
-<dl>
-<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Two traps hide in analogy tests. Polysemy: “king” the monarch versus “king” the chess piece give different offsets, and the single vector averages them. The exclusion rule: without excluding a, b, c, the top answer to “king − man + woman” is often “king” itself.</dd>
-<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose analogies when you want a fast automated check with no annotators. Choose human correlation when you want validity. Analogy sets have known artifacts: the answer is often just the nearest neighbor of c.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s7" data-sign-label="Unit" data-sign-num="7" id="nugget-parallel"><div class="tag-price"><span class="tag-big">6</span><span class="tag-unit">Nugget 6 · From the lesson C07 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C07 §3, §11</div><div class="tag-eye">The lesson</div><p class="">The parallelogram assumes the relation is a constant vector offset. Where the assumption holds, the arithmetic works. Where it fails, the failure is the lesson.</p><p><b>Why it matters. </b>Two traps hide in analogy tests. Polysemy: “king” the monarch versus “king” the chess piece give different offsets, and the single vector averages them. The exclusion rule: without excluding a, b, c, the top answer to “king − man + woman” is often “king” itself.</p><p><b>Transfer. </b>Choose analogies when you want a fast automated check with no annotators. Choose human correlation when you want validity. Analogy sets have known artifacts: the answer is often just the nearest neighbor of c.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 07</span></div></div></aside>
 <div class="toy">
-<p><span class="tag tag-toy">Illustration</span> Analogy toy. The offset arithmetic is C07’s. The vectors are the lesson’s toy 2-D vectors. Change them and watch the cosine move.</p>
-<p>king <input class="text" id="anK" value="0.5,1.5" aria-label="king vector"></p>
-<p>man <input class="text" id="anM" value="0.4,0.6" aria-label="man vector"></p>
-<p>woman <input class="text" id="anW" value="0.1,0.5" aria-label="woman vector"></p>
-<p>queen <input class="text" id="anQ" value="0.25,1.35" aria-label="queen vector"></p>
+<p><span class="ptag ptag-illustration">Illustration</span> Analogy toy. The offset arithmetic is C07’s. The vectors are the lesson’s toy 2-D vectors. Change them and watch the cosine move.</p>
+<p>king <input aria-label="king vector" class="text" id="anK" value="0.5,1.5"/></p>
+<p>man <input aria-label="man vector" class="text" id="anM" value="0.4,0.6"/></p>
+<p>woman <input aria-label="woman vector" class="text" id="anW" value="0.1,0.5"/></p>
+<p>queen <input aria-label="queen vector" class="text" id="anQ" value="0.25,1.35"/></p>
 <p><button class="btn" id="anbtn">Close the parallelogram</button></p>
 <p class="small" id="annote"></p>
 </div>
 </section>
-<section class="block" id="s8">
-<p class="secnum">Section 8 · C08</p>
-<h2>Polysemy: one vector, one winner</h2>
+<section class="block col" data-chapter="1" data-title="Polysemy: one vector, one winner" id="s8"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">8</span></div><div><p class="ch-meta"><span class="ts">Unit 8</span> · C08</p><h2>Polysemy: one vector, one winner</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
 <p>What does the vector of “bank” mean? Corpus A (finance) pulls “bank” toward “loan”, corpus B (river) pulls it toward “shore”. One vector must serve both. The result is a weighted average, dominated by the frequent sense. A static embedding is a mixture over senses, weighted by frequency. The dominant sense wins the address, the rare sense is a faint echo.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §5, §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 §5, §6</span></p>
 <p>Why the mixture? The training objective sums over all occurrences. Occurrences of sense 1 pull the vector toward sense-1 contexts, occurrences of sense 2 pull toward sense-2 contexts. The gradient is the frequency-weighted sum of the pulls. Toy, hand-computed and labeled as such: sense vectors s1 = (1.0, 0.0) [finance], s2 = (0.0, 1.0) [river], frequencies 4:1. Mixture v = (0.8, 0.2). Cosine with s1 = 0.970, with s2 = 0.243. The vector points at finance. The river sense is nearly invisible. Five occurrences, one address, one winner.</p>
 </div>
 <figure>
 <div id="chart-poly"></div>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §6</span> The mixture, hand-computed and labeled illustrative: at 4:1 frequencies, the “bank” vector has cosine 0.970 with the finance sense and 0.243 with the river sense. The rare sense is nearly invisible.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 §6</span> The mixture, hand-computed and labeled illustrative: at 4:1 frequencies, the “bank” vector has cosine 0.970 with the finance sense and 0.243 with the river sense. The rare sense is nearly invisible.</figcaption>
 </figure>
-<div class="nugget" id="nugget-mixture">
-<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
-<p class="big">One vector per word form is a frequency-weighted mixture. The dominant sense wins the address. The rare sense is a faint echo.</p>
-<dl>
-<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The nearest neighbors of “bank” are {loan, money, river, shore, account}: a mixed list that describes no single sense. Reading the neighbor list as a definition merges finance and geography into one confused concept.</dd>
-<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose single-sense vectors when the downstream task is coarse. Choose multi-sense or contextual vectors when sense errors cost, as in legal or medical text. Modern practice: contextual vectors made this debate mostly historical.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s8" data-sign-label="Unit" data-sign-num="8" id="nugget-mixture"><div class="tag-price"><span class="tag-big">7</span><span class="tag-unit">Nugget 7 · From the lesson C08 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C08 §3, §11</div><div class="tag-eye">The lesson</div><p class="">One vector per word form is a frequency-weighted mixture. The dominant sense wins the address. The rare sense is a faint echo.</p><p><b>Why it matters. </b>The nearest neighbors of “bank” are {loan, money, river, shore, account}: a mixed list that describes no single sense. Reading the neighbor list as a definition merges finance and geography into one confused concept.</p><p><b>Transfer. </b>Choose single-sense vectors when the downstream task is coarse. Choose multi-sense or contextual vectors when sense errors cost, as in legal or medical text. Modern practice: contextual vectors made this debate mostly historical.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 08</span></div></div></aside>
 </section>
-<section class="block" id="s9">
-<p class="secnum">Section 9 · C09</p>
-<h2>Intrinsic is a proxy. Extrinsic is the thing.</h2>
+<section class="block col" data-chapter="1" data-title="Intrinsic is a proxy. Extrinsic is the thing." id="s9"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">9</span></div><div><p class="ch-meta"><span class="ts">Unit 9</span> · C09</p><h2>Intrinsic is a proxy. Extrinsic is the thing.</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
 <p>The vectors look good. Are they good? Intrinsic test: cosine(cat, dog) = 0.816 exceeds cosine(cat, mat) = 0.679, so the toy passes a two-pair similarity check. Extrinsic test: plug the vectors into the Naive Bayes classifier as features and measure accuracy. The two tests can disagree. Intrinsic evaluation asks the vectors directly: similarity correlation with humans, analogy accuracy. It is fast and needs no downstream system. Extrinsic evaluation asks the downstream task: does the classifier get better? It is slow and honest.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §5, §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C09 §5, §6</span></p>
 <p>Why they disagree: intrinsic tests reward one property, while a task needs many: robustness to noise, calibration, coverage of the task vocabulary. A vector set can ace analogies and still miss the task’s rare words. From the script: the intrinsic check on the toy passes (0.816 exceeds 0.679, correct order). The extrinsic check, hand-run and labeled as such: the toy Naive Bayes classifier from U01 uses 4 documents, and swapping in 8-dim vectors for 14 words cannot beat word counts on 4 documents. The extrinsic test is inconclusive by construction: the dataset is too small to separate the methods. Stated, not hidden.</p>
 </div>
-<div class="nugget" id="nugget-proxy">
-<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §11</span></h4>
-<p class="big">Intrinsic is a proxy. Extrinsic is the thing itself. Embedding sets ranked by analogy accuracy re-rank when dropped into real tasks.</p>
-<dl>
-<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The analogy set’s linearity bias does not match what the classifier needs. This is Goodhart again: optimizing the proxy is not optimizing the goal.</dd>
-<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose frozen-vector extrinsic eval when comparing pretrained sets fairly. Choose fine-tuning when shipping. They answer different questions: “which vectors are better?” versus “what is the best system?”</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s9" data-sign-label="Unit" data-sign-num="9" id="nugget-proxy"><div class="tag-price"><span class="tag-big">8</span><span class="tag-unit">Nugget 8 · From the lesson C09 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 8 · From the lesson C09 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Intrinsic is a proxy. Extrinsic is the thing itself. Embedding sets ranked by analogy accuracy re-rank when dropped into real tasks.</p><p><b>Why it matters. </b>The analogy set’s linearity bias does not match what the classifier needs. This is Goodhart again: optimizing the proxy is not optimizing the goal.</p><p><b>Transfer. </b>Choose frozen-vector extrinsic eval when comparing pretrained sets fairly. Choose fine-tuning when shipping. They answer different questions: “which vectors are better?” versus “what is the best system?”</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 09</span></div></div></aside>
 </section>
-<section class="block" id="s10">
-<p class="secnum">Section 10 · C10</p>
-<h2>Derive by hand, verify by machine</h2>
+<section class="block col" data-chapter="1" data-title="Derive by hand, verify by machine" id="s10"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">10</span></div><div><p class="ch-meta"><span class="ts">Unit 10</span> · C10</p><h2>Derive by hand, verify by machine</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
 <p>Every word2vec gradient has the same shape: (prediction error) × (the other vector). The error is (1 − σ) for positives: big when wrong, tiny when confident. The update moves v_c along u_o (pull) or away from u_i (push), scaled by the error. If you can write this sentence, you can write the gradient.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §5, §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 §5, §6</span></p>
 <p>The derivation, in short. For the positive term −log σ(u_o · v_c), the chain rule gives −(1 − σ(u_o · v_c)) u_o. For a noise term −log σ(−u_i · v_c), it gives (1 − σ(−u_i · v_c)) u_i. Sum over the positive and the k negatives. From <code>compute_u02.py</code>: analytic gradient at the toy point versus central differences with eps = 1e-6. Max component error: 2.76e-10. The gradient is correct. The check runs in the script on every execution. It is not a one-time claim.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 §11</span></p>
 <p>The broken assumption is that a passed gradient check means training works. Correct gradients with a learning rate of 10.0 diverge anyway. The check validates the derivative, not the optimization. Learning rate, initialization, and the objective itself are separate failure modes the check cannot see.</p>
 </div>
-<div class="nugget" id="nugget-verify">
-<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §6, §11</span></h4>
-<p class="big">Derive by hand, verify by machine, trust neither alone. The gradient check caught nothing here because the math was right. It exists for the day it is not.</p>
-<dl>
-<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose hand derivation plus finite differences when learning or when autograd is unavailable. Choose autograd for production code. The check validates the derivative. Optimization is a separate failure mode.</dd>
-<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every “it works” claim needs two witnesses: the derivation and the numeric check. One witness is a rumor.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s10" data-sign-label="Unit" data-sign-num="10" id="nugget-verify"><div class="tag-price"><span class="tag-big">9</span><span class="tag-unit">Nugget 9 · From the lesson C10 §6, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 9 · From the lesson C10 §6, §11</div><div class="tag-eye">The lesson</div><p class="">Derive by hand, verify by machine, trust neither alone. The gradient check caught nothing here because the math was right. It exists for the day it is not.</p><p><b>Why it matters. </b>Choose hand derivation plus finite differences when learning or when autograd is unavailable. Choose autograd for production code. The check validates the derivative. Optimization is a separate failure mode.</p><p><b>Transfer. </b>Every “it works” claim needs two witnesses: the derivation and the numeric check. One witness is a rumor.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 10</span></div></div></aside>
 </section>
-<section class="block" id="s11">
-<p class="secnum">Section 11 · C11</p>
-<h2>Frequency bias has two faces</h2>
+<section class="block col" data-chapter="1" data-title="Frequency bias has two faces" id="s11"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">11</span></div><div><p class="ch-meta"><span class="ts">Unit 11</span> · C11</p><h2>Frequency bias has two faces</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
 <p>“The” occurs 11 of 35 times. What does it do to the train loop? Without correction, 31% of center words are “the”, and the noise distribution draws “the” with probability 0.232 (computed). The model spends a third of its updates on a word with no content. Frequency bias has two faces. Face 1: frequent words dominate training pairs, so their vectors get over-updated and everyone else’s under-updated. Face 2: frequent words dominate the noise distribution, so every word is pushed away from “the” far more than from anything else. Subsampling fixes face 1. The 0.75 power fixes face 2.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §5, §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C11 §5, §6</span></p>
 <p>Why 0.75? Raw frequency (power 1.0) lets “the” dominate negatives. Uniform (power 0) never samples rare words as negatives, so rare words are never pushed away from anything. The 0.75 power is the empirical compromise: it lifts rare words relative to raw frequency while keeping frequent words common. No theorem. It is a tuned constant, stated as such. From <code>compute_u02.py</code> (training-token distribution): noise probs cat 0.228, sat 0.155, dog 0.115, rug 0.115, mouse 0.115. “The” has probability 0.0 because it was removed from training tokens. On the raw corpus, the script’s first attempt showed the failure: with “the” present, all vectors collapsed toward each other (cosines around 0.91 for unrelated pairs). Removing stopwords restored the separation (cat/dog 0.816, cat/mat 0.679).</p>
 </div>
 <figure>
 <div id="chart-noise"></div>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §6</span> The unigram^0.75 noise distribution on the training tokens, from <code>compute_u02.py</code>: cat 0.228, sat 0.155, dog 0.115, rug 0.115, mouse 0.115. Executed 2026-10-06.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C11 §6</span> The unigram^0.75 noise distribution on the training tokens, from <code>compute_u02.py</code>: cat 0.228, sat 0.155, dog 0.115, rug 0.115, mouse 0.115. Executed 2026-10-06.</figcaption>
 </figure>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C11 §11</span></p>
 <p>The broken assumption is that subsampling only removes useless words. Subsample too aggressively and “not” disappears: “not good” becomes “good” and sentiment flips. Function words carry syntax and negation. The correction is a tradeoff, not a free deletion.</p>
 </div>
 </section>
-<section class="block" id="s12">
-<p class="secnum">Section 12 · C12</p>
-<h2>The plot is a shadow, not the object</h2>
+<section class="block col" data-chapter="1" data-title="The plot is a shadow, not the object" id="s12"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">12</span></div><div><p class="ch-meta"><span class="ts">Unit 12</span> · C12</p><h2>The plot is a shadow, not the object</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
 <p>The t-SNE plot shows beautiful clusters. Should you believe it? Project the toy 8-dim vectors to 2-D with PCA. “Cat” and “dog” land near each other (true in 8-D: 0.816), but two unrelated words can also land near each other in 2-D while being far in 8-D. The plot is a shadow, not the object. Dimensionality reduction keeps some structure and destroys the rest. PCA keeps global variance directions. t-SNE keeps local neighborhoods and scrambles global distances.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §5, §6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 §5, §6</span></p>
 <p>Three lies, mechanistically. Lie 1 (crowding): d dimensions cannot fit in 2 without overlap, so distant points collide. Lie 2 (t-SNE): the perplexity parameter sets the neighborhood size, and changing it reshapes the clusters. Lie 3 (cherry-picking): the plot shows the words the author chose, and the ugly regions are cropped out. Toy, hand-computed and labeled as such: 8-D cosines cat/dog 0.816, cat/mat 0.679. After PCA to 2-D, the 2-D cosine of cat/mat rises from 0.679 toward 0.80: the projection compressed the gap by 0.12. The plot exaggerates the similarity it was meant to illustrate.</p>
 </div>
-<div class="nugget" id="nugget-shadow">
-<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §3, §10</span></h4>
-<p class="big">The plot is a shadow, not the object. When a plot and a table disagree, the table wins: the plot lost information and the table did not.</p>
-<dl>
-<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>t-SNE on random noise with tuned perplexity shows apparent clusters. The method creates structure from nothing when misused. A cluster is evidence only with a stability check: multiple seeds, multiple perplexities.</dd>
-<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose plots for talks and intuition. Choose tables for claims. The lesson states the irony itself: the chapter plate is a 2-D drawing of a high-dimensional claim, and its footer says so.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s12" data-sign-label="Unit" data-sign-num="12" id="nugget-shadow"><div class="tag-price"><span class="tag-big">10</span><span class="tag-unit">Nugget 10 · From the lesson C12 §3, §10</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · From the lesson C12 §3, §10</div><div class="tag-eye">The lesson</div><p class="">The plot is a shadow, not the object. When a plot and a table disagree, the table wins: the plot lost information and the table did not.</p><p><b>Why it matters. </b>t-SNE on random noise with tuned perplexity shows apparent clusters. The method creates structure from nothing when misused. A cluster is evidence only with a stability check: multiple seeds, multiple perplexities.</p><p><b>Transfer. </b>Choose plots for talks and intuition. Choose tables for claims. The lesson states the irony itself: the chapter plate is a 2-D drawing of a high-dimensional claim, and its footer says so.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 12</span></div></div></aside>
 </section>
-<section class="block" id="wisdom">
-<p class="secnum">Wisdom index</p>
-<h2>Ten nuggets, one page</h2>
-<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
-<ol class="wisdom">
-<li><a href="#nugget-profile"><span class="wnum">01</span>One-hot is a name tag, dense is a profile <span class="muted">· C01</span></a></li>
-<li><a href="#nugget-pushpull"><span class="wnum">02</span>Push-pull is the whole mechanism <span class="muted">· C02</span></a></li>
-<li><a href="#nugget-sample"><span class="wnum">03</span>A sample stands in for the sum <span class="muted">· C03</span></a></li>
-<li><a href="#nugget-ratios"><span class="wnum">04</span>Ratios become differences <span class="muted">· C05</span></a></li>
-<li><a href="#nugget-disguise"><span class="wnum">05</span>Word2vec is matrix factorization in disguise <span class="muted">· C06</span></a></li>
-<li><a href="#nugget-parallel"><span class="wnum">06</span>The parallelogram assumes linearity <span class="muted">· C07</span></a></li>
-<li><a href="#nugget-mixture"><span class="wnum">07</span>One vector, one winner <span class="muted">· C08</span></a></li>
-<li><a href="#nugget-proxy"><span class="wnum">08</span>Intrinsic is a proxy <span class="muted">· C09</span></a></li>
-<li><a href="#nugget-verify"><span class="wnum">09</span>Derive by hand, verify by machine <span class="muted">· C10</span></a></li>
-<li><a href="#nugget-shadow"><span class="wnum">10</span>The plot is a shadow <span class="muted">· C12</span></a></li>
-</ol>
-</section>
-<footer class="prov">
-<p><strong>Provenance.</strong> This companion narrates <code>lessons/u02_word_vectors.md</code> (CS224N, Unit 02). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The session title (S02, Word Vectors) and the reading list (word2vec, negative sampling, GloVe paper titles) are OFFICIAL-SOURCE via SRC-02. All concept leaves are REQUESTED-BRANCH. Every number on this page traces to the lesson’s computed script <code>visuals/compute_u02.py</code> (executed 2026-10-06) or to hand-computed examples the lesson labels as such. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+
+<section class="col" id="playbook-sec">
+<h3 class="sub">The playbook</h3>
+<p>Every lesson on this page, in order. Tap one to return to its chapter.</p>
+</section><div class="wide"><div class="playbook" id="playbook"></div></div><footer class="colophon col"><div class="sources"><h3>About this page</h3><div class="about"><p class="prov-line">This is an independent companion to the course source, written in original words. It is not affiliated with the source's creators. Original AI watercolor illustrations made for this page. Historical photographs are real and attributed in their captions.</p></div>
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u02_word_vectors.md</code> (CS224N, Unit 02). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The session title (S02, Word Vectors) and the reading list (word2vec, negative sampling, GloVe paper titles) are OFFICIAL-SOURCE via SRC-02. All concept leaves are REQUESTED-BRANCH. Every number on this page traces to the lesson’s computed script <code>visuals/compute_u02.py</code> (executed 2026-10-06) or to hand-computed examples the lesson labels as such. Toys run the lesson’s rules over tiny inputs and are labeled <span class="ptag ptag-illustration">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
 <p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
 <p class="small">Built as Companion 2 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
-</footer>
-</div>
-<script>
+<div class="quote-count"><b>On quotes. </b>Mechanical recount of every quoted phrase on this page: <span class="n">76</span> words (blockquote elements and straight or curly quoted strings, footer excluded). This counts the page's own quoted technical terms and toy inputs too, not only source quotes. Everything else is original paraphrase and analysis.</div></div></footer></div><script>
 function el(tag, cls, text) {
   const e = document.createElement(tag)
   if (cls) { e.className = cls }
@@ -826,6 +857,663 @@ barChart("chart-pmi", [["PMI(cat, sat)", 1.569, INDIGO], ["log k (k = 2)", 0.693
 barChart("chart-poly", [["cosine with finance sense", 0.970, SAGE], ["cosine with river sense", 0.243, CLAY]], 1.0, "")
 arrow("chart-step")
 scatter("chart-analogy", [[0.2, 1.4, SAGE], [0.25, 1.35, CLAY]], ["king - man + woman", "queen"], "dim 1", "dim 2")
-</script>
-</body>
+</script><script>
+/* =====================================================================
+   Companion template engine — runtime behavior shared by every artifact.
+   Ported from the reference artifact (~/workspace/companions/reference/index.html),
+   generalized: no per-page data, everything driven by DOM + data attributes.
+   Plain script, no modules, no dependencies. Works from file://.
+
+   DOM contract (see README.md):
+     #tapebar[data-mode="timestamp"|"progress"][data-total][data-sign-label]
+       > .tape-read > #tapeTime + #tapeCh ; svg#tape (built by this engine)
+     section[data-chapter][data-time][data-title]   (timestamp mode)
+     section[data-chapter][data-title]              (progress mode)
+     figure.paint[data-entrance="bloom"|"sketch"|"none"][data-scroll="pin"]
+       > .frame > .stage > img.base (+ optional img.ly layers)
+     aside.tag[data-sign-label][data-sign-num][data-chapter]
+       > .tag-price > .tag-big + .tag-unit ; .tag-body > .tag-eye + p + .tag-sku > svg.bars
+     #playbook (populated from aside.tag), #tip (created if absent)
+   ===================================================================== */
+(function () {
+  'use strict';
+  var NS = 'http://www.w3.org/2000/svg';
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var mqMobile = window.matchMedia('(max-width: 700px)');
+  var fine = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* ---------------- helpers ---------------- */
+  function S(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) if (attrs[k] !== undefined && attrs[k] !== null) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function T(parent, x, y, str, attrs) {
+    var t = S('text', { x: x, y: y }, parent);
+    for (var k in (attrs || {})) t.setAttribute(k, attrs[k]);
+    t.textContent = str;
+    return t;
+  }
+  function H(tag, cls, text, parent) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined && text !== null) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function lin(d0, d1, r0, r1) { return function (v) { return r0 + (v - d0) / (d1 - d0) * (r1 - r0); }; }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function fmt(n, d) { return n.toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+  function easeInOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function smoothstep(a, b, v) { var t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
+  /* Run fn(k) for k 0..1 over dur ms. Reduced motion jumps straight to the end. */
+  function tween(dur, fn, done) {
+    var stopped = false, id = 0, t0 = null;
+    if (reduce || !dur) { fn(1); if (done) done(); return { stop: function () {} }; }
+    function step(now) {
+      if (stopped) return;
+      if (t0 === null) t0 = now;
+      var k = Math.min(1, (now - t0) / dur);
+      fn(k);
+      if (k < 1) id = requestAnimationFrame(step); else if (done) done();
+    }
+    id = requestAnimationFrame(step);
+    return { stop: function () { stopped = true; cancelAnimationFrame(id); } };
+  }
+
+  /* ---------------- reveal choreography ----------------
+     An element is only reset to its "before" state (prep) when it is about
+     to scroll in from below, and plays once it is meaningfully on screen.
+     Anything already on screen, or reached from above, is left as is.
+     beforeprint finishes everything instantly. */
+  var revealers = [];
+  function reveal(el, prep, play, ratio) {
+    if (!el) return;
+    if (reduce || !('IntersectionObserver' in window)) { return; }
+    var state = 0;
+    var R = { el: el, finish: function () { if (state === 1) { state = 2; play(true); } } };
+    revealers.push(R);
+    var near = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (state === 0 && en.isIntersecting && en.boundingClientRect.top > window.innerHeight) { state = 1; prep(); }
+      });
+    }, { rootMargin: '0px 0px 140% 0px' });
+    var vis = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var need = Math.min(en.boundingClientRect.height * (ratio || 0.3), window.innerHeight * 0.35);
+        if (en.intersectionRect.height < need) return;
+        if (state === 1) { state = 2; play(false); }
+        else if (state === 0) state = 2;
+        if (state === 2) { near.disconnect(); vis.disconnect(); }
+      });
+    }, { threshold: [0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1] });
+    near.observe(el);
+    vis.observe(el);
+  }
+
+  /* ---------------- tooltip ---------------- */
+  var tip = document.getElementById('tip');
+  if (!tip) { tip = H('div', null, null, document.body); tip.id = 'tip'; tip.hidden = true; }
+  function placeTip(x, y) {
+    var pad = 14, r = tip.getBoundingClientRect();
+    var tx = x + pad, ty = y + pad;
+    if (tx + r.width > window.innerWidth - 8) tx = x - r.width - pad;
+    if (ty + r.height > window.innerHeight - 8) ty = y - r.height - pad;
+    tip.style.left = Math.max(8, tx) + 'px';
+    tip.style.top = Math.max(8, ty) + 'px';
+  }
+  function showTip(x, y, build) {
+    tip.replaceChildren();
+    build(tip);
+    tip.hidden = false;
+    tip.style.opacity = '1';   /* pilot tooltip code may have left it at 0 */
+    placeTip(x, y);
+  }
+  function showTipAt(el, build) {
+    var r = el.getBoundingClientRect();
+    showTip(r.left + r.width / 2, r.top + r.height / 2, build);
+  }
+  function hideTip() { tip.hidden = true; tip.style.opacity = ''; }
+  function tipRow(parent, key, label, value) {
+    var row = H('div', 'row', null, parent);
+    var a = H('span', null, null, row);
+    if (key) { var k = H('i', 'k', null, a); k.style.background = key; }
+    a.appendChild(document.createTextNode(label));
+    H('span', null, value, row);
+  }
+  window.addEventListener('scroll', hideTip, { passive: true });
+
+  /* ---------------- barcodes on shelf tags (seeded RNG, stable per page) ---------------- */
+  document.querySelectorAll('svg.bars').forEach(function (svg, i) {
+    var seed = 17 + i * 101;
+    function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+    svg.setAttribute('viewBox', '0 0 78 15');
+    var x = 0;
+    while (x < 76) {
+      var w = rnd() < 0.3 ? 2 : 1;
+      S('rect', { x: x, y: 0, width: w, height: 15, fill: 'var(--ink)' }, svg);
+      x += w + (rnd() < 0.5 ? 1 : 2);
+    }
+  });
+
+  /* ---------------- tape measure ---------------- */
+  function parseTime(v) {
+    if (v === undefined || v === null || v === '') return null;
+    // leading "~" is the page-stated approximate-time marker; strip it
+    var s0 = String(v).trim().replace(/^~\s*/, '');
+    if (s0 === '') return null;
+    if (/^\d+(\.\d+)?$/.test(s0)) return +s0;
+    var p = s0.split(':').map(Number);
+    if (p.some(isNaN)) return null;
+    var s = 0;
+    for (var i = 0; i < p.length; i++) s = s * 60 + p[i];
+    return s;
+  }
+  function hms(t) {
+    t = Math.round(t);
+    var h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60;
+    return h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  (function tape() {
+    var bar = document.getElementById('tapebar');
+    var tapeEl = document.getElementById('tape');
+    if (!bar || !tapeEl) return;
+    var timeEl = document.getElementById('tapeTime');
+    var chEl = document.getElementById('tapeCh');
+    var mode = bar.dataset.mode === 'progress' ? 'progress' : 'timestamp';
+    var label0 = bar.dataset.signLabel || (mode === 'progress' ? 'Unit' : 'Aisle');
+    var TOTAL, secs;
+    var raw = Array.prototype.slice.call(document.querySelectorAll('section[data-chapter]'));
+    if (mode === 'timestamp') {
+      TOTAL = parseTime(bar.dataset.total);
+      secs = raw.map(function (el) {
+        return { el: el, t: parseTime(el.dataset.time) || 0, label: el.dataset.title || '' };
+      }).sort(function (a, b) { return a.t - b.t; });
+      if (!TOTAL) TOTAL = (secs.length ? secs[secs.length - 1].t : 0) + 480;
+    } else {
+      secs = raw.map(function (el, i) {
+        return { el: el, t: i * 100, label: el.dataset.title || (label0 + ' ' + (i + 1)) };
+      });
+      TOTAL = secs.length * 100;
+    }
+    if (!secs.length) { bar.style.display = 'none'; return; }
+    secs.forEach(function (s, i) { s.t1 = i < secs.length - 1 ? secs[i + 1].t : TOTAL; s.i = i; });
+    var X = null, ph = null, hl = null, current = 0, curT = 0;
+    function draw() {
+      var W = tapeEl.clientWidth, Hh = tapeEl.clientHeight;
+      if (!W) return;
+      tapeEl.setAttribute('viewBox', '0 0 ' + W + ' ' + Hh);
+      tapeEl.replaceChildren();
+      var x0 = 6, x1 = W - 6, top = 6, bot = Hh - 4;
+      X = lin(0, TOTAL, x0, x1);
+      S('rect', { x: x0 - 3, y: top, width: x1 - x0 + 6, height: bot - top, rx: 3, fill: 'var(--tape)' }, tapeEl);
+      secs.forEach(function (s, i) {
+        if (i % 2) S('rect', { x: X(s.t), y: top, width: Math.max(0, X(s.t1) - X(s.t)), height: bot - top, fill: 'var(--tape-ink)', 'fill-opacity': 0.07 }, tapeEl);
+      });
+      hl = S('rect', { x: 0, y: top, width: 0, height: bot - top, fill: 'var(--apron)', 'fill-opacity': 0.32 }, tapeEl);
+      if (mode === 'timestamp') {
+        var ppm = (x1 - x0) / (TOTAL / 60);
+        for (var m = 0; m * 60 <= TOTAL; m++) {
+          var hgt = 0, x = X(m * 60);
+          if (m % 30 === 0) hgt = (bot - top) * 0.5;
+          else if (m % 5 === 0) hgt = (bot - top) * 0.28;
+          else if (ppm >= 3) hgt = (bot - top) * 0.15;
+          if (!hgt) continue;
+          S('line', { x1: x, x2: x, y1: top, y2: top + hgt, stroke: 'var(--tape-ink)', 'stroke-width': m % 30 === 0 ? 1.4 : 1, 'stroke-opacity': m % 30 === 0 ? 0.95 : 0.6 }, tapeEl);
+          if (m % 30 === 0 && m > 0) {
+            var lab = m % 60 === 0 ? (m / 60) + 'h' : (ppm > 2.2 ? (Math.floor(m / 60) ? Math.floor(m / 60) + 'h30' : '30m') : '');
+            if (lab) T(tapeEl, x + 3, bot - 4, lab, { 'font-family': 'Barlow Condensed, Arial Narrow, sans-serif', 'font-weight': 600, 'font-size': 11, fill: 'var(--tape-ink)' });
+          }
+        }
+      } else {
+        secs.forEach(function (s) {
+          var x = X(s.t);
+          S('line', { x1: x, x2: x, y1: top, y2: bot, stroke: 'var(--tape-ink)', 'stroke-width': s.i === 0 ? 1.6 : 1, 'stroke-opacity': 0.75 }, tapeEl);
+          if (W > 560) T(tapeEl, x + 4, bot - 4, String(s.i + 1), { 'font-family': 'Barlow Condensed, Arial Narrow, sans-serif', 'font-weight': 600, 'font-size': 11, fill: 'var(--tape-ink)' });
+        });
+      }
+      /* chapter-start teeth */
+      secs.forEach(function (s) {
+        var x = X(s.t);
+        S('path', { d: 'M' + (x - 3.5) + ',' + bot + ' L' + (x + 3.5) + ',' + bot + ' L' + x + ',' + (bot - 6) + ' Z', fill: 'var(--tape-ink)', 'fill-opacity': 0.6 }, tapeEl);
+      });
+      ph = S('g', null, tapeEl);
+      S('line', { x1: 0, x2: 0, y1: 1, y2: Hh - 1, stroke: 'var(--apron)', 'stroke-width': 2.5 }, ph);
+      S('rect', { x: -6, y: 0, width: 12, height: 6, rx: 1.5, fill: 'var(--apron)' }, ph);
+      update(curT);
+    }
+    function update(t) {
+      curT = t;
+      var i = 0;
+      for (var k = 0; k < secs.length; k++) if (t >= secs[k].t) i = k;
+      current = i;
+      if (X && ph) {
+        ph.setAttribute('transform', 'translate(' + X(t).toFixed(1) + ',0)');
+        hl.setAttribute('x', X(secs[i].t));
+        hl.setAttribute('width', Math.max(0, X(secs[i].t1) - X(secs[i].t)));
+      }
+      if (mode === 'timestamp') {
+        if (timeEl) timeEl.innerHTML = '';
+        if (timeEl) { timeEl.appendChild(document.createTextNode(hms(t))); var sm = H('small', null, 'of ' + hms(TOTAL), timeEl); }
+        if (chEl) chEl.textContent = secs[i].label;
+        tapeEl.setAttribute('aria-valuenow', Math.round(t));
+        tapeEl.setAttribute('aria-valuetext', hms(t) + ', ' + secs[i].label);
+      } else {
+        if (timeEl) { timeEl.innerHTML = ''; timeEl.appendChild(document.createTextNode((i + 1) + ' of ' + secs.length)); H('small', null, label0.toLowerCase(), timeEl); }
+        if (chEl) chEl.textContent = secs[i].label;
+        tapeEl.setAttribute('aria-valuenow', i + 1);
+        tapeEl.setAttribute('aria-valuetext', label0 + ' ' + (i + 1) + ' of ' + secs.length + ', ' + secs[i].label);
+      }
+    }
+    function anchorY() { return window.scrollY + bar.offsetHeight + window.innerHeight * 0.3; }
+    function tops() {
+      var arr = secs.map(function (s) { return s.el.getBoundingClientRect().top + window.scrollY; });
+      var foot = document.querySelector('footer.colophon');
+      arr.push(foot ? foot.getBoundingClientRect().top + window.scrollY : document.body.scrollHeight);
+      return arr;
+    }
+    function fromScroll() {
+      var a = anchorY(), tp = tops();
+      if (a < tp[0]) { update(0); return; }
+      for (var i = 0; i < secs.length; i++) {
+        if (a >= tp[i] && a < tp[i + 1]) {
+          var p = (a - tp[i]) / (tp[i + 1] - tp[i]);
+          update(secs[i].t + p * (secs[i].t1 - secs[i].t));
+          return;
+        }
+      }
+      update(TOTAL);
+    }
+    function jump(t) {
+      t = clamp(t, 0, TOTAL);
+      var i = 0;
+      for (var k = 0; k < secs.length; k++) if (t >= secs[k].t) i = k;
+      var tp = tops();
+      var p = (t - secs[i].t) / (secs[i].t1 - secs[i].t || 1);
+      var y = tp[i] + p * (tp[i + 1] - tp[i]) - bar.offsetHeight - window.innerHeight * 0.3 + 2;
+      window.scrollTo({ top: Math.max(0, y), behavior: reduce ? 'auto' : 'smooth' });
+    }
+    var ticking = false, pending = null, pendTimer = null;
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; if (pending === null) fromScroll(); }); }
+    }, { passive: true });
+    function tAt(ev) {
+      var r = tapeEl.getBoundingClientRect();
+      return clamp((ev.clientX - r.left - 6) / (r.width - 12), 0, 1) * TOTAL;
+    }
+    function labelAt(t) { var i = 0; for (var k = 0; k < secs.length; k++) if (t >= secs[k].t) i = k; return i; }
+    // click or drag jumps: pointerdown starts a potential drag and jumps to
+    // the press point, pointermove while down jumps live, pointerup ends it.
+    // A press without movement behaves exactly like the old click handler.
+    var dragging = false;
+    tapeEl.addEventListener('pointerdown', function (ev) {
+      if (ev.pointerType === 'mouse' && ev.button !== 0) return;
+      dragging = true;
+      try { tapeEl.setPointerCapture(ev.pointerId); } catch (e) {}
+      hideTip();
+      jump(tAt(ev));
+    });
+    tapeEl.addEventListener('pointermove', function (ev) {
+      if (dragging) { jump(tAt(ev)); return; }
+      if (ev.pointerType !== 'mouse') return;
+      var t = tAt(ev), i = labelAt(t);
+      showTip(ev.clientX, ev.clientY, function (el) {
+        H('b', null, mode === 'timestamp' ? hms(t) : (label0 + ' ' + (i + 1) + ' of ' + secs.length), el);
+        H('div', null, secs[i].label, el);
+      });
+    });
+    tapeEl.addEventListener('pointerup', function (ev) { dragging = false; hideTip(); });
+    tapeEl.addEventListener('pointercancel', function () { dragging = false; });
+    tapeEl.addEventListener('pointerleave', function () { if (!dragging) hideTip(); });
+    function kbJump(i) {
+      pending = clamp(i, 0, secs.length - 1);
+      clearTimeout(pendTimer);
+      pendTimer = setTimeout(function () { pending = null; }, 1400);
+      update(secs[pending].t);
+      jump(secs[pending].t);
+    }
+    tapeEl.addEventListener('keydown', function (ev) {
+      var base = pending !== null ? pending : current;
+      if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') { ev.preventDefault(); kbJump(base + 1); }
+      else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') {
+        ev.preventDefault();
+        kbJump(pending === null && curT - secs[current].t > (mode === 'timestamp' ? 20 : 1) ? current : base - 1);
+      } else if (ev.key === 'Home') { ev.preventDefault(); kbJump(0); }
+      else if (ev.key === 'End') { ev.preventDefault(); kbJump(secs.length - 1); }
+    });
+    if (window.ResizeObserver) new ResizeObserver(draw).observe(tapeEl); else window.addEventListener('resize', draw);
+    draw();
+    fromScroll();
+    window.addEventListener('load', fromScroll);
+  })();
+
+  /* ---------------- paintings ----------------
+     figure.paint > .frame > .stage > img.base (+ optional img.ly layers).
+     Entrances: data-entrance="bloom" (wet-wash mask, pure CSS, works on ANY
+     image) or "sketch" (grayscale+sepia develop). Layers: img.ly with
+     data-box="x,y,w,h" (pixel rect in the base image) + data-img-w/h on the
+     figure, or plain inline % positioning; class "mul" = multiply blend
+     (Tier 2 two-layer heroes, see README). data-depth enables pointer
+     parallax on fine pointers. Mobile: data-scroll="pin" pins and pans the
+     camera across the painting; everything else drifts gently. */
+  var barH = 0;
+  (function paintings() {
+    var root = document.documentElement, bar = document.getElementById('tapebar');
+    function setBar() { barH = bar ? bar.offsetHeight : 0; root.style.setProperty('--barH', barH + 'px'); }
+    setBar();
+    window.addEventListener('resize', setBar);
+
+    /* caption rides along inside the full-screen box on phones */
+    document.querySelectorAll('figure.paint').forEach(function (fig) {
+      var frame = fig.querySelector('.frame'), stage = fig.querySelector('.stage');
+      if (!frame || !stage) return;
+      var box = H('div', 'pinbox', null, null), cap = fig.querySelector('figcaption');
+      fig.insertBefore(box, frame); box.appendChild(frame); if (cap) box.appendChild(cap);
+    });
+
+    /* Tier-2 layer registration: data-box px rect -> % positioning */
+    var layers = [];
+    document.querySelectorAll('figure.paint .stage img.ly').forEach(function (img) {
+      var fig = img.closest('figure.paint');
+      var base = fig && fig.querySelector('img.base');
+      var W = +(fig.dataset.imgW || (base && base.getAttribute('width')) || 0);
+      var Hh = +(fig.dataset.imgH || (base && base.getAttribute('height')) || 0);
+      var b = (img.dataset.box || '').split(',').map(Number);
+      if (W && Hh && b.length === 4 && b.every(isFinite)) {
+        img.style.left = (b[0] / W * 100).toFixed(3) + '%';
+        img.style.top = (b[1] / Hh * 100).toFixed(3) + '%';
+        img.style.width = (b[2] / W * 100).toFixed(3) + '%';
+        img.style.height = (b[3] / Hh * 100).toFixed(3) + '%';
+      }
+      img.setAttribute('aria-hidden', 'true');
+      if (!img.hasAttribute('alt')) img.setAttribute('alt', '');
+      layers.push({ el: img, depth: +(img.dataset.depth || 0), fig: fig });
+    });
+
+    /* pointer parallax on fine pointers */
+    if (fine && !reduce) {
+      var px = 0, py = 0, raf = 0;
+      function applyPar() {
+        layers.forEach(function (L) {
+          if (!L.depth) return;
+          L.el.style.translate = (L.depth * px).toFixed(1) + 'px ' + (L.depth * py).toFixed(1) + 'px';
+        });
+      }
+      document.querySelectorAll('figure.paint .stage').forEach(function (st) {
+        st.addEventListener('pointermove', function (ev) {
+          var r = st.getBoundingClientRect();
+          px = clamp(((ev.clientX - r.left) / r.width - 0.5) * 2, -1, 1);
+          py = clamp(((ev.clientY - r.top) / r.height - 0.5) * 2, -1, 1);
+          if (!raf) raf = requestAnimationFrame(function () { raf = 0; applyPar(); });
+        });
+        st.addEventListener('pointerleave', function () {
+          px = 0; py = 0;
+          if (!raf) raf = requestAnimationFrame(function () { raf = 0; applyPar(); });
+        });
+      });
+    }
+
+    /* entrances */
+    var entrances = [];
+    var figs = Array.prototype.slice.call(document.querySelectorAll('figure.paint'));
+    figs.forEach(function (fig, fi) {
+      var stage = fig.querySelector('.stage');
+      if (!stage) return;
+      var kind = fig.dataset.entrance || (fi % 2 ? 'sketch' : 'bloom');
+      if (fig.dataset.entrance === 'none') kind = 'none';
+      var isHero = fig.hasAttribute('data-hero');
+      function arm() {
+        if (kind === 'bloom') (mqMobile.matches ? fig.querySelector('.frame') : stage).classList.add('bleed');
+        if (kind === 'sketch') stage.classList.add('sketch');
+      }
+      function play(instant) {
+        if (kind === 'bloom') (mqMobile.matches ? fig.querySelector('.frame') : stage).classList.add('bloom');
+        if (kind === 'sketch') stage.classList.add('develop');
+        if (!instant && kind !== 'none') setTimeout(clear, 3000);
+        else clear();
+      }
+      function clear() {
+        [fig.querySelector('.frame'), stage].forEach(function (e) {
+          if (e) e.classList.remove('bleed', 'bloom', 'sketch', 'develop');
+        });
+      }
+      entrances.push({ clear: clear });
+      if (reduce || kind === 'none') return;   /* still pictures */
+      if (isHero) { arm(); play(false); return; }
+      reveal(fig.querySelector('.frame') || fig,
+        function () { arm(); },
+        function (instant) { play(instant); },
+        0.3);
+    });
+    window.addEventListener('beforeprint', function () { entrances.forEach(function (e) { e.clear(); }); });
+
+    /* mobile camera: pin scenes pan across, the rest drift */
+    if (reduce) return;
+    var cams = figs.map(function (fig) {
+      return { fig: fig, stage: fig.querySelector('.stage'), pin: fig.dataset.scroll === 'pin', q: 0, t0: null };
+    }).filter(function (c) { return c.stage; });
+    if (!cams.length) return;
+    function setModes() {
+      var on = mqMobile.matches;
+      cams.forEach(function (c) {
+        c.fig.classList.toggle('pin', on && c.pin);
+        c.fig.classList.toggle('drift', on && !c.pin);
+        if (!on) c.stage.style.transform = '';
+      });
+    }
+    setModes();
+    if (mqMobile.addEventListener) mqMobile.addEventListener('change', setModes);
+    else if (mqMobile.addListener) mqMobile.addListener(setModes);
+    var running = false;
+    function view(c, q, now) {
+      var st = c.stage, fw = st.parentElement.clientWidth, fh = st.parentElement.clientHeight;
+      var base = st.querySelector('img.base');
+      var W = +(base && base.getAttribute('width')) || 1600, Hh = +(base && base.getAttribute('height')) || 900;
+      var k = st.offsetWidth / W || 1;
+      var z = c.pin ? 1 + 0.12 * q : 1 + 0.05 * (0.5 - 0.5 * Math.cos((now / 1000 / 26) * 2 * Math.PI));
+      var fx = c.pin ? W * (0.28 + 0.44 * q) : W / 2;
+      var sw = W * k * z, sh = Hh * k * z;
+      var tx = sw <= fw ? (fw - sw) / 2 : clamp(fw / 2 - fx * k * z, fw - sw, 0);
+      var ty = sh <= fh ? (fh - sh) / 2 : clamp(fh / 2 - (Hh / 2) * k * z, fh - sh, 0);
+      st.style.transform = 'translate3d(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px,0) scale(' + z.toFixed(4) + ')';
+    }
+    function tick(now) {
+      var vh = window.innerHeight, live = false;
+      cams.forEach(function (c) {
+        if (!mqMobile.matches) return;
+        var r = c.fig.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) return;
+        live = true;
+        if (c.pin) {
+          var travel = Math.max(1, r.height - (vh - barH));
+          c.q = clamp((barH - r.top) / travel, 0, 1);
+        }
+        view(c, c.q, now);
+      });
+      if (live) requestAnimationFrame(tick); else running = false;
+    }
+    function wake() { if (!running && mqMobile.matches) { running = true; requestAnimationFrame(tick); } }
+    window.addEventListener('scroll', wake, { passive: true });
+    window.addEventListener('resize', wake);
+    wake();
+  })();
+
+  /* ---------------- SVG overlay helpers ----------------
+     Runtime life for paintings: steam curls, lamp glows, ripples, sparkles,
+     dust motes, ring marks. Pure code, zero image cost. Exposed as
+     window.CompanionFX for Phase 2 scene code; CompanionFX.registerScene
+     wires per-scene init/pose functions into a shared rAF driver. */
+  var FX = (function () {
+    function overlay(stage, cls, W, Hh) {
+      var o = document.createElementNS(NS, 'svg');
+      o.setAttribute('class', 'ov ' + cls);
+      o.setAttribute('viewBox', '0 0 ' + W + ' ' + Hh);
+      o.setAttribute('aria-hidden', 'true');
+      stage.appendChild(o);
+      return o;
+    }
+    function steam(stage, W, Hh, x, y, rise, period) {
+      var ov = overlay(stage, 'fx', W, Hh);
+      var paths = [0, 1].map(function (i) {
+        return S('path', { stroke: '#B9C4C9', 'stroke-width': 5, fill: 'none', 'stroke-linecap': 'round', opacity: 0.55 }, ov);
+      });
+      return {
+        tick: function (t) {
+          paths.forEach(function (p, i) {
+            var u = ((t / period) + i / 2) % 1;
+            var yy = y - rise * u, xx = x + 9 * Math.sin(t * 1.3 + i * 2.1);
+            p.setAttribute('d', 'M' + xx.toFixed(1) + ',' + yy.toFixed(1) + ' q 10,-22 0,-44 q -10,-22 0,-44');
+            p.setAttribute('opacity', (0.55 * Math.pow(Math.sin(Math.PI * u), 1.2)).toFixed(2));
+          });
+        }
+      };
+    }
+    function glows(stage, W, Hh, pts, mode, color) {
+      var ov = overlay(stage, 'glow-' + mode, W, Hh);
+      var id = 'gl-' + Math.random().toString(36).slice(2, 8) + '-' + mode;
+      var gr = S('radialGradient', { id: id }, S('defs', null, ov));
+      S('stop', { offset: '0', 'stop-color': color, 'stop-opacity': mode === 'screen' ? 0.85 : 0.55 }, gr);
+      S('stop', { offset: '0.45', 'stop-color': color, 'stop-opacity': mode === 'screen' ? 0.35 : 0.22 }, gr);
+      S('stop', { offset: '1', 'stop-color': color, 'stop-opacity': 0 }, gr);
+      return pts.map(function (p) {
+        var c = S('circle', { cx: p[0], cy: p[1], r: p[2], fill: 'url(#' + id + ')' }, ov);
+        c.style.opacity = 0;
+        return c;
+      });
+    }
+    function ripple(stage, W, Hh, x, y) {
+      var ov = overlay(stage, 'fx', W, Hh);
+      return [0, 1].map(function () {
+        var e = S('ellipse', { class: 'ripple', cx: x, cy: y, rx: 0, ry: 0 }, ov);
+        e.style.opacity = 0;
+        return e;
+      });
+    }
+    function sparkles(stage, W, Hh, pts) {
+      var ov = overlay(stage, 'fx', W, Hh);
+      return pts.map(function (p) {
+        var g = S('g', { transform: 'translate(' + p[0] + ',' + p[1] + ')' }, ov);
+        var R = p[2], r = R * 0.16;
+        var star = S('path', { class: 'spark', d: 'M0,' + (-R) + 'L' + r + ',' + (-r) + 'L' + R + ',0L' + r + ',' + r + 'L0,' + R + 'L' + (-r) + ',' + r + 'L' + (-r) + ',' + (-r) + 'Z' }, g);
+        star.style.transform = 'scale(0)';
+        return star;
+      });
+    }
+    function motes(stage, W, Hh, n, seed) {
+      var ov = overlay(stage, 'glow-screen', W, Hh);
+      var out = [];
+      for (var i = 0; i < n; i++) {
+        seed = (seed * 9301 + 49297) % 233280; var u = seed / 233280;
+        seed = (seed * 9301 + 49297) % 233280; var ph = seed / 233280;
+        seed = (seed * 9301 + 49297) % 233280; var rr = seed / 233280;
+        var c = S('circle', { r: (3 + rr * 4).toFixed(1), fill: '#FFFDF4', cx: u * W, cy: ph * Hh }, ov);
+        c.style.opacity = 0;
+        out.push({ el: c, u: u, ph: ph, sp: 7 + rr * 9 });
+      }
+      return {
+        tick: function (t) {
+          out.forEach(function (m) {
+            var y = Hh - ((t * m.sp + m.ph * Hh) % Hh);
+            var x = m.u * W + 10 * Math.sin(t * 0.4 + m.ph * 9);
+            m.el.setAttribute('cx', x.toFixed(1)); m.el.setAttribute('cy', y.toFixed(1));
+            m.el.style.opacity = (0.35 + 0.4 * Math.pow(Math.sin(t * (0.7 + m.u) + m.ph * 6), 2)).toFixed(3);
+          });
+        }
+      };
+    }
+    function ringMarks(stage, W, Hh, sides) {
+      var ov = overlay(stage, 'fx', W, Hh);
+      return sides.map(function (sd) {
+        var g = S('g', { class: 'ring' }, ov), cx = sd[0], cy = sd[1];
+        var a0 = sd[2] * Math.PI / 180, a1 = sd[3] * Math.PI / 180;
+        [34, 54].forEach(function (r) {
+          S('path', { d: 'M' + (cx + Math.cos(a0) * r).toFixed(1) + ',' + (cy + Math.sin(a0) * r).toFixed(1) + ' A' + r + ',' + r + ' 0 0 1 ' + (cx + Math.cos(a1) * r).toFixed(1) + ',' + (cy + Math.sin(a1) * r).toFixed(1) }, g);
+        });
+        g.style.opacity = 0;
+        return g;
+      });
+    }
+    function flicker(t, k) { return 0.5 * Math.sin(t * 7.3 + k) + 0.3 * Math.sin(t * 13.1 + k * 2.1) + 0.2 * Math.sin(t * 23.7 + k * 3.7); }
+
+    /* per-scene registry (Phase 2): name -> { init(F), pose(S) -> {obj: {x,y,r,s,o}} } */
+    var scenes = {};
+    var live = [];
+    function registerScene(name, spec) {
+      scenes[name] = spec;
+      if (reduce) return;
+      document.querySelectorAll('figure.paint[data-scene="' + name + '"]').forEach(function (fig) {
+        var stage = fig.querySelector('.stage'), base = fig.querySelector('img.base');
+        if (!stage || !base) return;
+        var F = { fig: fig, stage: stage, name: name,
+          W: +(base.getAttribute('width')) || 1600, H: +(base.getAttribute('height')) || 900,
+          enterAt: null };
+        if (spec.init) spec.init(F, FX);
+        live.push({ F: F, spec: spec });
+        wakeFx();
+      });
+    }
+    var fxRunning = false;
+    function applyPose(F, pose) {
+      Object.keys(pose || {}).forEach(function (nm) {
+        var q = pose[nm] || {};
+        F.stage.querySelectorAll('img.ly[data-obj="' + nm + '"]').forEach(function (img) {
+          var tr = 'translate3d(' + (q.x || 0).toFixed(2) + 'px,' + (q.y || 0).toFixed(2) + 'px,0)';
+          if (q.r) tr += ' rotate(' + q.r.toFixed(3) + 'deg)';
+          if (q.s !== undefined && q.s !== 1) tr += ' scale(' + q.s.toFixed(4) + ')';
+          img.style.transform = tr;
+          if (q.o !== undefined) img.style.opacity = clamp(q.o, 0, 1).toFixed(3);
+        });
+      });
+    }
+    function fxTick(now) {
+      var t = now / 1000, any = false;
+      live.forEach(function (L) {
+        var r = L.F.fig.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > window.innerHeight + 200) return;
+        any = true;
+        if (L.F.enterAt === null && r.top < window.innerHeight * 0.8) L.F.enterAt = now;
+        var S_ = { t: t, et: L.F.enterAt === null ? 999 : (now - L.F.enterAt) / 1000, F: L.F };
+        applyPose(L.F, L.spec.pose ? L.spec.pose(S_, FX) : {});
+      });
+      if (any) requestAnimationFrame(fxTick); else fxRunning = false;
+    }
+    function wakeFx() { if (!fxRunning && live.length) { fxRunning = true; requestAnimationFrame(fxTick); } }
+    window.addEventListener('scroll', wakeFx, { passive: true });
+
+    return { overlay: overlay, steam: steam, glows: glows, ripple: ripple,
+      sparkles: sparkles, motes: motes, ringMarks: ringMarks, flicker: flicker,
+      registerScene: registerScene, smoothstep: smoothstep, clamp: clamp };
+  })();
+  window.CompanionFX = FX;
+
+  /* ---------------- playbook: auto-index of every shelf tag ---------------- */
+  (function playbook() {
+    var grid = document.getElementById('playbook');
+    if (!grid) return;
+    var bar = document.getElementById('tapebar');
+    var signLabel = (bar && bar.dataset.signLabel) || 'Aisle';
+    document.querySelectorAll('aside.tag').forEach(function (tag, i) {
+      var a = H('a', 'pb', null, grid);
+      a.href = '#' + (tag.id || tag.dataset.chapter || '');
+      var num = tag.dataset.signNum, lab = tag.dataset.signLabel || signLabel;
+      H('div', 'a', num ? (lab + ' ' + num) : ('Lesson ' + (i + 1)), a);
+      var big = tag.querySelector('.tag-big');
+      H('div', 'big', big ? big.textContent : '', a);
+      var p = tag.querySelector('.tag-body p');
+      H('p', null, p ? p.textContent : '', a);
+    });
+  })();
+
+  /* ---------------- beforeprint: finish everything instantly ---------------- */
+  window.addEventListener('beforeprint', function () {
+    revealers.forEach(function (r) { r.finish(); });
+    document.querySelectorAll('.paint .bleed, .paint .bloom, .paint .stage.sketch, .paint .stage.develop')
+      .forEach(function (e) { e.classList.remove('bleed', 'bloom', 'sketch', 'develop'); });
+  });
+})();
+
+</script></body>
 </html>

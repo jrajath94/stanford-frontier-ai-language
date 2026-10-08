@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS224N U09: Tools, agents, and retrieval, a companion</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+<p class="kicker">CS224N · Companion artifact U09 of 15</p>
+<h1>Tools, agents, and retrieval</h1>
+<p class="dek">Models that act: they call tools, read the results, and cite evidence. The math is small, the discipline is large.</p>
+<div class="legend" aria-label="Source tags">
+<span class="tag tag-lesson">From the lesson</span>
+<span class="tag tag-toy">Illustration</span>
+<span class="tag tag-companion">Companion</span>
+</div>
+<p class="small muted">“From the lesson” marks facts from <code>lessons/u09_tools_agents_retrieval.md</code>. “Illustration” marks interactive toys that run the lesson’s rules over tiny inputs. “Companion” marks advice from the companion author. Tags after each section name the lesson leaf, for example C04.</p>
+</header>
+<nav class="small" aria-label="Sections">
+<p><strong>On this page:</strong> 1 · the loop with feedback · 2 · the schema is a contract · 3 · the tool talks back · 4 · the index is external memory · 5 · the swap test · 6 · overlap is insurance · 7 · cheap breadth, expensive depth · 8 · a pointer, not a proof · 9 · the desk and the filing cabinet · 10 · every call carries a badge · 11 · two exits · 12 · autopsy before surgery · <a href="#wisdom">wisdom index</a></p>
+</nav>
+<figure>
+<img class="illustration" src="assets/u09-loop.jpg" alt="Watercolor illustration of a circular loop of footprints on paper with a magnifying glass">
+<figcaption><span class="tag tag-toy">Illustration</span> ReAct: the model narrates its plan, acts, reads the result, then plans again.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>The loop with feedback</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>The model cannot answer from its weights alone. How does it get the missing fact? The model narrates its plan, acts, reads the result, then plans again. The loop turns a one-shot guess into a program with feedback. The Observation is the only new information in the loop. Everything else is format. The loop is a while-loop with the model as the loop body.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §4, §5</span></p>
+<p>From <code>compute_u09.py</code>: a 2-hop question ("the mayor's party, then the mayor's age"). Trace: Thought (14 tokens), Action search (8), Observation (22), Thought (10), Action search (8), Observation (18), Answer (12). 7 steps, 92 tokens total. The two Observations (22 + 18 = 40 tokens) carry the new facts. Reading results costs more than acting.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that the loop stops on its own. A tool returns "no results" forever and the model rephrases the same query for 50 steps. Termination needs an explicit rule (C11). The loop alone never guarantees it.</p>
+</div>
+<figure>
+<div id="chart-trace"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §4</span> Token cost by step type in the toy trace, from <code>compute_u09.py</code> (executed 2026-10-06): thoughts 24, actions 16, observations 40, answer 12. Total 92.</figcaption>
+</figure>
+<div class="nugget" id="nugget-loop">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">The Observation is the only new information. Everything else in the loop is format, and the loop needs an explicit stop rule.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose ReAct when observations change the plan (search, debugging). Choose plan-then-execute when the steps are known up front and observations are cheap.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Budget for feedback loops explicitly: cost = expected steps × cost per step. Cap the steps, validate the answer.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>The schema is a contract</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>The model emits <code>search("mayor")</code>. What makes that a real call instead of text? The schema is a contract: <code>{name: search, args: {q: string, k: int}}</code>. The model proposes, the validator disposes. A call that fails validation never executes. This is the same as a type checker, only the programmer is a language model.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4, §5</span></p>
+<p>From <code>compute_u09.py</code>: 4 of 6 calls valid. The invalid two: <code>search</code> with a missing argument (wrong arity), <code>delete</code> which is not a declared tool (unknown name). Validity is three checks: the name exists, the arguments match the schema (types and required fields), the caller's permissions cover the tool (C10).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p>The broken assumption is that the model will respect the schema. The model invents <code>search_v2</code> because it saw the name in a hallucinated example. The validator must reject, and the prompt must show only real names.</p>
+</div>
+<div class="nugget" id="nugget-contract">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §3, §11</span></h4>
+<p class="big">Name, arity, types: all three must hold, or the call never executes. Validation is dull on purpose. Dull is auditable.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose schemas for anything with side effects. Choose free text only for read-only toys where a miss costs nothing.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Never trust generated structure without a validator. The contract sits between the proposer and the executor.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The validator. The schema is <code>{name: search, args: {q: string, k: int}}</code>. Pick a call and watch the three checks run.</p>
+<p>call <input class="text" id="tvc" value="search" aria-label="Tool name" style="width:110px"></p>
+<p>q <input class="text" id="tvq" value="mayor" aria-label="q" style="width:110px"></p>
+<p>k <input class="text" id="tvk" value="5" aria-label="k" style="width:90px"></p>
+<p><button class="btn" id="tvb">Validate</button></p>
+<p class="small" id="tvnote"></p>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>The tool talks back</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>The tool returns an error. Does the agent learn anything? <code>calc("2++2")</code> returns <code>SyntaxError: unexpected +</code>. The next Thought quotes the error and calls <code>calc("2+2")</code>. The error text is data. A good agent treats the error message as an observation, not as a failure. Retry is the loop's error handling: two retries with new information each time, then escalate.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: first call fails with the syntax error, second call succeeds. Two calls, one error message, zero model changes. The feedback did the work that training would have done. The information gain is the difference between "it failed" and "it failed because".</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §11</span></p>
+<p>The broken assumption is that errors are always informative. The tool returns "error 500" and the model invents a new theory each retry, burning the budget. Cap and escalate.</p>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>The index is external memory</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>The answer lives in your documents, not in the model's weights. How do you get it in? Retrieve k chunks, prepend to the prompt, generate. The pipeline factorizes: P(answer | query) = sum over chunks of P(chunk | query) times P(answer | chunk, query). Top-k approximates the sum with the k best chunks. The approximation is good when the mass concentrates on few chunks.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4, §5</span></p>
+<p>From <code>compute_u09.py</code>: 20 chunks, 3 relevant at ranks 2, 5, 9. Recall at k: 0.000 (k = 1), 0.333 (k = 3), 0.667 (k = 5), 1.000 (k = 10). The first relevant chunk sits at rank 2, so k = 1 finds nothing. Recall never falls when k grows. Precision does. k is a recall knob with a precision cost.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that the top chunk is the right chunk. The rank-1 chunk shares keywords but not the answer, and the model cites it confidently. Retrieve more, rerank (C07), require citations (C08).</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u09-index.jpg" alt="Watercolor illustration of a vast card catalog, one drawer pulled open">
+<figcaption><span class="tag tag-toy">Illustration</span> The index is external memory. The model is only as good as what retrieval hands it.</figcaption>
+</figure>
+<figure>
+<div id="chart-recall"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4</span> Recall at k, from <code>compute_u09.py</code> (executed 2026-10-06): 0.000, 0.333, 0.667, 1.000 at k = 1, 3, 5, 10.</figcaption>
+</figure>
+<div class="nugget" id="nugget-memory">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §3, §11</span></h4>
+<p class="big">The model is only as good as what retrieval hands it. Garbage in, fluent garbage out.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose RAG when the corpus exceeds the window or changes often. Choose stuffing for small static corpora where retrieval adds failure modes for no gain.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>When the answer is wrong, suspect the input before the reader. The generator never sees what retrieval hid.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The recall knob. The relevant ranks are fixed at 2, 5, 9 (the lesson toy). Turn k and watch recall move.</p>
+<p>k <input class="text" id="rck" value="5" aria-label="k"></p>
+<p><button class="btn" id="rcb">Retrieve</button></p>
+<p class="small" id="rcnote"></p>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>The swap test</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>The answer is wrong. Which half broke? Two machines, two contracts. The retriever's contract: the right chunk is in the top-k. The generator's contract: given the right chunk, the answer is right. Test each contract with the other half frozen.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: fix the generator, swap two retrievers (ranks [2,5,9] vs [1,2,3]): recall at k = 5 moves from 0.667 to 1.000 with the generator untouched. The retriever owned the failure. The swap test is an ablation: hold the generator fixed, vary the retriever, the delta in end-to-end score is the retriever's contribution.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that a better retriever always helps end to end. The generator may ignore the new chunks (position bias toward its priors): end-to-end flat while recall rises. Test the generator's contract too.</p>
+</div>
+<figure>
+<div id="chart-swap"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4</span> The swap test, hand-set and labeled illustrative: same generator, recall at k = 5 from 0.667 to 1.000. Attribution: retriever.</figcaption>
+</figure>
+<div class="nugget" id="nugget-swap">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §3, §11</span></h4>
+<p class="big">Hold one half frozen, vary the other, read the delta. Attribution is an ablation, not a guess.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose separation for diagnosis and iteration speed. Choose joint training only when retrieval itself must learn from answer feedback.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Change one factor at a time. The delta names the owner of the failure.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>Overlap is insurance</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>The answer spans 30 tokens, the chunker cuts every 200. What breaks? The chunker is a cookie cutter: every cut risks slicing an answer in two. Overlap is insurance: pay extra index tokens so no span falls in a crack. Split rate: max(0, s - o) / (c - o). When o reaches s, the rate is zero: every span fits inside some chunk.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4, §5</span></p>
+<p>From <code>compute_u09.py</code>: doc 1000 tokens, chunk 200, span 30. Overlap 0: 5 chunks, split rate 0.15. Overlap 50: 7 chunks, split rate 0.00. Insurance costs 2 extra chunks (40 percent more index tokens) and removes the failure class.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §11</span></p>
+<p>The broken assumption is that smaller chunks are always better. At c = 50 every multi-sentence answer splits, and recall collapses even though precision per chunk looks fine. Size to the answer, not to the index.</p>
+</div>
+<figure>
+<div id="chart-split"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4</span> Split rate vs overlap, from <code>compute_u09.py</code> (executed 2026-10-06): 0.15 at overlap 0, 0.00 at overlap 50.</figcaption>
+</figure>
+<div class="nugget" id="nugget-insurance">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §3, §11</span></h4>
+<p class="big">Overlap at least the answer span length removes the split failure class. Price the insurance in index tokens.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose fixed windows for speed and predictability. Choose semantic splits when answers align with sections.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every partition risks cutting something that spans the cut. Insure the boundary, not the pieces.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The cookie cutter. The split-rate formula is C06’s. The document is yours. Prefilled with the lesson toy.</p>
+<p>doc tokens <input class="text" id="ckd" value="1000" aria-label="Doc tokens"></p>
+<p>chunk c <input class="text" id="ckc" value="200" aria-label="Chunk size"></p>
+<p>overlap o <input class="text" id="cko" value="50" aria-label="Overlap"></p>
+<p>span s <input class="text" id="cks" value="30" aria-label="Span"></p>
+<p><button class="btn" id="ckb">Cut it</button></p>
+<p class="small" id="cknote"></p>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Cheap breadth, expensive depth</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>Dense retrieval misses exact terms, sparse misses meaning. What now? Two nets, one pool. Sparse catches the keywords, dense catches the paraphrase. Rerank reads the small pool carefully with a heavy model. Cheap breadth first, expensive depth second.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: a chunk scores 0.72 sparse, 0.41 dense. Fused score = w times dense + (1 - w) times sparse. w = 0.0 gives 0.720, w = 0.5 gives 0.565, w = 1.0 gives 0.410. The fusion is a dial, not a discovery: the weight moves the winner, tune it on a dev set.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §11</span></p>
+<p>The broken assumption is that rerank fixes bad retrieval. The answer sits at rank 200, m = 50, rerank never sees it. Rerank is a polish, not a rescue.</p>
+</div>
+<div class="nugget" id="nugget-fusion">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
+<p class="big">Fuse sparse and dense with a tuned weight, then rerank the small pool. Rerank polishes. It does not rescue.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose hybrid when queries mix exact terms (codes, names) with paraphrase. Choose dense only when the corpus is pure prose.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Breadth cheap, depth expensive. Filter wide, then spend compute on the short list.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The fusion dial. The convex mix is C07’s. The scores are the lesson toy’s.</p>
+<p>w (0 = sparse, 1 = dense) <input class="text" id="fuw" value="0.5" aria-label="Fusion weight"></p>
+<p><button class="btn" id="fub">Fuse</button></p>
+<p class="small" id="funote"></p>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>A pointer, not a proof</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>The model answers with a quote. How do you check it? A citation is a pointer, not a proof. It says "look here", and the reader (or the checker) can verify. A system that cites is auditable. A system that does not is a rumor. Span grounding: the generator must emit pointers into the retrieved chunks, and a checker verifies each pointer resolves to a span that entails the claim.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 4 claims, 3 cite a span that contains them, 1 cites a span that does not. Citation precision 0.75. The unsupported one quotes the right document but the wrong paragraph. Near is not support. Two failure classes: dangling pointers, unsupported claims.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that a cited answer is a true answer. The span supports the claim, but the span itself may come from a poisoned chunk. Citations move trust to the corpus. They do not create it.</p>
+</div>
+<figure>
+<div id="chart-cite"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4</span> Citation precision, hand-set and labeled illustrative: 3 of 4 supported, 0.75.</figcaption>
+</figure>
+<div class="nugget" id="nugget-pointer">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">Citations move trust to the corpus. They do not create it. Check that the pointer resolves and the span entails the claim.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose citations for anything a human will act on. Choose bare answers for low-stakes chat.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Auditability is a feature. Every claim that matters should point at its evidence.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>The desk and the filing cabinet</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>The conversation is 12000 tokens, the window is 8000. What survives? Context is the desk, memory is the filing cabinet. The desk holds what the current step needs. The cabinet holds what future steps might need. Summarization moves papers from the desk to the cabinet.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4, §5</span></p>
+<p>From <code>compute_u09.py</code>: 12000 tokens compress to 900, ratio 13.3. The mechanism is lossy compression under a budget: keep the newest N tokens verbatim (recency), summarize the rest (abstraction), pin facts that must not change (anchors). Retrieval over memory (C04's machinery) beats rereading the whole log.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is that the summary keeps what matters. The summary drops the one constraint the user stated ("never email"), the agent emails. Pin constraints as anchors, never summarize them away.</p>
+</div>
+<figure>
+<div id="chart-mem"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4</span> The compression, from <code>compute_u09.py</code> (executed 2026-10-06): 12000 raw tokens to 900 summary tokens, ratio 13.3.</figcaption>
+</figure>
+<div class="nugget" id="nugget-desk">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §11</span></h4>
+<p class="big">Summarize the chatter, keep the decisions, pin the constraints. Anchors never get summarized away.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose summarization for long tasks with decisions to keep. Choose the sliding window for short tasks where old tokens are truly dead.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Lossy compression needs a pinned list. Decide what is un-droppable before you compress.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Every call carries a badge</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>The agent wants to run <code>delete</code>. Who says yes? Every tool call carries a badge. The badge lists what this run may touch. No badge, no call. The human issues the badge. The agent cannot upgrade it. The check is set membership: required(tool) is a subset of granted(run).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: granted {read}. <code>search</code> requires {read}: pass. <code>delete</code> requires {write}: fail. One set operation per call, zero model judgment involved. Destructive tools add an approval step: pause, ask, resume.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p>The broken assumption is that the model will ask before deleting. The model deletes first and explains after, because the prompt said "be proactive". Enforcement lives outside the model.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u09-badge.jpg" alt="Watercolor illustration of a guard checking a badge at a gate">
+<figcaption><span class="tag tag-toy">Illustration</span> Permissions: the badge lists what the run may touch. The agent cannot upgrade it.</figcaption>
+</figure>
+<div class="nugget" id="nugget-badge">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §3, §11</span></h4>
+<p class="big">Enforcement lives outside the model. Prompt-only permissions are wishes. Code enforcement is the gate.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose code enforcement for anything irreversible. Choose prompts only for read-only sandboxes.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Least privilege is a set operation, not a suggestion. The badge decides before the model acts.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The badge checker. The subset rule is C10’s. Type a granted scope and a required scope.</p>
+<p>granted (comma separated) <input class="text" id="bdg" value="read" aria-label="Granted scopes" style="width:150px"></p>
+<p>required (comma separated) <input class="text" id="bdr" value="write" aria-label="Required scopes" style="width:150px"></p>
+<p><button class="btn" id="bdb">Check badge</button></p>
+<p class="small" id="bdnote"></p>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Two exits</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>Who decides the agent is done? Two exits: success (the answer parses) and the fire escape (the step cap). Success is checked, the cap is counted. An agent with only one exit is a gamble. The loop is <code>while steps below B and not valid(answer)</code>. Termination is guaranteed by the cap. Correctness is attempted by the validator.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §4, §5</span></p>
+<p>From <code>compute_u09.py</code>: the toy stops at 7 steps, 92 tokens, under the cap of 10. The expected cost is E[steps] times cost per step. The 50-step counterexample in C01 shows the cap binding.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p>The broken assumption is that the model knows when it is done. The model emits "Final answer" three times with three different answers. The validator, not the model, declares done.</p>
+</div>
+<div class="nugget" id="nugget-exits">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §3, §11</span></h4>
+<p class="big">Success is checked, the cap is counted. The validator declares done, never the model.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose explicit rules for production. Choose model-decided stopping only in research toys where the stop itself is studied.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every loop needs a success test and a fire escape. One exit is a gamble.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Autopsy before surgery</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>The agent failed. Do you fix the retriever, the tool, or the prompt? Every failure gets one label: the retriever handed the wrong chunk, the tool errored or lied, or the policy chose badly. Fix the biggest class first. Sort classes by frequency, fix in order, re-measure.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4, §5</span></p>
+<p>From <code>compute_u09.py</code>: 10 failures classified as R (retriever) 4, T (tool) 3, P (policy/prompt) 3. The counts say where the budget goes: the next sprint improves retrieval (C07), not the prompt.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §11</span></p>
+<p>The broken assumption is that one label always fits. The retriever was fine and the tool was fine, but the policy gave up after one try (C11's cap too tight). The taxonomy needs the loop parameters as context.</p>
+</div>
+<figure>
+<div id="chart-attr"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4</span> Failure classes, from <code>compute_u09.py</code> (executed 2026-10-06): R 4, T 3, P 3 of 10. The retriever owns the next sprint.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The autopsy board. Paste failure labels (R, T, P), one per line, and see where the budget goes.</p>
+<p><textarea class="text" id="auf" rows="5" style="width:100%" aria-label="Failure labels">R
+R
+T
+P
+R
+T
+P
+R
+T
+P</textarea></p>
+<p><button class="btn" id="aub">Classify</button></p>
+<p class="small" id="aunote"></p>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-loop"><span class="wnum">01</span>The Observation is the only new information <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-contract"><span class="wnum">02</span>Name, arity, types <span class="muted">· C02</span></a></li>
+<li><a href="#nugget-memory"><span class="wnum">03</span>Garbage in, fluent garbage out <span class="muted">· C04</span></a></li>
+<li><a href="#nugget-swap"><span class="wnum">04</span>Attribution is an ablation <span class="muted">· C05</span></a></li>
+<li><a href="#nugget-insurance"><span class="wnum">05</span>Insure the boundary <span class="muted">· C06</span></a></li>
+<li><a href="#nugget-fusion"><span class="wnum">06</span>Breadth cheap, depth expensive <span class="muted">· C07</span></a></li>
+<li><a href="#nugget-pointer"><span class="wnum">07</span>A pointer, not a proof <span class="muted">· C08</span></a></li>
+<li><a href="#nugget-desk"><span class="wnum">08</span>Pin the constraints <span class="muted">· C09</span></a></li>
+<li><a href="#nugget-badge"><span class="wnum">09</span>Enforcement lives outside the model <span class="muted">· C10</span></a></li>
+<li><a href="#nugget-exits"><span class="wnum">10</span>The validator declares done <span class="muted">· C11</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u09_tools_agents_retrieval.md</code> (CS224N, Unit 09). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The concept inventory is REQUESTED-BRANCH, the reading list OFFICIAL-SOURCE via SRC-02. Every computed number traces to the lesson’s script <code>visuals/compute_u09.py</code> (executed 2026-10-06). Hand-set toys are labeled as such in the text. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+<p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
+<p class="small">Built as Companion 9 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 250
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function runValid() {
+  const name = document.getElementById("tvc").value.trim()
+  const q = document.getElementById("tvq").value
+  const k = document.getElementById("tvk").value
+  const note = document.getElementById("tvnote")
+  const checks = []
+  if (name === "search") { checks.push("name: pass") } else { checks.push("name: fail (unknown tool)") }
+  if (q.length > 0 && k.trim().length > 0 && !isNaN(parseInt(k, 10))) { checks.push("args: pass") } else { checks.push("args: fail (missing or mistyped)") }
+  checks.push("permissions: pass (read-only tool)")
+  const ok = checks.every(function(c) { return c.indexOf("pass") >= 0 })
+  note.textContent = checks.join(". ") + ". Verdict: " + (ok ? "VALID, executes." : "INVALID, never executes.") + " The lesson toy: 4 of 6 valid."
+}
+
+function runRecall() {
+  const k = parseInt(document.getElementById("rck").value, 10)
+  const note = document.getElementById("rcnote")
+  if (!(k >= 1)) {
+    note.textContent = "k must be at least 1."
+    return
+  }
+  const ranks = [2, 5, 9]
+  let found = 0
+  ranks.forEach(function(r) { if (r <= k) { found = found + 1 } })
+  const rec = found / ranks.length
+  note.textContent = "k = " + k + ": " + found + " of 3 relevant in top-k, recall " + rec.toFixed(3) + ". The lesson numbers: 0.000, 0.333, 0.667, 1.000 at k = 1, 3, 5, 10."
+}
+
+function runChunk() {
+  const doc = parseFloat(document.getElementById("ckd").value)
+  const c = parseFloat(document.getElementById("ckc").value)
+  const o = parseFloat(document.getElementById("cko").value)
+  const s = parseFloat(document.getElementById("cks").value)
+  const note = document.getElementById("cknote")
+  if (!(doc > 0) || !(c > 0) || !(o >= 0) || o >= c || !(s > 0)) {
+    note.textContent = "Need positive sizes and overlap below chunk size."
+    return
+  }
+  const n = 1 + Math.ceil((doc - c) / (c - o))
+  const split = Math.max(0, s - o) / (c - o)
+  note.textContent = "Chunks: " + n + ", split rate: " + split.toFixed(2) + ". The lesson toy: overlap 0 -> 5 chunks, 0.15. Overlap 50 -> 7 chunks, 0.00."
+}
+
+function runFuse() {
+  const w = parseFloat(document.getElementById("fuw").value)
+  const note = document.getElementById("funote")
+  if (isNaN(w) || w < 0 || w > 1) {
+    note.textContent = "w must sit between 0 and 1."
+    return
+  }
+  const fused = w * 0.41 + (1 - w) * 0.72
+  note.textContent = "Fused = " + w.toFixed(2) + " x 0.41 + " + (1 - w).toFixed(2) + " x 0.72 = " + fused.toFixed(3) + ". The lesson toy: w = 0.5 gives 0.565."
+}
+
+function runBadge() {
+  const g = document.getElementById("bdg").value.split(",").map(function(x) { return x.trim() }).filter(function(x) { return x.length > 0 })
+  const r = document.getElementById("bdr").value.split(",").map(function(x) { return x.trim() }).filter(function(x) { return x.length > 0 })
+  const note = document.getElementById("bdnote")
+  const missing = r.filter(function(x) { return g.indexOf(x) < 0 })
+  note.textContent = missing.length === 0 ? "All required scopes granted: call passes. The lesson toy: search needs read, granted read: pass." : "Missing scopes: " + missing.join(", ") + ": call fails validation. The lesson toy: delete needs write, granted read: fail."
+}
+
+function runAutopsy() {
+  const labels = document.getElementById("auf").value.split("\n").map(function(x) { return x.trim().toUpperCase() }).filter(function(x) { return x === "R" || x === "T" || x === "P" })
+  const note = document.getElementById("aunote")
+  if (labels.length === 0) {
+    note.textContent = "Give at least one R, T, or P label."
+    return
+  }
+  const counts = {R: 0, T: 0, P: 0}
+  labels.forEach(function(x) { counts[x] = counts[x] + 1 })
+  const order = ["R", "T", "P"].sort(function(a, b) { return counts[b] - counts[a] })
+  note.textContent = "R " + counts.R + ", T " + counts.T + ", P " + counts.P + " of " + labels.length + ". Biggest class: " + order[0] + ". Fix it first, then re-measure. The lesson toy: R 4, T 3, P 3."
+}
+
+document.getElementById("tvb").addEventListener("click", runValid)
+document.getElementById("rcb").addEventListener("click", runRecall)
+document.getElementById("ckb").addEventListener("click", runChunk)
+document.getElementById("fub").addEventListener("click", runFuse)
+document.getElementById("bdb").addEventListener("click", runBadge)
+document.getElementById("aub").addEventListener("click", runAutopsy)
+
+barChart("chart-trace", [["thoughts", 24, INDIGO], ["actions", 16, AMBER], ["observations", 40, SAGE], ["answer", 12, CLAY]], 92, " tokens")
+barChart("chart-recall", [["k = 1", 0.000, CLAY], ["k = 3", 0.333, AMBER], ["k = 5", 0.667, INDIGO], ["k = 10", 1.000, SAGE]], 1.05, "")
+barChart("chart-swap", [["retriever A (ranks 2,5,9)", 0.667, CLAY], ["retriever B (ranks 1,2,3)", 1.000, SAGE]], 1.05, "")
+barChart("chart-split", [["overlap 0", 0.15, CLAY], ["overlap 50", 0.00, SAGE]], 0.16, "")
+barChart("chart-cite", [["supported", 3, SAGE], ["unsupported", 1, CLAY]], 4, " of 4")
+barChart("chart-mem", [["raw log", 12000, CLAY], ["summary", 900, SAGE]], 12000, " tokens")
+barChart("chart-attr", [["retriever R", 4, CLAY], ["tool T", 3, AMBER], ["policy P", 3, INDIGO]], 4.5, " failures")
+</script>
+</body>
+</html>

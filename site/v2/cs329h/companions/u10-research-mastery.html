@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U10 Companion: Research projects and oral mastery · CS329H</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:900px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband a{color:var(--paper)}
+header.hero{padding:52px 0 6px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:660px}
+.notice{border:1px solid var(--line)}
+.notice{background:var(--paper2)}
+.notice{border-radius:10px}
+.notice{padding:16px 20px}
+.notice{margin:26px 0}
+.notice{font-size:16px}
+.notice p{margin:.45em 0}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:16px 20px}
+.legend{margin:26px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-interp{background:transparent}
+.tag-interp{color:var(--indigo)}
+.tag-interp{border:1.5px solid var(--indigo)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+section.block{padding:34px 0 10px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.12em}
+.secnum{text-transform:uppercase}
+.secnum{color:var(--clay)}
+.secnum{margin:0 0 4px}
+h2{font-size:32px}
+h2{line-height:1.2}
+h2{margin:.1em 0 .5em}
+h3{font-size:22px}
+h3{margin:1.2em 0 .4em}
+.prose-narrow{max-width:720px}
+figure{margin:28px 0}
+figure{background:#fff}
+figure{border:1px solid var(--line)}
+figure{border-radius:10px}
+figure{padding:18px 18px 8px}
+figcaption{font-size:15px}
+figcaption{color:var(--muted)}
+figcaption{padding:10px 4px 12px}
+figcaption{line-height:1.55}
+img.illus{width:100%}
+img.illus{border-radius:8px}
+img.illus{display:block}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:5px solid var(--clay)}
+.nugget{background:#fff}
+.nugget{border-radius:8px}
+.nugget{padding:18px 22px}
+.nugget{margin:30px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:14px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:20px}
+.nugget .big{line-height:1.5}
+.nugget .big{margin:.2em 0 .6em}
+.nugget dl{margin:0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{margin:10px 0 2px}
+.nugget dd{margin:0 0 6px}
+.nugget dd{font-size:16.5px}
+.lab{border:1px dashed var(--amber)}
+.lab{background:var(--ambersoft)}
+.lab{border-radius:10px}
+.lab{padding:18px 22px}
+.lab{margin:28px 0}
+.toy{border:1px solid var(--indigo)}
+.toy{background:var(--indigosoft)}
+.toy{border-radius:10px}
+.toy{padding:18px 22px}
+.toy{margin:28px 0}
+.toy input[type=number]{width:64px}
+.toy input[type=number]{font-family:var(--mono)}
+.toy input[type=number]{font-size:15px}
+.toy input[type=number]{padding:4px 6px}
+.toy input[type=number]{margin:2px 6px 2px 2px}
+.toy label{font-family:var(--sans)}
+.toy label{font-size:14px}
+.btn{font-family:var(--sans)}
+.btn{font-size:15px}
+.btn{background:var(--ink)}
+.btn{color:var(--paper)}
+.btn{border:none}
+.btn{border-radius:8px}
+.btn{padding:10px 18px}
+.btn{cursor:pointer}
+.btn{margin:8px 8px 8px 0}
+.btn.ghost{background:transparent}
+.btn.ghost{color:var(--ink)}
+.btn.ghost{border:1.5px solid var(--ink)}
+table.data{border-collapse:collapse}
+table.data{margin:14px 0}
+table.data{font-size:16px}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.06em}
+table.data th{text-align:left}
+table.data th{padding:8px 14px 8px 0}
+table.data td{padding:8px 14px 8px 0}
+table.data td{border-top:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+code{font-family:var(--mono)}
+code{font-size:.88em}
+code{background:var(--paper2)}
+code{padding:1px 6px}
+code{border-radius:5px}
+.wisdom ol{padding-left:22px}
+.wisdom li{margin:10px 0}
+.wisdom a{color:var(--clay)}
+footer{background:var(--ink)}
+footer{color:var(--paper)}
+footer{margin-top:56px}
+footer{padding:40px 0 60px}
+footer p{font-size:15.5px}
+footer{line-height:1.6}
+footer code{background:rgba(255,255,255,.12)}
+footer a{color:var(--paper)}
+.backlink{font-family:var(--sans)}
+.backlink{font-size:15px}
+.backlink{margin:34px 0 0}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CS329H · Stanford · Interactive companion · <a href="../index.html">course index</a></div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">U10 · Research projects and oral mastery</p>
+<h1>Run it as if someone audits the run</h1>
+<p class="dek">Nine units of machinery, one research project. Write the plan before the numbers exist. Read the baseline literature. State a falsifiable hypothesis. Run the baselines, report the uncertainty, reproduce the run, and defend it out loud. This unit is the course's research practice: the capstone replication of dueling Thompson sampling, including its failed hypothesis.</p>
+</header>
+<figure>
+<img class="illus" src="assets/u10-clipboard.jpg" alt="Watercolor of a clipboard with a checklist and fountain pen">
+<figcaption><span class="tag tag-toy">Illustration</span> The plan as watercolor. Five elements, frozen before the run. The checklist is the contract with your future self. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="notice">
+<p><strong>Sourcing.</strong> No full transcript exists for session S18. This companion narrates <code>content/v2/cs329h/lessons/u10_lesson.md</code>. All twelve concepts are taught as independent theory: the lesson marks the session PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING. The capstone runs are original simulations on the lesson's machine.</p>
+<p><strong>Lesson title note.</strong> The lesson file titles this unit "UU10", a typo for U10. It is reproduced here as written in the provenance line and corrected in the page title.</p>
+<p><strong>How to read the tags.</strong> Every number carries its lesson section. Anything the companion computes is tagged <span class="tag tag-toy">Illustration</span>. A <span class="tag tag-interp">Interpretation</span> tag marks the companion's own reading of the lesson. Where the lesson leaves a value out, the page says so in words.</p>
+</div>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> A fact, number, or mechanism from the lesson.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-interp">Interpretation</span> The companion's reading of why a lesson fact matters. The fact is the lesson's, the gloss is ours.</p>
+<p><span class="tag-ref">C01 · Contract 6</span> Points to the exact lesson section behind a claim or number.</p>
+</div>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">Plan first</a>
+<a href="#s2">Baselines</a>
+<a href="#s3">Run it honestly</a>
+<a href="#s4">Defend it</a>
+<a href="#wisdom">Wisdom index</a>
+<a href="#provenance">Provenance</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01, C02, C03</p>
+<h2>Plan before you run</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 5, 6</span></p>
+<p>A pre-analysis plan names the hypotheses, the metric, the sample, the success rule, and the failure rule before any number exists. It turns success into a checkable claim. The lesson's capstone A plan: H1, dueling TS beats uniform. H2, leader-focused TS beats vanilla dueling TS. Metric: mean cumulative strong regret. T = 200, 20 seeds. Success: lower mean with non-overlapping 95 percent CIs. Failure: overlap or reversal. The plan is timestamped before the data run. Lesson figure u10_f01 draws the five elements.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 5</span></p>
+<p>Read the baseline literature before proposing. The reading contract has four cells: the problem statement, the theorem, the proof sketch, the experimental setup. The lesson's worked example is the pairwise-comparison bandit: learn the best arm from pairwise comparisons, Thompson sampling achieves low regret empirically, Bradley-Terry simulator, 4 arms. Your contribution is measured against the strongest baseline, not the weakest. Read the proof, not just the abstract.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 5, 6</span></p>
+<p>A hypothesis names the intervention, the outcome, the direction, and the condition. A falsifiable hypothesis names the intervention, the outcome, the direction, and the condition. For example: the leader-focused variant yields lower mean strong regret than vanilla TS on the 4-arm BT bandit. The vague version, that a better acquisition helps, is not falsifiable. The lesson's H2 failed: leader TS mean 8.36 against TS 3.11. The failure is data. One sharp hypothesis per experiment beats five vague ones.</p>
+</div>
+<div class="nugget" id="nugget-plan">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 7</span></h4>
+<p class="big">Freeze the plan before the numbers exist. Hypotheses, metric, sample, success rule, failure rule: five elements, timestamped.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The failure rule is written before the numbers. That is what makes success checkable instead of autobiographical.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>An A/B test. The success metric and the sample size go in the doc before the test runs, or the test is theater.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-read">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 7</span></h4>
+<p class="big">Read the proof, not just the abstract. Your contribution is measured against the strongest baseline.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The four-cell contract forces specifics: numbers, not adjectives. A misread baseline voids the comparison.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A drug trial. The baseline is the standard of care at its best dose, not a straw man.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C05, C06, C11</p>
+<h2>The baselines and their uncertainty</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 5, 6</span></p>
+<p>The capstone A replication ran the baseline ladder on the 4-arm Bradley-Terry dueling bandit. Uniform dueling: mean strong regret 17.24, CI [16.56, 17.92]. Dueling TS: 3.11, CI [2.23, 3.99]. Leader-focused TS: 8.36, CI [6.86, 9.87]. The verdict rule: lower mean plus non-overlapping 95 percent CIs. H1 supported: TS beats uniform by 14.13 with no CI overlap. H2 not supported: leader TS is worse than TS by 5.25. Lesson figure u10_f02 draws the bars with CIs.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 320" role="img" aria-label="Uniform 17.24, dueling TS 3.11, leader TS 8.36, with confidence intervals">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">H1 supported, H2 not</text>
+<g><title>Uniform: 17.24, CI 16.56 to 17.92</title><rect x="80" y="60" width="120" height="200" fill="#6f6355" rx="4"/><line x1="140" y1="66" x2="140" y2="72" stroke="#faf6ee" stroke-width="3"/><line x1="140" y1="188" x2="140" y2="194" stroke="#faf6ee" stroke-width="3"/><text x="140" y="52" text-anchor="middle" font-size="14" font-family="Georgia">17.24</text><text x="140" y="280" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">uniform</text></g>
+<g><title>Dueling TS: 3.11, CI 2.23 to 3.99</title><rect x="280" y="224" width="120" height="36" fill="#5d7050" rx="4"/><line x1="340" y1="218" x2="340" y2="224" stroke="#faf6ee" stroke-width="3"/><line x1="340" y1="260" x2="340" y2="266" stroke="#faf6ee" stroke-width="3"/><text x="340" y="210" text-anchor="middle" font-size="14" font-family="Georgia">3.11</text><text x="340" y="280" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">dueling TS</text></g>
+<g><title>Leader TS: 8.36, CI 6.86 to 9.87</title><rect x="480" y="140" width="120" height="120" fill="#a94f27" rx="4"/><line x1="540" y1="132" x2="540" y2="140" stroke="#faf6ee" stroke-width="3"/><line x1="540" y1="260" x2="540" y2="268" stroke="#faf6ee" stroke-width="3"/><text x="540" y="124" text-anchor="middle" font-size="14" font-family="Georgia">8.36</text><text x="540" y="280" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">leader TS</text></g>
+<text x="320" y="302" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">mean strong regret, 20 seeds, 95 percent CIs</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 6</span> Same numbers as lesson figure u10_f02. The CIs do not overlap, so the verdicts are clean. Overlapping CIs claimed as a win is the failure case.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 3, 5, 6</span></p>
+<p>Report what the numbers do not know. CI = mean ± 1.96 × SD / √n, n = 20 seeds. Uniform: SD 1.55, tight. Dueling TS: mean 3.11, SD 2.01, CI [2.23, 3.99]. Leader TS: SD 3.43, wide. The SD is information, not noise to hide: the extension is unstable. State what varies (seeds) and what does not (the environment).</p>
+</div>
+<figure>
+<img class="illus" src="assets/u10-seeds.jpg" alt="Watercolor of a notebook with bell curves and seed packets">
+<figcaption><span class="tag tag-toy">Illustration</span> The seeds as watercolor. Twenty packets, one curve each. The spread is the information. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The CI toy. Move the mean, SD, and seed count. The browser applies the lesson's C06 formula.</p>
+<p><label>mean <input type="range" id="cm" min="0" max="20" step="0.01" value="3.11"></label> <code id="cmv">3.11</code></p>
+<p><label>SD <input type="range" id="csd" min="0.5" max="5" step="0.01" value="2.01"></label> <code id="csdv">2.01</code></p>
+<p><label>seeds n <input type="range" id="cn" min="5" max="100" step="1" value="20"></label> <code id="cnv">20</code></p>
+<p class="small" id="cout">CI appears here.</p>
+<p class="small muted"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 6</span> With the lesson's values the readout must show [2.23, 3.99].</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 5, 6</span></p>
+<p>A negative result is a result. The report has four parts: the hypothesis, the numbers, the diagnosis, what it rules out. H2 not supported: leader TS 8.36 against dueling TS 3.11, CIs [6.86, 9.87] against [2.23, 3.99]. Diagnosis: forcing duels against the least-tried challenger spends rounds on weak arms, and challenges cost strong regret. Ruled out: the claim that any leader focus helps. Lesson figure u10_f03 draws the failed comparison.</p>
+</div>
+<div class="nugget" id="nugget-verdict">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 7</span></h4>
+<p class="big">H1 supported, H2 not. TS beats uniform by 14.13 with no CI overlap. The extension adds 5.25 of regret.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The verdict rule is mechanical: lower mean plus non-overlapping CIs. No eyeballing curves, no p-values without effect sizes.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A clinical trial readout. The treatment wins by a margin the CIs do not swallow, or it does not win.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-sd">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 3, 7</span></h4>
+<p class="big">Leader SD 3.43 against uniform 1.55. The SD is information: the extension is unstable.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>A mean without an SD hides the instability. The wide SD is the honest part of the leader-TS story.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A poll margin of error. The headline number without the ± is not a number, it is an advertisement.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-negative">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 7</span></h4>
+<p class="big">H2 failed: 8.36 against 3.11. A negative result is a result, reported with numbers and a diagnosis.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Burying the failure is publication bias. The four-part report, hypothesis, numbers, diagnosis, ruled-out claim, is the honest alternative.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A failed drug trial. The trial still taught something: the mechanism does not work that way.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C04, C07, C08, C09</p>
+<h2>The honest run</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 5, 6</span></p>
+<p>Preference data is opinion data: it reveals the rater. The consent contract names purpose, voluntariness, withdrawal terms, data-use limits, and retention. The lesson's hypothetical rater pool: 25 synthetic raters, 2000 prompts × 3 pairs, a funnel from 6000 to 5664 labeled pairs. Withdrawal within 30 days, research-only use, 2-year retention: every term labeled HYPOTHETICAL in the lesson. The failure case is a promise of easy withdrawal with no removal mechanism. Lesson figure u10_f04 draws the funnel.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 5, 6</span></p>
+<p>Reproducible code: fixed seeds, pinned environment, committed scripts, outputs written to files. The check is the two-run diff: run twice, diff the outputs. Capstone A passed with an empty diff: identical JSON across runs. The failure case is the silent dependency update: NumPy changes a sampler, the JSON differs, and nobody recorded the version. One command reproduces the numbers, or the experiment is unverifiable.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 5</span></p>
+<p>A contribution statement names the delta over the strongest baseline: baseline, intervention, evidence, scope. The lesson's worked example reports a replication of dueling TS against uniform on a 4-arm BT bandit, falsifying the leader-focus extension at 8.36 against 3.11. The scope names what is not claimed: 4-arm BT simulation, not humans. A contribution without a scope is a claim without a boundary.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5</span></p>
+<p>Integrity, reflection, impact: report the negative result, state the limits, name who is affected. The lesson's worked reflection: integrity (the H2 failure reported with numbers), limits (simulated BT, 4 arms, no humans), impact (better elicitation helps assistants. The same methods optimize manipulation). The lesson's audit figure u10_f05 gates the capstone: agreement pass, position pass, drift fail, size pass, decision BLOCK. A failed gate blocks. That is what gates are for.</p>
+</div>
+<div class="nugget" id="nugget-repro">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 7</span></h4>
+<p class="big">Run twice, diff the outputs. Capstone A passed with an empty diff: identical JSON.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>A run that works on one machine is unverifiable. The two-run check is the minimum viable reproducibility, and it fits in five commands.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A clinical analysis pipeline. The regulator re-runs it. The diff must be empty.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-scope">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 7</span></h4>
+<p class="big">Name the scope: 4-arm BT simulation, not humans. A contribution without a scope is a claim without a boundary.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The scope is what keeps 8.36 vs 3.11 from becoming a claim that the method beats Thompson sampling in general. It beats it on the simulator, nowhere else.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A patent claim. The claims section is the scope. Everything outside it is not yours.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C10, C12</p>
+<h2>Defend it out loud</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5, 6</span></p>
+<p>Oral mastery is tested three ways: the quiz (timed, written), the ladder drill (one claim, eight follow-ups), the demo (one screen, one claim, live run, the decision). The eight rungs: define, toy, derive, implement and complexity, compare, debug, critique, design. No notes after rung 2. The lesson's worked ladder climbs the claim that H1 held: define strong regret, toy the 4-arm bandit, derive the verdict rule, implement the CI code, compare against uniform, debug unpaired seeds, critique the simulated BT, design the human replication. Lesson figures u10_f06 and u10_f07 draw the ladder and the demo checklist.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 3, 5</span></p>
+<p>The field's open gaps, each a project a student could own: open preference datasets with full provenance, open reward-model eval rigs with subgroup slicing, replication code for published acquisition methods, audit tooling for annotation pipelines. A gap statement names what is absent, why it matters, and what "done" looks like. The lesson's figure u10_f08 maps the ten units with the gaps on top.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u10-horizon.jpg" alt="Watercolor of a ship sailing toward the horizon at sunset">
+<figcaption><span class="tag tag-toy">Illustration</span> The horizon as watercolor. The course ends at the shore. The four gaps are the sea. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="nugget" id="nugget-ladder">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 7</span></h4>
+<p class="big">Eight rungs, no notes after rung 2: define, toy, derive, implement, compare, debug, critique, design.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The drill finds the rung you cannot climb. A skipped derivation is a missing rung, and follow-ups will find it.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A thesis defense. The committee climbs the ladder with you. There is no rung 9.</dd>
+</dl>
+</div>
+</section>
+<section class="block wisdom" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Eight nuggets, indexed</h2>
+<ol>
+<li><a href="#nugget-plan">Freeze the plan.</a> Five elements, timestamped.</li>
+<li><a href="#nugget-read">Read the proof.</a> Strongest baseline, not weakest.</li>
+<li><a href="#nugget-verdict">H1 supported, H2 not.</a> 14.13 with no overlap. The extension adds 5.25.</li>
+<li><a href="#nugget-sd">Report the SD.</a> 3.43 means unstable.</li>
+<li><a href="#nugget-negative">A negative result is a result.</a> 8.36 against 3.11, with a diagnosis.</li>
+<li><a href="#nugget-repro">Run twice, diff.</a> Empty diff or unverifiable.</li>
+<li><a href="#nugget-scope">Name the scope.</a> Simulator, not humans.</li>
+<li><a href="#nugget-ladder">Eight rungs.</a> No notes after rung 2.</li>
+</ol>
+<p class="backlink"><a href="../index.html">Back to the CS329H course index</a></p>
+</section>
+</div>
+<footer id="provenance"><div class="wrap">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cs329h/lessons/u10_lesson.md</code>, titled "UU10" in the lesson file, a typo for U10 disclosed above. No full lecture transcript exists for session S18, and no lecture anecdotes appear. All twelve concepts are taught as independent theory: the lesson marks the session PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING. Quoted words from the lesson source: 0, counted by <code>companions/tools/quote_recount.py</code> with the blockquote plus quoted-phrase method, footer excluded. Lesson figures u10_f01 through u10_f08 are referenced where the lesson places them. The charts on this page re-plot the lesson's computed toy numbers with concept and contract citations. The CI toy applies the lesson's C06 formula in the browser. No official source video is on record for this session, so no embed appears. The three watercolors are original illustrations made for this companion.</p>
+</div></footer>
+<script>
+function updCI(){
+var m=parseFloat(document.getElementById("cm").value)
+var sd=parseFloat(document.getElementById("csd").value)
+var n=parseFloat(document.getElementById("cn").value)
+document.getElementById("cmv").textContent=m.toFixed(2)
+document.getElementById("csdv").textContent=sd.toFixed(2)
+document.getElementById("cnv").textContent=n.toFixed(0)
+var h=1.96*sd/Math.sqrt(n)
+document.getElementById("cout").textContent="95 percent CI ["+(m-h).toFixed(2)+", "+(m+h).toFixed(2)+"], half-width "+h.toFixed(2)
+}
+var cids=["cm","csd","cn"]
+cids.forEach(function(id){document.getElementById(id).addEventListener("input",updCI)})
+updCI()
+</script>
+</body>
+
+</html>

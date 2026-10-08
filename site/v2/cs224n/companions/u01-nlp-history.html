@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U01 Companion: NLP History, Tasks, and Data · CS224N</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">Stanford CS224N · Unit 01 · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero" id="top">
+<p class="kicker">Companion 1 of 15 · narrated from the lesson document</p>
+<h1>NLP history, tasks, and data</h1>
+<p class="dek">Before models read language, people had to decide what language is. This companion walks the full arc of Unit 01: why ambiguity is the normal state, why the field moved from rules to counts to vectors, and how tasks, corpora, and metrics set the rules of the game.</p>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> The idea, and every number beside it, comes from the cited section of <code>lessons/u01_nlp_history.md</code>. The phrasing is the companion’s.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-companion">companion</span> Companion voice: the idea above the tag is from the lesson. The generalization below it is the companion’s.</p>
+<p class="small muted">Provenance: no full lecture transcript exists for this session. The 2026 lecture videos are restricted and unviewed, and the 2024 playlist was not viewed. This page narrates the lesson document, not a video. The session title (S01, History of NLP) and the A1 title (Introduction to word vectors) are OFFICIAL-SOURCE via SRC-02 and SRC-03. The concept inventory is REQUESTED-BRANCH.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u01-hero.jpg" alt="Watercolor of a river of language history from stone tablet to word constellation">
+<figcaption><span class="tag tag-toy">Illustration</span> The U01 arc in one image: stone tablets, manuscripts, the press, punched cards, and finally a constellation of connected word-dots. The knowledge moves from the scribe, to the machine, to the geometry. Watercolor, original to this companion.</figcaption>
+</figure>
+</header>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">1 Ambiguity</a>
+<a href="#s2">2 Three eras</a>
+<a href="#s3">3 Corpora</a>
+<a href="#s4">4 Classification</a>
+<a href="#s5">5 Parsing</a>
+<a href="#s6">6 Translation</a>
+<a href="#s7">7 Language models</a>
+<a href="#s8">8 Distributional</a>
+<a href="#s9">9 Splits</a>
+<a href="#s10">10 Formulation</a>
+<a href="#s11">11 Metrics</a>
+<a href="#s12">12 The arc</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>Ambiguity is the normal state</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2</span></p>
+<p>Why does “visiting relatives can be dull” crash a naive parser? Reading 1 takes “visiting relatives” as one noun phrase: relatives who visit are dull. Reading 2 takes “visiting” as the verb and “relatives” as its object: the act of visiting bores. One string, two structures.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §5</span></p>
+<p>Ambiguity is not noise. It is the normal state of language. Every level of analysis, sound, word, syntax, meaning, intent, can branch. The mechanism behind this toy is attachment: “visiting” can attach as a modifier of “relatives” or as the main verb with “relatives” as object. The rule that forces the branch is that English lets -ing forms act as nouns or verbs. Remove that flexibility and one reading dies.</p>
+<figure>
+<img class="illus" src="assets/u01-ambiguity.jpg" alt="Watercolor of one paper ribbon with two different tree branchings above it">
+<figcaption><span class="tag tag-toy">Illustration</span> One ribbon of words, two branchings above it. The trees are the parses. A system that picks one branch early fails silently on the other. Watercolor, original to this companion.</figcaption>
+</figure>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that the most frequent parse is the right parse. In travel text, reading 2 dominates. In a family newsletter, reading 1 dominates. Frequency is corpus-relative. A model trained on one genre picks the wrong branch on the other with full confidence. A system that picks one branch early fails silently on the other.</p>
+</div>
+<div class="nugget" id="nugget-ambiguity">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">Ambiguity is not noise. It is the normal state of language. The two readings of “visiting relatives” come from one rule of English, not from a broken sentence.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Rule-based pipelines pick a branch and move on. The failure is silent, and confidence stays high while the meaning flips by genre.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>When a system fails with full confidence, suspect an early commitment to one branch of an ambiguous input. Keep branches alive until the evidence forces a choice.</dd>
+</dl>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §10</span></p>
+<p>An alternative is semantic disambiguation by world knowledge. Choose syntax-first when the grammar is strong and the domain is narrow. Choose joint models when both signals are weak. Modern neural models learn the joint distribution and skip the staged choice.</p>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>Three eras: rules, counts, vectors</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>Why did the field abandon hand-written rules? A rule “not X means the opposite of X” handles “not good” but fails on “not bad”, on “not just good but great”, and on “yeah, not good”. Each fix adds a rule. The rule list grows without bound. The three eras store knowledge in three different places. Symbolic systems store human insight as rules. Statistical systems store corpus evidence as counts. Neural systems store corpus evidence as vectors and functions.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §5</span></p>
+<p>The mechanism that separates the eras is generalization. Rules generalize by author intent and break on unseen patterns. Counts generalize by smoothing and break on unseen combinations. Vectors generalize by geometry: similar inputs land near each other, so the model answers unseen combinations by proximity.</p>
+</div>
+<figure>
+<div id="chart-bigram-cells"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §6</span> The sparsity pain of the statistical era. The toy corpus has 35 tokens and 14 types, so the bigram table has 14 × 14 = 196 cells, only a handful nonzero. Computed by <code>compute_u01.py</code>, executed 2026-10-06.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p>The broken assumption is that neural always beats symbolic. The counterexample is a zip-code validator. A regex is exact, instant, and auditable, while a neural model guesses. The failure mode of era-chauvinism is a GPU that approximates a lookup table. Choose pure neural when data is plentiful and the output space is open. Choose rules when the output must obey hard constraints, and choose counts when you need a transparent baseline in an hour.</p>
+</div>
+<div class="nugget" id="nugget-eras">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §3, §5</span></h4>
+<p class="big">Each era moves the knowledge from the linguist’s head into the data, then into the geometry. Vectors win because proximity answers questions the counts never saw.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The toy shows the start: P(sat | cat) = 0.158 smoothed, but a vector model can also answer P(sat | kitten) if “kitten” lands near “cat”. Geometry shares statistics across words.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>When a method generalizes, ask what representation carries the generalization. Rules carry author intent, counts carry samples, vectors carry proximity. Pick the carrier for the unseen cases you care about.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>A corpus is a sample, not the language</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>Why do two models trained on “English” disagree? Corpus A is six pet sentences. Corpus B is six finance sentences. The word “bank” is absent in A and means a money store in B. Same language, disjoint evidence. Every corpus over-represents its source genre, era, and author pool. Claims about “English” from one corpus are claims about that corpus.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §5</span></p>
+<p>The collection pipeline runs: source selection, crawling or licensing, cleaning, tokenization, split. Each arrow can inject bias. Dedup by exact match misses near-duplicates. Aggressive cleaning deletes dialect text. The mechanism to remember: bias enters at collection, and no later step removes it.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §6, §11</span></p>
+<p>The toy corpus has 6 documents, 35 tokens, 14 types. The type-token ratio is 14/35 = 0.40. A second toy corpus of the same size built from one repeated sentence would have a ratio near 0.14. The ratio measures lexical variety, not quality. And the broken assumption is that a bigger corpus is a better corpus: add one million machine-generated SEO pages to a clean corpus, the token count triples, and quality drops. Size without curation is a liability.</p>
+</div>
+<div class="nugget" id="nugget-corpus">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §3, §5</span></h4>
+<p class="big">The model learns the sample, not the language. Bias enters at collection, and no later step removes it.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Dedup and cleaning look like hygiene, but each is a decision about which evidence survives. Exact-match dedup misses near-duplicates, and aggressive cleaning deletes dialect text.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Before you trust a model, profile its corpus. Six documents, token counts, type counts, duplicate rate: these numbers tell you what the model has actually seen.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Text classification: scores and a brutal assumption</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>How do you sort text without reading it? Four training documents, two classes, pets and finance. The test document is “cat bank”. The classifier must weigh “cat” (pets signal) against “bank” (finance signal). Classification assigns a score per class, and the top score wins. Naive Bayes scores with word likelihoods under a brutal independence assumption: words are independent given the class. Brutal, fast, and often good enough.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §5</span></p>
+<p>Bayes rule: P(class | document) is proportional to P(class) times the product of P(word | class). Take logs: score = log P(class) + sum of log P(word | class). With add-1 smoothing, P(word | class) = (count + 1) / (total words in class + V). The argmax over classes is the prediction. The log turns products into sums and prevents underflow.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §6</span></p>
+<p>The computed example, from <code>compute_u01.py</code>: priors 0.5 each. Scores: pets −5.416, finance −5.011. Prediction: finance. The honest result: the toy is so small that smoothing dominates and the wrong-looking answer wins. This is computed, not hand-waved.</p>
+</div>
+<figure>
+<div id="chart-nb"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §6</span> Naive Bayes log-scores on the toy: pets −5.416, finance −5.011. Higher wins, so the model predicts finance. With four training documents, smoothing outvotes evidence. Computed by <code>compute_u01.py</code>, executed 2026-10-06.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that more training words always help. Add 100 copies of “the cat sat” to pets, and “the” piles up in pets, so every finance document containing “the” gets misclassified. Duplicated data is a silent class prior shift.</p>
+</div>
+<div class="nugget" id="nugget-nb">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §6, §11</span></h4>
+<p class="big">With four documents, smoothing outvotes evidence. The “wrong” prediction is the honest one: the model tells you the data is too small.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Duplicates are a silent prior shift. One hundred copies of one sentence reweight the class without adding a single new fact.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose Naive Bayes when data is tiny and you need a baseline in minutes. Choose logistic regression when you have enough data to estimate the boundary directly. Choose neural classifiers when word order matters.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Parsing: the sentence’s skeleton</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>Who did what to whom in “the cat chased the mouse”? The arcs: chased → cat (subject), chased → mouse (object), the → cat, the → mouse (determiners). A dependency parse is a set of directed arcs from heads to dependents, one head per word, no cycles, covering the sentence. Think of it as wiring: each word plugs into exactly one parent, and the verb is usually the root. The parse is the sentence’s skeleton, and everything downstream reads it.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §5</span></p>
+<p>Why search? n words admit exponentially many trees. A parser scores candidate arcs and picks the best tree. Transition-based parsing builds the tree left to right with a stack and buffer, choosing SHIFT, LEFT-ARC, or RIGHT-ARC at each step. Local greedy or beam decisions compose into a global tree.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §6</span></p>
+<p>The toy, hand-set and labeled illustrative: “the cat sat”. Arcs: sat → cat (subject) with score 2.1, cat → the (determiner) with score 1.7. The correct tree scores 3.8 against 2.3 for the wrong attachment. The lesson labels these numbers illustrative.</p>
+</div>
+<figure>
+<div id="chart-arcs"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §6</span> Toy arc scores on “the cat sat”, labeled illustrative by the lesson: the correct tree scores 3.8 (2.1 + 1.7) against 2.3 for the wrong attachment. The parser picks the max.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that the parser’s top tree is trustworthy. Garden-path sentences like “the horse raced past the barn fell” break greedy parsers: the early attachment of “raced” as main verb is wrong, and greedy decoding cannot backtrack. Beam search or global inference is the fix. Greedy is the trap.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Score the tree yourself. This toy scores candidate trees from the lesson’s illustrative arc scores. The mechanism, score the arcs and pick the max, is C05’s. The numbers are the lesson’s illustrative toy.</p>
+<p><button class="btn" id="arcbtn">Score the two trees</button></p>
+<div class="chips" id="arcout"><span class="chip plain">press the button</span></div>
+<p class="small" id="arcnote"></p>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>Translation: not a dictionary lookup</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>Why is “the cat sat on the mat” not translated word by word? The French “le chat s’est assis sur le tapis” uses two words, “s’est assis”, for one English word. Word order and morphology both shift. Translation is structure mapping, not dictionary lookup. It has three subproblems: what each source word means, which target words express it, and in what order they go.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §5</span></p>
+<p>BLEU in one paragraph. For n = 1 to 4, compute the fraction of candidate n-grams that appear in the reference (precision). Take the geometric mean. Multiply by a brevity penalty that punishes short candidates. The brevity penalty exists because pure precision rewards one-word correct guesses.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6</span></p>
+<p>The computed example. Candidate: “the cat sat”. Reference: “the cat sat on the mat”. Unigram precision 3/3 = 1.0. Bigram precision 2/2 = 1.0. Brevity penalty exp(1 − 6/3) = exp(−1) = 0.368. BLEU-2 = 0.368 × exp((log 1 + log 1)/2) = 0.368. The penalty dominates: short and perfect still scores low.</p>
+</div>
+<figure>
+<div id="chart-bleu"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6</span> BLEU-2 decomposition on the toy, hand-computed in the lesson: perfect precision at both n-gram orders, then the brevity penalty (0.368) pulls the final score to 0.368. The lab recomputes it in code.</figcaption>
+</figure>
+<div class="nugget" id="nugget-bleu">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6, §11</span></h4>
+<p class="big">Short and perfect still scores low. The brevity penalty does the real work in BLEU: without it, one correct word would beat a full sentence.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Metric hacking is real. A candidate that copies the reference’s n-grams in scrambled order keeps unigram precision 1.0 while being unreadable. Systems can climb BLEU while human quality stalls.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose BLEU when you need a cheap repeatable number, chrF for morphologically rich targets, and human evaluation when the decision matters. Automatic metrics correlate with humans but do not replace them.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> BLEU-2 calculator. The formula is C06’s. The values are yours. Prefilled with the lesson’s toy numbers.</p>
+<p>Unigram precision <input class="text" id="bleup1" value="1.0" aria-label="Unigram precision"></p>
+<p>Bigram precision <input class="text" id="bleup2" value="1.0" aria-label="Bigram precision"></p>
+<p>Candidate length <input class="text" id="bleuc" value="3" aria-label="Candidate length"></p>
+<p>Reference length <input class="text" id="bleur" value="6" aria-label="Reference length"></p>
+<p><button class="btn" id="bleubtn">Score it</button></p>
+<p class="small" id="bleunote"></p>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Language models: probability over strings</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">Remediation, C07 §2, §3</span></p>
+<p>What does it mean for a machine to “know English”? Assign a probability to every string. P(“the cat sat”) should exceed P(“cat the sat the”). A language model is a probability distribution over sequences. The chain rule factors it: P(w1..wn) is the product of P(wt | prefix). This one factorization turns generation into repeated prediction and evaluation into a single number.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">Remediation</span></p>
+<p>Start with counts. A unigram count c(w) is how many times word w occurs. A bigram count c(u, v) is how many times v follows u. The maximum-likelihood estimate of P(v | u) is c(u, v) / c(u). Add-1 smoothing adds one phantom count to every bigram: P(v | u) = (c(u, v) + 1) / (c(u) + V), where V is the vocabulary size. On the toy corpus, c(the) = 11, c(the, cat) = 5, V = 14. MLE gives 5/11 = 0.455. Add-1 gives (5 + 1)/(11 + 14) = 6/25 = 0.24.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Smoothing calculator. The formula is the lesson’s remediation block. The values start at the toy corpus numbers.</p>
+<p>c(u, v) <input class="text" id="s cuv" value="5" aria-label="Joint count"></p>
+<p>c(u) <input class="text" id="scu" value="11" aria-label="Marginal count"></p>
+<p>V (vocabulary size) <input class="text" id="sv" value="14" aria-label="Vocabulary size"></p>
+<p><button class="btn" id="sbtn">Compute both</button></p>
+<p class="small" id="snote"></p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §5, §6</span></p>
+<p>Cross-entropy on a test sequence: H = −(1/n) times the sum of log P(word | prefix). Perplexity = exp(H). The meaning falls out of a uniform model: if the model assigned probability 1/k to each next word, H = log k and perplexity = k. So perplexity reads as the model’s effective number of choices per word. Lower is better, and the floor is 1.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §6</span></p>
+<p>The computed example, from <code>compute_u01.py</code>. Test: “the cat sat”, add-1 smoothed bigram. P(cat | the) = 0.24, P(sat | cat) = 0.1579. H = −(log 0.24 + log 0.1579)/2 = 1.636 nats. Perplexity = exp(1.636) = 5.137. The model is as confused as a 5-sided die.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Perplexity probe. The formula is C07’s. Feed it two next-word probabilities and read the confusion.</p>
+<p>P(word 1 | context) <input class="text" id="pp1" value="0.24" aria-label="First probability"></p>
+<p>P(word 2 | context) <input class="text" id="pp2" value="0.1579" aria-label="Second probability"></p>
+<p><button class="btn" id="pbtn">Compute perplexity</button></p>
+<p class="small" id="pnote"></p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §11</span></p>
+<p>The broken assumption is that lower perplexity means a better model for your task. The counterexample is a model with great perplexity that copies training text verbatim. Perplexity rewards fit to the test distribution, and if the test leaks into training, the number lies. Split discipline is the guard. And perplexity only compares models over the same tokenization.</p>
+</div>
+<div class="nugget" id="nugget-ppl">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §5, §6</span></h4>
+<p class="big">Perplexity reads as choices per word. A score of 5.137 means the model hesitates the way a 5-sided die hesitates.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The number is only honest under split discipline. Memorized training text gives great perplexity and zero generalization.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Any evaluation number needs its comparison conditions stated: same tokenization, clean split, no leak. The number without the conditions is a rumor.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>The distributional hypothesis</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>How can a machine learn meaning without a dictionary? In the corpus, “cat” occurs near {the, sat, on, chased, mouse} and “dog” occurs near {the, sat, on, rug, barked, at}. The neighbor sets overlap heavily. The hypothesis says: similar neighbors, similar meaning. The classic line, as the lesson states it: “You shall know a word by the company it keeps”.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §5, §6</span></p>
+<p>Similarity is cosine between cooccurrence vectors: cos(u, v) = u·v / (||u|| ||v||). High cosine means the words keep the same company. The mechanism is purely counting, and U02 replaces raw counts with learned vectors that fix the sparsity. From <code>compute_u01.py</code>: a window of width 2 around the first “cat” (position 1) gives {the: 1, sat: 1, on: 1}. Slide the window to position 2 (“sat”) and the counts become {the: 2, cat: 1, on: 1}. The count of “the” rises from 1 to 2 because the window now covers two “the” tokens.</p>
+<figure>
+<img class="illus" src="assets/u01-distributional.jpg" alt="Watercolor of two overlapping clouds of colored dots with circled overlaps">
+<figcaption><span class="tag tag-toy">Illustration</span> The distributional idea as watercolor: two clouds of cooccurrence dots, “cat” and “dog”, overlapping heavily. The overlap is the shared meaning. Antonyms live in the overlap too, which is the catch. Watercolor, original to this companion.</figcaption>
+</figure>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that similar contexts mean similar meaning. The counterexample is antonyms. “Hot” and “cold” occur in near-identical contexts (“the soup is __”, “it feels __ today”). Cosine calls them similar, a human calls them opposites. Distributional similarity is substitutability, not synonymy.</p>
+</div>
+<div class="nugget" id="nugget-distrib">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">Meaning is read off from context distributions, not stored as definitions. But similarity here means substitutability, and antonyms substitute perfectly.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>“Hot” and “cold” keep the same company. Any vector method built on cooccurrence inherits this blind spot unless the objective corrects for it.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>When you define similarity operationally, name what the operation cannot see. Cosine sees substitutability. Synonymy is a stricter claim that needs stricter evidence.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Data splits: three jobs, three sets</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>Why not train on all the data and test on all the data? Build the toy vocabulary from all six sentences, then “test” on sentence 5 (“the mouse ran from the cat”). Every word is known, the OOV rate is 0%. Now build the vocabulary from sentences 1 to 4 only: “ran” and “from” are unknown. The first setup lies about generalization.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §5</span></p>
+<p>Three jobs, three sets. Train fits parameters. Validation picks settings: smoothing, window width, model choice. Test reports the number you claim. Touch the test set twice and the second number is not a test number anymore. It is a second validation number. Choose the splits before you count anything. Vocabulary, counts, and hyperparameters come from train only.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §6</span></p>
+<p>The computed example. Vocabulary from sentences 1 to 4. Test sentence 5 has 6 tokens, 2 OOV (“ran”, “from”). OOV rate = 2/6 = 0.333. With the leaky vocabulary (all six sentences), the OOV rate is 0. The honest number is 0.333. Computed from the corpus in <code>compute_u01.py</code>.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is that the test set measures generalization. The counterexample: the test set comes from the same crawl as training, full of near-duplicates. The model scores 95% on test and 70% in production. The split was clean, the collection was not. Splits cannot fix a biased corpus. Dedup before splitting, not after.</p>
+</div>
+<div class="nugget" id="nugget-split">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §5</span></h4>
+<p class="big">Read the test set once, at the end. The second read is not a test. It is a second validation.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Two leakage mechanisms hide in pipelines: the vocabulary built on test data, and near-duplicate documents across splits. Both make the number optimistic, and neither shows up in the loss curve.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>For systems that face the future, like news or markets, prefer time-based splits. Random splits leak the future into training and predict production accuracy worse.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Task formulation: five slots or a wish</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>Why do two teams both “do sentiment” and get incomparable numbers? Team A labels movie reviews positive or negative. Team B labels the same reviews on a 1 to 5 scale. Same name, different label sets, different metrics. The task was never formulated, so the numbers cannot be compared.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §3, §5</span></p>
+<p>A task formulation has five slots: input, output, data (with splits), metric, and the decision the output drives. If any slot is blank, the task is a wish, not a task. The decision slot is the one teams skip: who acts on the label, and what happens when it is wrong? The loss is what the optimizer sees, and the metric is what the stakeholder sees. They must correlate, but they are not the same object.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §6, §11</span></p>
+<p>The toy formulation for the Naive Bayes classifier: input, one sentence. Output, {pets, finance}. Data, 4 train docs, 1 validation, 1 test. Metric, accuracy. Decision, route the document to the right team queue. The computed test accuracy on one test doc is 0 or 1: a reminder that tiny test sets make the metric a coin flip. And the broken assumption is that the metric captures the task: accuracy on a 99-to-1 imbalanced queue gives a constant classifier 99% while it routes every finance document to pets.</p>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Metrics: lenses, not truths</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>The classifier scores 99%. Is it good? One hundred documents: 99 pets, 1 finance. A constant “pets” classifier reaches accuracy 0.99 with finance recall 0.0. The headline number is excellent, the system is useless for finance. Metrics are lenses, not truths. Accuracy asks how often right. Precision asks: of the flagged, how many correct. Recall asks: of the true, how many found. F1 is their harmonic mean: it punishes a model that sacrifices one for the other.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §5, §6</span></p>
+<p>Why the harmonic mean? The arithmetic mean of P = 1.0, R = 0.0 is 0.5, which hides the total recall failure. The harmonic mean is 0.0. F1 = 2/(1/P + 1/R): when either term is zero, F1 is zero. The metric is designed to refuse partial credit for degenerate classifiers. The toy, with finance as positive: TP = 0, FP = 0, FN = 1. Precision is 0/0, defined as 0.0 by convention. Recall is 0/1 = 0.0. F1 = 0.0. Accuracy = 0.99. Four numbers, one story: the accuracy lies, the F1 tells the truth.</p>
+</div>
+<figure>
+<div id="chart-f1"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §6</span> The constant “pets” classifier on the 99/1 split: accuracy 0.99, F1 0.0. The gap is the whole point.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Constant-classifier toy. Slide the minority count and watch accuracy stay smug while F1 refuses partial credit. The setup is C11’s.</p>
+<p>Minority documents (of 100) <input class="range" type="range" id="f1k" min="1" max="50" value="1" aria-label="Minority document count"></p>
+<p class="small" id="f1note"></p>
+</div>
+<div class="nugget" id="nugget-f1">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §5, §6</span></h4>
+<p class="big">F1 refuses partial credit. A classifier that never predicts the minority class gets 0.0, no matter what accuracy says.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Once a metric becomes the target, it stops measuring. The lesson names BLEU hacking as the classic case: n-gram overlap climbs while humans judge quality flat. Rotate metrics and keep a human-eval slice.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Pick the lens that matches the cost of the mistake. Choose F1 when classes are imbalanced and both error types cost. Choose accuracy only when classes are balanced and errors are symmetric.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>The arc: five eras, four mechanisms</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §3, §5</span></p>
+<p>Five rough eras: rules (1950s to 1980s), statistics (1990s to 2000s), neural networks (2010s), pretraining (2018 to 2022), scale and alignment (2023 to 2026). Each era kept the previous era’s insights and dropped its bottlenecks. The mechanism of progress, stated without hype: (a) more compute, (b) more data, (c) better objectives, (d) architectures that parallelize. Every milestone moves at least one of the four. Word2vec moved (c) and (d). Transformers moved (d). Pretraining moved (b) and (c). RLHF moved (c) toward human judgment.</p>
+<figure>
+<img class="illus" src="assets/u01-eliza.jpg" alt="Black and white photograph of Joseph Weizenbaum at a teletype terminal with ELIZA">
+<figcaption>Historical photograph: Joseph Weizenbaum with ELIZA at a terminal, 1960s. ELIZA, built in 1966, is the symbolic era’s most famous system: pattern-action rules that could imitate a conversation. Source: the Weizenbaum Institute’s “60 Jahre ELIZA” archive page (weizenbaum-institut.de). Real photograph, not generated.</figcaption>
+</figure>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §6, §11</span></p>
+<p>The toy arithmetic on the schedule, from the inspected official site (SRC-01), not from memory: 20 sessions over 9 weeks. 4 assignments at 48% total (A1 6%, A2 to A4 14% each). Project at 49%. Participation at 3%. And the broken assumption: progress was inevitable. The counterexample is the neural winter of the 1990s to 2000s. The ideas existed, the compute and data did not. Progress needed all four mechanisms. Ideas alone stalled for a decade.</p>
+</div>
+<figure>
+<div id="chart-grades"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §6</span> Course grade weights from the inspected official site (SRC-01): assignments 48%, project 49%, participation 3%. The project outweighs all four assignments.</figcaption>
+</figure>
+<div class="nugget" id="nugget-progress">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §5, §11</span></h4>
+<p class="big">Progress is four mechanisms, not one genius idea: more compute, more data, better objectives, architectures that parallelize. The neural winter proves ideas alone stall.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The schedule itself is the argument for order: week 1 covers history and word vectors, week 4 covers pretraining, week 5 covers post-training. You cannot understand RLHF without vectors. History is the dependency graph.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>When a field advances, attribute the advance to its mechanism, not its mystique. If you want the next advance, buy the missing mechanism, not the missing guru.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-ambiguity"><span class="wnum">01</span>Ambiguity is the normal state <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-eras"><span class="wnum">02</span>Knowledge moves into geometry <span class="muted">· C02</span></a></li>
+<li><a href="#nugget-corpus"><span class="wnum">03</span>A corpus is a sample, not the language <span class="muted">· C03</span></a></li>
+<li><a href="#nugget-nb"><span class="wnum">04</span>Tiny data makes smoothing the vote <span class="muted">· C04</span></a></li>
+<li><a href="#nugget-bleu"><span class="wnum">05</span>Short and perfect still scores low <span class="muted">· C06</span></a></li>
+<li><a href="#nugget-ppl"><span class="wnum">06</span>Perplexity reads as choices per word <span class="muted">· C07</span></a></li>
+<li><a href="#nugget-distrib"><span class="wnum">07</span>Substitutability is not synonymy <span class="muted">· C08</span></a></li>
+<li><a href="#nugget-split"><span class="wnum">08</span>Read the test set once <span class="muted">· C09</span></a></li>
+<li><a href="#nugget-f1"><span class="wnum">09</span>F1 refuses partial credit <span class="muted">· C11</span></a></li>
+<li><a href="#nugget-progress"><span class="wnum">10</span>Progress is four mechanisms <span class="muted">· C12</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u01_nlp_history.md</code> (CS224N, Unit 01). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The session title (S01, History of NLP) and A1 title (Introduction to word vectors) are OFFICIAL-SOURCE via SRC-02 and SRC-03. All concept leaves are REQUESTED-BRANCH. Every number on this page traces to the lesson’s computed script <code>visuals/compute_u01.py</code> (executed 2026-10-06), the lesson’s hand-computed examples (labeled as such), or the inspected official site (SRC-01). Toys run the lesson’s rules over the toy corpus and are labeled <span class="tag tag-toy">Illustration</span>. Interactive widgets marked <span class="tag tag-toy">Illustration</span> are companion inventions. One historical photograph is used (Weizenbaum with ELIZA), sourced from the Weizenbaum Institute archive with attribution.</p>
+<p class="small">Direct quotations from the source: 10 words, all in Section 8 (the classic statement of the distributional hypothesis, as the lesson states it). Example sentences and terms in quotation marks are the lesson’s own toy material, narrated rather than quoted.</p>
+<p class="small">Built as Companion 1 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 230
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function negBar(id, rows, lo) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 190
+  const rowH = 52
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const maxV = Math.max.apply(null, rows.map(function(r) { return r[1] }))
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 30, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * ((r[1] - lo) / (maxV - lo))
+    const bar = svgEl("rect", {x: labelW, y: y + 12, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1]
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 30, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = String(r[1])
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function num(id, dflt) {
+  const v = parseFloat(document.getElementById(id).value)
+  if (isNaN(v)) { return dflt }
+  return v
+}
+
+function runSmooth() {
+  const cuv = num("scuv", 5)
+  const cu = num("scu", 11)
+  const V = num("sv", 14)
+  const note = document.getElementById("snote")
+  if (cu <= 0 || V <= 0) {
+    note.textContent = "Counts must be positive."
+    return
+  }
+  const mle = cuv / cu
+  const add1 = (cuv + 1) / (cu + V)
+  note.textContent = "MLE c(u,v)/c(u) = " + mle.toFixed(3) + ". Add-1 = (c(u,v)+1)/(c(u)+V) = " + add1.toFixed(3) + ". Smoothing pulls the estimate toward the uniform prior."
+}
+
+function runPpl() {
+  const p1 = num("pp1", 0.24)
+  const p2 = num("pp2", 0.1579)
+  const note = document.getElementById("pnote")
+  if (p1 <= 0 || p2 <= 0 || p1 > 1 || p2 > 1) {
+    note.textContent = "Probabilities must sit between 0 and 1."
+    return
+  }
+  const H = -(Math.log(p1) + Math.log(p2)) / 2
+  const ppl = Math.exp(H)
+  note.textContent = "H = " + H.toFixed(3) + " nats. Perplexity = exp(H) = " + ppl.toFixed(3) + ". The model hesitates like a " + ppl.toFixed(1) + "-sided die."
+}
+
+function runBleu() {
+  const p1 = num("bleup1", 1.0)
+  const p2 = num("bleup2", 1.0)
+  const c = num("bleuc", 3)
+  const r = num("bleur", 6)
+  const note = document.getElementById("bleunote")
+  if (p1 <= 0 || p2 <= 0 || c <= 0 || r <= 0) {
+    note.textContent = "All inputs must be positive."
+    return
+  }
+  const bp = (c >= r) ? 1 : Math.exp(1 - r / c)
+  const score = bp * Math.exp((Math.log(p1) + Math.log(p2)) / 2)
+  note.textContent = "Brevity penalty = " + bp.toFixed(3) + ". BLEU-2 = " + score.toFixed(3) + ". With perfect precision, the penalty is the whole score."
+}
+
+function runArcs() {
+  const out = document.getElementById("arcout")
+  out.textContent = ""
+  out.appendChild(el("span", "chip", "correct: 2.1 + 1.7 = 3.8"))
+  out.appendChild(el("span", "chip plain", "wrong attach: 2.1 + 0.2 = 2.3"))
+  document.getElementById("arcnote").textContent = "Winner: the correct tree, 3.8 > 2.3. The parser picks the max."
+}
+
+function runF1() {
+  const k = parseInt(document.getElementById("f1k").value, 10)
+  const acc = (100 - k) / 100
+  const note = document.getElementById("f1note")
+  note.textContent = "Minority = " + k + " of 100. Constant classifier: accuracy " + acc.toFixed(2) + ", precision 0.00, recall 0.00, F1 0.00. Accuracy stays smug. F1 does not."
+}
+
+document.getElementById("sbtn").addEventListener("click", runSmooth)
+document.getElementById("pbtn").addEventListener("click", runPpl)
+document.getElementById("bleubtn").addEventListener("click", runBleu)
+document.getElementById("arcbtn").addEventListener("click", runArcs)
+document.getElementById("f1k").addEventListener("input", runF1)
+
+barChart("chart-bigram-cells", [["cat follows the", 5, CLAY], ["rug follows the", 2, INDIGO], ["mouse follows the", 2, INDIGO], ["mat follows the", 1, SAGE], ["dog follows the", 1, SAGE]], 5, "")
+negBar("chart-nb", [["finance (winner)", -5.011, SAGE], ["pets", -5.416, CLAY]], -6)
+barChart("chart-arcs", [["correct tree", 3.8, SAGE], ["wrong attachment", 2.3, CLAY]], 3.8, "")
+barChart("chart-bleu", [["unigram precision", 1.0, INDIGO], ["bigram precision", 1.0, INDIGO], ["brevity penalty", 0.368, AMBER], ["BLEU-2", 0.368, CLAY]], 1.0, "")
+barChart("chart-f1", [["accuracy", 0.99, INDIGO], ["F1", 0.0, CLAY]], 1.0, "")
+barChart("chart-grades", [["assignments (4)", 48, INDIGO], ["project", 49, CLAY], ["participation", 3, SAGE]], 49, "%")
+runF1()
+</script>
+</body>
+</html>

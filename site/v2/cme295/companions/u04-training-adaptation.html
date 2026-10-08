@@ -1,726 +1,758 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>U04 · Training and adaptation: Interactive companion</title>
-<style>
-:root{--ink:#1c1a17}
-:root{--paper:#faf7f0}
-:root{--paper2:#f3eee2}
-:root{--line:#ddd3bd}
-:root{--muted:#7a7160}
-:root{--clay:#b3541e}
-:root{--indigo:#2f4b8f}
-:root{--indigosoft:#e8edfb}
-:root{--sage:#4f7a52}
-:root{--sagesoft:#e6f0e6}
-:root{--amber:#a97b12}
-:root{--serif:"Iowan Old Style",Georgia,"Times New Roman",serif}
-:root{--sans:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
-:root{--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-*{box-sizing:border-box}
-body{margin:0}
-body{background:var(--paper)}
-body{color:var(--ink)}
-body{font-family:var(--serif)}
-body{font-size:19px}
-body{line-height:1.62}
-.wrap{max-width:860px}
-.wrap{margin:0 auto}
-.wrap{padding:0 24px}
-.topband{background:var(--ink)}
-.topband{color:var(--paper)}
-.topband{font-family:var(--sans)}
-.topband{font-size:13px}
-.topband{letter-spacing:.12em}
-.topband{text-transform:uppercase}
-.topband{padding:10px 0}
-.topband .wrap{padding:0 24px}
-header.hero{padding:52px 0 8px}
-.kicker{font-family:var(--sans)}
-.kicker{font-size:13px}
-.kicker{letter-spacing:.14em}
-.kicker{text-transform:uppercase}
-.kicker{color:var(--clay)}
-.kicker{margin:0 0 10px}
-h1{font-size:44px}
-h1{line-height:1.12}
-h1{margin:0 0 14px}
-h1{font-weight:700}
-.dek{font-size:21px}
-.dek{line-height:1.5}
-.dek{color:#3d382e}
-.dek{max-width:680px}
-.legend{border:1px solid var(--line)}
-.legend{background:var(--paper2)}
-.legend{border-radius:10px}
-.legend{padding:18px 22px}
-.legend{margin:28px 0}
-.legend{font-size:16px}
-.legend p{margin:.4em 0}
-.tag{display:inline-block}
-.tag{font-family:var(--sans)}
-.tag{font-size:11px}
-.tag{font-weight:700}
-.tag{letter-spacing:.1em}
-.tag{text-transform:uppercase}
-.tag{padding:3px 10px}
-.tag{border-radius:20px}
-.tag{margin-right:8px}
-.tag{vertical-align:2px}
-.tag-lesson{background:var(--ink)}
-.tag-lesson{color:var(--paper)}
-.tag-toy{background:transparent}
-.tag-toy{color:var(--amber)}
-.tag-toy{border:1.5px solid var(--amber)}
-.tag-companion{background:transparent}
-.tag-companion{color:var(--muted)}
-.tag-companion{border:1.5px solid var(--muted)}
-.tag-ref{font-family:var(--mono)}
-.tag-ref{font-size:12px}
-.tag-ref{color:var(--muted)}
-.tag-ref{margin-left:6px}
-nav.sticky{position:sticky}
-nav.sticky{top:0}
-nav.sticky{z-index:50}
-nav.sticky{background:var(--paper)}
-nav.sticky{border-top:1px solid var(--line)}
-nav.sticky{border-bottom:1px solid var(--line)}
-.navscroll{display:flex}
-.navscroll{gap:4px}
-.navscroll{overflow-x:auto}
-.navscroll{padding:8px 0}
-.navscroll{white-space:nowrap}
-.navscroll{max-width:860px}
-.navscroll{margin:0 auto}
-.navscroll{padding-left:24px}
-.navscroll{padding-right:24px}
-.navscroll a{color:var(--muted)}
-.navscroll a{text-decoration:none}
-.navscroll a{font-family:var(--sans)}
-.navscroll a{font-size:13px}
-.navscroll a{padding:6px 10px}
-.navscroll a{border-radius:16px}
-.navscroll a:hover{background:var(--paper2)}
-.navscroll a:hover{color:var(--ink)}
-section.block{padding:44px 0 8px}
-section.block{border-top:1px solid var(--line)}
-section.block{margin-top:36px}
-.secnum{font-family:var(--sans)}
-.secnum{font-size:13px}
-.secnum{letter-spacing:.14em}
-.secnum{color:var(--clay)}
-.secnum{text-transform:uppercase}
-h2{font-size:32px}
-h2{margin:.25em 0 .5em}
-h2{line-height:1.2}
-h3{font-size:22px}
-h3{margin:1.6em 0 .5em}
-p{margin:.7em 0}
-.prose-narrow{max-width:680px}
-figure{margin:26px 0}
-figcaption{color:var(--muted)}
-figcaption{margin-top:10px}
-figcaption{line-height:1.5}
-figcaption{font-size:16px}
-img.illus{width:100%}
-img.illus{border-radius:10px}
-img.illus{border:1px solid var(--line)}
-img.illus{display:block}
-img.lessonfig{width:100%}
-img.lessonfig{border-radius:10px}
-img.lessonfig{border:1px solid var(--line)}
-img.lessonfig{display:block}
-.nugget{border:1px solid var(--line)}
-.nugget{border-left:6px solid var(--clay)}
-.nugget{background:#fffdf8}
-.nugget{border-radius:8px}
-.nugget{padding:20px 24px}
-.nugget{margin:26px 0}
-.nugget h4{font-family:var(--sans)}
-.nugget h4{font-size:15px}
-.nugget h4{letter-spacing:.06em}
-.nugget h4{text-transform:uppercase}
-.nugget h4{color:var(--clay)}
-.nugget h4{margin:0 0 8px}
-.nugget .big{font-size:22px}
-.nugget .big{line-height:1.35}
-.nugget .big{margin:.3em 0}
-.nugget dl{margin:.6em 0 0}
-.nugget dt{font-family:var(--sans)}
-.nugget dt{font-size:13px}
-.nugget dt{font-weight:700}
-.nugget dt{letter-spacing:.08em}
-.nugget dt{text-transform:uppercase}
-.nugget dt{color:var(--muted)}
-.nugget dt{margin-top:10px}
-.nugget dd{margin:2px 0 0 0}
-table.data{border-collapse:collapse}
-table.data{width:100%}
-table.data{margin:20px 0}
-table.data{font-size:16px}
-table.data{background:#fffdf8}
-table.data th{font-family:var(--sans)}
-table.data th{font-size:13px}
-table.data th{text-transform:uppercase}
-table.data th{letter-spacing:.08em}
-table.data th{text-align:left}
-table.data th{padding:10px 12px}
-table.data th{border-bottom:2px solid var(--ink)}
-table.data td{padding:9px 12px}
-table.data td{border-bottom:1px solid var(--line)}
-table.data td.num{font-family:var(--mono)}
-table.data td.num{font-size:15px}
-code{font-family:var(--mono)}
-code{font-size:.86em}
-code{background:var(--paper2)}
-code{padding:2px 6px}
-code{border-radius:4px}
-pre{background:var(--ink)}
-pre{color:var(--paper)}
-pre{padding:18px 20px}
-pre{border-radius:8px}
-pre{overflow-x:auto}
-pre{font-size:14.5px}
-pre{line-height:1.55}
-pre code{background:transparent}
-pre code{color:var(--paper)}
-pre code{padding:0}
-.toy{border:1.5px dashed var(--amber)}
-.toy{border-radius:10px}
-.toy{padding:20px 22px}
-.toy{margin:24px 0}
-.toy{background:#fffdf6}
-.chips{display:flex}
-.chips{flex-wrap:wrap}
-.chips{gap:8px}
-.chips{margin:14px 0}
-.chip{font-family:var(--mono)}
-.chip{font-size:15px}
-.chip{background:var(--indigosoft)}
-.chip{border:1px solid var(--indigo)}
-.chip{color:var(--indigo)}
-.chip{padding:6px 12px}
-.chip{border-radius:6px}
-.chip.plain{background:var(--paper2)}
-.chip.plain{border-color:var(--line)}
-.chip.plain{color:var(--ink)}
-button.btn{font-family:var(--sans)}
-button.btn{font-size:15px}
-button.btn{font-weight:600}
-button.btn{background:var(--ink)}
-button.btn{color:var(--paper)}
-button.btn{border:none}
-button.btn{border-radius:8px}
-button.btn{padding:10px 18px}
-button.btn{cursor:pointer}
-button.btn{margin:6px 8px 6px 0}
-button.btn:hover{background:var(--clay)}
-input.text{font-family:var(--mono)}
-input.text{font-size:16px}
-input.text{padding:10px 14px}
-input.text{border:1.5px solid var(--line)}
-input.text{border-radius:8px}
-input.text{width:100%}
-input.text{max-width:420px}
-input.text{background:#fffdf8}
-.callout{border-left:4px solid var(--indigo)}
-.callout{padding:6px 0 6px 18px}
-.callout{margin:20px 0}
-.callout{color:var(--ink)}
-.wisdom{list-style:none}
-.wisdom{padding:0}
-.wisdom li{border-bottom:1px solid var(--line)}
-.wisdom li{padding:12px 0}
-.wisdom a{color:var(--ink)}
-.wisdom a{text-decoration:none}
-.wisdom a:hover{color:var(--clay)}
-.wisdom .wnum{font-family:var(--sans)}
-.wisdom .wnum{font-size:12px}
-.wisdom .wnum{color:var(--clay)}
-.wisdom .wnum{font-weight:700}
-.wisdom .wnum{margin-right:10px}
-svg.chart{width:100%}
-svg.chart{height:auto}
-svg.chart{display:block}
-svg.chart{background:#fffdf8}
-svg.chart{border:1px solid var(--line)}
-svg.chart{border-radius:10px}
-footer.prov{border-top:2px solid var(--ink)}
-footer.prov{margin-top:56px}
-footer.prov{padding:28px 0 60px}
-footer.prov{font-size:16px}
-footer.prov{color:#3d382e}
-footer.prov p{margin:.7em 0}
-.small{font-size:15px}
-.capleft{text-align:left}
-.capleft{padding-bottom:8px}
-.muted{color:var(--muted)}
-</style>
-</head>
-<body>
-<div class="topband"><div class="wrap">CME295 · Transformers and Large Language Models · Interactive companion</div></div>
-<div class="wrap">
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&amp;family=Barlow+Semi+Condensed:ital,wght@0,400;0,500;0,600;1,400&amp;family=Libre+Caslon+Display&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&amp;display=swap" rel="stylesheet"/>
+<style id="template-theme">
+/* =====================================================================
+   Companion template theme — extracted verbatim from the reference artifact
+   (~/workspace/companions/reference/index.html), with two additions:
+     (a) provenance components the reference lacks: .src-legend, provenance
+         tag pills, .quote-count, and the colophon block styles;
+     (b) a clearly-marked LEGACY section carrying forward old pilot content
+         classes (pull quotes, stat cards, toys) so build.py can swap the
+         <style> block without orphaning existing content.
+   Per-course accent override is NOT in this file: build.py injects a second
+   <style id="course-accent"> after this one, setting only --apron,
+   --apron-wash, --apron-text (+ dark variants). Later rules win.
+   ===================================================================== */
+
+/* ---------- design tokens (reference §a, verbatim) ---------- */
+:root {
+  --paper: #F7F2E8;        /* page = the watercolor paper */
+  --print: #F7F2E8;        /* paintings always sit on paper, in both themes */
+  --surface: #FFFCF5;      /* shelf tags, cards */
+  --ink: #2A231E;          /* sepia-black, same as the pen in the paintings */
+  --ink-2: #5C534A;
+  --muted: #7E7469;
+  --rule: #DDD3C3;
+  --rule-2: #ECE4D6;
+  --apron: #D9581A;        /* the accent: marks, never body text */
+  --apron-wash: rgba(217, 88, 26, .12);
+  --apron-text: #A6400B;   /* accent that clears contrast as text on paper */
+  --on-apron: #FFFFFF;
+  --blue: #2462A6;         /* blueprint blue: the second series */
+  --blue-wash: rgba(36, 98, 166, .12);
+  --grey: #7E786F;         /* neutral benchmark series */
+  --tape: #F0C537;
+  --tape-ink: #2A231E;
+  --frame-pad: 0px;
+  --frame-shadow: none;
+  --frame-radius: 0px;
+  --stage-bg: #EEE6D6;      /* full-screen chart panels on phones */
+  --f-display: "Libre Caslon Display", "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --f-body: "Newsreader", Georgia, "Times New Roman", serif;
+  --f-ui: "Barlow Semi Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --f-sign: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --col: 37rem;
+  --wide: 68rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #181512; --surface: #221D19; --ink: #EEE6DA; --ink-2: #C3B9AC; --muted: #978D81;
+    --rule: #3B342D; --rule-2: #2A2520; --apron: #D8612A; --apron-wash: rgba(216, 97, 42, .2);
+    --apron-text: #F2925A; --on-apron: #FFFFFF; --blue: #4F8DD6; --blue-wash: rgba(79, 141, 214, .2);
+    --grey: #938D84; --tape: #D9B12E; --tape-ink: #1A1611;
+    --frame-pad: 14px; --frame-shadow: 0 18px 44px rgba(0, 0, 0, .5); --frame-radius: 3px; --stage-bg: #211D19;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #181512; --surface: #221D19; --ink: #EEE6DA; --ink-2: #C3B9AC; --muted: #978D81;
+  --rule: #3B342D; --rule-2: #2A2520; --apron: #D8612A; --apron-wash: rgba(216, 97, 42, .2);
+  --apron-text: #F2925A; --on-apron: #FFFFFF; --blue: #4F8DD6; --blue-wash: rgba(79, 141, 214, .2);
+  --grey: #938D84; --tape: #D9B12E; --tape-ink: #1A1611;
+  --frame-pad: 14px; --frame-shadow: 0 18px 44px rgba(0, 0, 0, .5); --frame-radius: 3px; --stage-bg: #211D19;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-padding-top: 6rem; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.125rem/1.62 var(--f-body);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: inherit; text-decoration-color: var(--apron); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+a:hover { color: var(--apron-text); }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 2px; }
+.wrap { padding-inline: 20px; padding-block: 0 4rem; }
+.col { max-width: var(--col); margin-inline: auto; }
+.wide { max-width: var(--wide); margin-inline: auto; }
+.col > p { margin: 0 0 1.05em; }
+.col > p + p { text-indent: 0; }
+em { font-style: italic; }
+.ui { font-family: var(--f-ui); }
+
+/* ---------- tape measure bar ---------- */
+.tapebar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  display: grid; grid-template-columns: minmax(11rem, 15rem) 1fr; align-items: center; gap: 14px;
+  padding: 8px 20px 6px;
+}
+.tape-read { font-family: var(--f-ui); line-height: 1.15; min-width: 0; }
+.tape-time { font: 600 1.15rem var(--f-sign); letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; flex: none; }
+.tape-time small { font: 500 .78rem var(--f-ui); color: var(--muted); letter-spacing: .04em; margin-left: .35rem; }
+.tape-ch { font-size: .86rem; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#tape { display: block; width: 100%; height: 42px; cursor: pointer; touch-action: pan-y; }
+#tape:focus-visible { outline-offset: 1px; }
+.tape-hint { position: absolute; right: 22px; bottom: -1.35rem; font: 500 .72rem var(--f-ui); color: var(--muted); }
+@media (max-width: 640px) {
+  .tapebar { grid-template-columns: 1fr; gap: 2px; padding: 6px 16px 4px; }
+  .tape-read { display: flex; gap: .6rem; align-items: baseline; }
+  #tape { height: 36px; }
+}
+
+/* ---------- hero ---------- */
+.hero { padding-block: 3.2rem 1rem; }
+.kicker { font: 600 .8rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--apron-text); margin: 0 0 1.2rem; }
+h1 {
+  font: 400 clamp(2.8rem, 7.6vw, 5.6rem)/0.98 var(--f-display);
+  letter-spacing: -.012em; margin: 0 0 1.4rem; text-wrap: balance;
+}
+.dek { font: italic 400 clamp(1.2rem, 2.4vw, 1.5rem)/1.42 var(--f-body); color: var(--ink-2); margin: 0 0 1.6rem; text-wrap: pretty; max-width: 34rem; }
+.byline { font: 500 .88rem/1.5 var(--f-ui); color: var(--muted); letter-spacing: .02em; display: flex; flex-wrap: wrap; gap: .25rem 1.1rem; }
+.byline b { color: var(--ink-2); font-weight: 600; }
+
+/* ---------- paintings ---------- */
+figure { margin: 0; }
+.paint { margin-block: 2.2rem 2.6rem; }
+.paint .frame {
+  background: var(--print); padding: var(--frame-pad); box-shadow: var(--frame-shadow);
+  border-radius: var(--frame-radius); isolation: isolate;
+}
+/* each painting: a static base on paper, plus separately painted layers that move */
+.stage { position: relative; background: var(--print); isolation: isolate; overflow: hidden; }
+.stage img.base { display: block; width: 100%; height: auto; max-width: 100%; mix-blend-mode: multiply; }
+.stage .ly { position: absolute; display: block; max-width: none; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.stage .ly.mul { mix-blend-mode: multiply; }
+.stage .ly[hidden] { display: none; }
+.stage .ov { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.stage .spark { fill: #FFF8E2; transform-box: fill-box; transform-origin: center; }
+.stage .ripple { fill: none; stroke: #5F7F96; stroke-width: 2.5; }
+.stage .ov.glow-screen { mix-blend-mode: screen; }
+.stage .ring path { fill: none; stroke: #2A231E; stroke-width: 4; stroke-linecap: round; }
+/* first arrival, second kind: the picture develops from a pencil sketch into colour */
+.paint .stage.sketch { filter: grayscale(1) sepia(.3) contrast(1.12); }
+.paint .stage.sketch.develop { filter: grayscale(0) sepia(0) contrast(1); transition: filter 2.4s cubic-bezier(.45, .05, .35, 1) .15s; }
+/* first arrival: the picture blooms onto the paper like a wet wash.
+   The reference used an external bleed.png; the template embeds an organic
+   turbulence-edged mask as a data URI so the effect works on ANY image with
+   zero external files (single-file, file://-clean). */
+.paint .bleed {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='b' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.016' numOctaves='3' seed='7' result='n'/%3E%3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.72'/%3E%3CfeComposite operator='in' in2='SourceGraphic'/%3E%3C/filter%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='52%25' stop-color='black'/%3E%3Cstop offset='80%25' stop-color='black' stop-opacity='0'/%3E%3C/radialGradient%3E%3Crect width='400' height='400' fill='url(%23g)' filter='url(%23b)'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat; -webkit-mask-position: 50% 50%; -webkit-mask-size: 1% auto;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='b' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.016' numOctaves='3' seed='7' result='n'/%3E%3CfeColorMatrix in='n' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.85 0.85 0.85 0 -0.72'/%3E%3CfeComposite operator='in' in2='SourceGraphic'/%3E%3C/filter%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='52%25' stop-color='black'/%3E%3Cstop offset='80%25' stop-color='black' stop-opacity='0'/%3E%3C/radialGradient%3E%3Crect width='400' height='400' fill='url(%23g)' filter='url(%23b)'/%3E%3C/svg%3E");
+  mask-repeat: no-repeat; mask-position: 50% 50%; mask-size: 1% auto;
+}
+.paint .bleed.bloom {
+  -webkit-mask-size: 270% auto; mask-size: 270% auto;
+  transition: -webkit-mask-size 1.9s cubic-bezier(.5, .05, .4, 1), mask-size 1.9s cubic-bezier(.5, .05, .4, 1);
+}
+.pinbox { position: relative; }
+/* phones: each painting takes the screen and the view travels across it as you scroll */
+@media (max-width: 700px) {
+  figure.paint.pin, figure.paint.drift { margin: 1.6rem -20px 1.8rem; max-width: none; }
+  figure.paint.pin { height: 200vh; height: 200svh; }
+  figure.paint.drift { scroll-snap-align: start; }
+  figure.paint.pin .pinbox { position: sticky; top: var(--barH, 60px); }
+  figure.paint.pin .pinbox, figure.paint.drift .pinbox { height: calc(100vh - var(--barH, 60px)); height: calc(100svh - var(--barH, 60px)); display: flex; flex-direction: column; }
+  figure.paint.pin .frame, figure.paint.drift .frame { flex: 1 1 auto; min-height: 0; position: relative; overflow: hidden; padding: 0; box-shadow: none; border-radius: 0; background: var(--print); }
+  figure.paint.pin .stage, figure.paint.drift .stage { position: absolute; left: 0; top: 0; height: 100%; width: auto; max-width: none; aspect-ratio: var(--ar); transform-origin: 0 0; }
+  figure.paint.pin .stage img.base, figure.paint.drift .stage img.base { width: 100%; height: 100%; max-width: none; }
+  figure.paint.pin figcaption, figure.paint.drift figcaption { margin: 0; padding: .6rem 20px .75rem; max-width: none; background: var(--paper); border-top: 1px solid var(--rule); }
+}
+.paint figcaption, .fig-note {
+  font: italic 400 .92rem/1.45 var(--f-body); color: var(--muted); margin-top: .7rem; max-width: var(--col);
+}
+.paint.wide figcaption { margin-inline: auto; }
+.paint.inset { max-width: 46rem; margin-inline: auto; }
+/* breakout: figures that stay in-flow inside the 37rem column can still
+   open up to inset/wide widths on large screens (Phase 1 may hoist them
+   to true siblings instead; visually identical). */
+@media (min-width: 50rem) {
+  .col > figure.paint.inset, .col > figure.photo.inset { width: 46rem; max-width: none; margin-inline: calc((var(--col) - 46rem) / 2); }
+}
+@media (min-width: 74rem) {
+  .col > figure.paint.wide, .col > figure.photo.wide, .col > section.fig.wide { width: var(--wide); max-width: none; margin-inline: calc((var(--col) - var(--wide)) / 2); }
+}
+/* real photographs: no watercolor entrance, honest framing */
+.photo { margin-block: 2.2rem 2.6rem; }
+.photo img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 3px; }
+.photo.inset { max-width: 46rem; margin-inline: auto; }
+.photo figcaption { font: italic 400 .92rem/1.45 var(--f-body); color: var(--muted); margin-top: .7rem; }
+.photo figcaption .credit { font-style: normal; font-family: var(--f-ui); font-size: .8rem; color: var(--ink-2); }
+
+/* ---------- chapter heads: hanging aisle signs ---------- */
+.chapter { padding-top: 3.4rem; }
+.ch-head { display: flex; gap: 1.2rem; align-items: flex-start; margin-bottom: 1.5rem; }
+.aisle {
+  flex: none; position: relative; margin-top: 1.5rem;
+  width: 4.4rem; padding: .35rem 0 .45rem; text-align: center;
+  background: var(--apron); color: var(--on-apron); border-radius: 2px;
+  font-family: var(--f-sign); line-height: 1;
+}
+.aisle::before, .aisle::after {
+  content: ""; position: absolute; bottom: 100%; width: 1px; height: 1.5rem; background: var(--muted);
+}
+.aisle::before { left: 22%; } .aisle::after { right: 22%; }
+.aisle .l { display: block; font-size: .68rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; }
+.aisle .n { display: block; font-size: 2.35rem; font-weight: 700; margin-top: .12rem; }
+.aisle.analysis { background: var(--ink); }
+.ch-meta { font: 600 .8rem var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: .2rem 0 .4rem; }
+.ch-meta .ts { color: var(--apron-text); font-variant-numeric: tabular-nums; }
+.ch-meta .dec { text-transform: none; }
+h2 { font: 400 clamp(2rem, 4.8vw, 3.15rem)/1.02 var(--f-display); margin: 0; text-wrap: balance; letter-spacing: -.005em; }
+h3.sub { font: 400 1.7rem/1.1 var(--f-display); margin: 2.4rem 0 .8rem; text-wrap: balance; }
+.part-break { text-align: center; margin: 5rem 0 0; font: 600 .82rem var(--f-ui); letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.part-break span { display: inline-block; padding: 0 1rem; background: var(--paper); position: relative; }
+.part-break::before { content: ""; display: block; height: 1px; background: var(--rule); position: relative; top: .62rem; }
+
+/* ---------- lesson tags: shelf labels ---------- */
+aside.tag {
+  display: grid; grid-template-columns: minmax(8.4rem, 10.5rem) 1fr;
+  background: var(--surface); border: 1px solid var(--rule); border-top: 6px solid var(--apron);
+  border-radius: 3px; margin: 2.1rem 0 2.3rem; box-shadow: 0 1px 0 var(--rule);
+}
+.tag-price { padding: 1rem .9rem 1rem 1rem; border-right: 1px dashed var(--rule); display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.tag-big { font: 700 2.3rem/1 var(--f-sign); color: var(--ink); letter-spacing: -.01em; white-space: nowrap; }
+.tag-big.tight { font-size: 1.55rem; }
+.tag-unit { font: 500 .82rem/1.25 var(--f-ui); color: var(--ink-2); margin-top: .35rem; }
+.tag-body { padding: .95rem 1.15rem 1rem; min-width: 0; }
+.tag-eye { font: 600 .74rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--apron-text); }
+.tag-body p { margin: .3rem 0 .6rem; font: 500 1.08rem/1.45 var(--f-body); text-wrap: pretty; }
+.tag-sku { display: flex; align-items: center; gap: .7rem; font: 500 .74rem var(--f-ui); color: var(--muted); letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.bars { display: inline-block; height: 15px; width: 78px; }
+@media (max-width: 520px) {
+  aside.tag { grid-template-columns: 1fr; }
+  .tag-price { border-right: 0; border-bottom: 1px dashed var(--rule); flex-direction: row; align-items: baseline; gap: .7rem; padding-bottom: .8rem; }
+  .tag-unit { margin-top: 0; }
+}
+
+/* ---------- figures / charts ---------- */
+.fig { margin-block: 2.4rem 2.8rem; }
+.fig-head { margin-bottom: .9rem; }
+.fig-title { font: 600 1.12rem/1.3 var(--f-ui); margin: 0; letter-spacing: .005em; }
+.fig-sub { font: 400 .95rem/1.4 var(--f-ui); color: var(--ink-2); margin: .2rem 0 0; }
+.fig-note { font-style: normal; font-family: var(--f-ui); font-size: .82rem; }
+.chart { position: relative; width: 100%; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { font-family: var(--f-ui); fill: var(--ink-2); font-size: 12px; }
+.chart .tick text { fill: var(--muted); font-variant-numeric: tabular-nums; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; shape-rendering: crispEdges; }
+.chart .axis { stroke: var(--muted); stroke-width: 1; shape-rendering: crispEdges; }
+.chart .lbl-strong { fill: var(--ink); font-weight: 600; }
+.legend { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; font: 500 .85rem var(--f-ui); color: var(--ink-2); margin: .3rem 0 .6rem; }
+.legend i { display: inline-block; width: 16px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: .4rem; }
+.legend i.sq { height: 10px; width: 10px; border-radius: 2px; }
+.ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1.2rem; margin: .4rem 0 1rem; font: 500 .9rem var(--f-ui); color: var(--ink-2); }
+.ctrl label { display: flex; align-items: center; gap: .55rem; }
+.ctrl output { font: 600 1rem var(--f-sign); color: var(--ink); min-width: 3.2rem; font-variant-numeric: tabular-nums; }
+input[type="range"] { accent-color: var(--apron); width: 11rem; max-width: 100%; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 2px; background: var(--surface); }
+.seg button, .btn {
+  font: 600 .86rem var(--f-ui); color: var(--ink-2); background: transparent; border: 0; border-radius: 999px;
+  padding: .32rem .85rem; cursor: pointer; letter-spacing: .02em;
+}
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.btn { border: 1px solid var(--rule); background: var(--surface); color: var(--ink); }
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--apron); border-color: var(--apron); color: var(--on-apron); }
+details.table { margin-top: .8rem; font: 400 .88rem var(--f-ui); color: var(--ink-2); }
+details.table summary { cursor: pointer; color: var(--muted); font-weight: 600; letter-spacing: .03em; }
+.tbl-wrap { overflow-x: auto; max-height: 22rem; margin-top: .5rem; border: 1px solid var(--rule); border-radius: 3px; }
+.tbl-wrap table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+.tbl-wrap th, .tbl-wrap td { padding: .3rem .7rem; text-align: right; border-bottom: 1px solid var(--rule-2); white-space: nowrap; }
+.tbl-wrap th:first-child, .tbl-wrap td:first-child { text-align: left; }
+.tbl-wrap th { position: sticky; top: 0; background: var(--surface); color: var(--ink); font-weight: 600; }
+
+#tip {
+  position: fixed; z-index: 50; pointer-events: none; max-width: 17rem;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--rule); border-radius: 4px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .14); padding: .5rem .7rem; font: 400 .85rem/1.35 var(--f-ui);
+}
+#tip b { display: block; font: 600 1.05rem/1.2 var(--f-sign); font-variant-numeric: tabular-nums; }
+#tip .k { display: inline-block; width: 12px; height: 2px; vertical-align: middle; margin-right: .35rem; border-radius: 1px; }
+#tip .row { display: flex; justify-content: space-between; gap: 1rem; }
+#tip .row span:last-child { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* hero number */
+.hero-num { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem 2.5rem; margin: 1.6rem 0 .6rem; }
+.hero-num .lab { font: 600 .78rem var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.hero-num .val { font: 600 clamp(2.2rem, 4.4vw, 3rem)/1 var(--f-ui); letter-spacing: -.01em; margin-top: .35rem; white-space: nowrap; }
+.hero-num .val.hd { color: var(--ink); }
+.hero-num .val.sp { color: var(--ink-2); }
+.hero-num .val.tick { animation: valtick .45s cubic-bezier(.2, 1.6, .4, 1); transform-origin: left center; }
+@keyframes valtick { from { transform: scale(1.08); color: var(--apron-text); } }
+.hero-num .mark { display: inline-block; width: 22px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: .5rem; }
+.hero-num .note { font: 400 .9rem var(--f-ui); color: var(--ink-2); margin-top: .35rem; }
+
+/* cast badges */
+.cast { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 1rem; margin: 1.6rem 0 1rem; }
+.badge { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
+.badge-top { background: var(--apron); color: var(--on-apron); font: 600 .72rem var(--f-ui); letter-spacing: .16em; text-transform: uppercase; padding: .35rem .8rem; }
+.badge-body { padding: .7rem .9rem .9rem; display: flex; flex-direction: column; gap: .15rem; flex: 1; }
+.badge-name { font: 400 1.5rem/1.1 var(--f-display); }
+.badge-role { font: 600 .78rem var(--f-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--apron-text); }
+.badge-body p { margin: .35rem 0 0; font: 400 .95rem/1.4 var(--f-ui); color: var(--ink-2); }
+.cameos { font: 400 .92rem/1.5 var(--f-ui); color: var(--ink-2); }
+.cameos b { color: var(--ink); font-weight: 600; }
+
+/* playbook */
+.playbook { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: .9rem; margin-top: 1.4rem; }
+.pb { display: block; text-decoration: none; background: var(--surface); border: 1px solid var(--rule); border-top: 4px solid var(--apron); border-radius: 3px; padding: .75rem .9rem .8rem; color: var(--ink); }
+.pb:hover { border-color: var(--muted); border-top-color: var(--apron); color: var(--ink); }
+.pb .a { font: 600 .72rem var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--apron-text); }
+.pb .big { font: 700 1.5rem/1.05 var(--f-sign); margin: .25rem 0 .15rem; }
+.pb p { margin: 0; font: 400 .95rem/1.4 var(--f-body); color: var(--ink-2); }
+
+.sources { font: 400 .9rem/1.5 var(--f-ui); color: var(--ink-2); }
+.sources h3 { font: 600 .82rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 2rem 0 .5rem; }
+.sources ul { padding-left: 1.1rem; margin: 0; }
+.sources li { margin: .2rem 0; }
+footer.colophon { border-top: 1px solid var(--rule); margin-top: 4rem; padding-top: 1.5rem; }
+
+/* ---------- chart motion ---------- */
+.chart g.pop { transition: opacity .35s ease, transform .5s cubic-bezier(.2, 1.5, .4, 1); transform-box: fill-box; transform-origin: center; }
+.chart g.pop.off { opacity: 0; transform: scale(.2); }
+.era-lab { transition: opacity .45s ease; }
+.score .sl { stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 1.1s cubic-bezier(.4, 0, .2, 1) .25s; }
+.score .sl-end { transition: opacity .35s ease 1.2s; }
+.score .score-card { transition: opacity .5s ease, transform .5s ease; }
+.score.pre .score-card { opacity: 0; transform: translateY(12px); transition: none; }
+.score.pre .sl { stroke-dashoffset: 1; transition: none; }
+.score.pre .sl-end { opacity: 0; transition: none; }
+.cap-seg { transition: transform .9s cubic-bezier(.2, .8, .2, 1); transform-origin: left center; }
+.cap-bar.pre .cap-seg { transform: scaleX(0); transition: none; }
+.eq > * { transition: opacity .45s ease, transform .45s ease; }
+.eq.pre > * { opacity: 0; transform: translateY(10px); transition: none; }
+.eq-result { transition: opacity .7s ease; }
+.eq-result.pre { opacity: 0; transition: none; }
+/* phones: charts take the whole screen, and the page settles onto them */
+@media (max-width: 700px) {
+  html { scroll-snap-type: y proximity; scroll-padding-top: var(--barH, 60px); }
+  .fig.fs {
+    min-height: calc(100vh - var(--barH, 60px)); min-height: calc(100svh - var(--barH, 60px));
+    margin: 2rem -20px; padding: 1.4rem 20px 1.5rem; background: var(--stage-bg);
+    display: flex; flex-direction: column; justify-content: center; scroll-snap-align: start;
+  }
+  .fig.fs > * { margin-left: 0 !important; margin-right: 0 !important; width: 100%; max-width: none !important; }
+  .fig.fs .chart { max-width: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; scroll-snap-type: none !important; }
+  .pyr-g { transition: none; }
+  .paint .bleed { -webkit-mask: none; mask: none; }
+  .paint .stage.sketch { filter: none; }
+}
+
+/* =====================================================================
+   PROVENANCE COMPONENTS — the reference lacks these; the template carries
+   them for every artifact (COMPANION_PROMPT.md honesty laws).
+   ===================================================================== */
+/* SOURCE / INTERPRETATION legend */
+.src-legend {
+  border: 1px solid var(--rule); background: var(--surface); border-radius: 6px;
+  padding: 1rem 1.2rem; margin: 1.8rem 0; font: 400 .95rem/1.5 var(--f-ui); color: var(--ink-2);
+}
+.src-legend p { margin: .35rem 0; }
+.src-legend .lede { font: 600 .78rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: .5rem; }
+/* provenance tag pills (inline, element-qualified so they never clash with aside.tag) */
+span.ptag, .ptag {
+  display: inline-block; font: 700 .68rem var(--f-ui); letter-spacing: .1em; text-transform: uppercase;
+  padding: .18rem .6rem; border-radius: 999px; margin-right: .5rem; vertical-align: .12em; white-space: nowrap;
+}
+.ptag-src { background: var(--ink); color: var(--paper); }
+.ptag-illustration { background: transparent; color: var(--apron-text); border: 1.5px solid var(--apron); }
+.ptag-companion { background: transparent; color: var(--muted); border: 1.5px solid var(--muted); }
+.ptag-ref { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .72rem; font-weight: 500; color: var(--muted); margin-left: .4rem; letter-spacing: 0; text-transform: none; }
+/* mechanical quote-count footer block */
+.quote-count {
+  border: 1px dashed var(--rule); border-radius: 6px; padding: .9rem 1.1rem; margin: 2rem 0;
+  font: 400 .9rem/1.5 var(--f-ui); color: var(--ink-2); background: transparent;
+}
+.quote-count b { color: var(--ink); }
+.quote-count .n { font: 700 1.3rem var(--f-sign); color: var(--apron-text); font-variant-numeric: tabular-nums; }
+/* colophon: "About this page" + sources + provenance wording */
+.colophon .about p { font: 400 .95rem/1.55 var(--f-ui); color: var(--ink-2); }
+.colophon .about .prov-line { border-left: 3px solid var(--apron); padding-left: .9rem; }
+
+/* =====================================================================
+   LEGACY pilot content classes — carried forward so the build.py <style>
+   swap never orphans existing content. New artifacts should use the
+   reference components above instead.
+   ===================================================================== */
+.pull { margin: 2rem 0; padding: 1.2rem 1.4rem; border-left: 4px solid var(--apron); background: var(--surface); border-radius: 0 6px 6px 0; }
+.pull blockquote { margin: 0; font: italic 400 1.35rem/1.4 var(--f-display); color: var(--ink); text-wrap: pretty; }
+.pull .who { margin: .6rem 0 0; font: 500 .85rem var(--f-ui); color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1rem; margin: 1.6rem 0; }
+.stat { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: .8rem 1rem; }
+.stat .n { font: 700 1.9rem/1.1 var(--f-sign); color: var(--ink); font-variant-numeric: tabular-nums; }
+.stat .l { font: 500 .9rem/1.35 var(--f-ui); color: var(--ink-2); margin-top: .25rem; }
+.stat .s { font: 500 .75rem var(--f-ui); color: var(--muted); margin-top: .3rem; letter-spacing: .04em; }
+.caption { font: italic 400 .92rem/1.45 var(--f-body); color: var(--muted); margin-top: .6rem; }
+.eyebrow { font: 600 .78rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--apron-text); margin: 0 0 .4rem; }
+.video { position: relative; width: 100%; aspect-ratio: 16 / 9; margin: 2rem 0; background: var(--stage-bg); border-radius: 6px; overflow: hidden; }
+.video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in { opacity: 1; transform: none; }
+.takeaways { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 1.1rem 1.3rem; margin: 2rem 0; }
+.takeaways h3 { font: 400 1.4rem/1.2 var(--f-display); margin: 0 0 .6rem; }
+.takeaways ol { margin: 0; padding-left: 1.2rem; font-size: 1rem; }
+.takeaways li { margin: .35rem 0; }
+.prose-narrow { max-width: var(--col); }
+.secnum { font: 600 .8rem var(--f-ui); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 .5rem; }
+.chips, .stepdots { display: flex; flex-wrap: wrap; gap: .45rem; }
+.toy { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 1rem 1.2rem; margin: 1.6rem 0; }
+.toy .data { font-variant-numeric: tabular-nums; }
+.wisdom ol { font-size: 1rem; }
+.nugget-legacy { border: 1px solid var(--rule); border-radius: 6px; padding: 1rem 1.2rem; margin: 1.6rem 0; background: var(--surface); }
+
+</style><style id="course-accent">
+/* course accent: Copper #9C5A1E (cme295) */
+:root{--apron:#9C5A1E;--apron-wash:rgba(156,90,30,.12);--apron-text:#9C5A1E;}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--apron:#D88234;--apron-wash:rgba(216,130,52,.2);--apron-text:#C06E26;}}
+:root[data-theme="dark"]{--apron:#D88234;--apron-wash:rgba(216,130,52,.2);--apron-text:#C06E26;}
+</style></head>
+<body><div class="tapebar" data-mode="progress" data-sign-label="Unit" id="tapebar"><div aria-live="off" class="tape-read"><div class="tape-time" id="tapeTime"></div><div class="tape-ch" id="tapeCh"></div></div><svg aria-label="Position in the companion. Use arrow keys to move between sections." aria-valuemax="12" aria-valuemin="1" aria-valuenow="1" id="tape" role="slider" tabindex="0"></svg></div><div hidden="" id="tip"></div><div class="wrap">
 <header class="hero">
 <p class="kicker">Unit 04 · Training and adaptation</p>
 <h1>Budgets, bits, and the thin adapter</h1>
 <p class="dek">Twelve concepts cover what happens after the architecture is drawn: pretraining at 6ND, packing the data, quantization grids, the roofline, SFT, chat templates, LoRA, the Adam memory bill, numerical precision, full versus PEFT, regression canaries, and the budget sheet. Every number below comes from the lesson.</p>
 </header>
-<div class="legend">
+<div class="legend src-legend">
 <p><strong>How to read this page.</strong> Three tags separate fact from invention.</p>
-<p><span class="tag tag-lesson">From the lesson</span> A claim, number, or figure that appears in the lesson source, with its section cited.</p>
-<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with values you supply, or a what-if. Never lesson content.</p>
-<p><span class="tag tag-companion">Companion</span> Editorial framing or a transferable principle. The lesson did not say it this way.</p>
+<p><span class="ptag ptag-src">From the lesson</span> A claim, number, or figure that appears in the lesson source, with its section cited.</p>
+<p><span class="ptag ptag-illustration">Illustration</span> Invented by the companion: an analogy, a toy with values you supply, or a what-if. Never lesson content.</p>
+<p><span class="ptag ptag-companion">Companion</span> Editorial framing or a transferable principle. The lesson did not say it this way.</p>
 </div>
-</div>
-<nav class="sticky"><div class="navscroll">
-<a href="#s1">1 Pretraining</a>
-<a href="#s2">2 Data</a>
-<a href="#s3">3 Quantization</a>
-<a href="#s4">4 Roofline</a>
-<a href="#s5">5 SFT</a>
-<a href="#s6">6 Templates</a>
-<a href="#s7">7 LoRA</a>
-<a href="#s8">8 Memory bill</a>
-<a href="#s9">9 Precision</a>
-<a href="#s10">10 Full vs PEFT</a>
-<a href="#s11">11 Canaries</a>
-<a href="#s12">12 Budget</a>
-<a href="#wisdom">Wisdom index</a>
-</div></nav>
-<div class="wrap">
-<figure>
-<img class="illus" src="assets/u04-hero.webp" alt="Watercolor of a vast library with a small figure reading under mountains of scrolls">
-<figcaption><span class="tag tag-toy">Illustration</span> Pretraining in one image: reading the internet with a test after every word. Watercolor, original to this companion.</figcaption>
-</figure>
-<section class="block" id="s1">
-<p class="secnum">Section 1 · C01</p>
-<h2>Pretraining: 6ND is the budget</h2>
+<figure class="paint inset" data-entrance="bloom">
+<div class="frame"><div class="stage"><img alt="Watercolor of a vast library with a small figure reading under mountains of scrolls" class="base" loading="lazy" src="assets/u04-hero.webp"/></div></div>
+<figcaption><span class="ptag ptag-illustration">Illustration</span> Pretraining in one image: reading the internet with a test after every word. Watercolor, original to this companion.</figcaption></figure>
+<section class="block col" data-chapter="1" data-title="Pretraining: 6ND is the budget" id="s1"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">1</span></div><div><p class="ch-meta"><span class="ts">Unit 1</span> · C01</p><h2>Pretraining: 6ND is the budget</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 2-5</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 items 2-5</span></p>
 <p>Where does the base model's knowledge come from? The LM loss from U01, summed over trillions of tokens. No labels. The next token is the label. Pretraining is the act of reading the internet with a test after every word: predict the next one. The model that predicts well must compress grammar, facts, and reasoning patterns into its weights. Per token, the forward pass costs about 2N FLOPs and the backward pass about 4N, for 6ND total with N parameters and D tokens. Chinchilla's finding: the compute-optimal ratio is roughly D = 20 N. Train a 7B model on about 140B tokens, not 1T, at fixed compute.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 item 6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 item 6</span></p>
 <p>The toy: N = 7e9, D = 1.4e11. FLOPs = 6 times 7e9 times 1.4e11 = 5.9e21. At 1e15 FLOP/s effective per GPU, that is 5.9e6 GPU-seconds, about 68 GPU-days on one card, or hours on thousands. The arithmetic is the budget. The training step itself is four lines: logits from the shifted batch, LM loss, backward, optimizer step. The shift by one is the whole trick.</p>
 </div>
 <figure>
-<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Bar chart of the 6ND budget split into forward 2N and backward 4N">
-<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">The 6ND budget, N = 7e9, D = 1.4e11 (C01 item 6)</text>
-<rect x="180" y="150" width="110" height="100" fill="#2f4b8f" rx="4"/>
-<rect x="410" y="70" width="110" height="180" fill="#b3541e" rx="4"/>
-<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<svg aria-label="Bar chart of the 6ND budget split into forward 2N and backward 4N" class="chart" role="img" viewbox="0 0 700 320">
+<text font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle" x="350" y="28">The 6ND budget, N = 7e9, D = 1.4e11 (C01 item 6)</text>
+<rect fill="#2f4b8f" height="100" rx="4" width="110" x="180" y="150"></rect>
+<rect fill="#b3541e" height="180" rx="4" width="110" x="410" y="70"></rect>
+<g fill="#1c1a17" font-family="monospace" font-size="14" text-anchor="middle">
 <text x="235" y="140">2ND fwd</text>
 <text x="465" y="60">4ND bwd</text>
 </g>
-<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<g fill="#7a7160" font-family="sans-serif" font-size="13" text-anchor="middle">
 <text x="235" y="270">forward</text>
 <text x="465" y="270">backward</text>
 </g>
-<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Total 5.9e21 FLOPs. About 68 GPU-days at 1e15 FLOP/s per GPU.</text>
+<text fill="#7a7160" font-family="sans-serif" font-size="12" text-anchor="middle" x="350" y="300">Total 5.9e21 FLOPs. About 68 GPU-days at 1e15 FLOP/s per GPU.</text>
 </svg>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 5-6</span> The lesson's computed budget. Loss starts near log V and falls. The lab asks for N = 1e9, D = 2e10: 1.2e20 FLOPs.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 items 5-6</span> The lesson's computed budget. Loss starts near log V and falls. The lab asks for N = 1e9, D = 2e10: 1.2e20 FLOPs.</figcaption>
 </figure>
 <div class="toy">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 4-5</span> Budget bench: 6ND FLOPs and GPU-days on your N, D, and throughput.</p>
-<p><input class="text" id="bgn" type="number" value="7000000000" aria-label="N params"> <input class="text" id="bgd" type="number" value="140000000000" aria-label="D tokens"> <input class="text" id="bgt" type="number" value="1000000000000000" aria-label="FLOP per s per GPU"> <button class="btn" id="bgbt">Compute budget</button></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 items 4-5</span> Budget bench: 6ND FLOPs and GPU-days on your N, D, and throughput.</p>
+<p><input aria-label="N params" class="text" id="bgn" type="number" value="7000000000"/> <input aria-label="D tokens" class="text" id="bgd" type="number" value="140000000000"/> <input aria-label="FLOP per s per GPU" class="text" id="bgt" type="number" value="1000000000000000"/> <button class="btn" id="bgbt">Compute budget</button></p>
 <div class="chips" id="bgout"></div>
 <p class="small muted">Reproduce the lesson: the defaults give 5.9e21 FLOPs and about 68 GPU-days. Try the Chinchilla check: D = 20 N.</p>
 </div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 item 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 item 11</span></p>
 <p>More data does not always help. Duplicated or toxic data degrades the model. Quality beats quantity past a point. Deduplication and filtering are part of training, not decoration.</p>
 </div>
-<div class="nugget" id="w1">
-<h4>Nugget 01 · The arithmetic is the budget</h4>
-<p class="big">6ND FLOPs, balanced 20 to 1 by Chinchilla. Run the multiplication before you run the cluster.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson derives 6ND from 2N forward plus 4N backward, states the 20:1 ratio, and prices 7B on 140B tokens at 5.9e21 FLOPs.</dd>
-<dt>Why it matters</dt><dd>Lopsided scaling wastes the budget. Doubling compute at the Chinchilla ratio beats a param-heavy or data-heavy split. The ratio is a decision, not trivia.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Price the work before you start it. One multiplication on a napkin beats a surprised invoice.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="w1"><div class="tag-price"><span class="tag-big">01</span><span class="tag-unit">Nugget 01 · The arithmetic is the budget</span></div><div class="tag-body"><div class="tag-title">Nugget 01 · The arithmetic is the budget</div><div class="tag-eye">The lesson</div><p class="">6ND FLOPs, balanced 20 to 1 by Chinchilla. Run the multiplication before you run the cluster.</p><p><b>What happened. </b>The lesson derives 6ND from 2N forward plus 4N backward, states the 20:1 ratio, and prices 7B on 140B tokens at 5.9e21 FLOPs.</p><p><b>Why it matters. </b>Lopsided scaling wastes the budget. Doubling compute at the Chinchilla ratio beats a param-heavy or data-heavy split. The ratio is a decision, not trivia.</p><p><b>Transferable principle. </b> Price the work before you start it. One multiplication on a napkin beats a surprised invoice.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
 </section>
-<section class="block" id="s2">
-<p class="secnum">Section 2 · C02</p>
-<h2>Pack the container, mask the loss</h2>
+<section class="block col" data-chapter="1" data-title="Pack the container, mask the loss" id="s2"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">2</span></div><div><p class="ch-meta"><span class="ts">Unit 2</span> · C02</p><h2>Pack the container, mask the loss</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 2-6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C02 items 2-6</span></p>
 <p>Documents have different lengths. How do you fill a batch without wasting half of it? Pack short documents end to end with a separator, and mask the loss so position i never trains on document j's tokens. The batch is a shipping container: pack it full, but label the boxes so the loss knows which is which. The toy: 4 documents of lengths [100, 300, 50, 550], T = 1024. Unpacked waste: 4 times 1024 minus 1000 = 3096 padding tokens, 75% waste. Packed: one 1000-token sequence, about 2% waste. The packing decision is a 75-point swing.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 5, 9, 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C02 items 5, 9, 11</span></p>
 <p>Without masking, padding tokens train the model to predict padding: the loss must zero them. Data quality is the manifest: dedupe, filter, mix. Dirty data wastes the most expensive resource, GPU time. And the mix is a hyperparameter with real effects: too much code starves prose fluency and vice versa.</p>
 </div>
 <figure>
-<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of padding waste unpacked versus packed">
-<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Padding waste, 4 documents, T = 1024 (C02 item 6)</text>
-<rect x="180" y="70" width="110" height="180" fill="#b3541e" rx="4"/>
-<rect x="410" y="240" width="110" height="10" fill="#2f4b8f" rx="4"/>
-<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<svg aria-label="Bar chart of padding waste unpacked versus packed" class="chart" role="img" viewbox="0 0 700 300">
+<text font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle" x="350" y="28">Padding waste, 4 documents, T = 1024 (C02 item 6)</text>
+<rect fill="#b3541e" height="180" rx="4" width="110" x="180" y="70"></rect>
+<rect fill="#2f4b8f" height="10" rx="4" width="110" x="410" y="240"></rect>
+<g fill="#1c1a17" font-family="monospace" font-size="15" text-anchor="middle">
 <text x="235" y="60">75%</text>
 <text x="465" y="230">~2%</text>
 </g>
-<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<g fill="#7a7160" font-family="sans-serif" font-size="13" text-anchor="middle">
 <text x="235" y="270">unpacked</text>
 <text x="465" y="270">packed</text>
 </g>
-<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">3096 padding tokens vs one 1000-token sequence. The mask keeps the loss honest.</text>
+<text fill="#7a7160" font-family="sans-serif" font-size="12" text-anchor="middle" x="350" y="296">3096 padding tokens vs one 1000-token sequence. The mask keeps the loss honest.</text>
 </svg>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 6</span> The lesson's waste arithmetic. The lab variant: lengths [200, 200, 200] unpacked waste 80%.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C02 item 6</span> The lesson's waste arithmetic. The lab variant: lengths [200, 200, 200] unpacked waste 80%.</figcaption>
 </figure>
-<div class="nugget" id="w2">
-<h4>Nugget 02 · The loss is only as honest as the manifest</h4>
-<p class="big">Pack every batch full, mask every padding token, and treat dedupe and filtering as training, not decoration.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson computes the 75-point packing swing, derives the loss mask, and makes data quality a first-class pipeline stage.</dd>
-<dt>Why it matters</dt><dd>Unmasked padding teaches the model to predict padding. Duplicated text gets memorized. Both are silent taxes on the most expensive resource you own.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Efficiency and honesty are the same work. The mask that saves compute is the mask that keeps the objective true.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="w2"><div class="tag-price"><span class="tag-big">02</span><span class="tag-unit">Nugget 02 · The loss is only as honest as the manifest</span></div><div class="tag-body"><div class="tag-title">Nugget 02 · The loss is only as honest as the manifest</div><div class="tag-eye">The lesson</div><p class="">Pack every batch full, mask every padding token, and treat dedupe and filtering as training, not decoration.</p><p><b>What happened. </b>The lesson computes the 75-point packing swing, derives the loss mask, and makes data quality a first-class pipeline stage.</p><p><b>Why it matters. </b>Unmasked padding teaches the model to predict padding. Duplicated text gets memorized. Both are silent taxes on the most expensive resource you own.</p><p><b>Transferable principle. </b> Efficiency and honesty are the same work. The mask that saves compute is the mask that keeps the objective true.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
 </section>
-<section class="block" id="s3">
-<p class="secnum">Section 3 · C03</p>
-<h2>Quantization: a grid snapped over the numbers</h2>
+<section class="block col" data-chapter="1" data-title="Quantization: a grid snapped over the numbers" id="s3"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">3</span></div><div><p class="ch-meta"><span class="ts">Unit 3</span> · C03</p><h2>Quantization: a grid snapped over the numbers</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 2-6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 items 2-6</span></p>
 <p>The weights are fp16. Can they be int8 at half the memory? The toy: w = [-1.2, -0.3, 0.1, 0.7, 1.5]. Symmetric scale s = max|w| / 127, q = round(w / s). The scale sets the grid spacing, rounding snaps each value to the nearest grid point. Outliers stretch the grid and punish everyone. The lesson computes s = 0.01181, q = [-102, -25, 8, 59, 127], max abs error 0.00551, within the s/2 bound of 0.00591, as theory says. Dequantize: q times s.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 9, 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 items 9, 11</span></p>
 <p>Memory halves from fp16 to int8, and memory-bound decode benefits immediately. Accuracy usually costs less than 1 point on benchmarks for weights-only. But one scale does not fit all: a single outlier channel stretches s and destroys the small weights. Per-channel scales or outlier-aware methods fix it.</p>
 </div>
 <figure>
-<svg class="chart" viewBox="0 0 700 340" role="img" aria-label="Diagram mapping five fp32 weights to int8 grid points">
-<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">q = round(w / s), s = 0.01181 (C03 item 6)</text>
-<g font-family="monospace" font-size="13" text-anchor="middle" fill="#1c1a17">
+<svg aria-label="Diagram mapping five fp32 weights to int8 grid points" class="chart" role="img" viewbox="0 0 700 340">
+<text font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle" x="350" y="28">q = round(w / s), s = 0.01181 (C03 item 6)</text>
+<g fill="#1c1a17" font-family="monospace" font-size="13" text-anchor="middle">
 <text x="90" y="120">-1.2 to -102</text>
 <text x="230" y="150">-0.3 to -25</text>
 <text x="370" y="180">0.1 to 8</text>
 <text x="510" y="150">0.7 to 59</text>
 <text x="620" y="110">1.5 to 127</text>
 </g>
-<line x1="60" y1="200" x2="640" y2="200" stroke="#ddd3bd" stroke-width="2"/>
+<line stroke="#ddd3bd" stroke-width="2" x1="60" x2="640" y1="200" y2="200"></line>
 <g stroke="#b3541e" stroke-width="2">
-<line x1="90" y1="130" x2="90" y2="200"/><line x1="230" y1="160" x2="230" y2="200"/><line x1="370" y1="190" x2="370" y2="200"/><line x1="510" y1="160" x2="510" y2="200"/><line x1="620" y1="120" x2="620" y2="200"/>
+<line x1="90" x2="90" y1="130" y2="200"></line><line x1="230" x2="230" y1="160" y2="200"></line><line x1="370" x2="370" y1="190" y2="200"></line><line x1="510" x2="510" y1="160" y2="200"></line><line x1="620" x2="620" y1="120" y2="200"></line>
 </g>
-<text x="350" y="250" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Each value snaps to the nearest grid point. Max error 0.00551, bound s/2 = 0.00591.</text>
-<text x="350" y="272" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The max-abs value maps to 127, exactly as the check requires.</text>
+<text fill="#7a7160" font-family="sans-serif" font-size="12" text-anchor="middle" x="350" y="250">Each value snaps to the nearest grid point. Max error 0.00551, bound s/2 = 0.00591.</text>
+<text fill="#7a7160" font-family="sans-serif" font-size="12" text-anchor="middle" x="350" y="272">The max-abs value maps to 127, exactly as the check requires.</text>
 </svg>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 6</span> The lesson's computed mapping.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 item 6</span> The lesson's computed mapping.</figcaption>
 </figure>
-<figure>
-<img class="lessonfig" src="../assets/u04_fig02.png" alt="Plate showing five fp32 weights mapped to int8 with one scale">
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 15, figure u04_fig02</span> The lesson's own plate: one rule (q = round(w/s)), before (fp32 weights), after (int8 plus scale). Numbers from the lesson's render script.</figcaption>
-</figure>
+<figure class="paint inset" data-entrance="sketch">
+<div class="frame"><div class="stage"><img alt="Plate showing five fp32 weights mapped to int8 with one scale" class="lessonfig base" loading="lazy" src="../assets/u04_fig02.png"/></div></div>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 item 15, figure u04_fig02</span> The lesson's own plate: one rule (q = round(w/s)), before (fp32 weights), after (int8 plus scale). Numbers from the lesson's render script.</figcaption></figure>
 <div class="toy">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 4, 7</span> Quantizer bench: symmetric int8 on your weights.</p>
-<p><input class="text" id="qnw" type="text" value="-1.2, -0.3, 0.1, 0.7, 1.5" aria-label="comma separated weights"> <button class="btn" id="qnbtn">Quantize</button></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 items 4, 7</span> Quantizer bench: symmetric int8 on your weights.</p>
+<p><input aria-label="comma separated weights" class="text" id="qnw" type="text" value="-1.2, -0.3, 0.1, 0.7, 1.5"/> <button class="btn" id="qnbtn">Quantize</button></p>
 <div class="chips" id="qnout"></div>
 <p class="small muted">Reproduce the lesson: the defaults give s = 0.01181 and max error 0.00551. Try the lab: -2, 0, 2.</p>
 </div>
-<div class="nugget" id="w3">
-<h4>Nugget 03 · Outliers stretch the grid</h4>
-<p class="big">One scale, one rounding, error bounded by s/2. The grid is only as fine as the largest value allows.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson writes the symmetric formulas, quantizes the toy by hand, and verifies the error bound.</dd>
-<dt>Why it matters</dt><dd>The failure mode is distributional: one wild channel ruins the many. Per-channel scales are the standard fix, not a refinement.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Global normalizations inherit the worst outlier. When one value sets the scale for all, check the tails first.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="w3"><div class="tag-price"><span class="tag-big">03</span><span class="tag-unit">Nugget 03 · Outliers stretch the grid</span></div><div class="tag-body"><div class="tag-title">Nugget 03 · Outliers stretch the grid</div><div class="tag-eye">The lesson</div><p class="">One scale, one rounding, error bounded by s/2. The grid is only as fine as the largest value allows.</p><p><b>What happened. </b>The lesson writes the symmetric formulas, quantizes the toy by hand, and verifies the error bound.</p><p><b>Why it matters. </b>The failure mode is distributional: one wild channel ruins the many. Per-channel scales are the standard fix, not a refinement.</p><p><b>Transferable principle. </b> Global normalizations inherit the worst outlier. When one value sets the scale for all, check the tails first.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
 </section>
-<section class="block" id="s4">
-<p class="secnum">Section 4 · C04</p>
-<h2>The roofline: intensity decides the regime</h2>
+<section class="block col" data-chapter="1" data-title="The roofline: intensity decides the regime" id="s4"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">4</span></div><div><p class="ch-meta"><span class="ts">Unit 4</span> · C04</p><h2>The roofline: intensity decides the regime</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 2-6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 items 2-6</span></p>
 <p>Decode does few FLOPs but takes forever. Training does many FLOPs and flies. Why? The toy: decode loads 14 GB of weights to do 1e9 FLOPs, intensity 0.07 FLOP/byte, memory-bound. Training reuses weights over big batches: compute-bound. Every kernel lives under a roof with two slopes: memory bandwidth and peak compute. Arithmetic intensity, FLOPs per byte, decides which slope binds. Time = max(bytes/bandwidth, FLOPs/peak).</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 item 6</span></p>
 <p>The toy chip: bandwidth 2 TB/s, peak 300 TFLOP/s, ridge at 150 FLOP/byte. Decode at I = 0.07 reaches 0.14 TFLOP/s effective, 0.05% of peak. Training at I = 200 reaches the full 300 TFLOP/s. Same chip, 2000x different efficiency. That is the whole serving problem in one ratio.</p>
 </div>
 <figure>
-<svg class="chart" viewBox="0 0 700 340" role="img" aria-label="Roofline sketch with decode left of the ridge and training right">
-<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Roofline: bandwidth 2 TB/s, peak 300 TFLOP/s (C04 item 6)</text>
-<polyline points="60,250 300,250 300,90 640,90" fill="none" stroke="#1c1a17" stroke-width="2.5"/>
-<circle cx="120" cy="250" r="7" fill="#b3541e"/>
-<circle cx="520" cy="90" r="7" fill="#2f4b8f"/>
-<g font-family="sans-serif" font-size="13" fill="#1c1a17">
+<svg aria-label="Roofline sketch with decode left of the ridge and training right" class="chart" role="img" viewbox="0 0 700 340">
+<text font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle" x="350" y="28">Roofline: bandwidth 2 TB/s, peak 300 TFLOP/s (C04 item 6)</text>
+<polyline fill="none" points="60,250 300,250 300,90 640,90" stroke="#1c1a17" stroke-width="2.5"></polyline>
+<circle cx="120" cy="250" fill="#b3541e" r="7"></circle>
+<circle cx="520" cy="90" fill="#2f4b8f" r="7"></circle>
+<g fill="#1c1a17" font-family="sans-serif" font-size="13">
 <text x="60" y="280">decode I=0.07, 0.05% MFU</text>
 <text x="420" y="120">training I=200, at peak</text>
 <text x="300" y="280">ridge 150 FLOP/byte</text>
 </g>
-<text x="350" y="312" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Attainable = min(peak, bandwidth times I). Same roof, two regimes.</text>
+<text fill="#7a7160" font-family="sans-serif" font-size="12" text-anchor="middle" x="350" y="312">Attainable = min(peak, bandwidth times I). Same roof, two regimes.</text>
 </svg>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 6</span> The lesson's computed points. Serving cost is memory bandwidth, not FLOPs.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 item 6</span> The lesson's computed points. Serving cost is memory bandwidth, not FLOPs.</figcaption>
 </figure>
 <div class="toy">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 4, 7</span> Roofline bench: attainable throughput on your FLOPs, bytes, bandwidth, peak.</p>
-<p><input class="text" id="rlf" type="number" value="1000000000" aria-label="FLOPs"> <input class="text" id="rlb" type="number" value="14000000000" aria-label="bytes"> <input class="text" id="rlbw" type="number" value="2000000000000" aria-label="bandwidth bytes per s"> <input class="text" id="rlp" type="number" value="300000000000000" aria-label="peak FLOP per s"> <button class="btn" id="rlbtn">Roofline it</button></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 items 4, 7</span> Roofline bench: attainable throughput on your FLOPs, bytes, bandwidth, peak.</p>
+<p><input aria-label="FLOPs" class="text" id="rlf" type="number" value="1000000000"/> <input aria-label="bytes" class="text" id="rlb" type="number" value="14000000000"/> <input aria-label="bandwidth bytes per s" class="text" id="rlbw" type="number" value="2000000000000"/> <input aria-label="peak FLOP per s" class="text" id="rlp" type="number" value="300000000000000"/> <button class="btn" id="rlbtn">Roofline it</button></p>
 <div class="chips" id="rlout"></div>
 <p class="small muted">Reproduce the lesson: the defaults give I = 0.07 and 0.05% MFU. Then try the lab: 1e12 FLOPs, 5e11 bytes.</p>
 </div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 item 11</span></p>
 <p>FLOP counts do not predict serving cost. The decode toy at 0.05% MFU makes FLOP-based pricing nonsense. Always roofline before budgeting.</p>
 </div>
-<div class="nugget" id="w4">
-<h4>Nugget 04 · Budget bytes, not FLOPs</h4>
-<p class="big">Below the ridge you wait on memory. Above it you wait on math. Decode lives far below, at five hundredths of a percent of peak.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson derives intensity, draws the roofline, and prices decode at 0.05% MFU against training at full peak.</dd>
-<dt>Why it matters</dt><dd>Quantization and MQA/GQA attack bytes, not math, because bytes are the binding slope. Optimizing FLOPs for a memory-bound workload is theater.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Find the binding constraint before you optimize. The roofline is one division that prevents a quarter of wasted effort.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="w4"><div class="tag-price"><span class="tag-big">04</span><span class="tag-unit">Nugget 04 · Budget bytes, not FLOPs</span></div><div class="tag-body"><div class="tag-title">Nugget 04 · Budget bytes, not FLOPs</div><div class="tag-eye">The lesson</div><p class="">Below the ridge you wait on memory. Above it you wait on math. Decode lives far below, at five hundredths of a percent of peak.</p><p><b>What happened. </b>The lesson derives intensity, draws the roofline, and prices decode at 0.05% MFU against training at full peak.</p><p><b>Why it matters. </b>Quantization and MQA/GQA attack bytes, not math, because bytes are the binding slope. Optimizing FLOPs for a memory-bound workload is theater.</p><p><b>Transferable principle. </b> Find the binding constraint before you optimize. The roofline is one division that prevents a quarter of wasted effort.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
 </section>
-<section class="block" id="s5">
-<p class="secnum">Section 5 · C05</p>
-<h2>SFT: apprenticeship, not education</h2>
+<section class="block col" data-chapter="1" data-title="SFT: apprenticeship, not education" id="s5"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">5</span></div><div><p class="ch-meta"><span class="ts">Unit 5</span> · C05</p><h2>SFT: apprenticeship, not education</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 2-6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 items 2-6</span></p>
 <p>The base model completes text. How do you make it follow instructions? The toy pair: <em>Summarize: doc</em> to <em>summary</em>. Train the LM loss on the summary tokens only. SFT is apprenticeship: show the model thousands of (instruction, response) pairs. It learns the format (how to answer), not new facts (what to say). The base model holds the knowledge. SFT teaches manners. Masking the prompt means no gradient for predicting the instruction, which is given. The response tokens train normally.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 6, 9</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 items 6, 9</span></p>
 <p>The toy budget: 10k pairs at mean 200 response tokens = 2M training tokens. At 6ND with N = 7e9: 8.4e16 FLOPs, minutes on a cluster. SFT costs little compared with pretraining. That is why everyone does it. Overfitting is the risk: few epochs, low learning rate. The lab variant: 50k pairs at 300 tokens = 15M tokens.</p>
 </div>
 <figure>
-<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of SFT tokens: 2M versus pretraining trillions">
-<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">SFT data scale vs pretraining (C05 item 6)</text>
-<rect x="180" y="248" width="110" height="6" fill="#2f4b8f"/>
-<rect x="410" y="70" width="110" height="184" fill="#b3541e" rx="4"/>
-<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<svg aria-label="Bar chart of SFT tokens: 2M versus pretraining trillions" class="chart" role="img" viewbox="0 0 700 300">
+<text font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle" x="350" y="28">SFT data scale vs pretraining (C05 item 6)</text>
+<rect fill="#2f4b8f" height="6" width="110" x="180" y="248"></rect>
+<rect fill="#b3541e" height="184" rx="4" width="110" x="410" y="70"></rect>
+<g fill="#1c1a17" font-family="monospace" font-size="15" text-anchor="middle">
 <text x="235" y="238">2M</text>
 <text x="465" y="60">trillions</text>
 </g>
-<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<g fill="#7a7160" font-family="sans-serif" font-size="13" text-anchor="middle">
 <text x="235" y="270">SFT toy</text>
 <text x="465" y="270">pretraining</text>
 </g>
-<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">8.4e16 FLOPs. Minutes on a cluster. Format is cheap to install.</text>
+<text fill="#7a7160" font-family="sans-serif" font-size="12" text-anchor="middle" x="350" y="296">8.4e16 FLOPs. Minutes on a cluster. Format is cheap to install.</text>
 </svg>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 6</span> The lesson's toy budget. The mask is the whole difference from pretraining: prompt tokens contribute zero loss.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 item 6</span> The lesson's toy budget. The mask is the whole difference from pretraining: prompt tokens contribute zero loss.</figcaption>
 </figure>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 item 11</span></p>
 <p>SFT does not teach facts. SFT on false answers teaches confident falsehoods. The base model's knowledge bounds what SFT can elicit. SFT elicits. It does not create.</p>
 </div>
-<div class="nugget" id="w5">
-<h4>Nugget 05 · Elicit, do not expect creation</h4>
-<p class="big">SFT installs the format on masked responses. Knowledge comes from the base. Confident falsehoods come from SFT on falsehoods.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson writes the masked SFT loss, budgets 2M tokens at 8.4e16 FLOPs, and draws the format-vs-fact line.</dd>
-<dt>Why it matters</dt><dd>Blaming SFT for missing knowledge misdiagnoses the system. The base sets the ceiling. SFT decides which room you enter.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Separate the channel from the content. Training the format cannot create the facts. Audit which one your problem actually lacks.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="w5"><div class="tag-price"><span class="tag-big">05</span><span class="tag-unit">Nugget 05 · Elicit, do not expect creation</span></div><div class="tag-body"><div class="tag-title">Nugget 05 · Elicit, do not expect creation</div><div class="tag-eye">The lesson</div><p class="">SFT installs the format on masked responses. Knowledge comes from the base. Confident falsehoods come from SFT on falsehoods.</p><p><b>What happened. </b>The lesson writes the masked SFT loss, budgets 2M tokens at 8.4e16 FLOPs, and draws the format-vs-fact line.</p><p><b>Why it matters. </b>Blaming SFT for missing knowledge misdiagnoses the system. The base sets the ceiling. SFT decides which room you enter.</p><p><b>Transferable principle. </b> Separate the channel from the content. Training the format cannot create the facts. Audit which one your problem actually lacks.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
 </section>
-<section class="block" id="s6">
-<p class="secnum">Section 6 · C06</p>
-<h2>Chat templates: punctuation for dialogue</h2>
+<section class="block col" data-chapter="1" data-title="Chat templates: punctuation for dialogue" id="s6"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">6</span></div><div><p class="ch-meta"><span class="ts">Unit 6</span> · C06</p><h2>Chat templates: punctuation for dialogue</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 2-6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 items 2-6</span></p>
 <p>How does the model know where the user ends and the assistant begins? The toy: user marker, <em>Hello</em>, end marker, assistant marker, <em>Hi</em>, end marker. The markers are ordinary tokens with agreed meanings. The template is punctuation for dialogue. Special tokens are reserved ids added to the vocabulary: toy vocab 32000 + 3 = 32003 rows in E. Template overhead per turn: about 10 tokens. On a 20-turn conversation: 200 template tokens of pure format.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 5, 9, 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 items 5, 9, 11</span></p>
 <p>Train and serve must use the identical template, or the model reads a foreign format. At inference the prompt ends with the assistant marker and the model continues. The failure is silent and total: serve a Llama-format prompt to a Mistral-tuned model and behavior collapses, because the markers are unknown strings. Template bugs are silent quality killers. Unit-test the exact strings.</p>
 </div>
-<div class="nugget" id="w6">
-<h4>Nugget 06 · Byte-match the contract</h4>
-<p class="big">The template is a format contract between training and serving. Any deviation is a foreign language to the model.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson defines markers, prices 200 format tokens per 20 turns, and shows the cross-model mismatch collapse.</dd>
-<dt>Why it matters</dt><dd>Negligible compute, maximum brittleness. The cheapest part of the system causes the most confusing failures, because nothing errors. Quality just dies.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Contracts that fail silently need tests, not trust. Where no error is raised, write the assertion yourself.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="w6"><div class="tag-price"><span class="tag-big">06</span><span class="tag-unit">Nugget 06 · Byte-match the contract</span></div><div class="tag-body"><div class="tag-title">Nugget 06 · Byte-match the contract</div><div class="tag-eye">The lesson</div><p class="">The template is a format contract between training and serving. Any deviation is a foreign language to the model.</p><p><b>What happened. </b>The lesson defines markers, prices 200 format tokens per 20 turns, and shows the cross-model mismatch collapse.</p><p><b>Why it matters. </b>Negligible compute, maximum brittleness. The cheapest part of the system causes the most confusing failures, because nothing errors. Quality just dies.</p><p><b>Transferable principle. </b> Contracts that fail silently need tests, not trust. Where no error is raised, write the assertion yourself.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
 </section>
-<section class="block" id="s7">
-<p class="secnum">Section 7 · C07</p>
-<h2>LoRA: the update lives in a thin subspace</h2>
+<section class="block col" data-chapter="1" data-title="LoRA: the update lives in a thin subspace" id="s7"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">7</span></div><div><p class="ch-meta"><span class="ts">Unit 7</span> · C07</p><h2>LoRA: the update lives in a thin subspace</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 2-6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 items 2-6</span></p>
 <p>Full fine-tuning moves 7B weights. What if the update is low-rank? The toy: W0 (8x8) frozen, B (8x2), A (2x8) trainable: 32 params instead of 64. The update is dW = BA. B and A are two thin factors whose product is the change. The base stays frozen. The adapter is the diff. Merge at deploy: W = W0 + BA. The alpha/r scale keeps the update magnitude stable as r changes. Initialize A small and B = 0, so the adapter starts as the identity and the model does not jump at step 0.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 item 6</span></p>
 <p>The lesson computes d = 4096, r = 8: full 16,777,216 vs LoRA 65,536, ratio 256. Rank of BA is at most r by construction. Forward adds O(r d) per token, negligible. Rank is the capacity knob. The lab asks for d = 1024, r = 16: 32,768 params.</p>
 </div>
+<figure class="paint inset" data-entrance="bloom">
+<div class="frame"><div class="stage"><img alt="Watercolor of a huge frosted monolith with a thin marked ribbon around it" class="base" loading="lazy" src="assets/u04-lora.webp"/></div></div>
+<figcaption><span class="ptag ptag-illustration">Illustration</span> LoRA in one image: the frozen monolith never moves, the thin ribbon carries the whole change. Watercolor, original to this companion.</figcaption></figure>
 <figure>
-<img class="illus" src="assets/u04-lora.webp" alt="Watercolor of a huge frosted monolith with a thin marked ribbon around it">
-<figcaption><span class="tag tag-toy">Illustration</span> LoRA in one image: the frozen monolith never moves, the thin ribbon carries the whole change. Watercolor, original to this companion.</figcaption>
-</figure>
-<figure>
-<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of full versus LoRA parameters at d equals 4096">
-<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Parameters, d = 4096, r = 8 (C07 item 6)</text>
-<rect x="150" y="70" width="130" height="180" fill="#b3541e" rx="4"/>
-<rect x="420" y="244" width="130" height="6" fill="#2f4b8f"/>
-<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<svg aria-label="Bar chart of full versus LoRA parameters at d equals 4096" class="chart" role="img" viewbox="0 0 700 300">
+<text font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle" x="350" y="28">Parameters, d = 4096, r = 8 (C07 item 6)</text>
+<rect fill="#b3541e" height="180" rx="4" width="130" x="150" y="70"></rect>
+<rect fill="#2f4b8f" height="6" width="130" x="420" y="244"></rect>
+<g fill="#1c1a17" font-family="monospace" font-size="15" text-anchor="middle">
 <text x="215" y="60">16,777,216</text>
 <text x="485" y="234">65,536</text>
 </g>
-<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<g fill="#7a7160" font-family="sans-serif" font-size="13" text-anchor="middle">
 <text x="215" y="270">full dW</text>
 <text x="485" y="270">LoRA BA</text>
 </g>
-<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Ratio 256. Gradients flow only into B and A.</text>
+<text fill="#7a7160" font-family="sans-serif" font-size="12" text-anchor="middle" x="350" y="296">Ratio 256. Gradients flow only into B and A.</text>
 </svg>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 6</span> The lesson's count.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 item 6</span> The lesson's count.</figcaption>
 </figure>
-<figure>
-<img class="lessonfig" src="../assets/u04_fig01.png" alt="Plate showing a full weight update factored into rank-2 thin factors">
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 15, figure u04_fig01</span> The lesson's own plate: one rule (dW = BA), before (full dW), after (thin factors). Numbers from the lesson's render script.</figcaption>
-</figure>
+<figure class="paint inset" data-entrance="sketch">
+<div class="frame"><div class="stage"><img alt="Plate showing a full weight update factored into rank-2 thin factors" class="lessonfig base" loading="lazy" src="../assets/u04_fig01.png"/></div></div>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 item 15, figure u04_fig01</span> The lesson's own plate: one rule (dW = BA), before (full dW), after (thin factors). Numbers from the lesson's render script.</figcaption></figure>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 item 11</span></p>
 <p>Low rank does not always suffice. Tasks needing genuinely new capabilities, a new language or modality, exceed rank r. The adapter saturates and full tuning wins.</p>
 </div>
-<div class="nugget" id="w7">
-<h4>Nugget 07 · Thin diffs, frozen base</h4>
-<p class="big">Two thin factors carry the change at 1/256 the parameters. Start them at zero so day one changes nothing.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson writes dW = BA, counts 65,536 vs 16,777,216, and justifies the alpha/r scale and the zero init.</dd>
-<dt>Why it matters</dt><dd>The init trick is the whole safety story: B = 0 means the adapter is the identity at step 0. No jump, no surprise, then learning.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Start every delta at zero. A change that begins as nothing can only earn its keep.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s7" data-sign-label="Unit" data-sign-num="7" id="w7"><div class="tag-price"><span class="tag-big">07</span><span class="tag-unit">Nugget 07 · Thin diffs, frozen base</span></div><div class="tag-body"><div class="tag-title">Nugget 07 · Thin diffs, frozen base</div><div class="tag-eye">The lesson</div><p class="">Two thin factors carry the change at 1/256 the parameters. Start them at zero so day one changes nothing.</p><p><b>What happened. </b>The lesson writes dW = BA, counts 65,536 vs 16,777,216, and justifies the alpha/r scale and the zero init.</p><p><b>Why it matters. </b>The init trick is the whole safety story: B = 0 means the adapter is the identity at step 0. No jump, no surprise, then learning.</p><p><b>Transferable principle. </b> Start every delta at zero. A change that begins as nothing can only earn its keep.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 07</span></div></div></aside>
 </section>
-<section class="block" id="s8">
-<p class="secnum">Section 8 · C08</p>
-<h2>The Adam bill: freezing deletes two thirds</h2>
+<section class="block col" data-chapter="1" data-title="The Adam bill: freezing deletes two thirds" id="s8"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">8</span></div><div><p class="ch-meta"><span class="ts">Unit 8</span> · C08</p><h2>The Adam bill: freezing deletes two thirds</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 2-6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 items 2-6</span></p>
 <p>Where exactly do the 104 GB go in full fp32 Adam on 7B? Weights 28 GB (fp32), grads 28 GB, m+v 56 GB. Adam triples the bill: weights plus grads plus two states. Freezing the base deletes grads and states for 99.6% of parameters. The lesson computes: full fp32 Adam on 7B = 104.3 GiB, frozen bf16 base + LoRA (0.4% of weights trainable) = 13.4 GiB. That moves 7B training from 8xA100 to 1xA100 territory.</p>
-<p><span class="tag tag-toy">Illustration</span> <strong>Honesty note, from the lesson itself.</strong> The lesson's lab toy uses a smaller adapter fraction, 0.06%, and prints 13.1 GiB. The two toys state different assumptions and both are correct under their own. This page charts the 0.4% / 13.4 GiB version from the lesson's render script.</p>
+<p><span class="ptag ptag-illustration">Illustration</span> <strong>Honesty note, from the lesson itself.</strong> The lesson's lab toy uses a smaller adapter fraction, 0.06%, and prints 13.1 GiB. The two toys state different assumptions and both are correct under their own. This page charts the 0.4% / 13.4 GiB version from the lesson's render script.</p>
 </div>
 <figure>
-<svg class="chart" viewBox="0 0 700 340" role="img" aria-label="Stacked bars of Adam memory: full 104.3 GiB versus LoRA 13.4 GiB">
-<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Adam memory on 7B (C08 item 6)</text>
-<rect x="150" y="70" width="120" height="45" fill="#2f4b8f"/>
-<rect x="150" y="115" width="120" height="45" fill="#7a8fc4"/>
-<rect x="150" y="160" width="120" height="90" fill="#b3c2e8"/>
-<rect x="430" y="227" width="120" height="23" fill="#2f4b8f"/>
-<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<svg aria-label="Stacked bars of Adam memory: full 104.3 GiB versus LoRA 13.4 GiB" class="chart" role="img" viewbox="0 0 700 340">
+<text font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle" x="350" y="28">Adam memory on 7B (C08 item 6)</text>
+<rect fill="#2f4b8f" height="45" width="120" x="150" y="70"></rect>
+<rect fill="#7a8fc4" height="45" width="120" x="150" y="115"></rect>
+<rect fill="#b3c2e8" height="90" width="120" x="150" y="160"></rect>
+<rect fill="#2f4b8f" height="23" width="120" x="430" y="227"></rect>
+<g fill="#1c1a17" font-family="monospace" font-size="14" text-anchor="middle">
 <text x="210" y="60">104.3 GiB</text>
 <text x="490" y="60">13.4 GiB</text>
 </g>
-<g font-family="sans-serif" font-size="12" fill="#7a7160" text-anchor="middle">
+<g fill="#7a7160" font-family="sans-serif" font-size="12" text-anchor="middle">
 <text x="210" y="272">full: W 28, grad 28, m+v 56 GB</text>
 <text x="490" y="272">frozen bf16 base + adapter</text>
 </g>
-<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The optimizer only allocates states for parameters with gradients.</text>
+<text fill="#7a7160" font-family="sans-serif" font-size="12" text-anchor="middle" x="350" y="300">The optimizer only allocates states for parameters with gradients.</text>
 </svg>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 item 6</span> The lesson's computed bill. The lesson's plate u04_fig03 shows the same before and after. Check the bill against nvidia-smi within 20%.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 item 6</span> The lesson's computed bill. The lesson's plate u04_fig03 shows the same before and after. Check the bill against nvidia-smi within 20%.</figcaption>
 </figure>
 <div class="toy">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 4, 7</span> Memory bill bench: the lesson's three-term formula on your params.</p>
-<p><input class="text" id="mbn" type="number" value="7000000000" aria-label="params"> <button class="btn" id="mbbt">Compute bills</button></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 items 4, 7</span> Memory bill bench: the lesson's three-term formula on your params.</p>
+<p><input aria-label="params" class="text" id="mbn" type="number" value="7000000000"/> <button class="btn" id="mbbt">Compute bills</button></p>
 <div class="chips" id="mbout"></div>
 <p class="small muted">Full fp32 Adam: 16 bytes/param. Frozen bf16 base: 2 bytes/param. The lab asks for 1B full fp32: 14.9 GiB.</p>
 </div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 item 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 item 11</span></p>
 <p>The bill does not cover everything. Activations at long context can exceed the weights. The bill needs an activation term past T = 4k.</p>
 </div>
-<div class="nugget" id="w8">
-<h4>Nugget 08 · The bill decides fit or no-fit</h4>
-<p class="big">Run the three-term memory bill before every launch. Freezing is the biggest win. Everything else is refinement.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson names the three terms, computes 104.3 vs 13.4 GiB, and discloses the lab's differing assumption on-page.</dd>
-<dt>Why it matters</dt><dd>The bill is the fit/no-fit decision for the GPU. Two toys, two adapter fractions, two honest numbers. Assumptions are part of the answer.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> State the assumptions with the number. A figure without its assumptions is a rumor with decimals.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s8" data-sign-label="Unit" data-sign-num="8" id="w8"><div class="tag-price"><span class="tag-big">08</span><span class="tag-unit">Nugget 08 · The bill decides fit or no-fit</span></div><div class="tag-body"><div class="tag-title">Nugget 08 · The bill decides fit or no-fit</div><div class="tag-eye">The lesson</div><p class="">Run the three-term memory bill before every launch. Freezing is the biggest win. Everything else is refinement.</p><p><b>What happened. </b>The lesson names the three terms, computes 104.3 vs 13.4 GiB, and discloses the lab's differing assumption on-page.</p><p><b>Why it matters. </b>The bill is the fit/no-fit decision for the GPU. Two toys, two adapter fractions, two honest numbers. Assumptions are part of the answer.</p><p><b>Transferable principle. </b> State the assumptions with the number. A figure without its assumptions is a rumor with decimals.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 08</span></div></div></aside>
 </section>
-<section class="block" id="s9">
-<p class="secnum">Section 9 · C09</p>
-<h2>Precision: range kills, precision blurs</h2>
+<section class="block col" data-chapter="1" data-title="Precision: range kills, precision blurs" id="s9"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">9</span></div><div><p class="ch-meta"><span class="ts">Unit 9</span> · C09</p><h2>Precision: range kills, precision blurs</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 2-6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C09 items 2-6</span></p>
 <p>fp16 halves memory. Why did early fp16 training diverge? The toy: gradient 1e-8 in fp16, whose min normal is about 6e-5. It rounds to zero. The update vanishes. fp16: 1 sign, 5 exponent, 10 mantissa bits, range about 6e-5 to 6e4. bf16: 1/8/7, range about 1e-38 to 3e38, like fp32. Loss scaling multiplies the loss by S, computes in fp16, then unscales gradients in fp32. The toy: true gradient 3e-6. fp16: 0, underflow. With loss scale 1024: 3e-3, representable, unscale recovers 3e-6. bf16: 3e-6 representable directly. bf16 needs no scaling because its range covers the gradients.</p>
 </div>
 <table class="data">
-<caption class="small muted capleft"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 3-4</span> The three formats.</caption>
+<caption class="small muted capleft"><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C09 items 3-4</span> The three formats.</caption>
 <tr><th>Format</th><th>Bits</th><th>Range</th><th>Needs scaling</th></tr>
 <tr><td>fp32</td><td class="num">1/8/23</td><td class="num">~1e-38 to 3e38</td><td>no, the safe default</td></tr>
 <tr><td>fp16</td><td class="num">1/5/10</td><td class="num">~6e-5 to 6e4</td><td>yes, loss scaling</td></tr>
 <tr><td>bf16</td><td class="num">1/8/7</td><td class="num">~1e-38 to 3e38</td><td>no, the modern default</td></tr>
 </table>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 4, 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C09 items 4, 11</span></p>
 <p>Keep master weights in fp32, or the optimizer rounds updates to zero. And less precision is not always safe: fp16 without loss scaling on a deep net underflows gradients, and the model trains on noise. Precision is a budget, not a free lunch. Choose bf16 for training, fp16 or int8 for inference per hardware.</p>
 </div>
-<div class="nugget" id="w9">
-<h4>Nugget 09 · Match the range to the signal</h4>
-<p class="big">Gradients live near zero. fp16 cannot see them without scaling. bf16 can. Pick the format whose range covers your smallest signal.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson tabulates the three formats, derives loss scaling, and shows the 3e-6 gradient surviving in bf16 and scaled fp16.</dd>
-<dt>Why it matters</dt><dd>Underflow is silent. The loss looks alive while the updates are zero. The mantissa difference rarely matters. The range difference decides.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Resolution and range are different budgets. When small signals vanish, suspect range first.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s9" data-sign-label="Unit" data-sign-num="9" id="w9"><div class="tag-price"><span class="tag-big">09</span><span class="tag-unit">Nugget 09 · Match the range to the signal</span></div><div class="tag-body"><div class="tag-title">Nugget 09 · Match the range to the signal</div><div class="tag-eye">The lesson</div><p class="">Gradients live near zero. fp16 cannot see them without scaling. bf16 can. Pick the format whose range covers your smallest signal.</p><p><b>What happened. </b>The lesson tabulates the three formats, derives loss scaling, and shows the 3e-6 gradient surviving in bf16 and scaled fp16.</p><p><b>Why it matters. </b>Underflow is silent. The loss looks alive while the updates are zero. The mantissa difference rarely matters. The range difference decides.</p><p><b>Transferable principle. </b> Resolution and range are different budgets. When small signals vanish, suspect range first.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 09</span></div></div></aside>
 </section>
-<section class="block" id="s10">
-<p class="secnum">Section 10 · C10</p>
-<h2>Full vs PEFT: choose by depth of change</h2>
+<section class="block col" data-chapter="1" data-title="Full vs PEFT: choose by depth of change" id="s10"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">10</span></div><div><p class="ch-meta"><span class="ts">Unit 10</span> · C10</p><h2>Full vs PEFT: choose by depth of change</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 2-6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 items 2-6</span></p>
 <p>LoRA is cheap. Full tuning is free. When is cheap wrong? The toy: adapting to a new language needs deep change, a new format needs surface change. Rank 8 cannot hold a language. Full tuning: every weight may move, maximum freedom, maximum bill, maximum forgetting risk. PEFT: a thin diff on a frozen base, swappable, composable, bounded. The lesson prices it: full moves 16.8M params per matrix-class vs LoRA 65k, ratio 256. Adam 104.3 GiB vs 13.4 GiB. Merging is exact: W = W0 + BA, four lines, zero-latency deploy. Unmerge by subtracting.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 item 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 item 11</span></p>
 <p>PEFT does not guarantee no forgetting. A rank-64 adapter on a small base can still distort core behavior, and full tuning with good data and low LR forgets little. Both need evals. The lesson's chapter plate u04_fig04 shows the same tradeoff.</p>
 </div>
-<div class="nugget" id="w10">
-<h4>Nugget 10 · Depth of change decides</h4>
-<p class="big">New format: adapter. New language: full tuning. The rank is a capacity knob, and some changes exceed every rank.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson trades the two strategies, prices both, and gives the exact merge.</dd>
-<dt>Why it matters</dt><dd>Cost alone is the wrong chooser. The question is how much must change. A saturated adapter is just an expensive way to learn that rank was too small.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Match the tool's capacity to the change's depth. Cheap tools fail expensively when the job exceeds them.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s10" data-sign-label="Unit" data-sign-num="10" id="w10"><div class="tag-price"><span class="tag-big">10</span><span class="tag-unit">Nugget 10 · Depth of change decides</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · Depth of change decides</div><div class="tag-eye">The lesson</div><p class="">New format: adapter. New language: full tuning. The rank is a capacity knob, and some changes exceed every rank.</p><p><b>What happened. </b>The lesson trades the two strategies, prices both, and gives the exact merge.</p><p><b>Why it matters. </b>Cost alone is the wrong chooser. The question is how much must change. A saturated adapter is just an expensive way to learn that rank was too small.</p><p><b>Transferable principle. </b> Match the tool's capacity to the change's depth. Cheap tools fail expensively when the job exceeds them.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 10</span></div></div></aside>
 </section>
-<section class="block" id="s11">
-<p class="secnum">Section 11 · C11</p>
-<h2>Canaries: a contract with the past</h2>
+<section class="block col" data-chapter="1" data-title="Canaries: a contract with the past" id="s11"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">11</span></div><div><p class="ch-meta"><span class="ts">Unit 11</span> · C11</p><h2>Canaries: a contract with the past</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 2-6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C11 items 2-6</span></p>
 <p>The fine-tune improved the task but broke refusals. How would you know before shipping? The toy: 50 canary prompts, 20 capability, 20 safety, 10 format. Gate: no canary regresses beyond tolerance. Before tune: record canary scores. After: re-run. Any drop beyond noise is a regression. Safety canaries (refusals, PII) are zero-tolerance. The toy verdict: capability 19/20 to 19/20, pass. Safety 20/20 to 18/20, FAIL: two refusals broke. The tune ships only after the safety fix. The numbers are the gate.</p>
 </div>
 <figure>
-<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of canary results: capability passes, safety fails">
-<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Canary gate, 50 prompts (C11 item 6)</text>
-<rect x="130" y="90" width="110" height="160" fill="#2f4b8f" rx="4"/>
-<rect x="290" y="90" width="110" height="160" fill="#2f4b8f" rx="4"/>
-<rect x="450" y="110" width="110" height="140" fill="#b3541e" rx="4"/>
-<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<svg aria-label="Bar chart of canary results: capability passes, safety fails" class="chart" role="img" viewbox="0 0 700 300">
+<text font-family="sans-serif" font-size="16" font-weight="700" text-anchor="middle" x="350" y="28">Canary gate, 50 prompts (C11 item 6)</text>
+<rect fill="#2f4b8f" height="160" rx="4" width="110" x="130" y="90"></rect>
+<rect fill="#2f4b8f" height="160" rx="4" width="110" x="290" y="90"></rect>
+<rect fill="#b3541e" height="140" rx="4" width="110" x="450" y="110"></rect>
+<g fill="#1c1a17" font-family="monospace" font-size="15" text-anchor="middle">
 <text x="185" y="80">19/20</text>
 <text x="345" y="80">20/20</text>
 <text x="505" y="100">18/20</text>
 </g>
-<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<g fill="#7a7160" font-family="sans-serif" font-size="13" text-anchor="middle">
 <text x="185" y="270">capability before</text>
 <text x="345" y="270">capability after</text>
 <text x="505" y="270">safety after: FAIL</text>
 </g>
-<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Two refusals broke. The tune does not ship.</text>
+<text fill="#7a7160" font-family="sans-serif" font-size="12" text-anchor="middle" x="350" y="296">Two refusals broke. The tune does not ship.</text>
 </svg>
-<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 6</span> The lesson's toy verdict. 50 generations per gate: minutes. The cost of skipping it is a broken product.</figcaption>
+<figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C11 item 6</span> The lesson's toy verdict. 50 generations per gate: minutes. The cost of skipping it is a broken product.</figcaption>
 </figure>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C11 item 11</span></p>
 <p>Canaries do not cover everything. A regression outside the canary set ships silently. Canaries need periodic renewal from real failures. And if canaries change with the tune, they are not canaries.</p>
 </div>
-<div class="nugget" id="w11">
-<h4>Nugget 11 · Freeze the promises</h4>
-<p class="big">Every tune re-passes the old promises: answers stay right, refusals stay firm, format stays valid. Safety is zero-tolerance.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson designs the canary set, defines the gate, and runs the toy to a FAIL verdict on safety.</dd>
-<dt>Why it matters</dt><dd>Improvement on the task is not improvement overall. Without the contract, every tune is a gamble with the product's past behavior.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Pin the invariants before you change anything. Progress you cannot gate is just motion.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s11" data-sign-label="Unit" data-sign-num="11" id="w11"><div class="tag-price"><span class="tag-big">11</span><span class="tag-unit">Nugget 11 · Freeze the promises</span></div><div class="tag-body"><div class="tag-title">Nugget 11 · Freeze the promises</div><div class="tag-eye">The lesson</div><p class="">Every tune re-passes the old promises: answers stay right, refusals stay firm, format stays valid. Safety is zero-tolerance.</p><p><b>What happened. </b>The lesson designs the canary set, defines the gate, and runs the toy to a FAIL verdict on safety.</p><p><b>Why it matters. </b>Improvement on the task is not improvement overall. Without the contract, every tune is a gamble with the product's past behavior.</p><p><b>Transferable principle. </b> Pin the invariants before you change anything. Progress you cannot gate is just motion.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 11</span></div></div></aside>
 </section>
-<section class="block" id="s12">
-<p class="secnum">Section 12 · C12</p>
-<h2>The budget sheet: name the binding row</h2>
+<section class="block col" data-chapter="1" data-title="The budget sheet: name the binding row" id="s12"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">12</span></div><div><p class="ch-meta"><span class="ts">Unit 12</span> · C12</p><h2>The budget sheet: name the binding row</h2></div></div>
 <div class="prose-narrow">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 2-6</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 items 2-6</span></p>
 <p>Can we fine-tune 7B with LoRA on one A100? The toy sheet: weights 14 GB (bf16), cache and activations about 20 GB at T = 2048, adapter states about 1 GB. Fits in 40 GB. FLOPs: 2M SFT tokens times 6 times 7e9 = 8.4e16, about 1 hour at 50% MFU, cost about $2-3 on cloud. Full fine-tune of the same: memory 104 GB (needs 3+ GPUs), time similar, cost 3x. The sheet makes the LoRA decision obvious.</p>
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 4, 11</span></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 items 4, 11</span></p>
 <p>The sheet has four rows: FLOPs, memory, time, money. Memory decides fit (yes/no). FLOPs decide time. Time times GPU price decides money. And MFU 30-50% is honest. 70% is a dream. The sheet with 70% underestimates time 2x and the deadline slips.</p>
 </div>
 <table class="data">
-<caption class="small muted capleft"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 2, 6</span> The toy budget sheet: LoRA 7B on one A100.</caption>
+<caption class="small muted capleft"><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 items 2, 6</span> The toy budget sheet: LoRA 7B on one A100.</caption>
 <tr><th>Row</th><th>Value</th><th>Verdict</th></tr>
 <tr><td>FLOPs</td><td class="num">8.4e16</td><td>2M tokens x 6 x 7e9</td></tr>
 <tr><td>Memory</td><td class="num">~35 GB of 40 GB</td><td>fits, with headroom</td></tr>
@@ -728,46 +760,22 @@ footer.prov p{margin:.7em 0}
 <tr><td>Money</td><td class="num">~$2-3</td><td>full tune costs 3x</td></tr>
 </table>
 <div class="toy">
-<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 4, 7</span> Budget bench: time and cost on your FLOPs, GPUs, MFU, and price.</p>
-<p><input class="text" id="bdf" type="number" value="84000000000000000" aria-label="FLOPs"> <input class="text" id="bdg" type="number" value="1" min="1" max="1024" aria-label="GPUs"> <input class="text" id="bdm" type="number" value="0.5" step="0.05" min="0.05" max="1" aria-label="MFU"> <input class="text" id="bdp" type="number" value="156000000000000" aria-label="peak FLOP per s per GPU"> <button class="btn" id="bdbt">Compute time</button></p>
+<p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 items 4, 7</span> Budget bench: time and cost on your FLOPs, GPUs, MFU, and price.</p>
+<p><input aria-label="FLOPs" class="text" id="bdf" type="number" value="84000000000000000"/> <input aria-label="GPUs" class="text" id="bdg" max="1024" min="1" type="number" value="1"/> <input aria-label="MFU" class="text" id="bdm" max="1" min="0.05" step="0.05" type="number" value="0.5"/> <input aria-label="peak FLOP per s per GPU" class="text" id="bdp" type="number" value="156000000000000"/> <button class="btn" id="bdbt">Compute time</button></p>
 <div class="chips" id="bdout"></div>
 <p class="small muted">Peak 1.56e14 is an A100 at bf16. Try MFU 0.7 and watch the honest 0.4 disagree.</p>
 </div>
-<div class="nugget" id="w12">
-<h4>Nugget 12 · The binding row decides</h4>
-<p class="big">Four rows, one binding constraint. Change the plan until all four pass, and distrust any sheet that assumes 70% MFU.</p>
-<dl>
-<dt>What happened</dt><dd>The lesson builds the sheet, fits LoRA 7B on one A100, and prices full tuning at 3x.</dd>
-<dt>Why it matters</dt><dd>The sheet costs nothing. Skipping it costs a crashed run or a surprise bill. The binding row is the plan. The others are sanity checks.</dd>
-<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Every plan has a binding constraint. Name it explicitly, or it will name itself at the worst moment.</dd>
-</dl>
-</div>
+<aside class="tag" data-chapter="s12" data-sign-label="Unit" data-sign-num="12" id="w12"><div class="tag-price"><span class="tag-big">12</span><span class="tag-unit">Nugget 12 · The binding row decides</span></div><div class="tag-body"><div class="tag-title">Nugget 12 · The binding row decides</div><div class="tag-eye">The lesson</div><p class="">Four rows, one binding constraint. Change the plan until all four pass, and distrust any sheet that assumes 70% MFU.</p><p><b>What happened. </b>The lesson builds the sheet, fits LoRA 7B on one A100, and prices full tuning at 3x.</p><p><b>Why it matters. </b>The sheet costs nothing. Skipping it costs a crashed run or a surprise bill. The binding row is the plan. The others are sanity checks.</p><p><b>Transferable principle. </b> Every plan has a binding constraint. Name it explicitly, or it will name itself at the worst moment.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 12</span></div></div></aside>
 </section>
-<section class="block" id="wisdom">
-<p class="secnum">Wisdom index</p>
-<h2>Twelve nuggets, one unit</h2>
-<ol class="wisdom">
-<li><a href="#w1"><span class="wnum">01</span>The arithmetic is the budget</a></li>
-<li><a href="#w2"><span class="wnum">02</span>The loss is only as honest as the manifest</a></li>
-<li><a href="#w3"><span class="wnum">03</span>Outliers stretch the grid</a></li>
-<li><a href="#w4"><span class="wnum">04</span>Budget bytes, not FLOPs</a></li>
-<li><a href="#w5"><span class="wnum">05</span>Elicit, do not expect creation</a></li>
-<li><a href="#w6"><span class="wnum">06</span>Byte-match the contract</a></li>
-<li><a href="#w7"><span class="wnum">07</span>Thin diffs, frozen base</a></li>
-<li><a href="#w8"><span class="wnum">08</span>The bill decides fit or no-fit</a></li>
-<li><a href="#w9"><span class="wnum">09</span>Match the range to the signal</a></li>
-<li><a href="#w10"><span class="wnum">10</span>Depth of change decides</a></li>
-<li><a href="#w11"><span class="wnum">11</span>Freeze the promises</a></li>
-<li><a href="#w12"><span class="wnum">12</span>The binding row decides</a></li>
-</ol>
-</section>
-<footer class="prov">
+
+<section class="col" id="playbook-sec">
+<h3 class="sub">The playbook</h3>
+<p>Every lesson on this page, in order. Tap one to return to its chapter.</p>
+</section><div class="wide"><div class="playbook" id="playbook"></div></div><footer class="colophon col"><div class="sources"><h3>About this page</h3><div class="about"><p class="prov-line">This is an independent companion to the course source, written in original words. It is not affiliated with the source's creators. Original AI watercolor illustrations made for this page. Historical photographs are real and attributed in their captions.</p></div>
 <p><strong>Provenance.</strong> This companion narrates <code>content/v2/cme295/lessons/u04_training_adaptation.md</code>, locally authored bridge content for Stanford CME295 (2026-10-06). The lesson marks pretraining, data and loss, SFT, templates, and LoRA OFFICIAL-SYLLABUS, and quantization, hardware efficiency, precision, full-versus-PEFT, regression tests, and the resource budget REQUESTED-BRANCH. Every leaf is PLANNED / SOURCE ATTRIBUTION PENDING until slide or transcript extraction verifies it. No lecture transcript exists for this unit, so no lecture anecdotes appear and no sentence here reproduces an instructor's words. The memory-bill section discloses on-page the lesson's own two-toy note: the render-script toy (0.4% adapter, 13.4 GiB) and the lab toy (0.06% adapter, 13.1 GiB) state different assumptions and both are correct under their own. Lesson figures u04_fig01 and u04_fig02 are the lesson's own computed plates, embedded where cited. Charts on this page re-plot the lesson's computed numbers with section citations. Interactive toys run the lesson's rules on values you supply. The two watercolor illustrations are original to this companion, generated with Muse native tools, and labeled Illustration. No official course video exists for this unit, so no video is embedded.</p>
-<p><strong>Quoted words.</strong> Quoted words from the lesson source: 0. This companion paraphrases the lesson throughout and uses no quotation marks in visible text, tooltips, or labels. Numbers carry their lesson section above each figure and table.</p>
+<p><strong>Quoted words.</strong> This companion paraphrases the lesson throughout and uses no quotation marks in visible text, tooltips, or labels. Numbers carry their lesson section above each figure and table.</p>
 <p><a href="../index.html">Back to the CME295 index</a></p>
-</footer>
-</div>
-<script>
+<div class="quote-count"><b>On quotes. </b>Mechanical recount of every quoted phrase on this page: <span class="n">0</span> words (blockquote elements and straight or curly quoted strings, footer excluded). This counts the page's own quoted technical terms and toy inputs too, not only source quotes. Everything else is original paraphrase and analysis.</div></div></footer></div><script>
 function el(tag,cls,text){
 var e=document.createElement(tag)
 if(cls){e.className=cls}
@@ -889,6 +897,663 @@ runQuant()
 runRoof()
 runMemBill()
 runDay()
-</script>
-</body>
+</script><script>
+/* =====================================================================
+   Companion template engine — runtime behavior shared by every artifact.
+   Ported from the reference artifact (~/workspace/companions/reference/index.html),
+   generalized: no per-page data, everything driven by DOM + data attributes.
+   Plain script, no modules, no dependencies. Works from file://.
+
+   DOM contract (see README.md):
+     #tapebar[data-mode="timestamp"|"progress"][data-total][data-sign-label]
+       > .tape-read > #tapeTime + #tapeCh ; svg#tape (built by this engine)
+     section[data-chapter][data-time][data-title]   (timestamp mode)
+     section[data-chapter][data-title]              (progress mode)
+     figure.paint[data-entrance="bloom"|"sketch"|"none"][data-scroll="pin"]
+       > .frame > .stage > img.base (+ optional img.ly layers)
+     aside.tag[data-sign-label][data-sign-num][data-chapter]
+       > .tag-price > .tag-big + .tag-unit ; .tag-body > .tag-eye + p + .tag-sku > svg.bars
+     #playbook (populated from aside.tag), #tip (created if absent)
+   ===================================================================== */
+(function () {
+  'use strict';
+  var NS = 'http://www.w3.org/2000/svg';
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var mqMobile = window.matchMedia('(max-width: 700px)');
+  var fine = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* ---------------- helpers ---------------- */
+  function S(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) if (attrs[k] !== undefined && attrs[k] !== null) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function T(parent, x, y, str, attrs) {
+    var t = S('text', { x: x, y: y }, parent);
+    for (var k in (attrs || {})) t.setAttribute(k, attrs[k]);
+    t.textContent = str;
+    return t;
+  }
+  function H(tag, cls, text, parent) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined && text !== null) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function lin(d0, d1, r0, r1) { return function (v) { return r0 + (v - d0) / (d1 - d0) * (r1 - r0); }; }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function fmt(n, d) { return n.toLocaleString('en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+  function easeInOut(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  function smoothstep(a, b, v) { var t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
+  /* Run fn(k) for k 0..1 over dur ms. Reduced motion jumps straight to the end. */
+  function tween(dur, fn, done) {
+    var stopped = false, id = 0, t0 = null;
+    if (reduce || !dur) { fn(1); if (done) done(); return { stop: function () {} }; }
+    function step(now) {
+      if (stopped) return;
+      if (t0 === null) t0 = now;
+      var k = Math.min(1, (now - t0) / dur);
+      fn(k);
+      if (k < 1) id = requestAnimationFrame(step); else if (done) done();
+    }
+    id = requestAnimationFrame(step);
+    return { stop: function () { stopped = true; cancelAnimationFrame(id); } };
+  }
+
+  /* ---------------- reveal choreography ----------------
+     An element is only reset to its "before" state (prep) when it is about
+     to scroll in from below, and plays once it is meaningfully on screen.
+     Anything already on screen, or reached from above, is left as is.
+     beforeprint finishes everything instantly. */
+  var revealers = [];
+  function reveal(el, prep, play, ratio) {
+    if (!el) return;
+    if (reduce || !('IntersectionObserver' in window)) { return; }
+    var state = 0;
+    var R = { el: el, finish: function () { if (state === 1) { state = 2; play(true); } } };
+    revealers.push(R);
+    var near = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (state === 0 && en.isIntersecting && en.boundingClientRect.top > window.innerHeight) { state = 1; prep(); }
+      });
+    }, { rootMargin: '0px 0px 140% 0px' });
+    var vis = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var need = Math.min(en.boundingClientRect.height * (ratio || 0.3), window.innerHeight * 0.35);
+        if (en.intersectionRect.height < need) return;
+        if (state === 1) { state = 2; play(false); }
+        else if (state === 0) state = 2;
+        if (state === 2) { near.disconnect(); vis.disconnect(); }
+      });
+    }, { threshold: [0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1] });
+    near.observe(el);
+    vis.observe(el);
+  }
+
+  /* ---------------- tooltip ---------------- */
+  var tip = document.getElementById('tip');
+  if (!tip) { tip = H('div', null, null, document.body); tip.id = 'tip'; tip.hidden = true; }
+  function placeTip(x, y) {
+    var pad = 14, r = tip.getBoundingClientRect();
+    var tx = x + pad, ty = y + pad;
+    if (tx + r.width > window.innerWidth - 8) tx = x - r.width - pad;
+    if (ty + r.height > window.innerHeight - 8) ty = y - r.height - pad;
+    tip.style.left = Math.max(8, tx) + 'px';
+    tip.style.top = Math.max(8, ty) + 'px';
+  }
+  function showTip(x, y, build) {
+    tip.replaceChildren();
+    build(tip);
+    tip.hidden = false;
+    tip.style.opacity = '1';   /* pilot tooltip code may have left it at 0 */
+    placeTip(x, y);
+  }
+  function showTipAt(el, build) {
+    var r = el.getBoundingClientRect();
+    showTip(r.left + r.width / 2, r.top + r.height / 2, build);
+  }
+  function hideTip() { tip.hidden = true; tip.style.opacity = ''; }
+  function tipRow(parent, key, label, value) {
+    var row = H('div', 'row', null, parent);
+    var a = H('span', null, null, row);
+    if (key) { var k = H('i', 'k', null, a); k.style.background = key; }
+    a.appendChild(document.createTextNode(label));
+    H('span', null, value, row);
+  }
+  window.addEventListener('scroll', hideTip, { passive: true });
+
+  /* ---------------- barcodes on shelf tags (seeded RNG, stable per page) ---------------- */
+  document.querySelectorAll('svg.bars').forEach(function (svg, i) {
+    var seed = 17 + i * 101;
+    function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+    svg.setAttribute('viewBox', '0 0 78 15');
+    var x = 0;
+    while (x < 76) {
+      var w = rnd() < 0.3 ? 2 : 1;
+      S('rect', { x: x, y: 0, width: w, height: 15, fill: 'var(--ink)' }, svg);
+      x += w + (rnd() < 0.5 ? 1 : 2);
+    }
+  });
+
+  /* ---------------- tape measure ---------------- */
+  function parseTime(v) {
+    if (v === undefined || v === null || v === '') return null;
+    // leading "~" is the page-stated approximate-time marker; strip it
+    var s0 = String(v).trim().replace(/^~\s*/, '');
+    if (s0 === '') return null;
+    if (/^\d+(\.\d+)?$/.test(s0)) return +s0;
+    var p = s0.split(':').map(Number);
+    if (p.some(isNaN)) return null;
+    var s = 0;
+    for (var i = 0; i < p.length; i++) s = s * 60 + p[i];
+    return s;
+  }
+  function hms(t) {
+    t = Math.round(t);
+    var h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60;
+    return h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  (function tape() {
+    var bar = document.getElementById('tapebar');
+    var tapeEl = document.getElementById('tape');
+    if (!bar || !tapeEl) return;
+    var timeEl = document.getElementById('tapeTime');
+    var chEl = document.getElementById('tapeCh');
+    var mode = bar.dataset.mode === 'progress' ? 'progress' : 'timestamp';
+    var label0 = bar.dataset.signLabel || (mode === 'progress' ? 'Unit' : 'Aisle');
+    var TOTAL, secs;
+    var raw = Array.prototype.slice.call(document.querySelectorAll('section[data-chapter]'));
+    if (mode === 'timestamp') {
+      TOTAL = parseTime(bar.dataset.total);
+      secs = raw.map(function (el) {
+        return { el: el, t: parseTime(el.dataset.time) || 0, label: el.dataset.title || '' };
+      }).sort(function (a, b) { return a.t - b.t; });
+      if (!TOTAL) TOTAL = (secs.length ? secs[secs.length - 1].t : 0) + 480;
+    } else {
+      secs = raw.map(function (el, i) {
+        return { el: el, t: i * 100, label: el.dataset.title || (label0 + ' ' + (i + 1)) };
+      });
+      TOTAL = secs.length * 100;
+    }
+    if (!secs.length) { bar.style.display = 'none'; return; }
+    secs.forEach(function (s, i) { s.t1 = i < secs.length - 1 ? secs[i + 1].t : TOTAL; s.i = i; });
+    var X = null, ph = null, hl = null, current = 0, curT = 0;
+    function draw() {
+      var W = tapeEl.clientWidth, Hh = tapeEl.clientHeight;
+      if (!W) return;
+      tapeEl.setAttribute('viewBox', '0 0 ' + W + ' ' + Hh);
+      tapeEl.replaceChildren();
+      var x0 = 6, x1 = W - 6, top = 6, bot = Hh - 4;
+      X = lin(0, TOTAL, x0, x1);
+      S('rect', { x: x0 - 3, y: top, width: x1 - x0 + 6, height: bot - top, rx: 3, fill: 'var(--tape)' }, tapeEl);
+      secs.forEach(function (s, i) {
+        if (i % 2) S('rect', { x: X(s.t), y: top, width: Math.max(0, X(s.t1) - X(s.t)), height: bot - top, fill: 'var(--tape-ink)', 'fill-opacity': 0.07 }, tapeEl);
+      });
+      hl = S('rect', { x: 0, y: top, width: 0, height: bot - top, fill: 'var(--apron)', 'fill-opacity': 0.32 }, tapeEl);
+      if (mode === 'timestamp') {
+        var ppm = (x1 - x0) / (TOTAL / 60);
+        for (var m = 0; m * 60 <= TOTAL; m++) {
+          var hgt = 0, x = X(m * 60);
+          if (m % 30 === 0) hgt = (bot - top) * 0.5;
+          else if (m % 5 === 0) hgt = (bot - top) * 0.28;
+          else if (ppm >= 3) hgt = (bot - top) * 0.15;
+          if (!hgt) continue;
+          S('line', { x1: x, x2: x, y1: top, y2: top + hgt, stroke: 'var(--tape-ink)', 'stroke-width': m % 30 === 0 ? 1.4 : 1, 'stroke-opacity': m % 30 === 0 ? 0.95 : 0.6 }, tapeEl);
+          if (m % 30 === 0 && m > 0) {
+            var lab = m % 60 === 0 ? (m / 60) + 'h' : (ppm > 2.2 ? (Math.floor(m / 60) ? Math.floor(m / 60) + 'h30' : '30m') : '');
+            if (lab) T(tapeEl, x + 3, bot - 4, lab, { 'font-family': 'Barlow Condensed, Arial Narrow, sans-serif', 'font-weight': 600, 'font-size': 11, fill: 'var(--tape-ink)' });
+          }
+        }
+      } else {
+        secs.forEach(function (s) {
+          var x = X(s.t);
+          S('line', { x1: x, x2: x, y1: top, y2: bot, stroke: 'var(--tape-ink)', 'stroke-width': s.i === 0 ? 1.6 : 1, 'stroke-opacity': 0.75 }, tapeEl);
+          if (W > 560) T(tapeEl, x + 4, bot - 4, String(s.i + 1), { 'font-family': 'Barlow Condensed, Arial Narrow, sans-serif', 'font-weight': 600, 'font-size': 11, fill: 'var(--tape-ink)' });
+        });
+      }
+      /* chapter-start teeth */
+      secs.forEach(function (s) {
+        var x = X(s.t);
+        S('path', { d: 'M' + (x - 3.5) + ',' + bot + ' L' + (x + 3.5) + ',' + bot + ' L' + x + ',' + (bot - 6) + ' Z', fill: 'var(--tape-ink)', 'fill-opacity': 0.6 }, tapeEl);
+      });
+      ph = S('g', null, tapeEl);
+      S('line', { x1: 0, x2: 0, y1: 1, y2: Hh - 1, stroke: 'var(--apron)', 'stroke-width': 2.5 }, ph);
+      S('rect', { x: -6, y: 0, width: 12, height: 6, rx: 1.5, fill: 'var(--apron)' }, ph);
+      update(curT);
+    }
+    function update(t) {
+      curT = t;
+      var i = 0;
+      for (var k = 0; k < secs.length; k++) if (t >= secs[k].t) i = k;
+      current = i;
+      if (X && ph) {
+        ph.setAttribute('transform', 'translate(' + X(t).toFixed(1) + ',0)');
+        hl.setAttribute('x', X(secs[i].t));
+        hl.setAttribute('width', Math.max(0, X(secs[i].t1) - X(secs[i].t)));
+      }
+      if (mode === 'timestamp') {
+        if (timeEl) timeEl.innerHTML = '';
+        if (timeEl) { timeEl.appendChild(document.createTextNode(hms(t))); var sm = H('small', null, 'of ' + hms(TOTAL), timeEl); }
+        if (chEl) chEl.textContent = secs[i].label;
+        tapeEl.setAttribute('aria-valuenow', Math.round(t));
+        tapeEl.setAttribute('aria-valuetext', hms(t) + ', ' + secs[i].label);
+      } else {
+        if (timeEl) { timeEl.innerHTML = ''; timeEl.appendChild(document.createTextNode((i + 1) + ' of ' + secs.length)); H('small', null, label0.toLowerCase(), timeEl); }
+        if (chEl) chEl.textContent = secs[i].label;
+        tapeEl.setAttribute('aria-valuenow', i + 1);
+        tapeEl.setAttribute('aria-valuetext', label0 + ' ' + (i + 1) + ' of ' + secs.length + ', ' + secs[i].label);
+      }
+    }
+    function anchorY() { return window.scrollY + bar.offsetHeight + window.innerHeight * 0.3; }
+    function tops() {
+      var arr = secs.map(function (s) { return s.el.getBoundingClientRect().top + window.scrollY; });
+      var foot = document.querySelector('footer.colophon');
+      arr.push(foot ? foot.getBoundingClientRect().top + window.scrollY : document.body.scrollHeight);
+      return arr;
+    }
+    function fromScroll() {
+      var a = anchorY(), tp = tops();
+      if (a < tp[0]) { update(0); return; }
+      for (var i = 0; i < secs.length; i++) {
+        if (a >= tp[i] && a < tp[i + 1]) {
+          var p = (a - tp[i]) / (tp[i + 1] - tp[i]);
+          update(secs[i].t + p * (secs[i].t1 - secs[i].t));
+          return;
+        }
+      }
+      update(TOTAL);
+    }
+    function jump(t) {
+      t = clamp(t, 0, TOTAL);
+      var i = 0;
+      for (var k = 0; k < secs.length; k++) if (t >= secs[k].t) i = k;
+      var tp = tops();
+      var p = (t - secs[i].t) / (secs[i].t1 - secs[i].t || 1);
+      var y = tp[i] + p * (tp[i + 1] - tp[i]) - bar.offsetHeight - window.innerHeight * 0.3 + 2;
+      window.scrollTo({ top: Math.max(0, y), behavior: reduce ? 'auto' : 'smooth' });
+    }
+    var ticking = false, pending = null, pendTimer = null;
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; if (pending === null) fromScroll(); }); }
+    }, { passive: true });
+    function tAt(ev) {
+      var r = tapeEl.getBoundingClientRect();
+      return clamp((ev.clientX - r.left - 6) / (r.width - 12), 0, 1) * TOTAL;
+    }
+    function labelAt(t) { var i = 0; for (var k = 0; k < secs.length; k++) if (t >= secs[k].t) i = k; return i; }
+    // click or drag jumps: pointerdown starts a potential drag and jumps to
+    // the press point, pointermove while down jumps live, pointerup ends it.
+    // A press without movement behaves exactly like the old click handler.
+    var dragging = false;
+    tapeEl.addEventListener('pointerdown', function (ev) {
+      if (ev.pointerType === 'mouse' && ev.button !== 0) return;
+      dragging = true;
+      try { tapeEl.setPointerCapture(ev.pointerId); } catch (e) {}
+      hideTip();
+      jump(tAt(ev));
+    });
+    tapeEl.addEventListener('pointermove', function (ev) {
+      if (dragging) { jump(tAt(ev)); return; }
+      if (ev.pointerType !== 'mouse') return;
+      var t = tAt(ev), i = labelAt(t);
+      showTip(ev.clientX, ev.clientY, function (el) {
+        H('b', null, mode === 'timestamp' ? hms(t) : (label0 + ' ' + (i + 1) + ' of ' + secs.length), el);
+        H('div', null, secs[i].label, el);
+      });
+    });
+    tapeEl.addEventListener('pointerup', function (ev) { dragging = false; hideTip(); });
+    tapeEl.addEventListener('pointercancel', function () { dragging = false; });
+    tapeEl.addEventListener('pointerleave', function () { if (!dragging) hideTip(); });
+    function kbJump(i) {
+      pending = clamp(i, 0, secs.length - 1);
+      clearTimeout(pendTimer);
+      pendTimer = setTimeout(function () { pending = null; }, 1400);
+      update(secs[pending].t);
+      jump(secs[pending].t);
+    }
+    tapeEl.addEventListener('keydown', function (ev) {
+      var base = pending !== null ? pending : current;
+      if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') { ev.preventDefault(); kbJump(base + 1); }
+      else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') {
+        ev.preventDefault();
+        kbJump(pending === null && curT - secs[current].t > (mode === 'timestamp' ? 20 : 1) ? current : base - 1);
+      } else if (ev.key === 'Home') { ev.preventDefault(); kbJump(0); }
+      else if (ev.key === 'End') { ev.preventDefault(); kbJump(secs.length - 1); }
+    });
+    if (window.ResizeObserver) new ResizeObserver(draw).observe(tapeEl); else window.addEventListener('resize', draw);
+    draw();
+    fromScroll();
+    window.addEventListener('load', fromScroll);
+  })();
+
+  /* ---------------- paintings ----------------
+     figure.paint > .frame > .stage > img.base (+ optional img.ly layers).
+     Entrances: data-entrance="bloom" (wet-wash mask, pure CSS, works on ANY
+     image) or "sketch" (grayscale+sepia develop). Layers: img.ly with
+     data-box="x,y,w,h" (pixel rect in the base image) + data-img-w/h on the
+     figure, or plain inline % positioning; class "mul" = multiply blend
+     (Tier 2 two-layer heroes, see README). data-depth enables pointer
+     parallax on fine pointers. Mobile: data-scroll="pin" pins and pans the
+     camera across the painting; everything else drifts gently. */
+  var barH = 0;
+  (function paintings() {
+    var root = document.documentElement, bar = document.getElementById('tapebar');
+    function setBar() { barH = bar ? bar.offsetHeight : 0; root.style.setProperty('--barH', barH + 'px'); }
+    setBar();
+    window.addEventListener('resize', setBar);
+
+    /* caption rides along inside the full-screen box on phones */
+    document.querySelectorAll('figure.paint').forEach(function (fig) {
+      var frame = fig.querySelector('.frame'), stage = fig.querySelector('.stage');
+      if (!frame || !stage) return;
+      var box = H('div', 'pinbox', null, null), cap = fig.querySelector('figcaption');
+      fig.insertBefore(box, frame); box.appendChild(frame); if (cap) box.appendChild(cap);
+    });
+
+    /* Tier-2 layer registration: data-box px rect -> % positioning */
+    var layers = [];
+    document.querySelectorAll('figure.paint .stage img.ly').forEach(function (img) {
+      var fig = img.closest('figure.paint');
+      var base = fig && fig.querySelector('img.base');
+      var W = +(fig.dataset.imgW || (base && base.getAttribute('width')) || 0);
+      var Hh = +(fig.dataset.imgH || (base && base.getAttribute('height')) || 0);
+      var b = (img.dataset.box || '').split(',').map(Number);
+      if (W && Hh && b.length === 4 && b.every(isFinite)) {
+        img.style.left = (b[0] / W * 100).toFixed(3) + '%';
+        img.style.top = (b[1] / Hh * 100).toFixed(3) + '%';
+        img.style.width = (b[2] / W * 100).toFixed(3) + '%';
+        img.style.height = (b[3] / Hh * 100).toFixed(3) + '%';
+      }
+      img.setAttribute('aria-hidden', 'true');
+      if (!img.hasAttribute('alt')) img.setAttribute('alt', '');
+      layers.push({ el: img, depth: +(img.dataset.depth || 0), fig: fig });
+    });
+
+    /* pointer parallax on fine pointers */
+    if (fine && !reduce) {
+      var px = 0, py = 0, raf = 0;
+      function applyPar() {
+        layers.forEach(function (L) {
+          if (!L.depth) return;
+          L.el.style.translate = (L.depth * px).toFixed(1) + 'px ' + (L.depth * py).toFixed(1) + 'px';
+        });
+      }
+      document.querySelectorAll('figure.paint .stage').forEach(function (st) {
+        st.addEventListener('pointermove', function (ev) {
+          var r = st.getBoundingClientRect();
+          px = clamp(((ev.clientX - r.left) / r.width - 0.5) * 2, -1, 1);
+          py = clamp(((ev.clientY - r.top) / r.height - 0.5) * 2, -1, 1);
+          if (!raf) raf = requestAnimationFrame(function () { raf = 0; applyPar(); });
+        });
+        st.addEventListener('pointerleave', function () {
+          px = 0; py = 0;
+          if (!raf) raf = requestAnimationFrame(function () { raf = 0; applyPar(); });
+        });
+      });
+    }
+
+    /* entrances */
+    var entrances = [];
+    var figs = Array.prototype.slice.call(document.querySelectorAll('figure.paint'));
+    figs.forEach(function (fig, fi) {
+      var stage = fig.querySelector('.stage');
+      if (!stage) return;
+      var kind = fig.dataset.entrance || (fi % 2 ? 'sketch' : 'bloom');
+      if (fig.dataset.entrance === 'none') kind = 'none';
+      var isHero = fig.hasAttribute('data-hero');
+      function arm() {
+        if (kind === 'bloom') (mqMobile.matches ? fig.querySelector('.frame') : stage).classList.add('bleed');
+        if (kind === 'sketch') stage.classList.add('sketch');
+      }
+      function play(instant) {
+        if (kind === 'bloom') (mqMobile.matches ? fig.querySelector('.frame') : stage).classList.add('bloom');
+        if (kind === 'sketch') stage.classList.add('develop');
+        if (!instant && kind !== 'none') setTimeout(clear, 3000);
+        else clear();
+      }
+      function clear() {
+        [fig.querySelector('.frame'), stage].forEach(function (e) {
+          if (e) e.classList.remove('bleed', 'bloom', 'sketch', 'develop');
+        });
+      }
+      entrances.push({ clear: clear });
+      if (reduce || kind === 'none') return;   /* still pictures */
+      if (isHero) { arm(); play(false); return; }
+      reveal(fig.querySelector('.frame') || fig,
+        function () { arm(); },
+        function (instant) { play(instant); },
+        0.3);
+    });
+    window.addEventListener('beforeprint', function () { entrances.forEach(function (e) { e.clear(); }); });
+
+    /* mobile camera: pin scenes pan across, the rest drift */
+    if (reduce) return;
+    var cams = figs.map(function (fig) {
+      return { fig: fig, stage: fig.querySelector('.stage'), pin: fig.dataset.scroll === 'pin', q: 0, t0: null };
+    }).filter(function (c) { return c.stage; });
+    if (!cams.length) return;
+    function setModes() {
+      var on = mqMobile.matches;
+      cams.forEach(function (c) {
+        c.fig.classList.toggle('pin', on && c.pin);
+        c.fig.classList.toggle('drift', on && !c.pin);
+        if (!on) c.stage.style.transform = '';
+      });
+    }
+    setModes();
+    if (mqMobile.addEventListener) mqMobile.addEventListener('change', setModes);
+    else if (mqMobile.addListener) mqMobile.addListener(setModes);
+    var running = false;
+    function view(c, q, now) {
+      var st = c.stage, fw = st.parentElement.clientWidth, fh = st.parentElement.clientHeight;
+      var base = st.querySelector('img.base');
+      var W = +(base && base.getAttribute('width')) || 1600, Hh = +(base && base.getAttribute('height')) || 900;
+      var k = st.offsetWidth / W || 1;
+      var z = c.pin ? 1 + 0.12 * q : 1 + 0.05 * (0.5 - 0.5 * Math.cos((now / 1000 / 26) * 2 * Math.PI));
+      var fx = c.pin ? W * (0.28 + 0.44 * q) : W / 2;
+      var sw = W * k * z, sh = Hh * k * z;
+      var tx = sw <= fw ? (fw - sw) / 2 : clamp(fw / 2 - fx * k * z, fw - sw, 0);
+      var ty = sh <= fh ? (fh - sh) / 2 : clamp(fh / 2 - (Hh / 2) * k * z, fh - sh, 0);
+      st.style.transform = 'translate3d(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px,0) scale(' + z.toFixed(4) + ')';
+    }
+    function tick(now) {
+      var vh = window.innerHeight, live = false;
+      cams.forEach(function (c) {
+        if (!mqMobile.matches) return;
+        var r = c.fig.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) return;
+        live = true;
+        if (c.pin) {
+          var travel = Math.max(1, r.height - (vh - barH));
+          c.q = clamp((barH - r.top) / travel, 0, 1);
+        }
+        view(c, c.q, now);
+      });
+      if (live) requestAnimationFrame(tick); else running = false;
+    }
+    function wake() { if (!running && mqMobile.matches) { running = true; requestAnimationFrame(tick); } }
+    window.addEventListener('scroll', wake, { passive: true });
+    window.addEventListener('resize', wake);
+    wake();
+  })();
+
+  /* ---------------- SVG overlay helpers ----------------
+     Runtime life for paintings: steam curls, lamp glows, ripples, sparkles,
+     dust motes, ring marks. Pure code, zero image cost. Exposed as
+     window.CompanionFX for Phase 2 scene code; CompanionFX.registerScene
+     wires per-scene init/pose functions into a shared rAF driver. */
+  var FX = (function () {
+    function overlay(stage, cls, W, Hh) {
+      var o = document.createElementNS(NS, 'svg');
+      o.setAttribute('class', 'ov ' + cls);
+      o.setAttribute('viewBox', '0 0 ' + W + ' ' + Hh);
+      o.setAttribute('aria-hidden', 'true');
+      stage.appendChild(o);
+      return o;
+    }
+    function steam(stage, W, Hh, x, y, rise, period) {
+      var ov = overlay(stage, 'fx', W, Hh);
+      var paths = [0, 1].map(function (i) {
+        return S('path', { stroke: '#B9C4C9', 'stroke-width': 5, fill: 'none', 'stroke-linecap': 'round', opacity: 0.55 }, ov);
+      });
+      return {
+        tick: function (t) {
+          paths.forEach(function (p, i) {
+            var u = ((t / period) + i / 2) % 1;
+            var yy = y - rise * u, xx = x + 9 * Math.sin(t * 1.3 + i * 2.1);
+            p.setAttribute('d', 'M' + xx.toFixed(1) + ',' + yy.toFixed(1) + ' q 10,-22 0,-44 q -10,-22 0,-44');
+            p.setAttribute('opacity', (0.55 * Math.pow(Math.sin(Math.PI * u), 1.2)).toFixed(2));
+          });
+        }
+      };
+    }
+    function glows(stage, W, Hh, pts, mode, color) {
+      var ov = overlay(stage, 'glow-' + mode, W, Hh);
+      var id = 'gl-' + Math.random().toString(36).slice(2, 8) + '-' + mode;
+      var gr = S('radialGradient', { id: id }, S('defs', null, ov));
+      S('stop', { offset: '0', 'stop-color': color, 'stop-opacity': mode === 'screen' ? 0.85 : 0.55 }, gr);
+      S('stop', { offset: '0.45', 'stop-color': color, 'stop-opacity': mode === 'screen' ? 0.35 : 0.22 }, gr);
+      S('stop', { offset: '1', 'stop-color': color, 'stop-opacity': 0 }, gr);
+      return pts.map(function (p) {
+        var c = S('circle', { cx: p[0], cy: p[1], r: p[2], fill: 'url(#' + id + ')' }, ov);
+        c.style.opacity = 0;
+        return c;
+      });
+    }
+    function ripple(stage, W, Hh, x, y) {
+      var ov = overlay(stage, 'fx', W, Hh);
+      return [0, 1].map(function () {
+        var e = S('ellipse', { class: 'ripple', cx: x, cy: y, rx: 0, ry: 0 }, ov);
+        e.style.opacity = 0;
+        return e;
+      });
+    }
+    function sparkles(stage, W, Hh, pts) {
+      var ov = overlay(stage, 'fx', W, Hh);
+      return pts.map(function (p) {
+        var g = S('g', { transform: 'translate(' + p[0] + ',' + p[1] + ')' }, ov);
+        var R = p[2], r = R * 0.16;
+        var star = S('path', { class: 'spark', d: 'M0,' + (-R) + 'L' + r + ',' + (-r) + 'L' + R + ',0L' + r + ',' + r + 'L0,' + R + 'L' + (-r) + ',' + r + 'L' + (-r) + ',' + (-r) + 'Z' }, g);
+        star.style.transform = 'scale(0)';
+        return star;
+      });
+    }
+    function motes(stage, W, Hh, n, seed) {
+      var ov = overlay(stage, 'glow-screen', W, Hh);
+      var out = [];
+      for (var i = 0; i < n; i++) {
+        seed = (seed * 9301 + 49297) % 233280; var u = seed / 233280;
+        seed = (seed * 9301 + 49297) % 233280; var ph = seed / 233280;
+        seed = (seed * 9301 + 49297) % 233280; var rr = seed / 233280;
+        var c = S('circle', { r: (3 + rr * 4).toFixed(1), fill: '#FFFDF4', cx: u * W, cy: ph * Hh }, ov);
+        c.style.opacity = 0;
+        out.push({ el: c, u: u, ph: ph, sp: 7 + rr * 9 });
+      }
+      return {
+        tick: function (t) {
+          out.forEach(function (m) {
+            var y = Hh - ((t * m.sp + m.ph * Hh) % Hh);
+            var x = m.u * W + 10 * Math.sin(t * 0.4 + m.ph * 9);
+            m.el.setAttribute('cx', x.toFixed(1)); m.el.setAttribute('cy', y.toFixed(1));
+            m.el.style.opacity = (0.35 + 0.4 * Math.pow(Math.sin(t * (0.7 + m.u) + m.ph * 6), 2)).toFixed(3);
+          });
+        }
+      };
+    }
+    function ringMarks(stage, W, Hh, sides) {
+      var ov = overlay(stage, 'fx', W, Hh);
+      return sides.map(function (sd) {
+        var g = S('g', { class: 'ring' }, ov), cx = sd[0], cy = sd[1];
+        var a0 = sd[2] * Math.PI / 180, a1 = sd[3] * Math.PI / 180;
+        [34, 54].forEach(function (r) {
+          S('path', { d: 'M' + (cx + Math.cos(a0) * r).toFixed(1) + ',' + (cy + Math.sin(a0) * r).toFixed(1) + ' A' + r + ',' + r + ' 0 0 1 ' + (cx + Math.cos(a1) * r).toFixed(1) + ',' + (cy + Math.sin(a1) * r).toFixed(1) }, g);
+        });
+        g.style.opacity = 0;
+        return g;
+      });
+    }
+    function flicker(t, k) { return 0.5 * Math.sin(t * 7.3 + k) + 0.3 * Math.sin(t * 13.1 + k * 2.1) + 0.2 * Math.sin(t * 23.7 + k * 3.7); }
+
+    /* per-scene registry (Phase 2): name -> { init(F), pose(S) -> {obj: {x,y,r,s,o}} } */
+    var scenes = {};
+    var live = [];
+    function registerScene(name, spec) {
+      scenes[name] = spec;
+      if (reduce) return;
+      document.querySelectorAll('figure.paint[data-scene="' + name + '"]').forEach(function (fig) {
+        var stage = fig.querySelector('.stage'), base = fig.querySelector('img.base');
+        if (!stage || !base) return;
+        var F = { fig: fig, stage: stage, name: name,
+          W: +(base.getAttribute('width')) || 1600, H: +(base.getAttribute('height')) || 900,
+          enterAt: null };
+        if (spec.init) spec.init(F, FX);
+        live.push({ F: F, spec: spec });
+        wakeFx();
+      });
+    }
+    var fxRunning = false;
+    function applyPose(F, pose) {
+      Object.keys(pose || {}).forEach(function (nm) {
+        var q = pose[nm] || {};
+        F.stage.querySelectorAll('img.ly[data-obj="' + nm + '"]').forEach(function (img) {
+          var tr = 'translate3d(' + (q.x || 0).toFixed(2) + 'px,' + (q.y || 0).toFixed(2) + 'px,0)';
+          if (q.r) tr += ' rotate(' + q.r.toFixed(3) + 'deg)';
+          if (q.s !== undefined && q.s !== 1) tr += ' scale(' + q.s.toFixed(4) + ')';
+          img.style.transform = tr;
+          if (q.o !== undefined) img.style.opacity = clamp(q.o, 0, 1).toFixed(3);
+        });
+      });
+    }
+    function fxTick(now) {
+      var t = now / 1000, any = false;
+      live.forEach(function (L) {
+        var r = L.F.fig.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > window.innerHeight + 200) return;
+        any = true;
+        if (L.F.enterAt === null && r.top < window.innerHeight * 0.8) L.F.enterAt = now;
+        var S_ = { t: t, et: L.F.enterAt === null ? 999 : (now - L.F.enterAt) / 1000, F: L.F };
+        applyPose(L.F, L.spec.pose ? L.spec.pose(S_, FX) : {});
+      });
+      if (any) requestAnimationFrame(fxTick); else fxRunning = false;
+    }
+    function wakeFx() { if (!fxRunning && live.length) { fxRunning = true; requestAnimationFrame(fxTick); } }
+    window.addEventListener('scroll', wakeFx, { passive: true });
+
+    return { overlay: overlay, steam: steam, glows: glows, ripple: ripple,
+      sparkles: sparkles, motes: motes, ringMarks: ringMarks, flicker: flicker,
+      registerScene: registerScene, smoothstep: smoothstep, clamp: clamp };
+  })();
+  window.CompanionFX = FX;
+
+  /* ---------------- playbook: auto-index of every shelf tag ---------------- */
+  (function playbook() {
+    var grid = document.getElementById('playbook');
+    if (!grid) return;
+    var bar = document.getElementById('tapebar');
+    var signLabel = (bar && bar.dataset.signLabel) || 'Aisle';
+    document.querySelectorAll('aside.tag').forEach(function (tag, i) {
+      var a = H('a', 'pb', null, grid);
+      a.href = '#' + (tag.id || tag.dataset.chapter || '');
+      var num = tag.dataset.signNum, lab = tag.dataset.signLabel || signLabel;
+      H('div', 'a', num ? (lab + ' ' + num) : ('Lesson ' + (i + 1)), a);
+      var big = tag.querySelector('.tag-big');
+      H('div', 'big', big ? big.textContent : '', a);
+      var p = tag.querySelector('.tag-body p');
+      H('p', null, p ? p.textContent : '', a);
+    });
+  })();
+
+  /* ---------------- beforeprint: finish everything instantly ---------------- */
+  window.addEventListener('beforeprint', function () {
+    revealers.forEach(function (r) { r.finish(); });
+    document.querySelectorAll('.paint .bleed, .paint .bloom, .paint .stage.sketch, .paint .stage.develop')
+      .forEach(function (e) { e.classList.remove('bleed', 'bloom', 'sketch', 'develop'); });
+  });
+})();
+
+</script></body>
 </html>

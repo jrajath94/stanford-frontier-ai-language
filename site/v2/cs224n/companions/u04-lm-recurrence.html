@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U04 Companion: Language Models and Recurrence · CS224N</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">Stanford CS224N · Unit 04 · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero" id="top">
+<p class="kicker">Companion 4 of 15 · narrated from the lesson document</p>
+<h1>Language models and recurrence</h1>
+<p class="dek">A probability for every sentence, a state for every prefix, and a gradient that must survive twenty multiplications. This companion walks the full arc of Unit 04: the chain rule, teacher forcing, perplexity, the RNN state, BPTT, vanishing gradients, gates, and decoding.</p>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> The idea, and every number beside it, comes from the cited section of <code>lessons/u04_lm_recurrence.md</code>. The phrasing is the companion’s.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-companion">companion</span> Companion voice: the idea above the tag is from the lesson. The generalization below it is the companion’s.</p>
+<p class="small muted">Provenance: no full lecture transcript exists for this session. The 2026 lecture videos are restricted and unviewed, and the 2024 playlist was not viewed. This page narrates the lesson document, not a video. The session title (S05, Language Models and RNNs) and the reading list are OFFICIAL-SOURCE via SRC-02. The concept inventory is REQUESTED-BRANCH.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u04-hero.jpg" alt="Watercolor of paper boats on a river, ripples merging into one current">
+<figcaption><span class="tag tag-toy">Illustration</span> The U04 idea in one image: each word drops a stone, and the ripples merge into one current. The state is the river. The chain rule is the ripple arithmetic. Watercolor, original to this companion.</figcaption>
+</figure>
+</header>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">1 Chain rule</a>
+<a href="#s2">2 Teacher forcing</a>
+<a href="#s3">3 Perplexity</a>
+<a href="#s4">4 State</a>
+<a href="#s5">5 BPTT</a>
+<a href="#s6">6 Vanishing</a>
+<a href="#s7">7 Gates</a>
+<a href="#s8">8 Clipping</a>
+<a href="#s9">9 Padding</a>
+<a href="#s10">10 State carry</a>
+<a href="#s11">11 Decoding</a>
+<a href="#s12">12 Lengths</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>One sentence, three small bets</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>How do you assign a probability to a whole sentence? P(the, cat, sat) = P(the) × P(cat | the) × P(sat | the, cat). Three small predictions compose into one sentence score, and no independence is assumed. The chain rule turns a joint distribution into a sequence of next-word bets. Training places all bets at once, because the full sentence is known. Generation places them one at a time, each depending on the last. This asymmetry, parallel training versus serial generation, shapes every LM system.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §5, §6</span></p>
+<p>The chain rule is exact: P(A, B) = P(A) P(B | A), applied n − 1 times. The log turns the product into a sum, so the total loss is a sum of per-position losses. Toy numbers, hand-computed from the U01 script counts and labeled as such: P(the) = 11/35 = 0.314, P(cat | the) = 0.24 (smoothed), P(sat | cat) = 0.158 (smoothed). Log-likelihood of “the cat sat” = log 0.314 + log 0.24 + log 0.158 = −1.158 − 1.427 − 1.845 = −4.430. Perplexity = exp(4.430/3) = 4.38.</p>
+</div>
+<div class="nugget" id="nugget-bets">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">Training is parallel. Generation is serial. The same factorization serves both, and the mismatch between them is where the bugs live.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Every position contributes equally to the loss, and no position is special. The log makes the product a sum, so one bad bet at one position costs the same as one bad bet anywhere else.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose autoregressive when the task generates text left to right. Choose bidirectional when the task reads whole inputs, as in classification. Train left-to-right, then ask for the middle word: the model cannot use the right side, because the factorization fixes the information flow.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>Training wheels that come off</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>Training feeds the model perfect prefixes. What happens when the perfection stops? At step t = 2 of “the cat sat ...”, training feeds “sat” (gold). Free running feeds the model’s own prediction “on”. The next state differs. Teacher forcing is like training wheels: the model always rides on the true path, so it never learns to recover from its own errors. At test time the wheels come off. Exposure bias is the resulting drift: small errors compound because the model visits states it never saw in training.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §5, §6</span></p>
+<p>The loss only ever evaluates P(w_{t+1} | gold prefix). The test distribution is P(w_{t+1} | model prefix). These are different distributions, and minimizing the first does not minimize the second. The gap grows with sequence length: each step’s error shifts the state, and the shift accumulates. From <code>compute_u04.py</code>: at t = 2, forced input “sat” versus free input “on” (the model’s argmax). KL(forced || free) = 2.9543 nats. The two next-word distributions barely overlap. One wrong word, one shifted state, one large KL.</p>
+</div>
+<div class="nugget" id="nugget-wheels">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §3, §11</span></h4>
+<p class="big">Training loss measures forced performance. Generation needs free-run evaluation. The toy RNN has a training perplexity of 1.326 and a one-step free-run KL of 2.95 nats.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Low training loss does not mean good generation. The model that never saw its own mistakes cannot recover from them.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose pure teacher forcing for stable, fast training (the default). Choose scheduled sampling when long free-run quality matters and you can afford the instability. Choose RL fine-tuning when the task has a reward for whole sequences.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Perplexity 1.326: excellent and almost meaningless</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>The RNN reports loss 0.2824. Is that good? Perplexity = exp(0.2824) = 1.326. On the training sentences, the model is nearly certain. The number is excellent and almost meaningless: it is the perplexity measured on the training data, six sentences. Perplexity is the size of the model’s confusion: 1.326 means “as confused as choosing among 1.3 equally likely words.” A model that memorizes training text gets perplexity near 1.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §6</span></p>
+<p>From <code>compute_u04.py</code>: train loss 0.2824, perplexity 1.326. Compare the U01 bigram: 5.137 on “the cat sat”. The RNN beats the bigram on its training data, as expected: it has far more capacity and the same six sentences to memorize.</p>
+</div>
+<figure>
+<div id="chart-ppl"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §6</span> Perplexity comparison, from <code>compute_u04.py</code> (executed 2026-10-06): the toy RNN’s training perplexity 1.326 against the U01 smoothed bigram’s 5.137. Same six sentences, far more capacity. The RNN memorized.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Perplexity probe. The rule is C03’s: perplexity is the geometric mean of 1/P. If the model gives each correct word probability p, the perplexity is 1/p.</p>
+<p>Probability per correct word <input class="text" id="ppv" value="0.5" aria-label="Probability per word"></p>
+<p><button class="btn" id="ppbtn">Compute it</button></p>
+<p class="small" id="ppnote"></p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §11</span></p>
+<p>The broken assumption is that lower perplexity means a better model. Three breaks: memorization (1.326 on training proves nothing), tokenizer mismatch (finer tokens inflate the count), and the task gap (great perplexity, poor free-run). The number is a filter, not a verdict.</p>
+</div>
+<div class="nugget" id="nugget-filter">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §3, §11</span></h4>
+<p class="big">Perplexity is a filter, not a verdict. A model that memorizes six sentences reaches 1.326 and knows nothing about the seventh.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Do not compare this number with any other model’s perplexity unless the tokenization matches. Bits per byte is the tokenizer-independent alternative.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose perplexity for quick comparison on a fixed tokenizer. Choose human eval when the decision matters. The number measures fit to the evaluated distribution, nothing more.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>The state is a lossy compressor</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>How does a fixed-size network read an unbounded sentence? h_t = tanh(W_x x_t + W_h h_{t−1} + b). The state h_t is a fixed d-dim vector that must summarize the entire prefix. Everything the model knows about the past lives in those d numbers. The state is a running summary. Each step folds the new word in and squeezes the result through tanh. The squeeze keeps values bounded but also crushes information: d numbers cannot hold n words losslessly.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §5, §6</span></p>
+<p>Unrolling: h_1 = f(x_1, h_0), h_2 = f(x_2, h_1), and so on. The network over time is a deep feedforward net with tied weights. Toy, hand-unrolled and labeled as such: d = 2, W_x = I, W_h = 0.5 I, b = 0, x_1 = (1, 0), x_2 = (0, 1), h_0 = (0, 0). h_1 = tanh((1,0)) = (0.762, 0). h_2 = tanh((0,1) + 0.5(0.7616, 0)) = tanh((0.3808, 1)) = (0.363, 0.762). The state carries a decayed trace of x_1 into step 2.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> State folder. The update is C04’s hand-unrolled toy: W_x = I, W_h = 0.5 I, b = 0, h_0 = (0, 0). Feed it two one-hot inputs and watch the decayed trace.</p>
+<p>x_1 <input class="text" id="rn1" value="1,0" aria-label="First input"></p>
+<p>x_2 <input class="text" id="rn2" value="0,1" aria-label="Second input"></p>
+<p><button class="btn" id="rnbtn">Unroll two steps</button></p>
+<p class="small" id="rnnote"></p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that the state remembers everything. d = 2, n = 100: the state cannot hold 100 words. Early words are crushed by repeated tanh squeezes. The failure is structural. Longer sequences need larger d or a different architecture.</p>
+</div>
+<div class="nugget" id="nugget-compressor">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §3, §11</span></h4>
+<p class="big">The state is a lossy compressor, and its capacity is the model’s memory. The tying is the point: one set of weights works for any length.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The decayed trace (0.363 in h_2’s first coordinate) is the memory. It fades by the recurrent weight every step, which is why the state cannot hold 100 words.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose RNN when the sequence is processed online and the state is a natural fit, as in streaming. Choose attention when training speed and long-range access matter more.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>BPTT: one matrix, ten contributions</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>The loss at step 10 depends on W_h through all 10 steps. How does the gradient reach step 1? dL/dW_h = sum over t = 1..10 of dL_t/dW_h, where each term flows back through the unrolled chain from t to the start. Every step contributes. Early steps contribute through long chains. Unroll the RNN into a 10-layer feedforward net with tied weights, then run ordinary backprop. The twist: the gradient for W_h is the sum of the per-layer gradients, because W_h appears in every layer. One matrix, ten contributions.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §6</span></p>
+<p>From <code>compute_u04.py</code>: the training loop implements exactly this double loop (reversed time inner, dh_next carried). After 300 epochs the loss falls 2.8011 → 0.2824 and next-word accuracy rises 0.034 → 0.862. The summed gradients moved all matrices in a useful direction. The script’s inner loop is BPTT, not an approximation.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that truncation only affects speed. k = 5 on a task needing 20-step memory: the gradient for the relevant dependency is cut, so the model cannot learn it no matter how long it trains. Truncation is a memory limit on what the model can learn. State it up front.</p>
+</div>
+<figure>
+<div id="chart-loss"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §6</span> The BPTT training run, from <code>compute_u04.py</code> (executed 2026-10-06): loss 2.8011 → 0.2824 over 300 epochs. Next-word accuracy rose 0.034 → 0.862 on the same run.</figcaption>
+</figure>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>The product decides, exponentially</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>The gradient for step 1 passes through 19 matrix products to reach the loss at step 20. What is its size? Linear RNN, dh_t/dh_{t−1} = ρ I. Then dh_20/dh_0 has norm ρ^20. ρ = 0.8 → 0.0115 (vanished). ρ = 1.2 → 38.34 (exploded). The product decides, exponentially. Each time step multiplies the gradient by a Jacobian. Twenty multiplications by 0.8 give about 0.01: the early steps get no learning signal. Twenty multiplications by 1.2 give about 38: the updates explode. Only Jacobians with norm near 1.0 let gradients travel.</p>
+<figure>
+<img class="illus" src="assets/u04-vanish.jpg" alt="Watercolor of a chain of rings fading into mist on one side and growing explosively on the other">
+<figcaption><span class="tag tag-toy">Illustration</span> The C06 product as watercolor: one chain dissolves into mist (ρ = 0.8), its mirror explodes bright (ρ = 1.2). The boundary at 1.0 is a knife edge. Watercolor, original to this companion.</figcaption>
+</figure>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6</span></p>
+<p>From <code>compute_u04.py</code>: ρ = 0.8 gives norms 0.8, 0.3277, 0.1074, 0.0115 at T = 1, 5, 10, 20. ρ = 1.2 gives 1.2, 2.4883, 6.1917, 38.3376. The boundary ρ = 1 is a knife edge. Training lives near it and falls off both sides.</p>
+</div>
+<figure>
+<div id="chart-rho"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6</span> Gradient norm versus time on a log scale, from <code>compute_u04.py</code> (executed 2026-10-06). The norm = 1 line is the knife edge. ρ = 0.8 falls to 0.0115 at T = 20. ρ = 1.2 climbs to 38.34.</figcaption>
+</figure>
+<div class="nugget" id="nugget-product">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §3, §11</span></h4>
+<p class="big">The product decides, exponentially. At ρ = 0.8 and T = 100, the gradient is 2e-10. No optimizer recovers a signal that small. The information is gone, not just quiet.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>tanh′ ≤ 1 helps, but it cannot fix a bad W_h. More steps of BPTT cannot fix a vanishing product either. The architecture must change.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose the fix by the symptom: nan → clip (C08), flat long-range learning → gates (C07). Diagnose first, then treat.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Product probe. The bound is C06’s: norm = ρ^T. Slide ρ and read the norm at T = 20.</p>
+<p>ρ (spectral factor) <input class="range" type="range" id="rho" min="0.5" max="1.5" step="0.05" value="0.8" aria-label="Rho"></p>
+<p class="small" id="rhonote"></p>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Gates protect the gradient</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>The product of Jacobians vanishes. Can the architecture protect the gradient? The LSTM cell state: c_t = f_t × c_{t−1} + i_t × g_t. When the forget gate f_t = 1, dc_t/dc_{t−1} = 1: the gradient flows unchanged. The gate learns when to protect and when to forget. Three gates, three jobs. Forget: what to erase from memory. Input: what to write. Output: what to reveal. The cell state is the protected conveyor belt. The gates are the loaders and unloaders. GRU merges the belt and the output (two gates instead of three): cheaper, usually as good.</p>
+<figure>
+<img class="illus" src="assets/u04-gates.jpg" alt="Watercolor of three canal gates, one fully open, one half-closed, one nearly shut">
+<figcaption><span class="tag tag-toy">Illustration</span> The gates as watercolor: the open gate passes the gradient unchanged (the constant error carousel), the shut gate forgets. The network learns which gate to open. Watercolor, original to this companion.</figcaption>
+</figure>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §5, §6</span></p>
+<p>Toy, hand-computed and labeled as such: c_0 = 2.0, forget gates (1, 1, 1, 0.1) over 4 steps, input term 0. c_4 = 2.0 × 1 × 1 × 1 × 0.1 = 0.2. Gradient dc_4/dc_0 = 0.1: the gate chose to forget at step 4, and the gradient reflects the choice. With f = 1 everywhere, the gradient would be exactly 1.0 across any number of steps.</p>
+</div>
+<div class="nugget" id="nugget-gates">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
+<p class="big">The gate chose to forget, and the gradient reflects the choice. When f = 1 everywhere, the gradient is exactly 1.0 across any number of steps.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Gates do not solve vanishing gradients completely. The gates themselves are learned through the same products, and a badly initialized forget gate (near 0) wipes memory every step. The forget-gate bias trick (init at 1.0) exists because of this failure.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose LSTM when the task needs fine memory control and compute allows. Choose GRU for a cheaper close substitute. Choose vanilla RNN almost never: it is the teaching tool, not the production tool. All three lose to attention at scale (U05).</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>Clipping is a speed limit</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>The gradient norm is 29.0 and the loss just went nan. What now? Clip at 1.0: g ← g × (1.0/29.025). New norm exactly 1.0, direction identical. The step is smaller, the compass is the same. Clipping is a speed limit, not a rerouting. It caps the step size when the gradient explodes, so one bad batch cannot throw the parameters into nan territory. It does not fix the cause (the product in C06). It contains the symptom.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §6</span></p>
+<p>From <code>compute_u04.py</code>: random gradient norm 29.025, cap 1.0 → norm 1.000, direction kept. The training loop clips at 5.0 every step. Without it, the radius-2.0 run nans.</p>
+</div>
+<figure>
+<div id="chart-clip"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §6</span> The clip, from <code>compute_u04.py</code> (executed 2026-10-06): norm 29.025 capped at 1.0 → 1.000. Same direction, smaller step.</figcaption>
+</figure>
+<div class="nugget" id="nugget-speed">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">Clipping contains explosions. It cannot create signal. For vanishing gradients (norm 2e-10), clipping does nothing.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose global norm clipping as the default: the direction is kept. Per-value clipping changes direction and is cruder. Never rely on clipping alone for a fundamentally unstable architecture.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Diagnose first (which regime?), then treat. A speed limit helps the car that is too fast. It does nothing for the car with no fuel.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Padding: the mask is non-negotiable</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>The batch has lengths 6, 5, 4, and the tensor needs one shape. What fills the gaps, and what stops the filler from training the model? Pad id 0, mask m_t = 1 for real tokens, 0 for pads. Loss = sum(m_t L_t) / sum(m_t). Padding is a scaffold: it makes the batch rectangular, then the mask marks the scaffolding so the loss ignores it. The model still processes pad tokens (wasted compute). The mask only protects the loss.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §6</span></p>
+<p>Toy, hand-computed and labeled as such: lengths (3, 2), n_max = 3. Losses [[0.5, 0.4, 0.3], [0.6, 0.2, 9.9]], where 9.9 is the pad position’s loss. Unmasked mean = 11.9/6 = 1.983. Masked mean = (0.5+0.4+0.3+0.6+0.2)/5 = 0.4. The pad loss (9.9) dominates the unmasked number. The mask removes it.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is that the model ignores padding by itself. Forgetting the mask trains the model to predict padding: the gradient pushes the model to predict pad_id everywhere, because it is the most frequent “token” in a padded batch. The model learns the scaffolding, not the language.</p>
+</div>
+<figure>
+<div id="chart-pad"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §6</span> The mask’s effect, hand-computed and labeled illustrative: unmasked mean 1.983 (the pad loss 9.9 dominates) versus masked mean 0.4.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Mask toggle. The numbers are the lesson’s toy. Flip the mask and watch the scaffolding vote.</p>
+<p><button class="btn" id="padbtn">Toggle the mask</button></p>
+<p class="small" id="padnote"></p>
+</div>
+<div class="nugget" id="nugget-maskpad">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §11</span></h4>
+<p class="big">The mask is non-negotiable in every batched variant. Build it from lengths every time.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The unmasked loss is dominated by the easiest “token”: always predict pad. The bug is silent. No shape error, wrong training.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose padding + mask for the standard tradeoff. Choose bucketing when length variance is high. The mask stays in all variants.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Reset the state between sequences</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>After “the cat sat”, the state holds the sentence. The next batch starts “a dog barked”. Does the state carry over? Yes by default (the tensor persists), and that is a bug: the new sentence inherits the old sentence’s summary. Reset h_0 = 0 between sequences. The state is short-term memory with no expiration date. Training resets it per sequence, because each example is independent.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §6</span></p>
+<p>Toy, hand-computed and labeled as such: two sequences, d = 2. Reset: h_0 = (0, 0) for both. Carry by mistake: sequence 2 starts from sequence 1’s final state (0.363, 0.762) (from C04’s unroll), and its first prediction shifts toward “sat”-continuations. The bug is silent: no shape error, wrong conditioning. In real code it appears as mysteriously order-dependent validation scores: shuffle the validation set and the score changes, because the state leaked across sequences.</p>
+</div>
+<div class="nugget" id="nugget-reset">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §3, §11</span></h4>
+<p class="big">The state does not reset itself. Carry it across a batch boundary and the new sequence inherits the old summary, silently.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Stateful training across chunks is the deliberate exception: carry values, but detach the graph, or BPTT spans batches and memory blows up.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>At inference, carrying the state across a conversation is the correct behavior: it is the memory. In training, reset. The same tensor, opposite rules.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Decoding: a risk knob</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>The model outputs probabilities. How do you pick words? Scores (2.0, 1.0, 0.5, 0.1) → probs (0.587, 0.216, 0.131, 0.079) at T = 1. Greedy picks index 0 always. T = 0.5 sharpens: top prob 0.828. T = 2.0 flattens: top prob 0.406. Decoding is a risk knob. Greedy: no risk, often dull and repetitive. Temperature scales the logits before softmax: low T sharpens (confident), high T flattens (wild). Top-k and top-p cut the tail, then sample. The knob trades coherence for variety. There is no universally right setting.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §5, §6</span></p>
+<p>As T → 0, softmax(z/T) → one-hot on the argmax (greedy). As T → infinity, it → uniform. Dividing by T scales the gaps, and exp amplifies the scaled gaps. From <code>compute_u04.py</code>: greedy → index 0. T = 0.5: top prob 0.828. T = 2.0: top prob 0.406. Same logits, three behaviors.</p>
+</div>
+<figure>
+<div id="chart-decode"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §6</span> The risk knob on fixed scores (2.0, 1.0, 0.5, 0.1), from <code>compute_u04.py</code> (executed 2026-10-06): top probability 0.828 at T = 0.5, 0.587 at T = 1.0, 0.406 at T = 2.0. Same logits, three behaviors.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Risk knob. The reshaping is C11’s. The scores are the lesson’s toy. Slide T and watch the distribution sharpen and flatten.</p>
+<p>Temperature T <input class="range" type="range" id="tmp" min="0.1" max="3" step="0.1" value="1" aria-label="Temperature"></p>
+<p class="small" id="tmpnote"></p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §10, §11</span></p>
+<p>The broken assumption is that higher temperature means more creative means better. At T = 2.0 on the toy, the top prob is 0.406 and the tail dominates: the output is incoherent. Creativity without control is noise. Choose greedy for speed and determinism, sampling for variety, beam for quality under a sequence-level score. None fixes a bad model.</p>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Lengths it did not see</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>Trained on length-6 sentences, what happens on length-20? The state is d = 16 numbers. A length-20 sentence must squeeze through the same 16 numbers. Early words are crushed (C04). RNNs generalize along the training distribution’s support: new word orders, seen lengths. They fail off-support: much longer sequences, novel compositions. The fixed state is a hard ceiling. Attention (U05) removes it by giving every position direct access to every other.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §6</span></p>
+<p>The lesson states the mechanism as a designed experiment, not a result: the trained RNN scores 0.862 next-word accuracy on length-6 training sentences, and a drop is expected on length-12 continuations. The unit’s arc ends here: U05 is the answer to this concept’s problem.</p>
+</div>
+<div class="nugget" id="nugget-offsupport">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §3, §11</span></h4>
+<p class="big">Generalization is measured off-support, never on it. 0.862 on six memorized sentences means the model learned the sentences, not the language.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The failure is predictable from the unit’s mechanisms: lossy compression (C04) plus vanishing products (C06). That predictability is the point of the synthesis.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose RNNs where they fit: short sequences, streaming. Choose attention when length generalization matters. The ceiling is architectural, not a tuning problem.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-bets"><span class="wnum">01</span>Parallel training, serial generation <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-wheels"><span class="wnum">02</span>Training wheels that come off <span class="muted">· C02</span></a></li>
+<li><a href="#nugget-filter"><span class="wnum">03</span>Perplexity is a filter, not a verdict <span class="muted">· C03</span></a></li>
+<li><a href="#nugget-compressor"><span class="wnum">04</span>The state is a lossy compressor <span class="muted">· C04</span></a></li>
+<li><a href="#nugget-gates"><span class="wnum">05</span>The gate chose to forget <span class="muted">· C07</span></a></li>
+<li><a href="#nugget-product"><span class="wnum">06</span>The product decides, exponentially <span class="muted">· C06</span></a></li>
+<li><a href="#nugget-speed"><span class="wnum">07</span>Clipping is a speed limit <span class="muted">· C08</span></a></li>
+<li><a href="#nugget-maskpad"><span class="wnum">08</span>The mask is non-negotiable <span class="muted">· C09</span></a></li>
+<li><a href="#nugget-reset"><span class="wnum">09</span>Reset the state between sequences <span class="muted">· C10</span></a></li>
+<li><a href="#nugget-offsupport"><span class="wnum">10</span>Measured off-support, never on it <span class="muted">· C12</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u04_lm_recurrence.md</code> (CS224N, Unit 04). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The session title (S05, Language Models and RNNs) and the reading list are OFFICIAL-SOURCE via SRC-02. All concept leaves are REQUESTED-BRANCH. Every number on this page traces to the lesson’s computed script <code>visuals/compute_u04.py</code> (executed 2026-10-06) or to hand-computed examples the lesson labels as such. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+<p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
+<p class="small">Built as Companion 4 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 230
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function rhoChart() {
+  const host = document.getElementById("chart-rho")
+  const W = 760
+  const H = 400
+  const mL = 64
+  const mR = 30
+  const mT = 26
+  const mB = 54
+  const T = [1, 5, 10, 20]
+  const data = [
+    {rho: 0.8, norms: [0.8, 0.3277, 0.1074, 0.0115], color: INDIGO, lab: "rho 0.8 (vanishes)"},
+    {rho: 1.2, norms: [1.2, 2.4883, 6.1917, 38.3376], color: CLAY, lab: "rho 1.2 (explodes)"}
+  ]
+  function X(i) { return mL + i * ((W - mL - mR) / (T.length - 1)) }
+  function Y(lg) { return mT + (2 - lg) / 4 * (H - mT - mB) }
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  const grid = [-2, -1, 0, 1, 2]
+  grid.forEach(function(g) {
+    svg.appendChild(svgEl("line", {x1: mL, x2: W - mR, y1: Y(g), y2: Y(g), stroke: "#e2d7c2", "stroke-width": 1}))
+    const t = svgEl("text", {x: 10, y: Y(g) + 5, "font-size": 13, fill: MUT, "font-family": SANS})
+    t.textContent = "1e" + g
+    svg.appendChild(t)
+  })
+  svg.appendChild(svgEl("line", {x1: mL, x2: W - mR, y1: Y(0), y2: Y(0), stroke: INK, "stroke-width": 2}))
+  const zl = svgEl("text", {x: W - mR - 8, y: Y(0) - 8, "font-size": 13, fill: INK, "text-anchor": "end", "font-family": SANS})
+  zl.textContent = "norm = 1 (knife edge)"
+  svg.appendChild(zl)
+  data.forEach(function(d) {
+    let pth = ""
+    d.norms.forEach(function(n, i) {
+      const lg = Math.log10(n)
+      pth = pth + (i === 0 ? "M" : "L") + X(i).toFixed(1) + " " + Y(lg).toFixed(1) + " "
+    })
+    const p = svgEl("path", {d: pth, fill: "none", stroke: d.color, "stroke-width": 3})
+    const tip = svgEl("title", {})
+    tip.textContent = d.lab + ": " + d.norms.join(", ")
+    p.appendChild(tip)
+    svg.appendChild(p)
+    d.norms.forEach(function(n, i) {
+      const c = svgEl("circle", {cx: X(i), cy: Y(Math.log10(n)), r: 7, fill: d.color})
+      const tp = svgEl("title", {})
+      tp.textContent = "T = " + T[i] + ": " + n
+      c.appendChild(tp)
+      svg.appendChild(c)
+    })
+    T.forEach(function(t, i) {
+      const xl = svgEl("text", {x: X(i), y: H - 30, "font-size": 13, fill: MUT, "text-anchor": "middle", "font-family": SANS})
+      xl.textContent = "T=" + t
+      svg.appendChild(xl)
+    })
+  })
+  const yl = svgEl("text", {x: 14, y: 20, "font-size": 13, fill: MUT, "font-family": SANS})
+  yl.textContent = "gradient norm (log)"
+  svg.appendChild(yl)
+  host.appendChild(svg)
+}
+
+function num(id, dflt) {
+  const v = parseFloat(document.getElementById(id).value)
+  if (isNaN(v)) { return dflt }
+  return v
+}
+function vec(id) {
+  const parts = document.getElementById(id).value.split(",")
+  return [parseFloat(parts[0]) || 0, parseFloat(parts[1]) || 0]
+}
+
+function runPpl() {
+  const p = num("ppv", 0.5)
+  const note = document.getElementById("ppnote")
+  if (p <= 0 || p > 1) {
+    note.textContent = "The probability must sit between 0 and 1."
+    return
+  }
+  note.textContent = "Perplexity = 1 / " + p + " = " + (1 / p).toFixed(3) + ". A model that gives 0.5 to each correct word has perplexity 2.0: as confused as a coin."
+}
+
+function runRnn() {
+  const x1 = vec("rn1")
+  const x2 = vec("rn2")
+  const note = document.getElementById("rnnote")
+  function tanh2(v) { return [Math.tanh(v[0]), Math.tanh(v[1])] }
+  const h1 = tanh2([x1[0] + 0.5 * 0, x1[1] + 0.5 * 0])
+  const h2 = tanh2([x2[0] + 0.5 * h1[0], x2[1] + 0.5 * h1[1]])
+  note.textContent = "h_1 = (" + h1[0].toFixed(3) + ", " + h1[1].toFixed(3) + "). h_2 = (" + h2[0].toFixed(3) + ", " + h2[1].toFixed(3) + "). The 0.5 weight decays the trace of x_1 every step."
+}
+
+function runRho() {
+  const rho = parseFloat(document.getElementById("rho").value)
+  const n = Math.pow(rho, 20)
+  const note = document.getElementById("rhonote")
+  const mode = (rho < 1) ? "vanishes" : (rho > 1 ? "explodes" : "sits on the knife edge")
+  note.textContent = "rho = " + rho.toFixed(2) + ". Norm at T = 20: " + n.toExponential(2) + ". Verdict: " + mode + "."
+}
+
+function runTemp() {
+  const T = parseFloat(document.getElementById("tmp").value)
+  const z = [2.0, 1.0, 0.5, 0.1]
+  const e = z.map(function(v) { return Math.exp(v / T) })
+  const s = e[0] + e[1] + e[2] + e[3]
+  const p = e.map(function(v) { return v / s })
+  document.getElementById("tmpnote").textContent = "T = " + T.toFixed(1) + ". Probs: (" + p.map(function(v) { return v.toFixed(3) }).join(", ") + "). Top prob " + p[0].toFixed(3) + ". Greedy is the T -> 0 limit."
+}
+
+let padOn = true
+function runPad() {
+  const note = document.getElementById("padnote")
+  if (padOn) {
+    note.textContent = "Mask ON. Masked mean = 0.400. The pad loss 9.9 is ignored. The model trains on language."
+  } else {
+    note.textContent = "Mask OFF. Unmasked mean = 1.983. The pad loss 9.9 dominates. The model trains to predict padding."
+  }
+}
+
+document.getElementById("ppbtn").addEventListener("click", runPpl)
+document.getElementById("rnbtn").addEventListener("click", runRnn)
+document.getElementById("rho").addEventListener("input", runRho)
+document.getElementById("tmp").addEventListener("input", runTemp)
+document.getElementById("padbtn").addEventListener("click", function() { padOn = !padOn, runPad() })
+
+barChart("chart-ppl", [["smoothed bigram (U01)", 5.137, INDIGO], ["toy RNN, training", 1.326, CLAY]], 5.2, "")
+barChart("chart-loss", [["loss, epoch 0", 2.8011, CLAY], ["loss, epoch 300", 0.2824, SAGE]], 2.9, "")
+barChart("chart-clip", [["gradient norm", 29.025, CLAY], ["after clip at 1.0", 1.0, SAGE]], 30, "")
+barChart("chart-pad", [["unmasked mean", 1.983, CLAY], ["masked mean", 0.4, SAGE]], 2.0, "")
+barChart("chart-decode", [["T = 0.5 (sharp)", 0.828, SAGE], ["T = 1.0", 0.587, INDIGO], ["T = 2.0 (flat)", 0.406, CLAY]], 1.0, "")
+rhoChart()
+runRho()
+runTemp()
+runPad()
+</script>
+</body>
+</html>

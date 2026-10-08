@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U07 · RAG and agents: Interactive companion</title>
+<style>
+:root{--ink:#1c1a17}
+:root{--paper:#faf7f0}
+:root{--paper2:#f3eee2}
+:root{--line:#ddd3bd}
+:root{--muted:#7a7160}
+:root{--clay:#b3541e}
+:root{--indigo:#2f4b8f}
+:root{--indigosoft:#e8edfb}
+:root{--sage:#4f7a52}
+:root{--sagesoft:#e6f0e6}
+:root{--amber:#a97b12}
+:root{--serif:"Iowan Old Style",Georgia,"Times New Roman",serif}
+:root{--sans:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+:root{--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:19px}
+body{line-height:1.62}
+.wrap{max-width:860px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband{padding:10px 0}
+.topband .wrap{padding:0 24px}
+header.hero{padding:52px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+.kicker{margin:0 0 10px}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:0 0 14px}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{line-height:1.5}
+.dek{color:#3d382e}
+.dek{max-width:680px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll{max-width:860px}
+.navscroll{margin:0 auto}
+.navscroll{padding-left:24px}
+.navscroll{padding-right:24px}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-family:var(--sans)}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:26px 0}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+figcaption{font-size:16px}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+img.lessonfig{width:100%}
+img.lessonfig{border-radius:10px}
+img.lessonfig{border:1px solid var(--line)}
+img.lessonfig{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 60px}
+footer.prov{font-size:16px}
+footer.prov{color:#3d382e}
+footer.prov p{margin:.7em 0}
+.small{font-size:15px}
+.capleft{text-align:left}
+.capleft{padding-bottom:8px}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CME295 · Transformers and Large Language Models · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">Unit 07 · RAG and agentic systems</p>
+<h1>The funnel, the menu, and the relay</h1>
+<p class="dek">Twelve concepts turn a language model into a system that reads and acts: the retrieval pipeline, advanced retrieval, hybrid search, reranking, context construction, function calling, tool results, ReAct, agent state, stopping rules, permissions, and failure separation. Every number below comes from the lesson.</p>
+</header>
+<div class="legend">
+<p><strong>How to read this page.</strong> Three tags separate fact from invention.</p>
+<p><span class="tag tag-lesson">From the lesson</span> A claim, number, or figure that appears in the lesson source, with its section cited.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with values you supply, or a what-if. Never lesson content.</p>
+<p><span class="tag tag-companion">Companion</span> Editorial framing or a transferable principle. The lesson did not say it this way.</p>
+</div>
+</div>
+<nav class="sticky"><div class="navscroll">
+<a href="#s1">1 Pipeline</a>
+<a href="#s2">2 Advanced</a>
+<a href="#s3">3 Hybrid</a>
+<a href="#s4">4 Rerank</a>
+<a href="#s5">5 Context</a>
+<a href="#s6">6 Tools</a>
+<a href="#s7">7 Results</a>
+<a href="#s8">8 ReAct</a>
+<a href="#s9">9 State</a>
+<a href="#s10">10 Stopping</a>
+<a href="#s11">11 Permissions</a>
+<a href="#s12">12 Failures</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<div class="wrap">
+<figure>
+<img class="illus" src="assets/u07-hero.webp" alt="Watercolor of a library funnel narrowing books down to a writer's desk">
+<figcaption><span class="tag tag-toy">Illustration</span> The unit in one image: a wide corpus funnels to the few pages the model actually reads. Watercolor, original to this companion.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>The retrieval pipeline: a funnel</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 2-6</span></p>
+<p>The model knows the world up to its cutoff. How does it answer about last week's policy change? The toy: corpus 100 docs, 8 relevant to the query. Retrieve top 20 by cosine, 6 relevant land in the set. Recall 0.75, precision 0.30. The model now sees 6 of 8 facts. The pipeline has two halves. Offline: chunk, embed, index. Online: embed the query, ANN search, top-k online. The pipeline is a funnel. Wide at the bottom, narrow at the top. Recall is set by the index and k, precision by the embedding quality.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 6, 11</span></p>
+<p>Doubling k to 40 catches 7 relevant: recall 0.875, precision 0.175. Figure u07_fig01 shows the top-k with hits marked. The check: a query built from a known doc must return that doc in the top-k. If it does not, the embedder or the chunker is wrong, not the index. The broken assumption: the chunker keeps facts whole. A table split across two chunks retrieves half the answer. Fix with overlapping chunks or structure-aware parsing.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of recall and precision at k=20 and k=40">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Recall and precision vs k (C01 item 6)</text>
+<rect x="150" y="100" width="110" height="150" fill="#2f4b8f" rx="4"/>
+<rect x="290" y="180" width="110" height="70" fill="#7a8fc4" rx="4"/>
+<rect x="440" y="80" width="110" height="170" fill="#2f4b8f" rx="4" opacity="0.55"/>
+<rect x="580" y="205" width="110" height="45" fill="#7a8fc4" rx="4" opacity="0.55"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="205" y="90">0.75</text><text x="345" y="170">0.30</text><text x="495" y="70">0.875</text><text x="635" y="195">0.175</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="205" y="270">recall k=20</text><text x="345" y="270">precision k=20</text><text x="495" y="270">recall k=40</text><text x="635" y="270">precision k=40</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Wider k catches one more fact and drowns the precision.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 item 6</span> The lesson's computed tradeoff. The lab asks the R0.1 toy: R 8, K 20, H 6.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 4, 14</span> Funnel bench: recall and precision on your counts.</p>
+<p><input class="text" id="fbr" type="number" value="8" min="1" aria-label="R"> <input class="text" id="fbk" type="number" value="20" min="1" aria-label="K"> <input class="text" id="fbh" type="number" value="6" min="0" aria-label="H"> <button class="btn" id="fbbtn">Compute</button></p>
+<div class="chips" id="fbout"></div>
+<p class="small muted">Reproduce the lesson: 8, 20, 6 gives recall 0.75, precision 0.30. Try k 40 with 7 hits: 0.875 and 0.175.</p>
+</div>
+<div class="nugget" id="w1">
+<h4>Nugget 01 · The funnel decides what the model can know</h4>
+<p class="big">The model answers from the top-k, never from the corpus. Recall is set by the index and k. Everything else is downstream.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds the funnel, prices recall and precision at two k values, and names the chunker failure.</dd>
+<dt>Why it matters</dt><dd>A missing fact is a retrieval failure, not a model failure. Debug the funnel before you blame the reader.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Any system that reasons over retrieved evidence is bounded by the retriever. The funnel is the first suspect.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>Advanced retrieval: a small program around the index</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 2-6</span></p>
+<p>The user asks a vague question, the embedding matches vague docs, what then? The toy: query "it broke again". Rewrite: "pump P-101 failure modes". The rewrite retrieves the manual, the raw query retrieves forum complaints. Basic retrieval is one shot. Advanced retrieval is a small program around the index: rewrite the query, retrieve, expand, retrieve again. HyDE: generate a hypothetical answer, embed it instead of the query, because nearest neighbors of the answer are nearer the truth. Multi-hop: retrieve, read, form a follow-up query, retrieve again.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 6, 11</span></p>
+<p>The computed example: single-hop recall@20 = 0.62. Two-hop recall@20 = 0.81 at 2.1x latency. Query rewrite adds +0.09 recall at 1.3x latency. The ladder is measurable. Each step trades latency for recall, and the failure mode is drift: each hop can wander off-topic, so cap hops at 2-3. The broken assumption: hops add signal. The expander can hallucinate a follow-up query and hop 2 retrieves fiction. Ground each hop in retrieved text.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Recall rising with hops against latency rising">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Recall vs latency by strategy (C02 item 6)</text>
+<rect x="140" y="150" width="100" height="100" fill="#2f4b8f" rx="4"/>
+<rect x="290" y="120" width="100" height="130" fill="#2f4b8f" rx="4" opacity="0.8"/>
+<rect x="440" y="90" width="100" height="160" fill="#2f4b8f" rx="4" opacity="0.6"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="190" y="140">0.62</text><text x="340" y="110">0.71</text><text x="490" y="80">0.81</text>
+</g>
+<g font-family="sans-serif" font-size="12" fill="#7a7160" text-anchor="middle">
+<text x="190" y="270">1 hop, 1x</text><text x="340" y="270">rewrite, 1.3x</text><text x="490" y="270">2 hops, 2.1x</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Every step up the ladder costs latency. Measure the trade.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 6</span> Toy numbers from the lesson's lab runner. If hop 2 adds nothing, the questions are single-hop.</figcaption>
+</figure>
+<div class="nugget" id="w2">
+<h4>Nugget 02 · Each hop buys recall with latency</h4>
+<p class="big">Rewrite adds +0.09 at 1.3x. A second hop adds +0.19 at 2.1x. The ladder is measurable, so climb it deliberately.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson prices three retrieval strategies in recall and latency, and names the drift failure.</dd>
+<dt>Why it matters</dt><dd>Multi-hop is a program, not a setting. Ungrounded hops retrieve fiction. Cap the hops, ground each one.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Iterative refinement trades time for quality. Price each iteration and stop when the price exceeds the gain.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Hybrid search: two witnesses, one jury</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 2-6</span></p>
+<p>Dense search misses the exact part number "XJ-4471", keyword search misses the paraphrase "pump failure", how do you get both? The toy: doc A: BM25 0.9, dense 0.4. Doc B: BM25 0.3, dense 0.8. Fusion 0.5/0.5: A 0.65, B 0.55. A wins, both signals counted. BM25 testifies about exact terms, dense about meaning. Fusion is the jury. Weighted sum: s = alpha times bm25_norm + (1 - alpha) times dense. RRF: s = sum 1/(k + rank_i) with k = 60, which needs no normalization, only ranks. The mechanism is error decorrelation: the two signals err in different ways.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 6, 11</span></p>
+<p>The computed example: docs A/B/C, BM25 [0.9, 0.3, 0.5], dense [0.4, 0.8, 0.5], alpha 0.5 gives fused [0.65, 0.55, 0.50]. Dense alone ranks B first, fusion ranks A first. Figure u07_fig02. The broken assumption: scores are comparable. Unnormalized BM25 dwarfs cosine and alpha becomes meaningless. Normalize first, always.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Grouped bars of BM25, dense, and fused scores for docs A, B, C">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Fusion, alpha = 0.5 (C03 item 6)</text>
+<rect x="120" y="70" width="50" height="180" fill="#ddd3bd" rx="4"/>
+<rect x="180" y="170" width="50" height="80" fill="#7a8fc4" rx="4"/>
+<rect x="240" y="120" width="50" height="130" fill="#2f4b8f" rx="4"/>
+<rect x="330" y="190" width="50" height="60" fill="#ddd3bd" rx="4"/>
+<rect x="390" y="90" width="50" height="160" fill="#7a8fc4" rx="4"/>
+<rect x="450" y="140" width="50" height="110" fill="#2f4b8f" rx="4"/>
+<rect x="540" y="150" width="50" height="100" fill="#ddd3bd" rx="4"/>
+<rect x="600" y="150" width="50" height="100" fill="#7a8fc4" rx="4"/>
+<g font-family="monospace" font-size="12" text-anchor="middle" fill="#1c1a17">
+<text x="145" y="60">0.9</text><text x="265" y="110">0.65</text>
+<text x="415" y="80">0.8</text><text x="475" y="130">0.55</text>
+<text x="595" y="140">0.5</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="205" y="280">doc A</text><text x="415" y="280">doc B</text><text x="595" y="280">doc C</text>
+</g>
+<text x="350" y="306" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Tan BM25, blue dense, dark fused. Dense ranks B first, fusion ranks A first.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 6</span> The lesson's computed fusion. The lab asks for alpha 0.8: A wins at 0.80.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 5, 14</span> Fusion bench: weighted-sum fusion on your scores.</p>
+<p><input class="text" id="fub" type="text" value="0.9, 0.3, 0.5" aria-label="BM25 scores"> <input class="text" id="fud" type="text" value="0.4, 0.8, 0.5" aria-label="dense scores"> <input class="text" id="fua" type="number" value="0.5" step="0.1" min="0" max="1" aria-label="alpha"> <button class="btn" id="fubtn">Fuse</button></p>
+<div class="chips" id="fuout"></div>
+<p class="small muted">Reproduce the lesson: the defaults give [0.65, 0.55, 0.50]. Try the lab: alpha 0.8 gives [0.80, 0.40, 0.50].</p>
+</div>
+<div class="nugget" id="w3">
+<h4>Nugget 03 · Neither witness alone</h4>
+<p class="big">BM25 hears the part number, dense hears the meaning. The jury needs both, and the scores must be normalized first.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson fuses two signals by hand, shows the ranking flip, and names the scale-mismatch failure.</dd>
+<dt>Why it matters</dt><dd>Unnormalized scores make alpha a lie. The fusion is only as honest as the normalization.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Combine signals that err differently. Before you weight them, put them on the same scale.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Rerank: the bouncer and the judge</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 2-6</span></p>
+<p>The retriever is fast and dumb, the reader needs the best 5 docs, who bridges the gap? The toy: 50 candidates from hybrid search, cross-encoder scores each pair (query, doc), top 5 go to the model. Precision@5 jumps from 0.40 to 0.80. The retriever is a bouncer, the reranker is the judge. The bouncer admits 50, the judge picks 5. Bi-encoder: one vector per doc, dot product, fast. Cross-encoder: joint (query, doc) encoding, slow, accurate. Two stages: recall from stage 1, precision from stage 2. The product bounds the end quality.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 6, 11</span></p>
+<p>The computed example: stage 1 recall@50 = 0.90. Rerank precision@5 = 0.80. End-to-end: 0.72 of relevant docs reach the model in the top 5. The stages multiply. The broken assumption: the candidates contain the answer. Stage-1 recall 0.40 means the reranker polishes the wrong 50. Fix retrieval first. The latency rule: N times single-call ms must fit the budget, else shrink N. The lab asks: N = 200 at 15 ms per call is 3000 ms.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Funnel bars: 50 candidates, recall 0.90, precision 0.80, end to end 0.72">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Two stages multiply (C04 item 6)</text>
+<rect x="120" y="60" width="110" height="190" fill="#ddd3bd" rx="4"/>
+<rect x="280" y="80" width="110" height="170" fill="#7a8fc4" rx="4"/>
+<rect x="440" y="110" width="110" height="140" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="175" y="50">recall 0.90</text><text x="335" y="70">prec 0.80</text><text x="495" y="100">0.72</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="175" y="270">stage 1: 50 in</text><text x="335" y="270">rerank: 5 out</text><text x="495" y="270">end to end</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">0.90 times 0.80. The judge cannot rescue what the bouncer never admitted.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 6</span> The lesson's stage math. The lab asks: recall@50 0.90, precision@5 0.80, end-to-end 0.72.</figcaption>
+</figure>
+<div class="nugget" id="w4">
+<h4>Nugget 04 · Stages multiply</h4>
+<p class="big">Recall from stage 1, precision from stage 2. End quality is the product, 0.72, and the product punishes the weakest stage.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson names the bouncer and the judge, multiplies the stages, and prices the latency rule.</dd>
+<dt>Why it matters</dt><dd>Reranking cannot rescue what retrieval missed. Fix the funnel before you polish the shortlist.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> In a pipeline, stage qualities multiply. The cheapest win is usually the weakest stage, not the strongest.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Context construction: packing the suitcase</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 2-6</span></p>
+<p>5 reranked docs, 800 tokens each, window 4000, system prompt 500, what fits? The toy: budget = 4000 - 500 - 500 (reserve for answer) = 3000. Docs at 800 each: 3 fit (2400), the 4th is cut at 600 tokens with a truncation mark. Order by score, cut from the bottom. The window is a suitcase. Fold the big items, put essentials on top, and leave room for the trip home (the answer). Greedy pack by score: take docs in rerank order until the budget fills, truncate the last. The computed example: W = 8000, S = 600, R = 1000, docs [1500, 1200, 900, 800, 700]. Budget 6400. All 5 fit (5100). Add a 6th at 2000: total 7100, cut 700 from the last doc.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 11</span></p>
+<p>The broken assumption: order equals value. The 5th doc holds the key fact, truncation cuts it. Mitigate with per-doc minimum guarantees or compression. The lab asks: W 4000, S 500, R 500, docs of 800. Three fit.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Stacked bars of a 3000-token budget holding three 800-token docs plus a truncated 600-token doc">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Packing 3000 tokens (C05 item 2)</text>
+<rect x="200" y="60" width="90" height="190" fill="#2f4b8f" rx="4"/>
+<rect x="300" y="60" width="90" height="190" fill="#2f4b8f" rx="4"/>
+<rect x="400" y="60" width="90" height="190" fill="#2f4b8f" rx="4"/>
+<rect x="500" y="110" width="90" height="140" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="13" text-anchor="middle" fill="#1c1a17">
+<text x="245" y="150">800</text><text x="345" y="150">800</text><text x="445" y="150">800</text><text x="545" y="180">600 cut</text>
+</g>
+<g font-family="sans-serif" font-size="12" fill="#7a7160" text-anchor="middle">
+<text x="245" y="270">doc 1</text><text x="345" y="270">doc 2</text><text x="445" y="270">doc 3</text><text x="545" y="270">doc 4</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Order by score, cut from the bottom, mark the cut.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 2</span> The lesson's pack toy. Measure with the real tokenizer or the budget is fiction.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 4, 7</span> Packing bench: the lesson's budget arithmetic.</p>
+<p><input class="text" id="pkw" type="number" value="4000" min="500" aria-label="W"> <input class="text" id="pks" type="number" value="500" min="0" aria-label="S"> <input class="text" id="pkr" type="number" value="500" min="0" aria-label="R"> <input class="text" id="pkd" type="text" value="800, 800, 800, 800, 800" aria-label="docs"> <button class="btn" id="pkbtn">Pack</button></p>
+<div class="chips" id="pkout"></div>
+<p class="small muted">Reproduce the lesson: the defaults give budget 3000, 3 docs fit, 600 cut. Try the computed example: 8000, 600, 1000, and 1500, 1200, 900, 800, 700, 2000.</p>
+</div>
+<div class="nugget" id="w5">
+<h4>Nugget 05 · The suitcase has three zippers</h4>
+<p class="big">Budget = window minus system minus reserve. Order by score, cut from the bottom, and never trust the truncation order blindly.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the pack inequality, works both toys, and names the key-fact-cut failure.</dd>
+<dt>Why it matters</dt><dd>Every truncated token is a fact the model never sees. The reserve is for the answer. The mark is for honesty.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Fit the evidence to the container by rank, and mark every cut. Silent truncation is silent information loss.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>Function calling: words become actions</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 2-6</span></p>
+<p>The model says "I will search for the refund policy", who does the searching? The toy schema: {"name": "search", "arguments": {"q": "string"}}. The model emits the call, the runtime runs it and pastes the result back. Words become actions. The schema is a menu, the call is an order, the runtime is the kitchen. The model can only order what is on the menu, in the format the menu demands. A bad order bounces back with an error. The loop: validate, execute, append the result as a new message, continue until the model answers or stops.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 6, 11</span></p>
+<p>The computed example: schema with one required string arg. Valid call parses in 1 step. Call missing "q" fails validation with error "missing required argument: q". The error message is part of the contract. Figure u07_fig03 shows the call and result. The check: 100 synthetic calls, all valid ones execute, all invalid ones return errors naming the fault. If a bad call executes, validation is broken. The broken assumption: the schema tells the truth. The "search" tool that actually deletes records is invisible to the model. The registry must be trusted.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 4, 6</span> Validation bench: the lesson's dispatch rule on your call.</p>
+<p><input class="text" id="tcn" type="text" value="search" aria-label="tool name"> <input class="text" id="tca" type="text" value="refund policy" aria-label="q argument"> <button class="btn" id="tcbtn">Dispatch</button></p>
+<div class="chips" id="tcout"></div>
+<p class="small muted">Reproduce the lesson: name search with a q argument validates. Clear the q field and the error names the missing argument.</p>
+</div>
+<div class="nugget" id="w6">
+<h4>Nugget 06 · The schema is the contract</h4>
+<p class="big">Validate before execute, always. The error message is part of the contract, not an afterthought.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the schema, parses the toy call, and shows the missing-argument error.</dd>
+<dt>Why it matters</dt><dd>The model cannot see past the schema. Validation is the only gate between words and actions.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When text triggers actions, the contract is the schema and the gate is validation. Name the fault in the error.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Tool results: senses, not floods</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 2-6</span></p>
+<p>The search tool returns 50,000 tokens, what happens to the window? The toy: result cap 2000 tokens, truncate with a marker, log the full result to a store. The model sees the head, the audit keeps the body. Tools are senses, results are sensations. A sense that floods the brain with noise is worse than no sense. Each tool reports concisely or not at all. The computed example: raw result 50,000 tokens, cap 2000, kept head 2000 with marker. Error case: timeout returns {"error": "timeout", "retry": true}. The model retries once. Errors return as typed results, not exceptions, so the model can react.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 11</span></p>
+<p>The broken assumption: retries are safe. The "send_email" tool is not idempotent, a retry sends twice. Flag side effects in the schema. The check: no result entering the context exceeds the cap on a fuzz run. If one does, the cap is applied in the wrong place.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 260" role="img" aria-label="Long bar of 50000 tokens cut down to a 2000-token head">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">The cap (C07 item 6)</text>
+<rect x="60" y="90" width="580" height="50" fill="#ddd3bd" rx="4"/>
+<rect x="60" y="160" width="60" height="50" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="14" fill="#1c1a17">
+<text x="60" y="80">50,000 tokens in</text>
+<text x="60" y="235">2,000 tokens kept, rest in the store</text>
+</g>
+<text x="350" y="256" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The model sees the head. The audit keeps the body.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 6</span> The lesson's truncation toy. Typed errors cost one extra model step to handle.</figcaption>
+</figure>
+<div class="nugget" id="w7">
+<h4>Nugget 07 · Cap the senses</h4>
+<p class="big">50,000 tokens in, 2,000 kept, the rest logged. A sense that floods the context is worse than no sense at all.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson sets the result cap, marks the truncation, and types the errors.</dd>
+<dt>Why it matters</dt><dd>Uncapped results blow the window. Non-idempotent tools make retries dangerous. The schema must flag side effects.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Bound every input channel. What enters the decision must be sized, marked, and typed.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>ReAct: thinking out loud with hands</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 2-6</span></p>
+<p>The model must use two tools in sequence, how does it keep track? The toy trace: Thought "I need the policy doc", Action search(q="refund policy"), Observation "doc found, 3 pages", Thought "now I summarize", Action answer(...). The trace is the working memory. ReAct thinks out loud with hands. Each thought plans one move, each action moves, each observation reports back. The prompt format interleaves the three roles, and the runtime injects each observation. The computed example: trace with 2 tool calls, 14 total steps, final answer cites both observations. A broken trace loops Thought without Action 6 times, and the loop detector fires.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 item 11</span></p>
+<p>The broken assumption: thoughts guide actions. The model writes a good thought then calls the wrong tool. The thought is decoration. Grade the actions. The check: on 20 scripted tasks, the agent calls the right tools in the right order. If it never acts, the trigger format is wrong. Figure u07_fig03 shows one ReAct cycle.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u07-loop.webp" alt="Watercolor of a circular loop of an eye, a hand, and an ear connected by arrows, with a leash held by a hand">
+<figcaption><span class="tag tag-toy">Illustration</span> The loop in one image: thought plans, action moves, observation reports, and the leash holds the circle. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="nugget" id="w8">
+<h4>Nugget 08 · Grade the actions, not the thoughts</h4>
+<p class="big">Thoughts can be decoration. The trace is the working memory, but the actions are the evidence.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the toy trace, gives the loop detector, and warns that thoughts do not guarantee actions.</dd>
+<dt>Why it matters</dt><dd>A fluent thought followed by the wrong call is a failure wearing a plan. Evaluate what the agent did, not what it said it would do.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Plans are cheap, actions are the record. When the two disagree, the actions are the truth.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Agent state: desk, notebook, filing cabinet</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 2-6</span></p>
+<p>The agent books a flight in step 3 and needs the confirmation code in step 9, where does it live? The toy: working memory = the trace (last 8 steps). Episodic = the session log (all steps, summarized). Long-term = the user profile (window seat). Three stores, three lifetimes. The agent has a desk (trace), a notebook (session summary), and a filing cabinet (profile). The desk is fast and small, the notebook is cheap and lossy, the cabinet is permanent and must be curated. Compaction: when the trace exceeds the window, summarize the oldest steps into the notebook, keep the newest verbatim.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 6, 11</span></p>
+<p>The computed example: 40-step trace, window 8, summary every 8 steps. Final context: 8 verbatim steps + 4 summaries. Token count 3200 vs 12000 uncompacted, 3.75x smaller. The broken assumption: the summary keeps what matters. The code is summarized away, step 30 needs it verbatim. Keep verbatim anchors for codes, IDs, and numbers. The check: a fact from step 2 must still be answerable at step 30.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of 12000 uncompacted tokens versus 3200 compacted tokens">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Compaction (C09 item 6)</text>
+<rect x="180" y="60" width="110" height="190" fill="#ddd3bd" rx="4"/>
+<rect x="410" y="190" width="110" height="60" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="235" y="50">12,000</text>
+<text x="465" y="180">3,200</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="235" y="270">uncompacted</text>
+<text x="465" y="270">8 verbatim + 4 summaries</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">3.75x smaller. Codes and IDs stay verbatim.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 6</span> The lesson's compaction toy. The lab asks: 40 steps, window 8, 4 summaries.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 5, 7</span> Compaction bench: the lesson's window math.</p>
+<p><input class="text" id="cpn" type="number" value="40" min="1" aria-label="steps"> <input class="text" id="cpw" type="number" value="8" min="1" aria-label="window"> <button class="btn" id="cpbtn">Compact</button></p>
+<div class="chips" id="cpout"></div>
+<p class="small muted">Reproduce the lesson: 40 steps, window 8, gives 4 summaries with 8 steps verbatim.</p>
+</div>
+<div class="nugget" id="w9">
+<h4>Nugget 09 · Three stores, three lifetimes</h4>
+<p class="big">Desk, notebook, filing cabinet. Summarize the old, keep the newest verbatim, and never summarize a confirmation code.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson separates the three stores, works the compaction toy, and names the summary-loss failure.</dd>
+<dt>Why it matters</dt><dd>Summarization is lossy compression of exactly the detail a later step needs. Verbatim anchors for codes, IDs, and numbers.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Compress the narrative, anchor the facts. What must be exact stays exact.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Stopping: every loop needs a leash</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 2-6</span></p>
+<p>The agent called search 12 times and keeps rephrasing, when does someone pull the plug? The toy rules: max 10 steps, no repeat action twice in a row, stop when the model emits the answer trigger. Step 11 fires the cap. The loop is a dog on a leash. The leash is the step cap, the collar is the repeat detector, the owner is the answer trigger. A loop without a leash runs until the budget dies. After each step, check: step count >= N, last two actions identical, or answer trigger present. Any true means stop.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 6, 11</span></p>
+<p>The computed example: 100 scripted runs, cap 10. 91 finish by answer, 6 hit the repeat guard, 3 hit the cap. The 3 cap hits are the tasks to fix. The check: cap-hit rate below 5% on the task suite. Above that, the cap is too tight or the tasks are too hard. The broken assumption: the cap binds only runaways. A legit 12-step task dies at step 10. Set the cap from the task distribution, not from superstition.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of run outcomes: 91 answer, 6 repeat guard, 3 cap">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">100 runs, cap 10 (C10 item 6)</text>
+<rect x="140" y="70" width="110" height="180" fill="#2f4b8f" rx="4"/>
+<rect x="300" y="220" width="110" height="30" fill="#7a8fc4" rx="4"/>
+<rect x="460" y="230" width="110" height="20" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="195" y="60">91</text><text x="355" y="210">6</text><text x="515" y="220">3</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="195" y="270">answer</text><text x="355" y="270">repeat guard</text><text x="515" y="270">cap hit</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">3% cap hits. Below 5% is acceptable.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 item 6</span> The lesson's stop batch. The 3 cap hits are the tasks to fix.</figcaption>
+</figure>
+<div class="nugget" id="w10">
+<h4>Nugget 10 · Leash, collar, owner</h4>
+<p class="big">Step cap, repeat detector, answer trigger. The guards are free. The runaway they prevent is unbounded.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the three stopping rules and prices them on 100 runs.</dd>
+<dt>Why it matters</dt><dd>A loop without a leash burns budget with zero return. Cap-hit rate below 5% keeps the leash honest.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Every autonomous loop needs a leash. Set it from the task distribution, then watch what it catches.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Permissions: badge every tool</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 2-6</span></p>
+<p>The agent wants to delete the production database as cleanup, who says no? The toy tiers: the read tier (always allow), write sandbox (allow with log), irreversible (require approval). The delete needs a human click. Tools carry badges: green, yellow, red. Green tools run free, yellow tools run logged, red tools wait at the gate. Before dispatch, check the tier. Red: pause, request approval with the exact call shown, resume on grant. The mechanism is a gate, not a suggestion.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 6, 11</span></p>
+<p>The computed example: 12 tools, 7 green, 3 yellow, 2 red. 1000 actions: 0 red executed without approval, 3 approval requests denied by the human. The gate held. The check: a red tool called in a test fires the approval path, never the direct path. The broken assumption: tiers match reality. The "read" tool with a hidden side effect (logging reads triggers alerts) is misbadged. Audit tools for hidden writes. Figure u07_fig04 carries the red panel.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of tool tiers: 7 green, 3 yellow, 2 red">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">12 tools badged (C11 item 6)</text>
+<rect x="170" y="90" width="110" height="160" fill="#5a7d5a" rx="4"/>
+<rect x="330" y="170" width="110" height="80" fill="#c9a227" rx="4"/>
+<rect x="490" y="200" width="110" height="50" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="225" y="80">7</text><text x="385" y="160">3</text><text x="545" y="190">2</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="225" y="270">green: free</text><text x="385" y="270">yellow: logged</text><text x="545" y="270">red: approval</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">0 red executed without approval. The gate held.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 6</span> The lesson's gate toy. Batch red actions, approvals cost human minutes.</figcaption>
+</figure>
+<div class="nugget" id="w11">
+<h4>Nugget 11 · The gate, not a suggestion</h4>
+<p class="big">Green runs free, yellow runs logged, red waits at the gate. 1000 actions, 0 red without approval.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the three-tier table, the approval flow, and the gate test.</dd>
+<dt>Why it matters</dt><dd>One unbadged tool is a hole in the fence. Audit for hidden writes, red-team the tier list.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Tier actions by blast radius. The dangerous ones wait for a human, no exceptions.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Failure separation: find the dropped baton</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 2-6</span></p>
+<p>The agent answered wrong. Was the doc missing, the model sloppy, or the tool broken? The toy: check the trace. Doc absent means retrieval failure. Doc present but the answer ignores it means model failure. Tool errored means tool failure. Three bins, three fixes. The pipeline is a relay race. When the baton drops, find which handoff failed. The protocol: (1) was a relevant doc retrieved? No means retrieval. (2) did the tool return correctly? No means tool. (3) did the answer use the evidence? No means model. The order matters, check upstream first.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 6, 11</span></p>
+<p>The computed example: 100 wrong answers labeled: 47 retrieval, 31 model, 22 tool. Fixing retrieval (better chunks) recovers 47, the biggest lever. The check: the bins sum to the error count, and a fix to the top bin moves the metric. The broken assumption: single cause. Retrieval was weak AND the model ignored the doc. Label the primary cause, note the secondary. Figure u07_fig04 maps the three bins.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Histogram of failure bins: 47 retrieval, 31 model, 22 tool">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">100 wrong answers, three bins (C12 item 6)</text>
+<rect x="140" y="110" width="110" height="140" fill="#b3541e" rx="4"/>
+<rect x="300" y="160" width="110" height="90" fill="#7a8fc4" rx="4"/>
+<rect x="460" y="190" width="110" height="60" fill="#7a8fc4" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="195" y="100">47</text><text x="355" y="150">31</text><text x="515" y="180">22</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="195" y="270">retrieval</text><text x="355" y="270">model</text><text x="515" y="270">tool</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Fix the biggest bin first. Rerun the histogram after each fix.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 item 6</span> The lesson's separation toy. The lab asks: doc absent means the retrieval bin.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 5, 14</span> Separation bench: the lesson's protocol on your trace flags.</p>
+<p><input class="text" id="spd" type="text" value="yes" aria-label="doc retrieved"> <input class="text" id="spt" type="text" value="yes" aria-label="tool ok"> <input class="text" id="spa" type="text" value="no" aria-label="answer used evidence"> <button class="btn" id="spbtn">Separate</button></p>
+<div class="chips" id="spout"></div>
+<p class="small muted">Answer yes or no to the three checks. The first no in pipeline order names the bin.</p>
+</div>
+<div class="nugget" id="w12">
+<h4>Nugget 12 · Check upstream first</h4>
+<p class="big">47 retrieval, 31 model, 22 tool. The histogram aims the fix. Rerun it after every fix and watch it shift.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the separation protocol, labels 100 failures, and prices the biggest lever.</dd>
+<dt>Why it matters</dt><dd>Blaming the runner for a dropped baton at the exchange fixes the wrong thing twice. Separation first, fix second.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> In a pipeline, debug upstream first. The Pareto usually shows by 50 samples.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Twelve nuggets, one unit</h2>
+<ol class="wisdom">
+<li><a href="#w1"><span class="wnum">01</span>The funnel decides what the model can know</a></li>
+<li><a href="#w2"><span class="wnum">02</span>Each hop buys recall with latency</a></li>
+<li><a href="#w3"><span class="wnum">03</span>Neither witness alone</a></li>
+<li><a href="#w4"><span class="wnum">04</span>Stages multiply</a></li>
+<li><a href="#w5"><span class="wnum">05</span>The suitcase has three zippers</a></li>
+<li><a href="#w6"><span class="wnum">06</span>The schema is the contract</a></li>
+<li><a href="#w7"><span class="wnum">07</span>Cap the senses</a></li>
+<li><a href="#w8"><span class="wnum">08</span>Grade the actions, not the thoughts</a></li>
+<li><a href="#w9"><span class="wnum">09</span>Three stores, three lifetimes</a></li>
+<li><a href="#w10"><span class="wnum">10</span>Leash, collar, owner</a></li>
+<li><a href="#w11"><span class="wnum">11</span>The gate, not a suggestion</a></li>
+<li><a href="#w12"><span class="wnum">12</span>Check upstream first</a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cme295/lessons/u07_rag_agents.md</code>, locally authored bridge content for Stanford CME295 (2026-10-06). The lesson marks the retrieval pipeline, context construction, function calling and tool results, and agent state OFFICIAL-SYLLABUS, and advanced retrieval, hybrid search, reranking, ReAct, stopping rules, permissions, and failure separation REQUESTED-BRANCH. Every leaf is PLANNED / SOURCE ATTRIBUTION PENDING until slide or transcript extraction verifies it. No lecture transcript exists for this unit, so no lecture anecdotes appear and no sentence here reproduces an instructor's words. Lesson figures u07_fig01, u07_fig02, u07_fig03, and u07_fig04 are the lesson's own plates, cited where they appear. Charts on this page re-plot the lesson's computed numbers with section citations. Interactive toys run the lesson's rules on values you supply. The two watercolor illustrations are original to this companion, generated with Muse native tools, and labeled Illustration. No official course video exists for this unit, so no video is embedded.</p>
+<p><strong>Quoted words.</strong> Quoted words from the lesson source: 50. These are the lesson's own example strings (tool names, schema fields, query text, error messages, and ReAct trace lines), quoted verbatim so the examples stay exact. All counts were made with the mechanical recount method: quoted phrases in visible body text, chart labels, tooltips, and attribute values, footer excluded. Numbers carry their lesson section above each figure and table.</p>
+<p><a href="../index.html">Back to the CME295 index</a></p>
+</footer>
+</div>
+<script>
+function el(tag,cls,text){
+var e=document.createElement(tag)
+if(cls){e.className=cls}
+if(text!=null){e.textContent=text}
+return e
+}
+function parseNums(id){
+var raw=document.getElementById(id).value
+var parts=raw.split(",")
+var out=[]
+var i=0
+while(i<parts.length){
+var v=parseFloat(parts[i])
+if(!isNaN(v)){out.push(v)}
+i=i+1
+}
+return out
+}
+function runFb(){
+var R=parseFloat(document.getElementById("fbr").value)
+var K=parseFloat(document.getElementById("fbk").value)
+var H=parseFloat(document.getElementById("fbh").value)
+var out=document.getElementById("fbout")
+out.textContent=""
+if(!(R>0)||!(K>0)||!(H>=0)||H>R||H>K){
+out.appendChild(el("span","chip plain","Enter R > 0, K > 0, 0 <= H <= min(R,K)."))
+return
+}
+out.appendChild(el("span","chip plain","recall = "+(H/R).toFixed(3)))
+out.appendChild(el("span","chip plain","precision = "+(H/K).toFixed(3)))
+}
+function runFu(){
+var b=parseNums("fub")
+var d=parseNums("fud")
+var a=parseFloat(document.getElementById("fua").value)
+var out=document.getElementById("fuout")
+out.textContent=""
+if(b.length!==d.length||b.length<2||!(a>=0)||!(a<=1)){
+out.appendChild(el("span","chip plain","Enter two equal-length lists and alpha in [0,1]."))
+return
+}
+var s=""
+var best=0
+var bi=0
+var i=0
+while(i<b.length){
+var f=a*b[i]+(1-a)*d[i]
+s=s+"doc "+(i+1)+" "+f.toFixed(2)
+if(i<b.length-1){s=s+", "}
+if(f>best){
+best=f
+bi=i
+}
+i=i+1
+}
+out.appendChild(el("span","chip plain","fused = "+s))
+out.appendChild(el("span","chip plain","winner: doc "+(bi+1)))
+}
+function runPk2(){
+var W=parseFloat(document.getElementById("pkw").value)
+var S=parseFloat(document.getElementById("pks").value)
+var R=parseFloat(document.getElementById("pkr").value)
+var docs=parseNums("pkd")
+var out=document.getElementById("pkout")
+out.textContent=""
+if(!(W>0)||!(S>=0)||!(R>=0)||S+R>=W||docs.length<1){
+out.appendChild(el("span","chip plain","Enter W > S + R >= 0 and docs."))
+return
+}
+var budget=W-S-R
+var used=0
+var fit=0
+var i=0
+while(i<docs.length){
+if(used+docs[i]<=budget){
+used=used+docs[i]
+fit=fit+1
+}
+else{
+break
+}
+i=i+1
+}
+var cut=0
+if(fit<docs.length){
+cut=budget-used
+}
+out.appendChild(el("span","chip plain","budget = "+budget))
+out.appendChild(el("span","chip plain","fit = "+fit+" docs"))
+if(cut>0){
+out.appendChild(el("span","chip plain","next doc cut to "+cut+" tokens"))
+}
+}
+function runTc(){
+var name=document.getElementById("tcn").value.trim()
+var q=document.getElementById("tca").value.trim()
+var out=document.getElementById("tcout")
+out.textContent=""
+if(name!=="search"){
+out.appendChild(el("span","chip plain","Unknown tool. The menu has: search."))
+return
+}
+if(q===""){
+out.appendChild(el("span","chip plain","missing required argument: q"))
+return
+}
+out.appendChild(el("span","chip plain","valid call, 1 step"))
+}
+function runCp(){
+var n=parseFloat(document.getElementById("cpn").value)
+var w=parseFloat(document.getElementById("cpw").value)
+var out=document.getElementById("cpout")
+out.textContent=""
+if(!(n>=1)||!(w>=1)){
+out.appendChild(el("span","chip plain","Enter steps >= 1, window >= 1."))
+return
+}
+var summaries=0
+var left=n
+while(left>w){
+left=left-w
+summaries=summaries+1
+}
+out.appendChild(el("span","chip plain","summaries = "+summaries))
+out.appendChild(el("span","chip plain","verbatim = "+Math.min(n,w)+" steps"))
+}
+function runSp(){
+function yes(id){
+var v=document.getElementById(id).value.trim().toLowerCase()
+return v==="yes"||v==="y"
+}
+var out=document.getElementById("spout")
+out.textContent=""
+if(!yes("spd")){
+out.appendChild(el("span","chip plain","bin: retrieval"))
+}
+else if(!yes("spt")){
+out.appendChild(el("span","chip plain","bin: tool"))
+}
+else if(!yes("spa")){
+out.appendChild(el("span","chip plain","bin: model"))
+}
+else{
+out.appendChild(el("span","chip plain","No failure flagged. Check the labels."))
+}
+}
+document.getElementById("fbbtn").addEventListener("click",runFb)
+document.getElementById("fubtn").addEventListener("click",runFu)
+document.getElementById("pkbtn").addEventListener("click",runPk2)
+document.getElementById("tcbtn").addEventListener("click",runTc)
+document.getElementById("cpbtn").addEventListener("click",runCp)
+document.getElementById("spbtn").addEventListener("click",runSp)
+runFb()
+runFu()
+runPk2()
+runTc()
+runCp()
+runSp()
+</script>
+</body>
+</html>

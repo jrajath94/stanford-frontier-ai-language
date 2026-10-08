@@ -437,8 +437,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-companion">companion</span> Companion voice: the idea above the tag is from the lesson. The generalization below it is the companion’s.</p>
 <p class="small muted">Provenance: no full lecture transcript exists for this session. The 2026 lecture videos are restricted and unviewed, and the 2024 playlist was not viewed. This page narrates the lesson document, not a video. The session title (S01, History of NLP) and the A1 title (Introduction to word vectors) are OFFICIAL-SOURCE via SRC-02 and SRC-03. The concept inventory is REQUESTED-BRANCH.</p>
 </div>
-</header><figure class="paint wide" data-entrance="bloom" data-hero="1">
-<div class="frame"><div class="stage"><img alt="Watercolor of a river of language history from stone tablet to word constellation" class="base" fetchpriority="high" loading="lazy" src="assets/u01-hero.jpg"/></div></div>
+</header><figure data-phase2="1" data-scene="u01-nlp-history-hero" class="paint wide" data-entrance="bloom" data-hero="1">
+<div class="frame"><div class="stage"><img alt="Watercolor of a river of language history from stone tablet to word constellation" class="base" fetchpriority="high" loading="lazy" src="assets/u01-hero.jpg"/><img alt="" aria-hidden="true" class="ly mul" data-obj="hero-subject" data-depth="14" loading="lazy" src="assets/u01-nlp-history-hero-layer.png" style="left:5%;top:5%;width:90%"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The U01 arc in one image: stone tablets, manuscripts, the press, punched cards, and finally a constellation of connected word-dots. The knowledge moves from the scribe, to the machine, to the geometry. Watercolor, original to this companion.</figcaption></figure>
 <section class="block col" data-chapter="1" data-title="Ambiguity is the normal state" id="s1"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">1</span></div><div><p class="ch-meta"><span class="ts">Unit 1</span> · C01</p><h2>Ambiguity is the normal state</h2></div></div>
 <div class="prose-narrow">
@@ -446,13 +446,13 @@ span.ptag, .ptag {
 <p>Why does “visiting relatives can be dull” crash a naive parser? Reading 1 takes “visiting relatives” as one noun phrase: relatives who visit are dull. Reading 2 takes “visiting” as the verb and “relatives” as its object: the act of visiting bores. One string, two structures.</p>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 §3, §5</span></p>
 <p>Ambiguity is not noise. It is the normal state of language. Every level of analysis, sound, word, syntax, meaning, intent, can branch. The mechanism behind this toy is attachment: “visiting” can attach as a modifier of “relatives” or as the main verb with “relatives” as object. The rule that forces the branch is that English lets -ing forms act as nouns or verbs. Remove that flexibility and one reading dies.</p>
-<figure class="paint inset" data-entrance="sketch">
+<figure data-phase2="1" data-scene="u01-nlp-history-s2" class="paint inset" data-entrance="sketch">
 <div class="frame"><div class="stage"><img alt="Watercolor of one paper ribbon with two different tree branchings above it" class="base" loading="lazy" src="assets/u01-ambiguity.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> One ribbon of words, two branchings above it. The trees are the parses. A system that picks one branch early fails silently on the other. Watercolor, original to this companion.</figcaption></figure>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 §11</span></p>
 <p>The broken assumption is that the most frequent parse is the right parse. In travel text, reading 2 dominates. In a family newsletter, reading 1 dominates. Frequency is corpus-relative. A model trained on one genre picks the wrong branch on the other with full confidence. A system that picks one branch early fails silently on the other.</p>
 </div>
-<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-ambiguity"><div class="tag-price"><span class="tag-big">1</span><span class="tag-unit">Nugget 1 · From the lesson C01 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Ambiguity is not noise. It is the normal state of language. The two readings of “visiting relatives” come from one rule of English, not from a broken sentence.</p><p><b>Why it matters. </b>Rule-based pipelines pick a branch and move on. The failure is silent, and confidence stays high while the meaning flips by genre.</p><p><b>Transfer. </b>When a system fails with full confidence, suspect an early commitment to one branch of an ambiguous input. Keep branches alive until the evidence forces a choice.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-ambiguity"><div class="tag-price"><span class="tag-big">2 readings</span><span class="tag-unit">visiting relatives come from one rule · From the lesson C01 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Ambiguity is not noise. It is the normal state of language. The two readings of “visiting relatives” come from one rule of English, not from a broken sentence.</p><p><b>Why it matters. </b>Rule-based pipelines pick a branch and move on. The failure is silent, and confidence stays high while the meaning flips by genre.</p><p><b>Transfer. </b>When a system fails with full confidence, suspect an early commitment to one branch of an ambiguous input. Keep branches alive until the evidence forces a choice.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 §10</span></p>
 <p>An alternative is semantic disambiguation by world knowledge. Choose syntax-first when the grammar is strong and the domain is narrow. Choose joint models when both signals are weak. Modern neural models learn the joint distribution and skip the staged choice.</p>
@@ -503,7 +503,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 §11</span></p>
 <p>The broken assumption is that more training words always help. Add 100 copies of “the cat sat” to pets, and “the” piles up in pets, so every finance document containing “the” gets misclassified. Duplicated data is a silent class prior shift.</p>
 </div>
-<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-nb"><div class="tag-price"><span class="tag-big">4</span><span class="tag-unit">Nugget 4 · From the lesson C04 §6, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C04 §6, §11</div><div class="tag-eye">The lesson</div><p class="">With four documents, smoothing outvotes evidence. The “wrong” prediction is the honest one: the model tells you the data is too small.</p><p><b>Why it matters. </b>Duplicates are a silent prior shift. One hundred copies of one sentence reweight the class without adding a single new fact.</p><p><b>Transfer. </b>Choose Naive Bayes when data is tiny and you need a baseline in minutes. Choose logistic regression when you have enough data to estimate the boundary directly. Choose neural classifiers when word order matters.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
+<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-nb"><div class="tag-price"><span class="tag-big tight">4 documents</span><span class="tag-unit">smoothing outvotes evidence · From the lesson C04 §6, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C04 §6, §11</div><div class="tag-eye">The lesson</div><p class="">With four documents, smoothing outvotes evidence. The “wrong” prediction is the honest one: the model tells you the data is too small.</p><p><b>Why it matters. </b>Duplicates are a silent prior shift. One hundred copies of one sentence reweight the class without adding a single new fact.</p><p><b>Transfer. </b>Choose Naive Bayes when data is tiny and you need a baseline in minutes. Choose logistic regression when you have enough data to estimate the boundary directly. Choose neural classifiers when word order matters.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Parsing: the sentence’s skeleton" id="s5"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">5</span></div><div><p class="ch-meta"><span class="ts">Unit 5</span> · C05</p><h2>Parsing: the sentence’s skeleton</h2></div></div>
 <div class="prose-narrow">
@@ -542,7 +542,7 @@ span.ptag, .ptag {
 <div id="chart-bleu"></div>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §6</span> BLEU-2 decomposition on the toy, hand-computed in the lesson: perfect precision at both n-gram orders, then the brevity penalty (0.368) pulls the final score to 0.368. The lab recomputes it in code.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="nugget-bleu"><div class="tag-price"><span class="tag-big">5</span><span class="tag-unit">Nugget 5 · From the lesson C06 §6, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C06 §6, §11</div><div class="tag-eye">The lesson</div><p class="">Short and perfect still scores low. The brevity penalty does the real work in BLEU: without it, one correct word would beat a full sentence.</p><p><b>Why it matters. </b>Metric hacking is real. A candidate that copies the reference’s n-grams in scrambled order keeps unigram precision 1.0 while being unreadable. Systems can climb BLEU while human quality stalls.</p><p><b>Transfer. </b>Choose BLEU when you need a cheap repeatable number, chrF for morphologically rich targets, and human evaluation when the decision matters. Automatic metrics correlate with humans but do not replace them.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
+<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="nugget-bleu"><div class="tag-price"><span class="tag-big">1 correct</span><span class="tag-unit">word would beat a full sentence · From the lesson C06 §6, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C06 §6, §11</div><div class="tag-eye">The lesson</div><p class="">Short and perfect still scores low. The brevity penalty does the real work in BLEU: without it, one correct word would beat a full sentence.</p><p><b>Why it matters. </b>Metric hacking is real. A candidate that copies the reference’s n-grams in scrambled order keeps unigram precision 1.0 while being unreadable. Systems can climb BLEU while human quality stalls.</p><p><b>Transfer. </b>Choose BLEU when you need a cheap repeatable number, chrF for morphologically rich targets, and human evaluation when the decision matters. Automatic metrics correlate with humans but do not replace them.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
 <div class="toy">
 <p><span class="ptag ptag-illustration">Illustration</span> BLEU-2 calculator. The formula is C06’s. The values are yours. Prefilled with the lesson’s toy numbers.</p>
 <p>Unigram precision <input aria-label="Unigram precision" class="text" id="bleup1" value="1.0"/></p>
@@ -593,7 +593,7 @@ span.ptag, .ptag {
 <p>How can a machine learn meaning without a dictionary? In the corpus, “cat” occurs near {the, sat, on, chased, mouse} and “dog” occurs near {the, sat, on, rug, barked, at}. The neighbor sets overlap heavily. The hypothesis says: similar neighbors, similar meaning. The classic line, as the lesson states it: “You shall know a word by the company it keeps”.</p>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 §5, §6</span></p>
 <p>Similarity is cosine between cooccurrence vectors: cos(u, v) = u·v / (||u|| ||v||). High cosine means the words keep the same company. The mechanism is purely counting, and U02 replaces raw counts with learned vectors that fix the sparsity. From <code>compute_u01.py</code>: a window of width 2 around the first “cat” (position 1) gives {the: 1, sat: 1, on: 1}. Slide the window to position 2 (“sat”) and the counts become {the: 2, cat: 1, on: 1}. The count of “the” rises from 1 to 2 because the window now covers two “the” tokens.</p>
-<figure class="paint inset" data-entrance="bloom">
+<figure data-phase2="1" data-scene="u01-nlp-history-s3" class="paint inset" data-entrance="bloom">
 <div class="frame"><div class="stage"><img alt="Watercolor of two overlapping clouds of colored dots with circled overlaps" class="base" loading="lazy" src="assets/u01-distributional.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The distributional idea as watercolor: two clouds of cooccurrence dots, “cat” and “dog”, overlapping heavily. The overlap is the shared meaning. Antonyms live in the overlap too, which is the catch. Watercolor, original to this companion.</figcaption></figure>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 §11</span></p>
@@ -656,7 +656,7 @@ span.ptag, .ptag {
 <div id="chart-grades"></div>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 §6</span> Course grade weights from the inspected official site (SRC-01): assignments 48%, project 49%, participation 3%. The project outweighs all four assignments.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s12" data-sign-label="Unit" data-sign-num="12" id="nugget-progress"><div class="tag-price"><span class="tag-big">10</span><span class="tag-unit">Nugget 10 · From the lesson C12 §5, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · From the lesson C12 §5, §11</div><div class="tag-eye">The lesson</div><p class="">Progress is four mechanisms, not one genius idea: more compute, more data, better objectives, architectures that parallelize. The neural winter proves ideas alone stall.</p><p><b>Why it matters. </b>The schedule itself is the argument for order: week 1 covers history and word vectors, week 4 covers pretraining, week 5 covers post-training. You cannot understand RLHF without vectors. History is the dependency graph.</p><p><b>Transfer. </b>When a field advances, attribute the advance to its mechanism, not its mystique. If you want the next advance, buy the missing mechanism, not the missing guru.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 12</span></div></div></aside>
+<aside class="tag" data-chapter="s12" data-sign-label="Unit" data-sign-num="12" id="nugget-progress"><div class="tag-price"><span class="tag-big tight">4 mechanisms</span><span class="tag-unit">From the lesson C12 §5, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · From the lesson C12 §5, §11</div><div class="tag-eye">The lesson</div><p class="">Progress is four mechanisms, not one genius idea: more compute, more data, better objectives, architectures that parallelize. The neural winter proves ideas alone stall.</p><p><b>Why it matters. </b>The schedule itself is the argument for order: week 1 covers history and word vectors, week 4 covers pretraining, week 5 covers post-training. You cannot understand RLHF without vectors. History is the dependency graph.</p><p><b>Transfer. </b>When a field advances, attribute the advance to its mechanism, not its mystique. If you want the next advance, buy the missing mechanism, not the missing guru.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 12</span></div></div></aside>
 </section>
 
 <section class="col" id="playbook-sec">
@@ -1477,5 +1477,43 @@ runF1()
   });
 })();
 
-</script></body>
+</script><script>
+(function(){if(!window.CompanionFX)return;var FX=window.CompanionFX;
+FX.registerScene('u01-nlp-history-hero',{
+ init:function(F,FX){
+  F._m=FX.motes(F.stage,F.W,F.H,24,7);
+  F._g=FX.glows(F.stage,F.W,F.H,[[F.W*0.5,F.H*0.30,Math.min(F.W,F.H)*0.22]],'screen','#E8A94B')[0];
+ },
+ pose:function(S,FX){
+  var F=S.F;F._m.tick(S.t);
+  F._g.style.opacity=(0.20+0.10*FX.flicker(S.t,3)).toFixed(3);
+  return {'hero-subject':{x:7*Math.sin(S.t*0.6),y:5*Math.sin(S.t*0.83+1),r:0,s:1,o:1}};
+ } });
+FX.registerScene('u01-nlp-history-s2',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+FX.registerScene('u01-nlp-history-s3',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+})();
+</script>
+</body>
 </html>

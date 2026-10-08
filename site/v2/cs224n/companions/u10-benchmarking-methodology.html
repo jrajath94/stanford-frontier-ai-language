@@ -441,8 +441,8 @@ span.ptag, .ptag {
 <nav aria-label="Sections" class="small">
 <p><strong>On this page:</strong> 1 · no winner declared · 2 · the map and the territory · 3 · calibrate the instrument · 4 · an open-book exam graded closed-book · 5 · the interval is the claim · 6 · the scorer is part of the benchmark · 7 · replicate first · 8 · the mean hides the slice · 9 · name the tilt · 10 · write the contract first · 11 · kill it on paper · 12 · borrowed and built · <a href="#wisdom">wisdom index</a></p>
 </nav>
-<figure class="paint inset" data-entrance="bloom">
-<div class="frame"><div class="stage"><img alt="Watercolor illustration of an exam paper with an error bar around a grade" class="illustration base" loading="lazy" src="assets/u10-exam.jpg"/></div></div>
+<figure data-phase2="1" data-scene="u10-benchmarking-methodology-hero" class="paint inset" data-entrance="bloom">
+<div class="frame"><div class="stage"><img alt="Watercolor illustration of an exam paper with an error bar around a grade" class="illustration base" loading="lazy" src="assets/u10-exam.jpg"/><img alt="" aria-hidden="true" class="ly mul" data-obj="hero-subject" data-depth="14" loading="lazy" src="assets/u10-benchmarking-methodology-hero-layer.png" style="left:5%;top:5%;width:90%"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> Every score is a sample. The interval is the honest claim, the point is the center.</figcaption></figure>
 <section class="block col" data-chapter="1" data-title="No winner declared" id="s1"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">1</span></div><div><p class="ch-meta"><span class="ts">Unit 1</span> · C01</p><h2>No winner declared</h2></div></div>
 <div class="prose-narrow">
@@ -507,7 +507,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 §11</span></p>
 <p>The broken assumption is that overlap means memorization. Common phrases overlap without the answer leaking. The probe needs the answer-bearing spans, not any n-gram.</p>
 </div>
-<figure class="paint inset" data-entrance="sketch">
+<figure data-phase2="1" data-scene="u10-benchmarking-methodology-s2" class="paint inset" data-entrance="sketch">
 <div class="frame"><div class="stage"><img alt="Watercolor illustration of a student peeking at an open book during an exam" class="illustration base" loading="lazy" src="assets/u10-leak.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> Contamination: the model is not smarter, the test is compromised.</figcaption></figure>
 <figure>
@@ -579,7 +579,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 §11</span></p>
 <p>The broken assumption is that the mean represents the slices. The mean is a weighted lie when the weights are not your users.</p>
 </div>
-<figure class="paint inset" data-entrance="bloom">
+<figure data-phase2="1" data-scene="u10-benchmarking-methodology-s3" class="paint inset" data-entrance="bloom">
 <div class="frame"><div class="stage"><img alt="Watercolor illustration of a pie with one slice lifted out" class="illustration base" loading="lazy" src="assets/u10-slices.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The mean is a summary, the slices are the story. Cut by what matters.</figcaption></figure>
 <figure>
@@ -648,7 +648,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 §11</span></p>
 <p>The broken assumption is that a negative result is not a contribution. The rerank sweep that found nothing is a contribution if the test was fair: negative results are data.</p>
 </div>
-<aside class="tag" data-chapter="s12" data-sign-label="Unit" data-sign-num="12" id="nugget-ledger"><div class="tag-price"><span class="tag-big">10</span><span class="tag-unit">Nugget 10 · From the lesson C12 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · From the lesson C12 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Keep the ledger from day one: borrowed in one column, built in the other. One new falsifiable claim is the bar.</p><p><b>Why it matters. </b>Choose the ledger for anything public. The alternative is misconduct.</p><p><b>Transfer. </b>Label what you borrowed, name what you built. Negative results count when the test was fair.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 12</span></div></div></aside>
+<aside class="tag" data-chapter="s12" data-sign-label="Unit" data-sign-num="12" id="nugget-ledger"><div class="tag-price"><span class="tag-big">1 column</span><span class="tag-unit">built in the other · From the lesson C12 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · From the lesson C12 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Keep the ledger from day one: borrowed in one column, built in the other. One new falsifiable claim is the bar.</p><p><b>Why it matters. </b>Choose the ledger for anything public. The alternative is misconduct.</p><p><b>Transfer. </b>Label what you borrowed, name what you built. Negative results count when the test was fair.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 12</span></div></div></aside>
 <div class="toy">
 <p><span class="ptag ptag-illustration">Illustration</span> The ledger. Type what you borrowed and what you built, one per line.</p>
 <p>borrowed <textarea aria-label="Borrowed" class="text" id="lgbo" rows="3" style="width:100%">transformer
@@ -840,6 +840,39 @@ document.getElementById("scb").addEventListener("click", runScore)
 document.getElementById("lgb").addEventListener("click", runLedger)
 
 intervalChart("chart-wilson", [["78 of 100", 0.689, 0.78, 0.850, CLAY], ["780 of 1000", 0.753, 0.78, 0.805, SAGE]], 0.6, 0.9)
+/* Phase 2: Wilson-interval simulator. The two rows above are the lesson's
+   anchors at n = 100 and n = 1000; the slider recomputes the Wilson 95%
+   percent interval for the same 0.78 rate at any n, so the reader feels
+   the interval shrink as n grows. */
+;(function() {
+  const host = document.getElementById("chart-wilson")
+  if (!host) { return }
+  const ctl = el("div", "ctrl")
+  const lab = el("label", "ctl-label", "Sample size n")
+  lab.setAttribute("for", "wson")
+  const inp = el("input", "")
+  inp.type = "range"; inp.id = "wson"; inp.min = "20"; inp.max = "2000"; inp.step = "10"; inp.value = "100"
+  inp.setAttribute("aria-label", "Sample size for the Wilson interval, 20 to 2000")
+  const out = el("output", "ctl-out", "")
+  out.setAttribute("for", "wson")
+  ctl.appendChild(lab); ctl.appendChild(inp); ctl.appendChild(out)
+  host.appendChild(ctl)
+  function wilson(p, n) {
+    const z = 1.96
+    const d = 1 + z * z / n
+    const c = p + z * z / (2 * n)
+    const m = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
+    return [(c - m) / d, (c + m) / d]
+  }
+  function wShow() {
+    const n = parseInt(inp.value, 10)
+    const w = wilson(0.78, n)
+    out.textContent = "n = " + n + ": 95% interval [" + w[0].toFixed(3) + ", " + w[1].toFixed(3) +
+      "], width " + (w[1] - w[0]).toFixed(3)
+  }
+  inp.addEventListener("input", wShow)
+  wShow()
+})()
 barChart("chart-rel", [["stated", 0.80, INDIGO], ["observed", 0.67, CLAY]], 0.85, "")
 barChart("chart-contam", [["reported", 0.75, CLAY], ["clean-only", 0.70, SAGE]], 0.78, "")
 barChart("chart-format", [["exact match", 0.78, CLAY], ["normalized", 0.90, SAGE]], 0.95, "")
@@ -1504,5 +1537,43 @@ barChart("chart-bias", [["unblinded", 0.62, CLAY], ["blinded", 0.53, SAGE]], 0.6
   });
 })();
 
-</script></body>
+</script><script>
+(function(){if(!window.CompanionFX)return;var FX=window.CompanionFX;
+FX.registerScene('u10-benchmarking-methodology-hero',{
+ init:function(F,FX){
+  F._m=FX.motes(F.stage,F.W,F.H,24,7);
+  F._g=FX.glows(F.stage,F.W,F.H,[[F.W*0.5,F.H*0.30,Math.min(F.W,F.H)*0.22]],'screen','#E8A94B')[0];
+ },
+ pose:function(S,FX){
+  var F=S.F;F._m.tick(S.t);
+  F._g.style.opacity=(0.20+0.10*FX.flicker(S.t,3)).toFixed(3);
+  return {'hero-subject':{x:7*Math.sin(S.t*0.6),y:5*Math.sin(S.t*0.83+1),r:0,s:1,o:1}};
+ } });
+FX.registerScene('u10-benchmarking-methodology-s2',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+FX.registerScene('u10-benchmarking-methodology-s3',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+})();
+</script>
+</body>
 </html>

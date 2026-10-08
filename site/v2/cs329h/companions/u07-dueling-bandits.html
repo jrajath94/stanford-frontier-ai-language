@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U07 Companion: Acquisition, Thompson sampling, and dueling bandits · CS329H</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:900px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband a{color:var(--paper)}
+header.hero{padding:52px 0 6px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:660px}
+.notice{border:1px solid var(--line)}
+.notice{background:var(--paper2)}
+.notice{border-radius:10px}
+.notice{padding:16px 20px}
+.notice{margin:26px 0}
+.notice{font-size:16px}
+.notice p{margin:.45em 0}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:16px 20px}
+.legend{margin:26px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-interp{background:transparent}
+.tag-interp{color:var(--indigo)}
+.tag-interp{border:1.5px solid var(--indigo)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+section.block{padding:34px 0 10px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.12em}
+.secnum{text-transform:uppercase}
+.secnum{color:var(--clay)}
+.secnum{margin:0 0 4px}
+h2{font-size:32px}
+h2{line-height:1.2}
+h2{margin:.1em 0 .5em}
+h3{font-size:22px}
+h3{margin:1.2em 0 .4em}
+.prose-narrow{max-width:720px}
+figure{margin:28px 0}
+figure{background:#fff}
+figure{border:1px solid var(--line)}
+figure{border-radius:10px}
+figure{padding:18px 18px 8px}
+figcaption{font-size:15px}
+figcaption{color:var(--muted)}
+figcaption{padding:10px 4px 12px}
+figcaption{line-height:1.55}
+img.illus{width:100%}
+img.illus{border-radius:8px}
+img.illus{display:block}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:5px solid var(--clay)}
+.nugget{background:#fff}
+.nugget{border-radius:8px}
+.nugget{padding:18px 22px}
+.nugget{margin:30px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:14px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:20px}
+.nugget .big{line-height:1.5}
+.nugget .big{margin:.2em 0 .6em}
+.nugget dl{margin:0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{margin:10px 0 2px}
+.nugget dd{margin:0 0 6px}
+.nugget dd{font-size:16.5px}
+.lab{border:1px dashed var(--amber)}
+.lab{background:var(--ambersoft)}
+.lab{border-radius:10px}
+.lab{padding:18px 22px}
+.lab{margin:28px 0}
+.toy{border:1px solid var(--indigo)}
+.toy{background:var(--indigosoft)}
+.toy{border-radius:10px}
+.toy{padding:18px 22px}
+.toy{margin:28px 0}
+.toy input[type=number]{width:64px}
+.toy input[type=number]{font-family:var(--mono)}
+.toy input[type=number]{font-size:15px}
+.toy input[type=number]{padding:4px 6px}
+.toy input[type=number]{margin:2px 6px 2px 2px}
+.toy label{font-family:var(--sans)}
+.toy label{font-size:14px}
+.btn{font-family:var(--sans)}
+.btn{font-size:15px}
+.btn{background:var(--ink)}
+.btn{color:var(--paper)}
+.btn{border:none}
+.btn{border-radius:8px}
+.btn{padding:10px 18px}
+.btn{cursor:pointer}
+.btn{margin:8px 8px 8px 0}
+.btn.ghost{background:transparent}
+.btn.ghost{color:var(--ink)}
+.btn.ghost{border:1.5px solid var(--ink)}
+table.data{border-collapse:collapse}
+table.data{margin:14px 0}
+table.data{font-size:16px}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.06em}
+table.data th{text-align:left}
+table.data th{padding:8px 14px 8px 0}
+table.data td{padding:8px 14px 8px 0}
+table.data td{border-top:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+code{font-family:var(--mono)}
+code{font-size:.88em}
+code{background:var(--paper2)}
+code{padding:1px 6px}
+code{border-radius:5px}
+.wisdom ol{padding-left:22px}
+.wisdom li{margin:10px 0}
+.wisdom a{color:var(--clay)}
+footer{background:var(--ink)}
+footer{color:var(--paper)}
+footer{margin-top:56px}
+footer{padding:40px 0 60px}
+footer p{font-size:15.5px}
+footer{line-height:1.6}
+footer code{background:rgba(255,255,255,.12)}
+footer a{color:var(--paper)}
+.backlink{font-family:var(--sans)}
+.backlink{font-size:15px}
+.backlink{margin:34px 0 0}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CS329H · Stanford · Interactive companion · <a href="../index.html">course index</a></div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">U07 · Acquisition, Thompson sampling, and dueling bandits</p>
+<h1>Explore by sampling, duel by comparing</h1>
+<p class="dek">How do we act under uncertainty without a hand-tuned exploration knob? Sample a world from the posterior and act as if it were true. Score candidate queries by expected usefulness. And when feedback is only a win or a loss, duel. This unit builds Thompson sampling, acquisition functions, and the dueling bandit.</p>
+</header>
+<figure>
+<img class="illus" src="assets/u07-regret.jpg" alt="Watercolor of three paths up a hill, one straight, one meandering, one circling">
+<figcaption><span class="tag tag-toy">Illustration</span> Three policies as watercolor. One path climbs straight, one meanders, one circles the bottom. The regret curves tell which is which. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="notice">
+<p><strong>Sourcing.</strong> No full transcript exists for sessions S12 and S13. This companion narrates <code>content/v2/cs329h/lessons/u07_lesson.md</code>. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<p><strong>Lesson inconsistencies disclosed.</strong> In C07 the lesson's Contract 5 leaves the Copeland scores as an unresolved placeholder while its Contract 6 reports 0.718, 0.603, 0.452, 0.226. In C10 the lesson's Contracts 2 and 8 leave the stopping round as a placeholder while Contract 6 reports round 43. Both are stated as written. The reported numbers are used on this page.</p>
+<p><strong>How to read the tags.</strong> Every number carries its lesson section. Anything the companion computes is tagged <span class="tag tag-toy">Illustration</span>. A <span class="tag tag-interp">Interpretation</span> tag marks the companion's own reading of the lesson. Where the lesson leaves a value out, the page says so in words.</p>
+</div>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> A fact, number, or mechanism from the lesson.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-interp">Interpretation</span> The companion's reading of why a lesson fact matters. The fact is the lesson's, the gloss is ours.</p>
+<p><span class="tag-ref">C01 · Contract 6</span> Points to the exact lesson section behind a claim or number.</p>
+</div>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">Sample and act</a>
+<a href="#s2">Promises and budgets</a>
+<a href="#s3">Duels not scores</a>
+<a href="#s4">Search and stop</a>
+<a href="#wisdom">Wisdom index</a>
+<a href="#provenance">Provenance</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01, C02, C03</p>
+<h2>Sample a world, act in it</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 5, 6</span></p>
+<p>Thompson sampling turns a posterior into actions. Sample a world from the posterior, then act as if the sample were true. Uncertainty becomes exploration automatically: arms that might be best get pulled in proportion to their chance of being best. That is probability matching: P(pull a) = P(a is optimal | data). No epsilon to tune. The lesson toy: 3-arm Bernoulli with Beta posteriors (8,3), (4,4), (2,6). P(arm 1 is best) = 0.850 from 20000 samples at seed 0. TS pulls arm 1 about that often. Lesson figure u07_f01 draws the loop.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 5, 6</span></p>
+<p>Every pull both earns and teaches. The lesson runs three policies on 3-arm Bernoulli [0.7, 0.5, 0.4], T = 300, seed 23: Thompson sampling ends at regret 4.0, epsilon-greedy (0.1) at 5.2, greedy at 89.6. Greedy locks onto an early lucky arm and pays linearly. Epsilon-greedy pays a constant exploration tax. TS explores in proportion to uncertainty and the regret grows sublinearly. Lesson figure u07_f02 draws the three curves.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Final regrets: TS 4.0, epsilon-greedy 5.2, greedy 89.6">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Greedy pays the lock-in tax</text>
+<g><title>TS: 4.0</title><rect x="80" y="228" width="120" height="12" fill="#5d7050" rx="4"/><text x="140" y="220" text-anchor="middle" font-size="14" font-family="Georgia">4.0</text><text x="140" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">TS</text></g>
+<g><title>Epsilon-greedy: 5.2</title><rect x="280" y="224" width="120" height="16" fill="#31405e" rx="4"/><text x="340" y="216" text-anchor="middle" font-size="14" font-family="Georgia">5.2</text><text x="340" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">eps-greedy</text></g>
+<g><title>Greedy: 89.6</title><rect x="480" y="60" width="120" height="180" fill="#a94f27" rx="4"/><text x="540" y="52" text-anchor="middle" font-size="14" font-family="Georgia">89.6</text><text x="540" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">greedy</text></g>
+<text x="320" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">cumulative regret at T = 300, seed 23</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 6</span> Same numbers as lesson figure u07_f02. The ordering is seed-dependent: greedy wins on a lucky seed. Replicate across seeds before claiming.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 5, 6</span></p>
+<p>An acquisition function turns the posterior into a shopping list. UCB is optimistic: mu + k sd. EI is the expected gain over the best so far. PI is the chance of any gain. The lesson toy: f_best = 1.0, candidates (mu 1.2, sd 0.1), (mu 0.9, sd 0.5), (mu 0.5, sd 0.8). Computed: UCB at k = 2 gives 1.40, 1.90, 2.10. EI gives 0.201, 0.153, 0.130. PI gives 0.977, 0.421, 0.266. The three rules rank differently: UCB picks candidate 3, EI picks candidate 1. Lesson figure u07_f03 draws the three curves with markers.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u07-curve.jpg" alt="Watercolor of a magnifying glass over a rising curve">
+<figcaption><span class="tag tag-toy">Illustration</span> The acquisition as watercolor. The glass scores each point on the curve. Optimism, expected gain, and chance of gain point at different peaks. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The acquisition toy. Move k and the browser recomputes UCB for the lesson's three candidates. EI and PI follow the closed forms.</p>
+<p><label>k <input type="range" id="ack" min="0" max="4" step="0.5" value="2"></label> <code id="ackv">2.0</code></p>
+<p class="small" id="acout">Scores appear here.</p>
+<p class="small muted"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 6</span> At k = 2 the readout must show UCB 1.40, 1.90, 2.10 and EI 0.201, 0.153, 0.130 with PI 0.977, 0.421, 0.266.</p>
+</div>
+<div class="nugget" id="nugget-matching">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 7</span></h4>
+<p class="big">Probability matching: pull each arm in proportion to its chance of being best. P(arm 1 best) = 0.850, so arm 1 gets about 85 percent of pulls.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Exploration falls out of the posterior with no tuning knob. The only requirement is a posterior you can sample.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Clinical trials. Assign patients to treatments in proportion to each treatment's chance of being best. Ethics and learning agree.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-lockin">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 7</span></h4>
+<p class="big">Greedy regret 89.6 against TS 4.0. The lock-in tax is the price of never exploring.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Greedy looks efficient: it always pulls the current best. The 89.6 is what that efficiency costs when the current best is wrong.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A new city. Eating at the first good restaurant every night is greedy. The 89.6 is every better meal you never found.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-rank">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 7</span></h4>
+<p class="big">UCB picks candidate 3, EI picks candidate 1. The acquisition function is a choice about what exploration means.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>There is no neutral way to score a candidate query. Optimism, expected gain, and chance of gain are three different bets.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choosing the next lab experiment. UCB runs the wild idea, EI refines the leader. Name which game you play.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C04, C11, C12</p>
+<h2>The price of promises</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 5, 6</span></p>
+<p>Regret bounds are promises under assumptions: stationary rewards, bounded noise, a well-specified model. The lesson draws sqrt(T) against linear at T = 1000: 31.6 against 1000 on the unit scale. The sqrt(T) rate says average regret per round goes to zero: the policy learns. Linear says it does not. Break an assumption and the promise voids: the best arm flipping every 100 rounds makes measured regret linear despite the guarantee. Lesson figure u07_f04 draws both curves with the assumption panel.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 280" role="img" aria-label="sqrt(T) reaches 31.6 while linear reaches 1000 at T=1000">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The promise and its fine print</text>
+<polyline points="60,230 200,205 340,188 480,175 580,168" fill="none" stroke="#5d7050" stroke-width="2.5"/>
+<polyline points="60,230 200,185 340,140 480,95 580,60" fill="none" stroke="#a94f27" stroke-width="2.5"/>
+<text x="560" y="158" font-size="13" font-family="Georgia" fill="#5d7050">sqrt(T): 31.6</text>
+<text x="560" y="50" font-size="13" font-family="Georgia" fill="#a94f27">linear: 1000</text>
+<text x="320" y="262" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">T = 1000, unit scale: the rates, not the constants, are the point</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 6</span> Same numbers as lesson figure u07_f04. The assumptions are the fine print: stationarity, bounded noise, well-specified model.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 5, 6</span></p>
+<p>The compute budget decides the algorithm. The lesson's cost table: Beta-Bernoulli TS costs order k = 4 operations per round. A GP surrogate refit costs order n^3: at n = 200 duels that is 8,000,000 flops. Orders of magnitude apart. Cheap posteriors allow TS. Expensive ones force UCB-on-a-surrogate or random. The budget is a design constraint, not an afterthought.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 3, 5, 6</span></p>
+<p>A fair comparison fixes the world and varies only the policy: same bandit, T = 300, 20 seeds, metric cumulative regret, report mean plus or minus 1.96 standard errors. The lesson's protocol arithmetic: TS mean regret 12.3 with sd 4.0 gives se = 4.0/sqrt(20) = 0.894 and CI [10.5, 14.1]. Anything less is a demo, not an experiment. The values are labeled hypothetical protocol arithmetic in the lesson.</p>
+</div>
+<div class="nugget" id="nugget-promise">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 7</span></h4>
+<p class="big">sqrt(T) against linear at T = 1000: 31.6 against 1000. The bound is a promise, the assumptions are the fine print.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The guarantee voids the moment the world drifts. A non-stationary world makes measured regret linear no matter what the theorem says.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A warranty. The promise covers the listed conditions. Read the panel before you rely on it.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-budget">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 7</span></h4>
+<p class="big">8,000,000 flops against 4 operations per round. The compute budget picks the algorithm before the theory does.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The elegant method you cannot afford per round is not your method. Budget is a design constraint, not an afterthought.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A phone app. The model that needs a server farm per decision does not ship. The budget chose.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C05, C06, C07, C09</p>
+<h2>Duels, not scores</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 5, 6</span></p>
+<p>Dueling feedback is one bit per duel: we see who wins, never a score. The Bradley-Terry model turns strengths into win probabilities: P(i beats j) = sigma(s_i - s_j). The lesson toy: 4 arms with strengths [1.2, 0.8, 0.3, -0.5]. P(arm 1 beats arm 2) = sigma(0.4) = 0.599. P(arm 1 beats arm 4) = sigma(1.7) = 0.846. The matrix is skew-symmetric in logit space: W_ji = 1 - W_ij. Lesson figure u07_f05 draws the full matrix.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u07-duel.jpg" alt="Watercolor of two fencers crossing epees">
+<figcaption><span class="tag tag-toy">Illustration</span> The duel as watercolor. One bit per crossing of blades. The strengths are invisible. Only the winner is seen. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 3, 5, 6</span></p>
+<p>Uncertainty about strengths widens win probabilities toward 0.5. The winner probability averages the BT formula over the posterior: E[sigma(s_i - s_j)]. Jensen's inequality bites: the average of the sigmoid is not the sigmoid of the average. The lesson toy at seed 0, 2000 samples: plug-in P(1 beats 2) = 0.599, posterior-averaged = 0.5930. Plug-in P(1 beats 4) = 0.846, averaged = 0.8360. The plug-in is fast and overconfident. Lesson figure u07_f06 shows both matrices.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 5, 6</span></p>
+<p>A dueling bandit picks two arms per round and observes the winner. The goal is the Copeland winner: the arm that beats the most others, C_i = mean over j of P(i beats j). On the toy the strengths are ordered, so arm 1 beats all pairwise and its Copeland score is highest: 0.718, 0.603, 0.452, 0.226. Strong regret counts rounds where neither duelist is the winner. The lesson's Contract 5 leaves these scores as a placeholder while Contract 6 reports them. Both are stated as written. Lesson figure u07_f07 draws the bars.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Copeland scores 0.718, 0.603, 0.452, 0.226">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The arm that beats the most others</text>
+<g><title>Arm 1: 0.718</title><rect x="80" y="100" width="120" height="140" fill="#31405e" rx="4"/><text x="140" y="92" text-anchor="middle" font-size="14" font-family="Georgia">0.718</text><text x="140" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">arm 1</text></g>
+<g><title>Arm 2: 0.603</title><rect x="240" y="118" width="120" height="122" fill="#31405e" rx="4"/><text x="300" y="110" text-anchor="middle" font-size="14" font-family="Georgia">0.603</text><text x="300" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">arm 2</text></g>
+<g><title>Arm 3: 0.452</title><rect x="400" y="140" width="120" height="100" fill="#5d7050" rx="4"/><text x="460" y="132" text-anchor="middle" font-size="14" font-family="Georgia">0.452</text><text x="460" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">arm 3</text></g>
+<g><title>Arm 4: 0.226</title><rect x="540" y="172" width="60" height="68" fill="#a94f27" rx="4"/><text x="570" y="164" text-anchor="middle" font-size="14" font-family="Georgia">0.226</text><text x="570" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">arm 4</text></g>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 6</span> Same numbers as lesson figure u07_f07. With rock-paper-scissors strengths there is no Condorcet winner: Copeland still ranks, but the best arm is ill-defined.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5, 6</span></p>
+<p>Noise sets the irreducible error. With Gumbel noise, P(i beats j) = sigma(u_i - u_j) exactly. The lesson toy: gap 0.4 gives single-duel P = 0.599. A majority vote over 9 duels raises it to 0.731 by the binomial tail. More duels average the noise out at 1/sqrt(n), but the noise never vanishes: even the true best arm loses sometimes.</p>
+</div>
+<div class="nugget" id="nugget-bit">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 7</span></h4>
+<p class="big">One bit per duel. The Bradley-Terry model turns strengths into win probabilities, and the matrix is skew-symmetric in logit space.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Humans compare better than they score. The duel is the query format that matches the rater, and BT is the model that reads it.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Chess Elo. Nobody scores a game 0.73. They win, lose, or draw, and the rating reads the bits.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-jensen">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 3, 7</span></h4>
+<p class="big">E[sigma] is not sigma(E). Uncertainty pulls win probabilities toward 0.5: 0.599 becomes 0.5930, 0.846 becomes 0.8360.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The plug-in estimate is fast and overconfident. Averaging over the posterior is the honest probability, and it is always closer to a coin flip.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Election forecasts. The point estimate says 60 percent. The honest forecast, averaged over uncertainty, says less.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C08, C10</p>
+<h2>Search and stop</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 5, 6</span></p>
+<p>Preferential Bayesian optimization optimizes a function it can only compare, never evaluate. The loop: fit a surrogate to pairwise comparisons, pick the next duel by acquisition, repeat. The lesson toy: f(x) = -40(x-0.7)^2 on [0,1], 11-point grid, 20 duel rounds, seed 0. The acquisition duels the Copeland leader against the least-tried challenger. Best-so-far true f rises from -19.600 to -1.600 against a true optimum of 0.0. Lesson figure u07_f08 draws the rising curve.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5, 6</span></p>
+<p>A stopping rule converts uncertainty into a decision. Rule A: stop when the max posterior winner probability crosses 1 - delta. Rule B: stop at N_max rounds, whichever comes first. The lesson toy at seed 2 with leader-focused duels: P(arm 1 is the Copeland winner) crosses 0.95 at round 43, and the budget of 300 never binds. The lesson's Contracts 2 and 8 leave the round as a placeholder while Contract 6 reports 43. Both are stated as written. Without rule B, a misspecified model can query forever.</p>
+</div>
+<div class="nugget" id="nugget-stop">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 7</span></h4>
+<p class="big">Stop at 0.95 confidence or at the budget, whichever comes first. The toy stops at round 43. The budget of 300 never binds.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Rule A controls the error rate, rule B controls the cost. A stopping rule with only one of them is half a rule: confidence without a budget can query forever under misspecification.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Interviewing candidates. Stop when one candidate is clearly ahead, or when the interview budget runs out. Whichever comes first.</dd>
+</dl>
+</div>
+</section>
+<section class="block wisdom" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Eight nuggets, indexed</h2>
+<ol>
+<li><a href="#nugget-matching">Probability matching.</a> Pull in proportion to the chance of being best.</li>
+<li><a href="#nugget-lockin">Greedy pays the lock-in tax.</a> 89.6 against 4.0.</li>
+<li><a href="#nugget-rank">The acquisition is a choice.</a> UCB and EI rank differently.</li>
+<li><a href="#nugget-promise">The bound is a promise.</a> The assumptions are the fine print.</li>
+<li><a href="#nugget-budget">The budget picks the algorithm.</a> 8,000,000 against 4.</li>
+<li><a href="#nugget-bit">One bit per duel.</a> BT reads the bits.</li>
+<li><a href="#nugget-jensen">E[sigma] is not sigma(E).</a> Uncertainty pulls toward 0.5.</li>
+<li><a href="#nugget-stop">Stop on confidence or budget.</a> Round 43 in the toy.</li>
+</ol>
+<p class="backlink"><a href="../index.html">Back to the CS329H course index</a></p>
+</section>
+</div>
+<footer id="provenance"><div class="wrap">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cs329h/lessons/u07_lesson.md</code>. No full lecture transcript exists for S12 and S13, and no lecture anecdotes appear. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING. Quoted words from the lesson source: 0, counted by <code>companions/tools/quote_recount.py</code> with the blockquote plus quoted-phrase method, footer excluded. Lesson figures u07_f01 through u07_f08 are referenced where the lesson places them. The charts on this page re-plot the lesson's computed toy numbers with concept and contract citations. The acquisition toy evaluates the lesson's C03 closed forms in the browser. Two internal inconsistencies are disclosed above: the C07 score placeholder beside its reported scores, and the C10 round placeholder beside round 43. No official source video is on record for this session, so no embed appears. The three watercolors are original illustrations made for this companion.</p>
+</div></footer>
+<script>
+function phi(z){
+var t=1/(1+0.2316419*Math.abs(z))
+var d=0.3989423*Math.exp(-z*z/2)
+var p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274))))
+if(z>0){p=1-p}
+return p
+}
+function updAc(){
+var k=parseFloat(document.getElementById("ack").value)
+document.getElementById("ackv").textContent=k.toFixed(1)
+var fb=1.0
+var cands=[[1.2,0.1],[0.9,0.5],[0.5,0.8]]
+var out=cands.map(function(c,i){
+var mu=c[0]
+var sd=c[1]
+var ucb=mu+k*sd
+var z=(mu-fb)/sd
+var ph=phi(z)
+var pd=0.3989423*Math.exp(-z*z/2)
+var ei=sd*(z*ph+pd)
+return "c"+(i+1)+": UCB "+ucb.toFixed(2)+", EI "+ei.toFixed(3)+", PI "+ph.toFixed(3)
+})
+document.getElementById("acout").textContent=out.join(" | ")
+}
+document.getElementById("ack").addEventListener("input",updAc)
+updAc()
+</script>
+</body>
+
+</html>

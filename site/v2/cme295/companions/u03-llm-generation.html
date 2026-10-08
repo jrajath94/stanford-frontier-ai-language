@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U03 · LLM architecture and generation: Interactive companion</title>
+<style>
+:root{--ink:#1c1a17}
+:root{--paper:#faf7f0}
+:root{--paper2:#f3eee2}
+:root{--line:#ddd3bd}
+:root{--muted:#7a7160}
+:root{--clay:#b3541e}
+:root{--indigo:#2f4b8f}
+:root{--indigosoft:#e8edfb}
+:root{--sage:#4f7a52}
+:root{--sagesoft:#e6f0e6}
+:root{--amber:#a97b12}
+:root{--serif:"Iowan Old Style",Georgia,"Times New Roman",serif}
+:root{--sans:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+:root{--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:19px}
+body{line-height:1.62}
+.wrap{max-width:860px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband{padding:10px 0}
+.topband .wrap{padding:0 24px}
+header.hero{padding:52px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+.kicker{margin:0 0 10px}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:0 0 14px}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{line-height:1.5}
+.dek{color:#3d382e}
+.dek{max-width:680px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll{max-width:860px}
+.navscroll{margin:0 auto}
+.navscroll{padding-left:24px}
+.navscroll{padding-right:24px}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-family:var(--sans)}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:26px 0}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+figcaption{font-size:16px}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+img.lessonfig{width:100%}
+img.lessonfig{border-radius:10px}
+img.lessonfig{border:1px solid var(--line)}
+img.lessonfig{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 60px}
+footer.prov{font-size:16px}
+footer.prov{color:#3d382e}
+footer.prov p{margin:.7em 0}
+.small{font-size:15px}
+.capleft{text-align:left}
+.capleft{padding-bottom:8px}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CME295 · Transformers and Large Language Models · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">Unit 03 · LLM architecture and generation</p>
+<h1>The loop, the dials, and the steering wheel</h1>
+<p class="dek">Twelve concepts turn a transformer into a language model and then into a controllable one: the definition triple, MoE, context stretching, temperature, top-k and top-p, greedy versus sampling, prompting, in-context learning, demonstration selection, chain of thought, self-consistency, and the limits of evaluation. Every number below comes from the lesson.</p>
+</header>
+<div class="legend">
+<p><strong>How to read this page.</strong> Three tags separate fact from invention.</p>
+<p><span class="tag tag-lesson">From the lesson</span> A claim, number, or figure that appears in the lesson source, with its section cited.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with values you supply, or a what-if. Never lesson content.</p>
+<p><span class="tag tag-companion">Companion</span> Editorial framing or a transferable principle. The lesson did not say it this way.</p>
+</div>
+</div>
+<nav class="sticky"><div class="navscroll">
+<a href="#s1">1 Definition</a>
+<a href="#s2">2 MoE</a>
+<a href="#s3">3 Context</a>
+<a href="#s4">4 Temperature</a>
+<a href="#s5">5 Top-k/p</a>
+<a href="#s6">6 Greedy</a>
+<a href="#s7">7 Prompting</a>
+<a href="#s8">8 ICL</a>
+<a href="#s9">9 Demos</a>
+<a href="#s10">10 CoT</a>
+<a href="#s11">11 Voting</a>
+<a href="#s12">12 Eval limits</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<div class="wrap">
+<figure>
+<img class="illus" src="assets/u03-hero.webp" alt="Watercolor of paper cards feeding into a small brass machine with a dial, emitting a growing ribbon">
+<figcaption><span class="tag tag-toy">Illustration</span> The unit in one image: the generate loop. Cards in, one card out, the ribbon grows. Watercolor, original to this companion.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>An LLM is a triple plus a loop</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 2-6</span></p>
+<p>What exactly is the object when someone says the model? The lesson defines it without hype: weights W (numbers), tokenizer T (the string to id map), config C (d, L, h, T_max). The LLM is the triple (W, T, C) plus the sampling code. Nothing more. The runtime is one loop: text to ids (T), forward pass (W, C), logits, sample, ids, text (T). Every LLM application is this loop with different conditioners (prompts) and samplers.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 4, 6</span></p>
+<p>The toy triple: V = 32000, d = 4096, L = 32. Weights in fp16 run about 12 times d^2 times L: 12 times 4096^2 times 32, about 6.4e9 parameters, about 13 GB. The tokenizer table is kilobytes. W holds roughly 1e9 to 1e12 floats in real models, V runs 32k to 200k. Large is about the triple's size, not about understanding. Capabilities are measured, not defined.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of the triple: weights 13 GB versus tokenizer kilobytes">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">The triple, toy (C01 item 6)</text>
+<rect x="150" y="70" width="140" height="180" fill="#b3541e" rx="4"/>
+<rect x="380" y="240" width="140" height="10" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="220" y="60">6.4e9 params, 13 GB</text>
+<text x="450" y="230">kilobytes</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="220" y="270">W, fp16</text>
+<text x="450" y="270">T, table</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">C sets the shape. The loop is the entire runtime.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 item 6</span> The lesson's toy arithmetic. Swap the tokenizer and keep W, and perplexity explodes: the triple must match.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 item 11</span></p>
+<p>The name guarantees nothing. Two triples with the same architecture and size but different data behave differently. LLM names the shape, not the skills.</p>
+</div>
+<div class="nugget" id="w1">
+<h4>Nugget 01 · Name the triple</h4>
+<p class="big">Weights, tokenizer, config, plus sampling code. That is the whole object. Everything else is measured behavior.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson replaces hype with an operational definition, prices the toy triple at 6.4e9 parameters and 13 GB, and writes the eight-line generate loop.</dd>
+<dt>Why it matters</dt><dd>Confusing the label with the capability is the root of most LLM arguments. The definition tells you what it is. Only measurement tells you what it does.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Define the object before you debate its powers. A crisp definition plus honest measurement beats a grand name every time.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>MoE: most weights sleep per token</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 2-5</span></p>
+<p>Capacity costs compute. Can most weights sleep per token? The toy: 8 experts, top-2 routing. Each token wakes 2 of 8 FFNs. The other 6 cost nothing. The router is a bouncer with a guest list of 2: g = softmax(x W_g), keep the top k gates, renormalize, output the weighted sum of the chosen experts. Capacity (total parameters) grows while active compute stays flat at about k/E of dense.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 5-6</span></p>
+<p>Without balancing, the router collapses: one expert gets everything, the rich get richer since chosen experts train faster. The aux loss penalizes the product of the fraction of tokens routed to expert i and the mean gate value: L_aux = E times sum of f_i times P_i, added with a small coefficient. The toy (seed 11, E = 8, d = 16, k = 2) gives gates [0.030, 0.112, 0.087, 0.202, 0.431, 0.086, 0.028, 0.024]. Experts E4 and E3 win, renormalized to [0.681, 0.319]. MoE output norm 2.746 vs dense (all experts) 1.838. The lesson cites Mixtral 8x7B as a public model example: 8 experts, top-2.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 340" role="img" aria-label="Bar chart of router gates with experts E4 and E3 selected">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Router gates, E = 8, top-2 (C02 item 6)</text>
+<g font-family="monospace" font-size="12" text-anchor="middle">
+<rect x="60" y="250" width="60" height="20" fill="#2f4b8f"/><text x="90" y="242" fill="#1c1a17">.030</text>
+<rect x="140" y="210" width="60" height="60" fill="#2f4b8f"/><text x="170" y="202" fill="#1c1a17">.112</text>
+<rect x="220" y="222" width="60" height="48" fill="#2f4b8f"/><text x="250" y="214" fill="#1c1a17">.087</text>
+<rect x="300" y="160" width="60" height="110" fill="#b3541e"/><text x="330" y="152" fill="#1c1a17">.202</text>
+<rect x="380" y="70" width="60" height="200" fill="#b3541e"/><text x="410" y="62" fill="#1c1a17">.431</text>
+<rect x="460" y="222" width="60" height="48" fill="#2f4b8f"/><text x="490" y="214" fill="#1c1a17">.086</text>
+<rect x="540" y="252" width="60" height="18" fill="#2f4b8f"/><text x="570" y="244" fill="#1c1a17">.028</text>
+<rect x="620" y="254" width="60" height="16" fill="#2f4b8f" transform="translate(-40,0)"/><text x="610" y="246" fill="#1c1a17">.024</text>
+</g>
+<g font-family="sans-serif" font-size="12" fill="#7a7160" text-anchor="middle">
+<text x="90" y="290">E0</text><text x="170" y="290">E1</text><text x="250" y="290">E2</text><text x="330" y="290">E3</text><text x="410" y="290">E4</text><text x="490" y="290">E5</text><text x="570" y="290">E6</text><text x="610" y="290">E7</text>
+</g>
+<text x="350" y="316" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Clay bars win: 0.431 and 0.202 renormalize to 0.681 and 0.319. Six experts sleep.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 6</span> The lesson's computed gates. Check: exactly k experts active, weights sum to 1, usage within 2x of uniform.</figcaption>
+</figure>
+<figure>
+<img class="lessonfig" src="../assets/u03_fig03.png" alt="Plate showing a token routed to 2 of 8 experts and the weighted expert sum">
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 15, figure u03_fig03</span> The lesson's own plate: one rule (route to 2 of 8), before (token plus router), after (weighted expert sum). Numbers from the lesson's render script.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 4, 7</span> Routing bench: top-k renormalization on your gates.</p>
+<p><input class="text" id="moeg" type="text" value="0.030, 0.112, 0.087, 0.202, 0.431, 0.086, 0.028, 0.024" aria-label="comma separated gate values"> <input class="text" id="moek" type="number" value="2" min="1" max="8" aria-label="k"> <button class="btn" id="moebtn">Route top-k</button></p>
+<div class="chips" id="moeout"></div>
+<p class="small muted">Reproduce the lesson: the defaults give E4 and E3 at 0.681 and 0.319. Then try k = 1 and watch the active fraction fall to 1/8.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 11</span></p>
+<p>Experts do not specialize on their own. Without the aux loss, or with a bad coefficient, experts stay redundant and the model is a slow dense net. Specialization is enforced, not emergent.</p>
+</div>
+<div class="nugget" id="w2">
+<h4>Nugget 02 · Enforce the balance</h4>
+<p class="big">Top-k routing buys capacity at flat compute, but only the aux loss keeps the experts honest. Without it the router collapses to one expert.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the routing equation, derives the aux loss, and runs the toy: E4 and E3 chosen at 0.681 and 0.319.</dd>
+<dt>Why it matters</dt><dd>Emergence is the hope. The loss is the mechanism. If one expert takes over half the tokens, the aux coefficient is too small. That check is the whole operations manual.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Whenever a system routes work to workers, watch the load distribution. The router optimizes its own objective, which is rarely yours.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Context length: the position fix is easy, the memory is the wall</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 2-6</span></p>
+<p>The model trained at 4k tokens. The task needs 128k. What breaks? Three costs: memory (T^2 scores, T cache), compute (T^2 d), and position codes (unseen RoPE angles at position 100000 with base 10000). Position interpolation maps position m to m/s for stretch factor s: s = 32 stretches 4k to 128k. Every angle stays inside the trained range, at the cost of local resolution. NTK-aware variants scale the base instead, preserving high-frequency detail. A short fine-tune on long documents teaches the model the new scale.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 6</span></p>
+<p>The wall is memory. Attention scores at T = 128k, d = 4096, h = 32, fp16: 32 times 128k^2 times 2 bytes = 1 TB per layer. The position fix is the easy part. That number is why long context needs kernels, not just interpolation.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart showing score memory exploding from 4k to 128k context">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Score memory per layer, h = 32, fp16 (C03 item 6)</text>
+<rect x="150" y="248" width="120" height="6" fill="#2f4b8f"/>
+<rect x="430" y="70" width="120" height="184" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="210" y="238">~1 GB</text>
+<text x="490" y="60">1 TB</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="210" y="270">T = 4k</text>
+<text x="490" y="270">T = 128k</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">32x the length, 1024x the scores. Interpolation fixes angles, not bytes.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 6</span> The lesson's headline number. The lab asks for T = 32768, h = 8, fp16: 16 GiB per layer.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 6</span> Memory wall bench: score bytes per layer on your T, h, and dtype.</p>
+<p><input class="text" id="mmt" type="number" value="131072" min="1024" max="10000000" aria-label="T"> <input class="text" id="mmh" type="number" value="32" min="1" max="128" aria-label="h"> <button class="btn" id="mmbtn">Compute score memory</button></p>
+<div class="chips" id="mmout"></div>
+<p class="small muted">Reproduce the lesson: T = 131072, h = 32 gives 1 TB. Then try the lab: T = 32768, h = 8 gives 16 GiB.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 11</span></p>
+<p>Stretched context does not reason like trained context. Lost in the middle: models use the start and end of long contexts better than the middle. Length is not comprehension.</p>
+</div>
+<div class="nugget" id="w3">
+<h4>Nugget 03 · Length is not comprehension</h4>
+<p class="big">Interpolation stretches the ruler to 128k. The 1 TB of scores is the real wall, and even past it the model reads the middle worst.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson names the triple constraint (memory, compute, positions), derives interpolation, and prices 128k context at 1 TB per layer.</dd>
+<dt>Why it matters</dt><dd>Two separate problems hide under long context: fitting it in memory and actually using it. Solving the first does not solve the second.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Capacity and competence are different budgets. When you scale a system's reach, test whether its attention follows.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Temperature: the volume knob on decisiveness</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 2-6</span></p>
+<p>The logits are fixed. How do you make the model more daring or more careful without retraining? Divide by T, then softmax. The toy logits [3, 1, 0, -1] stand for [the, a, an, zebra]. T below 1 turns the volume down: the winner takes more. T above 1 turns it up: everyone gets a share. T = 1 changes nothing. The limits are exact: as T nears 0 the distribution goes one-hot on the argmax (greedy), as T grows large it goes uniform.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 6</span></p>
+<p>The lesson computes three distributions. T = 0.5 gives [0.979, 0.018, 0.002, 0.000], entropy 0.110. T = 1.0 gives [0.831, 0.112, 0.041, 0.015], entropy 0.595. T = 2.0 gives [0.579, 0.213, 0.129, 0.078], entropy 1.110. Entropy rises monotonically with T.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u03-temp.webp" alt="Watercolor of a brass volume knob with three distributions from sharp to flat">
+<figcaption><span class="tag tag-toy">Illustration</span> The knob in one image: one tall bar at low T, four even bars at high T. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 700 340" role="img" aria-label="Grouped bar chart of the three temperature distributions">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">softmax(z / T) for z = [3, 1, 0, -1] (C04 item 6)</text>
+<g font-family="sans-serif" font-size="12" fill="#7a7160" text-anchor="middle">
+<text x="140" y="290">the</text><text x="280" y="290">a</text><text x="420" y="290">an</text><text x="560" y="290">zebra</text>
+</g>
+<g>
+<rect x="110" y="60" width="35" height="210" fill="#2f4b8f"/><rect x="150" y="60" width="35" height="210" fill="#b3541e"/><rect x="190" y="60" width="35" height="210" fill="#4f7a52"/>
+<rect x="250" y="252" width="35" height="18" fill="#2f4b8f"/><rect x="290" y="222" width="35" height="48" fill="#b3541e"/><rect x="330" y="178" width="35" height="92" fill="#4f7a52"/>
+<rect x="390" y="262" width="35" height="8" fill="#2f4b8f"/><rect x="430" y="250" width="35" height="20" fill="#b3541e"/><rect x="470" y="212" width="35" height="58" fill="#4f7a52"/>
+<rect x="530" y="268" width="35" height="2" fill="#2f4b8f"/><rect x="570" y="260" width="35" height="10" fill="#b3541e"/><rect x="610" y="236" width="35" height="34" fill="#4f7a52"/>
+</g>
+<g font-family="monospace" font-size="12" text-anchor="middle" fill="#1c1a17">
+<text x="162" y="50">0.979 / 0.831 / 0.579</text>
+</g>
+<text x="350" y="316" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Indigo T=0.5, clay T=1.0, sage T=2.0. Entropies 0.110, 0.595, 1.110.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 6</span> The lesson's three distributions. At T = 2 the zebra token at 0.078 fires often enough to derail factual text.</figcaption>
+</figure>
+<figure>
+<img class="lessonfig" src="../assets/u03_fig01.png" alt="Plate showing one logit vector reshaped by three temperatures">
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 15, figure u03_fig01</span> The lesson's own plate: one rule (softmax of z over T), before (logits), after (three distributions). Numbers from the lesson's render script.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 4-5</span> Temperature bench: the lesson's softmax(z / T) on your logits.</p>
+<p><input class="text" id="tmz" type="text" value="3, 1, 0, -1" aria-label="comma separated logits"> <input class="text" id="tmt" type="number" value="1" step="0.25" min="0.05" max="5" aria-label="temperature"> <button class="btn" id="tmbtn">Reshape</button></p>
+<div class="chips" id="tmout"></div>
+<p class="small muted">Reproduce the lesson: the defaults at T = 0.5, 1.0, 2.0 give entropies 0.110, 0.595, 1.110. Push T to 5 and watch the zebra rise.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 11</span></p>
+<p>Higher T does not mean more creative and still coherent. Temperature without truncation is a common source of confident nonsense: the tail fires, the facts scatter.</p>
+</div>
+<div class="nugget" id="w4">
+<h4>Nugget 04 · The knob reshapes, never removes</h4>
+<p class="big">Temperature moves entropy up and down the exact limits, greedy to uniform. It flattens the tail but never cuts it.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives both limits, computes three distributions with entropies 0.110, 0.595, 1.110, and warns about the high-T tail.</dd>
+<dt>Why it matters</dt><dd>The dial and the guard are different tools. Temperature sets the creativity level. Truncation sets the safety rail. Confusing them produces confident nonsense.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> A knob that reshapes risk is not a guard that removes it. Name which one you turned before you trust the output.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Top-k and top-p: the bouncer with a list</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 2-6</span></p>
+<p>Temperature flattens the tail but never removes it. How do you forbid the junk outright? Truncation is a bouncer with a list. Top-k: the list has k names, always. Top-p: the list holds enough names to cover mass p, however many that takes. Both renormalize after the cut. The toy: base top-3 [0.6082, 0.2238, 0.0823]. Top-k = 3 gives [0.6652, 0.2447, 0.0900]. Top-p = 0.9 keeps 3 here, identical [0.6652, 0.2447, 0.0900]. They coincide on this toy and differ when the mass concentrates differently. Apply after temperature, before sampling.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 5, 9</span></p>
+<p>Top-p adapts: sharp distributions keep few tokens, flat ones keep many. Sorting costs O(V log V) per step, fine at V near 1e5. One caution: the cut changes the distribution the model was trained on. Mild truncation is safe. Aggressive truncation distorts.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Bar chart of the distribution before and after top-3 truncation">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Truncate and renormalize (C05 item 6)</text>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="175" y="270">before</text>
+<text x="525" y="270">top-k=3, top-p=0.9</text>
+</g>
+<rect x="110" y="90" width="40" height="160" fill="#7a7160" rx="4"/>
+<rect x="155" y="180" width="40" height="70" fill="#7a7160" rx="4"/>
+<rect x="200" y="222" width="40" height="28" fill="#7a7160" rx="4"/>
+<rect x="460" y="70" width="40" height="180" fill="#b3541e" rx="4"/>
+<rect x="505" y="172" width="40" height="78" fill="#b3541e" rx="4"/>
+<rect x="550" y="216" width="40" height="34" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="12" text-anchor="middle" fill="#1c1a17">
+<text x="175" y="60">0.6082 0.2238 0.0823</text>
+<text x="525" y="60">0.6652 0.2447 0.0900</text>
+</g>
+<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Kept mass 0.9143 renormalized to 1. The tail is gone, not flattened.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 6</span> The lesson's numbers. The lesson's plate u03_fig02 shows both panels. Check: the kept set sums to 1 after renormalization.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 11</span></p>
+<p>Truncation does not only remove junk. At top-p = 0.5 on a flat distribution, valid continuations get cut and the model repeats itself. The safety rail becomes a cage.</p>
+</div>
+<div class="nugget" id="w5">
+<h4>Nugget 05 · Cut, then renormalize, then doubt the cut</h4>
+<p class="big">Top-p adapts the list to the distribution's shape. But every cut distorts what the model learned. Mild is safe. Aggressive is a cage.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines both rules, runs the toy where they coincide at [0.6652, 0.2447, 0.0900], and shows when they diverge.</dd>
+<dt>Why it matters</dt><dd>The guardrail has its own failure mode. Cutting too hard removes valid continuations and the model loops. The rail needs tuning like any other dial.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Every safety mechanism changes the system it guards. Budget for the distortion, and test the guard at its aggressive end.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>Greedy is safe. Sampling is alive.</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 2-6</span></p>
+<p>If the top token is most likely, why ever sample anything else? The toy distribution [0.831, 0.112, 0.041, 0.015] (T = 1 from C04) answers: greedy always picks token 0, sampling picks token 0 with 83% and explores otherwise. Argmax is the safe road: deterministic, highest-probability, dull. Sampling is the side roads: diverse, risky, sometimes brilliant. Open generation needs side roads. Closed tasks like math and code tests usually want the safe road.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 5-6, 11</span></p>
+<p>Greedy fails by repetition: the model walks into a high-probability cycle, the the the. Sampling fails by tail junk. The lesson prices the toy: greedy pick probability 1.000, sample entropy 0.595 nats at T = 1. That entropy is the diversity budget. And greedy does not give the most likely sequence: it is locally optimal per token, while the globally most likely sequence needs search. Token-greedy is not sequence-optimal.</p>
+</div>
+<div class="nugget" id="w6">
+<h4>Nugget 06 · Match the decoder to the scoring</h4>
+<p class="big">Greedy for exactness, sampling with guards for diversity. And never mistake a per-token argmax for the best sequence.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson contrasts the two modes on the T = 1 distribution, names both failure modes, and prices the diversity budget at 0.595 nats.</dd>
+<dt>Why it matters</dt><dd>The mode is a config, not a model change, yet it decides the output character. Repetition loops and tail junk are both decoder choices, not model flaws.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Local optima do not compose into global ones. Whenever you greedily pick the best step, ask what the best path needed.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Prompting: a steering wheel, not an engine</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 2-6</span></p>
+<p>The weights are frozen. How does text before the question change the answer? The toy: <em>Translate to French: hello</em> vs <em>hello</em>. The first conditions P(y | x) on a task frame. The second leaves the distribution unsteered. The lesson's numbers: P(Bonjour | hello) = 0.02 vs P(Bonjour | Translate to French: hello) = 0.91. <span class="tag tag-toy">Illustration</span> The lesson marks this toy illustrative, not measured. The frame moves 89 points of probability mass. That is the entire mechanism in one number.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 3-5, 9</span></p>
+<p>A prompt is a steering wheel, not an engine. System: who the model is. User: the task. The model completes the pattern the prompt sets. Change the pattern, change the distribution. Instruction tuning trains the model to obey common frames. The prompt selects among learned behaviors. Long system prompts are a standing tax: their tokens cost prefill compute and cache on every request.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of probability mass shift from 0.02 to 0.91, labeled illustrative">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">The frame moves the mass (C07 item 6, illustrative)</text>
+<rect x="180" y="240" width="110" height="10" fill="#7a7160" rx="4"/>
+<rect x="410" y="70" width="110" height="180" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="235" y="230">0.02</text>
+<text x="465" y="60">0.91</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="235" y="270">bare hello</text>
+<text x="465" y="270">framed</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Illustrative toy from the lesson, not a measurement. 89 points of mass moved.</text>
+</svg>
+<figcaption><span class="tag tag-toy">Illustration</span> The lesson's own toy values, which the lesson marks illustrative. The mechanism (conditioning shifts the distribution) is the lesson's claim.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 11</span></p>
+<p>The steering wheel works for attackers too. Prompt injection: untrusted text in the prompt steers the model against the system instruction. The frame is powerful in both directions.</p>
+</div>
+<div class="nugget" id="w7">
+<h4>Nugget 07 · The frame selects the behavior</h4>
+<p class="big">Frozen weights, new behavior. The prompt does not teach. It selects among behaviors the model already learned.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines conditioning, shows the toy mass shift, and prices long system prompts as a per-request tax.</dd>
+<dt>Why it matters</dt><dd>Two lessons in one: prompting is the cheap per-request lever (fine-tune only what is constant), and any steering wheel can be grabbed. Injection is the same mechanism with a hostile driver.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Selection is cheaper than training. Before you retrain a system for a new behavior, check whether the behavior already exists and only needs selecting.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>ICL: learning with no gradients</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 2-6</span></p>
+<p>Can the model learn a task from examples in the prompt, with zero weight updates? The toy: <em>eng: hello -> fra: bonjour, eng: cat -> fra: chat, eng: dog -></em>. The model continues the pattern with <em>chien</em>. The examples define the input-output mapping in context. The model infers the function and applies it. No gradients flow. The learning is all in the forward pass. The leading account is implicit Bayesian inference: the prompt evidences a latent task, and the forward pass approximates the posterior predictive. The lesson calls it a useful lens, not a theorem.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 6, 9, 11</span></p>
+<p>With 0 shots the model guesses the task. With 3 shots the format locks. Returns diminish past about 8 shots on simple tasks, a reported pattern that varies by task. Each shot costs tokens, so ICL is sample-efficient but token-hungry per request. And the model is sensitive to example order and label noise in ways training is not. Learning overstates it. Call it conditioning, and test order robustness.</p>
+</div>
+<div class="nugget" id="w8">
+<h4>Nugget 08 · Conditioning is not learning</h4>
+<p class="big">Examples in context steer the forward pass. No weights move. The word learning promises more robustness than the mechanism delivers.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines few-shot ICL, works the 3-shot translation toy, and documents order sensitivity and diminishing returns past about 8 shots.</dd>
+<dt>Why it matters</dt><dd>The name sets the wrong expectation. Training tolerates order changes. ICL does not. Permute the examples and measure the spread before you ship.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Distrust flattering names for mechanisms. Ask what the mechanism actually guarantees, then test exactly that.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Demonstration selection: near is not enough</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 2-6</span></p>
+<p>Not all examples are equal. Which k help this query most? The toy: query <em>dog to ?</em>, candidates scored by embedding cosine. Pick the near ones, then check diversity. Toy cosines [0.91, 0.73, 0.45, 0.12] for 4 candidates, k = 2, picks [0.91, 0.73]. Diversity check: if both show the same label, swap in 0.45 with the missing label. The rule is explicit and auditable. Demonstrations are nearest neighbors in task space. Similar examples teach the relevant mapping, diverse examples cover the label space, order biases toward the recent.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of candidate cosine scores with top 2 selected">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Candidate cosines, k = 2 (C09 item 6)</text>
+<rect x="130" y="70" width="110" height="180" fill="#b3541e" rx="4"/>
+<rect x="290" y="115" width="110" height="135" fill="#b3541e" rx="4"/>
+<rect x="450" y="180" width="110" height="70" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="185" y="60">0.91</text>
+<text x="345" y="105">0.73</text>
+<text x="505" y="170">0.45</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="185" y="270">picked</text>
+<text x="345" y="270">picked</text>
+<text x="505" y="270">0.12 dropped</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Then the diversity audit: same label twice means swap one out.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 6</span> The lesson's ranking. The lab variant: cosines [0.9, 0.85, 0.2] with labels [A, A, B] picks 0.9 (A) and 0.2 (B) for coverage.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 11</span></p>
+<p>Similar does not mean helpful. Near duplicates teach nothing new. The model needs label coverage, not clones. Similarity without diversity fails.</p>
+</div>
+<div class="nugget" id="w9">
+<h4>Nugget 09 · Cover the labels, not the neighborhood</h4>
+<p class="big">Rank by similarity, then diversify. Two near-identical examples are one example wearing a disguise.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds the select pipeline: cosine rank, maximal marginal relevance for diversity, recency-aware order.</dd>
+<dt>Why it matters</dt><dd>Selection is retrieval applied to prompts, and it inherits retrieval's failure: the top-k can be k copies of the same lesson. The diversity swap is the fix.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Relevance without variety is redundancy. Whenever you pick examples, advisors, or data, audit the set for coverage, not just the top score.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Chain of thought: tokens are compute</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 2-6</span></p>
+<p>The model fails multi-step arithmetic in one token. What changes if it may think aloud? The toy: <em>23 * 17</em> with steps <em>20*17=340, 3*17=51, total 391</em>. The intermediate tokens are scratch space. Each generated token is one computation step. Forcing the answer in one token allows one step. Chain-of-thought buys as many steps as tokens. Reasoning is compute, and tokens are the currency. The lesson's accuracy numbers: direct answer on 2-digit multiplication about 30%, with written steps about 85%. <span class="tag tag-toy">Illustration</span> The lesson marks these illustrative, a pattern from the CoT literature, not measured here. The gap is the value of scratch space.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 5, 9, 11</span></p>
+<p>The scratch tokens hold partial results in context, so later tokens condition on them. Errors compound per step, and decomposition helps only when each step is easier than the whole. Cost: k extra tokens per query. And the steps are not faithful reasoning: models produce plausible steps to a wrong answer, or right answers with wrong steps. CoT is a useful trace, not a proof.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of direct versus step accuracy, labeled illustrative">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Scratch space value, 2-digit multiplication (C10 item 6, illustrative)</text>
+<rect x="180" y="180" width="110" height="70" fill="#7a7160" rx="4"/>
+<rect x="410" y="70" width="110" height="180" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="235" y="170">~30%</text>
+<text x="465" y="60">~85%</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="235" y="270">direct answer</text>
+<text x="465" y="270">with steps</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Illustrative pattern from the literature, per the lesson. Not measured here.</text>
+</svg>
+<figcaption><span class="tag tag-toy">Illustration</span> The lesson's own illustrative numbers, labeled as the lesson labels them. The mechanism (scratch tokens hold partial results) is the lesson's claim.</figcaption>
+</figure>
+<div class="nugget" id="w10">
+<h4>Nugget 10 · Buy steps with tokens</h4>
+<p class="big">One token, one computation step. If the task needs more steps than one, the model needs the tokens to take them in.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson frames CoT as compute currency, works the 391 toy, and prices the trade: k extra tokens per query for accuracy on decomposable tasks.</dd>
+<dt>Why it matters</dt><dd>The trace is useful and unfaithful at once. Steps can be plausible and wrong. Use CoT for accuracy, never as proof of how the answer was reached.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> A record of work is not a record of thought. Treat generated explanations as artifacts to verify, not as windows into the process.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Self-consistency: an election over reasoning paths</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 2-6</span></p>
+<p>One chain can wander. What if you ask five times and take the majority? The toy: answers [391, 391, 382, 391, 390] give majority 391, three of five. Diverse chains explore different decompositions, and the majority filters one-off errors. It helps when errors are uncorrelated across samples. The Condorcet math: if each chain is right with probability p above 0.5 independently, the majority is right with probability approaching 1 as N grows. The lesson computes p = 0.6, N = 5: majority accuracy = sum over k = 3..5 of C(5,k) 0.6^k 0.4^{5-k} = 0.683. The math shows the gain and its limit. Independence is the lie. The heuristic survives it partially.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Bar chart of the five votes with 391 winning three of five">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">The vote: [391, 391, 382, 391, 390] (C11 item 6)</text>
+<rect x="150" y="70" width="100" height="180" fill="#b3541e" rx="4"/>
+<rect x="290" y="150" width="100" height="100" fill="#2f4b8f" rx="4"/>
+<rect x="430" y="150" width="100" height="100" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="200" y="60">391 x3</text>
+<text x="340" y="140">382</text>
+<text x="480" y="140">390</text>
+</g>
+<text x="350" y="290" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Majority 391. At p = 0.6, N = 5, the majority is right with probability 0.683.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 6</span> The lesson's toy vote and Condorcet computation. Cost: N times chain tokens. The lab asks for p = 0.7, N = 3: 0.784.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 6</span> Condorcet bench: majority accuracy from per-chain p and N.</p>
+<p><input class="text" id="vop" type="number" value="0.6" step="0.05" min="0.51" max="0.99" aria-label="p per chain"> <input class="text" id="von" type="number" value="5" step="2" min="1" max="21" aria-label="N chains"> <button class="btn" id="vobtn">Compute majority accuracy</button></p>
+<div class="chips" id="voout"></div>
+<p class="small muted">Reproduce the lesson: p = 0.6, N = 5 gives 0.683. Try the lab: p = 0.7, N = 3 gives 0.784. Push N to 21 and watch the limit.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 11</span></p>
+<p>Systematic bias breaks the election. If the model is wrong the same way every time, voting confidently picks the wrong answer. Diversity of error is the real requirement.</p>
+</div>
+<div class="nugget" id="w11">
+<h4>Nugget 11 · Voting needs diverse errors</h4>
+<p class="big">The majority filters one-off mistakes, not shared ones. If every chain shares the bias, the election certifies the error.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines the vote, computes 0.683 for the toy, and names the independence assumption as the lie the heuristic partially survives.</dd>
+<dt>Why it matters</dt><dd>Ensembles help exactly when errors scatter. Correlated errors are the norm in practice, which caps the gain. Measure agreement vs correctness before you pay N times the tokens.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> A vote is only as good as the independence of its voters. When everyone reads the same briefing, the majority is a megaphone, not a filter.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Evaluation limits: distrust scores without provenance</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 2-6</span></p>
+<p>The benchmark score rose 5 points. Did the model get better? The toy: 100 test questions, 30 in the training data. Reported accuracy 90%, decontaminated accuracy 70%. The 20-point gap is the contamination premium. A model that memorized the test set scores 100% and understands nothing. The metric cannot see the difference. Metrics are proxies. Benchmarks measure the benchmark, and the benchmark may be in the training data. Human judgment is the ground truth. Everything else is a shadow.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of reported 90 percent versus decontaminated 70 percent accuracy">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">The contamination premium (C12 item 6)</text>
+<rect x="180" y="70" width="110" height="180" fill="#b3541e" rx="4"/>
+<rect x="410" y="110" width="110" height="140" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="235" y="60">90%</text>
+<text x="465" y="100">70%</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="235" y="270">reported</text>
+<text x="465" y="270">decontaminated</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">30 of 100 test questions in training. The 20-point gap is memorization.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 item 6</span> The lesson's toy. The lab variant: 80 of 100 raw with 20 memorized gives 75% decontaminated.</figcaption>
+</figure>
+<table class="data">
+<caption class="small muted capleft"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 3-5</span> Metric, what it measures, what it misses.</caption>
+<tr><th>Metric</th><th>Measures</th><th>Misses</th></tr>
+<tr><td>Perplexity</td><td class="num">Surprise at the truth</td><td>Truth itself, cross-tokenizer meaning</td></tr>
+<tr><td>Benchmark accuracy</td><td class="num">The benchmark</td><td>Contamination, real use</td></tr>
+<tr><td>Automatic overlap</td><td class="num">Surface match to reference</td><td>Paraphrase, correctness</td></tr>
+</table>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 5, 8</span></p>
+<p>Goodhart's law: when a measure becomes a target, it ceases to be a good measure. The hygiene procedure is the product: n-gram overlap vs training data, canary strings, both raw and decontaminated scores reported. If no contamination check ran, the score is provisional.</p>
+</div>
+<div class="nugget" id="w12">
+<h4>Nugget 12 · Ask for the decontaminated number</h4>
+<p class="big">A 20-point premium can hide in any headline score. Demand the overlap report, the canaries, and both numbers.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds the contamination toy, states Goodhart's law, and defines eval hygiene as n-gram overlap plus canaries plus dual reporting.</dd>
+<dt>Why it matters</dt><dd>Every generalization claim rests on the train-test split. Contamination breaks the split silently. The score without provenance is not evidence.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When a metric becomes the target, audit the metric. The number is only as honest as the process that produced it.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Twelve nuggets, one unit</h2>
+<ol class="wisdom">
+<li><a href="#w1"><span class="wnum">01</span>Name the triple</a></li>
+<li><a href="#w2"><span class="wnum">02</span>Enforce the balance</a></li>
+<li><a href="#w3"><span class="wnum">03</span>Length is not comprehension</a></li>
+<li><a href="#w4"><span class="wnum">04</span>The knob reshapes, never removes</a></li>
+<li><a href="#w5"><span class="wnum">05</span>Cut, then renormalize, then doubt the cut</a></li>
+<li><a href="#w6"><span class="wnum">06</span>Match the decoder to the scoring</a></li>
+<li><a href="#w7"><span class="wnum">07</span>The frame selects the behavior</a></li>
+<li><a href="#w8"><span class="wnum">08</span>Conditioning is not learning</a></li>
+<li><a href="#w9"><span class="wnum">09</span>Cover the labels, not the neighborhood</a></li>
+<li><a href="#w10"><span class="wnum">10</span>Buy steps with tokens</a></li>
+<li><a href="#w11"><span class="wnum">11</span>Voting needs diverse errors</a></li>
+<li><a href="#w12"><span class="wnum">12</span>Ask for the decontaminated number</a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cme295/lessons/u03_llm_generation.md</code>, locally authored bridge content for Stanford CME295 (2026-10-06). The lesson marks LLM definition, MoE, context length, temperature, and sampling strategies OFFICIAL-SYLLABUS, and prompting, ICL, demonstration selection, reasoning prompting, self-consistency, and evaluation limits REQUESTED-BRANCH. Every leaf is PLANNED / SOURCE ATTRIBUTION PENDING until slide or transcript extraction verifies it. No lecture transcript exists for this unit, so no lecture anecdotes appear and no sentence here reproduces an instructor's words. The prompting mass-shift toy and the chain-of-thought accuracy figures are the lesson's own illustrative values, labeled Illustration wherever shown. The Mixtral example appears with the lesson's caveat as a public model fact. Lesson figures u03_fig01 and u03_fig03 are the lesson's own computed plates, embedded where cited. Charts on this page re-plot the lesson's computed numbers with section citations. Interactive toys run the lesson's rules on values you supply. The two watercolor illustrations are original to this companion, generated with Muse native tools, and labeled Illustration. No official course video exists for this unit, so no video is embedded.</p>
+<p><strong>Quoted words.</strong> Quoted words from the lesson source: 0. This companion paraphrases the lesson throughout and uses no quotation marks in visible text, tooltips, or labels. Numbers carry their lesson section above each figure and table.</p>
+<p><a href="../index.html">Back to the CME295 index</a></p>
+</footer>
+</div>
+<script>
+function el(tag,cls,text){
+var e=document.createElement(tag)
+if(cls){e.className=cls}
+if(text!=null){e.textContent=text}
+return e
+}
+function parseNums(id){
+var raw=document.getElementById(id).value
+var parts=raw.split(",")
+var out=[]
+var i=0
+while(i<parts.length){
+var v=parseFloat(parts[i])
+if(!isNaN(v)){out.push(v)}
+i=i+1
+}
+return out
+}
+function top2(vals,k){
+var idx=[]
+var i=0
+while(i<vals.length){
+idx.push(i)
+i=i+1
+}
+idx.sort(function(a,b){return vals[b]-vals[a]})
+return idx.slice(0,k)
+}
+function runMoe(){
+var vals=parseNums("moeg")
+var k=parseInt(document.getElementById("moek").value,10)
+var out=document.getElementById("moeout")
+out.textContent=""
+if(vals.length<2||!(k>=1)||k>vals.length){
+out.appendChild(el("span","chip plain","Enter gates and 1 <= k <= E."))
+return
+}
+var top=top2(vals,k)
+var s=0
+var i=0
+while(i<top.length){
+s=s+vals[top[i]]
+i=i+1
+}
+i=0
+while(i<top.length){
+var w=vals[top[i]]/s
+out.appendChild(el("span","chip","E"+String(top[i])+" w="+w.toFixed(3)))
+i=i+1
+}
+out.appendChild(el("span","chip plain","active "+String(k)+"/"+String(vals.length)))
+}
+function runMem(){
+var t=parseFloat(document.getElementById("mmt").value)
+var h=parseFloat(document.getElementById("mmh").value)
+var out=document.getElementById("mmout")
+out.textContent=""
+if(!(t>=1)||!(h>=1)){
+out.appendChild(el("span","chip plain","Enter T >= 1 and h >= 1."))
+return
+}
+var bytes=h*t*t*2
+out.appendChild(el("span","chip plain","bytes = "+bytes.toExponential(2)))
+var gb=bytes/1073741824
+if(gb>=1024){
+out.appendChild(el("span","chip plain","= "+(gb/1024).toFixed(2)+" TB"))
+}else{
+out.appendChild(el("span","chip plain","= "+gb.toFixed(1)+" GiB"))
+}
+}
+function runTemp(){
+var z=parseNums("tmz")
+var tt=parseFloat(document.getElementById("tmt").value)
+var out=document.getElementById("tmout")
+out.textContent=""
+if(z.length<2||!(tt>0)){
+out.appendChild(el("span","chip plain","Enter logits and T > 0."))
+return
+}
+var m=z[0]
+var i=1
+while(i<z.length){if(z[i]>m){m=z[i]} i=i+1}
+var s=0
+i=0
+while(i<z.length){
+s=s+Math.exp(z[i]/tt-m/tt)
+i=i+1
+}
+var ent=0
+var probs=[]
+i=0
+while(i<z.length){
+var p=Math.exp(z[i]/tt-m/tt)/s
+probs.push(p)
+ent=ent-p*Math.log(p)
+i=i+1
+}
+out.appendChild(el("span","chip plain","p = ["+probs.map(function(x){return x.toFixed(3)}).join(", ")+"]"))
+out.appendChild(el("span","chip plain","entropy = "+ent.toFixed(3)+" nats"))
+}
+function runVote(){
+var p=parseFloat(document.getElementById("vop").value)
+var n=parseInt(document.getElementById("von").value,10)
+var out=document.getElementById("voout")
+out.textContent=""
+if(!(p>0.5&&p<1)||!(n>=1)){
+out.appendChild(el("span","chip plain","Enter 0.5 < p < 1 and N >= 1."))
+return
+}
+function comb(nn,kk){
+var r=1
+var i=0
+while(i<kk){
+r=r*(nn-i)/(i+1)
+i=i+1
+}
+return r
+}
+var acc=0
+var k=Math.floor(n/2)+1
+while(k<=n){
+acc=acc+comb(n,k)*Math.pow(p,k)*Math.pow(1-p,n-k)
+k=k+1
+}
+out.appendChild(el("span","chip plain","majority = "+acc.toFixed(3)))
+}
+document.getElementById("moebtn").addEventListener("click",runMoe)
+document.getElementById("mmbtn").addEventListener("click",runMem)
+document.getElementById("tmbtn").addEventListener("click",runTemp)
+document.getElementById("vobtn").addEventListener("click",runVote)
+runMoe()
+runMem()
+runTemp()
+runVote()
+</script>
+</body>
+</html>

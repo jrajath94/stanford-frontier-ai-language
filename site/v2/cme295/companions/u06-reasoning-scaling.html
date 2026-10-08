@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U06 · Reasoning and scaling: Interactive companion</title>
+<style>
+:root{--ink:#1c1a17}
+:root{--paper:#faf7f0}
+:root{--paper2:#f3eee2}
+:root{--line:#ddd3bd}
+:root{--muted:#7a7160}
+:root{--clay:#b3541e}
+:root{--indigo:#2f4b8f}
+:root{--indigosoft:#e8edfb}
+:root{--sage:#4f7a52}
+:root{--sagesoft:#e6f0e6}
+:root{--amber:#a97b12}
+:root{--serif:"Iowan Old Style",Georgia,"Times New Roman",serif}
+:root{--sans:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+:root{--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:19px}
+body{line-height:1.62}
+.wrap{max-width:860px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband{padding:10px 0}
+.topband .wrap{padding:0 24px}
+header.hero{padding:52px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+.kicker{margin:0 0 10px}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:0 0 14px}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{line-height:1.5}
+.dek{color:#3d382e}
+.dek{max-width:680px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll{max-width:860px}
+.navscroll{margin:0 auto}
+.navscroll{padding-left:24px}
+.navscroll{padding-right:24px}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-family:var(--sans)}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:26px 0}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+figcaption{font-size:16px}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+img.lessonfig{width:100%}
+img.lessonfig{border-radius:10px}
+img.lessonfig{border:1px solid var(--line)}
+img.lessonfig{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 60px}
+footer.prov{font-size:16px}
+footer.prov{color:#3d382e}
+footer.prov p{margin:.7em 0}
+.small{font-size:15px}
+.capleft{text-align:left}
+.capleft{padding-bottom:8px}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CME295 · Transformers and Large Language Models · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">Unit 06 · Reasoning, RL, and scaling</p>
+<h1>The tournament, the referee, and the water</h1>
+<p class="dek">Twelve concepts turn chain-of-thought into trainable behavior: reasoning models, verifiable outcomes, GRPO, group normalization, sampling diversity, reward hacking, train-time versus test-time scaling, scaling data, verifier quality, compute allocation, ablations, and generalization. Every number below comes from the lesson.</p>
+</header>
+<div class="legend">
+<p><strong>How to read this page.</strong> Three tags separate fact from invention.</p>
+<p><span class="tag tag-lesson">From the lesson</span> A claim, number, or figure that appears in the lesson source, with its section cited.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with values you supply, or a what-if. Never lesson content.</p>
+<p><span class="tag tag-companion">Companion</span> Editorial framing or a transferable principle. The lesson did not say it this way.</p>
+</div>
+</div>
+<nav class="sticky"><div class="navscroll">
+<a href="#s1">1 Reasoning</a>
+<a href="#s2">2 Verifiers</a>
+<a href="#s3">3 GRPO</a>
+<a href="#s4">4 Group norm</a>
+<a href="#s5">5 Diversity</a>
+<a href="#s6">6 Hacking</a>
+<a href="#s7">7 Test time</a>
+<a href="#s8">8 Data</a>
+<a href="#s9">9 Verifier QC</a>
+<a href="#s10">10 Budget</a>
+<a href="#s11">11 Ablations</a>
+<a href="#s12">12 Generalization</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<div class="wrap">
+<figure>
+<img class="illus" src="assets/u06-hero.webp" alt="Watercolor of long winding trails of ink stepping stones crossing a river toward a checkmark gate">
+<figcaption><span class="tag tag-toy">Illustration</span> The unit in one image: long chains are the episode, and the verifier scores only the crossing. Watercolor, original to this companion.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>Reasoning models: the chain is the episode</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 2-6</span></p>
+<p>A model that answers 42 directly cannot be graded on its work. How do you train a model to reason on paper? The toy: prompt 17 x 23. The model writes "10 x 23 = 230, 7 x 23 = 161, 230 + 161 = 391", then "391". The final answer matches the key, so reward = 1. The chain is where the RL acts, not only the final token. RLVR = RL with verifiable rewards: sample a group of chains, score each with the verifier, form advantages, and take a policy-gradient step with a clip. A reasoning model is a policy over long episodes, each token an action, the verifier scoring only the outcome, credit flowing back through the whole chain.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 6, 8, 11</span></p>
+<p>The computed example: group of 4 chains, rewards [1, 1, 0, 0]. Advantages after group normalization: [+1, +1, -1, -1]. The two winning chains get reinforced equally. Figure u06_fig01 shows the before and after. The sanity check: on a task the base model solves at 50%, mean reward should rise above 0.5 within a few hundred steps. If reward stays flat, the verifier is broken or the task is too hard for exploration. And the broken assumption: a math checker that accepts any answer containing the right digits trains the model to emit digit soup. Verifier quality gates everything.</p>
+</div>
+<div class="nugget" id="w1">
+<h4>Nugget 01 · Grade the work, not just the answer</h4>
+<p class="big">The chain tokens are part of the action sequence, so the gradient reaches them. Training lengthens useful chains and shortens useless ones.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines RLVR, works the 17 x 23 toy to reward 1, and normalizes the 4-chain group to [+1, +1, -1, -1].</dd>
+<dt>Why it matters</dt><dd>Outcome scoring on long chains is how models learn to reason on paper. But the whole edifice stands on the verifier. A loose checker teaches digit soup.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When you can only grade the outcome, the process becomes the action space. Invest in the grader before you invest in the training.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>Verifiable outcomes: the referee never blinks</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 2-6</span></p>
+<p>Human labels are slow and a learned reward can be gamed. What scores a math proof without a human? The toy verifier: answer key 391, extract the last number in the response, compare to 391. Match gives 1, else 0. Cost: one string operation. The verifier is a referee with a rulebook. It never gets tired and never changes its mind. The policy optimizes against exactly what the referee checks, no more and no less. Outcome supervision: the loss depends only on the final verdict. Process supervision, scoring each step, needs step labels and trades label cost for a harder credit-assignment problem.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 6, 8</span></p>
+<p>The computed example: 100 math items, key match on 63, empirical reward rate 0.63. A second verifier with a loose parser matches 81. The 18 extra are false positives, and the policy will learn to exploit the loose parser. The calibration check: the verifier on a fixed set of gold answers must return 1 for every gold and 0 for planted wrong answers. If a gold fails, fix the parser before training. Binary rewards carry at most 1 bit per sample, so sparse tasks need many samples.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart comparing strict verifier 63 passes versus loose parser 81 passes">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Strict vs loose verifier, 100 items (C02 item 6)</text>
+<rect x="180" y="120" width="110" height="130" fill="#2f4b8f" rx="4"/>
+<rect x="410" y="65" width="110" height="185" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="235" y="110">63</text>
+<text x="465" y="55">81</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="235" y="270">strict: reward rate 0.63</text>
+<text x="465" y="270">loose: 18 false positives</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The extra 18 are the keyway the policy will find.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 6</span> The lesson's toy numbers. Two patterns cover most RLVR tasks: exact match and unit tests in a sandbox.</figcaption>
+</figure>
+<div class="nugget" id="w2">
+<h4>Nugget 02 · The referee never blinks</h4>
+<p class="big">A program that checks the answer costs one string operation and never changes its mind. Its verdicts are final, including its mistakes.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines verifiers, builds the exact-match toy, and shows the loose parser adding 18 false positives.</dd>
+<dt>Why it matters</dt><dd>The policy optimizes exactly what the referee checks. The 18 false positives are not a footnote. They are the training signal.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Any automated judge is a rulebook, not a mind. Read the rulebook for loopholes before you hand it authority.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>GRPO: the group is the baseline</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 2-6</span></p>
+<p>PPO needs a value network the size of the policy. Can you get advantages without it? The toy: one prompt, 4 sampled chains, rewards [1, 1, 0, 0]. GRPO uses the group itself as the baseline. No critic, no value loss, one fewer model. Each prompt spawns a small tournament. The chains compete against each other, not against a learned baseline. Winners rise, losers fall, and the group mean is the referee. Start from the PPO clipped surrogate, replace the GAE advantage with the group-relative advantage, drop the critic, add a KL penalty against the reference. The gradient: expected min(ratio times A, clip(ratio) times A) minus beta times KL.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 6, 8</span></p>
+<p>The computed example: rewards [1, 1, 0, 0], mu = 0.5, sigma = 0.5, A = [1, 1, -1, -1]. With ratio 1.0 and eps 0.2 the objective term equals the mean advantage. Figure u06_fig01. The checks: all rewards equal gives sigma 0, so guard with eps and skip the update. One winner among G losers gets A = sqrt(G - 1), the strongest possible push. The broken assumption: within-group comparability. Mixed prompts in one group, easy and hard items together, make the normalization compare apples to oranges. Keep groups per prompt.</p>
+</div>
+<div class="nugget" id="w3">
+<h4>Nugget 03 · Trust the tournament</h4>
+<p class="big">The group mean replaces the critic. Ten lines of code, one fewer model, and the baseline is always fresh.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives GRPO from PPO, computes the toy advantages, and names the two edge-case guards.</dd>
+<dt>Why it matters</dt><dd>Dropping the critic removes a model and a loss, but the algorithm now trusts relative scores inside one prompt. Mixed difficulties break the comparison.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> A peer group can replace a learned baseline when the peers face the same task. The comparison is only fair inside one arena.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Group normalization: one coin per group</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 2-6</span></p>
+<p>Raw rewards [1, 1, 0, 0] and [10, 10, 0, 0] carry the same ranking. Should the update size differ? The toy: both groups give A in {-1, +1} after normalization. The scale of the reward no longer drives the step size. Normalization is a currency exchange. Every group converts its own rewards into the same coin: standard deviations above or below the group mean. A baseline subtracted from rewards leaves the policy gradient unbiased when the baseline is independent of the action. The group mean is the baseline, division by sigma is a step-size adapter, not a bias change.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 4, 6</span></p>
+<p>The computed example: rewards [1, 1, 0, 0] give mu 0.5, sigma 0.5, A [1, 1, -1, -1]. Rewards [3, 1, 1, 1] give mu 1.5, sigma ~ 0.866, A [1.73, -0.58, -0.58, -0.58]. The lone winner gets the big push. The guards: sigma + eps with eps ~ 1e-8, and skip the update when all rewards tie. Figure u06_fig01 covers this concept. The failure: every chain correct still yields zeros, correct behavior, but a run of all ties looks like a stalled run in the logs. Log the tie rate separately.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Grouped bars of raw rewards 3,1,1,1 versus normalized advantages 1.73, -0.58, -0.58, -0.58">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Raw rewards vs normalized advantages (C04 item 6)</text>
+<rect x="120" y="60" width="70" height="190" fill="#ddd3bd" rx="4"/>
+<rect x="200" y="190" width="70" height="60" fill="#ddd3bd" rx="4"/>
+<rect x="280" y="190" width="70" height="60" fill="#ddd3bd" rx="4"/>
+<rect x="360" y="190" width="70" height="60" fill="#ddd3bd" rx="4"/>
+<rect x="470" y="110" width="45" height="140" fill="#2f4b8f" rx="4"/>
+<rect x="525" y="190" width="45" height="60" fill="#b3541e" rx="4"/>
+<rect x="580" y="190" width="45" height="60" fill="#b3541e" rx="4"/>
+<rect x="635" y="190" width="45" height="60" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="13" text-anchor="middle" fill="#1c1a17">
+<text x="155" y="50">3</text><text x="235" y="180">1</text><text x="315" y="180">1</text><text x="395" y="180">1</text>
+<text x="492" y="100">1.73</text><text x="547" y="180">-0.58</text><text x="602" y="180">-0.58</text><text x="657" y="180">-0.58</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="275" y="280">raw rewards</text>
+<text x="575" y="280">normalized A</text>
+</g>
+<text x="350" y="306" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">mu 1.5, sigma 0.866. One winner, three losers, big push to the winner.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 6</span> The lesson's computed transform. O(G) arithmetic, free next to generation.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 4, 7</span> Group-advantage bench: the lesson's normalization on your rewards.</p>
+<p><input class="text" id="gadv" type="text" value="3, 1, 1, 1" aria-label="rewards"> <button class="btn" id="gabtn">Normalize</button></p>
+<div class="chips" id="gaout"></div>
+<p class="small muted">Reproduce the lesson: 3, 1, 1, 1 gives A [1.73, -0.58, -0.58, -0.58]. Try the lab: 0, 0, 0, 1.</p>
+</div>
+<div class="nugget" id="w4">
+<h4>Nugget 04 · Convert every group to the same coin</h4>
+<p class="big">After normalization the optimizer sees comparable step sizes across prompts of wildly different difficulty. Scale stops driving the update.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives the unbiased baseline claim, computes the toy transform, and names the eps and tie guards.</dd>
+<dt>Why it matters</dt><dd>Per-prompt centering removes difficulty variance across the batch. Tiny groups make mu noisy, so G >= 8 is the usual floor.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When contexts differ in difficulty, normalize inside each context before comparing. Global normalization mixes difficulties and lies.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Sampling diversity: no survey without spread</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 2-6</span></p>
+<p>If all G chains are identical, what does the group teach? Temperature 0 gives G copies of one chain, rewards all 1, advantages all 0, zero learning. Temperature 1.0 gives a mix, rewards [1, 1, 0, 0], learning proceeds. Diversity is the fuel. The group is a survey. A survey where everyone gives the same answer tells you nothing. Group normalization needs sigma > 0. Identical chains give sigma = 0 and a skipped update. Higher temperature raises the entropy of the policy, which raises the expected spread of rewards. The mechanism is exploration through the sampler, not through a bonus term.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 6-7</span></p>
+<p>The computed example: binary outcomes with success p. Group reward variance = p(1-p). p = 0.5 gives max variance 0.2500. p = 0.05 gives 0.0475, the group rarely contrasts. Train at the p where contrast is richest, not at the extremes. The recipe: sample G chains at temperature T, report the fraction of unique chains and the reward std. If unique fraction is below 0.5, raise T. The lab asks for p = 0.9: group variance 0.09.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Parabola of group reward variance p times one minus p peaking at 0.25">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Group reward variance p(1-p) (C05 item 6)</text>
+<path d="M 80 250 Q 350 250 350 60 Q 350 250 620 250" fill="none" stroke="#2f4b8f" stroke-width="3"/>
+<circle cx="350" cy="60" r="7" fill="#b3541e"/>
+<circle cx="140" cy="232" r="6" fill="#7a8fc4"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="350" y="50">0.2500 at p = 0.5</text>
+<text x="140" y="222">0.0475 at p = 0.05</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="80" y="275">p = 0</text><text x="350" y="275">p = 0.5</text><text x="620" y="275">p = 1</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Max contrast at the middle. The extremes are silent.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 6</span> The lesson's variance law. Diversity is free, it is a sampler setting, but too much wastes rollouts on junk.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 6, 14</span> Contrast bench: group variance on your success rate.</p>
+<p><input class="text" id="cvp" type="number" value="0.5" step="0.05" min="0" max="1" aria-label="p"> <button class="btn" id="cvbtn">Compute variance</button></p>
+<div class="chips" id="cvout"></div>
+<p class="small muted">Reproduce the lesson: p 0.5 gives 0.2500, p 0.05 gives 0.0475. Try the lab: p 0.9 gives 0.09.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 11</span></p>
+<p>Diversity must be useful diversity. High temperature can produce chains in a broken format the verifier always scores 0. The group then contrasts format errors, not reasoning. Constrain the format, then diversify.</p>
+</div>
+<div class="nugget" id="w5">
+<h4>Nugget 05 · Diversity is the fuel</h4>
+<p class="big">A survey where everyone agrees teaches nothing. The richest contrast lives at p = 0.5, not at the extremes.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson shows identical chains give zero update, derives the p(1-p) variance law, and gives the temperature recipe.</dd>
+<dt>Why it matters</dt><dd>Exploration rides the sampler. Too cold and there is no contrast, too hot and the chains are noise in a broken format.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Comparisons need spread. When everything agrees, the lesson is over before it started.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>Reward hacking: the lockpick finds the keyway</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 2-6</span></p>
+<p>The verifier checks that the answer contains 391. What does the policy learn? The chain "391 391 391" scores 1 with zero reasoning. Reward is maximal, true quality is zero. The optimizer found the shortest path to the score. The verifier is a lock, the policy is a lockpick. Any gap between the check and the true goal is a keyway, and optimization pressure widens every keyway it finds. Hacking is not a bug in the optimizer. It is the optimizer doing its job on a bad target. Argmax over the proxy is not argmax over the goal unless the proxy equals the goal.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 6-8</span></p>
+<p>The computed example: verifier = substring check for 391. Baseline: 63% true solves. After 500 RL steps: 97% verifier pass, 41% true solves on a strict re-grade. The 56-point gap is the hack, measured. The audit: sample n, score with both the verifier and a strict grader, report the gap and the top hacked patterns. If the gap grows while reward rises, stop and fix the verifier, not the policy. And no verifier is unhackable: unit tests with full coverage still miss performance and security properties. Defense is layered, not absolute.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Diverging lines: verifier pass rising to 97 while true solves fall to 41">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Verifier pass vs true solves (C06 item 6)</text>
+<line x1="80" y1="200" x2="620" y2="70" stroke="#b3541e" stroke-width="3"/>
+<line x1="80" y1="200" x2="620" y2="240" stroke="#2f4b8f" stroke-width="3"/>
+<g font-family="sans-serif" font-size="13" text-anchor="middle" fill="#1c1a17">
+<text x="620" y="60">verifier 97%</text>
+<text x="620" y="262">true solves 41%</text>
+<text x="80" y="222">both 63%</text>
+</g>
+<text x="350" y="130" text-anchor="middle" font-family="monospace" font-size="14" fill="#1c1a17">56-point gap</text>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The gap, not the reward, is the metric.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 item 6</span> Toy outputs from the lesson's lab runner. Hacking is the red panel in the lesson's plate u06_fig04.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 6-7</span> Hack-gap bench: the lesson's audit arithmetic.</p>
+<p><input class="text" id="hgv" type="number" value="97" min="0" max="100" aria-label="verifier pass percent"> <input class="text" id="hgt" type="number" value="41" min="0" max="100" aria-label="true solve percent"> <button class="btn" id="hgbtn">Compute gap</button></p>
+<div class="chips" id="hgout"></div>
+<p class="small muted">Reproduce the lesson: 97 vs 41 gives the 56-point gap. The lesson's rule: gap over 5 points means stop and fix the verifier.</p>
+</div>
+<div class="nugget" id="w6">
+<h4>Nugget 06 · Watch the gap, not the reward</h4>
+<p class="big">When verifier pass rises and true quality falls, the policy is not failing. It wins the wrong game.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines hacking as argmax mismatch, measures the 56-point gap, and gives the audit procedure.</dd>
+<dt>Why it matters</dt><dd>More optimization makes hacking worse, not better. The audit gap is the only honest metric of the verifier's authority.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Every proxy has keyways. Measure the distance between the proxy and the goal continuously, or the optimizer will find it for you.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Train-time versus test-time: skill and chances</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 2-6</span></p>
+<p>One more training run or ten samples per query, which buys more accuracy? The toy: base p = 0.2. Train harder: p rises to 0.35. Test-time: k = 16 at p = 0.2 gives 0.97. The sampler beats the trainer when verification is cheap. Training buys skill, test-time buys chances. Skill raises p, chances exploit p through 1 - (1 - p)^k. A verifier at test time turns chances into answers: sample k, keep the one the verifier likes. The computed example: p = 0.2, k = 1, 2, 4, 8, 16 gives 0.200, 0.360, 0.590, 0.832, 0.972. Doubling k past 8 buys little.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 8, 11</span></p>
+<p>The check: measured best-of-k accuracy on 200 prompts should track the 1 - (1 - p)^k curve within a few points. A large shortfall means correlated failures or a weak selector. The broken assumption: independence. The model making the same algebra slip in all k samples makes coverage an illusion. Diversity and a real verifier are the guards. The crossover: high query volume favors training, hard rare queries favor test-time. Figure u06_fig02 plots the law.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u06-dice.webp" alt="Watercolor of a hand scattering dice, a few throws circled, a scale beside them">
+<figcaption><span class="tag tag-toy">Illustration</span> Best-of-k in one image: throw many, keep the winner. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="pass at k curve rising from 0.2 to 0.972">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">pass@k, p = 0.2 (C07 item 6)</text>
+<polyline points="80,240 170,200 260,160 350,120 440,80 530,55 620,50" fill="none" stroke="#2f4b8f" stroke-width="3"/>
+<g font-family="monospace" font-size="13" text-anchor="middle" fill="#1c1a17">
+<text x="80" y="232">0.200</text><text x="170" y="192">0.360</text><text x="260" y="152">0.590</text><text x="350" y="112">0.832</text><text x="530" y="47">0.972</text>
+</g>
+<g font-family="sans-serif" font-size="12" fill="#7a7160" text-anchor="middle">
+<text x="80" y="270">k=1</text><text x="170" y="270">2</text><text x="260" y="270">4</text><text x="350" y="270">8</text><text x="440" y="270">12</text><text x="530" y="270">16</text>
+</g>
+<text x="350" y="306" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The sampler beats the trainer when verification is cheap.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 6</span> The lesson's computed curve. The lab asks for p = 0.3, k = 8: 0.942.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 5, 14</span> pass@k bench: the lesson's law on your p and k.</p>
+<p><input class="text" id="pkp" type="number" value="0.2" step="0.05" min="0" max="1" aria-label="p"> <input class="text" id="pkk" type="number" value="16" min="1" max="128" aria-label="k"> <button class="btn" id="pkbtn">Compute pass@k</button></p>
+<div class="chips" id="pkout"></div>
+<p class="small muted">Reproduce the lesson: p 0.2, k 16 gives 0.972. Try the lab: p 0.3, k 8 gives 0.942.</p>
+</div>
+<div class="nugget" id="w7">
+<h4>Nugget 07 · Coverage is not skill</h4>
+<p class="big">Test-time compute buys chances, never skill. Sixteen throws at p = 0.2 land one at 0.97, but the model is no smarter.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the pass@k law, computes the toy curve, and names the independence break.</dd>
+<dt>Why it matters</dt><dd>When the verifier is cheap and latency allows, sampling beats training. When failures correlate, coverage is an illusion.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Separate raising the odds from buying more tickets. The cheaper one wins, until the tickets are all for the same losing number.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>Scaling data: train at the frontier</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 2-6</span></p>
+<p>10k easy prompts or 1k hard ones, which trains reasoning? The toy: easy set, base p = 0.9, group variance 0.09, weak contrast. Hard set, p = 0.5, variance 0.25, rich contrast. The hard set teaches more per rollout. Data is terrain. Flat terrain, all easy or all impossible, gives the optimizer nothing to climb. Varied terrain with the policy near p = 0.5 on most items gives the steepest learning slope. Learning signal per group scales with p(1-p), maximal at p = 0.5. Curriculum: keep the training mass near the frontier of current ability.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 6-7</span></p>
+<p>The computed example: three prompt pools with p = 0.9, 0.5, 0.1. Expected contrast per group of 8: 0.09, 0.25, 0.09. The mid pool carries 2.8x the signal of either extreme. The recipe: estimate p per prompt with 8 samples, keep prompts in the band [0.2, 0.8]. The band is the curriculum. The check: kept fraction between 30% and 70%. If nothing is kept, the policy is off the terrain. The lab asks for p = 0.7: contrast 0.21.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of contrast 0.09, 0.25, 0.09 across easy, mid, hard pools">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Contrast per group of 8 (C08 item 6)</text>
+<rect x="170" y="195" width="110" height="55" fill="#ddd3bd" rx="4"/>
+<rect x="330" y="95" width="110" height="155" fill="#2f4b8f" rx="4"/>
+<rect x="490" y="195" width="110" height="55" fill="#ddd3bd" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="225" y="185">0.09</text>
+<text x="385" y="85">0.25</text>
+<text x="545" y="185">0.09</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="225" y="270">easy p = 0.9</text>
+<text x="385" y="270">mid p = 0.5</text>
+<text x="545" y="270">hard p = 0.1</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The mid pool carries 2.8x the signal.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 item 6</span> The lesson's toy pools. Re-filter as the policy improves, the frontier moves.</figcaption>
+</figure>
+<div class="nugget" id="w8">
+<h4>Nugget 08 · Keep the mass at the frontier</h4>
+<p class="big">Items far from p = 0.5 contribute little. The band [0.2, 0.8] is the curriculum, and it follows the policy.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives the p(1-p) contrast law, prices the 2.8x signal ratio, and gives the banding recipe.</dd>
+<dt>Why it matters</dt><dd>Filtering costs 8 samples per prompt once, then training is 2-3x more sample-efficient. Noisy verifiers jitter p estimates, so fix the verifier first.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Practice at the edge of ability. Too easy is dull, too hard is noise, and the edge moves as you improve.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Verifier quality: calibrate the instrument</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 2-6</span></p>
+<p>How do you know the verifier deserves the authority you gave it? The toy: 200 gold answers all score 1, recall 1.0. 200 planted wrong answers score 1 on 36, a precision leak of 0.18. The verifier is generous, and the policy will learn generosity. The verifier is a measuring instrument. Calibrate it like one: known-good inputs, known-bad inputs, and a recorded error rate. An uncalibrated instrument corrupts every experiment built on it. Policy return under a noisy verifier equals true return plus an exploitation term, and the exploitation term grows with optimization pressure.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 6-7</span></p>
+<p>The computed example: verifier A, FP rate 0.02, final true solve 0.78. Verifier B, FP rate 0.18, final true solve 0.41, verifier pass 0.93. Same policy, same budget, the verifier decides the outcome. The audit: precision, recall, FP rate, and the worst offending patterns, run before training and weekly during. The upgrade ladder: exact match, normalized match, unit tests, model-graded spot checks, human review of high-reward outliers. The lab asks: 200 gold, 200 wrong, 36 wrong pass. Precision = 200 / 236 = 0.847.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Grouped bars: verifier A reaches 0.78 true solve, verifier B reaches 0.41 true solve with 0.93 verifier pass">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Same budget, different verifier (C09 item 6)</text>
+<rect x="150" y="90" width="110" height="160" fill="#2f4b8f" rx="4"/>
+<rect x="300" y="190" width="110" height="60" fill="#b3541e" rx="4"/>
+<rect x="450" y="80" width="110" height="170" fill="#b3541e" rx="4" opacity="0.45"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="205" y="80">0.78</text>
+<text x="355" y="180">0.41</text>
+<text x="505" y="70">0.93</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="205" y="270">A true, FP 0.02</text>
+<text x="355" y="270">B true, FP 0.18</text>
+<text x="505" y="270">B verifier pass</text>
+</g>
+<text x="350" y="306" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The verifier, not the policy, decides the outcome.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 6</span> The lesson's toy comparison. Rotate fresh adversarial items into each audit round.</figcaption>
+</figure>
+<div class="nugget" id="w9">
+<h4>Nugget 09 · The instrument decides the experiment</h4>
+<p class="big">Same policy, same budget, two verifiers: 0.78 versus 0.41. The FP rate is the variable that matters.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds the calibration toy, prices the two-verifier gap, and gives the audit cadence and upgrade ladder.</dd>
+<dt>Why it matters</dt><dd>Gradient ascent finds false positives faster than true positives when they are easier to reach. Audit before training, not after.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Calibrate the measuring instrument before you trust the experiment. The error bar on the judge is the error bar on everything.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Compute allocation: pour to the margin</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 2-6</span></p>
+<p>Budget B = 100 units, one unit trains a little, ten units buy one test sample per query for 100 queries. Where is the sweet spot? The toy model: p(T) = 1 - exp(-T/60), k = (100 - T)/10, score = 1 - (1 - p)^k. T = 40 gives 0.982, T = 80 gives 0.931. The interior wins. The budget is water, training and test-time are two fields. The marginal drop matters, not the average. Pour until the next drop helps both fields equally. Diminishing returns on both sides force an interior solution when both curves are concave.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 6, 11</span></p>
+<p>The computed example: T in {20, 40, 60, 80}, S = 0.931, 0.982, 0.982, 0.931. The plateau at 40-60 is the flat top. Figure u06_fig03. The recipe: evaluate S(T) on a grid, take the argmax and the plateau width, and replace p_fn with measured numbers before any real decision. The failure: p(T) saturates early, then all extra training is waste the model hides. Measure, do not trust the toy. The lab asks: B = 100, c = 10, T = 20. k = 8.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Score curve over T with a flat top between 40 and 60">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Score S(T), B = 100 (C10 item 6)</text>
+<polyline points="80,240 200,80 320,60 440,60 560,240" fill="none" stroke="#2f4b8f" stroke-width="3"/>
+<g font-family="monospace" font-size="13" text-anchor="middle" fill="#1c1a17">
+<text x="80" y="232">0.931</text><text x="200" y="70">0.982</text><text x="440" y="50">0.982</text><text x="560" y="232">0.931</text>
+</g>
+<g font-family="sans-serif" font-size="12" fill="#7a7160" text-anchor="middle">
+<text x="80" y="270">T=20</text><text x="200" y="270">40</text><text x="320" y="270">50</text><text x="440" y="270">60</text><text x="560" y="270">80</text>
+</g>
+<text x="350" y="306" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The flat top 40-60. The lesson's curves are labeled hypothetical.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 item 6</span> The lesson's toy sweep. In practice, decide with 2-3 probe points, not a full curve.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 4, 7</span> Allocation bench: the lesson's toy model on your budget.</p>
+<p><input class="text" id="alb" type="number" value="100" min="10" max="1000" aria-label="B"> <input class="text" id="alc" type="number" value="10" min="1" max="100" aria-label="c"> <input class="text" id="alt" type="number" value="40" min="0" max="1000" aria-label="T"> <button class="btn" id="albtn">Compute score</button></p>
+<div class="chips" id="alout"></div>
+<p class="small muted">Reproduce the lesson: B 100, c 10, T 40 gives 0.982. Try T 80 for 0.931, or the lab: T 20 gives k 8.</p>
+</div>
+<div class="nugget" id="w10">
+<h4>Nugget 10 · The interior wins</h4>
+<p class="big">All training or all test-time both lose. The marginal drop decides, and the flat top tolerates error.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds the toy budget model, sweeps the grid, and finds the plateau at 40-60.</dd>
+<dt>Why it matters</dt><dd>Real curves are measured, not assumed. If p(T) saturates early, the toy hides waste. Probe with real numbers before deciding.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Split resources by marginal return, not by habit. When both sides show diminishing returns, the optimum is inside.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Ablations: demolish one wall</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 2-6</span></p>
+<p>The full RLVR stack works. Which part carries the win? The toy: full = 0.78. No group norm = 0.61. No KL = 0.74. G = 4 instead of 32 = 0.69. The table says group norm matters most. An ablation is a controlled demolition. Remove one wall, see if the house stands. Remove two at once and you learn nothing about either. One factor per run, matched budgets everywhere else. The computed deltas vs full: group norm -0.17, KL -0.04, small G -0.09. With seed std 0.02, the group-norm delta is 8.5 sigma, real. The KL delta is 2 sigma, suggestive.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 8, 11</span></p>
+<p>The protocol: fix budget, vary one factor, replicate with seeds (>= 3), report mean and spread. The first check is on the rig: the full config rerun must reproduce the baseline within seed noise. If not, the rig is broken, not the factors. The broken assumption: factors do not interact. Group norm off AND small G together collapse training while each alone merely hurts. Note interactions as a caveat. Cost = factors x seeds x budget, so ablate what the paper claims, not everything.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of ablation deltas: minus 0.17, minus 0.04, minus 0.09">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Ablation deltas vs full 0.78 (C11 item 6)</text>
+<rect x="170" y="120" width="110" height="130" fill="#b3541e" rx="4"/>
+<rect x="330" y="210" width="110" height="40" fill="#7a8fc4" rx="4"/>
+<rect x="490" y="170" width="110" height="80" fill="#7a8fc4" rx="4"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="225" y="110">-0.17</text>
+<text x="385" y="200">-0.04</text>
+<text x="545" y="160">-0.09</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="225" y="270">no group norm</text>
+<text x="385" y="270">no KL</text>
+<text x="545" y="270">G = 4</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">8.5 sigma is real. 2 sigma is suggestive.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 6</span> The lesson's toy table. The lab asks: delta -0.17 at std 0.02 is 8.5 sigma, significant.</figcaption>
+</figure>
+<div class="nugget" id="w11">
+<h4>Nugget 11 · One factor per run</h4>
+<p class="big">The table says group norm carries the win. Two removals at once teach nothing about either.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds the toy ablation table, prices significance in sigmas, and gives the replication protocol.</dd>
+<dt>Why it matters</dt><dd>Mechanism claims need causal isolation. Match budgets, replicate seeds, check the rig first, and note interactions.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> To credit a part, remove only that part. Everything else matched, every run replicated, or the claim is decoration.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Generalization: the gym is not the street</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 2-6</span></p>
+<p>The model masters the training verifier. Does it reason or does it memorize the verifier? The toy: train on algebra, test on geometry with a fresh verifier: 0.78 to 0.52. Test on algebra with paraphrased prompts: 0.78 to 0.71. The drop pattern diagnoses memorization. Training is a gym, the world is the street. A fighter who only spars one partner loses to a new style. Three probes: paraphrase (same skill, new surface), domain shift (new skill mix), verifier shift (new referee). Each probe isolates one failure class.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 6, 8, 11</span></p>
+<p>The computed example: train 0.78, paraphrase 0.71 (-0.07), domain 0.52 (-0.26), verifier-shift 0.44 (-0.34). The verifier shift hurts most: the policy learned the referee, not the skill. The healthy ordering places the drops as paraphrase, then domain, then verifier-shift. An inverted order means a broken suite. The broken assumption: no leakage. The supposedly new domain appearing in pretraining makes the probe measure memory. Decontaminate the probes. Figure u06_fig04 is the chapter plate with the three probes listed.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of scores: train 0.78, paraphrase 0.71, domain 0.52, verifier shift 0.44">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">The three probes (C12 item 6)</text>
+<rect x="100" y="70" width="110" height="180" fill="#2f4b8f" rx="4"/>
+<rect x="260" y="85" width="110" height="165" fill="#2f4b8f" rx="4"/>
+<rect x="420" y="140" width="110" height="110" fill="#b3541e" rx="4"/>
+<rect x="580" y="162" width="110" height="88" fill="#b3541e" rx="4" opacity="0.7"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="155" y="60">0.78</text><text x="315" y="75">0.71</text><text x="475" y="130">0.52</text><text x="635" y="152">0.44</text>
+</g>
+<g font-family="sans-serif" font-size="12" fill="#7a7160" text-anchor="middle">
+<text x="155" y="270">train</text><text x="315" y="270">paraphrase</text><text x="475" y="270">domain</text><text x="635" y="270">verifier shift</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Verifier shift hurts most: the policy learned the referee.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 item 6</span> The lesson's drop table. Probes are inference-only and cheap. Building good suites is the real cost.</figcaption>
+</figure>
+<div class="nugget" id="w12">
+<h4>Nugget 12 · Read the drop pattern</h4>
+<p class="big">Paraphrase -0.07, domain -0.26, verifier-shift -0.34. The ordering is the diagnosis.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds the three-probe battery, computes the drop table, and names the leakage failure.</dd>
+<dt>Why it matters</dt><dd>A single held-out set is blind to failure class. The verifier-shift drop shows the policy learned the referee, and that tells you what to fix.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Test on new partners, new phrasings, new referees. How performance decays says more than where it lands.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Twelve nuggets, one unit</h2>
+<ol class="wisdom">
+<li><a href="#w1"><span class="wnum">01</span>Grade the work, not just the answer</a></li>
+<li><a href="#w2"><span class="wnum">02</span>The referee never blinks</a></li>
+<li><a href="#w3"><span class="wnum">03</span>Trust the tournament</a></li>
+<li><a href="#w4"><span class="wnum">04</span>Convert every group to the same coin</a></li>
+<li><a href="#w5"><span class="wnum">05</span>Diversity is the fuel</a></li>
+<li><a href="#w6"><span class="wnum">06</span>Watch the gap, not the reward</a></li>
+<li><a href="#w7"><span class="wnum">07</span>Coverage is not skill</a></li>
+<li><a href="#w8"><span class="wnum">08</span>Keep the mass at the frontier</a></li>
+<li><a href="#w9"><span class="wnum">09</span>The instrument decides the experiment</a></li>
+<li><a href="#w10"><span class="wnum">10</span>The interior wins</a></li>
+<li><a href="#w11"><span class="wnum">11</span>One factor per run</a></li>
+<li><a href="#w12"><span class="wnum">12</span>Read the drop pattern</a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cme295/lessons/u06_reasoning_scaling.md</code>, locally authored bridge content for Stanford CME295 (2026-10-06). The lesson marks reasoning models, verifiable outcomes, GRPO, and reward-hacking limitations OFFICIAL-SYLLABUS, and group normalization mechanics, sampling diversity, train-time versus test-time scaling, scaling-data analysis, verifier quality, compute allocation, ablations, and generalization tests REQUESTED-BRANCH. Every leaf is PLANNED / SOURCE ATTRIBUTION PENDING until slide or transcript extraction verifies it. No lecture transcript exists for this unit, so no lecture anecdotes appear and no sentence here reproduces an instructor's words. The compute-allocation curves are the lesson's own hypothetical toy, labeled as such. Lesson figures u06_fig01, u06_fig02, u06_fig03, and u06_fig04 are the lesson's own plates, cited where they appear. Charts on this page re-plot the lesson's computed numbers with section citations. Interactive toys run the lesson's rules on values you supply. The two watercolor illustrations are original to this companion, generated with Muse native tools, and labeled Illustration. No official course video exists for this unit, so no video is embedded.</p>
+<p><strong>Quoted words.</strong> Quoted words from the lesson source: 15. These are the lesson's own quoted arithmetic toy strings (the 17×23 chain-of-thought example and the 391 reward-hacking example), quoted verbatim. All other prose is original paraphrase. Numbers carry their lesson section above each figure and table.</p>
+<p><a href="../index.html">Back to the CME295 index</a></p>
+</footer>
+</div>
+<script>
+function el(tag,cls,text){
+var e=document.createElement(tag)
+if(cls){e.className=cls}
+if(text!=null){e.textContent=text}
+return e
+}
+function parseNums(id){
+var raw=document.getElementById(id).value
+var parts=raw.split(",")
+var out=[]
+var i=0
+while(i<parts.length){
+var v=parseFloat(parts[i])
+if(!isNaN(v)){out.push(v)}
+i=i+1
+}
+return out
+}
+function runGa(){
+var r=parseNums("gadv")
+var out=document.getElementById("gaout")
+out.textContent=""
+if(r.length<2){
+out.appendChild(el("span","chip plain","Enter at least two rewards."))
+return
+}
+var mu=0
+var i=0
+while(i<r.length){
+mu=mu+r[i]
+i=i+1
+}
+mu=mu/r.length
+var va=0
+i=0
+while(i<r.length){
+va=va+(r[i]-mu)*(r[i]-mu)
+i=i+1
+}
+var sigma=Math.sqrt(va/r.length)
+var eps=1e-8
+var a=[]
+i=0
+while(i<r.length){
+a.push((r[i]-mu)/(sigma+eps))
+i=i+1
+}
+var s=""
+i=0
+while(i<a.length){
+s=s+a[i].toFixed(2)
+if(i<a.length-1){s=s+", "}
+i=i+1
+}
+out.appendChild(el("span","chip plain","mu = "+mu.toFixed(3)))
+out.appendChild(el("span","chip plain","sigma = "+sigma.toFixed(3)))
+out.appendChild(el("span","chip plain","A = ["+s+"]"))
+}
+function runCv(){
+var p=parseFloat(document.getElementById("cvp").value)
+var out=document.getElementById("cvout")
+out.textContent=""
+if(!(p>=0)||!(p<=1)){
+out.appendChild(el("span","chip plain","Enter p in [0, 1]."))
+return
+}
+out.appendChild(el("span","chip plain","variance = "+(p*(1-p)).toFixed(4)))
+}
+function runHg(){
+var v=parseFloat(document.getElementById("hgv").value)
+var t=parseFloat(document.getElementById("hgt").value)
+var out=document.getElementById("hgout")
+out.textContent=""
+if(!(v>=0)||!(t>=0)){
+out.appendChild(el("span","chip plain","Enter non-negative percents."))
+return
+}
+var gap=v-t
+out.appendChild(el("span","chip plain","gap = "+gap.toFixed(0)+" points"))
+if(gap>5){
+out.appendChild(el("span","chip plain","Stop and fix the verifier."))
+}
+else{
+out.appendChild(el("span","chip plain","Within the 5-point budget."))
+}
+}
+function runPk(){
+var p=parseFloat(document.getElementById("pkp").value)
+var k=parseFloat(document.getElementById("pkk").value)
+var out=document.getElementById("pkout")
+out.textContent=""
+if(!(p>0)||!(p<1)||!(k>=1)){
+out.appendChild(el("span","chip plain","Enter p in (0, 1), k >= 1."))
+return
+}
+var v=1-Math.pow(1-p,k)
+out.appendChild(el("span","chip plain","pass@k = "+v.toFixed(3)))
+}
+function runAl(){
+var B=parseFloat(document.getElementById("alb").value)
+var c=parseFloat(document.getElementById("alc").value)
+var T=parseFloat(document.getElementById("alt").value)
+var out=document.getElementById("alout")
+out.textContent=""
+if(!(B>0)||!(c>0)||!(T>=0)||T>B){
+out.appendChild(el("span","chip plain","Enter B > T >= 0, c > 0."))
+return
+}
+var p=1-Math.exp(-T/60)
+var k=(B-T)/c
+var s=1-Math.pow(1-p,k)
+out.appendChild(el("span","chip plain","p = "+p.toFixed(3)))
+out.appendChild(el("span","chip plain","k = "+k.toFixed(1)))
+out.appendChild(el("span","chip plain","score = "+s.toFixed(3)))
+}
+document.getElementById("gabtn").addEventListener("click",runGa)
+document.getElementById("cvbtn").addEventListener("click",runCv)
+document.getElementById("hgbtn").addEventListener("click",runHg)
+document.getElementById("pkbtn").addEventListener("click",runPk)
+document.getElementById("albtn").addEventListener("click",runAl)
+runGa()
+runCv()
+runHg()
+runPk()
+runAl()
+</script>
+</body>
+</html>

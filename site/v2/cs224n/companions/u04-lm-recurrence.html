@@ -437,8 +437,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-companion">companion</span> Companion voice: the idea above the tag is from the lesson. The generalization below it is the companion’s.</p>
 <p class="small muted">Provenance: no full lecture transcript exists for this session. The 2026 lecture videos are restricted and unviewed, and the 2024 playlist was not viewed. This page narrates the lesson document, not a video. The session title (S05, Language Models and RNNs) and the reading list are OFFICIAL-SOURCE via SRC-02. The concept inventory is REQUESTED-BRANCH.</p>
 </div>
-</header><figure class="paint wide" data-entrance="bloom" data-hero="1">
-<div class="frame"><div class="stage"><img alt="Watercolor of paper boats on a river, ripples merging into one current" class="base" fetchpriority="high" loading="lazy" src="assets/u04-hero.jpg"/></div></div>
+</header><figure data-phase2="1" data-scene="u04-lm-recurrence-hero" class="paint wide" data-entrance="bloom" data-hero="1">
+<div class="frame"><div class="stage"><img alt="Watercolor of paper boats on a river, ripples merging into one current" class="base" fetchpriority="high" loading="lazy" src="assets/u04-hero.jpg"/><img alt="" aria-hidden="true" class="ly mul" data-obj="hero-subject" data-depth="14" loading="lazy" src="assets/u04-lm-recurrence-hero-layer.png" style="left:5%;top:5%;width:90%"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The U04 idea in one image: each word drops a stone, and the ripples merge into one current. The state is the river. The chain rule is the ripple arithmetic. Watercolor, original to this companion.</figcaption></figure>
 <section class="block col" data-chapter="1" data-title="One sentence, three small bets" id="s1"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">1</span></div><div><p class="ch-meta"><span class="ts">Unit 1</span> · C01</p><h2>One sentence, three small bets</h2></div></div>
 <div class="prose-narrow">
@@ -447,7 +447,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C01 §5, §6</span></p>
 <p>The chain rule is exact: P(A, B) = P(A) P(B | A), applied n − 1 times. The log turns the product into a sum, so the total loss is a sum of per-position losses. Toy numbers, hand-computed from the U01 script counts and labeled as such: P(the) = 11/35 = 0.314, P(cat | the) = 0.24 (smoothed), P(sat | cat) = 0.158 (smoothed). Log-likelihood of “the cat sat” = log 0.314 + log 0.24 + log 0.158 = −1.158 − 1.427 − 1.845 = −4.430. Perplexity = exp(4.430/3) = 4.38.</p>
 </div>
-<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-bets"><div class="tag-price"><span class="tag-big">1</span><span class="tag-unit">Nugget 1 · From the lesson C01 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Training is parallel. Generation is serial. The same factorization serves both, and the mismatch between them is where the bugs live.</p><p><b>Why it matters. </b>Every position contributes equally to the loss, and no position is special. The log makes the product a sum, so one bad bet at one position costs the same as one bad bet anywhere else.</p><p><b>Transfer. </b>Choose autoregressive when the task generates text left to right. Choose bidirectional when the task reads whole inputs, as in classification. Train left-to-right, then ask for the middle word: the model cannot use the right side, because the factorization fixes the information flow.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-bets"><div class="tag-price"><span class="tag-big">1 bad</span><span class="tag-unit">bet at one position costs the same · From the lesson C01 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Training is parallel. Generation is serial. The same factorization serves both, and the mismatch between them is where the bugs live.</p><p><b>Why it matters. </b>Every position contributes equally to the loss, and no position is special. The log makes the product a sum, so one bad bet at one position costs the same as one bad bet anywhere else.</p><p><b>Transfer. </b>Choose autoregressive when the task generates text left to right. Choose bidirectional when the task reads whole inputs, as in classification. Train left-to-right, then ask for the middle word: the model cannot use the right side, because the factorization fixes the information flow.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Training wheels that come off" id="s2"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">2</span></div><div><p class="ch-meta"><span class="ts">Unit 2</span> · C02</p><h2>Training wheels that come off</h2></div></div>
 <div class="prose-narrow">
@@ -479,7 +479,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 §11</span></p>
 <p>The broken assumption is that lower perplexity means a better model. Three breaks: memorization (1.326 on training proves nothing), tokenizer mismatch (finer tokens inflate the count), and the task gap (great perplexity, poor free-run). The number is a filter, not a verdict.</p>
 </div>
-<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-filter"><div class="tag-price"><span class="tag-big">3</span><span class="tag-unit">Nugget 3 · From the lesson C03 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C03 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Perplexity is a filter, not a verdict. A model that memorizes six sentences reaches 1.326 and knows nothing about the seventh.</p><p><b>Why it matters. </b>Do not compare this number with any other model’s perplexity unless the tokenization matches. Bits per byte is the tokenizer-independent alternative.</p><p><b>Transfer. </b>Choose perplexity for quick comparison on a fixed tokenizer. Choose human eval when the decision matters. The number measures fit to the evaluated distribution, nothing more.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
+<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-filter"><div class="tag-price"><span class="tag-big tight">6 sentences</span><span class="tag-unit">From the lesson C03 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C03 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Perplexity is a filter, not a verdict. A model that memorizes six sentences reaches 1.326 and knows nothing about the seventh.</p><p><b>Why it matters. </b>Do not compare this number with any other model’s perplexity unless the tokenization matches. Bits per byte is the tokenizer-independent alternative.</p><p><b>Transfer. </b>Choose perplexity for quick comparison on a fixed tokenizer. Choose human eval when the decision matters. The number measures fit to the evaluated distribution, nothing more.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="The state is a lossy compressor" id="s4"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">4</span></div><div><p class="ch-meta"><span class="ts">Unit 4</span> · C04</p><h2>The state is a lossy compressor</h2></div></div>
 <div class="prose-narrow">
@@ -499,7 +499,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 §11</span></p>
 <p>The broken assumption is that the state remembers everything. d = 2, n = 100: the state cannot hold 100 words. Early words are crushed by repeated tanh squeezes. The failure is structural. Longer sequences need larger d or a different architecture.</p>
 </div>
-<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-compressor"><div class="tag-price"><span class="tag-big">4</span><span class="tag-unit">Nugget 4 · From the lesson C04 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C04 §3, §11</div><div class="tag-eye">The lesson</div><p class="">The state is a lossy compressor, and its capacity is the model’s memory. The tying is the point: one set of weights works for any length.</p><p><b>Why it matters. </b>The decayed trace (0.363 in h_2’s first coordinate) is the memory. It fades by the recurrent weight every step, which is why the state cannot hold 100 words.</p><p><b>Transfer. </b>Choose RNN when the sequence is processed online and the state is a natural fit, as in streaming. Choose attention when training speed and long-range access matter more.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
+<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-compressor"><div class="tag-price"><span class="tag-big">100 words</span><span class="tag-unit">From the lesson C04 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C04 §3, §11</div><div class="tag-eye">The lesson</div><p class="">The state is a lossy compressor, and its capacity is the model’s memory. The tying is the point: one set of weights works for any length.</p><p><b>Why it matters. </b>The decayed trace (0.363 in h_2’s first coordinate) is the memory. It fades by the recurrent weight every step, which is why the state cannot hold 100 words.</p><p><b>Transfer. </b>Choose RNN when the sequence is processed online and the state is a natural fit, as in streaming. Choose attention when training speed and long-range access matter more.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="BPTT: one matrix, ten contributions" id="s5"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">5</span></div><div><p class="ch-meta"><span class="ts">Unit 5</span> · C05</p><h2>BPTT: one matrix, ten contributions</h2></div></div>
 <div class="prose-narrow">
@@ -519,7 +519,7 @@ span.ptag, .ptag {
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
 <p>The gradient for step 1 passes through 19 matrix products to reach the loss at step 20. What is its size? Linear RNN, dh_t/dh_{t−1} = ρ I. Then dh_20/dh_0 has norm ρ^20. ρ = 0.8 → 0.0115 (vanished). ρ = 1.2 → 38.34 (exploded). The product decides, exponentially. Each time step multiplies the gradient by a Jacobian. Twenty multiplications by 0.8 give about 0.01: the early steps get no learning signal. Twenty multiplications by 1.2 give about 38: the updates explode. Only Jacobians with norm near 1.0 let gradients travel.</p>
-<figure class="paint inset" data-entrance="sketch">
+<figure data-phase2="1" data-scene="u04-lm-recurrence-s2" class="paint inset" data-entrance="sketch">
 <div class="frame"><div class="stage"><img alt="Watercolor of a chain of rings fading into mist on one side and growing explosively on the other" class="base" loading="lazy" src="assets/u04-vanish.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The C06 product as watercolor: one chain dissolves into mist (ρ = 0.8), its mirror explodes bright (ρ = 1.2). The boundary at 1.0 is a knife edge. Watercolor, original to this companion.</figcaption></figure>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §6</span></p>
@@ -529,7 +529,7 @@ span.ptag, .ptag {
 <div id="chart-rho"></div>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §6</span> Gradient norm versus time on a log scale, from <code>compute_u04.py</code> (executed 2026-10-06). The norm = 1 line is the knife edge. ρ = 0.8 falls to 0.0115 at T = 20. ρ = 1.2 climbs to 38.34.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="nugget-product"><div class="tag-price"><span class="tag-big">6</span><span class="tag-unit">Nugget 6 · From the lesson C06 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C06 §3, §11</div><div class="tag-eye">The lesson</div><p class="">The product decides, exponentially. At ρ = 0.8 and T = 100, the gradient is 2e-10. No optimizer recovers a signal that small. The information is gone, not just quiet.</p><p><b>Why it matters. </b>tanh′ ≤ 1 helps, but it cannot fix a bad W_h. More steps of BPTT cannot fix a vanishing product either. The architecture must change.</p><p><b>Transfer. </b>Choose the fix by the symptom: nan → clip (C08), flat long-range learning → gates (C07). Diagnose first, then treat.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
+<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="nugget-product"><div class="tag-price"><span class="tag-big">5</span><span class="tag-unit">Nugget 6 · From the lesson C06 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C06 §3, §11</div><div class="tag-eye">The lesson</div><p class="">The product decides, exponentially. At ρ = 0.8 and T = 100, the gradient is 2e-10. No optimizer recovers a signal that small. The information is gone, not just quiet.</p><p><b>Why it matters. </b>tanh′ ≤ 1 helps, but it cannot fix a bad W_h. More steps of BPTT cannot fix a vanishing product either. The architecture must change.</p><p><b>Transfer. </b>Choose the fix by the symptom: nan → clip (C08), flat long-range learning → gates (C07). Diagnose first, then treat.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
 <div class="toy">
 <p><span class="ptag ptag-illustration">Illustration</span> Product probe. The bound is C06’s: norm = ρ^T. Slide ρ and read the norm at T = 20.</p>
 <p>ρ (spectral factor) <input aria-label="Rho" class="range" id="rho" max="1.5" min="0.5" step="0.05" type="range" value="0.8"/></p>
@@ -540,13 +540,13 @@ span.ptag, .ptag {
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
 <p>The product of Jacobians vanishes. Can the architecture protect the gradient? The LSTM cell state: c_t = f_t × c_{t−1} + i_t × g_t. When the forget gate f_t = 1, dc_t/dc_{t−1} = 1: the gradient flows unchanged. The gate learns when to protect and when to forget. Three gates, three jobs. Forget: what to erase from memory. Input: what to write. Output: what to reveal. The cell state is the protected conveyor belt. The gates are the loaders and unloaders. GRU merges the belt and the output (two gates instead of three): cheaper, usually as good.</p>
-<figure class="paint inset" data-entrance="bloom">
+<figure data-phase2="1" data-scene="u04-lm-recurrence-s3" class="paint inset" data-entrance="bloom">
 <div class="frame"><div class="stage"><img alt="Watercolor of three canal gates, one fully open, one half-closed, one nearly shut" class="base" loading="lazy" src="assets/u04-gates.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The gates as watercolor: the open gate passes the gradient unchanged (the constant error carousel), the shut gate forgets. The network learns which gate to open. Watercolor, original to this companion.</figcaption></figure>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 §5, §6</span></p>
 <p>Toy, hand-computed and labeled as such: c_0 = 2.0, forget gates (1, 1, 1, 0.1) over 4 steps, input term 0. c_4 = 2.0 × 1 × 1 × 1 × 0.1 = 0.2. Gradient dc_4/dc_0 = 0.1: the gate chose to forget at step 4, and the gradient reflects the choice. With f = 1 everywhere, the gradient would be exactly 1.0 across any number of steps.</p>
 </div>
-<aside class="tag" data-chapter="s7" data-sign-label="Unit" data-sign-num="7" id="nugget-gates"><div class="tag-price"><span class="tag-big">5</span><span class="tag-unit">Nugget 5 · From the lesson C07 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C07 §3, §11</div><div class="tag-eye">The lesson</div><p class="">The gate chose to forget, and the gradient reflects the choice. When f = 1 everywhere, the gradient is exactly 1.0 across any number of steps.</p><p><b>Why it matters. </b>Gates do not solve vanishing gradients completely. The gates themselves are learned through the same products, and a badly initialized forget gate (near 0) wipes memory every step. The forget-gate bias trick (init at 1.0) exists because of this failure.</p><p><b>Transfer. </b>Choose LSTM when the task needs fine memory control and compute allows. Choose GRU for a cheaper close substitute. Choose vanilla RNN almost never: it is the teaching tool, not the production tool. All three lose to attention at scale (U05).</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 07</span></div></div></aside>
+<aside class="tag" data-chapter="s7" data-sign-label="Unit" data-sign-num="7" id="nugget-gates"><div class="tag-price"><span class="tag-big">3 lose</span><span class="tag-unit">attention at scale U05 · From the lesson C07 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C07 §3, §11</div><div class="tag-eye">The lesson</div><p class="">The gate chose to forget, and the gradient reflects the choice. When f = 1 everywhere, the gradient is exactly 1.0 across any number of steps.</p><p><b>Why it matters. </b>Gates do not solve vanishing gradients completely. The gates themselves are learned through the same products, and a badly initialized forget gate (near 0) wipes memory every step. The forget-gate bias trick (init at 1.0) exists because of this failure.</p><p><b>Transfer. </b>Choose LSTM when the task needs fine memory control and compute allows. Choose GRU for a cheaper close substitute. Choose vanilla RNN almost never: it is the teaching tool, not the production tool. All three lose to attention at scale (U05).</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 07</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Clipping is a speed limit" id="s8"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">8</span></div><div><p class="ch-meta"><span class="ts">Unit 8</span> · C08</p><h2>Clipping is a speed limit</h2></div></div>
 <div class="prose-narrow">
@@ -618,7 +618,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 §6</span></p>
 <p>The lesson states the mechanism as a designed experiment, not a result: the trained RNN scores 0.862 next-word accuracy on length-6 training sentences, and a drop is expected on length-12 continuations. The unit’s arc ends here: U05 is the answer to this concept’s problem.</p>
 </div>
-<aside class="tag" data-chapter="s12" data-sign-label="Unit" data-sign-num="12" id="nugget-offsupport"><div class="tag-price"><span class="tag-big">10</span><span class="tag-unit">Nugget 10 · From the lesson C12 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · From the lesson C12 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Generalization is measured off-support, never on it. 0.862 on six memorized sentences means the model learned the sentences, not the language.</p><p><b>Why it matters. </b>The failure is predictable from the unit’s mechanisms: lossy compression (C04) plus vanishing products (C06). That predictability is the point of the synthesis.</p><p><b>Transfer. </b>Choose RNNs where they fit: short sequences, streaming. Choose attention when length generalization matters. The ceiling is architectural, not a tuning problem.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 12</span></div></div></aside>
+<aside class="tag" data-chapter="s12" data-sign-label="Unit" data-sign-num="12" id="nugget-offsupport"><div class="tag-price"><span class="tag-big tight">6 memorized</span><span class="tag-unit">sentences means the model learned the sentences · From the lesson C12 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · From the lesson C12 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Generalization is measured off-support, never on it. 0.862 on six memorized sentences means the model learned the sentences, not the language.</p><p><b>Why it matters. </b>The failure is predictable from the unit’s mechanisms: lossy compression (C04) plus vanishing products (C06). That predictability is the point of the synthesis.</p><p><b>Transfer. </b>Choose RNNs where they fit: short sequences, streaming. Choose attention when length generalization matters. The ceiling is architectural, not a tuning problem.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 12</span></div></div></aside>
 </section>
 
 <section class="col" id="playbook-sec">
@@ -1464,5 +1464,43 @@ runPad()
   });
 })();
 
-</script></body>
+</script><script>
+(function(){if(!window.CompanionFX)return;var FX=window.CompanionFX;
+FX.registerScene('u04-lm-recurrence-hero',{
+ init:function(F,FX){
+  F._m=FX.motes(F.stage,F.W,F.H,24,7);
+  F._g=FX.glows(F.stage,F.W,F.H,[[F.W*0.5,F.H*0.30,Math.min(F.W,F.H)*0.22]],'screen','#E8A94B')[0];
+ },
+ pose:function(S,FX){
+  var F=S.F;F._m.tick(S.t);
+  F._g.style.opacity=(0.20+0.10*FX.flicker(S.t,3)).toFixed(3);
+  return {'hero-subject':{x:7*Math.sin(S.t*0.6),y:5*Math.sin(S.t*0.83+1),r:0,s:1,o:1}};
+ } });
+FX.registerScene('u04-lm-recurrence-s2',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+FX.registerScene('u04-lm-recurrence-s3',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+})();
+</script>
+</body>
 </html>

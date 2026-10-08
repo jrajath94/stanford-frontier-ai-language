@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 <!DOCTYPE html>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -432,8 +434,8 @@ span.ptag, .ptag {
 <h1>Explore by sampling, duel by comparing</h1>
 <p class="dek">How do we act under uncertainty without a hand-tuned exploration knob? Sample a world from the posterior and act as if it were true. Score candidate queries by expected usefulness. And when feedback is only a win or a loss, duel. This unit builds Thompson sampling, acquisition functions, and the dueling bandit.</p>
 </header>
-<figure class="paint inset" data-entrance="bloom">
-<div class="frame"><div class="stage"><img alt="Watercolor of three paths up a hill, one straight, one meandering, one circling" class="base" loading="lazy" src="assets/u07-regret.jpg"/></div></div>
+<figure class="paint inset" data-entrance="bloom" data-hero="" data-scene="p2-h-u07-hero">
+<div class="frame"><div class="stage"><img alt="Watercolor of three paths up a hill, one straight, one meandering, one circling" class="base" fetchpriority="high" height="1280" loading="lazy" src="assets/u07-regret.jpg" width="1920"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> Three policies as watercolor. One path climbs straight, one meanders, one circles the bottom. The regret curves tell which is which. Watercolor, original to this companion.</figcaption></figure>
 <div class="notice">
 <p><strong>Sourcing.</strong> No full transcript exists for sessions S12 and S13. This companion narrates <code>content/v2/cs329h/lessons/u07_lesson.md</code>. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING.</p>
@@ -467,8 +469,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 · Contract 3, 5, 6</span></p>
 <p>An acquisition function turns the posterior into a shopping list. UCB is optimistic: mu + k sd. EI is the expected gain over the best so far. PI is the chance of any gain. The lesson toy: f_best = 1.0, candidates (mu 1.2, sd 0.1), (mu 0.9, sd 0.5), (mu 0.5, sd 0.8). Computed: UCB at k = 2 gives 1.40, 1.90, 2.10. EI gives 0.201, 0.153, 0.130. PI gives 0.977, 0.421, 0.266. The three rules rank differently: UCB picks candidate 3, EI picks candidate 1. Lesson figure u07_f03 draws the three curves with markers.</p>
 </div>
-<figure class="paint inset" data-entrance="sketch">
-<div class="frame"><div class="stage"><img alt="Watercolor of a magnifying glass over a rising curve" class="base" loading="lazy" src="assets/u07-curve.jpg"/></div></div>
+<figure class="paint inset" data-entrance="sketch" data-scene="p2-h-u07-curve">
+<div class="frame"><div class="stage"><img alt="Watercolor of a magnifying glass over a rising curve" class="base" height="1280" loading="lazy" src="assets/u07-curve.jpg" width="1920"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The acquisition as watercolor. The glass scores each point on the curve. Optimism, expected gain, and chance of gain point at different peaks. Watercolor, original to this companion.</figcaption></figure>
 <div class="toy">
 <p><span class="ptag ptag-illustration">Illustration</span> The acquisition toy. Move k and the browser recomputes UCB for the lesson's three candidates. EI and PI follow the closed forms.</p>
@@ -476,9 +478,9 @@ span.ptag, .ptag {
 <p class="small" id="acout">Scores appear here.</p>
 <p class="small muted"><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 · Contract 6</span> At k = 2 the readout must show UCB 1.40, 1.90, 2.10 and EI 0.201, 0.153, 0.130 with PI 0.977, 0.421, 0.266.</p>
 </div>
-<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-matching"><div class="tag-price"><span class="tag-big">1</span><span class="tag-unit">Nugget 1 · From the lesson C01 · Contract 3, 7</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">Probability matching: pull each arm in proportion to its chance of being best. P(arm 1 best) = 0.850, so arm 1 gets about 85 percent of pulls.</p><p><b>Why it matters. </b>Exploration falls out of the posterior with no tuning knob. The only requirement is a posterior you can sample.</p><p><b>Transfer. </b>Clinical trials. Assign patients to treatments in proportion to each treatment's chance of being best. Ethics and learning agree.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
-<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-lockin"><div class="tag-price"><span class="tag-big">2</span><span class="tag-unit">Nugget 2 · From the lesson C02 · Contract 3, 7</span></div><div class="tag-body"><div class="tag-title">Nugget 2 · From the lesson C02 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">Greedy regret 89.6 against TS 4.0. The lock-in tax is the price of never exploring.</p><p><b>Why it matters. </b>Greedy looks efficient: it always pulls the current best. The 89.6 is what that efficiency costs when the current best is wrong.</p><p><b>Transfer. </b>A new city. Eating at the first good restaurant every night is greedy. The 89.6 is every better meal you never found.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
-<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-rank"><div class="tag-price"><span class="tag-big">3</span><span class="tag-unit">Nugget 3 · From the lesson C03 · Contract 3, 7</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C03 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">UCB picks candidate 3, EI picks candidate 1. The acquisition function is a choice about what exploration means.</p><p><b>Why it matters. </b>There is no neutral way to score a candidate query. Optimism, expected gain, and chance of gain are three different bets.</p><p><b>Transfer. </b>Choosing the next lab experiment. UCB runs the wild idea, EI refines the leader. Name which game you play.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-matching"><div class="tag-price"><span class="tag-big">0.850</span><span class="tag-unit">P(arm 1 best), pull it 85%</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">Probability matching: pull each arm in proportion to its chance of being best. P(arm 1 best) = 0.850, so arm 1 gets about 85 percent of pulls.</p><p><b>Why it matters. </b>Exploration falls out of the posterior with no tuning knob. The only requirement is a posterior you can sample.</p><p><b>Transfer. </b>Clinical trials. Assign patients to treatments in proportion to each treatment's chance of being best. Ethics and learning agree.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-lockin"><div class="tag-price"><span class="tag-big">89.6/4.0</span><span class="tag-unit">greedy regret vs Thompson sampling</span></div><div class="tag-body"><div class="tag-title">Nugget 2 · From the lesson C02 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">Greedy regret 89.6 against TS 4.0. The lock-in tax is the price of never exploring.</p><p><b>Why it matters. </b>Greedy looks efficient: it always pulls the current best. The 89.6 is what that efficiency costs when the current best is wrong.</p><p><b>Transfer. </b>A new city. Eating at the first good restaurant every night is greedy. The 89.6 is every better meal you never found.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-rank"><div class="tag-price"><span class="tag-big">3 vs 1</span><span class="tag-unit">UCB picks 3, EI picks 1</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C03 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">UCB picks candidate 3, EI picks candidate 1. The acquisition function is a choice about what exploration means.</p><p><b>Why it matters. </b>There is no neutral way to score a candidate query. Optimism, expected gain, and chance of gain are three different bets.</p><p><b>Transfer. </b>Choosing the next lab experiment. UCB runs the wild idea, EI refines the leader. Name which game you play.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="The price of promises" id="s2"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">2</span></div><div><p class="ch-meta"><span class="ts">Unit 2</span> · C04, C11, C12</p><h2>The price of promises</h2></div></div>
 <div class="prose-narrow">
@@ -502,8 +504,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 · Contract 3, 5, 6</span></p>
 <p>A fair comparison fixes the world and varies only the policy: same bandit, T = 300, 20 seeds, metric cumulative regret, report mean plus or minus 1.96 standard errors. The lesson's protocol arithmetic: TS mean regret 12.3 with sd 4.0 gives se = 4.0/sqrt(20) = 0.894 and CI [10.5, 14.1]. Anything less is a demo, not an experiment. The values are labeled hypothetical protocol arithmetic in the lesson.</p>
 </div>
-<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-promise"><div class="tag-price"><span class="tag-big">4</span><span class="tag-unit">Nugget 4 · From the lesson C04 · Contract 3, 7</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C04 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">sqrt(T) against linear at T = 1000: 31.6 against 1000. The bound is a promise, the assumptions are the fine print.</p><p><b>Why it matters. </b>The guarantee voids the moment the world drifts. A non-stationary world makes measured regret linear no matter what the theorem says.</p><p><b>Transfer. </b>A warranty. The promise covers the listed conditions. Read the panel before you rely on it.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
-<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-budget"><div class="tag-price"><span class="tag-big">5</span><span class="tag-unit">Nugget 5 · From the lesson C11 · Contract 3, 7</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C11 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">8,000,000 flops against 4 operations per round. The compute budget picks the algorithm before the theory does.</p><p><b>Why it matters. </b>The elegant method you cannot afford per round is not your method. Budget is a design constraint, not an afterthought.</p><p><b>Transfer. </b>A phone app. The model that needs a server farm per decision does not ship. The budget chose.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
+<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-promise"><div class="tag-price"><span class="tag-big">31.6/1000</span><span class="tag-unit">root-T bound vs linear at 1000</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C04 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">sqrt(T) against linear at T = 1000: 31.6 against 1000. The bound is a promise, the assumptions are the fine print.</p><p><b>Why it matters. </b>The guarantee voids the moment the world drifts. A non-stationary world makes measured regret linear no matter what the theorem says.</p><p><b>Transfer. </b>A warranty. The promise covers the listed conditions. Read the panel before you rely on it.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
+<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-budget"><div class="tag-price"><span class="tag-big">8M/4</span><span class="tag-unit">flops vs 4 ops per round</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C11 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">8,000,000 flops against 4 operations per round. The compute budget picks the algorithm before the theory does.</p><p><b>Why it matters. </b>The elegant method you cannot afford per round is not your method. Budget is a design constraint, not an afterthought.</p><p><b>Transfer. </b>A phone app. The model that needs a server farm per decision does not ship. The budget chose.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Duels, not scores" id="s3"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">3</span></div><div><p class="ch-meta"><span class="ts">Unit 3</span> · C05, C06, C07, C09</p><h2>Duels, not scores</h2></div></div>
 <div class="prose-narrow">
@@ -533,8 +535,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5, 6</span></p>
 <p>Noise sets the irreducible error. With Gumbel noise, P(i beats j) = sigma(u_i - u_j) exactly. The lesson toy: gap 0.4 gives single-duel P = 0.599. A majority vote over 9 duels raises it to 0.731 by the binomial tail. More duels average the noise out at 1/sqrt(n), but the noise never vanishes: even the true best arm loses sometimes.</p>
 </div>
-<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-bit"><div class="tag-price"><span class="tag-big">6</span><span class="tag-unit">Nugget 6 · From the lesson C05 · Contract 3, 7</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C05 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">One bit per duel. The Bradley-Terry model turns strengths into win probabilities, and the matrix is skew-symmetric in logit space.</p><p><b>Why it matters. </b>Humans compare better than they score. The duel is the query format that matches the rater, and BT is the model that reads it.</p><p><b>Transfer. </b>Chess Elo. Nobody scores a game 0.73. They win, lose, or draw, and the rating reads the bits.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
-<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-jensen"><div class="tag-price"><span class="tag-big">7</span><span class="tag-unit">Nugget 7 · From the lesson C06 · Contract 3, 7</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C06 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">E[sigma] is not sigma(E). Uncertainty pulls win probabilities toward 0.5: 0.599 becomes 0.5930, 0.846 becomes 0.8360.</p><p><b>Why it matters. </b>The plug-in estimate is fast and overconfident. Averaging over the posterior is the honest probability, and it is always closer to a coin flip.</p><p><b>Transfer. </b>Election forecasts. The point estimate says 60 percent. The honest forecast, averaged over uncertainty, says less.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
+<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-bit"><div class="tag-price"><span class="tag-big">1 bit</span><span class="tag-unit">one duel, one bit</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C05 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">One bit per duel. The Bradley-Terry model turns strengths into win probabilities, and the matrix is skew-symmetric in logit space.</p><p><b>Why it matters. </b>Humans compare better than they score. The duel is the query format that matches the rater, and BT is the model that reads it.</p><p><b>Transfer. </b>Chess Elo. Nobody scores a game 0.73. They win, lose, or draw, and the rating reads the bits.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
+<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-jensen"><div class="tag-price"><span class="tag-big">0.599→0.593</span><span class="tag-unit">uncertainty pulls toward 0.5</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C06 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">E[sigma] is not sigma(E). Uncertainty pulls win probabilities toward 0.5: 0.599 becomes 0.5930, 0.846 becomes 0.8360.</p><p><b>Why it matters. </b>The plug-in estimate is fast and overconfident. Averaging over the posterior is the honest probability, and it is always closer to a coin flip.</p><p><b>Transfer. </b>Election forecasts. The point estimate says 60 percent. The honest forecast, averaged over uncertainty, says less.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Search and stop" id="s4"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">4</span></div><div><p class="ch-meta"><span class="ts">Unit 4</span> · C08, C10</p><h2>Search and stop</h2></div></div>
 <div class="prose-narrow">
@@ -543,7 +545,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5, 6</span></p>
 <p>A stopping rule converts uncertainty into a decision. Rule A: stop when the max posterior winner probability crosses 1 - delta. Rule B: stop at N_max rounds, whichever comes first. The lesson toy at seed 2 with leader-focused duels: P(arm 1 is the Copeland winner) crosses 0.95 at round 43, and the budget of 300 never binds. The lesson's Contracts 2 and 8 leave the round as a placeholder while Contract 6 reports 43. Both are stated as written. Without rule B, a misspecified model can query forever.</p>
 </div>
-<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-stop"><div class="tag-price"><span class="tag-big">8</span><span class="tag-unit">Nugget 8 · From the lesson C10 · Contract 3, 7</span></div><div class="tag-body"><div class="tag-title">Nugget 8 · From the lesson C10 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">Stop at 0.95 confidence or at the budget, whichever comes first. The toy stops at round 43. The budget of 300 never binds.</p><p><b>Why it matters. </b>Rule A controls the error rate, rule B controls the cost. A stopping rule with only one of them is half a rule: confidence without a budget can query forever under misspecification.</p><p><b>Transfer. </b>Interviewing candidates. Stop when one candidate is clearly ahead, or when the interview budget runs out. Whichever comes first.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
+<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-stop"><div class="tag-price"><span class="tag-big">43</span><span class="tag-unit">rounds, the 300 budget never bound</span></div><div class="tag-body"><div class="tag-title">Nugget 8 · From the lesson C10 · Contract 3, 7</div><div class="tag-eye">The lesson</div><p class="">Stop at 0.95 confidence or at the budget, whichever comes first. The toy stops at round 43. The budget of 300 never binds.</p><p><b>Why it matters. </b>Rule A controls the error rate, rule B controls the cost. A stopping rule with only one of them is half a rule: confidence without a budget can query forever under misspecification.</p><p><b>Transfer. </b>Interviewing candidates. Stop when one candidate is clearly ahead, or when the interview budget runs out. Whichever comes first.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
 </section>
 <section class="col" id="playbook-sec">
 <h3 class="sub">The playbook</h3>
@@ -1235,5 +1237,46 @@ updAc()
   });
 })();
 
-</script></body>
+</script><script>
+<script>
+/* Phase 2 scenes (Builder 2): CompanionFX overlay life. Pure code, zero image cost. */
+(function(){
+var FX = window.CompanionFX; if(!FX) return;
+FX.registerScene("p2-h-u07-hero", {
+  init: function(F, FX) {
+    F._fx_spark = FX.sparkles(F.stage, F.W, F.H, [[400, 1100, 20], [700, 1000, 22], [1100, 1050, 20], [1400, 1100, 22]]);
+    F._fx_motes = FX.motes(F.stage, F.W, F.H, 8, 27);
+  },
+  pose: function(S, FX) {
+    var t = S.t, F = S.F, et = S.et;
+    var k = FX.smoothstep(0, 1, Math.min(1, et/1.4));
+    F._fx_spark.forEach(function(st,i){
+      var tw = 0.55 + 0.45*FX.flicker(t, i*1.7);
+      st.style.transform = 'scale(' + (k*tw).toFixed(3) + ')';
+    });
+    F._fx_motes.tick(t);
+    return {};
+  }
+});
+FX.registerScene("p2-h-u07-curve", {
+  init: function(F, FX) {
+    F._fx_glows = FX.glows(F.stage, F.W, F.H, [[960, 640, 150]], 'screen', '#FFE9B0');
+    F._fx_spark = FX.sparkles(F.stage, F.W, F.H, [[800, 500, 20]]);
+  },
+  pose: function(S, FX) {
+    var t = S.t, F = S.F, et = S.et;
+    F._fx_glows.forEach(function(c,i){
+      c.style.opacity = (0.3+0.22*FX.flicker(t, i*2.3)).toFixed(3);
+    });
+    var k = FX.smoothstep(0, 1, Math.min(1, et/1.4));
+    F._fx_spark.forEach(function(st,i){
+      var tw = 0.55 + 0.45*FX.flicker(t, i*1.7);
+      st.style.transform = 'scale(' + (k*tw).toFixed(3) + ')';
+    });
+    return {};
+  }
+});
+})();
+</script>
+</body>
 </html>

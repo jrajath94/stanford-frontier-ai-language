@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U02 Companion: Word Vectors and Cooccurrence · CS224N</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">Stanford CS224N · Unit 02 · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero" id="top">
+<p class="kicker">Companion 2 of 15 · narrated from the lesson document</p>
+<h1>Word vectors and cooccurrence</h1>
+<p class="dek">Words become addresses in a space, and the space learns meaning from company. This companion walks the full arc of Unit 02: from one-hot name tags to skip-gram, negative sampling, GloVe, the PMI identity, analogies, and the honest limits of the plot.</p>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> The idea, and every number beside it, comes from the cited section of <code>lessons/u02_word_vectors.md</code>. The phrasing is the companion’s.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-companion">companion</span> Companion voice: the idea above the tag is from the lesson. The generalization below it is the companion’s.</p>
+<p class="small muted">Provenance: no full lecture transcript exists for this session. The 2026 lecture videos are restricted and unviewed, and the 2024 playlist was not viewed. This page narrates the lesson document, not a video. The session title (S02, Word Vectors) and the reading list (word2vec, negative sampling, GloVe paper titles) are OFFICIAL-SOURCE via SRC-02. The concept inventory is REQUESTED-BRANCH.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u02-hero.jpg" alt="Watercolor of glowing word-dots clustered into constellations in deep indigo space">
+<figcaption><span class="tag tag-toy">Illustration</span> The U02 idea in one image: every word is a point of light, and similar words gather into constellations. The geometry is the meaning. Watercolor, original to this companion.</figcaption>
+</figure>
+</header>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">1 Name tags</a>
+<a href="#s2">2 Skip-gram</a>
+<a href="#s3">3 Neg sampling</a>
+<a href="#s4">4 Hier softmax</a>
+<a href="#s5">5 GloVe</a>
+<a href="#s6">6 PMI</a>
+<a href="#s7">7 Analogy</a>
+<a href="#s8">8 Polysemy</a>
+<a href="#s9">9 Evaluation</a>
+<a href="#s10">10 Derivatives</a>
+<a href="#s11">11 Freq bias</a>
+<a href="#s12">12 Plot limits</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>One-hot is a name tag. Dense is a profile.</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>How do you give a word a numerical address? With a vocabulary of 14 words, one-hot “cat” is (0,1,0,...,0): a 14-dim vector with a single 1. Distributed “cat” is (0.21, −0.44, 0.09, 0.33, ...): an 8-dim vector of learned numbers. One-hot is a name tag: it says which word, and nothing else. Distributed is a profile: each dimension is a learned feature, and similarity between profiles means similarity between words. The name tag cannot express that “cat” is closer to “dog” than to “mat”. The profile can.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §5, §6</span></p>
+<p>The lookup is a matrix product in disguise: the embedding matrix times a one-hot picks row w. The mechanism that matters: the embedding matrix is a parameter, not a fixed table. Gradients flow into it during training, so the vectors move to positions that help the objective. One-hot vectors never move. They have no parameters. From <code>compute_u02.py</code>: after 400 epochs of skip-gram training, the learned “cat” vector starts (0.21, −0.44, ...). Its cosine with “dog” is 0.816, with “mat” it is 0.679. The one-hot cosine between any two distinct words is 0.0. The learned vectors separate related from unrelated. The name tags cannot.</p>
+</div>
+<figure>
+<div id="chart-cos"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §6</span> Cosine similarity after 400 epochs of skip-gram on the toy corpus, from <code>compute_u02.py</code> (executed 2026-10-06): cos(cat, dog) = 0.816, cos(cat, mouse) = 0.808, cos(cat, mat) = 0.679, one-hot = 0.0. The learned vectors rank correctly.</figcaption>
+</figure>
+<div class="nugget" id="nugget-profile">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §6</span></h4>
+<p class="big">One-hot is a name tag. Dense is a profile. The profile can say “cat is closer to dog than to mat”. The tag can only say “cat”.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Parameters are what move. The embedding matrix learns because gradients reach it. One-hot vectors have no parameters, so they can never rearrange themselves into meaning.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Ask what moves under training in any representation. Fixed encodings carry only what the designer put in. Learned encodings carry what the objective needed.</dd>
+</dl>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that distributed vectors capture all meaning. The counterexample is “cat” the animal versus “cat” the jazz musician. One vector per word form forces both senses into one address. The profile is a mixture, and the mixture can mislead. (C08 returns to this.)</p>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>Skip-gram and CBOW: opposite arrows</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>Where do the vectors come from? Skip-gram takes center “cat” and predicts each context word (“the”, “sat”, “on”). CBOW takes the context words and predicts center “cat”. Same window, opposite arrows. Skip-gram treats each (center, context) pair as a training example, so rare words get many updates from their few occurrences. CBOW averages the context words into one prediction: faster and smoother, but the averaging washes out rare words.</p>
+<figure>
+<img class="illus" src="assets/u02-arrows.jpg" alt="Watercolor of outward arrows from one center circle and inward arrows in a mirror panel">
+<figcaption><span class="tag tag-toy">Illustration</span> The two arrows of C02 as watercolor: skip-gram radiates one center outward to many contexts, CBOW gathers many contexts inward to one center. Same window, opposite arrows. Watercolor, original to this companion.</figcaption>
+</figure>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §5</span></p>
+<p>The softmax probability: P(o | c) = exp(u_o · v_c) / sum_w exp(u_w · v_c). Loss for one pair: −log P(o | c) = −u_o · v_c + log sum_w exp(u_w · v_c). The first term pulls u_o toward v_c, the second term pushes all u_w away from v_c. That push-pull is the whole mechanism. C03 and C04 are cheaper ways to compute the push.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §6</span></p>
+<p>From <code>compute_u02.py</code>: 18 training tokens (stopwords removed), 66 (center, context) pairs, window 2. Mean negative-sampling loss falls from 0.6934 to 0.6471 over 400 epochs. The loss is per binary decision, not per word, so 0.69 is the chance-level start (log 2).</p>
+</div>
+<figure>
+<div id="chart-loss"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §6</span> Mean negative-sampling loss over 400 epochs, from <code>compute_u02.py</code> (executed 2026-10-06): 0.6934 at epoch 0 (chance level, log 2) down to 0.6471 at epoch 400. The model learns, slowly, on a toy.</figcaption>
+</figure>
+<div class="nugget" id="nugget-pushpull">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §5</span></h4>
+<p class="big">Push-pull is the whole mechanism. One term pulls the true context vector toward the center, one term pushes every other vector away. Everything in this unit is a cheaper way to compute the push.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The gradient of the log-sum-exp is a softmax: the push is distributed by how wrong the model is. When you see a new word2vec variant, look for the pull and the push first.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Contrastive objectives are all push-pull. Name the positive and name what stands in for “everything else”, and you have the algorithm.</dd>
+</dl>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p>The broken assumption is that more pairs always help. Window 10 on the toy corpus covers whole sentences, so every word pairs with every other word, the “context” becomes the document, and all vectors collapse toward each other. Window width is a real hyperparameter, not a free lunch.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Softmax stability toy. The shift is the lesson’s remediation block. Try large values and watch the naive version fail.</p>
+<p>z1 <input class="text" id="sm1" value="1000" aria-label="First score"></p>
+<p>z2 <input class="text" id="sm2" value="1001" aria-label="Second score"></p>
+<p>z3 <input class="text" id="sm3" value="1002" aria-label="Third score"></p>
+<p><button class="btn" id="smbtn">Compare naive vs shifted</button></p>
+<p class="small" id="smnote"></p>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Negative sampling: a sample stands in for the sum</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>The softmax sums over all V words per pair. At V = 10,000, training crawls. What is the cheapest way to keep the push-pull? Instead of pushing all 13 wrong words away, push k = 2 sampled wrong words away. The sample stands in for the sum. Turn prediction into a game: for each true (center, context) pair, the model must say “real” while saying “fake” to k noise words. The noise words come from a fixed distribution (unigram to the 0.75 power).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §5</span></p>
+<p>Gradient wrt v_c: −(1 − σ(u_o · v_c)) u_o + sum over noise of (1 − σ(−u_i · v_c)) u_i. The first term pulls v_c toward the true context vector with strength (1 − σ): large when the model is wrong, near zero when confident. Each noise term pushes v_c away from the noise vector. Same push-pull as C02, at O(k d) cost instead of O(V d).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §6</span></p>
+<p>From <code>compute_u02.py</code>: one explicit step with v_c = (0.30, −0.20), u_o = (0.10, 0.40), learning rate 0.5. After the step v_c = (0.386, 0.043): the distance to u_o shrank, so the vector moved toward the positive context. Finite-difference check of the gradient: max error 2.76e-10, so the analytic gradient is correct.</p>
+</div>
+<figure>
+<div id="chart-step"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §6</span> One negative-sampling gradient step, from <code>compute_u02.py</code>: v_c moves from (0.30, −0.20) to (0.386, 0.043), toward u_o = (0.10, 0.40). The arrow is one pull. Executed 2026-10-06.</figcaption>
+</figure>
+<div class="nugget" id="nugget-sample">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></h4>
+<p class="big">A sample stands in for the sum. Push 2 sampled wrong words away instead of all 13, and the vectors still learn.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The noise distribution matters: uniform noise almost never samples rare words as negatives, so their vectors drift. The 0.75 power oversamples rare words relative to raw frequency. Computed noise probs on the training tokens: cat 0.228, sat 0.155, dog 0.115.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Whenever you replace a sum with a sample, the sampler is part of the algorithm. A careless sampler teaches the model the wrong task.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Hierarchical softmax: three coin flips</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>Can we keep a true probability distribution but avoid the O(V) sum? Put 8 words as leaves of a binary tree of depth 3. P(word | center) is the product of 3 binary decisions along the root-to-leaf path. Three sigmoids replace a 14-way softmax. Each internal node holds a vector. Going left or right at a node is a coin flip whose bias depends on the dot product of the node vector with the center vector. Frequent words get short paths (Huffman tree), so common predictions stay cheap.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §6</span></p>
+<p>Toy numbers, hand-computed and labeled as such: depth 3, path turns (+1, −1, +1), dot products (0.5, −0.2, 0.8). σ(0.5) = 0.622, σ(0.2) = 0.550, σ(0.8) = 0.690. P = 0.622 × 0.550 × 0.690 = 0.236. Three sigmoids, one product.</p>
+</div>
+<figure>
+<div id="chart-hsoft"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §6</span> The toy path product, hand-computed and labeled illustrative: three turn probabilities 0.622, 0.550, 0.690 multiply to P = 0.236. A true distribution, no V-wide sum.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §10, §11</span></p>
+<p>Choose hierarchical softmax when you need proper probabilities and V is moderate. Choose negative sampling when V is huge and you only need good vectors, not probabilities. In practice negative sampling won for embeddings, and hierarchical softmax survives in some decoders. The broken assumption is that the tree shape does not matter: a degenerate chain tree costs O(V d) per pair, worse than the flat softmax, with vanishing gradients through L sigmoids.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Path-product toy. The tree walk is C04’s. The dot products are yours. Prefilled with the lesson’s illustrative numbers.</p>
+<p>Dot 1 <input class="text" id="hs1" value="0.5" aria-label="First dot product"></p>
+<p>Dot 2 <input class="text" id="hs2" value="-0.2" aria-label="Second dot product"></p>
+<p>Dot 3 <input class="text" id="hs3" value="0.8" aria-label="Third dot product"></p>
+<p><button class="btn" id="hsbtn">Walk the path</button></p>
+<p class="small" id="hsnote"></p>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>GloVe: regression on log-counts</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>Word2vec scans the corpus with a sliding window. Can we use the count table directly? The cooccurrence matrix X holds X_cat,sat = 2: they cooccur twice in the window. GloVe fits vectors so that w_cat · w~_sat + b_cat + b~_sat approximates log X_cat,sat. GloVe is regression on log-counts. Rare pairs get downweighted because their counts are noisy, and zero pairs are skipped because log 0 is undefined.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §5</span></p>
+<p>Why log? Ratios of cooccurrence probabilities carry meaning: P(solid|ice) / P(solid|steam) is large, P(gas|ice) / P(gas|steam) is small. The log turns ratios into differences: log X_ik − log X_jk = (w_i − w_j) · w~_k. Vector differences encode probability ratios. That is the whole point of the dot-product form.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §6</span></p>
+<p>Toy, hand-computed and labeled as such: X_cat,sat = 2, log 2 = 0.693. With w_cat · w~_sat = 0.5, b_cat = 0.1, b~_sat = 0.05: residual = 0.5 + 0.1 + 0.05 − 0.693 = −0.043. Weight f(2) = (2/100)^0.75 = 0.053. Loss contribution = 0.053 × 0.043^2 = 9.8e-5. Small weight, small residual: the pair barely moves the vectors, as designed.</p>
+</div>
+<div class="nugget" id="nugget-ratios">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §5, §11</span></h4>
+<p class="big">Ratios become differences. The log turns “ice versus steam for the word solid” into a vector offset. That is the whole point of the dot-product form.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>X_ij = 1 versus X_ij = 2 looks like a huge difference in log space (0 versus 0.693), but both counts are noise. The weighting function exists to distrust small counts. Without it, rare-pair noise dominates training.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose GloVe when you want global counts used once and cleanly. Choose skip-gram for streaming or huge corpora where building X is awkward. Both give similar vectors: the choice is an engineering call.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> GloVe residual toy. The formula is C05’s. The counts are yours. Prefilled with the lesson’s illustrative numbers.</p>
+<p>Cooccurrence count X <input class="text" id="gx" value="2" aria-label="Cooccurrence count"></p>
+<p>Dot product <input class="text" id="gdot" value="0.5" aria-label="Dot product"></p>
+<p>Biases b + b~ <input class="text" id="gbias" value="0.15" aria-label="Sum of biases"></p>
+<p><button class="btn" id="gbtn">Fit the residual</button></p>
+<p class="small" id="gnote"></p>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>The PMI identity: word2vec in disguise</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>Are learned vectors doing something principled, or just fitting? PMI measures surprise: PMI(w, c) = log(P(w, c) / (P(w) P(c))). Positive means the pair cooccurs more than chance, negative means less. The result: skip-gram with k negatives implicitly factorizes the matrix M_w,c = PMI(w, c) − log k. At the optimum, u_c · v_w = PMI(w, c) − log k. Word2vec is matrix factorization in disguise.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6</span></p>
+<p>From <code>compute_u02.py</code>: PMI(cat, sat) = 1.569 nats on the toy corpus. With k = 2, the implicit target is 1.569 − 0.693 = 0.876. So the trained dot product u_sat · v_cat should land near 0.876 at convergence. The script’s 400-epoch run is far from convergence (loss 0.6471): the number is the target, not the achievement. Stated honestly.</p>
+</div>
+<figure>
+<div id="chart-pmi"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6</span> The implicit target, from <code>compute_u02.py</code>: PMI(cat, sat) = 1.569 nats, minus log 2 = 0.693 for k = 2, gives the optimum target 0.876 for the dot product. Executed 2026-10-06.</figcaption>
+</figure>
+<div class="nugget" id="nugget-disguise">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §11</span></h4>
+<p class="big">Word2vec is matrix factorization in disguise. The vectors are a low-rank factorization of a shifted PMI matrix.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The result is an asymptote, not a description of any real training run. Finite data, finite dimensions, finite steps: all three break the equality. The toy run never reaches the target, and the lesson says so.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose implicit (skip-gram) when the corpus streams or V is huge. Choose explicit SVD on the PPMI matrix when the corpus is fixed and you want reproducibility with theory that matches exactly.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Analogy: algebra with meanings</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>Can you do algebra with meanings? v(king) − v(man) + v(woman) should land near v(queen). The offset (king − man) is supposed to encode “royalty”: adding it to “woman” should give royalty plus female. The parallelogram assumes the relation is a constant vector offset, the same everywhere in the space. That is a strong linearity claim. Where relations are linear, the arithmetic works. Where they are not, it fails, and the failure is informative.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §5, §6</span></p>
+<p>Why it can work, via C06: if PMI factorizes and the relation corresponds to a consistent shift in cooccurrence distributions, the shift appears as a constant vector offset. From <code>compute_u02.py</code> (toy 2-D vectors, stated explicitly): king − man + woman = (0.20, 1.40). Cosine with the queen vector (0.25, 1.35) = 0.9992. The parallelogram closes almost exactly, because the toy vectors were placed that way. The number demonstrates the computation, not a discovery.</p>
+<figure>
+<img class="illus" src="assets/u02-parallelogram.jpg" alt="Watercolor of an abstract parallelogram with a ghost copy beside it">
+<figcaption><span class="tag tag-toy">Illustration</span> The parallelogram as watercolor: four points, one offset, and its ghost. The shape only closes where the relation is a constant offset. Watercolor, original to this companion.</figcaption>
+</figure>
+</div>
+<figure>
+<div id="chart-analogy"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §6</span> The toy parallelogram, from <code>compute_u02.py</code>: king − man + woman lands at (0.20, 1.40), the queen vector sits at (0.25, 1.35), cosine 0.9992. The toy vectors were placed to close the shape. Executed 2026-10-06.</figcaption>
+</figure>
+<div class="nugget" id="nugget-parallel">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
+<p class="big">The parallelogram assumes the relation is a constant vector offset. Where the assumption holds, the arithmetic works. Where it fails, the failure is the lesson.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Two traps hide in analogy tests. Polysemy: “king” the monarch versus “king” the chess piece give different offsets, and the single vector averages them. The exclusion rule: without excluding a, b, c, the top answer to “king − man + woman” is often “king” itself.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose analogies when you want a fast automated check with no annotators. Choose human correlation when you want validity. Analogy sets have known artifacts: the answer is often just the nearest neighbor of c.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Analogy toy. The offset arithmetic is C07’s. The vectors are the lesson’s toy 2-D vectors. Change them and watch the cosine move.</p>
+<p>king <input class="text" id="anK" value="0.5,1.5" aria-label="king vector"></p>
+<p>man <input class="text" id="anM" value="0.4,0.6" aria-label="man vector"></p>
+<p>woman <input class="text" id="anW" value="0.1,0.5" aria-label="woman vector"></p>
+<p>queen <input class="text" id="anQ" value="0.25,1.35" aria-label="queen vector"></p>
+<p><button class="btn" id="anbtn">Close the parallelogram</button></p>
+<p class="small" id="annote"></p>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>Polysemy: one vector, one winner</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>What does the vector of “bank” mean? Corpus A (finance) pulls “bank” toward “loan”, corpus B (river) pulls it toward “shore”. One vector must serve both. The result is a weighted average, dominated by the frequent sense. A static embedding is a mixture over senses, weighted by frequency. The dominant sense wins the address, the rare sense is a faint echo.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §5, §6</span></p>
+<p>Why the mixture? The training objective sums over all occurrences. Occurrences of sense 1 pull the vector toward sense-1 contexts, occurrences of sense 2 pull toward sense-2 contexts. The gradient is the frequency-weighted sum of the pulls. Toy, hand-computed and labeled as such: sense vectors s1 = (1.0, 0.0) [finance], s2 = (0.0, 1.0) [river], frequencies 4:1. Mixture v = (0.8, 0.2). Cosine with s1 = 0.970, with s2 = 0.243. The vector points at finance. The river sense is nearly invisible. Five occurrences, one address, one winner.</p>
+</div>
+<figure>
+<div id="chart-poly"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §6</span> The mixture, hand-computed and labeled illustrative: at 4:1 frequencies, the “bank” vector has cosine 0.970 with the finance sense and 0.243 with the river sense. The rare sense is nearly invisible.</figcaption>
+</figure>
+<div class="nugget" id="nugget-mixture">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">One vector per word form is a frequency-weighted mixture. The dominant sense wins the address. The rare sense is a faint echo.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The nearest neighbors of “bank” are {loan, money, river, shore, account}: a mixed list that describes no single sense. Reading the neighbor list as a definition merges finance and geography into one confused concept.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose single-sense vectors when the downstream task is coarse. Choose multi-sense or contextual vectors when sense errors cost, as in legal or medical text. Modern practice: contextual vectors made this debate mostly historical.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Intrinsic is a proxy. Extrinsic is the thing.</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>The vectors look good. Are they good? Intrinsic test: cosine(cat, dog) = 0.816 exceeds cosine(cat, mat) = 0.679, so the toy passes a two-pair similarity check. Extrinsic test: plug the vectors into the Naive Bayes classifier as features and measure accuracy. The two tests can disagree. Intrinsic evaluation asks the vectors directly: similarity correlation with humans, analogy accuracy. It is fast and needs no downstream system. Extrinsic evaluation asks the downstream task: does the classifier get better? It is slow and honest.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §5, §6</span></p>
+<p>Why they disagree: intrinsic tests reward one property, while a task needs many: robustness to noise, calibration, coverage of the task vocabulary. A vector set can ace analogies and still miss the task’s rare words. From the script: the intrinsic check on the toy passes (0.816 exceeds 0.679, correct order). The extrinsic check, hand-run and labeled as such: the toy Naive Bayes classifier from U01 uses 4 documents, and swapping in 8-dim vectors for 14 words cannot beat word counts on 4 documents. The extrinsic test is inconclusive by construction: the dataset is too small to separate the methods. Stated, not hidden.</p>
+</div>
+<div class="nugget" id="nugget-proxy">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §11</span></h4>
+<p class="big">Intrinsic is a proxy. Extrinsic is the thing itself. Embedding sets ranked by analogy accuracy re-rank when dropped into real tasks.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The analogy set’s linearity bias does not match what the classifier needs. This is Goodhart again: optimizing the proxy is not optimizing the goal.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose frozen-vector extrinsic eval when comparing pretrained sets fairly. Choose fine-tuning when shipping. They answer different questions: “which vectors are better?” versus “what is the best system?”</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Derive by hand, verify by machine</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>Every word2vec gradient has the same shape: (prediction error) × (the other vector). The error is (1 − σ) for positives: big when wrong, tiny when confident. The update moves v_c along u_o (pull) or away from u_i (push), scaled by the error. If you can write this sentence, you can write the gradient.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §5, §6</span></p>
+<p>The derivation, in short. For the positive term −log σ(u_o · v_c), the chain rule gives −(1 − σ(u_o · v_c)) u_o. For a noise term −log σ(−u_i · v_c), it gives (1 − σ(−u_i · v_c)) u_i. Sum over the positive and the k negatives. From <code>compute_u02.py</code>: analytic gradient at the toy point versus central differences with eps = 1e-6. Max component error: 2.76e-10. The gradient is correct. The check runs in the script on every execution. It is not a one-time claim.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p>The broken assumption is that a passed gradient check means training works. Correct gradients with a learning rate of 10.0 diverge anyway. The check validates the derivative, not the optimization. Learning rate, initialization, and the objective itself are separate failure modes the check cannot see.</p>
+</div>
+<div class="nugget" id="nugget-verify">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §6, §11</span></h4>
+<p class="big">Derive by hand, verify by machine, trust neither alone. The gradient check caught nothing here because the math was right. It exists for the day it is not.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose hand derivation plus finite differences when learning or when autograd is unavailable. Choose autograd for production code. The check validates the derivative. Optimization is a separate failure mode.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every “it works” claim needs two witnesses: the derivation and the numeric check. One witness is a rumor.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Frequency bias has two faces</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>“The” occurs 11 of 35 times. What does it do to the train loop? Without correction, 31% of center words are “the”, and the noise distribution draws “the” with probability 0.232 (computed). The model spends a third of its updates on a word with no content. Frequency bias has two faces. Face 1: frequent words dominate training pairs, so their vectors get over-updated and everyone else’s under-updated. Face 2: frequent words dominate the noise distribution, so every word is pushed away from “the” far more than from anything else. Subsampling fixes face 1. The 0.75 power fixes face 2.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §5, §6</span></p>
+<p>Why 0.75? Raw frequency (power 1.0) lets “the” dominate negatives. Uniform (power 0) never samples rare words as negatives, so rare words are never pushed away from anything. The 0.75 power is the empirical compromise: it lifts rare words relative to raw frequency while keeping frequent words common. No theorem. It is a tuned constant, stated as such. From <code>compute_u02.py</code> (training-token distribution): noise probs cat 0.228, sat 0.155, dog 0.115, rug 0.115, mouse 0.115. “The” has probability 0.0 because it was removed from training tokens. On the raw corpus, the script’s first attempt showed the failure: with “the” present, all vectors collapsed toward each other (cosines around 0.91 for unrelated pairs). Removing stopwords restored the separation (cat/dog 0.816, cat/mat 0.679).</p>
+</div>
+<figure>
+<div id="chart-noise"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §6</span> The unigram^0.75 noise distribution on the training tokens, from <code>compute_u02.py</code>: cat 0.228, sat 0.155, dog 0.115, rug 0.115, mouse 0.115. Executed 2026-10-06.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p>The broken assumption is that subsampling only removes useless words. Subsample too aggressively and “not” disappears: “not good” becomes “good” and sentiment flips. Function words carry syntax and negation. The correction is a tradeoff, not a free deletion.</p>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>The plot is a shadow, not the object</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>The t-SNE plot shows beautiful clusters. Should you believe it? Project the toy 8-dim vectors to 2-D with PCA. “Cat” and “dog” land near each other (true in 8-D: 0.816), but two unrelated words can also land near each other in 2-D while being far in 8-D. The plot is a shadow, not the object. Dimensionality reduction keeps some structure and destroys the rest. PCA keeps global variance directions. t-SNE keeps local neighborhoods and scrambles global distances.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §5, §6</span></p>
+<p>Three lies, mechanistically. Lie 1 (crowding): d dimensions cannot fit in 2 without overlap, so distant points collide. Lie 2 (t-SNE): the perplexity parameter sets the neighborhood size, and changing it reshapes the clusters. Lie 3 (cherry-picking): the plot shows the words the author chose, and the ugly regions are cropped out. Toy, hand-computed and labeled as such: 8-D cosines cat/dog 0.816, cat/mat 0.679. After PCA to 2-D, the 2-D cosine of cat/mat rises from 0.679 toward 0.80: the projection compressed the gap by 0.12. The plot exaggerates the similarity it was meant to illustrate.</p>
+</div>
+<div class="nugget" id="nugget-shadow">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §3, §10</span></h4>
+<p class="big">The plot is a shadow, not the object. When a plot and a table disagree, the table wins: the plot lost information and the table did not.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>t-SNE on random noise with tuned perplexity shows apparent clusters. The method creates structure from nothing when misused. A cluster is evidence only with a stability check: multiple seeds, multiple perplexities.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose plots for talks and intuition. Choose tables for claims. The lesson states the irony itself: the chapter plate is a 2-D drawing of a high-dimensional claim, and its footer says so.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-profile"><span class="wnum">01</span>One-hot is a name tag, dense is a profile <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-pushpull"><span class="wnum">02</span>Push-pull is the whole mechanism <span class="muted">· C02</span></a></li>
+<li><a href="#nugget-sample"><span class="wnum">03</span>A sample stands in for the sum <span class="muted">· C03</span></a></li>
+<li><a href="#nugget-ratios"><span class="wnum">04</span>Ratios become differences <span class="muted">· C05</span></a></li>
+<li><a href="#nugget-disguise"><span class="wnum">05</span>Word2vec is matrix factorization in disguise <span class="muted">· C06</span></a></li>
+<li><a href="#nugget-parallel"><span class="wnum">06</span>The parallelogram assumes linearity <span class="muted">· C07</span></a></li>
+<li><a href="#nugget-mixture"><span class="wnum">07</span>One vector, one winner <span class="muted">· C08</span></a></li>
+<li><a href="#nugget-proxy"><span class="wnum">08</span>Intrinsic is a proxy <span class="muted">· C09</span></a></li>
+<li><a href="#nugget-verify"><span class="wnum">09</span>Derive by hand, verify by machine <span class="muted">· C10</span></a></li>
+<li><a href="#nugget-shadow"><span class="wnum">10</span>The plot is a shadow <span class="muted">· C12</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u02_word_vectors.md</code> (CS224N, Unit 02). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The session title (S02, Word Vectors) and the reading list (word2vec, negative sampling, GloVe paper titles) are OFFICIAL-SOURCE via SRC-02. All concept leaves are REQUESTED-BRANCH. Every number on this page traces to the lesson’s computed script <code>visuals/compute_u02.py</code> (executed 2026-10-06) or to hand-computed examples the lesson labels as such. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+<p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
+<p class="small">Built as Companion 2 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 230
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function scatter(id, pts, labels, xLab, yLab) {
+  const host = document.getElementById(id)
+  const W = 760
+  const H = 420
+  const mL = 64
+  const mR = 30
+  const mT = 26
+  const mB = 56
+  const xs = pts.map(function(p) { return p[0] })
+  const ys = pts.map(function(p) { return p[1] })
+  const x0 = Math.min.apply(null, xs) - 0.08
+  const x1 = Math.max.apply(null, xs) + 0.08
+  const y0 = Math.min.apply(null, ys) - 0.15
+  const y1 = Math.max.apply(null, ys) + 0.15
+  function X(v) { return mL + (v - x0) / (x1 - x0) * (W - mL - mR) }
+  function Y(v) { return mT + (y1 - v) / (y1 - y0) * (H - mT - mB) }
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  svg.appendChild(svgEl("line", {x1: mL, x2: W - mR, y1: Y(0), y2: Y(0), stroke: "#e2d7c2", "stroke-width": 1}))
+  svg.appendChild(svgEl("line", {x1: X(0), x2: X(0), y1: mT, y2: H - mB, stroke: "#e2d7c2", "stroke-width": 1}))
+  pts.forEach(function(p, i) {
+    const c = svgEl("circle", {cx: X(p[0]), cy: Y(p[1]), r: 9, fill: p[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = labels[i] + ": (" + p[0] + ", " + p[1] + ")"
+    c.appendChild(tip)
+    svg.appendChild(c)
+    const t = svgEl("text", {x: X(p[0]) + 14, y: Y(p[1]) + 5, "font-size": 14, fill: INK, "font-family": MONO})
+    t.textContent = labels[i]
+    svg.appendChild(t)
+  })
+  const xl = svgEl("text", {x: W - mR, y: H - 14, "font-size": 13, fill: MUT, "text-anchor": "end", "font-family": SANS})
+  xl.textContent = xLab
+  svg.appendChild(xl)
+  const yl = svgEl("text", {x: 14, y: 20, "font-size": 13, fill: MUT, "font-family": SANS})
+  yl.textContent = yLab
+  svg.appendChild(yl)
+  host.appendChild(svg)
+}
+
+function arrow(id) {
+  const host = document.getElementById(id)
+  const W = 760
+  const H = 360
+  const mL = 60
+  const mR = 30
+  const mT = 26
+  const mB = 50
+  const x0 = -0.1
+  const x1 = 0.5
+  const y0 = -0.35
+  const y1 = 0.55
+  function X(v) { return mL + (v - x0) / (x1 - x0) * (W - mL - mR) }
+  function Y(v) { return mT + (y1 - v) / (y1 - y0) * (H - mT - mB) }
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  svg.appendChild(svgEl("defs", {}))
+  const defs = svg.firstChild
+  const marker = svgEl("marker", {id: "ah", markerWidth: 10, markerHeight: 10, refX: 8, refY: 3, orient: "auto"})
+  marker.appendChild(svgEl("path", {d: "M0,0 L8,3 L0,6 z", fill: CLAY}))
+  defs.appendChild(marker)
+  function dot(x, y, color, lab) {
+    const c = svgEl("circle", {cx: X(x), cy: Y(y), r: 10, fill: color})
+    const tip = svgEl("title", {})
+    tip.textContent = lab + ": (" + x + ", " + y + ")"
+    c.appendChild(tip)
+    svg.appendChild(c)
+    const t = svgEl("text", {x: X(x) + 15, y: Y(y) + 5, "font-size": 14, fill: INK, "font-family": MONO})
+    t.textContent = lab
+    svg.appendChild(t)
+  }
+  svg.appendChild(svgEl("line", {x1: X(0.3), x2: X(0.386), y1: Y(-0.2), y2: Y(0.043), stroke: CLAY, "stroke-width": 3, "marker-end": "url(#ah)"}))
+  dot(0.3, -0.2, INDIGO, "v_c before")
+  dot(0.386, 0.043, SAGE, "v_c after")
+  dot(0.1, 0.4, AMBER, "u_o target")
+  host.appendChild(svg)
+}
+
+function num(id, dflt) {
+  const v = parseFloat(document.getElementById(id).value)
+  if (isNaN(v)) { return dflt }
+  return v
+}
+function vec(id) {
+  const parts = document.getElementById(id).value.split(",")
+  return [parseFloat(parts[0]) || 0, parseFloat(parts[1]) || 0]
+}
+function cos2(a, b) {
+  const d = a[0] * b[0] + a[1] * b[1]
+  const na = Math.sqrt(a[0] * a[0] + a[1] * a[1])
+  const nb = Math.sqrt(b[0] * b[0] + b[1] * b[1])
+  if (na === 0 || nb === 0) { return 0 }
+  return d / (na * nb)
+}
+function sig(x) {
+  return 1 / (1 + Math.exp(-x))
+}
+
+function runSoftmax() {
+  const z = [num("sm1", 1000), num("sm2", 1001), num("sm3", 1002)]
+  const note = document.getElementById("smnote")
+  const naive = z.map(function(v) { return Math.exp(v) })
+  const sN = naive[0] + naive[1] + naive[2]
+  const m = Math.max.apply(null, z)
+  const sh = z.map(function(v) { return Math.exp(v - m) })
+  const sS = sh[0] + sh[1] + sh[2]
+  const pS = sh.map(function(v) { return (v / sS).toFixed(3) })
+  const naiveTxt = (sN === Infinity) ? "overflow (Infinity)" : naive.map(function(v) { return (v / sN).toFixed(3) }).join(", ")
+  note.textContent = "Naive: " + naiveTxt + ". Shifted (subtract " + m + "): " + pS.join(", ") + ". The shift changes nothing mathematically and prevents overflow."
+}
+
+function runHsoft() {
+  const ds = [num("hs1", 0.5), num("hs2", -0.2), num("hs3", 0.8)]
+  const note = document.getElementById("hsnote")
+  const ps = ds.map(function(d, i) {
+    const s = sig(Math.abs(d))
+    return {d: d, s: s}
+  })
+  let prod = 1
+  ps.forEach(function(p) { prod = prod * p.s })
+  note.textContent = "Turn probabilities: " + ps.map(function(p) { return p.s.toFixed(3) }).join(" x ") + " = " + prod.toFixed(3) + ". Three sigmoids, one product, a true distribution."
+}
+
+function runGlove() {
+  const X = num("gx", 2)
+  const dot = num("gdot", 0.5)
+  const bias = num("gbias", 0.15)
+  const note = document.getElementById("gnote")
+  if (X <= 0) {
+    note.textContent = "The count must be positive. Zero pairs are skipped: log 0 is undefined."
+    return
+  }
+  const lx = Math.log(X)
+  const resid = dot + bias - lx
+  const f = (X < 100) ? Math.pow(X / 100, 0.75) : 1
+  const loss = f * resid * resid
+  note.textContent = "log X = " + lx.toFixed(3) + ". Residual = " + resid.toFixed(3) + ". Weight f(X) = " + f.toFixed(3) + ". Loss contribution = " + loss.toExponential(2) + "."
+}
+
+function runAnalogy() {
+  const k = vec("anK")
+  const m = vec("anM")
+  const w = vec("anW")
+  const q = vec("anQ")
+  const r = [k[0] - m[0] + w[0], k[1] - m[1] + w[1]]
+  const c = cos2(r, q)
+  document.getElementById("annote").textContent = "king - man + woman = (" + r[0].toFixed(2) + ", " + r[1].toFixed(2) + "). Cosine with queen = " + c.toFixed(4) + ". With the lesson toy vectors: 0.9992."
+}
+
+document.getElementById("smbtn").addEventListener("click", runSoftmax)
+document.getElementById("hsbtn").addEventListener("click", runHsoft)
+document.getElementById("gbtn").addEventListener("click", runGlove)
+document.getElementById("anbtn").addEventListener("click", runAnalogy)
+
+barChart("chart-cos", [["cat / dog", 0.816, SAGE], ["cat / mouse", 0.808, SAGE], ["cat / mat", 0.679, INDIGO], ["one-hot, any pair", 0.0, CLAY]], 1.0, "")
+barChart("chart-loss", [["epoch 0 (chance)", 0.6934, CLAY], ["epoch 400", 0.6471, SAGE]], 0.7, "")
+barChart("chart-noise", [["cat", 0.228, INDIGO], ["sat", 0.155, INDIGO], ["dog", 0.115, SAGE], ["rug", 0.115, SAGE], ["mouse", 0.115, SAGE]], 0.25, "")
+barChart("chart-hsoft", [["turn 1", 0.622, INDIGO], ["turn 2", 0.550, INDIGO], ["turn 3", 0.690, INDIGO], ["path product", 0.236, CLAY]], 1.0, "")
+barChart("chart-pmi", [["PMI(cat, sat)", 1.569, INDIGO], ["log k (k = 2)", 0.693, AMBER], ["optimum target", 0.876, SAGE]], 1.6, " nats")
+barChart("chart-poly", [["cosine with finance sense", 0.970, SAGE], ["cosine with river sense", 0.243, CLAY]], 1.0, "")
+arrow("chart-step")
+scatter("chart-analogy", [[0.2, 1.4, SAGE], [0.25, 1.35, CLAY]], ["king - man + woman", "queen"], "dim 1", "dim 2")
+</script>
+</body>
+</html>

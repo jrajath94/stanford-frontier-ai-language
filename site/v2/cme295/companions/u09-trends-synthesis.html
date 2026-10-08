@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U09 · Trends and synthesis: Interactive companion</title>
+<style>
+:root{--ink:#1c1a17}
+:root{--paper:#faf7f0}
+:root{--paper2:#f3eee2}
+:root{--line:#ddd3bd}
+:root{--muted:#7a7160}
+:root{--clay:#b3541e}
+:root{--indigo:#2f4b8f}
+:root{--indigosoft:#e8edfb}
+:root{--sage:#4f7a52}
+:root{--sagesoft:#e6f0e6}
+:root{--amber:#a97b12}
+:root{--serif:"Iowan Old Style",Georgia,"Times New Roman",serif}
+:root{--sans:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+:root{--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:19px}
+body{line-height:1.62}
+.wrap{max-width:860px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband{padding:10px 0}
+.topband .wrap{padding:0 24px}
+header.hero{padding:52px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+.kicker{margin:0 0 10px}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:0 0 14px}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{line-height:1.5}
+.dek{color:#3d382e}
+.dek{max-width:680px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll{max-width:860px}
+.navscroll{margin:0 auto}
+.navscroll{padding-left:24px}
+.navscroll{padding-right:24px}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-family:var(--sans)}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:26px 0}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+figcaption{font-size:16px}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+img.lessonfig{width:100%}
+img.lessonfig{border-radius:10px}
+img.lessonfig{border:1px solid var(--line)}
+img.lessonfig{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 60px}
+footer.prov{font-size:16px}
+footer.prov{color:#3d382e}
+footer.prov p{margin:.7em 0}
+.small{font-size:15px}
+.capleft{text-align:left}
+.capleft{padding-bottom:8px}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CME295 · Transformers and Large Language Models · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">Unit 09 · Current trends, exams, and synthesis</p>
+<h1>The sculptor, the map, and the building</h1>
+<p class="dek">Twelve concepts close the course: diffusion language models, the recap, midterm and final objective mapping, dated updates, original exam practice, cross-lecture dependencies, comparative architectures, the end-to-end toy, the research protocol, the production bridge, and the oral defense. Every number below comes from the lesson.</p>
+</header>
+<div class="legend">
+<p><strong>How to read this page.</strong> Three tags separate fact from invention.</p>
+<p><span class="tag tag-lesson">From the lesson</span> A claim, number, or figure that appears in the lesson source, with its section cited.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with values you supply, or a what-if. Never lesson content.</p>
+<p><span class="tag tag-companion">Companion</span> Editorial framing or a transferable principle. The lesson did not say it this way.</p>
+</div>
+</div>
+<nav class="sticky"><div class="navscroll">
+<a href="#s1">1 Diffusion</a>
+<a href="#s2">2 Recap</a>
+<a href="#s3">3 Midterm map</a>
+<a href="#s4">4 Final map</a>
+<a href="#s5">5 Dating</a>
+<a href="#s6">6 Practice</a>
+<a href="#s7">7 Keystones</a>
+<a href="#s8">8 Architectures</a>
+<a href="#s9">9 Toy</a>
+<a href="#s10">10 Research</a>
+<a href="#s11">11 Production</a>
+<a href="#s12">12 Defense</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<div class="wrap">
+<figure>
+<img class="illus" src="assets/u09-hero.webp" alt="Watercolor of a sculptor chipping a marble block revealing half-formed letters, chips flying in parallel">
+<figcaption><span class="tag tag-toy">Illustration</span> The unit in one image: diffusion sculpts text everywhere at once, autoregressive types it left to right. Watercolor, original to this companion.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>Diffusion LMs: sculpt, do not type</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 2-6</span></p>
+<p>Must text be written left to right? The toy: length-8 sequence, mask 4 positions. Step 1: the model predicts all 4 masked tokens at once. Step 2: re-mask the 2 least confident, predict again. Done in 2 parallel steps, not 8 serial ones. Autoregressive generation types out text. Diffusion generation sculpts it: start with a block of marble (masks), chip away everywhere, refine the rough spots. Parallel chips, serial polish. Training: mask a random fraction of tokens, predict them from the rest, cross-entropy on masked positions only. Inference: start fully masked, unmask the most confident subset per step.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 6, 11</span></p>
+<p>The computed example: 8 tokens with confidences [0.9, 0.85, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3]. Step 1 unmasks the top 4. Step 2 unmasks 2 more, 2 stay masked. Two parallel steps cover 6 of 8 tokens vs 8 serial steps. Figure u09_fig01. The check: with steps = n and k = 1, the process reduces to a valid order-free generation. The win is latency with parallel hardware, not total FLOPs. The broken assumption: refinement repairs incoherence. Early wrong unmaskings lock in and poison later steps. Confidence calibration is the guard. The lab asks: 8 tokens, 2 steps. Four unmasked per step.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Eight token slots: four unmasked in step one, two more in step two, two stay masked">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Unmask by confidence, 8 tokens (C01 item 6)</text>
+<rect x="90" y="100" width="60" height="60" fill="#2f4b8f" rx="4"/>
+<rect x="160" y="100" width="60" height="60" fill="#2f4b8f" rx="4"/>
+<rect x="230" y="100" width="60" height="60" fill="#2f4b8f" rx="4"/>
+<rect x="300" y="100" width="60" height="60" fill="#2f4b8f" rx="4"/>
+<rect x="380" y="100" width="60" height="60" fill="#7a8fc4" rx="4"/>
+<rect x="450" y="100" width="60" height="60" fill="#7a8fc4" rx="4"/>
+<rect x="530" y="100" width="60" height="60" fill="#ddd3bd" rx="4"/>
+<rect x="600" y="100" width="60" height="60" fill="#ddd3bd" rx="4"/>
+<g font-family="monospace" font-size="12" text-anchor="middle" fill="#1c1a17">
+<text x="120" y="90">0.9</text><text x="190" y="90">0.85</text><text x="260" y="90">0.8</text><text x="330" y="90">0.7</text>
+<text x="410" y="90">0.6</text><text x="480" y="90">0.5</text><text x="560" y="90">0.4</text><text x="630" y="90">0.3</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="225" y="200">step 1: top 4</text><text x="445" y="200">step 2: next 2</text><text x="595" y="200">stay masked</text>
+</g>
+<text x="350" y="280" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">2 parallel steps cover 6 of 8. 8 serial steps cover all.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 item 6</span> The lesson's computed toy. If quality collapses at few steps, the confidences are miscalibrated.</figcaption>
+</figure>
+<div class="nugget" id="w1">
+<h4>Nugget 01 · Sculpt the text</h4>
+<p class="big">Parallel chips everywhere, then polish the rough spots. The win is latency on parallel hardware, not total FLOPs.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines masked diffusion, works the 8-token toy, and names the lock-in failure.</dd>
+<dt>Why it matters</dt><dd>Refinement is only as good as the confidence estimates. Wrong early unmaskings poison everything after.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Parallel drafts plus selective refinement beat serial work when the refinement is trustworthy.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>The recap: a map, not the territory</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 2-6</span></p>
+<p>Nine lectures, what actually matters? The toy: L1 attention, L2 RoPE, L3 SFT+LoRA, L4 GRPO, L5 KV cache, L6 ReAct, L7 judge bias. Seven mechanisms, each with one sentence and one failure. The recap is a map, not the territory. Each pin marks a mechanism worth re-deriving from scratch. If you cannot re-derive it, the pin is a wish. The protocol: for each lecture, write the one equation you would reconstruct first and the one assumption that breaks it.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 6, 8, 11</span></p>
+<p>The computed example: the recap table itself, 7 rows, each verified against its unit lesson. The check: 21/21 on the checklist before the final. Below 15, revisit the weak lectures. The broken assumption: the bullets match the lectures. A guest lecture can replace a topic. Verify against artifacts when they publish. The lab asks: 15/21. Revisit.</p>
+</div>
+<table class="data">
+<caption class="small muted capleft"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 2</span> The seven pins.</caption>
+<tr><th>Lecture</th><th>Mechanism</th></tr>
+<tr><td>L1</td><td class="num">Attention</td></tr>
+<tr><td>L2</td><td class="num">RoPE</td></tr>
+<tr><td>L3</td><td class="num">SFT + LoRA</td></tr>
+<tr><td>L4</td><td class="num">GRPO</td></tr>
+<tr><td>L5</td><td class="num">KV cache</td></tr>
+<tr><td>L6</td><td class="num">ReAct</td></tr>
+<tr><td>L7</td><td class="num">Judge bias</td></tr>
+</table>
+<div class="nugget" id="w2">
+<h4>Nugget 02 · Re-derive or it is a wish</h4>
+<p class="big">Seven mechanisms, one equation and one failure each. 21/21 before the final, or the pin is decoration.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson compresses nine lectures to seven pins with the compression protocol.</dd>
+<dt>Why it matters</dt><dd>Mechanism-level recall beats fact flashcards. If you cannot re-derive it, you do not know it.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Compress to mechanisms, then test the compression by rebuilding from the pins.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Midterm mapping: the inventory audit</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 1-6</span></p>
+<p>Is every testable objective taught somewhere? The toy: objective "derive the DPO loss" maps to U05 C09 (taught, assessed). Objective "implement FlashAttention" is named in L5, taught nowhere yet. The map exposes the hole. The map is an inventory audit. Every objective needs a shelf (lesson) and a price tag (assessment). Unshelved objectives are promises, not coverage. Honesty note: the midterm (Oct 23, 2026) fell after the build baseline (2026-10-06). No exam content exists or is claimed here. The map works from syllabus bullets only.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 6, 11</span></p>
+<p>The computed example: 24 objectives from L1-L4 bullets, 21 mapped, 3 orphans (FlashAttention internals, speculative decoding details, on-policy distillation variants). Coverage 87.5%. Figure u09_fig02. The check: every non-orphan objective resolves to a real file and line. Dangling pointers are lies. The broken assumption: bullets equal exam scope. The midterm can test a guest topic. The map is a guide, not a contract. The lab asks: 24 objectives, 3 orphans. Coverage 87.5%.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of 21 mapped objectives versus 3 orphans">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Midterm map, 24 objectives (C03 item 6)</text>
+<rect x="200" y="80" width="110" height="170" fill="#2f4b8f" rx="4"/>
+<rect x="390" y="215" width="110" height="35" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="255" y="70">21 mapped</text>
+<text x="445" y="205">3 orphans</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="255" y="270">shelf + price tag</text>
+<text x="445" y="270">promises, not coverage</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Coverage 87.5%. Orphans become study priorities or explicit scope cuts.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 6</span> Counts from the lesson's renderer. No exam content is claimed or reproduced.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 4, 7</span> Coverage bench: the lesson's map arithmetic.</p>
+<p><input class="text" id="cvm" type="number" value="21" min="0" aria-label="mapped"> <input class="text" id="cvo" type="number" value="3" min="0" aria-label="orphans"> <button class="btn" id="cvbtn">Compute coverage</button></p>
+<div class="chips" id="cvout"></div>
+<p class="small muted">Reproduce the lesson: 21 mapped, 3 orphans, coverage 87.5%. Try the final map: 34 mapped, 6 orphans.</p>
+</div>
+<div class="nugget" id="w3">
+<h4>Nugget 03 · Unshelved objectives are promises</h4>
+<p class="big">Every objective needs a lesson and an assessment. The 3 orphans are the study priorities.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds the objective map, finds 3 orphans, and prices coverage at 87.5%.</dd>
+<dt>Why it matters</dt><dd>Studying everything equally is fair and wasteful. The map aims the effort at the holes.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Audit coverage before you trust it. What is untaught is untestable, or it is a trap.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Final mapping: study the edges</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 1-6</span></p>
+<p>The final is cumulative. Where do lectures connect? The toy: DPO (L4) needs the BT model (U05), which needs MLE (P07), which needs probability (P06). The chain is the study order. The final tests the graph, not the nodes. Edges between lectures are where the hard questions live. The computed example: 40 objectives, 34 mapped, 6 orphans. Densest edges: U05 to U06 (RL foundations), U07 to U08 (agent eval). Study time follows edge density. Honesty note: the final (Dec 9, 2026) fell after the baseline. No exam content is claimed.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 8, 11</span></p>
+<p>The check: no objective lists a prerequisite that is itself an orphan. Chains must ground out in taught material. The broken assumption: edges are known. The final can emphasize L8-L9, which have the thinnest artifact base. Weight recent lectures up. The lab asks: the densest edge is U05 to U06.</p>
+</div>
+<div class="nugget" id="w4">
+<h4>Nugget 04 · The graph, not the nodes</h4>
+<p class="big">Hard questions live on the edges between lectures. Study time follows edge density, and chains must ground out in taught material.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson extends the map cumulatively and finds the densest edges.</dd>
+<dt>Why it matters</dt><dd>Linear rereading misses the connections. The dependency chains are the study order.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> For cumulative tests, learn the links first. The nodes are useless without them.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Dated updates: the newspaper with an archive</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 2-6</span></p>
+<p>A new paper lands in November. Does the course absorb it silently? The toy: baseline note "GRPO as of Oct 2026", update note "Nov 2026: follow-up X, changes claim Y". Two dates, no confusion. The course is a newspaper with an archive. New editions do not rewrite old ones, they stack with dates. The protocol: every factual claim carries "as of" or a dated source. Updates append, never edit history. This unit: baseline 2026-10-06, L8/L9 in the future at baseline, exams unheld. Any claim about L8 content is dated speculation, labeled.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 11</span></p>
+<p>The broken assumption: readers check dates. A stale claim quoted without its date misleads. Put dates inline, not in footnotes. The check: no undated factual claim in new material. Stamping is free. Undated claims cost trust.</p>
+</div>
+<div class="nugget" id="w5">
+<h4>Nugget 05 · Append, never rewrite</h4>
+<p class="big">Baseline 2026-10-06. New editions stack with dates. History is append-only.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the dating protocol and applies it to its own baseline.</dd>
+<dt>Why it matters</dt><dd>Silent updates rewrite history. Dated appends keep the record honest.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Date every claim, inline. The archive is only as honest as its stamps.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>Exam practice: spar like you fight</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 2-6</span></p>
+<p>How do you practice for an exam you cannot see? The toy questions: compute the GRPO advantage for rewards [2, 0, 0, 0] (2 min), state two judge biases and their fixes (3 min). Same skills, new numbers. Practice spars, the exam is the fight. Sparring partners are not the opponent, but the muscles are the same. The computed example: five questions with times: group norm (3 min), pass@k (2 min), fusion (3 min), ECE (3 min), bias swap (2 min). Total 13 min. Build questions from the objective map: one per major mechanism, mixed difficulty, timed. Grade against the unit keys.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 8, 11</span></p>
+<p>The check: every question traces to an objective and a key. Orphan questions are cut. The broken assumption: the format guess is right. The exam can be all proofs. Practice derivations too, not just numbers. The lab asks: build one 3-minute question.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 2, 6</span> Sparring bench: the lesson's timed set, solved.</p>
+<p><input class="text" id="spq" type="text" value="2, 0, 0, 0" aria-label="rewards"> <button class="btn" id="spbtn">Compute GRPO advantage</button></p>
+<div class="chips" id="spout"></div>
+<p class="small muted">Reproduce the lesson's first toy question: rewards [2, 0, 0, 0] give advantages [1.73, -0.58, -0.58, -0.58]. Try your own group.</p>
+</div>
+<div class="nugget" id="w6">
+<h4>Nugget 06 · Same muscles, new numbers</h4>
+<p class="big">Five questions, 13 minutes, every one traced to an objective. Timed original practice beats passive rereading.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds the timed practice set and prices it at 13 minutes.</dd>
+<dt>Why it matters</dt><dd>The exam format is a guess, so practice the skills, not the format. Derivations too, not just numbers.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Train under time pressure on original problems. The muscles transfer even when the format does not.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Keystones: the load-bearing walls</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 2-6</span></p>
+<p>Which concept, removed, collapses the most later material? The toy: remove "attention", U02-U09 lose their footing. Remove "RLVR", only U06 wobbles. Attention is the keystone. The course is a building. Lower floors hold upper floors. Count downstream dependents per concept. The top three are the keystones. Study them first, test them hardest. The computed example: toy graph of 20 concepts, attention has 15 downstream, policy gradient 9, retrieval 7. The ranking is the study order. Figure u09_fig04 marks the keystones on the dependency map.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 8, 11</span></p>
+<p>The check: the top keystone is a U01-U02 concept. If a U08 concept tops the list, the edges are wrong. The broken assumption: edges are complete. A hidden dependency (judging needs calibration) misleads the ranking. Audit edges yearly. The lab asks: the keystone of the toy graph is attention.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u09-keystone.webp" alt="Watercolor of a building cross-section with three glowing load-bearing columns and dependency lines">
+<figcaption><span class="tag tag-toy">Illustration</span> The keystones in one image: three load-bearing walls hold seven floors. Study them first. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bars of downstream dependents: attention 15, policy gradient 9, retrieval 7">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Downstream dependents, 20-concept toy (C07 item 6)</text>
+<rect x="150" y="80" width="110" height="170" fill="#2f4b8f" rx="4"/>
+<rect x="310" y="140" width="110" height="110" fill="#7a8fc4" rx="4"/>
+<rect x="470" y="170" width="110" height="80" fill="#7a8fc4" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="205" y="70">15</text><text x="365" y="130">9</text><text x="525" y="160">7</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="205" y="270">attention</text><text x="365" y="270">policy gradient</text><text x="525" y="270">retrieval</text>
+</g>
+<text x="350" y="296" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">The ranking is the study order.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 6</span> The lesson's toy graph. Remove attention and U02-U09 lose their footing.</figcaption>
+</figure>
+<div class="nugget" id="w7">
+<h4>Nugget 07 · Keystones first</h4>
+<p class="big">Attention holds 15 downstream concepts. The building stands on the lower floors, so study them first and test them hardest.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson counts transitive dependents and ranks the keystones.</dd>
+<dt>Why it matters</dt><dd>Flat review is fair and slow. Keystone-first review protects the foundation everything else stands on.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Find what everything depends on and learn that first. Foundations before facades.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>Comparative architectures: the dated matrix</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 2-6</span></p>
+<p>A new project, which architecture? The toy axes: coherence (AR wins), latency with parallel hardware (diffusion wins), tooling maturity (AR wins). Score 2-1 for AR today. Architectures are vehicles. The sedan (AR) is refined and everywhere. The prototype (diffusion) is fast on the track, rough on the road. The decision matrix: rows architectures, columns axes, cells scored 1-3 with dates. The winner is the weighted sum, the dates are the honesty.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 6, 11</span></p>
+<p>The computed example: AR [3, 2, 3], diffusion [2, 3, 1], equal weights: AR 8, diffusion 6. Latency-heavy weights [0.2, 0.6, 0.2]: both 2.4, a tie. The check: the dates are present and the weights are stated. A matrix without dates is an opinion. The broken assumption: axes are complete. Inference cost per token can flip the ranking at scale. Add cost as an axis. The lab asks: equal weights, AR wins 8 to 6.</p>
+</div>
+<table class="data">
+<caption class="small muted capleft"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 item 6</span> The toy matrix, scores 1-3, dated Oct 2026.</caption>
+<tr><th>Architecture</th><th>Coherence</th><th>Latency</th><th>Maturity</th><th>Equal-weight total</th></tr>
+<tr><td>AR</td><td class="num">3</td><td class="num">2</td><td class="num">3</td><td class="num">8</td></tr>
+<tr><td>Diffusion</td><td class="num">2</td><td class="num">3</td><td class="num">1</td><td class="num">6</td></tr>
+</table>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 5, 7</span> Decision bench: the lesson's weighted matrix on your weights.</p>
+<p><input class="text" id="dcw" type="text" value="0.2, 0.6, 0.2" aria-label="weights"> <button class="btn" id="dcbtn">Decide</button></p>
+<div class="chips" id="dcout"></div>
+<p class="small muted">Reproduce the lesson: latency-heavy weights [0.2, 0.6, 0.2] give 2.4 vs 2.4, a tie. Try equal weights for AR 8 vs diffusion 6.</p>
+</div>
+<div class="nugget" id="w8">
+<h4>Nugget 08 · Date every cell</h4>
+<p class="big">The scores are dated because the race is still running. Weights stated, dates present, or the matrix is an opinion.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds the decision matrix and shows the tie under latency weights.</dd>
+<dt>Why it matters</dt><dd>Undated comparisons rot. The wrong pick costs a project, so score honestly and re-score yearly.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Decide with a dated, weighted matrix. When the weights change, the winner can change too.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>The end-to-end toy: the dollhouse</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 2-6</span></p>
+<p>Do the pieces actually connect? The toy: vocab 4, d = 2, a two-token sequence, first token a, second b. Embed, one attention head, project to logits. Every number on the table. The toy is a dollhouse. Every room is real, just small. The six lines: e = E[x], q = e W_q, k = e W_k, v = e W_v, a = softmax(q k^T / sqrt(2)), h = a v, logits = h W_o. Each step is a matrix multiply. The computed example: with the fixed toy matrices, logits for position 2: [0.33, 0.67, -0.33, -0.67]. Argmax picks token 1, the b token. Figure u09_fig03.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 8, 11</span></p>
+<p>The check: rows of a sum to 1, logits shape (2, 4). If not, a transpose is wrong. O(n^2 d) with n = 2, d = 2: sixteen multiplies. The point is the path, not the speed. The broken assumption: the toy teaches scale. Nothing about KV caching or numerics appears at n = 2. The toy teaches connection, not systems. The lab asks: shape of a is (2, 2), argmax picks token 1.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 340" role="img" aria-label="Bars of logits 0.33, 0.67, -0.33, -0.67 at position 2">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Logits, position 2 (C09 item 6)</text>
+<line x1="60" y1="170" x2="660" y2="170" stroke="#1c1a17" stroke-width="1"/>
+<rect x="140" y="105" width="110" height="65" fill="#2f4b8f" rx="4"/>
+<rect x="290" y="40" width="110" height="130" fill="#2f4b8f" rx="4"/>
+<rect x="440" y="170" width="110" height="65" fill="#b3541e" rx="4"/>
+<rect x="590" y="170" width="110" height="130" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="195" y="95">0.33</text><text x="345" y="30">0.67</text><text x="495" y="250">-0.33</text><text x="645" y="250">-0.67</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="195" y="290">token 0</text><text x="345" y="290">token 1</text><text x="495" y="290">token 2</text><text x="645" y="290">token 3</text>
+</g>
+<text x="350" y="316" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Argmax picks token 1. Sixteen multiplies, the whole path.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 6</span> Numbers from the lesson's runner. Walk through it once and the mansion stops being scary.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 4, 6</span> Argmax bench: the lesson's logits, your pick.</p>
+<p><input class="text" id="agl" type="text" value="0.33, 0.67, -0.33, -0.67" aria-label="logits"> <button class="btn" id="agbtn">Argmax</button></p>
+<div class="chips" id="agout"></div>
+<p class="small muted">Reproduce the lesson: the defaults pick token 1.</p>
+</div>
+<div class="nugget" id="w9">
+<h4>Nugget 09 · Walk the dollhouse</h4>
+<p class="big">Sixteen multiplies from token ids to logits. Small enough to hold in your head, real enough to trust the path.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson runs the tiny forward pass and prints every intermediate.</dd>
+<dt>Why it matters</dt><dd>The toy teaches connection, not systems. Walk it once and the architecture stops being opaque.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Shrink the system until you can trace every step. Understanding the path beats memorizing the map.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>The research protocol: a bet with an exit</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 2-6</span></p>
+<p>What separates a real experiment from theater? The toy: hypothesis "group norm beats batch norm on mixed difficulty". Kill criterion: "if the delta is within 2 seed-std, kill it". The kill criterion is the honesty. Research is a bet with an exit. The hypothesis is the bet, the kill criteria are the stop-loss. No stop-loss, no trade. The checklist: question, falsifiable hypothesis, literature, data, baselines, matched budgets, metrics, controls, ablations, seeds, uncertainty, failure criteria, reproducibility, negative-result plan, limitations, ethics. Every item present or explicitly waived.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 8, 11</span></p>
+<p>The check: the kill criteria are numeric and pre-registered. Vague criteria fail the check. The broken assumption: the protocol guarantees truth. P-hacking inside the protocol is still p-hacking. Pre-register and keep hands off the analysis plan. The worked example is the capstone report on the GRPO extension, hypothesis through negative result, reported honestly. The lab asks: write a falsifiable hypothesis and its kill criterion.</p>
+</div>
+<div class="nugget" id="w10">
+<h4>Nugget 10 · No stop-loss, no trade</h4>
+<p class="big">Numeric kill criteria, pre-registered. The protocol costs an hour of writing. Skipping it costs months of theater.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the research checklist and the kill-criterion rule.</dd>
+<dt>Why it matters</dt><dd>Exploratory hacking finds things and proves nothing. The protocol is what turns a bet into an experiment.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Before you start, write what would make you stop. Pre-register the exit.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>The production bridge: five airlocks</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 2-6</span></p>
+<p>The lab says 0.98, production says 0.81. What happened? The toy: lab data was clean, production is messy, latency caps k at 2, the verifier is weaker. The gates catch each gap. Production is the ocean, the lab is the pool. Gates are the airlocks: data, latency, verifier, cost, monitoring, rollback. Gates in order: (1) data match (production sample through the lab pipeline), (2) latency (p99 under budget), (3) cost (per-query under budget), (4) shadow (run alongside, compare), (5) rollback (one command, tested). Each gate is a measurement, not a meeting. Ship only on five passes.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 8, 11</span></p>
+<p>The check: the rollback was tested, not just written. An untested rollback is a wish. The broken assumption: the lab result is real. The lab metric can be gamed. Audit the lab before bridging it. The worked example is the applied RAG support capstone, with hypothetical cost numbers labeled as such. The lab asks: rollback untested, verdict: wish.</p>
+</div>
+<div class="nugget" id="w11">
+<h4>Nugget 11 · Ship on five passes</h4>
+<p class="big">Data, latency, cost, shadow, rollback. Each gate is a measurement, and the rollback must be tested, not written.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the five acceptance gates and the rollback rule.</dd>
+<dt>Why it matters</dt><dd>Skip one airlock and the ocean floods in. Gates cost engineering weeks, skipping them costs incidents.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Bridge lab to production through measured gates. Test the escape hatch before you need it.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>The oral defense: the stress test</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 2-6</span></p>
+<p>Can you explain it when the questions keep coming? The toy ladder on GRPO: define, toy, derive, implement, compare, debug, critique, design. Eight rungs, no hiding. The defense is a stress test. Each rung loads the concept harder. Passing means the knowledge is structural, not painted on. The defender may say "I do not know" once without failing. Twice is a crack. Ten ladders with full keys live in the interview folder, and this unit's defense draws from all nine units.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 8, 11</span></p>
+<p>The check: the defender derives, not recites. Recitation fails at rung 3. One defense is 20 minutes. Ten defenses are a course. The broken assumption: the ladder fits every concept. Pure-fact concepts have no rung 3. Adapt: rung 3 becomes "justify why this fact matters". The lab asks: the 8 rungs, in order.</p>
+</div>
+<div class="nugget" id="w12">
+<h4>Nugget 12 · Derive, not recite</h4>
+<p class="big">Eight rungs, 20 minutes, no hiding. Recitation fails at rung 3. One honest I-do-not-know is allowed.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the ladder protocol and the scoring rule.</dd>
+<dt>Why it matters</dt><dd>Structural knowledge survives the ladder. Painted-on knowledge peels at rung 3.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Test understanding by climbing, not by recalling. The rungs are the same every time.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Twelve nuggets, one unit</h2>
+<ol class="wisdom">
+<li><a href="#w1"><span class="wnum">01</span>Sculpt the text</a></li>
+<li><a href="#w2"><span class="wnum">02</span>Re-derive or it is a wish</a></li>
+<li><a href="#w3"><span class="wnum">03</span>Unshelved objectives are promises</a></li>
+<li><a href="#w4"><span class="wnum">04</span>The graph, not the nodes</a></li>
+<li><a href="#w5"><span class="wnum">05</span>Append, never rewrite</a></li>
+<li><a href="#w6"><span class="wnum">06</span>Same muscles, new numbers</a></li>
+<li><a href="#w7"><span class="wnum">07</span>Keystones first</a></li>
+<li><a href="#w8"><span class="wnum">08</span>Date every cell</a></li>
+<li><a href="#w9"><span class="wnum">09</span>Walk the dollhouse</a></li>
+<li><a href="#w10"><span class="wnum">10</span>No stop-loss, no trade</a></li>
+<li><a href="#w11"><span class="wnum">11</span>Ship on five passes</a></li>
+<li><a href="#w12"><span class="wnum">12</span>Derive, not recite</a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cme295/lessons/u09_trends_synthesis.md</code>, locally authored bridge content for Stanford CME295 (2026-10-06). The lesson marks diffusion LLM topics named in L8 and the L9 recap OFFICIAL-SYLLABUS. All exam mapping and practice is the lesson's own REQUESTED-BRANCH original work: the midterm (Oct 23, 2026) and final (Dec 9, 2026) fell after the build baseline of 2026-10-06, so no exam content is claimed or reproduced anywhere on this page. Every leaf is PLANNED / SOURCE ATTRIBUTION PENDING until slide or transcript extraction verifies it. No lecture transcript exists for this unit, so no lecture anecdotes appear and no sentence here reproduces an instructor's words. The diffusion confidences, the objective counts, the decision matrix, and the toy logits are the lesson's own computed values, labeled per section. Lesson figures u09_fig01, u09_fig02, u09_fig03, and u09_fig04 are the lesson's own plates, cited where they appear. Charts on this page re-plot the lesson's computed numbers with section citations. Interactive toys run the lesson's rules on values you supply. The two watercolor illustrations are original to this companion, generated with Muse native tools, and labeled Illustration. No official course video exists for this unit, so no video is embedded.</p>
+<p><strong>Quoted words.</strong> Quoted words from the lesson source: 50. These are the lesson's own example strings (objective names, hypothesis and kill-criterion wordings, dated baseline notes, and toy labels), quoted verbatim so the examples stay exact. All counts were made with the mechanical recount method: quoted phrases in visible body text, chart labels, tooltips, and attribute values, footer excluded. Numbers carry their lesson section above each figure and table.</p>
+<p><a href="../index.html">Back to the CME295 index</a></p>
+</footer>
+</div>
+<script>
+function el(tag,cls,text){
+var e=document.createElement(tag)
+if(cls){e.className=cls}
+if(text!=null){e.textContent=text}
+return e
+}
+function parseNums(id){
+var raw=document.getElementById(id).value
+var parts=raw.split(",")
+var out=[]
+var i=0
+while(i<parts.length){
+var v=parseFloat(parts[i])
+if(!isNaN(v)){out.push(v)}
+i=i+1
+}
+return out
+}
+function runCv(){
+var m=parseFloat(document.getElementById("cvm").value)
+var o=parseFloat(document.getElementById("cvo").value)
+var out=document.getElementById("cvout")
+out.textContent=""
+if(!(m>=0)||!(o>=0)||m+o===0){
+out.appendChild(el("span","chip plain","Enter non-negative counts, not all zero."))
+return
+}
+out.appendChild(el("span","chip plain","coverage = "+(m/(m+o)*100).toFixed(1)+"%"))
+out.appendChild(el("span","chip plain","orphans = "+o))
+}
+function runSp(){
+var r=parseNums("spq")
+var out=document.getElementById("spout")
+out.textContent=""
+if(r.length<2){
+out.appendChild(el("span","chip plain","Enter at least two rewards."))
+return
+}
+var mu=0
+var i=0
+while(i<r.length){
+mu=mu+r[i]
+i=i+1
+}
+mu=mu/r.length
+var va=0
+i=0
+while(i<r.length){
+va=va+(r[i]-mu)*(r[i]-mu)
+i=i+1
+}
+var sigma=Math.sqrt(va/r.length)
+var s=""
+i=0
+while(i<r.length){
+s=s+((r[i]-mu)/(sigma+1e-8)).toFixed(2)
+if(i<r.length-1){s=s+", "}
+i=i+1
+}
+out.appendChild(el("span","chip plain","A = ["+s+"]"))
+}
+function runDc(){
+var w=parseNums("dcw")
+var out=document.getElementById("dcout")
+out.textContent=""
+if(w.length!==3){
+out.appendChild(el("span","chip plain","Enter three weights."))
+return
+}
+var ar=[3,2,3]
+var df=[2,3,1]
+var sa=0
+var sd=0
+var i=0
+while(i<3){
+sa=sa+w[i]*ar[i]
+sd=sd+w[i]*df[i]
+i=i+1
+}
+out.appendChild(el("span","chip plain","AR = "+sa.toFixed(2)))
+out.appendChild(el("span","chip plain","diffusion = "+sd.toFixed(2)))
+if(sa>sd){
+out.appendChild(el("span","chip plain","winner: AR"))
+}
+else if(sd>sa){
+out.appendChild(el("span","chip plain","winner: diffusion"))
+}
+else{
+out.appendChild(el("span","chip plain","tie"))
+}
+}
+function runAg(){
+var l=parseNums("agl")
+var out=document.getElementById("agout")
+out.textContent=""
+if(l.length<1){
+out.appendChild(el("span","chip plain","Enter logits."))
+return
+}
+var bi=0
+var i=1
+while(i<l.length){
+if(l[i]>l[bi]){bi=i}
+i=i+1
+}
+out.appendChild(el("span","chip plain","argmax = token "+bi))
+}
+document.getElementById("cvbtn").addEventListener("click",runCv)
+document.getElementById("spbtn").addEventListener("click",runSp)
+document.getElementById("dcbtn").addEventListener("click",runDc)
+document.getElementById("agbtn").addEventListener("click",runAg)
+runCv()
+runSp()
+runDc()
+runAg()
+</script>
+</body>
+</html>

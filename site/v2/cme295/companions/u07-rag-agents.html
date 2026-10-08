@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 <!DOCTYPE html>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -438,8 +440,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-illustration">Illustration</span> Invented by the companion: an analogy, a toy with values you supply, or a what-if. Never lesson content.</p>
 <p><span class="ptag ptag-companion">Companion</span> Editorial framing or a transferable principle. The lesson did not say it this way.</p>
 </div>
-<figure class="paint inset" data-entrance="bloom">
-<div class="frame"><div class="stage"><img alt="Watercolor of a library funnel narrowing books down to a writer's desk" class="base" loading="lazy" src="assets/u07-hero.webp"/></div></div>
+<figure class="paint inset" data-entrance="bloom" data-hero="" data-scene="p2-cme-u07-hero">
+<div class="frame"><div class="stage"><img alt="Watercolor of a library funnel narrowing books down to a writer's desk" class="base" fetchpriority="high" height="1792" loading="lazy" src="assets/u07-hero.webp" width="1344"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The unit in one image: a wide corpus funnels to the few pages the model actually reads. Watercolor, original to this companion.</figcaption></figure>
 <section class="block col" data-chapter="1" data-title="The retrieval pipeline: a funnel" id="s1"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">1</span></div><div><p class="ch-meta"><span class="ts">Unit 1</span> · C01</p><h2>The retrieval pipeline: a funnel</h2></div></div>
 <div class="prose-narrow">
@@ -471,7 +473,7 @@ span.ptag, .ptag {
 <div class="chips" id="fbout"></div>
 <p class="small muted">Reproduce the lesson: 8, 20, 6 gives recall 0.75, precision 0.30. Try k 40 with 7 hits: 0.875 and 0.175.</p>
 </div>
-<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="w1"><div class="tag-price"><span class="tag-big">01</span><span class="tag-unit">Nugget 01 · The funnel decides what the model can know</span></div><div class="tag-body"><div class="tag-title">Nugget 01 · The funnel decides what the model can know</div><div class="tag-eye">The lesson</div><p class="">The model answers from the top-k, never from the corpus. Recall is set by the index and k. Everything else is downstream.</p><p><b>What happened. </b>The lesson builds the funnel, prices recall and precision at two k values, and names the chunker failure.</p><p><b>Why it matters. </b>A missing fact is a retrieval failure, not a model failure. Debug the funnel before you blame the reader.</p><p><b>Transferable principle. </b> Any system that reasons over retrieved evidence is bounded by the retriever. The funnel is the first suspect.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="w1"><div class="tag-price"><span class="tag-big">top-k</span><span class="tag-unit">the model sees the top-k, never the corpus</span></div><div class="tag-body"><div class="tag-title">Nugget 01 · The funnel decides what the model can know</div><div class="tag-eye">The lesson</div><p class="">The model answers from the top-k, never from the corpus. Recall is set by the index and k. Everything else is downstream.</p><p><b>What happened. </b>The lesson builds the funnel, prices recall and precision at two k values, and names the chunker failure.</p><p><b>Why it matters. </b>A missing fact is a retrieval failure, not a model failure. Debug the funnel before you blame the reader.</p><p><b>Transferable principle. </b> Any system that reasons over retrieved evidence is bounded by the retriever. The funnel is the first suspect.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Advanced retrieval: a small program around the index" id="s2"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">2</span></div><div><p class="ch-meta"><span class="ts">Unit 2</span> · C02</p><h2>Advanced retrieval: a small program around the index</h2></div></div>
 <div class="prose-narrow">
@@ -496,7 +498,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C02 item 6</span> Toy numbers from the lesson's lab runner. If hop 2 adds nothing, the questions are single-hop.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="w2"><div class="tag-price"><span class="tag-big">02</span><span class="tag-unit">Nugget 02 · Each hop buys recall with latency</span></div><div class="tag-body"><div class="tag-title">Nugget 02 · Each hop buys recall with latency</div><div class="tag-eye">The lesson</div><p class="">Rewrite adds +0.09 at 1.3x. A second hop adds +0.19 at 2.1x. The ladder is measurable, so climb it deliberately.</p><p><b>What happened. </b>The lesson prices three retrieval strategies in recall and latency, and names the drift failure.</p><p><b>Why it matters. </b>Multi-hop is a program, not a setting. Ungrounded hops retrieve fiction. Cap the hops, ground each one.</p><p><b>Transferable principle. </b> Iterative refinement trades time for quality. Price each iteration and stop when the price exceeds the gain.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
+<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="w2"><div class="tag-price"><span class="tag-big">+0.19</span><span class="tag-unit">second-hop recall at 2.1x latency</span></div><div class="tag-body"><div class="tag-title">Nugget 02 · Each hop buys recall with latency</div><div class="tag-eye">The lesson</div><p class="">Rewrite adds +0.09 at 1.3x. A second hop adds +0.19 at 2.1x. The ladder is measurable, so climb it deliberately.</p><p><b>What happened. </b>The lesson prices three retrieval strategies in recall and latency, and names the drift failure.</p><p><b>Why it matters. </b>Multi-hop is a program, not a setting. Ungrounded hops retrieve fiction. Cap the hops, ground each one.</p><p><b>Transferable principle. </b> Iterative refinement trades time for quality. Price each iteration and stop when the price exceeds the gain.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Hybrid search: two witnesses, one jury" id="s3"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">3</span></div><div><p class="ch-meta"><span class="ts">Unit 3</span> · C03</p><h2>Hybrid search: two witnesses, one jury</h2></div></div>
 <div class="prose-narrow">
@@ -534,7 +536,7 @@ span.ptag, .ptag {
 <div class="chips" id="fuout"></div>
 <p class="small muted">Reproduce the lesson: the defaults give [0.65, 0.55, 0.50]. Try the lab: alpha 0.8 gives [0.80, 0.40, 0.50].</p>
 </div>
-<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="w3"><div class="tag-price"><span class="tag-big">03</span><span class="tag-unit">Nugget 03 · Neither witness alone</span></div><div class="tag-body"><div class="tag-title">Nugget 03 · Neither witness alone</div><div class="tag-eye">The lesson</div><p class="">BM25 hears the part number, dense hears the meaning. The jury needs both, and the scores must be normalized first.</p><p><b>What happened. </b>The lesson fuses two signals by hand, shows the ranking flip, and names the scale-mismatch failure.</p><p><b>Why it matters. </b>Unnormalized scores make alpha a lie. The fusion is only as honest as the normalization.</p><p><b>Transferable principle. </b> Combine signals that err differently. Before you weight them, put them on the same scale.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
+<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="w3"><div class="tag-price"><span class="tag-big">2 signals</span><span class="tag-unit">BM25 hears parts, dense hears meaning</span></div><div class="tag-body"><div class="tag-title">Nugget 03 · Neither witness alone</div><div class="tag-eye">The lesson</div><p class="">BM25 hears the part number, dense hears the meaning. The jury needs both, and the scores must be normalized first.</p><p><b>What happened. </b>The lesson fuses two signals by hand, shows the ranking flip, and names the scale-mismatch failure.</p><p><b>Why it matters. </b>Unnormalized scores make alpha a lie. The fusion is only as honest as the normalization.</p><p><b>Transferable principle. </b> Combine signals that err differently. Before you weight them, put them on the same scale.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Rerank: the bouncer and the judge" id="s4"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">4</span></div><div><p class="ch-meta"><span class="ts">Unit 4</span> · C04</p><h2>Rerank: the bouncer and the judge</h2></div></div>
 <div class="prose-narrow">
@@ -559,7 +561,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 item 6</span> The lesson's stage math. The lab asks: recall@50 0.90, precision@5 0.80, end-to-end 0.72.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="w4"><div class="tag-price"><span class="tag-big">04</span><span class="tag-unit">Nugget 04 · Stages multiply</span></div><div class="tag-body"><div class="tag-title">Nugget 04 · Stages multiply</div><div class="tag-eye">The lesson</div><p class="">Recall from stage 1, precision from stage 2. End quality is the product, 0.72, and the product punishes the weakest stage.</p><p><b>What happened. </b>The lesson names the bouncer and the judge, multiplies the stages, and prices the latency rule.</p><p><b>Why it matters. </b>Reranking cannot rescue what retrieval missed. Fix the funnel before you polish the shortlist.</p><p><b>Transferable principle. </b> In a pipeline, stage qualities multiply. The cheapest win is usually the weakest stage, not the strongest.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
+<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="w4"><div class="tag-price"><span class="tag-big">0.72</span><span class="tag-unit">end quality is the product</span></div><div class="tag-body"><div class="tag-title">Nugget 04 · Stages multiply</div><div class="tag-eye">The lesson</div><p class="">Recall from stage 1, precision from stage 2. End quality is the product, 0.72, and the product punishes the weakest stage.</p><p><b>What happened. </b>The lesson names the bouncer and the judge, multiplies the stages, and prices the latency rule.</p><p><b>Why it matters. </b>Reranking cannot rescue what retrieval missed. Fix the funnel before you polish the shortlist.</p><p><b>Transferable principle. </b> In a pipeline, stage qualities multiply. The cheapest win is usually the weakest stage, not the strongest.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Context construction: packing the suitcase" id="s5"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">5</span></div><div><p class="ch-meta"><span class="ts">Unit 5</span> · C05</p><h2>Context construction: packing the suitcase</h2></div></div>
 <div class="prose-narrow">
@@ -591,7 +593,7 @@ span.ptag, .ptag {
 <div class="chips" id="pkout"></div>
 <p class="small muted">Reproduce the lesson: the defaults give budget 3000, 3 docs fit, 600 cut. Try the computed example: 8000, 600, 1000, and 1500, 1200, 900, 800, 700, 2000.</p>
 </div>
-<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="w5"><div class="tag-price"><span class="tag-big">05</span><span class="tag-unit">Nugget 05 · The suitcase has three zippers</span></div><div class="tag-body"><div class="tag-title">Nugget 05 · The suitcase has three zippers</div><div class="tag-eye">The lesson</div><p class="">Budget = window minus system minus reserve. Order by score, cut from the bottom, and never trust the truncation order blindly.</p><p><b>What happened. </b>The lesson writes the pack inequality, works both toys, and names the key-fact-cut failure.</p><p><b>Why it matters. </b>Every truncated token is a fact the model never sees. The reserve is for the answer. The mark is for honesty.</p><p><b>Transferable principle. </b> Fit the evidence to the container by rank, and mark every cut. Silent truncation is silent information loss.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
+<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="w5"><div class="tag-price"><span class="tag-big">3 parts</span><span class="tag-unit">the context budget</span></div><div class="tag-body"><div class="tag-title">Nugget 05 · The suitcase has three zippers</div><div class="tag-eye">The lesson</div><p class="">Budget = window minus system minus reserve. Order by score, cut from the bottom, and never trust the truncation order blindly.</p><p><b>What happened. </b>The lesson writes the pack inequality, works both toys, and names the key-fact-cut failure.</p><p><b>Why it matters. </b>Every truncated token is a fact the model never sees. The reserve is for the answer. The mark is for honesty.</p><p><b>Transferable principle. </b> Fit the evidence to the container by rank, and mark every cut. Silent truncation is silent information loss.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Function calling: words become actions" id="s6"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">6</span></div><div><p class="ch-meta"><span class="ts">Unit 6</span> · C06</p><h2>Function calling: words become actions</h2></div></div>
 <div class="prose-narrow">
@@ -606,7 +608,7 @@ span.ptag, .ptag {
 <div class="chips" id="tcout"></div>
 <p class="small muted">Reproduce the lesson: name search with a q argument validates. Clear the q field and the error names the missing argument.</p>
 </div>
-<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="w6"><div class="tag-price"><span class="tag-big">06</span><span class="tag-unit">Nugget 06 · The schema is the contract</span></div><div class="tag-body"><div class="tag-title">Nugget 06 · The schema is the contract</div><div class="tag-eye">The lesson</div><p class="">Validate before execute, always. The error message is part of the contract, not an afterthought.</p><p><b>What happened. </b>The lesson writes the schema, parses the toy call, and shows the missing-argument error.</p><p><b>Why it matters. </b>The model cannot see past the schema. Validation is the only gate between words and actions.</p><p><b>Transferable principle. </b> When text triggers actions, the contract is the schema and the gate is validation. Name the fault in the error.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
+<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="w6"><div class="tag-price"><span class="tag-big">1 gate</span><span class="tag-unit">validate before execute</span></div><div class="tag-body"><div class="tag-title">Nugget 06 · The schema is the contract</div><div class="tag-eye">The lesson</div><p class="">Validate before execute, always. The error message is part of the contract, not an afterthought.</p><p><b>What happened. </b>The lesson writes the schema, parses the toy call, and shows the missing-argument error.</p><p><b>Why it matters. </b>The model cannot see past the schema. Validation is the only gate between words and actions.</p><p><b>Transferable principle. </b> When text triggers actions, the contract is the schema and the gate is validation. Name the fault in the error.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Tool results: senses, not floods" id="s7"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">7</span></div><div><p class="ch-meta"><span class="ts">Unit 7</span> · C07</p><h2>Tool results: senses, not floods</h2></div></div>
 <div class="prose-narrow">
@@ -628,7 +630,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 item 6</span> The lesson's truncation toy. Typed errors cost one extra model step to handle.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s7" data-sign-label="Unit" data-sign-num="7" id="w7"><div class="tag-price"><span class="tag-big">07</span><span class="tag-unit">Nugget 07 · Cap the senses</span></div><div class="tag-body"><div class="tag-title">Nugget 07 · Cap the senses</div><div class="tag-eye">The lesson</div><p class="">50,000 tokens in, 2,000 kept, the rest logged. A sense that floods the context is worse than no sense at all.</p><p><b>What happened. </b>The lesson sets the result cap, marks the truncation, and types the errors.</p><p><b>Why it matters. </b>Uncapped results blow the window. Non-idempotent tools make retries dangerous. The schema must flag side effects.</p><p><b>Transferable principle. </b> Bound every input channel. What enters the decision must be sized, marked, and typed.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 07</span></div></div></aside>
+<aside class="tag" data-chapter="s7" data-sign-label="Unit" data-sign-num="7" id="w7"><div class="tag-price"><span class="tag-big">50k→2k</span><span class="tag-unit">tokens in, tokens kept</span></div><div class="tag-body"><div class="tag-title">Nugget 07 · Cap the senses</div><div class="tag-eye">The lesson</div><p class="">50,000 tokens in, 2,000 kept, the rest logged. A sense that floods the context is worse than no sense at all.</p><p><b>What happened. </b>The lesson sets the result cap, marks the truncation, and types the errors.</p><p><b>Why it matters. </b>Uncapped results blow the window. Non-idempotent tools make retries dangerous. The schema must flag side effects.</p><p><b>Transferable principle. </b> Bound every input channel. What enters the decision must be sized, marked, and typed.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 07</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="ReAct: thinking out loud with hands" id="s8"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">8</span></div><div><p class="ch-meta"><span class="ts">Unit 8</span> · C08</p><h2>ReAct: thinking out loud with hands</h2></div></div>
 <div class="prose-narrow">
@@ -637,10 +639,10 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 item 11</span></p>
 <p>The broken assumption: thoughts guide actions. The model writes a good thought then calls the wrong tool. The thought is decoration. Grade the actions. The check: on 20 scripted tasks, the agent calls the right tools in the right order. If it never acts, the trigger format is wrong. Figure u07_fig03 shows one ReAct cycle.</p>
 </div>
-<figure class="paint inset" data-entrance="sketch">
-<div class="frame"><div class="stage"><img alt="Watercolor of a circular loop of an eye, a hand, and an ear connected by arrows, with a leash held by a hand" class="base" loading="lazy" src="assets/u07-loop.webp"/></div></div>
+<figure class="paint inset" data-entrance="sketch" data-scene="p2-cme-u07-loop">
+<div class="frame"><div class="stage"><img alt="Watercolor of a circular loop of an eye, a hand, and an ear connected by arrows, with a leash held by a hand" class="base" height="1792" loading="lazy" src="assets/u07-loop.webp" width="1344"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The loop in one image: thought plans, action moves, observation reports, and the leash holds the circle. Watercolor, original to this companion.</figcaption></figure>
-<aside class="tag" data-chapter="s8" data-sign-label="Unit" data-sign-num="8" id="w8"><div class="tag-price"><span class="tag-big">08</span><span class="tag-unit">Nugget 08 · Grade the actions, not the thoughts</span></div><div class="tag-body"><div class="tag-title">Nugget 08 · Grade the actions, not the thoughts</div><div class="tag-eye">The lesson</div><p class="">Thoughts can be decoration. The trace is the working memory, but the actions are the evidence.</p><p><b>What happened. </b>The lesson writes the toy trace, gives the loop detector, and warns that thoughts do not guarantee actions.</p><p><b>Why it matters. </b>A fluent thought followed by the wrong call is a failure wearing a plan. Evaluate what the agent did, not what it said it would do.</p><p><b>Transferable principle. </b> Plans are cheap, actions are the record. When the two disagree, the actions are the truth.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 08</span></div></div></aside>
+<aside class="tag" data-chapter="s8" data-sign-label="Unit" data-sign-num="8" id="w8"><div class="tag-price"><span class="tag-big">actions</span><span class="tag-unit">the trace is not the evidence</span></div><div class="tag-body"><div class="tag-title">Nugget 08 · Grade the actions, not the thoughts</div><div class="tag-eye">The lesson</div><p class="">Thoughts can be decoration. The trace is the working memory, but the actions are the evidence.</p><p><b>What happened. </b>The lesson writes the toy trace, gives the loop detector, and warns that thoughts do not guarantee actions.</p><p><b>Why it matters. </b>A fluent thought followed by the wrong call is a failure wearing a plan. Evaluate what the agent did, not what it said it would do.</p><p><b>Transferable principle. </b> Plans are cheap, actions are the record. When the two disagree, the actions are the truth.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 08</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Agent state: desk, notebook, filing cabinet" id="s9"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">9</span></div><div><p class="ch-meta"><span class="ts">Unit 9</span> · C09</p><h2>Agent state: desk, notebook, filing cabinet</h2></div></div>
 <div class="prose-narrow">
@@ -672,7 +674,7 @@ span.ptag, .ptag {
 <div class="chips" id="cpout"></div>
 <p class="small muted">Reproduce the lesson: 40 steps, window 8, gives 4 summaries with 8 steps verbatim.</p>
 </div>
-<aside class="tag" data-chapter="s9" data-sign-label="Unit" data-sign-num="9" id="w9"><div class="tag-price"><span class="tag-big">09</span><span class="tag-unit">Nugget 09 · Three stores, three lifetimes</span></div><div class="tag-body"><div class="tag-title">Nugget 09 · Three stores, three lifetimes</div><div class="tag-eye">The lesson</div><p class="">Desk, notebook, filing cabinet. Summarize the old, keep the newest verbatim, and never summarize a confirmation code.</p><p><b>What happened. </b>The lesson separates the three stores, works the compaction toy, and names the summary-loss failure.</p><p><b>Why it matters. </b>Summarization is lossy compression of exactly the detail a later step needs. Verbatim anchors for codes, IDs, and numbers.</p><p><b>Transferable principle. </b> Compress the narrative, anchor the facts. What must be exact stays exact.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 09</span></div></div></aside>
+<aside class="tag" data-chapter="s9" data-sign-label="Unit" data-sign-num="9" id="w9"><div class="tag-price"><span class="tag-big">3 stores</span><span class="tag-unit">desk, notebook, filing cabinet</span></div><div class="tag-body"><div class="tag-title">Nugget 09 · Three stores, three lifetimes</div><div class="tag-eye">The lesson</div><p class="">Desk, notebook, filing cabinet. Summarize the old, keep the newest verbatim, and never summarize a confirmation code.</p><p><b>What happened. </b>The lesson separates the three stores, works the compaction toy, and names the summary-loss failure.</p><p><b>Why it matters. </b>Summarization is lossy compression of exactly the detail a later step needs. Verbatim anchors for codes, IDs, and numbers.</p><p><b>Transferable principle. </b> Compress the narrative, anchor the facts. What must be exact stays exact.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 09</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Stopping: every loop needs a leash" id="s10"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">10</span></div><div><p class="ch-meta"><span class="ts">Unit 10</span> · C10</p><h2>Stopping: every loop needs a leash</h2></div></div>
 <div class="prose-narrow">
@@ -697,7 +699,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 item 6</span> The lesson's stop batch. The 3 cap hits are the tasks to fix.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s10" data-sign-label="Unit" data-sign-num="10" id="w10"><div class="tag-price"><span class="tag-big">10</span><span class="tag-unit">Nugget 10 · Leash, collar, owner</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · Leash, collar, owner</div><div class="tag-eye">The lesson</div><p class="">Step cap, repeat detector, answer trigger. The guards are free. The runaway they prevent is unbounded.</p><p><b>What happened. </b>The lesson writes the three stopping rules and prices them on 100 runs.</p><p><b>Why it matters. </b>A loop without a leash burns budget with zero return. Cap-hit rate below 5% keeps the leash honest.</p><p><b>Transferable principle. </b> Every autonomous loop needs a leash. Set it from the task distribution, then watch what it catches.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 10</span></div></div></aside>
+<aside class="tag" data-chapter="s10" data-sign-label="Unit" data-sign-num="10" id="w10"><div class="tag-price"><span class="tag-big">&lt;5%</span><span class="tag-unit">cap-hit rate keeps the leash honest</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · Leash, collar, owner</div><div class="tag-eye">The lesson</div><p class="">Step cap, repeat detector, answer trigger. The guards are free. The runaway they prevent is unbounded.</p><p><b>What happened. </b>The lesson writes the three stopping rules and prices them on 100 runs.</p><p><b>Why it matters. </b>A loop without a leash burns budget with zero return. Cap-hit rate below 5% keeps the leash honest.</p><p><b>Transferable principle. </b> Every autonomous loop needs a leash. Set it from the task distribution, then watch what it catches.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 10</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Permissions: badge every tool" id="s11"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">11</span></div><div><p class="ch-meta"><span class="ts">Unit 11</span> · C11</p><h2>Permissions: badge every tool</h2></div></div>
 <div class="prose-narrow">
@@ -722,7 +724,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C11 item 6</span> The lesson's gate toy. Batch red actions, approvals cost human minutes.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s11" data-sign-label="Unit" data-sign-num="11" id="w11"><div class="tag-price"><span class="tag-big">11</span><span class="tag-unit">Nugget 11 · The gate, not a suggestion</span></div><div class="tag-body"><div class="tag-title">Nugget 11 · The gate, not a suggestion</div><div class="tag-eye">The lesson</div><p class="">Green runs free, yellow runs logged, red waits at the gate. 1000 actions, 0 red without approval.</p><p><b>What happened. </b>The lesson writes the three-tier table, the approval flow, and the gate test.</p><p><b>Why it matters. </b>One unbadged tool is a hole in the fence. Audit for hidden writes, red-team the tier list.</p><p><b>Transferable principle. </b> Tier actions by blast radius. The dangerous ones wait for a human, no exceptions.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 11</span></div></div></aside>
+<aside class="tag" data-chapter="s11" data-sign-label="Unit" data-sign-num="11" id="w11"><div class="tag-price"><span class="tag-big">0 red</span><span class="tag-unit">red actions without approval</span></div><div class="tag-body"><div class="tag-title">Nugget 11 · The gate, not a suggestion</div><div class="tag-eye">The lesson</div><p class="">Green runs free, yellow runs logged, red waits at the gate. 1000 actions, 0 red without approval.</p><p><b>What happened. </b>The lesson writes the three-tier table, the approval flow, and the gate test.</p><p><b>Why it matters. </b>One unbadged tool is a hole in the fence. Audit for hidden writes, red-team the tier list.</p><p><b>Transferable principle. </b> Tier actions by blast radius. The dangerous ones wait for a human, no exceptions.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 11</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Failure separation: find the dropped baton" id="s12"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">12</span></div><div><p class="ch-meta"><span class="ts">Unit 12</span> · C12</p><h2>Failure separation: find the dropped baton</h2></div></div>
 <div class="prose-narrow">
@@ -753,9 +755,8 @@ span.ptag, .ptag {
 <div class="chips" id="spout"></div>
 <p class="small muted">Answer yes or no to the three checks. The first no in pipeline order names the bin.</p>
 </div>
-<aside class="tag" data-chapter="s12" data-sign-label="Unit" data-sign-num="12" id="w12"><div class="tag-price"><span class="tag-big">12</span><span class="tag-unit">Nugget 12 · Check upstream first</span></div><div class="tag-body"><div class="tag-title">Nugget 12 · Check upstream first</div><div class="tag-eye">The lesson</div><p class="">47 retrieval, 31 model, 22 tool. The histogram aims the fix. Rerun it after every fix and watch it shift.</p><p><b>What happened. </b>The lesson writes the separation protocol, labels 100 failures, and prices the biggest lever.</p><p><b>Why it matters. </b>Blaming the runner for a dropped baton at the exchange fixes the wrong thing twice. Separation first, fix second.</p><p><b>Transferable principle. </b> In a pipeline, debug upstream first. The Pareto usually shows by 50 samples.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 12</span></div></div></aside>
+<aside class="tag" data-chapter="s12" data-sign-label="Unit" data-sign-num="12" id="w12"><div class="tag-price"><span class="tag-big">47·31·22</span><span class="tag-unit">retrieval, model, tool failures</span></div><div class="tag-body"><div class="tag-title">Nugget 12 · Check upstream first</div><div class="tag-eye">The lesson</div><p class="">47 retrieval, 31 model, 22 tool. The histogram aims the fix. Rerun it after every fix and watch it shift.</p><p><b>What happened. </b>The lesson writes the separation protocol, labels 100 failures, and prices the biggest lever.</p><p><b>Why it matters. </b>Blaming the runner for a dropped baton at the exchange fixes the wrong thing twice. Separation first, fix second.</p><p><b>Transferable principle. </b> In a pipeline, debug upstream first. The Pareto usually shows by 50 samples.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 12</span></div></div></aside>
 </section>
-
 <section class="col" id="playbook-sec">
 <h3 class="sub">The playbook</h3>
 <p>Every lesson on this page, in order. Tap one to return to its chapter.</p>
@@ -1580,5 +1581,46 @@ runSp()
   });
 })();
 
-</script></body>
+</script><script>
+<script>
+/* Phase 2 scenes (Builder 2): CompanionFX overlay life. Pure code, zero image cost. */
+(function(){
+var FX = window.CompanionFX; if(!FX) return;
+FX.registerScene("p2-cme-u07-hero", {
+  init: function(F, FX) {
+    F._fx_motes = FX.motes(F.stage, F.W, F.H, 14, 16);
+    F._fx_spark = FX.sparkles(F.stage, F.W, F.H, [[672, 300, 24], [500, 600, 20], [850, 800, 22], [672, 1100, 20]]);
+  },
+  pose: function(S, FX) {
+    var t = S.t, F = S.F, et = S.et;
+    F._fx_motes.tick(t);
+    var k = FX.smoothstep(0, 1, Math.min(1, et/1.4));
+    F._fx_spark.forEach(function(st,i){
+      var tw = 0.55 + 0.45*FX.flicker(t, i*1.7);
+      st.style.transform = 'scale(' + (k*tw).toFixed(3) + ')';
+    });
+    return {};
+  }
+});
+FX.registerScene("p2-cme-u07-loop", {
+  init: function(F, FX) {
+    F._fx_glows = FX.glows(F.stage, F.W, F.H, [[672, 896, 150]], 'screen', '#FFE9B0');
+    F._fx_spark = FX.sparkles(F.stage, F.W, F.H, [[500, 700, 20], [850, 1100, 20]]);
+  },
+  pose: function(S, FX) {
+    var t = S.t, F = S.F, et = S.et;
+    F._fx_glows.forEach(function(c,i){
+      c.style.opacity = (0.3+0.22*FX.flicker(t, i*2.3)).toFixed(3);
+    });
+    var k = FX.smoothstep(0, 1, Math.min(1, et/1.4));
+    F._fx_spark.forEach(function(st,i){
+      var tw = 0.55 + 0.45*FX.flicker(t, i*1.7);
+      st.style.transform = 'scale(' + (k*tw).toFixed(3) + ')';
+    });
+    return {};
+  }
+});
+})();
+</script>
+</body>
 </html>

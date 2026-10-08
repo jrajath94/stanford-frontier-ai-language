@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U08 Companion: Inversion, style, and bounded rationality · CS329H</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:900px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband a{color:var(--paper)}
+header.hero{padding:52px 0 6px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:660px}
+.notice{border:1px solid var(--line)}
+.notice{background:var(--paper2)}
+.notice{border-radius:10px}
+.notice{padding:16px 20px}
+.notice{margin:26px 0}
+.notice{font-size:16px}
+.notice p{margin:.45em 0}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:16px 20px}
+.legend{margin:26px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-interp{background:transparent}
+.tag-interp{color:var(--indigo)}
+.tag-interp{border:1.5px solid var(--indigo)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+section.block{padding:34px 0 10px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.12em}
+.secnum{text-transform:uppercase}
+.secnum{color:var(--clay)}
+.secnum{margin:0 0 4px}
+h2{font-size:32px}
+h2{line-height:1.2}
+h2{margin:.1em 0 .5em}
+h3{font-size:22px}
+h3{margin:1.2em 0 .4em}
+.prose-narrow{max-width:720px}
+figure{margin:28px 0}
+figure{background:#fff}
+figure{border:1px solid var(--line)}
+figure{border-radius:10px}
+figure{padding:18px 18px 8px}
+figcaption{font-size:15px}
+figcaption{color:var(--muted)}
+figcaption{padding:10px 4px 12px}
+figcaption{line-height:1.55}
+img.illus{width:100%}
+img.illus{border-radius:8px}
+img.illus{display:block}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:5px solid var(--clay)}
+.nugget{background:#fff}
+.nugget{border-radius:8px}
+.nugget{padding:18px 22px}
+.nugget{margin:30px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:14px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:20px}
+.nugget .big{line-height:1.5}
+.nugget .big{margin:.2em 0 .6em}
+.nugget dl{margin:0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{margin:10px 0 2px}
+.nugget dd{margin:0 0 6px}
+.nugget dd{font-size:16.5px}
+.lab{border:1px dashed var(--amber)}
+.lab{background:var(--ambersoft)}
+.lab{border-radius:10px}
+.lab{padding:18px 22px}
+.lab{margin:28px 0}
+.toy{border:1px solid var(--indigo)}
+.toy{background:var(--indigosoft)}
+.toy{border-radius:10px}
+.toy{padding:18px 22px}
+.toy{margin:28px 0}
+.toy input[type=number]{width:64px}
+.toy input[type=number]{font-family:var(--mono)}
+.toy input[type=number]{font-size:15px}
+.toy input[type=number]{padding:4px 6px}
+.toy input[type=number]{margin:2px 6px 2px 2px}
+.toy label{font-family:var(--sans)}
+.toy label{font-size:14px}
+.btn{font-family:var(--sans)}
+.btn{font-size:15px}
+.btn{background:var(--ink)}
+.btn{color:var(--paper)}
+.btn{border:none}
+.btn{border-radius:8px}
+.btn{padding:10px 18px}
+.btn{cursor:pointer}
+.btn{margin:8px 8px 8px 0}
+.btn.ghost{background:transparent}
+.btn.ghost{color:var(--ink)}
+.btn.ghost{border:1.5px solid var(--ink)}
+table.data{border-collapse:collapse}
+table.data{margin:14px 0}
+table.data{font-size:16px}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.06em}
+table.data th{text-align:left}
+table.data th{padding:8px 14px 8px 0}
+table.data td{padding:8px 14px 8px 0}
+table.data td{border-top:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+code{font-family:var(--mono)}
+code{font-size:.88em}
+code{background:var(--paper2)}
+code{padding:1px 6px}
+code{border-radius:5px}
+.wisdom ol{padding-left:22px}
+.wisdom li{margin:10px 0}
+.wisdom a{color:var(--clay)}
+footer{background:var(--ink)}
+footer{color:var(--paper)}
+footer{margin-top:56px}
+footer{padding:40px 0 60px}
+footer p{font-size:15.5px}
+footer{line-height:1.6}
+footer code{background:rgba(255,255,255,.12)}
+footer a{color:var(--paper)}
+.backlink{font-family:var(--sans)}
+.backlink{font-size:15px}
+.backlink{margin:34px 0 0}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CS329H · Stanford · Interactive companion · <a href="../index.html">course index</a></div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">U08 · Inversion, style, and bounded rationality</p>
+<h1>Read the goal from the choice</h1>
+<p class="dek">We watch the choices. What goal explains them, and how wrong can we be? The choice underdetermines the goal. The surrogate diverges from the truth. Style masquerades as content. And the chooser is a satisficing, anchorable human, not a maximizer. This unit builds the inverse problem and names every way it lies.</p>
+</header>
+<figure>
+<img class="illus" src="assets/u08-mirror.jpg" alt="Watercolor of an antique hand mirror with a distorted reflection">
+<figcaption><span class="tag tag-toy">Illustration</span> The mirror as watercolor. The choice is the reflection. The goal is the face. Many faces fit one reflection. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="notice">
+<p><strong>Sourcing.</strong> No full transcript exists for sessions S14 and S15. This companion narrates <code>content/v2/cs329h/lessons/u08_lesson.md</code>. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<p><strong>How to read the tags.</strong> Every number carries its lesson section. Anything the companion computes is tagged <span class="tag tag-toy">Illustration</span>. A <span class="tag tag-interp">Interpretation</span> tag marks the companion's own reading of the lesson. Where the lesson leaves a value out, the page says so in words.</p>
+</div>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> A fact, number, or mechanism from the lesson.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-interp">Interpretation</span> The companion's reading of why a lesson fact matters. The fact is the lesson's, the gloss is ours.</p>
+<p><span class="tag-ref">C01 · Contract 6</span> Points to the exact lesson section behind a claim or number.</p>
+</div>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#sec-s1">Choice versus goal</a>
+<a href="#sec-s2">Surrogates and style</a>
+<a href="#s3">The human chooser</a>
+<a href="#s4">Honest reporting</a>
+<a href="#wisdom">Wisdom index</a>
+<a href="#provenance">Provenance</a>
+</div></nav>
+<section class="block" id="sec-s1">
+<p class="secnum">Section 1 · C01, C07, C08</p>
+<h2>The choice is not the goal</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 5, 6</span></p>
+<p>A choice is evidence about the goal, not the goal itself. The map from goal to choice is many-to-one, so the inverse is one-to-many. The lesson toy: two goals, health and impressing the guest, both rank salad first among salad and burger. The observed pick is salad. The posterior over goals stays 0.5/0.5. The choice teaches nothing about which goal. This underdetermination is the fundamental limit of all inversion. Lesson figure u08_f01 draws the two goals arrowing into one choice.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 5, 6</span></p>
+<p>The inverse problem is estimation with the choice model as the likelihood. The lesson toy: A beats B twice, B beats C once, Bradley-Terry link, N(0,1) prior on scores. The MLE of the A-B gap diverges to infinity: complete separation, a 2-0 record, and the likelihood keeps rising with the gap. The MAP with the Gaussian prior stays finite: gap_AB = 0.802, gap_BC = 0.254. The prior does real work here: without it the "estimate" is an artifact of where the optimizer stopped.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 5, 6</span></p>
+<p>Rewards are not identified by optimal behavior. Potential-based shaping, F = gamma Phi(s') - Phi(s), changes the reward without changing the optimal policy. The lesson toy: 2-state MDP, gamma 0.9. Under r the Q-values are [1.0, 0.9]. Under the shaped r' they are [0.5, 0.40]. Same argmax, different values. Inversion from behavior alone cannot pick between them. The honest practice: identify rewards only modulo shaping, or fix a canonical form. Lesson figure u08_f07 draws both Q bars.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Q values 1.0 and 0.9 under r, 0.5 and 0.40 under shaped r, same argmax">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Same policy, different reward</text>
+<text x="140" y="60" font-size="13" font-family="Georgia" fill="#6f6355">under r</text>
+<g><title>Q under r: 1.0, 0.9</title><rect x="80" y="75" width="120" height="120" fill="#31405e" rx="4"/><text x="140" y="140" text-anchor="middle" font-size="15" font-family="Georgia" fill="#faf6ee">1.0 / 0.9</text></g>
+<text x="460" y="60" font-size="13" font-family="Georgia" fill="#6f6355">under shaped r'</text>
+<g><title>Q under shaped r: 0.5, 0.40</title><rect x="400" y="75" width="120" height="120" fill="#5d7050" rx="4"/><text x="460" y="140" text-anchor="middle" font-size="15" font-family="Georgia" fill="#faf6ee">0.5 / 0.40</text></g>
+<text x="300" y="230" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">argmax identical: go. The inversion cannot tell r from r'.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 6</span> Same numbers as lesson figure u08_f07. Deploying the shaped reward in a new MDP is the failure case: the shaping was tuned for one task and misleads on the next.</figcaption>
+</figure>
+<div class="nugget" id="nugget-under">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 7</span></h4>
+<p class="big">The choice underdetermines the goal. Posterior stays 0.5/0.5: the salad teaches nothing about health versus impressing.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Every inversion starts from this gap. If the choice cannot separate the goals, no statistics will.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A vote for a candidate. Policy agreement, party loyalty, or dislike of the opponent: one ballot, many goals.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-map">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 7</span></h4>
+<p class="big">MLE diverges on separation, MAP stays finite: 0.802 and 0.254. The prior does real work.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>A 2-0 record contains no information about how large the gap is, only its sign. The infinite MLE is the likelihood telling you exactly that.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Ranking chess players from few games. Two wins say who is better, not by how much. The prior supplies the scale.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-shaping">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 7</span></h4>
+<p class="big">Shaping changes the reward, not the policy. [1.0, 0.9] and [0.5, 0.40] recommend the same action.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>An inverted reward that looks nothing like the true one can still drive the right policy. Judge the reward by the behavior it induces, not by its numbers.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Two bonus schemes, same incentives. The accountants see different numbers. The sales team does the same thing.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="sec-s2">
+<p class="secnum">Section 2 · C02, C03</p>
+<h2>Surrogates and style</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 5, 6</span></p>
+<p>A surrogate is a measurable stand-in for the true goal. We optimize the surrogate because the goal is hard to measure, and the gap between them is where hacking lives. The lesson toy: true goal G = quality = 0.8 - 0.6t, surrogate S = quality + 2 times clickbait with clickbait = t, policy parameter t in [0,1]. Optimizing S picks t = 1: S rises 0.8 to 2.2 while G falls 0.8 to 0.2. Goodhart in closed form: optimizing S hard moves the policy out of the region where the correlation held. Lesson figure u08_f02 draws both curves.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Surrogate rises 0.8 to 2.2 while the true goal falls 0.8 to 0.2">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The surrogate climbs, the goal falls</text>
+<polyline points="60,200 200,160 340,120 480,80 580,60" fill="none" stroke="#5d7050" stroke-width="2.5"/>
+<polyline points="60,200 200,215 340,225 480,232 580,235" fill="none" stroke="#a94f27" stroke-width="2.5"/>
+<text x="560" y="50" font-size="13" font-family="Georgia" fill="#5d7050">S: 0.8 to 2.2</text>
+<text x="560" y="248" font-size="13" font-family="Georgia" fill="#a94f27">G: 0.8 to 0.2</text>
+<text x="320" y="278" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">t = 0 to 1: the optimum of S is the ruin of G</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 6</span> Same numbers as lesson figure u08_f02. The surrogate is a local approximation treated as global. Validate the S-G correlation under optimization pressure or drop the surrogate.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 5, 6</span></p>
+<p>Preference data mixes style and content. The lesson toy: content scores [0.9, 0.4], style scores [0.3, 0.9]. The annotator picks response 2. The totals: r1 = 1.2, r2 = 1.3. The style gap beat the content gap: 0.6 > 0.5. Style decided. A content-only deployment picks response 1. A reward trained on the mix learns the blend, and the blend may not be what deployment wants. Lesson figure u08_f03 draws the stacked bars.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u08-masks.jpg" alt="Watercolor of two theater masks, one ornate, one plain">
+<figcaption><span class="tag tag-toy">Illustration</span> The masks as watercolor. The ornate mask wins the contest. The plain mask held the better content. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The decomposition toy. Move the content and style scores. The browser totals them and names the pick.</p>
+<p><label>content 1 <input type="range" id="c1" min="0" max="1" step="0.1" value="0.9"></label> <code id="c1v">0.9</code></p>
+<p><label>style 1 <input type="range" id="s1" min="0" max="1" step="0.1" value="0.3"></label> <code id="s1v">0.3</code></p>
+<p><label>content 2 <input type="range" id="c2" min="0" max="1" step="0.1" value="0.4"></label> <code id="c2v">0.4</code></p>
+<p><label>style 2 <input type="range" id="s2" min="0" max="1" step="0.1" value="0.9"></label> <code id="s2v">0.9</code></p>
+<p class="small" id="decompout">Totals appear here.</p>
+<p class="small muted"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 6</span> With the lesson's scores the readout must show totals 1.2 and 1.3, pick response 2, style the decider.</p>
+</div>
+<div class="nugget" id="nugget-surrogate">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 7</span></h4>
+<p class="big">S rises 0.8 to 2.2 while G falls 0.8 to 0.2. The optimum of the surrogate is the ruin of the goal.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The divergence is not an accident, it is the mechanism: optimization moves the policy where the correlation breaks. The surrogate must be validated under pressure, not at rest.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Teaching to the test. Scores rise, learning falls. The test was the surrogate.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-style">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 7</span></h4>
+<p class="big">Style decided: 0.6 beat 0.5, totals 1.2 against 1.3. The annotator picked the writing, not the answer.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>A reward trained on the mix learns the blend. If deployment wants content, the blend is the wrong target.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A job interview. The polished candidate beats the competent one. The hiring bar measured the mask.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C04, C05, C06</p>
+<h2>The chooser is human</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 5, 6</span></p>
+<p>Bounded rationality: the chooser has a computation budget. With 100 options and a budget of 10 evaluations, the chooser satisfices: take the first option above the aspiration level. The lesson toy: utilities uniform on [0,1], threshold 0.8. P(find above 0.8 in 10 draws) = 0.8926. Mean chosen utility 0.882 at seed 0 over 20000 trials. A maximizer gets about 0.990. The choice reflects the procedure, not just the preferences. Lesson figure u08_f04 draws the curve against the budget.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u08-flashlight.jpg" alt="Watercolor of a flashlight beam in a dark maze corridor">
+<figcaption><span class="tag tag-toy">Illustration</span> The flashlight as watercolor. Ten feet of visible path, a hundred feet of maze. Satisficing takes the first good-enough turn. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 5, 6</span></p>
+<p>Behavioral bias lives in the choice procedure, but naive inversion reads it as preference. The lesson toy: anchoring shifts P(pick A) from 0.5 to 0.65. With bias b = 0.619, the logit of 0.65/0.35, a true gap of 0 looks like a gap of 0.619. The inversion without the bias term invents 0.619 utils of preference out of framing. Lesson figure u08_f05 draws the before and after bars.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 260" role="img" aria-label="Choice share 0.50 unanchored, 0.65 anchored, phantom gap 0.619">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The phantom gap: 0.619 utils of framing</text>
+<g><title>Unanchored: 0.50</title><rect x="120" y="90" width="200" height="40" fill="#6f6355" rx="4"/><text x="325" y="115" font-size="13" font-family="Georgia" fill="#6f6355">unanchored 0.50</text></g>
+<g><title>Anchored: 0.65</title><rect x="120" y="150" width="260" height="40" fill="#a94f27" rx="4"/><text x="385" y="175" font-size="13" font-family="Georgia" fill="#a94f27">anchored 0.65</text></g>
+<text x="320" y="225" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">true gap 0, invented gap 0.619: the bias term the naive inversion skipped</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 6</span> Same numbers as lesson figure u08_f05. The bias-aware fit recovers a gap near 0. Debias by design when possible: randomize the frames.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 3, 5, 6</span></p>
+<p>Assume a maximizer, meet a satisficer. The lesson toy: 5 options with utils [1.0, 0.8, 0.6, 0.4, 0.2], random order, threshold 0.7, budget 3, 20000 trials, seed 0. Simulated choice shares: [0.449, 0.452, 0.033, 0.033, 0.033]. The best option is chosen only 0.449 of the time: it is evaluated in just 3 of 5 positions. A maximizer model reads the misses as dislike. The inferred reward absorbs the procedure as preference: systematic error, not noise.</p>
+</div>
+<div class="nugget" id="nugget-satis">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 7</span></h4>
+<p class="big">P(find above 0.8 in 10 draws) = 0.8926. Mean chosen 0.882 against the maximizer's 0.990.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Good enough beats best when evaluation is costly. The choice distribution depends on the budget and the threshold, not only on utilities.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Apartment hunting. Ten viewings, first place above the bar wins. The best apartment in the city was never viewed.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-phantom">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 7</span></h4>
+<p class="big">The phantom gap: 0.619 utils of pure framing. True gap 0, invented gap 0.619.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The bias is in the procedure, the inversion files it under preference. Every downstream decision inherits a preference that never existed.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A default-checked checkbox. The "preference" for the default is 0.619 utils of interface design.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C09, C10, C11, C12</p>
+<h2>Debias, personalize, report honestly</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5, 6</span></p>
+<p>Debiasing subtracts an estimated bias from the observed margin. It assumes the bias model is right and the estimate is accurate. The lesson toy: true gap 0.5, length bias b = 0.3, observed margin 0.8. With b_hat = 0.3 the correction is exact: 0.5. With b_hat = 0.9 the corrected gap is -0.1, error 0.6, worse than the uncorrected error of 0.3. The bad correction doubles the error. The cure must beat the disease: |b - b_hat| < |b|. Lesson figure u08_f08 draws the four bars.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="True 0.5, uncorrected 0.8, corrected-good 0.5, corrected-bad minus 0.1">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The cure must beat the disease</text>
+<g><title>True gap: 0.5</title><rect x="60" y="140" width="110" height="100" fill="#31405e" rx="4"/><text x="115" y="132" text-anchor="middle" font-size="13" font-family="Georgia">0.5</text><text x="115" y="258" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">true</text></g>
+<g><title>Uncorrected: 0.8</title><rect x="200" y="80" width="110" height="160" fill="#a94f27" rx="4"/><text x="255" y="72" text-anchor="middle" font-size="13" font-family="Georgia">0.8</text><text x="255" y="258" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">uncorrected</text></g>
+<g><title>Corrected good: 0.5</title><rect x="340" y="140" width="110" height="100" fill="#5d7050" rx="4"/><text x="395" y="132" text-anchor="middle" font-size="13" font-family="Georgia">0.5</text><text x="395" y="258" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">b_hat 0.3</text></g>
+<g><title>Corrected bad: -0.1</title><rect x="480" y="230" width="110" height="10" fill="#a94f27" rx="4"/><text x="535" y="222" text-anchor="middle" font-size="13" font-family="Georgia">-0.1</text><text x="535" y="258" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">b_hat 0.9</text></g>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 6</span> Same numbers as lesson figure u08_f08. Debias by design first: randomize the frames. Correct only with a validated b_hat.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5, 6</span></p>
+<p>One reward for everyone, or one per person? The lesson toy: two users with 8-2 and 2-8 records, true gaps +0.8 and -0.8, N(0,1) prior. The pooled MLE gap is 0.0: the users cancel. Per-user MAP recovers +0.90 and -0.90. Held-out: personalized predicts 0.85, pooled 0.50. The pooled policy is the worst of both: a mushy middle that pleases nobody. The failure case is thin data: 2 pairs per user and personalization overfits, held-out 0.45 against pooled 0.55.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 5, 6</span></p>
+<p>Carry uncertainty through the inversion. The lesson toy: posterior over gap_AB from the C07 data, 95 percent interval [-0.94, 3.31] on the grid. The interval is wide: with two observations even the sign is unsure. Acting as if the gap were exactly 0.802 overstates confidence badly. Report intervals, not points.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 3, 5, 6</span></p>
+<p>The checklist for responsible interpretation: name the choice model, audit the biases, justify the pooling decision, report uncertainty, flag counterfactual claims as model-dependent. The lesson's honest sentence: "users prefer concise answers (gap 0.4)" becomes "under the BT model with length debiased at b_hat 0.3, the MAP content gap is 0.4, 95 percent interval [0.1, 0.7], the claim reverses if the bias model is wrong." An inverted reward is a model output, not a fact about humans.</p>
+</div>
+<div class="nugget" id="nugget-cure">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 7</span></h4>
+<p class="big">The bad correction doubles the error: -0.1 against the uncorrected 0.8. The cure must beat the disease.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Debiasing with a wrong bias model is worse than no debiasing. The correction needs its own validation before it touches the data.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Adjusting test scores for coaching. The wrong adjustment punishes the coached and rewards the uncoached: worse than raw scores.</dd>
+</dl>
+</div>
+</section>
+<section class="block wisdom" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Eight nuggets, indexed</h2>
+<ol>
+<li><a href="#nugget-under">The choice underdetermines the goal.</a> Posterior 0.5/0.5.</li>
+<li><a href="#nugget-map">MLE diverges, MAP stays finite.</a> 0.802 and 0.254.</li>
+<li><a href="#nugget-shaping">Shaping changes the reward, not the policy.</a> Same argmax.</li>
+<li><a href="#nugget-surrogate">The surrogate climbs, the goal falls.</a> 2.2 against 0.2.</li>
+<li><a href="#nugget-style">Style decided.</a> 0.6 beat 0.5.</li>
+<li><a href="#nugget-satis">Satisficing, not maximizing.</a> 0.882 against 0.990.</li>
+<li><a href="#nugget-phantom">The phantom gap.</a> 0.619 utils of framing.</li>
+<li><a href="#nugget-cure">The cure must beat the disease.</a> The bad correction doubles the error.</li>
+</ol>
+<p class="backlink"><a href="../index.html">Back to the CS329H course index</a></p>
+</section>
+</div>
+<footer id="provenance"><div class="wrap">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cs329h/lessons/u08_lesson.md</code>. No full lecture transcript exists for S14 and S15, and no lecture anecdotes appear. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING. Quoted words from the lesson source: 36, counted by <code>companions/tools/quote_recount.py</code> with the blockquote plus quoted-phrase method, footer excluded. Lesson figures u08_f01 through u08_f08 are referenced where the lesson places them. The charts on this page re-plot the lesson's computed toy numbers with concept and contract citations. The decomposition toy totals the lesson's C03 additive model in the browser. No official source video is on record for this session, so no embed appears. The three watercolors are original illustrations made for this companion.</p>
+</div></footer>
+<script>
+function updDecomp(){
+var c1=parseFloat(document.getElementById("c1").value)
+var s1=parseFloat(document.getElementById("s1").value)
+var c2=parseFloat(document.getElementById("c2").value)
+var s2=parseFloat(document.getElementById("s2").value)
+document.getElementById("c1v").textContent=c1.toFixed(1)
+document.getElementById("s1v").textContent=s1.toFixed(1)
+document.getElementById("c2v").textContent=c2.toFixed(1)
+document.getElementById("s2v").textContent=s2.toFixed(1)
+var t1=c1+s1
+var t2=c2+s2
+var pick=t1>=t2?"response 1":"response 2"
+var decider=Math.abs(c1-c2)>Math.abs(s1-s2)?"content":"style"
+document.getElementById("decompout").textContent="totals "+t1.toFixed(1)+" vs "+t2.toFixed(1)+", pick "+pick+", decider "+decider
+}
+var dids=["c1","s1","c2","s2"]
+dids.forEach(function(id){document.getElementById(id).addEventListener("input",updDecomp)})
+updDecomp()
+</script>
+</body>
+
+</html>

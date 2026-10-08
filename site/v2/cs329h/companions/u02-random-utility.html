@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 <!DOCTYPE html>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -432,8 +434,8 @@ span.ptag, .ptag {
 <h1>The scoreboard wobbles</h1>
 <p class="dek">Why do identical people facing identical options choose differently? Random utility models answer with a hidden score plus a daily shock. This unit derives the softmax from that shock, states the axioms a utility story needs, breaks them on purpose, and then compresses whole populations of tasters into a few factors.</p>
 </header>
-<figure class="paint inset" data-entrance="bloom">
-<div class="frame"><div class="stage"><img alt="Watercolor of three desserts on a cafe table with dice beside them" class="base" loading="lazy" src="assets/u02-hero.jpg"/></div></div>
+<figure class="paint inset" data-entrance="bloom" data-hero="" data-scene="p2-h-u02-hero">
+<div class="frame"><div class="stage"><img alt="Watercolor of three desserts on a cafe table with dice beside them" class="base" fetchpriority="high" height="1280" loading="lazy" src="assets/u02-hero.jpg" width="1920"/><img alt="" aria-hidden="true" class="ly mul" data-depth="14" data-obj="desserts" src="assets/u02-random-utility-hero-layer.png" style="left:25%;top:50%;width:45%;"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> Three snacks with fixed appeal, plus a daily craving shock. The appeal is the utility. The shock is the Gumbel noise. The choice is the argmax of the sum. Watercolor, original to this companion.</figcaption></figure>
 <div class="notice">
 <p><strong>Sourcing.</strong> No full transcript exists for sessions S03 and S04. This companion narrates <code>content/v2/cs329h/lessons/u02_lesson.md</code>. Concepts C01 through C06 map to S03 at title level, and C07 through C09 map to S04 at title level. Concepts C10, C11, and C12 are requested extensions: the lesson marks them PLANNED / SOURCE ATTRIBUTION PENDING, and they are taught here as independent theory with that label.</p>
@@ -470,7 +472,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 · Contract 5, 6</span></p>
 <p>The same rule scales to any number of options. With utilities [2.0, 1.0, 0.0, -1.0, -2.0] the shares are 0.636, 0.234, 0.086, 0.032, 0.012. The top option takes nearly two-thirds. One fact from this concept is used later in U05: the log of the denominator, the partition function, equals the expected maximum utility, which becomes the regularized optimum there.</p>
 </div>
-<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-gumbel"><div class="tag-price"><span class="tag-big">1</span><span class="tag-unit">Nugget 1 · From the lesson C02 · Contract 3, 10</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C02 · Contract 3, 10</div><div class="tag-eye">The lesson</div><p class="">Argmax plus Gumbel noise is the softmax. The noise family chooses the choice rule.</p><p><b>Why it matters. </b>The softmax is not a definition here. It is a theorem about one specific noise shape. Change the shape and the clean formula disappears.</p><p><b>Transfer. </b>Neural network sampling draws from a softmax over logits. The Gumbel-max trick behind it is this derivation in production clothing.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-gumbel"><div class="tag-price"><span class="tag-big">1 trick</span><span class="tag-unit">argmax plus Gumbel noise is the softmax</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C02 · Contract 3, 10</div><div class="tag-eye">The lesson</div><p class="">Argmax plus Gumbel noise is the softmax. The noise family chooses the choice rule.</p><p><b>Why it matters. </b>The softmax is not a definition here. It is a theorem about one specific noise shape. Change the shape and the clean formula disappears.</p><p><b>Transfer. </b>Neural network sampling draws from a softmax over logits. The Gumbel-max trick behind it is this derivation in production clothing.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
 <div class="toy">
 <p><span class="ptag ptag-illustration">Illustration</span> Move the utilities and watch the shares follow the lesson's softmax rule. Then add a clone of option 2 and watch the red bus effect from C05 happen live.</p>
 <p><label>u1 <input id="u1" max="2" min="-2" step="0.1" type="range" value="1"/></label> <code id="u1v">1.0</code></p>
@@ -506,13 +508,13 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C03 · Contract 6</span> Same numbers as lesson figure u02_f03. The residual is the proof: no assignment of strengths reproduces three 0.80 wins around a cycle.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-cycle"><div class="tag-price"><span class="tag-big">2</span><span class="tag-unit">Nugget 2 · From the lesson C03 · Contract 5</span></div><div class="tag-body"><div class="tag-title">Nugget 2 · From the lesson C03 · Contract 5</div><div class="tag-eye">The lesson</div><p class="">A cycle refutes the single-utility story. Rock-paper-scissors data cannot come from one score per item.</p><p><b>Why it matters. </b>The 0.30 residual is not noise. It is the model announcing that its central assumption is false on this data.</p><p><b>Transfer. </b>Sports rankings with rock-paper-scissors matchups face the same wall. Any total order lies about at least one pairing.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
+<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-cycle"><div class="tag-price"><span class="tag-big">0.30</span><span class="tag-unit">the residual that refutes one utility</span></div><div class="tag-body"><div class="tag-title">Nugget 2 · From the lesson C03 · Contract 5</div><div class="tag-eye">The lesson</div><p class="">A cycle refutes the single-utility story. Rock-paper-scissors data cannot come from one score per item.</p><p><b>Why it matters. </b>The 0.30 residual is not noise. It is the model announcing that its central assumption is false on this data.</p><p><b>Transfer. </b>Sports rankings with rock-paper-scissors matchups face the same wall. Any total order lies about at least one pairing.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 · Contract 3, 4, 5, 6</span></p>
 <p>IIA says the ratio of two options' shares never changes when other options come or go. The logit implies it: P(car)/P(red) = exp(u_car - u_red), independent of the choice set. The red bus breaks it. Car 2/3, red bus 1/3. Add a blue bus identical to the red one. IIA keeps the car to red ratio at 2:1 and symmetry gives red to blue at 1:1, so the shares become car 0.50, red 0.25, blue 0.25. Intuition says the car should keep 0.67 while the buses split 0.33. Lesson figure u02_f02 computes the IIA prediction.</p>
 </div>
-<figure class="paint inset" data-entrance="sketch">
-<div class="frame"><div class="stage"><img alt="Watercolor of a red and a blue double-decker bus side by side with a small car" class="base" loading="lazy" src="assets/u02-bus.jpg"/></div></div>
+<figure class="paint inset" data-entrance="sketch" data-scene="p2-h-u02-bus">
+<div class="frame"><div class="stage"><img alt="Watercolor of a red and a blue double-decker bus side by side with a small car" class="base" height="1280" loading="lazy" src="assets/u02-bus.jpg" width="1920"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The canonical counterexample. The blue bus copies the red one, and the flat logit charges the car for the duplication. Watercolor, original to this companion.</figcaption></figure>
 <figure>
 <svg aria-label="Before the blue bus: 0.67 and 0.33. IIA prediction: 0.50, 0.25, 0.25. Intuitive: 0.67, 0.17, 0.17." class="chart" role="img" viewbox="0 0 640 340">
@@ -532,7 +534,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 · Contract 6</span> Lesson figure u02_f02 computes the IIA prediction. Lesson figure u02_f08 computes the intuitive shares. The repair is the nested logit of C12, which restores the car to 0.67 by nesting the buses.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-iia"><div class="tag-price"><span class="tag-big">3</span><span class="tag-unit">Nugget 3 · From the lesson C05 · Contract 4, 11</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C05 · Contract 4, 11</div><div class="tag-eye">The lesson</div><p class="">Under the flat logit, the ratio of two shares never moves. A near-duplicate newcomer cannibalizes everyone in proportion, which is exactly wrong.</p><p><b>Why it matters. </b>A recommender that adds near-duplicate items bleeds share from the good items to the clones. The model treats the clone as genuinely new demand.</p><p><b>Transfer. </b>Adding a near-duplicate product to a store. The flat logit predicts the existing products each lose share. Nest or deduplicate instead.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
+<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-iia"><div class="tag-price"><span class="tag-big">0 move</span><span class="tag-unit">two-share ratios never move</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C05 · Contract 4, 11</div><div class="tag-eye">The lesson</div><p class="">Under the flat logit, the ratio of two shares never moves. A near-duplicate newcomer cannibalizes everyone in proportion, which is exactly wrong.</p><p><b>Why it matters. </b>A recommender that adds near-duplicate items bleeds share from the good items to the clones. The model treats the clone as genuinely new demand.</p><p><b>Transfer. </b>Adding a near-duplicate product to a store. The flat logit predicts the existing products each lose share. Nest or deduplicate instead.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Many tasters, few factors" id="s3"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">3</span></div><div><p class="ch-meta"><span class="ts">Unit 3</span> · C07, C08</p><h2>Many tasters, few factors</h2></div></div>
 <div class="prose-narrow">
@@ -548,8 +550,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 · Contract 5, 6</span></p>
 <p>A new respondent arrives with two known ratings. Triangulate their position by least squares against the item factors, then predict the unseen items. The lesson toy is honest about what happens: the new respondent rates items 0 and 1 at 1.5 and -0.5, the fit gives r near [14.26, 6.17], and the item-4 prediction is a wild -12.42. The items 0 and 1 have nearly collinear factors, so two ratings do not determine the position. Fold-in needs varied item factors, not just enough of them.</p>
 </div>
-<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-lowrank"><div class="tag-price"><span class="tag-big">4</span><span class="tag-unit">Nugget 4 · From the lesson C07 · Contract 3, 10</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C07 · Contract 3, 10</div><div class="tag-eye">The lesson</div><p class="">Shared structure compresses the table. Twenty ratings become eighteen numbers when tastes vary smoothly along two axes.</p><p><b>Why it matters. </b>Compression is prediction. The factor model fills in the ratings nobody gave, which is the whole point of a recommender.</p><p><b>Transfer. </b>Recommender systems live here. R is the users, V is the items, and the dot product is the predicted rating.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
-<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-foldin"><div class="tag-price"><span class="tag-big">5</span><span class="tag-unit">Nugget 5 · From the lesson C08 · Contract 6, 9</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C08 · Contract 6, 9</div><div class="tag-eye">The lesson</div><p class="">Fold-in needs varied items, not just enough items. Collinear factors leave the new position undetermined and the predictions go wild.</p><p><b>Why it matters. </b>The lesson's -12.42 prediction is a warning label. Two ratings that agree with each other teach almost nothing beyond one rating.</p><p><b>Transfer. </b>A new streaming user who rated two action movies. Ask about a documentary next, not a third action movie.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
+<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-lowrank"><div class="tag-price"><span class="tag-big">20→18</span><span class="tag-unit">ratings compressed to eighteen numbers</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C07 · Contract 3, 10</div><div class="tag-eye">The lesson</div><p class="">Shared structure compresses the table. Twenty ratings become eighteen numbers when tastes vary smoothly along two axes.</p><p><b>Why it matters. </b>Compression is prediction. The factor model fills in the ratings nobody gave, which is the whole point of a recommender.</p><p><b>Transfer. </b>Recommender systems live here. R is the users, V is the items, and the dot product is the predicted rating.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
+<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-foldin"><div class="tag-price"><span class="tag-big">-12.42</span><span class="tag-unit">the wild prediction, a warning label</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C08 · Contract 6, 9</div><div class="tag-eye">The lesson</div><p class="">Fold-in needs varied items, not just enough items. Collinear factors leave the new position undetermined and the predictions go wild.</p><p><b>Why it matters. </b>The lesson's -12.42 prediction is a warning label. Two ratings that agree with each other teach almost nothing beyond one rating.</p><p><b>Transfer. </b>A new streaming user who rated two action movies. Ask about a documentary next, not a third action movie.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="The average voter does not exist" id="s4"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">4</span></div><div><p class="ch-meta"><span class="ts">Unit 4</span> · C09, C10</p><h2>The average voter does not exist</h2></div></div>
 <div class="prose-narrow">
@@ -566,7 +568,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C09 · Contract 6</span> Same numbers as lesson figure u02_f05. Mixture fitting is non-convex: use multiple restarts, and let held-out likelihood choose the number of groups.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-pooled"><div class="tag-price"><span class="tag-big">6</span><span class="tag-unit">Nugget 6 · From the lesson C09 · Contract 3, 11</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C09 · Contract 3, 11</div><div class="tag-eye">The lesson</div><p class="">The average voter does not exist. Pooling two opposite camps produces a middle number nobody holds.</p><p><b>Why it matters. </b>A pooled model trained on this data confidently predicts 0.48 for everyone and is wrong about everyone. The error is structural, not statistical.</p><p><b>Transfer. </b>Voters on a divisive issue. The poll average hides the two camps, and any policy built on the average pleases neither.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
+<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-pooled"><div class="tag-price"><span class="tag-big">0.48</span><span class="tag-unit">confident, wrong about everyone</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C09 · Contract 3, 11</div><div class="tag-eye">The lesson</div><p class="">The average voter does not exist. Pooling two opposite camps produces a middle number nobody holds.</p><p><b>Why it matters. </b>A pooled model trained on this data confidently predicts 0.48 for everyone and is wrong about everyone. The error is structural, not statistical.</p><p><b>Transfer. </b>Voters on a divisive issue. The poll average hides the two camps, and any policy built on the average pleases neither.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
 <div class="prose-narrow">
 <p><span class="tag tag-interp">Interpretation</span> The next two concepts are requested extensions, marked PLANNED / SOURCE ATTRIBUTION PENDING in the lesson and taught here as independent theory.</p>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5, 6</span></p>
@@ -588,7 +590,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 · Contract 6</span> Same numbers as lesson figure u02_f06. The cost of ignoring the tradeoff is misread strength: loud preferences that are really quiet noise.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-scale"><div class="tag-price"><span class="tag-big">7</span><span class="tag-unit">Nugget 7 · From the lesson C10 · Contract 3, 11</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C10 · Contract 3, 11</div><div class="tag-eye">The lesson</div><p class="">Utility and noise are one ratio. A utility number means nothing until the noise scale is fixed.</p><p><b>Why it matters. </b>Two fitted models with different implicit scales cannot be compared. The comparison is not noisy. It is undefined.</p><p><b>Transfer. </b>Temperature-scaled language models. Only the ratio of logits to temperature is identified, never the logits alone.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
+<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-scale"><div class="tag-price"><span class="tag-big">1 ratio</span><span class="tag-unit">utility over noise, nothing else</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C10 · Contract 3, 11</div><div class="tag-eye">The lesson</div><p class="">Utility and noise are one ratio. A utility number means nothing until the noise scale is fixed.</p><p><b>Why it matters. </b>Two fitted models with different implicit scales cannot be compared. The comparison is not noisy. It is undefined.</p><p><b>Transfer. </b>Temperature-scaled language models. Only the ratio of logits to temperature is identified, never the logits alone.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Guardrails" id="s5"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">5</span></div><div><p class="ch-meta"><span class="ts">Unit 5</span> · C11, C12</p><h2>Guardrails</h2></div></div>
 <div class="prose-narrow">
@@ -615,7 +617,7 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 · Contract 6</span> Same numbers as lesson figure u02_f08. The battery is not exhaustive: real data mixes breakages, and cycles plus heterogeneity together need both repairs at once.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-checklist"><div class="tag-price"><span class="tag-big">8</span><span class="tag-unit">Nugget 8 · From the lesson C11 · Contract 3, C12 · Contract 4</span></div><div class="tag-body"><div class="tag-title">Nugget 8 · From the lesson C11 · Contract 3, C12 · Contract 4</div><div class="tag-eye">The lesson</div><p class="">Check the contract before the fit. Six clauses, six named failures, and the repair always costs more than the check.</p><p><b>Why it matters. </b>Every failure in this unit produced confident, wrong numbers. The checklist is the only part of the pipeline that asks whether the model is allowed to speak.</p><p><b>Transfer. </b>A new preference dataset lands on your desk. The first hour is graph connectivity, repeat rate, cycle count, and a heterogeneity screen, not a fit.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
+<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-checklist"><div class="tag-price"><span class="tag-big">6 clauses</span><span class="tag-unit">check the contract before the fit</span></div><div class="tag-body"><div class="tag-title">Nugget 8 · From the lesson C11 · Contract 3, C12 · Contract 4</div><div class="tag-eye">The lesson</div><p class="">Check the contract before the fit. Six clauses, six named failures, and the repair always costs more than the check.</p><p><b>Why it matters. </b>Every failure in this unit produced confident, wrong numbers. The checklist is the only part of the pipeline that asks whether the model is allowed to speak.</p><p><b>Transfer. </b>A new preference dataset lands on your desk. The first hour is graph connectivity, repeat rate, cycle count, and a heterogeneity screen, not a fit.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
 </section>
 <section class="col" id="playbook-sec">
 <h3 class="sub">The playbook</h3>
@@ -1321,5 +1323,46 @@ upd()
   });
 })();
 
-</script></body>
+</script><script>
+<script>
+/* Phase 2 scenes (Builder 2): CompanionFX overlay life. Pure code, zero image cost. */
+(function(){
+var FX = window.CompanionFX; if(!FX) return;
+FX.registerScene("p2-h-u02-hero", {
+  init: function(F, FX) {
+    F._fx_motes = FX.motes(F.stage, F.W, F.H, 12, 22);
+    F._fx_spark = FX.sparkles(F.stage, F.W, F.H, [[700, 450, 20], [1100, 450, 22], [1300, 700, 20]]);
+  },
+  pose: function(S, FX) {
+    var t = S.t, F = S.F, et = S.et;
+    F._fx_motes.tick(t);
+    var k = FX.smoothstep(0, 1, Math.min(1, et/1.4));
+    F._fx_spark.forEach(function(st,i){
+      var tw = 0.55 + 0.45*FX.flicker(t, i*1.7);
+      st.style.transform = 'scale(' + (k*tw).toFixed(3) + ')';
+    });
+    return {"desserts": {y: -4*Math.abs(Math.sin(t*0.5))}};
+  }
+});
+FX.registerScene("p2-h-u02-bus", {
+  init: function(F, FX) {
+    F._fx_glows = FX.glows(F.stage, F.W, F.H, [[960, 640, 150]], 'screen', '#FFE9B0');
+    F._fx_spark = FX.sparkles(F.stage, F.W, F.H, [[800, 500, 20]]);
+  },
+  pose: function(S, FX) {
+    var t = S.t, F = S.F, et = S.et;
+    F._fx_glows.forEach(function(c,i){
+      c.style.opacity = (0.3+0.22*FX.flicker(t, i*2.3)).toFixed(3);
+    });
+    var k = FX.smoothstep(0, 1, Math.min(1, et/1.4));
+    F._fx_spark.forEach(function(st,i){
+      var tw = 0.55 + 0.45*FX.flicker(t, i*1.7);
+      st.style.transform = 'scale(' + (k*tw).toFixed(3) + ')';
+    });
+    return {};
+  }
+});
+})();
+</script>
+</body>
 </html>

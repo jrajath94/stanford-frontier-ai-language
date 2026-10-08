@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS224N U06: Pretraining, scaling, systems, data, a companion</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+<p class="kicker">CS224N · Companion artifact U06 of 15</p>
+<h1>Pretraining, scaling, systems, data</h1>
+<p class="dek">The architecture meets the budget. Data, compute, and memory decide what trains, and each decision is arithmetic you can check by hand.</p>
+<div class="legend" aria-label="Source tags">
+<span class="tag tag-lesson">From the lesson</span>
+<span class="tag tag-toy">Illustration</span>
+<span class="tag tag-companion">Companion</span>
+</div>
+<p class="small muted">“From the lesson” marks facts from <code>lessons/u06_pretraining_scaling.md</code>. “Illustration” marks interactive toys that run the lesson’s rules over tiny inputs. “Companion” marks advice from the companion author. Tags after each section name the lesson leaf, for example C04.</p>
+</header>
+<nav class="small" aria-label="Sections">
+<p><strong>On this page:</strong> 1 · the mask recipe · 2 · the 6.74x signal · 3 · one word, many vectors · 4 · the corpus is the curriculum · 5 · one budget, two dials · 6 · a ruler, not a crystal ball · 7 · the tax on every step · 8 · the exam leaked · 9 · the workshop and the furniture · 10 · the passport · 11 · three levels of eval · 12 · the memory problem · <a href="#wisdom">wisdom index</a></p>
+</nav>
+<figure>
+<img class="illustration" src="assets/u06-mask.jpg" alt="Watercolor illustration of a person painting over words in a sentence while watching both sides through binoculars">
+<figcaption><span class="tag tag-toy">Illustration</span> Masked training: cover some words, predict them from full context on both sides.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>The mask recipe</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>The encoder sees the whole sentence, so how do you train it without letting it copy the answer? Mask "sat" in "the cat sat on the mat" and predict it from both sides. The model fills the blank with both eyes open: 15 percent of tokens are masked, and the loss touches only masked positions. 15 percent of 512 is 76.8, about 77 tokens per sequence carry the MLM loss. The rest are context.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §4</span></p>
+<p>The recipe is 80/10/10: 80 percent of the chosen tokens become [MASK] (the task), 10 percent become a random token (robustness: do not trust the mask token), 10 percent stay unchanged (robustness: the model must still predict a visible word). From <code>compute_u06.py</code>: masked "sat", loss 0.487, p(true) 0.614. Pretraining losses are means of this number.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that the model sees [MASK] at test time too. Fine-tuning has no masks, so a model trained on 100 percent [MASK] faces a train/test skew. The 80/10/10 recipe exists because of this failure. Without it the model learns "[MASK] means predict", a train-only artifact.</p>
+</div>
+<div class="nugget" id="nugget-mask">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">The mask token is a train-only artifact. The 80/10/10 recipe keeps the model honest about a test set that has no masks.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Any special training token is a potential skew. Whenever you add one, ask what the test-time input looks like without it.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Train/test symmetry is a design constraint, not a hope. Build the test distribution into the training recipe.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The recipe, applied. Type a short sentence and watch 15 percent of its tokens get chosen, then the 80/10/10 split.</p>
+<p>sentence <input class="text" id="msen" value="the cat sat on the mat" aria-label="Sentence" style="width:240px"></p>
+<p><button class="btn" id="msbtn">Mask it</button></p>
+<p class="small" id="msnote"></p>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>The 6.74x signal</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>MLM trains on 15 percent of tokens. What trains on 100 percent? Autoregressive training: read and predict, every step. The AR loss is U04's factorization at scale: P(w_t | prefix) for every t. One direction, every token, no masks, no recipes. The simplicity is the point: the objective scales without special cases.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4, §5</span></p>
+<p>From <code>compute_u06.py</code>: n = 512, AR trains on 512 next tokens, MLM on ~77 masked ones, ratio 6.74x more training signal per pass. The 6.74x is arithmetic (512/76), not a claim about quality: AR sees more signal, MLM sees both directions. The tradeoff is signal volume vs context richness.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p>The broken assumption is that more signal per pass means better models. Early AR models underperformed MLM on understanding benchmarks at small scale: the signal advantage shows at scale with the right data. Volume is not quality.</p>
+</div>
+<figure>
+<div id="chart-signal"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4</span> Training signal per pass at n = 512, from <code>compute_u06.py</code> (executed 2026-10-06): AR predicts 512 tokens, MLM ~77. Ratio 6.74x.</figcaption>
+</figure>
+<div class="nugget" id="nugget-signal">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §3, §11</span></h4>
+<p class="big">The objective shapes the model more than the architecture does. MLM buys bidirectionality with 15 percent signal, and AR buys full signal with one direction.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose AR for generation and for scale (the modern default). Choose MLM when bidirectional context matters more than signal volume (small understanding models).</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Before tuning the model, check the objective: the loss function is the strongest design decision.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>One word, many vectors</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>U02 gave "bank" one vector. What does "bank" mean in "river bank" vs "bank loan"? The transformer's output at a position blends the word with its context (U05), so the representation is word-in-context, not word-in-vocabulary. Static embeddings are the special case with no context.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4, §5</span></p>
+<p>From <code>compute_u06.py</code>: bank|river = (0.9, 0.2), bank|money = (0.2, 0.9), bank|river2 = (0.85, 0.25). Same-sense cosine 0.998, cross-sense 0.424. Context moves the vector more than the word identity does. The cosine gap is what disambiguation looks like geometrically.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §11</span></p>
+<p>The broken assumption is that contextual always beats static. On tiny data, static embeddings with a simple model can win (fewer parameters, less overfitting). Context is capacity, and capacity needs data.</p>
+</div>
+<figure>
+<div id="chart-cos"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4</span> Cosine similarity between "bank" vectors across contexts, from <code>compute_u06.py</code> (executed 2026-10-06): same sense 0.998, different sense 0.424.</figcaption>
+</figure>
+<div class="nugget" id="nugget-vectors">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §3, §11</span></h4>
+<p class="big">Context moves the vector more than the word identity does. Ambiguity dissolves when the representation includes the sentence.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose contextual when ambiguity matters (most tasks). Choose static for cheap features at scale.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A representation is a function of its context, not a property of the token alone.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>The corpus is the curriculum</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>The web is 100 TB of mixed quality. What survives into training? The pipeline: filter, dedup, mix, decontaminate. Filtering removes boilerplate and toxicity (classifiers, heuristics). Dedup removes repeats (exact hash, near-dup MinHash). Mixing sets domain ratios. Decontamination removes test-set overlap (C08). Each step is a judgment call with a measurable effect.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4, §5</span></p>
+<p>Why dedup matters: duplicates get memorized (the model sees them k times, gradient k times), memorization wastes capacity and leaks. From <code>compute_u06.py</code>: 6 docs, 3 exact duplicates, 3 unique. Half the toy corpus was waste. At scale the fractions are smaller but the mechanism is identical.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that more data is always better. Adding low-quality or duplicated data at fixed compute hurts: it displaces good tokens. Quality per FLOP beats bytes.</p>
+</div>
+<div class="nugget" id="nugget-corpus">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §3, §11</span></h4>
+<p class="big">Duplicates get gradient updates k times for k copies. Dedup is not hygiene, it is capacity management.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose curation always (the standard). The question is how aggressive, not whether.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every repeated input is a repeated lesson. Audit your data for echoes before blaming the model.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Hash dedup. Paste documents, one per line, and see which are exact duplicates of an earlier line.</p>
+<p><textarea class="text" id="dddocs" rows="5" style="width:100%" aria-label="Documents">the cat sat on the mat
+a river flows to the sea
+the cat sat on the mat
+bank loans need approval
+a river flows to the sea</textarea></p>
+<p><button class="btn" id="ddbtn">Dedup</button></p>
+<p class="small" id="ddnote"></p>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>One budget, two dials</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>You have 1e18 FLOPs. How big a model on how much data? One budget, two dials. C = 6ND: 6 FLOPs per param per token (2 forward, 4 backward, the standard estimate). Spend on N (bigger model) or D (more data).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4, §5</span></p>
+<p>From <code>compute_u06.py</code>: N = 1e8 params, D = 2e9 tokens, C = 6 × 1e8 × 2e9 = 1.20e18 FLOPs, tokens per param 20.0. The 20:1 finding: at fixed C, loss is minimized near D/N = 20 (the compute-optimal ratio from the scaling literature). Double the model at fixed C: D halves to 1e9 (10:1, undertrained data). Double the data: N halves (overtrained small model).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that the ratio is a law of nature. It is a fit to specific data and architectures: new data mixes or architectures shift it. Treat it as a starting point, then fit your own (C06).</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u06-scale.jpg" alt="Watercolor illustration of a giant scale balancing a tiny box against a huge stack of papers">
+<figcaption><span class="tag tag-toy">Illustration</span> One budget, two dials: params on one side, tokens on the other, C = 6ND on the beam.</figcaption>
+</figure>
+<div class="nugget" id="nugget-budget">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §3, §11</span></h4>
+<p class="big">C = 6ND is the whole planning conversation in one equation. 20 tokens per param is the empirical balance point, not a law.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose 20:1 for training efficiency. Choose larger N when inference cost dominates the lifetime bill (the deployment argument).</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every allocation problem has a balance ratio. Write the equation first, then argue.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Budget calculator. The C = 6ND arithmetic is C05’s. The numbers are yours.</p>
+<p>N (params, billions) <input class="text" id="bgn" value="0.1" aria-label="Params in billions"></p>
+<p>D (tokens, billions) <input class="text" id="bgd" value="2" aria-label="Tokens in billions"></p>
+<p><button class="btn" id="bgb">Price it</button></p>
+<p class="small" id="bgnote"></p>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>A ruler, not a crystal ball</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>Loss falls smoothly with size. What is the functional form, and when does it lie? Power laws fit loss vs N, D, C on a log-log line within the fitted range. They predict the next point, not the next paradigm. Extrapolation past the data, new architectures, and data exhaustion all break the fit.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4, §5</span></p>
+<p>From <code>compute_u06.py</code>, the illustrative form L = 10 N^{-0.05}: N = 1e8 → 3.9811, 2e8 → 3.8455, 4e8 → 3.7145, 8e8 → 3.5879. Doubling N multiplies loss by 0.9659: a 3.4 percent cut per doubling. Smooth, slow, predictable. There is no first-principles derivation. The honesty is in the residuals and the range.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §11</span></p>
+<p>The broken assumption is that the law holds forever. Data exhaustion (repeating tokens breaks the D scaling), architecture changes (the a and b refit), and emergent jumps at the task level (loss is smooth, capabilities are not). The law is about loss, not about what the model can do.</p>
+</div>
+<figure>
+<div id="chart-power"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4</span> The illustrative form L = 10 N^{-0.05}, from <code>compute_u06.py</code> (executed 2026-10-06): each doubling of N cuts loss 3.4 percent. Log-scale x axis.</figcaption>
+</figure>
+<div class="nugget" id="nugget-ruler">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §3, §11</span></h4>
+<p class="big">Scaling laws are fitted lines, not laws of nature. Trust them within 10x of the data. Beyond that, run the experiment.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose power-law fits for planning within range. Beyond that, the residuals are the honest answer.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A smooth metric can hide lumpy capability. Track both the loss curve and the task scores.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The doubling test. Type a model size and see the illustrative form L = 10 N^{-0.05} predict it, then the doubling ratio.</p>
+<p>N (params) <input class="text" id="pwn" value="100000000" aria-label="Params"></p>
+<p><button class="btn" id="pwbtn">Predict loss</button></p>
+<p class="small" id="pwnote"></p>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>The tax on every step</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>One GPU holds 1B params but not the batch. How do 8 GPUs train one model? Split the data, share the model. Each GPU runs its shard, computes gradients, then allreduce averages them so every GPU takes the same step. The communication is the tax: 2(p-1)/p × size per step, independent of the batch.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4, §5</span></p>
+<p>Ring allreduce: p-1 scatter-reduce rounds + p-1 allgather rounds, each moving S/p: total 2(p-1)S/p. From <code>compute_u06.py</code>: p = 8, S = 1 GB → 1.75 GB/step. Noise: single-sample variance 1.026, batch-32 variance 0.0299, ratio 34.3. The tax is per step, the noise cut is per batch.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §11</span></p>
+<p>The broken assumption is that more GPUs mean proportionally faster. The 1.75 GB tax per step at fixed batch: small batches make communication dominate. Scale the batch with p, or the speedup stalls.</p>
+</div>
+<div class="nugget" id="nugget-tax">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
+<p class="big">The allreduce tax is bounded: 2(p-1)/p of the model per step, approaching 2× as p grows. Communication is a fixed cost, not a surprise.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose data-parallel when the model fits one GPU. Combine with model-parallel at scale (3-D parallelism). Scale the batch with p.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Price coordination separately from computation. Distributed systems bill you for agreement.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The tax calculator. The 2(p-1)/p formula is C07’s. The fleet is yours.</p>
+<p>GPUs (p) <input class="text" id="txp" value="8" aria-label="GPU count"></p>
+<p>model size (GB) <input class="text" id="txs" value="1" aria-label="Model size in GB"></p>
+<p><button class="btn" id="txb">Tax it</button></p>
+<p class="small" id="txnote"></p>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>The exam leaked</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>The test set is on the web. The training set is the web. What happens? A benchmark question appears verbatim in training. The model memorizes the answer, the benchmark measures recall, not ability. The exam leaked. Decontamination: n-gram overlap between train and test, drop or flag matches. Decide the rule before training, publish it with the model card (C10). Post-hoc excuses do not count.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4, §5</span></p>
+<p>Hand-computed toy, labeled as such: 1000 test items, 50 leaked verbatim, the model memorizes all 50 and gets 400 of the rest right. Reported: 450/1000 = 45 percent. Clean: 400/950 = 42.1 percent. The leak bought 2.9 points.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that big data is too big to contain the test. Benchmark text is duplicated across the web (papers, blogs, GitHub): big data contains more copies, not fewer. Scale increases the risk.</p>
+</div>
+<figure>
+<div id="chart-leak"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4</span> The leak toy, hand-computed and labeled illustrative: reported 45.0 percent vs clean 42.1 percent. The gap is 2.9 points of pure recall.</figcaption>
+</figure>
+<div class="nugget" id="nugget-leak">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">A benchmark on leaked data measures retrieval. Decontaminate before training and publish the rule, or the score is fraud-adjacent.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose decontamination as the minimum. Choose private held-out tests when the claim matters (capabilities, safety).</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every evaluation needs a contamination audit. A score without provenance is a number without meaning.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>The workshop and the furniture</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>The model read the web, now it must classify medical notes with 500 labels. Why does the web help? Pretraining builds the workshop, fine-tuning builds the furniture. The lower layers learn reusable features (syntax, word sense), the task head learns the decision. Transfer works when the features overlap the task. It fails on distribution shift (the honest boundary).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4, §5</span></p>
+<p>Hand-computed toy, labeled as such: sense probe on frozen vectors, 92 percent (the 0.998/0.424 geometry from C03). Random vectors: 55 percent. The gap is the transfer, measured. The probe/fine-tune gap diagnoses it: probe close to fine-tune means the features did the work, a big gap means the task needed the body to change.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is that pretraining always helps. Negative transfer: pretraining on the wrong domain can hurt (the body must unlearn). Check with the probe before committing to fine-tuning.</p>
+</div>
+<figure>
+<div id="chart-transfer"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4</span> The transfer toy, hand-computed and labeled illustrative: sense probe on pretrained vectors 92 percent vs random vectors 55 percent.</figcaption>
+</figure>
+<div class="nugget" id="nugget-workshop">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §11</span></h4>
+<p class="big">Probe before you fine-tune. The probe/fine-tune gap tells you whether the features did the work or the task needed the body to change.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose transfer as the default. Choose scratch when the domain is alien (the features do not apply).</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Diagnose before you invest: a cheap probe beats an expensive fine-tune that teaches you nothing.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>The passport</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>You download weights. What do you need to know before trusting them? The card is the model's passport: data provenance, training recipe, evaluation scope, and known limits, in one place. Data (what, deduped how, decontaminated against what), training (objective, C = 6ND, steps), eval (which benchmarks, which are clean), limits (languages, known failures), intended use. A model without a card is an unlabeled chemical: usable, but you own the risk.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §4, §5</span></p>
+<p>Hand-written toy card, labeled as such: "toy-1e8: AR objective, N = 1e8, D = 2e9, C = 1.20e18. Data: web mix, exact-deduped, decontaminated vs bench-X (13-gram). Eval: perplexity 3.59 held-out (clean). Limits: English only, no math. Use: research." Every number traceable to this unit.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p>The broken assumption is that the paper covers it. Papers describe the idea, cards describe the artifact (the exact data mix, the exact eval). Different documents, both needed.</p>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Three levels of eval</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>The loss fell to 3.59. Is the model good? Three levels. Intrinsic: held-out perplexity (did it learn the distribution). Probes: linear heads on frozen features (what is in the representations). Benchmarks: task scores (what it can do). Each level answers a different question, none substitutes for the others.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §4, §5</span></p>
+<p>Hand-computed toy, labeled as such: train NLL 3.40 (perplexity 30.0), held-out NLL 3.59 (perplexity 36.2), leaked-held-out NLL 3.10 (perplexity 22.2). The leak looks like a win. It is fraud. A memorizer gets low perplexity on leaked data (C08's 2.9 points). Report all three or report nothing.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p>The broken assumption is that low perplexity means a good model. The toy: 22.2 (leaked) beats 30.0 (train). Perplexity without provenance is a number without meaning.</p>
+</div>
+<figure>
+<div id="chart-ppl"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §4</span> The perplexity triplet, hand-computed and labeled illustrative: train 30.0, clean held-out 36.2, leaked held-out 22.2. The leak looks like a win. It is fraud.</figcaption>
+</figure>
+<div class="nugget" id="nugget-eval">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §3, §11</span></h4>
+<p class="big">Report all three numbers or report nothing: train, clean held-out, and the provenance check. The gap between them is the interesting part.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the three levels. Choose private benchmarks when the claim is capabilities (C08).</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A metric without provenance is a number without meaning. Publish the contamination rule alongside the score.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>The memory problem</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>1B params need 12 GB to train (fp16: weights 2 GB, grads 2 GB, Adam m+v 8 GB) but the GPU has 40 GB. What breaks first at 100B? Three axes of splitting. Data-parallel: split the batch (C07). Tensor-parallel: split layers across GPUs. Pipeline-parallel: split layers along depth. FSDP: shard weights, grads, and optimizer states, gather on demand. The art is the combination: 3-D parallelism.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4, §5</span></p>
+<p>From <code>compute_u06.py</code>: 1B params = 12 GB (2 + 2 + 8). Scaled by hand, labeled as such, to 100B: 1.2 TB. With FSDP across 32 GPUs: 37.5 GB each (plus activations). FSDP: each GPU holds 1/p of each tensor. Before a layer's compute, allgather the full weights (communication 1.5x per step vs data-parallel's allreduce). The mechanism is always the same: move bytes to save memory.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §11</span></p>
+<p>The broken assumption is that sharding is free. FSDP's allgather adds communication per layer. At small models it can be slower than data-parallel. Shard only what does not fit.</p>
+</div>
+<figure>
+<div id="chart-mem"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4</span> Training memory for 1B params in fp16, from <code>compute_u06.py</code> (executed 2026-10-06): Adam states dominate at 8 of 12 GB.</figcaption>
+</figure>
+<figure>
+<img class="illustration" src="assets/u06-ruler.jpg" alt="Watercolor illustration of a long ruler fading into fog, a hand marking where the straight line disappears">
+<figcaption><span class="tag tag-toy">Illustration</span> The ruler fades where the fit ends: scaling laws predict within range, not past it.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The memory stack. The 2/2/8 byte-per-param split is C12’s. The model size is yours.</p>
+<p>N (params, billions) <input class="text" id="mmn" value="1" aria-label="Params in billions"></p>
+<p><button class="btn" id="mmb">Stack it</button></p>
+<p class="small" id="mmnote"></p>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-mask"><span class="wnum">01</span>Train/test symmetry is a design constraint <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-signal"><span class="wnum">02</span>The objective shapes the model <span class="muted">· C02</span></a></li>
+<li><a href="#nugget-vectors"><span class="wnum">03</span>Context moves the vector <span class="muted">· C03</span></a></li>
+<li><a href="#nugget-corpus"><span class="wnum">04</span>Dedup is capacity management <span class="muted">· C04</span></a></li>
+<li><a href="#nugget-budget"><span class="wnum">05</span>C = 6ND, 20 tokens per param <span class="muted">· C05</span></a></li>
+<li><a href="#nugget-ruler"><span class="wnum">06</span>A ruler, not a crystal ball <span class="muted">· C06</span></a></li>
+<li><a href="#nugget-tax"><span class="wnum">07</span>Price coordination separately <span class="muted">· C07</span></a></li>
+<li><a href="#nugget-leak"><span class="wnum">08</span>A score without provenance is meaningless <span class="muted">· C08</span></a></li>
+<li><a href="#nugget-workshop"><span class="wnum">09</span>Probe before you fine-tune <span class="muted">· C09</span></a></li>
+<li><a href="#nugget-eval"><span class="wnum">10</span>Report all three numbers <span class="muted">· C11</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u06_pretraining_scaling.md</code> (CS224N, Unit 06). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The concept inventory is REQUESTED-BRANCH, the reading list OFFICIAL-SOURCE via SRC-02. Every computed number traces to the lesson’s script <code>visuals/compute_u06.py</code> (executed 2026-10-06). Hand-computed toys are labeled as such in the text. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+<p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
+<p class="small">Built as Companion 6 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 240
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function logChart(id, xs, ys, xLabel, yLabel) {
+  const host = document.getElementById(id)
+  const W = 760
+  const H = 340
+  const padL = 60
+  const padR = 20
+  const padT = 18
+  const padB = 46
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  const lx = xs.map(function(v) { return Math.log10(v) })
+  const lx0 = lx[0]
+  const lx1 = lx[lx.length - 1]
+  const y0 = Math.min.apply(null, ys)
+  const y1 = Math.max.apply(null, ys)
+  const X = function(l) { return padL + (l - lx0) / (lx1 - lx0) * (W - padL - padR) }
+  const Y = function(v) { return padT + (y1 - v) / (y1 - y0) * (H - padT - padB) }
+  const path = xs.map(function(v, i) { return (i === 0 ? "M" : "L") + X(lx[i]).toFixed(1) + " " + Y(ys[i]).toFixed(1) }).join(" ")
+  svg.appendChild(svgEl("path", {d: path, fill: "none", stroke: INDIGO, "stroke-width": 3}))
+  xs.forEach(function(v, i) {
+    svg.appendChild(svgEl("circle", {cx: X(lx[i]).toFixed(1), cy: Y(ys[i]).toFixed(1), r: 5, fill: CLAY}))
+    const tip = svgEl("title", {})
+    tip.textContent = "N = " + v + ": loss " + ys[i]
+    const lab = svgEl("text", {x: X(lx[i]).toFixed(1), y: H - 26, "font-size": 12, "text-anchor": "middle", fill: MUT, "font-family": MONO})
+    lab.textContent = v
+    svg.appendChild(lab)
+  })
+  const yl = svgEl("text", {x: 16, y: padT + 6, "font-size": 13, fill: MUT, "font-family": SANS})
+  yl.textContent = yLabel
+  svg.appendChild(yl)
+  host.appendChild(svg)
+}
+
+function runMask() {
+  const words = document.getElementById("msen").value.trim().split(/\s+/)
+  const note = document.getElementById("msnote")
+  if (words.length < 2) {
+    note.textContent = "Type at least two words."
+    return
+  }
+  const nMask = Math.max(1, Math.round(words.length * 0.15))
+  const chosen = words.slice(0, nMask)
+  const mask80 = chosen.slice(0, Math.round(nMask * 0.8))
+  const note2 = []
+  let i = 0
+  while (i < words.length) {
+    note2.push(i < nMask ? "[MASK]" : words[i])
+    i = i + 1
+  }
+  note.textContent = "Tokens: " + words.length + ", chosen to mask: " + nMask + " (" + (100 * nMask / words.length).toFixed(0) + "% ~ 15%). Of the chosen, ~80% become [MASK] here (" + mask80.length + " of " + nMask + "). Result: " + note2.join(" ") + ". The lesson loss at p(true) = 0.614 is 0.487."
+}
+
+function runDedup() {
+  const docs = document.getElementById("dddocs").value.split("\n").map(function(d) { return d.trim() }).filter(function(d) { return d.length > 0 })
+  const note = document.getElementById("ddnote")
+  const seen = {}
+  const kept = []
+  const dropped = []
+  docs.forEach(function(d) {
+    const h = d.toLowerCase()
+    if (seen[h]) { dropped.push(d) } else { seen[h] = true, kept.push(d) }
+  })
+  note.textContent = "Docs: " + docs.length + ", unique kept: " + kept.length + ", duplicates dropped: " + dropped.length + ". The lesson toy: 6 docs, 3 duplicates, 3 unique."
+}
+
+function runBudget() {
+  const N = parseFloat(document.getElementById("bgn").value) * 1e9
+  const D = parseFloat(document.getElementById("bgd").value) * 1e9
+  const note = document.getElementById("bgnote")
+  if (!(N > 0) || !(D > 0)) {
+    note.textContent = "N and D must be positive."
+    return
+  }
+  const C = 6 * N * D
+  const ratio = D / N
+  note.textContent = "C = 6ND = " + C.toExponential(2) + " FLOPs. Tokens per param: " + ratio.toFixed(1) + " (lesson target ~20). The lesson toy: 1.20e18 FLOPs at 20.0."
+}
+
+function runPower() {
+  const N = parseFloat(document.getElementById("pwn").value)
+  const note = document.getElementById("pwnote")
+  if (!(N > 0)) {
+    note.textContent = "N must be positive."
+    return
+  }
+  const L = 10 * Math.pow(N, -0.05)
+  const L2 = 10 * Math.pow(2 * N, -0.05)
+  note.textContent = "L = 10 N^-0.05 = " + L.toFixed(4) + ". At 2N: " + L2.toFixed(4) + ", ratio " + (L2 / L).toFixed(4) + " (lesson: 0.9659, a 3.4% cut per doubling)."
+}
+
+function runTax() {
+  const p = parseFloat(document.getElementById("txp").value)
+  const S = parseFloat(document.getElementById("txs").value)
+  const note = document.getElementById("txnote")
+  if (!(p >= 2) || !(S > 0)) {
+    note.textContent = "Need p >= 2 GPUs and a positive size."
+    return
+  }
+  const tax = 2 * (p - 1) / p * S
+  note.textContent = "Tax per step: 2(" + p + "-1)/" + p + " x " + S + " = " + tax.toFixed(2) + " GB. The lesson toy: 8 GPUs, 1 GB model -> 1.75 GB/step."
+}
+
+function runMem() {
+  const N = parseFloat(document.getElementById("mmn").value)
+  const note = document.getElementById("mmnote")
+  if (!(N > 0)) {
+    note.textContent = "N must be positive."
+    return
+  }
+  const w = 2 * N
+  const g = 2 * N
+  const a = 8 * N
+  note.textContent = "Weights " + w.toFixed(1) + " GB + grads " + g.toFixed(1) + " GB + Adam m+v " + a.toFixed(1) + " GB = " + (w + g + a).toFixed(1) + " GB. The lesson: 1B params -> 12 GB. 100B -> 1.2 TB, or 37.5 GB each with FSDP across 32 GPUs."
+}
+
+document.getElementById("msbtn").addEventListener("click", runMask)
+document.getElementById("ddbtn").addEventListener("click", runDedup)
+document.getElementById("bgb").addEventListener("click", runBudget)
+document.getElementById("pwbtn").addEventListener("click", runPower)
+document.getElementById("txb").addEventListener("click", runTax)
+document.getElementById("mmb").addEventListener("click", runMem)
+
+barChart("chart-signal", [["AR (all tokens)", 512, INDIGO], ["MLM (~15% masked)", 76, CLAY]], 520, " tokens")
+barChart("chart-cos", [["same sense (river, river2)", 0.998, SAGE], ["cross sense (river, money)", 0.424, CLAY]], 1.05, "")
+logChart("chart-power", [1e8, 2e8, 4e8, 8e8], [3.9811, 3.8455, 3.7145, 3.5879], "N", "loss")
+barChart("chart-leak", [["reported (leaked)", 45.0, CLAY], ["clean", 42.1, SAGE]], 46, "%")
+barChart("chart-transfer", [["pretrained probe", 92, SAGE], ["random probe", 55, CLAY]], 95, "%")
+barChart("chart-ppl", [["train", 30.0, INDIGO], ["clean held-out", 36.2, SAGE], ["leaked held-out", 22.2, CLAY]], 37, "")
+barChart("chart-mem", [["weights (2 B/param)", 2, INDIGO], ["grads (2 B/param)", 2, SAGE], ["Adam m+v (8 B/param)", 8, CLAY]], 12, " GB")
+</script>
+</body>
+</html>

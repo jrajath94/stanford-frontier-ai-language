@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U04 Companion: Fisher information and experimental design · CS329H</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:900px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband a{color:var(--paper)}
+header.hero{padding:52px 0 6px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:660px}
+.notice{border:1px solid var(--line)}
+.notice{background:var(--paper2)}
+.notice{border-radius:10px}
+.notice{padding:16px 20px}
+.notice{margin:26px 0}
+.notice{font-size:16px}
+.notice p{margin:.45em 0}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:16px 20px}
+.legend{margin:26px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-interp{background:transparent}
+.tag-interp{color:var(--indigo)}
+.tag-interp{border:1.5px solid var(--indigo)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+section.block{padding:34px 0 10px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.12em}
+.secnum{text-transform:uppercase}
+.secnum{color:var(--clay)}
+.secnum{margin:0 0 4px}
+h2{font-size:32px}
+h2{line-height:1.2}
+h2{margin:.1em 0 .5em}
+h3{font-size:22px}
+h3{margin:1.2em 0 .4em}
+.prose-narrow{max-width:720px}
+figure{margin:28px 0}
+figure{background:#fff}
+figure{border:1px solid var(--line)}
+figure{border-radius:10px}
+figure{padding:18px 18px 8px}
+figcaption{font-size:15px}
+figcaption{color:var(--muted)}
+figcaption{padding:10px 4px 12px}
+figcaption{line-height:1.55}
+img.illus{width:100%}
+img.illus{border-radius:8px}
+img.illus{display:block}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:5px solid var(--clay)}
+.nugget{background:#fff}
+.nugget{border-radius:8px}
+.nugget{padding:18px 22px}
+.nugget{margin:30px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:14px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:20px}
+.nugget .big{line-height:1.5}
+.nugget .big{margin:.2em 0 .6em}
+.nugget dl{margin:0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{margin:10px 0 2px}
+.nugget dd{margin:0 0 6px}
+.nugget dd{font-size:16.5px}
+.lab{border:1px dashed var(--amber)}
+.lab{background:var(--ambersoft)}
+.lab{border-radius:10px}
+.lab{padding:18px 22px}
+.lab{margin:28px 0}
+.toy{border:1px solid var(--indigo)}
+.toy{background:var(--indigosoft)}
+.toy{border-radius:10px}
+.toy{padding:18px 22px}
+.toy{margin:28px 0}
+.toy input[type=number]{width:64px}
+.toy input[type=number]{font-family:var(--mono)}
+.toy input[type=number]{font-size:15px}
+.toy input[type=number]{padding:4px 6px}
+.toy input[type=number]{margin:2px 6px 2px 2px}
+.toy label{font-family:var(--sans)}
+.toy label{font-size:14px}
+.btn{font-family:var(--sans)}
+.btn{font-size:15px}
+.btn{background:var(--ink)}
+.btn{color:var(--paper)}
+.btn{border:none}
+.btn{border-radius:8px}
+.btn{padding:10px 18px}
+.btn{cursor:pointer}
+.btn{margin:8px 8px 8px 0}
+.btn.ghost{background:transparent}
+.btn.ghost{color:var(--ink)}
+.btn.ghost{border:1.5px solid var(--ink)}
+table.data{border-collapse:collapse}
+table.data{margin:14px 0}
+table.data{font-size:16px}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.06em}
+table.data th{text-align:left}
+table.data th{padding:8px 14px 8px 0}
+table.data td{padding:8px 14px 8px 0}
+table.data td{border-top:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+code{font-family:var(--mono)}
+code{font-size:.88em}
+code{background:var(--paper2)}
+code{padding:1px 6px}
+code{border-radius:5px}
+.wisdom ol{padding-left:22px}
+.wisdom li{margin:10px 0}
+.wisdom a{color:var(--clay)}
+footer{background:var(--ink)}
+footer{color:var(--paper)}
+footer{margin-top:56px}
+footer{padding:40px 0 60px}
+footer p{font-size:15.5px}
+footer{line-height:1.6}
+footer code{background:rgba(255,255,255,.12)}
+footer a{color:var(--paper)}
+.backlink{font-family:var(--sans)}
+.backlink{font-size:15px}
+.backlink{margin:34px 0 0}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CS329H · Stanford · Interactive companion · <a href="../index.html">course index</a></div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">U04 · Fisher information and experimental design</p>
+<h1>How much does one label teach?</h1>
+<p class="dek">A label is a purchase. Fisher information prices it before you buy. This unit builds the price from the slope and curvature of the likelihood, then spends the budget where the information is: close contests, connected designs, and clean labels.</p>
+</header>
+<figure>
+<img class="illus" src="assets/u04-hero.jpg" alt="Watercolor of a sharp mountain peak beside a flat rounded hill">
+<figcaption><span class="tag tag-toy">Illustration</span> Same height, different precision. The sharp peak pins the parameter. The flat hill lets it wander. Curvature is the price of certainty. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="notice">
+<p><strong>Sourcing.</strong> No full transcript exists for session S07. This companion narrates <code>content/v2/cs329h/lessons/u04_lesson.md</code>. All twelve concepts are taught as independent theory: the lesson marks the session PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<p><strong>How to read the tags.</strong> Every number carries its lesson section. Anything the companion computes is tagged <span class="tag tag-toy">Illustration</span>. A <span class="tag tag-interp">Interpretation</span> tag marks the companion's own reading of the lesson. Where the lesson leaves a value out, the page says so in words.</p>
+</div>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> A fact, number, or mechanism from the lesson.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-interp">Interpretation</span> The companion's reading of why a lesson fact matters. The fact is the lesson's, the gloss is ours.</p>
+<p><span class="tag-ref">C01 · Contract 6</span> Points to the exact lesson section behind a claim or number.</p>
+</div>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">Slope and curvature</a>
+<a href="#s2">When identities fail</a>
+<a href="#s3">How many labels</a>
+<a href="#s4">Which label next</a>
+<a href="#s5">Noise and validation</a>
+<a href="#wisdom">Wisdom index</a>
+<a href="#provenance">Provenance</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01, C02, C03</p>
+<h2>The slope and the curvature</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 5, 6</span></p>
+<p>The score is the slope of the log-likelihood. Positive slope means move right. Negative means move left. Zero slope means you are at the peak. For 7 wins in 10 trials the score is 7/p - 3/(1-p). At p = 0.5 it reads 8.0: push right. At p = 0.9 it reads -22.2: push left. At p = 0.70 it is zero: the peak from U03. The score is positive left of the MLE and negative right of it, so gradient ascent climbs to the top. Lesson figure u04_f01 plots both curves.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 4, 6</span></p>
+<p>Fisher information measures how fast the likelihood falls away from its peak. Sharp peak: the data speaks clearly. Flat peak: many values fit almost as well. Two definitions, one number: the variance of the score, and the negative expected second derivative. For the Bernoulli, I(p) = n/(p(1-p)). At p = 0.70 and n = 10, I = 47.62. The quadratic ll_max - 0.5 I (p - mle)^2 hugs the true curve near the peak, matching within 0.01 over p in 0.55 to 0.85. Lesson figure u04_f02 overlays them.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 320" role="img" aria-label="True log-likelihood curve with dashed quadratic overlay, curvature 47.6">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The quadratic hugs the peak</text>
+<polyline points="60.0,85.1 103.3,119.5 146.7,147.3 190.0,169.2 233.3,185.6 276.7,196.4 320.0,201.2 363.3,199.4 406.7,189.3 450.0,167.9 493.3,128.8 536.7,55.3" fill="none" stroke="#31405e" stroke-width="2.5"/>
+<polyline points="60.0,65.7 103.3,105.7 146.7,138.7 190.0,164.8 233.3,183.9 276.7,196.0 320.0,201.2 363.3,199.5 406.7,190.8 450.0,175.2 493.3,152.6 536.7,123.1" fill="none" stroke="#a94f27" stroke-width="2" stroke-dasharray="7,5"/>
+<text x="480" y="90" font-size="13" font-family="Georgia" fill="#31405e">true curve</text>
+<text x="480" y="112" font-size="13" font-family="Georgia" fill="#a94f27">quadratic, curvature 47.6</text>
+<text x="320" y="292" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">The match holds near the peak and breaks far from it: curvature is a local price.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 6</span> Same numbers as lesson figure u04_f02. Far from the peak the true curve falls faster than the quadratic: the approximation is local, and the lesson says so.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 5, 6</span></p>
+<p>Curvature is how fast the slope changes. High curvature means the peak is a needle: nearby values are much worse, so the estimate is precise. Low curvature means a plateau. The Taylor expansion turns into a Gaussian with variance 1/I, so curvature directly sets the width of the uncertainty. With I = 47.6 the asymptotic standard deviation is 1/sqrt(47.6) = 0.145, matching the Bernoulli standard error from U03. The skewed warning: 9 wins in 10 gives a lopsided curve, and the symmetric interval misleads on the low side.</p>
+</div>
+<div class="nugget" id="nugget-slope">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, C03 · Contract 3</span></h4>
+<p class="big">The score is the slope. Its zero is the peak, and the curvature at the zero is the precision.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Three numbers from one curve: where to go, where to stop, and how sure to be. Optimization and inference read the same geometry.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Gradient ascent in logistic regression. The gradient is the score, and the lesson's push-right push-left reading is the update rule.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Price a Bernoulli study yourself. Move p and n and watch the information and the standard error follow the lesson's formulas.</p>
+<p><label>p <input type="range" id="fp" min="0.05" max="0.95" step="0.05" value="0.7"></label> <code id="fpv">0.70</code></p>
+<p><label>n <input type="range" id="fn" min="10" max="1000" step="10" value="10"></label> <code id="fnv">10</code></p>
+<p class="small" id="fout">Information and standard error appear here.</p>
+<p class="small muted"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 4, C06 · Contract 4</span> I(p) = n/(p(1-p)), SE = 1/sqrt(I). At p = 0.7, n = 10 the readout must show 47.62 and 0.145.</p>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C04, C05</p>
+<h2>When the identities fail</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 5, 6</span></p>
+<p>The score identities assume you can swap differentiation and integration. Three conditions: the support of the data must not move with the parameter, the parameter must sit in the interior of its space, and the derivatives must be well-behaved. The violation is concrete. Take x uniform on (0, theta). The support moves with theta, the swap breaks, and the Fisher formula does not apply. With n = 100 and true theta = 2, the MLE is the max of the sample, about 1.98, and the error shrinks as 1/n, not 1/sqrt(n). The lab verifies the rate on a log-log plot: slope near -1, not -0.5.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 5, 6</span></p>
+<p>A singular information matrix means some direction has zero information: the data cannot see it. That direction is exactly the non-identifiable one. For unanchored Bradley-Terry, shifting all scores by a constant leaves the likelihood unchanged, so the information matrix times the all-ones vector is zero. The lesson's design comparison makes it numeric. Design 1 puts all 10 labels on pair A-B: I = [[2.35, 0],[0, 0]], determinant 0, the second gap unidentified. Design 2 splits 5 and 5: I = [[1.175, 0],[0, 1.175]], determinant 1.381. Lesson figure u04_f05 draws both.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u04-design.jpg" alt="Watercolor of a drafting table with two bridge blueprints, one bold and one faint">
+<figcaption><span class="tag tag-toy">Illustration</span> Two labeling plans, two information matrices. One sees everything it priced. The other paid for ten labels and learned nothing about the second gap. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 640 340" role="img" aria-label="Design 1 information matrix singular, design 2 full rank with A 1.70 and D 1.38">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">All eggs, one pair: a singular design</text>
+<text x="60" y="62" font-size="13" font-family="Georgia" fill="#6f6355">design 1: 10 labels on pair A-B</text>
+<g><title>Information 2.35 on gap 1, 0 on gap 2: singular</title><rect x="60" y="75" width="150" height="60" fill="#a94f27" rx="4"/><text x="135" y="100" text-anchor="middle" font-size="13" font-family="Georgia" fill="#faf6ee">2.35</text><text x="135" y="120" text-anchor="middle" font-size="13" font-family="Georgia" fill="#faf6ee">gap 1</text><rect x="220" y="75" width="150" height="60" fill="#e2d7c2" rx="4"/><text x="295" y="100" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">0</text><text x="295" y="120" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">gap 2</text></g>
+<text x="60" y="170" font-size="13" font-family="Georgia" fill="#a94f27">determinant 0: gap 2 has infinite variance</text>
+<text x="60" y="205" font-size="13" font-family="Georgia" fill="#6f6355">design 2: 5 and 5 split</text>
+<g><title>Information 1.175 on each gap: full rank</title><rect x="60" y="218" width="150" height="60" fill="#5d7050" rx="4"/><text x="135" y="243" text-anchor="middle" font-size="13" font-family="Georgia" fill="#faf6ee">1.175</text><text x="135" y="263" text-anchor="middle" font-size="13" font-family="Georgia" fill="#faf6ee">gap 1</text><rect x="220" y="218" width="150" height="60" fill="#5d7050" rx="4"/><text x="295" y="243" text-anchor="middle" font-size="13" font-family="Georgia" fill="#faf6ee">1.175</text><text x="295" y="263" text-anchor="middle" font-size="13" font-family="Georgia" fill="#faf6ee">gap 2</text></g>
+<text x="420" y="170" font-size="13" font-family="Georgia" fill="#5d7050">determinant 1.381</text>
+<text x="420" y="195" font-size="13" font-family="Georgia" fill="#5d7050">A-optimality 1.702</text>
+<text x="420" y="220" font-size="13" font-family="Georgia" fill="#5d7050">D-optimality 1.381</text>
+<text x="420" y="260" font-size="13" font-family="Georgia" fill="#6f6355">Both criteria prefer design 2 infinitely.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 6, C08 · Contract 6</span> Same numbers as lesson figure u04_f05. A-optimality minimizes the average variance, the trace of the inverse. D-optimality maximizes the volume of information, the determinant. Both punish blind spots.</figcaption>
+</figure>
+<div class="nugget" id="nugget-singular">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 7</span></h4>
+<p class="big">A singular information matrix is a blind direction. The data cannot see it, and no optimizer can fix that.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Design 1 bought ten labels and learned nothing about the second gap. The eigenvalue check costs one decomposition and would have caught it before a dollar was spent.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Collinear features in regression. The design matrix equivalent of the zero row, and the same infinite-variance bill.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-regularity">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 13</span></h4>
+<p class="big">Check the conditions before quoting the rates. When the support moves with the parameter, 1/sqrt(n) is the wrong promise.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The Uniform example converges at 1/n, faster than the textbook rate. The formula is not conservative there. It is simply inapplicable.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Auction models, where the bid support depends on the value parameter. The non-regular theory is the right toolbox.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C06, C10</p>
+<h2>How many labels</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 3, 4, 6</span></p>
+<p>The MLE's variance is about 1/(n I): more data and sharper peaks both shrink it. Invert the formula to size the study. For p = 0.7 the per-sample information is 1/0.21 = 4.76, so a standard error below 0.05 needs n above 1/(0.05^2 times 4.76) = 84. The lesson's series: standard error 0.145 at n = 10, 0.046 at n = 100, 0.014 at n = 1000. Lesson figure u04_f03 draws the falling curve on a log axis. The honest caveat: at n = 10 the asymptotic 0.145 is only approximate, and the true sampling distribution is skewed.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Standard error falls from 0.145 to 0.014 as n grows from 10 to 1000">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The error falls as 1 over sqrt(n)</text>
+<polyline points="100,90 320,180 540,228" fill="none" stroke="#31405e" stroke-width="2.5"/>
+<g><title>SE 0.145 at n = 10</title><circle cx="100" cy="90" r="6" fill="#31405e"/><text x="100" y="74" text-anchor="middle" font-size="14" font-family="Georgia">0.145</text><text x="100" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">n = 10</text></g>
+<g><title>SE 0.046 at n = 100</title><circle cx="320" cy="180" r="6" fill="#31405e"/><text x="320" y="164" text-anchor="middle" font-size="14" font-family="Georgia">0.046</text><text x="320" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">n = 100</text></g>
+<g><title>SE 0.014 at n = 1000</title><circle cx="540" cy="228" r="6" fill="#31405e"/><text x="540" y="212" text-anchor="middle" font-size="14" font-family="Georgia">0.014</text><text x="540" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">n = 1000</text></g>
+<line x1="60" y1="196" x2="580" y2="196" stroke="#a94f27" stroke-width="1.5" stroke-dasharray="6,4"/>
+<text x="570" y="188" font-size="13" font-family="Georgia" fill="#a94f27">target 0.05: n = 84</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 6</span> Same numbers as lesson figure u04_f03, p = 0.7. The formula is for planning. For reporting at small n, use exact intervals.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5, 6</span></p>
+<p>Error falls fast at first, then slowly. The simulated mean squared error for a true gap of 1.0: 0.60 at n = 10, 0.37 at n = 20, 0.17 at n = 50, 0.07 at n = 100, 0.04 at n = 200, 0.01 at n = 500, twenty trials each. The first 50 labels buy most of the precision. The stopping rule: stop when the next label buys less than it costs. The pilot-study pattern: label 50, estimate the error curve, extrapolate, decide the full budget. Lesson figure u04_f07 plots the curve with trial spread.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u04-budget.jpg" alt="Watercolor of jars with diminishing stacks of coins">
+<figcaption><span class="tag tag-toy">Illustration</span> Diminishing returns as watercolor. The first jar buys the most precision. The last jar buys almost none. The budget binds before the information runs out. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="nugget" id="nugget-eightyfour">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 4, C10 · Contract 7</span></h4>
+<p class="big">Size the study before you buy the labels. The formula turns an error target into a sample size, and the pilot turns a guess into a curve.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>n = 84 for a 0.05 standard error is a three-line calculation. Collecting 500 labels first and asking later is the expensive order of operations.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>How many users must rate an item for a 0.05 standard error? Same formula, same three lines, different p.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C07, C08, C09</p>
+<h2>Which label next</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 5, 6</span></p>
+<p>Each candidate query carries information sigma(d)(1 - sigma(d)) about its gap. Close contests carry the most. Foregone conclusions carry almost none. The lesson scores three gaps: 0 gives 0.250, 1 gives 0.197, 2 gives 0.105. Labeling the gap-2 pair teaches less than half what the gap-0 pair teaches. The mechanism: for one Bradley-Terry comparison the Fisher information for the gap is the Bernoulli variance at p = sigma(d), and it peaks at p = 0.5. Lesson figure u04_f04 draws the three bars.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Information per label: 0.250 at gap 0, 0.197 at gap 1, 0.105 at gap 2">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Label the close contests</text>
+<g><title>Gap 0: information 0.250 per label</title><rect x="80" y="70" width="120" height="182" fill="#31405e" rx="4"/><text x="140" y="62" text-anchor="middle" font-size="15" font-family="Georgia">0.250</text><text x="140" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">gap 0</text></g>
+<g><title>Gap 1: information 0.197 per label</title><rect x="280" y="114" width="120" height="138" fill="#5d7050" rx="4"/><text x="340" y="106" text-anchor="middle" font-size="15" font-family="Georgia">0.197</text><text x="340" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">gap 1</text></g>
+<g><title>Gap 2: information 0.105 per label</title><rect x="480" y="178" width="120" height="74" fill="#a94f27" rx="4"/><text x="540" y="170" text-anchor="middle" font-size="15" font-family="Georgia">0.105</text><text x="540" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">gap 2</text></g>
+<text x="320" y="292" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">w(d) = sigma(d)(1 - sigma(d)), max 0.25 at d = 0</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 6</span> Same numbers as lesson figure u04_f04. The scores are only as good as the current gap estimates: early in learning, greedy selection myopically repeats bad queries.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5, 6</span></p>
+<p>Active selection always asks the currently most informative question, then updates its beliefs, then asks again. It is greedy, myopic, and usually better than random. The lesson's arithmetic: posterior precision adds the information of each asked query. Greedy banks 0.248 per label. Random banks 0.177 on average. After 30 labels the variance is 0.119 greedy against 0.159 random, a ratio of 0.75: greedy needs about 25 percent fewer labels for the same precision. Lesson figure u04_f06 draws both falling curves. The myopia warning: two queries that are jointly informative but weak alone will never be picked by a greedy rule.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 280" role="img" aria-label="Variance after 30 labels: 0.119 greedy, 0.159 random">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Greedy needs a quarter fewer labels</text>
+<g><title>Random selection variance 0.159</title><rect x="140" y="90" width="140" height="140" fill="#6f6355" rx="4"/><text x="210" y="82" text-anchor="middle" font-size="15" font-family="Georgia">0.159</text><text x="210" y="250" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">random</text></g>
+<g><title>Greedy selection variance 0.119</title><rect x="360" y="125" width="140" height="105" fill="#5d7050" rx="4"/><text x="430" y="117" text-anchor="middle" font-size="15" font-family="Georgia">0.119</text><text x="430" y="250" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">greedy</text></g>
+<text x="320" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">variance after 30 labels, ratio 0.75</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 6</span> Same numbers as lesson figure u04_f06. <span class="tag tag-toy">Illustration</span> The 25 percent figure is the companion's reading of the 0.75 ratio.</figcaption>
+</figure>
+<div class="nugget" id="nugget-greedy">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, C09 · Contract 3</span></h4>
+<p class="big">Label the close contests. A foregone conclusion teaches almost nothing, and the information price says exactly how little.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The gap-2 pair carries 0.105 against the gap-0 pair's 0.250. Spending the budget there pays full price for less than half the teaching.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Which search results should a rater judge next? The ones the model is least sure about, priced by the same Bernoulli variance.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-design">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 5</span></h4>
+<p class="big">A design is good if its information matrix is large. Both A- and D-optimality punish blind spots, infinitely.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The criteria turn a vague labeling plan into a number before any data exists. Design 2 wins on both, and the margin is not close.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A/B test allocation. The same trace and determinant choose how to split traffic across arms.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C11, C12</p>
+<h2>Noise and validation</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 5, 6</span></p>
+<p>Noise dilutes every label. The per-label information falls as the flip rate rises: relative information 1.00, 0.58, 0.31, 0.13, 0.03, 0.00 for q = 0 to 0.5. At q = 0.3 each label carries 13 percent of clean information, so about 7.7 times the labels are needed for the same precision. At q = 0.5 the information is 0: pure noise teaches nothing. The cost lesson is the point of the concept: cutting noise from 0.3 to 0.1 through protocol work beats buying five times the labels. Lesson figure u04_f08 draws the falling bars.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Relative information per label falls from 1.00 to 0.00 as the flip rate rises to 0.5">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Noise dilutes every label</text>
+<g><title>q = 0.0: relative information 1.00</title><rect x="50" y="60" width="70" height="192" fill="#31405e" rx="4"/><text x="85" y="52" text-anchor="middle" font-size="13" font-family="Georgia">1.00</text><text x="85" y="272" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">0.0</text></g>
+<g><title>q = 0.1: relative information 0.58</title><rect x="140" y="141" width="70" height="111" fill="#31405e" rx="4"/><text x="175" y="133" text-anchor="middle" font-size="13" font-family="Georgia">0.58</text><text x="175" y="272" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">0.1</text></g>
+<g><title>q = 0.2: relative information 0.31</title><rect x="230" y="193" width="70" height="59" fill="#5d7050" rx="4"/><text x="265" y="185" text-anchor="middle" font-size="13" font-family="Georgia">0.31</text><text x="265" y="272" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">0.2</text></g>
+<g><title>q = 0.3: relative information 0.13</title><rect x="320" y="227" width="70" height="25" fill="#a94f27" rx="4"/><text x="355" y="219" text-anchor="middle" font-size="13" font-family="Georgia">0.13</text><text x="355" y="272" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">0.3</text></g>
+<g><title>q = 0.4: relative information 0.03</title><rect x="410" y="246" width="70" height="6" fill="#a94f27" rx="4"/><text x="445" y="238" text-anchor="middle" font-size="13" font-family="Georgia">0.03</text><text x="445" y="272" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">0.4</text></g>
+<g><title>q = 0.5: relative information 0.00</title><rect x="500" y="250" width="70" height="2" fill="#6f6355" rx="4"/><text x="535" y="242" text-anchor="middle" font-size="13" font-family="Georgia">0.00</text><text x="535" y="272" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">0.5</text></g>
+<text x="320" y="292" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">flip rate q: at 0.3, about 7.7 times the labels for the same precision</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 6</span> Same numbers as lesson figure u04_f08. Item-dependent noise breaks the single-q formula: hard pairs flipped more often need a per-pair model.</figcaption>
+</figure>
+<div class="nugget" id="nugget-noiseprice">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 9</span></h4>
+<p class="big">Cutting noise beats buying labels. At 30 percent flips, each label carries 13 percent of clean information.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The budget multiplier is 7.7. Protocol work that moves q from 0.3 to 0.1 is worth more than five times the labeling spend.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Noisy crowd labels. Budget or clean? The information curve answers before the purchase order.</dd>
+</dl>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 3, 5, 6</span></p>
+<p>A design makes a promise: the predicted variance. Validation checks the promise against reality. Three checks: compare achieved standard errors to planned ones, check interval coverage on held-out data, and compare the active-selection gain against the predicted gain. Any failure sends you back to replan. The lesson's worked example: planned standard error 0.046 at n = 100. If the achieved is 0.09, the information came in at one quarter the planned rate. Investigate noise or bad gap guesses. Skipping validation risks the next study inheriting a broken plan.</p>
+</div>
+<div class="nugget" id="nugget-validation">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 5, 9</span></h4>
+<p class="big">A design makes a promise. Validation checks the promise, and a miss sends you back to replan.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>0.09 achieved against 0.046 planned is not bad luck. It is a quarter of the promised information rate, and the next study needs the corrected guesses.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>An A/B test comes in underpowered. Check planned against achieved before you rerun: the design, not the data, may be at fault.</dd>
+</dl>
+</div>
+</section>
+<section class="block wisdom" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Eight nuggets, indexed</h2>
+<ol>
+<li><a href="#nugget-slope">The score is the slope.</a> Its zero is the peak, the curvature is the precision.</li>
+<li><a href="#nugget-singular">A singular information matrix is a blind direction.</a> No optimizer can fix it.</li>
+<li><a href="#nugget-regularity">Check the conditions before quoting the rates.</a> Moving support breaks 1/sqrt(n).</li>
+<li><a href="#nugget-eightyfour">Size the study before you buy the labels.</a> The pilot turns a guess into a curve.</li>
+<li><a href="#nugget-greedy">Label the close contests.</a> Foregone conclusions teach almost nothing.</li>
+<li><a href="#nugget-design">A design is good if its information matrix is large.</a> Both criteria punish blind spots.</li>
+<li><a href="#nugget-noiseprice">Cutting noise beats buying labels.</a> The multiplier is 7.7 at 30 percent flips.</li>
+<li><a href="#nugget-validation">A design makes a promise.</a> Validation checks it.</li>
+</ol>
+<p class="backlink"><a href="../index.html">Back to the CS329H course index</a></p>
+</section>
+</div>
+<footer id="provenance"><div class="wrap">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cs329h/lessons/u04_lesson.md</code>. No full lecture transcript exists for S07, and no lecture anecdotes appear. All twelve concepts are taught as independent theory: the lesson marks the session PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING. Quoted words from the lesson source: 0, counted by <code>companions/tools/quote_recount.py</code> with the blockquote plus quoted-phrase method, footer excluded. Lesson figures u04_f01 through u04_f08 are referenced where the lesson places them. The charts on this page re-plot the lesson's computed toy numbers with concept and contract citations. The study-pricing toy runs the lesson's C02 and C06 formulas. No official source video is on record for this session, so no embed appears. The three watercolors are original illustrations made for this companion.</p>
+</div></footer>
+<script>
+function updF(){
+var p=parseFloat(document.getElementById("fp").value)
+var n=parseFloat(document.getElementById("fn").value)
+document.getElementById("fpv").textContent=p.toFixed(2)
+document.getElementById("fnv").textContent=n.toFixed(0)
+var info=n/(p*(1-p))
+var se=1/Math.sqrt(info)
+document.getElementById("fout").textContent="I = "+info.toFixed(2)+", SE = "+se.toFixed(3)
+}
+document.getElementById("fp").addEventListener("input",updF)
+document.getElementById("fn").addEventListener("input",updF)
+updF()
+</script>
+</body>
+
+</html>

@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U01 · NLP to transformer foundations: Interactive companion</title>
+<style>
+:root{--ink:#1c1a17}
+:root{--paper:#faf7f0}
+:root{--paper2:#f3eee2}
+:root{--line:#ddd3bd}
+:root{--muted:#7a7160}
+:root{--clay:#b3541e}
+:root{--indigo:#2f4b8f}
+:root{--indigosoft:#e8edfb}
+:root{--sage:#4f7a52}
+:root{--sagesoft:#e6f0e6}
+:root{--amber:#a97b12}
+:root{--serif:"Iowan Old Style",Georgia,"Times New Roman",serif}
+:root{--sans:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+:root{--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:19px}
+body{line-height:1.62}
+.wrap{max-width:860px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband{padding:10px 0}
+.topband .wrap{padding:0 24px}
+header.hero{padding:52px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+.kicker{margin:0 0 10px}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:0 0 14px}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{line-height:1.5}
+.dek{color:#3d382e}
+.dek{max-width:680px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll{max-width:860px}
+.navscroll{margin:0 auto}
+.navscroll{padding-left:24px}
+.navscroll{padding-right:24px}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-family:var(--sans)}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:26px 0}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+figcaption{font-size:16px}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+img.lessonfig{width:100%}
+img.lessonfig{border-radius:10px}
+img.lessonfig{border:1px solid var(--line)}
+img.lessonfig{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 60px}
+footer.prov{font-size:16px}
+footer.prov{color:#3d382e}
+footer.prov p{margin:.7em 0}
+.small{font-size:15px}
+.capleft{text-align:left}
+.capleft{padding-bottom:8px}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CME295 · Transformers and Large Language Models · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">Unit 01 · NLP to transformer foundations</p>
+<h1>From words to blocks: how text becomes a model</h1>
+<p class="dek">Twelve concepts carry you from a sentiment toy to a full transformer block: tasks, tokenization, embeddings, word2vec, recurrence, gates, attention, masks, shapes, the LM loss, and the checks that keep it all honest. Every number below comes from the lesson. Nothing here invents a lecture that was never recorded.</p>
+</header>
+<div class="legend">
+<p><strong>How to read this page.</strong> Three tags separate fact from invention.</p>
+<p><span class="tag tag-lesson">From the lesson</span> A claim, number, or figure that appears in the lesson source, with its section cited.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with values you supply, or a what-if. Never lesson content.</p>
+<p><span class="tag tag-companion">Companion</span> Editorial framing or a transferable principle. The lesson did not say it this way.</p>
+</div>
+</div>
+<nav class="sticky"><div class="navscroll">
+<a href="#s1">1 Tasks</a>
+<a href="#s2">2 Tokenization</a>
+<a href="#s3">3 Embeddings</a>
+<a href="#s4">4 Word2vec</a>
+<a href="#s5">5 RNN</a>
+<a href="#s6">6 LSTM</a>
+<a href="#s7">7 Attention</a>
+<a href="#s8">8 Blocks</a>
+<a href="#s9">9 Masks</a>
+<a href="#s10">10 Shapes</a>
+<a href="#s11">11 Objectives</a>
+<a href="#s12">12 Checks</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<div class="wrap">
+<figure>
+<img class="illus" src="assets/u01-hero.webp" alt="Watercolor of a text ribbon breaking into tokens, then vector dots, then a woven tower of blocks">
+<figcaption><span class="tag tag-toy">Illustration</span> The unit in one image: raw text becomes tokens, tokens become vectors, vectors weave into blocks. Watercolor, original to this companion.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>Every task is a function: name the input space, name the output space</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 2-3</span></p>
+<p>The lesson opens with a question: what does understanding text mean as an engineering target? Its toy answer is concrete. The input <em>I love this movie</em> maps to the label <em>positive</em>. The task becomes fixed only when the input space (strings) and the output space ({positive, negative}) are fixed. Without a fixed output space and a scoring rule, no loss exists.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 5-6</span></p>
+<p>Two families split on the output space. Discriminative tasks model P(y | x) directly and train with cross-entropy over K classes. Generative tasks model P(t | s) autoregressively and train with token-level cross-entropy. The split is about the output space, not about model size.</p>
+<p>The lesson runs a linear bag-of-words toy. Vocabulary {I, love, hate, this, movie}, labels {pos, neg}. Weights w_love = +2, w_hate = -2, all others 0. <em>I love this movie</em> scores +2. <em>I hate this movie</em> scores -2. The sign decides the label. Two examples already separate the classes.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 items 9, 11</span></p>
+<p>Bag-of-words inference costs O(length) time and O(vocab) memory, but it cannot see word order, so <em>not good</em> and <em>good</em> look alike. That failure motivates sequence models. And when the output space is not fixed at all, as in open-domain dialogue, the classification framing fails and generation with human judgment takes over.</p>
+</div>
+<div class="nugget" id="w1">
+<h4>Nugget 01 · The output space decides everything downstream</h4>
+<p class="big">Name the input space and the output space before you touch a model. That choice fixes the loss, the metric, and the architecture head.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds sentiment as a function from strings to {positive, negative}, then shows classification, NER, translation, summarization, and QA as different output spaces over the same input kind.</dd>
+<dt>Why it matters</dt><dd>A task is not a vibe. It is a contract: input space, output space, scoring rule. Rule-based systems win on tiny output spaces with no labels. Fine-tuning wins on fixed label sets with labels. Generation wins on open outputs.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When a new problem lands on your desk, write its input and output spaces first. If you cannot, you do not have a task yet. You have a hope.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>BPE: compression with a fixed codebook</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 items 2-5</span></p>
+<p>The model eats integers, not letters. Who decides the integer for <em>learning</em>? The lesson answers with byte-pair encoding on a toy corpus: {low: 2, lower: 1, lowest: 1, new: 1, newer: 1}. BPE starts from characters and merges the most frequent adjacent pair. Tokenization is compression with a fixed codebook. Frequent strings earn their own token. Rare strings get spelled out in pieces.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 6</span></p>
+<p>The lesson computes pair counts on the toy corpus: (o, w): 4, (l, o): 4, (w, end): 3. Merge 1 joins (o, w). Tokens per word before any merge: 4.167. After merge 1, <em>low</em> becomes <em>l ow end</em>: 3 tokens instead of 4. Encoding then applies merges in rank order, left to right. Rank order, not discovery order, is what makes encoding deterministic.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 300" role="img" aria-label="Bar chart of BPE pair counts on the toy corpus">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">BPE pair counts, toy corpus (C02 item 6)</text>
+<g font-family="sans-serif" font-size="13" fill="#7a7160">
+<text x="120" y="250">(o, w)</text>
+<text x="330" y="250">(l, o)</text>
+<text x="530" y="250">(w, end)</text>
+</g>
+<rect x="90" y="80" width="90" height="150" fill="#2f4b8f" rx="4"/>
+<rect x="305" y="80" width="90" height="150" fill="#2f4b8f" rx="4"/>
+<rect x="520" y="118" width="90" height="112" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" fill="#1c1a17" text-anchor="middle">
+<text x="135" y="70">4</text>
+<text x="350" y="70">4</text>
+<text x="565" y="108">3</text>
+</g>
+<text x="350" y="288" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Merge 1 joins (o, w). Tokens per word: 4.167 before, low drops from 4 to 3 after.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 6</span> Pair counts from the lesson's computed example. The top pair becomes merge 1. Counting costs O(corpus size) per merge. The merge table costs O(vocab) memory.</figcaption>
+</figure>
+<figure>
+<img class="lessonfig" src="../assets/u01_fig01.png" alt="Bar-free plate showing BPE pair counts before a merge and the merged token after">
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 15, figure u01_fig01</span> The lesson's own computed plate for this concept: one rule (merge the top pair), before (pair counts), after (rewritten words). Numbers computed in the lesson's render script.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 item 11</span></p>
+<p>The failure case is operational, not mathematical. A model trained with one BPE table and served with another sees shifted ids. Performance collapses while the code runs fine. The fix: version the tokenizer with the model.</p>
+</div>
+<div class="nugget" id="w2">
+<h4>Nugget 02 · The tokenizer is part of the model</h4>
+<p class="big">Merge rank fixes the encode order, and the merge table is a model artifact. Ship it, version it, and never swap it silently.</p>
+<dl>
+<dt>What happened</dt><dd>BPE merges the top pair, records its rank, and encodes by rank order. The toy shows merge 1 turning <em>low</em> from 4 tokens into 3.</dd>
+<dt>Why it matters</dt><dd>More merges mean shorter sequences but a larger embedding table. Fertility falls with diminishing returns. And a tokenizer mismatch at serving time shifts every id, a silent catastrophe.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Anything that changes the input encoding is a model change. Treat tokenizers, normalizers, and feature pipelines as versioned artifacts, not as config.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Embeddings: ids are arbitrary, geometry is learned</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 2-4</span></p>
+<p>The motivating question is disarmingly simple: ids are arbitrary (cat = 4521, dog = 908), so how does the model know they are related? The lesson's toy uses V = 6, d = 4. The table E sits in R^{V x d}. Row 0 is the vector for token 0. Lookup is row selection, not computation.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 5, 9</span></p>
+<p>The gradient flows into exactly one row per token occurrence: dL/dE[id] accumulates dL/de. Rows for absent tokens get no update. Over training, co-occurring tokens pull each other's rows into similar regions through the shared loss. Lookup costs O(1) per token. Memory is V times d floats: at V = 50k and d = 4096 in fp16, about 400 MB.</p>
+<p>The lesson's toy table (seed 7, 6 by 4) gives the row for <em>king</em> as [0.21, -0.44, 0.09, 0.63]. <span class="tag tag-toy">Illustration</span> The lesson itself marks these values illustrative, from its lab script. Treat them as a shape demo, not as learned truth.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 item 11</span></p>
+<p>Similar rows do not mean similar meaning. Antonyms like <em>good</em> and <em>bad</em> appear in similar contexts and land near each other. Geometry reflects distributional similarity, not truth.</p>
+</div>
+<table class="data">
+<caption class="small muted capleft"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 items 4, 9, lab E1</span> Embedding arithmetic that the lesson asks you to run by hand.</caption>
+<tr><th>Quantity</th><th>Setup</th><th class="num">Value</th></tr>
+<tr><td>Table shape</td><td>Toy</td><td class="num">E in R^{6 x 4}</td></tr>
+<tr><td>Lookup of id 0</td><td>Toy</td><td class="num">row 0, unchanged, shape (4,)</td></tr>
+<tr><td>Table memory</td><td>V = 50k, d = 4096, fp16</td><td class="num">about 400 MB</td></tr>
+<tr><td>Param count</td><td>V = 32000, d = 4096, fp16</td><td class="num">131,072,000 params, 250 MB</td></tr>
+<tr><td>Rows updated by ids [3, 3, 7]</td><td>Lab E2</td><td class="num">rows 3 and 7 only</td></tr>
+</table>
+<div class="nugget" id="w3">
+<h4>Nugget 03 · One row per occurrence</h4>
+<p class="big">The embedding table is a dictionary from id to vector. Each training step edits exactly the rows it saw. Nothing else moves.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines lookup as row selection, derives the one-row gradient rule, and prices the table at V times d floats.</dd>
+<dt>Why it matters</dt><dd>Rare tokens get few updates, so their rows stay noisy. That is not a bug in your code. It is the update rule, and it tells you why rare words behave badly.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Sparse updates mean sparse evidence. Anywhere a model learns per-item parameters (users, products, tokens), the rare items are the risk. Budget your skepticism by frequency.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Word2vec: meaning as a side effect of prediction</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 2-5</span></p>
+<p>How do vectors learn meaning without labels? The lesson's answer is skip-gram: predict context words from the center word, and let the vectors be a side effect of that prediction task. Words that share contexts need similar vectors to make similar predictions. The training signal is which words appear near each other, and the embedding table absorbs it.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 items 5-6</span></p>
+<p>Full softmax over V costs O(V) per step. Negative sampling replaces it: score the true pair high and k random pairs low with logistic loss, at O(d times (1 + k)) per step. The gradient pushes the center vector toward true context rows and away from negative rows. On the toy (seed 7, V = 6, d = 4), the center <em>king</em> gives P(woman | king) = 0.2261, P(king | king) = 0.1984, P(throne | king) = 0.1542, and the six probabilities sum to 1.000000.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Bar chart of context probabilities for the center word king">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Skip-gram output: P(context | king), toy (C04 item 6)</text>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<rect x="80" y="120" width="110" height="140" fill="#2f4b8f" rx="4"/><text x="135" y="110">0.2261</text>
+<rect x="230" y="145" width="110" height="115" fill="#2f4b8f" rx="4"/><text x="285" y="135">0.1984</text>
+<rect x="380" y="185" width="110" height="75" fill="#2f4b8f" rx="4"/><text x="435" y="175">0.1542</text>
+<rect x="530" y="150" width="110" height="110" fill="#b3541e" rx="4"/><text x="585" y="140">0.4213</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="135" y="280">woman</text>
+<text x="285" y="280">king</text>
+<text x="435" y="280">throne</text>
+<text x="585" y="280">other 3 share</text>
+</g>
+<text x="350" y="308" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Seed 7, V = 6, d = 4. All six probabilities sum to 1.000000.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 6</span> The lesson's computed distribution. The true context word <em>woman</em> leads at 0.2261. Negative sampling makes this step cost O(d times (1 + k)) instead of O(V).</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 item 11</span></p>
+<p>One vector per word cannot hold two meanings. <em>Bank</em> as river edge and <em>bank</em> as money house get a single blurred vector, and the two senses average. Contextual models fix this by making the vector a function of the sentence.</p>
+</div>
+<div class="nugget" id="w4">
+<h4>Nugget 04 · Polysemy breaks the one-vector contract</h4>
+<p class="big">Static embeddings give each word one address. Words with two lives get one blurred resident.</p>
+<dl>
+<dt>What happened</dt><dd>Skip-gram learns vectors as a side effect of predicting contexts, with negative sampling replacing the O(V) softmax. The toy distribution sums cleanly to 1.</dd>
+<dt>Why it matters</dt><dd>The <em>bank</em> counterexample shows the ceiling of the whole approach. No training trick fixes it. Only context-dependent vectors do, which is exactly what the rest of the unit builds toward.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When one representation must serve two masters, expect blur. The fix is never more training of the same form. It is a representation that can see the difference.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>The RNN: memory as a leaky summary</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 2-5</span></p>
+<p>Bag-of-words ignores order. How does a model remember what came before? The Elman recurrence answers: h_t = tanh(W x_t + U h_{t-1} + b). The state is the memory, and the recurrence is the update rule. The same W, U, b apply at every step, with weight tying over time.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 items 5-6</span></p>
+<p>Backprop through time multiplies the same Jacobian at every hop. Over k steps the gradient scales like rho to the k, where rho is the spectral radius of the effective matrix. The lesson's toy is scalar: U = 0.5, tanh derivative near 1. After 10 steps the gradient scales by 0.5^10, about 0.00098. A loss signal from step 10 reaches step 0 at one-thousandth strength.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Decaying curve of gradient scale rho to the k for rho equals 0.5">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Vanishing gradient: 0.5^k over k steps (C05 item 6)</text>
+<polyline points="60,60 122,60 184,75 246,105 308,150 370,195 432,225 494,245 556,255 618,260 640,262" fill="none" stroke="#b3541e" stroke-width="3"/>
+<g font-family="sans-serif" font-size="12" fill="#7a7160">
+<text x="60" y="292">k=0</text>
+<text x="330" y="292">k=5</text>
+<text x="600" y="292">k=10</text>
+<text x="60" y="50">1.0</text>
+<text x="60" y="265">0.0</text>
+</g>
+<g font-family="monospace" font-size="14" fill="#1c1a17">
+<text x="470" y="235">0.5^10 about 0.00098</text>
+</g>
+<circle cx="618" cy="260" r="5" fill="#b3541e"/>
+<text x="350" y="310" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Geometric decay. Tanh derivative at most 1 caps each hop, so vanishing is the usual case.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 6</span> The lesson's headline number, plotted. Forward pass costs O(T d^2) with O(T d) memory for stored states, and step t + 1 waits for step t, so time never parallelizes.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 5</span> Gradient decay bench: the lesson's rho-to-the-k rule, on your numbers.</p>
+<p><input class="text" id="rho" type="number" value="0.5" step="0.05" min="0.1" max="2" aria-label="rho, the per-step gradient scale"> <input class="text" id="rhosteps" type="number" value="10" min="1" max="60" aria-label="k, the number of steps"> <button class="btn" id="rhobtn">Compute rho to the k</button></p>
+<div class="chips" id="rhoout"></div>
+<p class="small muted">Try rho 0.8 at 20 steps (lab E2), then rho 1.2 at 10 steps. Below 1 the signal dies. Above 1 it explodes, and that is why clipping exists.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 item 11</span></p>
+<p>The broken assumption: the state can hold long-range information. The counterexample: subject-verb agreement across a 30-word relative clause. The gradient signal decays to noise and the model guesses. LSTMs and attention are the two historical fixes.</p>
+</div>
+<div class="nugget" id="w5">
+<h4>Nugget 05 · Rho to the k is the whole story</h4>
+<p class="big">Every hop multiplies the gradient by the same matrix. Ten hops at 0.5 leave one-thousandth of the signal. That single number explains why plain RNNs cannot learn long dependencies.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives the Jacobian product over k steps, shows the rho^k scaling, and prices it at 0.5^10, about 0.00098.</dd>
+<dt>Why it matters</dt><dd>Vanishing is not a training bug. It is the architecture. Clipping fixes explosions, never vanishing. Only a protected path (gates) or no recurrence at all (attention) changes the math.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Repeated multiplication is exponential, for better or worse. Whenever a system chains the same transform, compute the per-hop factor first. It predicts the failure before you train.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>The LSTM: three gates guard one conveyor belt</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 2-5</span></p>
+<p>The RNN gradient dies over distance. How can a state carry information unchanged? The cell update answers: c_t = f_t times c_{t-1} + i_t times g_t. If the forget gate f_t = 1 and the input gate i_t = 0, the cell copies itself exactly. Three gates guard one conveyor belt: forget decides what to erase, input what to write, output what to read. The belt itself has no squashing, so gradients ride it untouched.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 item 6</span></p>
+<p>The lesson traces scalars: c_0 = 2.0, f = [1, 1, 0.5], i times g = [0, 0.4, 0]. Then c_1 = 2.0, c_2 = 2.4, c_3 = 1.2. The gradient dc_3/dc_0 = 1 times 1 times 0.5 = 0.5, not 0.5^3. The ones preserved the signal where the RNN let it decay. The derivative dc_t/dc_{t-1} = f_t is the constant error carousel: when f_t sits near 1, the gradient passes unchanged.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Cell state trace and gradient comparison for LSTM versus plain RNN">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Cell trace c_t and gradient kept (C06 item 6)</text>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="140" y="270">c_0</text><text x="280" y="270">c_1</text><text x="420" y="270">c_2</text><text x="560" y="270">c_3</text>
+</g>
+<rect x="100" y="120" width="80" height="130" fill="#4f7a52" rx="4"/>
+<rect x="240" y="120" width="80" height="130" fill="#4f7a52" rx="4"/>
+<rect x="380" y="70" width="80" height="180" fill="#4f7a52" rx="4"/>
+<rect x="520" y="170" width="80" height="80" fill="#4f7a52" rx="4"/>
+<g font-family="monospace" font-size="14" text-anchor="middle" fill="#1c1a17">
+<text x="140" y="110">2.0</text><text x="280" y="110">2.0</text><text x="420" y="60">2.4</text><text x="560" y="160">1.2</text>
+</g>
+<g font-family="sans-serif" font-size="14" fill="#1c1a17">
+<text x="60" y="300">Gradient kept: LSTM 0.5 vs plain RNN 0.125</text>
+</g>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 item 6</span> The traced cell values. The forget gate at 1 copies the cell exactly. Four gate matrices make the LSTM cost 4 times the parameters of a plain RNN per layer.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 items 9, 11</span></p>
+<p>Four gate matrices mean 4 times the parameters of a plain RNN per layer, and the model still runs sequentially over time. The extra parameters are the price of the protected path. And gates do not learn long dependencies on their own: with random init the forget gate starts near 0.5, so the common fix initializes the forget bias to 1. Architecture helps only when init cooperates.</p>
+</div>
+<div class="nugget" id="w6">
+<h4>Nugget 06 · The carousel needs a push at birth</h4>
+<p class="big">The LSTM protects the gradient only where the forget gate sits near 1. Random init parks it at 0.5, so practitioners start the forget bias at 1.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives the elementwise carousel, traces the toy cell, and shows the gradient kept at 0.5 against the RNN's 0.125.</dd>
+<dt>Why it matters</dt><dd>A beautiful mechanism still needs a good birth. The forget-bias trick is a reminder that architecture and initialization are one design, not two.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> When a mechanism has a known good regime, initialize into it. Defaults are choices too, and the wrong default can hide a right idea.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Attention: a soft dictionary lookup</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 2-5</span></p>
+<p>The decoder needs one source word, but the encoder compressed everything into one vector. Which part should it read? The lesson's toy: source states s_1, s_2, s_3 and a query q. Scores e_i = v^T tanh(W s_i + U q). Weights a = softmax(e). Context c = sum a_i s_i. The query asks, the keys answer with scores, the values deliver content. The weights form a distribution, so the context is an expectation over source states.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 6, 9</span></p>
+<p>The toy scores e = [1.0, 2.0, 0.5]. Exponentials give [2.718, 7.389, 1.649], sum 11.756, weights a = [0.231, 0.629, 0.140]. The context is 0.231 s_1 + 0.629 s_2 + 0.140 s_3. State 2 dominates. The model looks mostly at position 2. Scoring costs O(T) per query, and the gradient path from output to any source state is O(1). That short path is the win over recurrence.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u01-attention.webp" alt="Watercolor of blank cards with ink threads of different thickness joining a central listening ear">
+<figcaption><span class="tag tag-toy">Illustration</span> Attention as the lesson describes it: every state offers content, one query listens, the thickest thread carries the most weight. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Bar chart of attention weights 0.231, 0.629, 0.140 over three states">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Attention weights a = softmax([1.0, 2.0, 0.5]) (C07 item 6)</text>
+<rect x="120" y="180" width="110" height="70" fill="#2f4b8f" rx="4"/>
+<rect x="295" y="80" width="110" height="170" fill="#b3541e" rx="4"/>
+<rect x="470" y="205" width="110" height="45" fill="#2f4b8f" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="175" y="170">0.231</text>
+<text x="350" y="70">0.629</text>
+<text x="525" y="195">0.140</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="175" y="270">state 1</text>
+<text x="350" y="270">state 2</text>
+<text x="525" y="270">state 3</text>
+</g>
+<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Weights sum to 1. Context = 0.231 s_1 + 0.629 s_2 + 0.140 s_3.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 6</span> The computed toy. With equal scores the context would be the mean. With one dominant score it approaches that state.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 items 5-6, R0.2</span> Softmax bench: the lesson's score to weight rule, on your scores.</p>
+<p><input class="text" id="sma" type="text" value="1.0, 2.0, 0.5" aria-label="comma separated scores"></p>
+<p><button class="btn" id="smbtn">Compute weights</button></p>
+<div class="chips" id="smout"></div>
+<p class="small muted">Try 0, 0, 0 for uniform weights (lab E1), then one large score to watch the context collapse onto a single state.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 item 11</span></p>
+<p>The weights are not faithful explanations. Different weight patterns can yield the same output. Treat them as mechanism, not as proof of reasoning.</p>
+</div>
+<div class="nugget" id="w7">
+<h4>Nugget 07 · Mechanism is not explanation</h4>
+<p class="big">Attention gives every query an O(1) path to every state. That path is why it trains. The weights themselves prove nothing about why the model decided.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds score, normalize, mix: additive scores, softmax to a distribution, a weighted sum as context. The toy puts 0.629 of the mass on state 2.</dd>
+<dt>Why it matters</dt><dd>Two wins arrive together: differentiability (unlike hard attention, which needs REINFORCE) and the short gradient path (unlike recurrence). The caution matters just as much: weights-as-explanation is a known trap.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> A readable intermediate is not a faithful one. When a system shows you its weights, ask what else could produce the same output before you trust the story.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>The transformer block: talk, then think, with a highway past both</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 2-5</span></p>
+<p>Attention mixes positions. What processes each position after mixing? The lesson's toy block, pre-norm layout: y = x + Attn(LN(x)), then z = y + FFN(LN(y)). Two residuals, two norms, one mixing step, one per-position step. The block alternates communication (attention: positions talk) and computation (FFN: each position thinks). Residuals carry the original signal past both. Norms keep scales stable.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 5-6</span></p>
+<p>Self-attention treats Q = K = V = x: each position attends over all positions. The residual x + F(x) gives a direct gradient path: dL/dx includes dL/dy unchanged. LayerNorm normalizes the last axis to zero mean and unit variance, then applies learned scale and shift. The FFN is a two-layer MLP, d to 4d to d, applied per position. On the toy shapes B = 2, T = 8, d = 64, the shape stays (2, 8, 64) after attention and after the FFN. Nothing changes shape inside the block. Only the values change. A 12-layer model applies this 12 times.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 items 9, 11</span></p>
+<p>Attention costs O(T^2 d), the FFN O(T d^2), memory O(T^2) for the weights plus O(T d) activations per layer. Pre-norm is more stable than post-norm at depth. And stacking more blocks does not always help: without residuals, a 24-layer net degrades below a 12-layer one. Depth needs the gradient highway.</p>
+</div>
+<div class="nugget" id="w8">
+<h4>Nugget 08 · The residual is the load-bearing wall</h4>
+<p class="big">Shapes never change inside the block. Values change, and the residual guarantees the gradient survives the change.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson writes the two pre-norm residual equations, traces (2, 8, 64) through attention and FFN unchanged, and prices each sublayer.</dd>
+<dt>Why it matters</dt><dd>Remove the residual and depth turns against you. The lesson's check is surgical: with both sublayers zeroed, the gradient still flows to x. If removing a residual kills training, it was load bearing.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> In any deep stack, name the path the gradient takes home. If every path passes through learned transforms, depth is a liability. Give the signal a highway.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Masks: the do-not-look list</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 2-5</span></p>
+<p>At training time the model sees the whole sequence. How do we stop position 3 from reading the answer at position 5? The toy: a 4 by 4 score matrix, add negative infinity above the diagonal, softmax each row. The mask is a do-not-look list, and it applies to scores, never to weights.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 5-6</span></p>
+<p>Softmax of [s_1, negative infinity] = [1, 0]: the exponential of negative infinity is 0, so the forbidden cell gets zero mass and the row still sums to 1. Masking after softmax instead would steal mass from allowed cells unless renormalized, and it leaks through the gradient. The lesson's computed rows (seed 7): [1.000, 0, 0, 0], [0.375, 0.625, 0, 0], [0.131, 0.275, 0.594, 0], [0.371, 0.192, 0.346, 0.092]. Every row sums to 1. Every future cell is 0.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 340" role="img" aria-label="Four by four heatmap of masked softmax rows from the lesson">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Causal mask: masked softmax rows (C09 item 6)</text>
+<g font-family="monospace" font-size="13" text-anchor="middle">
+<rect x="150" y="60" width="90" height="52" fill="#2f4b8f"/><text x="195" y="92" fill="#faf7f0">1.000</text>
+<rect x="240" y="60" width="90" height="52" fill="#faf7f0" stroke="#ddd3bd"/><text x="285" y="92" fill="#7a7160">0</text>
+<rect x="330" y="60" width="90" height="52" fill="#faf7f0" stroke="#ddd3bd"/><text x="375" y="92" fill="#7a7160">0</text>
+<rect x="420" y="60" width="90" height="52" fill="#faf7f0" stroke="#ddd3bd"/><text x="465" y="92" fill="#7a7160">0</text>
+<rect x="150" y="112" width="90" height="52" fill="#7a8fc4"/><text x="195" y="144" fill="#1c1a17">0.375</text>
+<rect x="240" y="112" width="90" height="52" fill="#2f4b8f"/><text x="285" y="144" fill="#faf7f0">0.625</text>
+<rect x="330" y="112" width="90" height="52" fill="#faf7f0" stroke="#ddd3bd"/><text x="375" y="144" fill="#7a7160">0</text>
+<rect x="420" y="112" width="90" height="52" fill="#faf7f0" stroke="#ddd3bd"/><text x="465" y="144" fill="#7a7160">0</text>
+<rect x="150" y="164" width="90" height="52" fill="#a9bde4"/><text x="195" y="196" fill="#1c1a17">0.131</text>
+<rect x="240" y="164" width="90" height="52" fill="#8ba3d4"/><text x="285" y="196" fill="#1c1a17">0.275</text>
+<rect x="330" y="164" width="90" height="52" fill="#2f4b8f"/><text x="375" y="196" fill="#faf7f0">0.594</text>
+<rect x="420" y="164" width="90" height="52" fill="#faf7f0" stroke="#ddd3bd"/><text x="465" y="196" fill="#7a7160">0</text>
+<rect x="150" y="216" width="90" height="52" fill="#7a8fc4"/><text x="195" y="248" fill="#1c1a17">0.371</text>
+<rect x="240" y="216" width="90" height="52" fill="#9db1dd"/><text x="285" y="248" fill="#1c1a17">0.192</text>
+<rect x="330" y="216" width="90" height="52" fill="#7e97cc"/><text x="375" y="248" fill="#1c1a17">0.346</text>
+<rect x="420" y="216" width="90" height="52" fill="#b3c2e8"/><text x="465" y="248" fill="#1c1a17">0.092</text>
+</g>
+<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Seed 7. Rows sum to 1 within rounding. The strict upper triangle is exactly 0.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 6</span> The lesson's computed masked rows, as a heatmap. Row 0 is [1, 0, 0, 0]: position 0 sees only itself.</figcaption>
+</figure>
+<figure>
+<img class="lessonfig" src="../assets/u01_fig03.png" alt="Two 4x4 grids showing raw attention scores and the masked softmax with future cells at zero">
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 item 15, figure u01_fig03</span> The lesson's own plate: one rule (mask then softmax), before (raw scores), after (masked rows). Numbers from the lesson's render script.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 items 8, 11</span></p>
+<p>The checks are one-liners with teeth: row sums are 1 to 1e-6, the strict upper triangle is exactly 0, row 0 is [1, 0, 0, 0]. The failure mode is a classic silent disaster. A training run with the mask accidentally disabled shows great loss, because the model reads the future, and generates garbage. The eval gap exposes it. Always test the mask with the row-0 check.</p>
+</div>
+<div class="nugget" id="w9">
+<h4>Nugget 09 · Mask the scores, not the weights</h4>
+<p class="big">Add negative infinity before the softmax. Zeroing weights after it steals probability mass from the cells you meant to keep.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson builds the 4 by 4 causal mask, derives why negative infinity zeroes exactly the forbidden cells, and diagnoses the after-softmax bug.</dd>
+<dt>Why it matters</dt><dd>The disabled-mask run is the nightmare case: training loss looks wonderful because the model cheats, and generation is garbage. One row-0 assert on day one prevents weeks of confusion.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Constraints belong before normalization, not after. Apply the rule to the raw scores, then let the normalizer do its honest work.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Shapes: the type system of deep learning</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 2-5</span></p>
+<p>The code runs but the loss is NaN. Where do you look first? The lesson answers: shapes. Its toy uses B = 2, T = 8, d = 64, h = 4, V = 1000. Read shapes right to left: (B, T, d) is B sequences, T positions, d features. Embedding lookup takes (B, T) ids to (B, T, d). Per head, Q, K, V are (B, h, T, 16). Scores are (B, h, T, T). The output merges heads back to (B, T, d). Unembedding gives logits (B, T, V). Most bugs are shape bugs wearing a math costume.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 item 6</span></p>
+<p>The lesson counts parameters for one layer at d = 64, h = 4. QKV plus output projections: 4 times 64 times 64 = 16384. FFN (d to 256 to d): 2 times 64 times 256 = 32768. LayerNorms: 4 times 64 = 256. Total per layer: 49408. Embeddings: 1000 times 64 = 64000. Small numbers, exact method. Large models scale the same way.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Bar chart of per-layer parameter counts: attention 16384, FFN 32768, norms 256">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Parameters per layer, d = 64 (C10 item 6)</text>
+<rect x="110" y="170" width="110" height="80" fill="#2f4b8f" rx="4"/>
+<rect x="295" y="90" width="110" height="160" fill="#b3541e" rx="4"/>
+<rect x="480" y="246" width="110" height="4" fill="#4f7a52"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="165" y="160">16384</text>
+<text x="350" y="80">32768</text>
+<text x="535" y="236">256</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="165" y="270">QKV + out</text>
+<text x="350" y="270">FFN</text>
+<text x="535" y="270">LayerNorms</text>
+</g>
+<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Total per layer 49408. Embeddings add 64000. FFN dominates at this width.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 item 6</span> The lesson's exact count. Activation memory per layer is O(B T d + B h T^2), and the T^2 term is the wall the next unit attacks.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 items 7, 11</span></p>
+<p>Shape asserts are the cheapest test in the codebase. The failure case shows why: split (B, T, d) into (B, T, h, d_k), forget the transpose before the score product, and attention runs over the wrong axes while the loss still decreases slowly, hiding the bug. A shape assert on (B, h, T, T) catches it. One caution: the transpose bug passes shape checks written from the same wrong belief. Independent derivation, the nine-step trace, is what saves you.</p>
+</div>
+<div class="nugget" id="w10">
+<h4>Nugget 10 · Assert the shapes, derive them independently</h4>
+<p class="big">Shapes are the type system of deep learning. Read them right to left, assert them at every step, and derive the expected shapes from the math, not from the code.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson traces nine steps from (B, T) ids to (B, T, V) logits, counts 49408 parameters per layer, and shows a transpose bug that trains while wrong.</dd>
+<dt>Why it matters</dt><dd>A slowly decreasing loss is not proof of correctness. The missing-transpose bug proves that a model can learn the wrong computation. Only an independent shape trace exposes it.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Never verify a system with a check written from the same assumption as the system. Derive the expectation from a second source, then compare.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>The LM loss: one number for surprise</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 2-5</span></p>
+<p>The model outputs a distribution. What single number says how surprised it is? The lesson's toy: target token <em>cat</em>, model p = [0.7, 0.2, 0.1]. Loss = negative log 0.7, about 0.357 nats. Perplexity = exp(0.357), about 1.43. The loss is the model's surprise at the truth. Perplexity converts surprise into effective vocabulary size: 1.43 means the model hesitates between about 1.4 tokens. Training maximizes the product of P(x_t | x before t) by maximum likelihood, takes logs to get a sum, and negates it for a loss. Teacher forcing feeds ground truth as inputs, which keeps training parallel.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 6, 8</span></p>
+<p>A three-token toy with true-token probabilities [0.7, 0.5, 0.8] gives losses [0.357, 0.693, 0.223], mean 0.424 nats, perplexity about 1.53. A uniform model over V = 1000 would give perplexity 1000. Sanity bounds: loss is never negative, perfect predictions give loss 0, uniform predictions give log V.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 700 320" role="img" aria-label="Bar chart comparing perplexity 1.43, 1.53, and 1000 on a log scale">
+<text x="350" y="28" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700">Perplexity: model vs uniform baseline (C11 item 6)</text>
+<rect x="130" y="210" width="110" height="40" fill="#2f4b8f" rx="4"/>
+<rect x="295" y="205" width="110" height="45" fill="#2f4b8f" rx="4"/>
+<rect x="460" y="60" width="110" height="190" fill="#b3541e" rx="4"/>
+<g font-family="monospace" font-size="15" text-anchor="middle" fill="#1c1a17">
+<text x="185" y="200">1.43</text>
+<text x="350" y="195">1.53</text>
+<text x="515" y="50">1000</text>
+</g>
+<g font-family="sans-serif" font-size="13" fill="#7a7160" text-anchor="middle">
+<text x="185" y="270">one token</text>
+<text x="350" y="270">3-token toy</text>
+<text x="515" y="270">uniform, V=1000</text>
+</g>
+<text x="350" y="300" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#7a7160">Log scale in spirit: the baseline is 650 times the toy. Lower is better, within one tokenizer.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 6</span> The lesson's numbers. Full softmax costs O(B T V), the standard cost driver, and log-sum-exp keeps it stable.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 items 4, 6</span> Perplexity bench: the lesson's loss rule, on your probabilities.</p>
+<p><input class="text" id="pxp" type="text" value="0.7, 0.5, 0.8" aria-label="comma separated true token probabilities"></p>
+<p><button class="btn" id="pxpbtn">Compute loss and perplexity</button></p>
+<div class="chips" id="pxpout"></div>
+<p class="small muted">Try 0.9, 0.9 (lab E1), then watch what a single 0.01 does to the mean. One confident mistake dominates the average.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 item 11</span></p>
+<p>Lower perplexity does not mean a better model for the task. Perplexity is comparable only under one tokenizer: across tokenizers it is meaningless. And low perplexity does not imply factuality.</p>
+</div>
+<div class="nugget" id="w11">
+<h4>Nugget 11 · Perplexity is a ruler, not a judge</h4>
+<p class="big">Perplexity turns surprise into effective vocabulary size. It compares models only under one tokenizer, and it never measures truth.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson derives the LM loss from maximum likelihood, computes 0.357 nats and 1.43 perplexity on the toy, and sets the uniform baseline at 1000.</dd>
+<dt>Why it matters</dt><dd>Two honest limits in one item: cross-tokenizer perplexity comparisons are meaningless, and a fluent model can be confidently wrong. The metric measures fit to text, not fit to facts.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Every metric has a domain where it is valid and a cliff where it is not. Name both before you optimize. Optimizing past the cliff is how good numbers hide bad models.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Implementation checks: trust nothing unverified</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 2-5</span></p>
+<p>The loss decreases but the model is wrong. What test would have caught it on day one? The lesson prescribes four checks, each under a minute, on a one-layer attention net over 8 tokens: the nine-step shape trace, the mask test, the gradient check, and the determinism check. Shapes, masks, gradients, and determinism are each one assert away from certainty. Bugs that pass silent checks cost weeks.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 4-6</span></p>
+<p>The gradient check compares the analytic dL/dW against (L(W+e) minus L(W-e)) / 2e and expects relative error below 1e-5 in fp64. The toy: W = [[0.5]], L = (Wx minus 1)^2 at x = 2. Analytic dL/dW = 0. Finite differences with e = 1e-6 agree. The mask check: attention rows sum to 1 and the future triangle is 0. The determinism check: two runs with one seed give bitwise-identical loss.</p>
+</div>
+<table class="data">
+<caption class="small muted capleft"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 items 5, 7-8</span> The four checks: invariant and what failure means.</caption>
+<tr><th>Check</th><th>Invariant</th><th>Failure means</th></tr>
+<tr><td>Shape trace</td><td class="num">Nine steps match C10, logits (B, T, V)</td><td>A transpose or split bug in the plumbing</td></tr>
+<tr><td>Mask test</td><td class="num">Rows sum to 1, future triangle 0</td><td>The mask was skipped or applied after softmax</td></tr>
+<tr><td>Gradient check</td><td class="num">Relative error below 1e-5 in fp64</td><td>The backward pass does not implement the forward pass</td></tr>
+<tr><td>Determinism</td><td class="num">Two seeded runs, bitwise-identical loss</td><td>An unseeded op or a nondeterministic kernel</td></tr>
+</table>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 item 9</span></p>
+<p>Gradient checks cost O(parameters) forward passes, so they run on tiny configs only. Seeded determinism costs nothing. These checks run in CI, not in the training loop.</p>
+</div>
+<div class="nugget" id="w12">
+<h4>Nugget 12 · The checks are the output</h4>
+<p class="big">Four asserts, each under a minute: shapes, masks, gradients, determinism. A model that passes all four can still be wrong, but a model that skips them is a rumor.</p>
+<dl>
+<dt>What happened</dt><dd>The lesson defines check_all: shape trace asserts, a mask test on random scores, a fp64 gradient check on a tiny config, and two seeded runs with compared losses.</dd>
+<dt>Why it matters</dt><dd>The checks are cheap and the bugs are expensive. The gradient check alone decides whether your backward pass implements your forward pass. That is not a detail. That is the training.</dd>
+<dt>Transferable principle</dt><dd><span class="tag tag-companion">Companion</span> Build the verification before you need it. The day the loss looks right and the model is wrong, the check you wrote on day one is the only witness you trust.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Twelve nuggets, one unit</h2>
+<ol class="wisdom">
+<li><a href="#w1"><span class="wnum">01</span>The output space decides everything downstream</a></li>
+<li><a href="#w2"><span class="wnum">02</span>The tokenizer is part of the model</a></li>
+<li><a href="#w3"><span class="wnum">03</span>One row per occurrence</a></li>
+<li><a href="#w4"><span class="wnum">04</span>Polysemy breaks the one-vector contract</a></li>
+<li><a href="#w5"><span class="wnum">05</span>Rho to the k is the whole story</a></li>
+<li><a href="#w6"><span class="wnum">06</span>The carousel needs a push at birth</a></li>
+<li><a href="#w7"><span class="wnum">07</span>Mechanism is not explanation</a></li>
+<li><a href="#w8"><span class="wnum">08</span>The residual is the load-bearing wall</a></li>
+<li><a href="#w9"><span class="wnum">09</span>Mask the scores, not the weights</a></li>
+<li><a href="#w10"><span class="wnum">10</span>Assert the shapes, derive them independently</a></li>
+<li><a href="#w11"><span class="wnum">11</span>Perplexity is a ruler, not a judge</a></li>
+<li><a href="#w12"><span class="wnum">12</span>The checks are the output</a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cme295/lessons/u01_nlp_foundations.md</code>, locally authored bridge content for Stanford CME295 (2026-10-06). The lesson marks its claim class OFFICIAL-SYLLABUS and every leaf PLANNED / SOURCE ATTRIBUTION PENDING until slide or transcript extraction verifies them. No lecture transcript exists for this unit, so no lecture anecdotes appear and no sentence here reproduces an instructor's words. Lesson figures u01_fig01 and u01_fig03 are the lesson's own computed plates, embedded where cited. Charts on this page re-plot the lesson's computed numbers with section citations. Interactive toys run the lesson's rules on values you supply. The two watercolor illustrations are original to this companion, generated with Muse native tools, and labeled Illustration. No official course video exists for this unit, so no video is embedded.</p>
+<p><strong>Quoted words.</strong> Quoted words from the lesson source: 0. This companion paraphrases the lesson throughout and uses no quotation marks in visible text, tooltips, or labels. Numbers carry their lesson section above each figure and table.</p>
+<p><a href="../index.html">Back to the CME295 index</a></p>
+</footer>
+</div>
+<script>
+function el(tag,cls,text){
+var e=document.createElement(tag)
+if(cls){e.className=cls}
+if(text!=null){e.textContent=text}
+return e
+}
+function parseNums(id){
+var raw=document.getElementById(id).value
+var parts=raw.split(",")
+var out=[]
+var i=0
+while(i<parts.length){
+var v=parseFloat(parts[i])
+if(!isNaN(v)){out.push(v)}
+i=i+1
+}
+return out
+}
+function runRho(){
+var rho=parseFloat(document.getElementById("rho").value)
+var k=parseInt(document.getElementById("rhosteps").value,10)
+var out=document.getElementById("rhoout")
+out.textContent=""
+if(!(rho>0)||!(k>=1)){
+out.appendChild(el("span","chip plain","Enter rho > 0 and k >= 1."))
+return
+}
+var v=Math.pow(rho,k)
+out.appendChild(el("span","chip plain","rho = "+String(rho)+", k = "+String(k)))
+out.appendChild(el("span","chip plain","rho^k = "+String(v)))
+if(rho<1){
+out.appendChild(el("span","chip plain","Vanishing regime: signal shrinks geometrically."))
+}else if(rho>1){
+out.appendChild(el("span","chip plain","Exploding regime: signal grows geometrically. Clip it."))
+}else{
+out.appendChild(el("span","chip plain","rho = 1: the signal rides unchanged."))
+}
+}
+function runSoftmax(){
+var vals=parseNums("sma")
+var out=document.getElementById("smout")
+out.textContent=""
+if(vals.length<2){
+out.appendChild(el("span","chip plain","Enter at least two scores."))
+return
+}
+var m=vals[0]
+var i=1
+while(i<vals.length){if(vals[i]>m){m=vals[i]} i=i+1}
+var exps=[]
+var s=0
+i=0
+while(i<vals.length){
+var e=Math.exp(vals[i]-m)
+exps.push(e)
+s=s+e
+i=i+1
+}
+i=0
+while(i<vals.length){
+var w=exps[i]/s
+out.appendChild(el("span","chip","w["+String(i)+"] = "+w.toFixed(3)))
+i=i+1
+}
+}
+function runPxp(){
+var ps=parseNums("pxp")
+var out=document.getElementById("pxpout")
+out.textContent=""
+var ok=ps.length>0
+var i=0
+while(i<ps.length){if(!(ps[i]>0&&ps[i]<=1)){ok=false} i=i+1}
+if(!ok){
+out.appendChild(el("span","chip plain","Enter probabilities in (0, 1]."))
+return
+}
+var losses=[]
+var sum=0
+i=0
+while(i<ps.length){
+var l=-Math.log(ps[i])
+losses.push(l)
+sum=sum+l
+i=i+1
+}
+var mean=sum/ps.length
+var ppl=Math.exp(mean)
+out.appendChild(el("span","chip plain","losses = ["+losses.map(function(x){return x.toFixed(3)}).join(", ")+"]"))
+out.appendChild(el("span","chip plain","mean = "+mean.toFixed(3)+" nats"))
+out.appendChild(el("span","chip plain","perplexity = "+ppl.toFixed(2)))
+}
+document.getElementById("rhobtn").addEventListener("click",runRho)
+document.getElementById("smbtn").addEventListener("click",runSoftmax)
+document.getElementById("pxpbtn").addEventListener("click",runPxp)
+runRho()
+runSoftmax()
+runPxp()
+</script>
+</body>
+</html>

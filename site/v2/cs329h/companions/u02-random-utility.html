@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U02 Companion: Random utility, axioms, and factor models · CS329H</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:900px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband a{color:var(--paper)}
+header.hero{padding:52px 0 6px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:660px}
+.notice{border:1px solid var(--line)}
+.notice{background:var(--paper2)}
+.notice{border-radius:10px}
+.notice{padding:16px 20px}
+.notice{margin:26px 0}
+.notice{font-size:16px}
+.notice p{margin:.45em 0}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:16px 20px}
+.legend{margin:26px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-interp{background:transparent}
+.tag-interp{color:var(--indigo)}
+.tag-interp{border:1.5px solid var(--indigo)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+section.block{padding:34px 0 10px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.12em}
+.secnum{text-transform:uppercase}
+.secnum{color:var(--clay)}
+.secnum{margin:0 0 4px}
+h2{font-size:32px}
+h2{line-height:1.2}
+h2{margin:.1em 0 .5em}
+h3{font-size:22px}
+h3{margin:1.2em 0 .4em}
+.prose-narrow{max-width:720px}
+figure{margin:28px 0}
+figure{background:#fff}
+figure{border:1px solid var(--line)}
+figure{border-radius:10px}
+figure{padding:18px 18px 8px}
+figcaption{font-size:15px}
+figcaption{color:var(--muted)}
+figcaption{padding:10px 4px 12px}
+figcaption{line-height:1.55}
+img.illus{width:100%}
+img.illus{border-radius:8px}
+img.illus{display:block}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:5px solid var(--clay)}
+.nugget{background:#fff}
+.nugget{border-radius:8px}
+.nugget{padding:18px 22px}
+.nugget{margin:30px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:14px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:20px}
+.nugget .big{line-height:1.5}
+.nugget .big{margin:.2em 0 .6em}
+.nugget dl{margin:0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{margin:10px 0 2px}
+.nugget dd{margin:0 0 6px}
+.nugget dd{font-size:16.5px}
+.lab{border:1px dashed var(--amber)}
+.lab{background:var(--ambersoft)}
+.lab{border-radius:10px}
+.lab{padding:18px 22px}
+.lab{margin:28px 0}
+.toy{border:1px solid var(--indigo)}
+.toy{background:var(--indigosoft)}
+.toy{border-radius:10px}
+.toy{padding:18px 22px}
+.toy{margin:28px 0}
+.toy input[type=number]{width:64px}
+.toy input[type=number]{font-family:var(--mono)}
+.toy input[type=number]{font-size:15px}
+.toy input[type=number]{padding:4px 6px}
+.toy input[type=number]{margin:2px 6px 2px 2px}
+.toy label{font-family:var(--sans)}
+.toy label{font-size:14px}
+.btn{font-family:var(--sans)}
+.btn{font-size:15px}
+.btn{background:var(--ink)}
+.btn{color:var(--paper)}
+.btn{border:none}
+.btn{border-radius:8px}
+.btn{padding:10px 18px}
+.btn{cursor:pointer}
+.btn{margin:8px 8px 8px 0}
+.btn.ghost{background:transparent}
+.btn.ghost{color:var(--ink)}
+.btn.ghost{border:1.5px solid var(--ink)}
+table.data{border-collapse:collapse}
+table.data{margin:14px 0}
+table.data{font-size:16px}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.06em}
+table.data th{text-align:left}
+table.data th{padding:8px 14px 8px 0}
+table.data td{padding:8px 14px 8px 0}
+table.data td{border-top:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+code{font-family:var(--mono)}
+code{font-size:.88em}
+code{background:var(--paper2)}
+code{padding:1px 6px}
+code{border-radius:5px}
+.wisdom ol{padding-left:22px}
+.wisdom li{margin:10px 0}
+.wisdom a{color:var(--clay)}
+footer{background:var(--ink)}
+footer{color:var(--paper)}
+footer{margin-top:56px}
+footer{padding:40px 0 60px}
+footer p{font-size:15.5px}
+footer{line-height:1.6}
+footer code{background:rgba(255,255,255,.12)}
+footer a{color:var(--paper)}
+.backlink{font-family:var(--sans)}
+.backlink{font-size:15px}
+.backlink{margin:34px 0 0}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CS329H · Stanford · Interactive companion · <a href="../index.html">course index</a></div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">U02 · Random utility, axioms, and factor models</p>
+<h1>The scoreboard wobbles</h1>
+<p class="dek">Why do identical people facing identical options choose differently? Random utility models answer with a hidden score plus a daily shock. This unit derives the softmax from that shock, states the axioms a utility story needs, breaks them on purpose, and then compresses whole populations of tasters into a few factors.</p>
+</header>
+<figure>
+<img class="illus" src="assets/u02-hero.jpg" alt="Watercolor of three desserts on a cafe table with dice beside them">
+<figcaption><span class="tag tag-toy">Illustration</span> Three snacks with fixed appeal, plus a daily craving shock. The appeal is the utility. The shock is the Gumbel noise. The choice is the argmax of the sum. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="notice">
+<p><strong>Sourcing.</strong> No full transcript exists for sessions S03 and S04. This companion narrates <code>content/v2/cs329h/lessons/u02_lesson.md</code>. Concepts C01 through C06 map to S03 at title level, and C07 through C09 map to S04 at title level. Concepts C10, C11, and C12 are requested extensions: the lesson marks them PLANNED / SOURCE ATTRIBUTION PENDING, and they are taught here as independent theory with that label.</p>
+<p><strong>How to read the tags.</strong> Every number carries its lesson section. Anything the companion computes is tagged <span class="tag tag-toy">Illustration</span>. A <span class="tag tag-interp">Interpretation</span> tag marks the companion's own reading of the lesson. Where the lesson leaves a value out, the page says so in words.</p>
+</div>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> A fact, number, or mechanism from the lesson.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-interp">Interpretation</span> The companion's reading of why a lesson fact matters. The fact is the lesson's, the gloss is ours.</p>
+<p><span class="tag-ref">C01 · Contract 6</span> Points to the exact lesson section behind a claim or number.</p>
+</div>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">The noisy scoreboard</a>
+<a href="#s2">Breaking the scoreboard</a>
+<a href="#s3">Many tasters, few factors</a>
+<a href="#s4">The average voter</a>
+<a href="#s5">Guardrails</a>
+<a href="#wisdom">Wisdom index</a>
+<a href="#provenance">Provenance</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01, C02, C06</p>
+<h2>The noisy scoreboard</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 5</span></p>
+<p>Utility is a hidden scoreboard. Higher means wanted more. You never see the scoreboard. You only see which option won each contest. With zero noise the choice is deterministic: the top-utility item always wins. With noise, the winner varies, and the choice frequencies reveal the utilities up to scale. The lesson toy uses three snacks with appeal 1.0, 0.5, and -0.5. Lesson figure u02_f07 maps those utilities to shares 0.55, 0.33, 0.12.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 4, 5</span></p>
+<p>The noise has a shape, and the shape matters. Each option gets an independent Gumbel shock: U_i = u_i + e_i, and the choice is the argmax. Condition on one shock, multiply the CDFs of the rest, integrate over the Gumbel density, and the integral collapses to the softmax: P(choose i) = exp(u_i) / sum_j exp(u_j). Other noise shapes give other rules. Gaussian noise gives the probit model, which has no closed form and needs integrals.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Utilities 1.0, 0.5, minus 0.5 map to shares 0.547, 0.331, 0.122">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Utilities in, shares out</text>
+<text x="60" y="60" font-size="13" font-family="Georgia" fill="#6f6355">utilities [1.0, 0.5, -0.5]</text>
+<g><title>Utility 1.0, share 0.547</title><rect x="60" y="80" width="220" height="30" fill="#31405e" rx="4"/><text x="288" y="101" font-size="14" font-family="Georgia">0.547</text></g>
+<g><title>Utility 0.5, share 0.331</title><rect x="60" y="118" width="133" height="30" fill="#5d7050" rx="4"/><text x="201" y="139" font-size="14" font-family="Georgia">0.331</text></g>
+<g><title>Utility minus 0.5, share 0.122</title><rect x="60" y="156" width="49" height="30" fill="#8a5a17" rx="4"/><text x="117" y="177" font-size="14" font-family="Georgia">0.122</text></g>
+<text x="60" y="230" font-size="13" font-family="Georgia" fill="#6f6355">softmax: exponentiate each utility, divide by the total.</text>
+<text x="60" y="252" font-size="13" font-family="Georgia" fill="#6f6355">Shares sum to 1. Adding a constant to every utility changes nothing.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 6</span> Computed shares for the three-snack toy: 0.547, 0.331, 0.122. The lesson figure u02_f07 rounds them to 0.55, 0.33, 0.12.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 6</span></p>
+<p>The lesson verifies the derivation by simulation, not by trust. With utilities [1.0, 0.5, 0.0] and 20000 Gumbel draws, the simulated shares are 0.511, 0.308, 0.181 against the formula's 0.506, 0.307, 0.186. The maximum gap is 0.005. Monte Carlo error shrinks as 1 over the square root of n, which is why 20000 draws buy about 0.004 accuracy here. Lesson figure u02_f01 draws both bar charts side by side.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 5, 6</span></p>
+<p>The same rule scales to any number of options. With utilities [2.0, 1.0, 0.0, -1.0, -2.0] the shares are 0.636, 0.234, 0.086, 0.032, 0.012. The top option takes nearly two-thirds. One fact from this concept is used later in U05: the log of the denominator, the partition function, equals the expected maximum utility, which becomes the regularized optimum there.</p>
+</div>
+<div class="nugget" id="nugget-gumbel">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 10</span></h4>
+<p class="big">Argmax plus Gumbel noise is the softmax. The noise family chooses the choice rule.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The softmax is not a definition here. It is a theorem about one specific noise shape. Change the shape and the clean formula disappears.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Neural network sampling draws from a softmax over logits. The Gumbel-max trick behind it is this derivation in production clothing.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Move the utilities and watch the shares follow the lesson's softmax rule. Then add a clone of option 2 and watch the red bus effect from C05 happen live.</p>
+<p><label>u1 <input type="range" id="u1" min="-2" max="2" step="0.1" value="1"></label> <code id="u1v">1.0</code></p>
+<p><label>u2 <input type="range" id="u2" min="-2" max="2" step="0.1" value="0.5"></label> <code id="u2v">0.5</code></p>
+<p><label>u3 <input type="range" id="u3" min="-2" max="2" step="0.1" value="-0.5"></label> <code id="u3v">-0.5</code></p>
+<p><label><input type="checkbox" id="clone"> Add a clone of option 2 (the blue bus)</label></p>
+<p class="small" id="shareout">Shares appear here.</p>
+<p class="small muted">The logit rule is the lesson's (C02). The clone is the companion's demo of C05: under a flat logit the ratio of any two shares never moves, so the newcomer steals from everyone in proportion.</p>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C03, C04, C05</p>
+<h2>Breaking the scoreboard</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 5, 6</span></p>
+<p>Axioms are hygiene rules for choices. Transitivity says if A beats B and B beats C, then A beats C. Without it, no single ranking explains the data. The contrapositive is the test: a cycle refutes the single-utility story. The lesson toy shows the cycle A beats B, B beats C, C beats A, each at 0.80. The best single-score fit predicts 0.50 everywhere, leaving a residual of 0.30 per pair. Lesson figure u02_f03 draws the three 0.80 bars against the three 0.50 bars.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 11</span></p>
+<p>Sampling noise creates fake cycles. With few comparisons per pair, majority votes cycle by chance: 1-0 records on three pairs cycle with probability 1/4 under pure noise. The falsifiable check is a permutation test: cycle counts within the permutation range mean noise, not structure.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 5, 6</span></p>
+<p>Stochastic consistency is the probabilistic version. Strong stochastic transitivity: if A usually beats B and B usually beats C, then A must beat C at least as usually. Under Bradley-Terry the bound is exact: p_ab = p_bc = 0.7 gives gaps of 0.847 each, so p_ac must be sigma(1.694) = 0.845. An observed 0.2 would be a hard violation. The 0.80 cycle violates the bound maximally.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Observed cycle win rates 0.80 each against the single-score fit 0.50 each">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The cycle the scores cannot fit</text>
+<text x="60" y="60" font-size="13" font-family="Georgia" fill="#6f6355">observed: A beats B, B beats C, C beats A</text>
+<g><title>A beats B: observed 0.80</title><rect x="60" y="75" width="160" height="26" fill="#a94f27" rx="4"/><text x="228" y="94" font-size="13" font-family="Georgia">0.80</text></g>
+<g><title>B beats C: observed 0.80</title><rect x="60" y="108" width="160" height="26" fill="#a94f27" rx="4"/><text x="228" y="127" font-size="13" font-family="Georgia">0.80</text></g>
+<g><title>C beats A: observed 0.80</title><rect x="60" y="141" width="160" height="26" fill="#a94f27" rx="4"/><text x="228" y="160" font-size="13" font-family="Georgia">0.80</text></g>
+<text x="380" y="60" font-size="13" font-family="Georgia" fill="#6f6355">best single-score fit</text>
+<g><title>A beats B: fitted 0.50</title><rect x="380" y="75" width="100" height="26" fill="#31405e" rx="4"/><text x="488" y="94" font-size="13" font-family="Georgia">0.50</text></g>
+<g><title>B beats C: fitted 0.50</title><rect x="380" y="108" width="100" height="26" fill="#31405e" rx="4"/><text x="488" y="127" font-size="13" font-family="Georgia">0.50</text></g>
+<g><title>C beats A: fitted 0.50</title><rect x="380" y="141" width="100" height="26" fill="#31405e" rx="4"/><text x="488" y="160" font-size="13" font-family="Georgia">0.50</text></g>
+<text x="320" y="220" text-anchor="middle" font-size="14" font-family="Georgia" fill="#a94f27">residual 0.30 per pair: the fit is as bad as it gets</text>
+<text x="320" y="245" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">no score vector fits a cycle, so the likelihood pushes all scores together</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 6</span> Same numbers as lesson figure u02_f03. The residual is the proof: no assignment of strengths reproduces three 0.80 wins around a cycle.</figcaption>
+</figure>
+<div class="nugget" id="nugget-cycle">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 5</span></h4>
+<p class="big">A cycle refutes the single-utility story. Rock-paper-scissors data cannot come from one score per item.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The 0.30 residual is not noise. It is the model announcing that its central assumption is false on this data.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Sports rankings with rock-paper-scissors matchups face the same wall. Any total order lies about at least one pairing.</dd>
+</dl>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 4, 5, 6</span></p>
+<p>IIA says the ratio of two options' shares never changes when other options come or go. The logit implies it: P(car)/P(red) = exp(u_car - u_red), independent of the choice set. The red bus breaks it. Car 2/3, red bus 1/3. Add a blue bus identical to the red one. IIA keeps the car to red ratio at 2:1 and symmetry gives red to blue at 1:1, so the shares become car 0.50, red 0.25, blue 0.25. Intuition says the car should keep 0.67 while the buses split 0.33. Lesson figure u02_f02 computes the IIA prediction.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u02-bus.jpg" alt="Watercolor of a red and a blue double-decker bus side by side with a small car">
+<figcaption><span class="tag tag-toy">Illustration</span> The canonical counterexample. The blue bus copies the red one, and the flat logit charges the car for the duplication. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 640 340" role="img" aria-label="Before the blue bus: 0.67 and 0.33. IIA prediction: 0.50, 0.25, 0.25. Intuitive: 0.67, 0.17, 0.17.">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The blue bus steals from the car, says IIA</text>
+<text x="40" y="62" font-size="13" font-family="Georgia" fill="#6f6355">before: car 0.67, red bus 0.33</text>
+<g><title>Car before: 0.67</title><rect x="40" y="72" width="134" height="24" fill="#31405e" rx="4"/><text x="182" y="90" font-size="13" font-family="Georgia">0.67</text></g>
+<g><title>Red bus before: 0.33</title><rect x="40" y="102" width="66" height="24" fill="#a94f27" rx="4"/><text x="114" y="120" font-size="13" font-family="Georgia">0.33</text></g>
+<text x="40" y="162" font-size="13" font-family="Georgia" fill="#6f6355">IIA after: car 0.50, red 0.25, blue 0.25</text>
+<g><title>Car after IIA: 0.50</title><rect x="40" y="172" width="100" height="24" fill="#31405e" rx="4"/><text x="148" y="190" font-size="13" font-family="Georgia">0.50</text></g>
+<g><title>Red bus after IIA: 0.25</title><rect x="40" y="202" width="50" height="24" fill="#a94f27" rx="4"/><text x="98" y="220" font-size="13" font-family="Georgia">0.25</text></g>
+<g><title>Blue bus after IIA: 0.25</title><rect x="40" y="232" width="50" height="24" fill="#8a5a17" rx="4"/><text x="98" y="250" font-size="13" font-family="Georgia">0.25</text></g>
+<text x="360" y="162" font-size="13" font-family="Georgia" fill="#6f6355">intuitive after: car 0.67, buses split 0.33</text>
+<g><title>Car intuitive: 0.67</title><rect x="360" y="172" width="134" height="24" fill="#5d7050" rx="4"/><text x="502" y="190" font-size="13" font-family="Georgia">0.67</text></g>
+<g><title>Red bus intuitive: 0.17</title><rect x="360" y="202" width="34" height="24" fill="#5d7050" rx="4"/><text x="402" y="220" font-size="13" font-family="Georgia">0.17</text></g>
+<g><title>Blue bus intuitive: 0.17</title><rect x="360" y="232" width="34" height="24" fill="#5d7050" rx="4"/><text x="402" y="250" font-size="13" font-family="Georgia">0.17</text></g>
+<text x="320" y="300" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">The car loses 0.17 of share to a bus nobody new wanted.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 6</span> Lesson figure u02_f02 computes the IIA prediction. Lesson figure u02_f08 computes the intuitive shares. The repair is the nested logit of C12, which restores the car to 0.67 by nesting the buses.</figcaption>
+</figure>
+<div class="nugget" id="nugget-iia">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 4, 11</span></h4>
+<p class="big">Under the flat logit, the ratio of two shares never moves. A near-duplicate newcomer cannibalizes everyone in proportion, which is exactly wrong.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>A recommender that adds near-duplicate items bleeds share from the good items to the clones. The model treats the clone as genuinely new demand.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Adding a near-duplicate product to a store. The flat logit predicts the existing products each lose share. Nest or deduplicate instead.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C07, C08</p>
+<h2>Many tasters, few factors</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 4, 5, 6</span></p>
+<p>Four respondents rate five items: twenty numbers. The factorization asks whether 8 + 10 numbers can replace them. Each respondent gets a taste vector, each item gets a feature vector, and the score is their dot product: M[j,i] = r_j . v_i. The assumption is low rank, here rank 2. The SVD recovers the factors up to rotation, and on the lesson toy the rank-2 reconstruction error is 0.0000. The entries range about -3 to 3, and all of that structure compresses into the factors exactly. Lesson figure u02_f04 draws the heatmap and the factor vectors.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u02-factors.jpg" alt="Watercolor of scattered dots with faint connecting lines under two overlapping grids">
+<figcaption><span class="tag tag-toy">Illustration</span> Tastes as geometry: people and items placed on the same map, close meaning liked. The factorization finds the map from the ratings table. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 9, 11</span></p>
+<p>The rank is a bet. A block-diagonal preference matrix needs rank equal to the number of blocks, and choosing d trades bias against variance. The falsifiable rule: select d by held-out prediction, not by the scree plot. If d = 3 beats d = 2 out of sample, the rank-2 claim fails.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 5, 6</span></p>
+<p>A new respondent arrives with two known ratings. Triangulate their position by least squares against the item factors, then predict the unseen items. The lesson toy is honest about what happens: the new respondent rates items 0 and 1 at 1.5 and -0.5, the fit gives r near [14.26, 6.17], and the item-4 prediction is a wild -12.42. The items 0 and 1 have nearly collinear factors, so two ratings do not determine the position. Fold-in needs varied item factors, not just enough of them.</p>
+</div>
+<div class="nugget" id="nugget-lowrank">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 10</span></h4>
+<p class="big">Shared structure compresses the table. Twenty ratings become eighteen numbers when tastes vary smoothly along two axes.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Compression is prediction. The factor model fills in the ratings nobody gave, which is the whole point of a recommender.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Recommender systems live here. R is the users, V is the items, and the dot product is the predicted rating.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-foldin">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 6, 9</span></h4>
+<p class="big">Fold-in needs varied items, not just enough items. Collinear factors leave the new position undetermined and the predictions go wild.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The lesson's -12.42 prediction is a warning label. Two ratings that agree with each other teach almost nothing beyond one rating.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A new streaming user who rated two action movies. Ask about a documentary next, not a third action movie.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C09, C10</p>
+<h2>The average voter does not exist</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5, 6</span></p>
+<p>The pooled win rate is 0.48. Does anyone actually sit at 0.48? The lesson toy answers no. Two groups sit at 0.88 and 0.08, and the pooled 0.484 represents nobody. With 500 respondents per group, the pooled number is precise and wrong: it describes a voter who does not exist. The mixture form is explicit: pooled P = alpha sigma(d_1) + (1 - alpha) sigma(d_2). The falsifiable check: within-group fits must beat the pooled fit on held-out data, or the groups are theater. Lesson figure u02_f05 draws the one pooled bar against the two group bars.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Pooled win rate 0.484 hides group rates 0.884 and 0.084">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The pooled number describes nobody</text>
+<g><title>Pooled win rate 0.484</title><rect x="80" y="140" width="120" height="112" fill="#6f6355" rx="4"/><text x="140" y="132" text-anchor="middle" font-size="15" font-family="Georgia">0.484</text><text x="140" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">pooled</text></g>
+<g><title>Group 1 win rate 0.884</title><rect x="280" y="60" width="120" height="192" fill="#31405e" rx="4"/><text x="340" y="52" text-anchor="middle" font-size="15" font-family="Georgia">0.884</text><text x="340" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">group 1</text></g>
+<g><title>Group 2 win rate 0.084</title><rect x="480" y="222" width="120" height="30" fill="#a94f27" rx="4"/><text x="540" y="214" text-anchor="middle" font-size="15" font-family="Georgia">0.084</text><text x="540" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">group 2</text></g>
+<text x="340" y="292" text-anchor="middle" font-size="13" font-family="Georgia" fill="#a94f27">n = 500 per group, seed 0</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 6</span> Same numbers as lesson figure u02_f05. Mixture fitting is non-convex: use multiple restarts, and let held-out likelihood choose the number of groups.</figcaption>
+</figure>
+<div class="nugget" id="nugget-pooled">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 11</span></h4>
+<p class="big">The average voter does not exist. Pooling two opposite camps produces a middle number nobody holds.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>A pooled model trained on this data confidently predicts 0.48 for everyone and is wrong about everyone. The error is structural, not statistical.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Voters on a divisive issue. The poll average hides the two camps, and any policy built on the average pleases neither.</dd>
+</dl>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-interp">Interpretation</span> The next two concepts are requested extensions, marked PLANNED / SOURCE ATTRIBUTION PENDING in the lesson and taught here as independent theory.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5, 6</span></p>
+<p>Utilities [2, 1, -1] or [4, 2, -2]. Which is right? Both, once the noise scales too. Doubling every utility and doubling the noise leaves every choice unchanged, because argmax(c u_i + c e_i) = argmax(u_i + e_i) for c greater than 0. Utility numbers and noise size are two dials with one effect. Only the ratio is real. The lesson shows utilities u and 2u with matched noise giving identical shares 0.547, 0.331, 0.122. The convention: fix the noise scale at 1 and estimate u. The trap: comparing utilities across two fitted models with different implicit scales is meaningless. Group A seeming to care more may just be group A with less noise. Lesson figure u02_f06 draws the identical twin bar charts.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 320" role="img" aria-label="Utilities u and 2u with matched noise give identical shares 0.547, 0.331, 0.122">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Double the utility, double the noise: same choices</text>
+<text x="60" y="60" font-size="13" font-family="Georgia" fill="#6f6355">utilities [1.0, 0.5, -0.5], noise 1</text>
+<g><title>Share 0.547</title><rect x="60" y="75" width="174" height="26" fill="#31405e" rx="4"/><text x="242" y="94" font-size="13" font-family="Georgia">0.547</text></g>
+<g><title>Share 0.331</title><rect x="60" y="108" width="105" height="26" fill="#31405e" rx="4"/><text x="173" y="127" font-size="13" font-family="Georgia">0.331</text></g>
+<g><title>Share 0.122</title><rect x="60" y="141" width="39" height="26" fill="#31405e" rx="4"/><text x="107" y="160" font-size="13" font-family="Georgia">0.122</text></g>
+<text x="400" y="60" font-size="13" font-family="Georgia" fill="#6f6355">utilities [2.0, 1.0, -1.0], noise 2</text>
+<g><title>Share 0.547</title><rect x="400" y="75" width="174" height="26" fill="#8a5a17" rx="4"/><text x="582" y="94" font-size="13" font-family="Georgia">0.547</text></g>
+<g><title>Share 0.331</title><rect x="400" y="108" width="105" height="26" fill="#8a5a17" rx="4"/><text x="513" y="127" font-size="13" font-family="Georgia">0.331</text></g>
+<g><title>Share 0.122</title><rect x="400" y="141" width="39" height="26" fill="#8a5a17" rx="4"/><text x="447" y="160" font-size="13" font-family="Georgia">0.122</text></g>
+<text x="320" y="220" text-anchor="middle" font-size="14" font-family="Georgia" fill="#a94f27">The scale is a convention. Fix noise at 1.</text>
+<text x="320" y="245" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">A group that cares more may only be a group with less noise.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 6</span> Same numbers as lesson figure u02_f06. The cost of ignoring the tradeoff is misread strength: loud preferences that are really quiet noise.</figcaption>
+</figure>
+<div class="nugget" id="nugget-scale">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 11</span></h4>
+<p class="big">Utility and noise are one ratio. A utility number means nothing until the noise scale is fixed.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Two fitted models with different implicit scales cannot be compared. The comparison is not noisy. It is undefined.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Temperature-scaled language models. Only the ratio of logits to temperature is identified, never the logits alone.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C11, C12</p>
+<h2>Guardrails</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 5</span></p>
+<p>Every estimator is a contract: IID records, correct noise family, connected comparison graph, fixed scale, correct rank for factors, and no unmodeled heterogeneity. Break a clause and the numbers lie quietly. Each clause maps to a failure already computed in this unit: repeats break IID, buses break the noise family, disconnected graphs break identification, free scale breaks interpretation, wrong rank leaves signal in the residual, pooled groups break the single-model story. The pre-fit checklist script tests graph connectivity, repeat rate, cycle count, and a heterogeneity screen. All checks are cheap. The repair of a failure is the expensive part.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 11</span></p>
+<p>The checklist itself assumes the checks have power. With tiny n every check passes vacuously: ten records pass all checks and still mislead. Detection is not a substitute for data.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 4, 5, 6</span></p>
+<p>Four mini-datasets, four breaks, four repairs. The 0.80 cycle breaks scores. The repair is a pairwise-only model. The red and blue buses break IIA. The repair is the nested logit. Two opposite groups break pooling. The repair is the mixture. Doubled utilities break interpretation. The repair is the scale fix. The nested logit repair is numeric. Flat logit gives car 0.50, red 0.25, blue 0.25. Nesting the buses restores car 0.67, red 0.17, blue 0.17. Lesson figure u02_f08 draws both.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 320" role="img" aria-label="Flat logit shares 0.50, 0.25, 0.25 against nested logit shares 0.67, 0.17, 0.17">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Nesting the buses restores the car</text>
+<text x="60" y="60" font-size="13" font-family="Georgia" fill="#6f6355">flat logit</text>
+<g><title>Car flat: 0.50</title><rect x="60" y="75" width="120" height="26" fill="#a94f27" rx="4"/><text x="188" y="94" font-size="13" font-family="Georgia">0.50</text></g>
+<g><title>Red bus flat: 0.25</title><rect x="60" y="108" width="60" height="26" fill="#a94f27" rx="4"/><text x="128" y="127" font-size="13" font-family="Georgia">0.25</text></g>
+<g><title>Blue bus flat: 0.25</title><rect x="60" y="141" width="60" height="26" fill="#a94f27" rx="4"/><text x="128" y="160" font-size="13" font-family="Georgia">0.25</text></g>
+<text x="400" y="60" font-size="13" font-family="Georgia" fill="#6f6355">nested logit</text>
+<g><title>Car nested: 0.67</title><rect x="400" y="75" width="161" height="26" fill="#5d7050" rx="4"/><text x="569" y="94" font-size="13" font-family="Georgia">0.67</text></g>
+<g><title>Red bus nested: 0.17</title><rect x="400" y="108" width="41" height="26" fill="#5d7050" rx="4"/><text x="449" y="127" font-size="13" font-family="Georgia">0.17</text></g>
+<g><title>Blue bus nested: 0.17</title><rect x="400" y="141" width="41" height="26" fill="#5d7050" rx="4"/><text x="449" y="160" font-size="13" font-family="Georgia">0.17</text></g>
+<text x="320" y="220" text-anchor="middle" font-size="14" font-family="Georgia" fill="#5d7050">The repair: let the buses share one nest.</text>
+<text x="320" y="245" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">Within the nest the buses split. Across nests the car keeps its share.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 6</span> Same numbers as lesson figure u02_f08. The battery is not exhaustive: real data mixes breakages, and cycles plus heterogeneity together need both repairs at once.</figcaption>
+</figure>
+<div class="nugget" id="nugget-checklist">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, C12 · Contract 4</span></h4>
+<p class="big">Check the contract before the fit. Six clauses, six named failures, and the repair always costs more than the check.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Every failure in this unit produced confident, wrong numbers. The checklist is the only part of the pipeline that asks whether the model is allowed to speak.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A new preference dataset lands on your desk. The first hour is graph connectivity, repeat rate, cycle count, and a heterogeneity screen, not a fit.</dd>
+</dl>
+</div>
+</section>
+<section class="block wisdom" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Eight nuggets, indexed</h2>
+<ol>
+<li><a href="#nugget-gumbel">Argmax plus Gumbel noise is the softmax.</a> The noise family chooses the choice rule.</li>
+<li><a href="#nugget-cycle">A cycle refutes the single-utility story.</a> Rock-paper-scissors data needs a richer model.</li>
+<li><a href="#nugget-iia">Under the flat logit, share ratios never move.</a> Near-duplicates cannibalize in proportion.</li>
+<li><a href="#nugget-lowrank">Shared structure compresses the table.</a> Twenty ratings become eighteen numbers.</li>
+<li><a href="#nugget-foldin">Fold-in needs varied items.</a> Collinear factors leave the new position undetermined.</li>
+<li><a href="#nugget-pooled">The average voter does not exist.</a> The pooled middle describes nobody.</li>
+<li><a href="#nugget-scale">Utility and noise are one ratio.</a> Fix the scale or the numbers are undefined.</li>
+<li><a href="#nugget-checklist">Check the contract before the fit.</a> Six clauses, six named failures.</li>
+</ol>
+<p class="backlink"><a href="../index.html">Back to the CS329H course index</a></p>
+</section>
+</div>
+<footer id="provenance"><div class="wrap">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cs329h/lessons/u02_lesson.md</code>. No full lecture transcript exists for S03 or S04, and no lecture anecdotes appear. Concepts C01 through C06 map to S03 at title level, and C07 through C09 map to S04 at title level. Concepts C10, C11, and C12 are requested extensions marked PLANNED / SOURCE ATTRIBUTION PENDING in the lesson. Quoted words from the lesson source: 0, counted by <code>companions/tools/quote_recount.py</code> with the blockquote plus quoted-phrase method, footer excluded. Lesson figures u02_f01 through u02_f08 are referenced where the lesson places them. The charts on this page re-plot the lesson's computed toy numbers with concept and contract citations. The softmax toy runs the lesson's C02 rule on slider values. No official source video is on record for these sessions, so no embed appears. The three watercolors are original illustrations made for this companion.</p>
+</div></footer>
+<script>
+function smaxN(u){
+var m=u[0]
+for(const v of u){if(v>m){m=v}}
+var e=[]
+var s=0
+for(const v of u){
+var q=Math.exp(v-m)
+e.push(q)
+s+=q
+}
+var r=[]
+for(const v of e){r.push(v/s)}
+return r
+}
+function upd(){
+var u1=parseFloat(document.getElementById("u1").value)
+var u2=parseFloat(document.getElementById("u2").value)
+var u3=parseFloat(document.getElementById("u3").value)
+document.getElementById("u1v").textContent=u1.toFixed(1)
+document.getElementById("u2v").textContent=u2.toFixed(1)
+document.getElementById("u3v").textContent=u3.toFixed(1)
+var opts=[u1,u2,u3]
+var names=["option 1","option 2","option 3"]
+if(document.getElementById("clone").checked){
+opts.push(u2)
+names.push("option 2 clone")
+}
+var sh=smaxN(opts)
+var parts=[]
+var i=0
+for(const nm of names){
+parts.push(nm+" "+sh[i].toFixed(3))
+i++
+}
+document.getElementById("shareout").textContent=parts.join(" · ")
+}
+var sids=["u1","u2","u3"]
+for(const sid of sids){document.getElementById(sid).addEventListener("input",upd)}
+document.getElementById("clone").addEventListener("change",upd)
+upd()
+</script>
+</body>
+
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U09 Companion: Aggregation, impossibility, and fairness · CS329H</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:900px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband a{color:var(--paper)}
+header.hero{padding:52px 0 6px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:660px}
+.notice{border:1px solid var(--line)}
+.notice{background:var(--paper2)}
+.notice{border-radius:10px}
+.notice{padding:16px 20px}
+.notice{margin:26px 0}
+.notice{font-size:16px}
+.notice p{margin:.45em 0}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:16px 20px}
+.legend{margin:26px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-interp{background:transparent}
+.tag-interp{color:var(--indigo)}
+.tag-interp{border:1.5px solid var(--indigo)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+section.block{padding:34px 0 10px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.12em}
+.secnum{text-transform:uppercase}
+.secnum{color:var(--clay)}
+.secnum{margin:0 0 4px}
+h2{font-size:32px}
+h2{line-height:1.2}
+h2{margin:.1em 0 .5em}
+h3{font-size:22px}
+h3{margin:1.2em 0 .4em}
+.prose-narrow{max-width:720px}
+figure{margin:28px 0}
+figure{background:#fff}
+figure{border:1px solid var(--line)}
+figure{border-radius:10px}
+figure{padding:18px 18px 8px}
+figcaption{font-size:15px}
+figcaption{color:var(--muted)}
+figcaption{padding:10px 4px 12px}
+figcaption{line-height:1.55}
+img.illus{width:100%}
+img.illus{border-radius:8px}
+img.illus{display:block}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:5px solid var(--clay)}
+.nugget{background:#fff}
+.nugget{border-radius:8px}
+.nugget{padding:18px 22px}
+.nugget{margin:30px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:14px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:20px}
+.nugget .big{line-height:1.5}
+.nugget .big{margin:.2em 0 .6em}
+.nugget dl{margin:0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{margin:10px 0 2px}
+.nugget dd{margin:0 0 6px}
+.nugget dd{font-size:16.5px}
+.lab{border:1px dashed var(--amber)}
+.lab{background:var(--ambersoft)}
+.lab{border-radius:10px}
+.lab{padding:18px 22px}
+.lab{margin:28px 0}
+.toy{border:1px solid var(--indigo)}
+.toy{background:var(--indigosoft)}
+.toy{border-radius:10px}
+.toy{padding:18px 22px}
+.toy{margin:28px 0}
+.toy input[type=number]{width:64px}
+.toy input[type=number]{font-family:var(--mono)}
+.toy input[type=number]{font-size:15px}
+.toy input[type=number]{padding:4px 6px}
+.toy input[type=number]{margin:2px 6px 2px 2px}
+.toy label{font-family:var(--sans)}
+.toy label{font-size:14px}
+.btn{font-family:var(--sans)}
+.btn{font-size:15px}
+.btn{background:var(--ink)}
+.btn{color:var(--paper)}
+.btn{border:none}
+.btn{border-radius:8px}
+.btn{padding:10px 18px}
+.btn{cursor:pointer}
+.btn{margin:8px 8px 8px 0}
+.btn.ghost{background:transparent}
+.btn.ghost{color:var(--ink)}
+.btn.ghost{border:1.5px solid var(--ink)}
+table.data{border-collapse:collapse}
+table.data{margin:14px 0}
+table.data{font-size:16px}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.06em}
+table.data th{text-align:left}
+table.data th{padding:8px 14px 8px 0}
+table.data td{padding:8px 14px 8px 0}
+table.data td{border-top:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+code{font-family:var(--mono)}
+code{font-size:.88em}
+code{background:var(--paper2)}
+code{padding:1px 6px}
+code{border-radius:5px}
+.wisdom ol{padding-left:22px}
+.wisdom li{margin:10px 0}
+.wisdom a{color:var(--clay)}
+footer{background:var(--ink)}
+footer{color:var(--paper)}
+footer{margin-top:56px}
+footer{padding:40px 0 60px}
+footer p{font-size:15.5px}
+footer{line-height:1.6}
+footer code{background:rgba(255,255,255,.12)}
+footer a{color:var(--paper)}
+.backlink{font-family:var(--sans)}
+.backlink{font-size:15px}
+.backlink{margin:34px 0 0}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CS329H · Stanford · Interactive companion · <a href="../index.html">course index</a></div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">U09 · Aggregation, impossibility, and fairness</p>
+<h1>Many voters, one outcome, no perfect rule</h1>
+<p class="dek">Three voters disagree. What does the group want? The answer depends on the rule, and no rule is perfect, and the voters can game every non-dictatorial one, and the Condorcet cycle proves majorities can contradict themselves. This unit builds the impossibility theorems, the strategic games, and the fair ways to cope.</p>
+</header>
+<figure>
+<img class="illus" src="assets/u09-hero.jpg" alt="Watercolor of raised hands voting in an assembly hall">
+<figcaption><span class="tag tag-toy">Illustration</span> The assembly as watercolor. Every hand is a ballot. The rule turns the hands into one outcome. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="notice">
+<p><strong>Sourcing.</strong> No full transcript exists for sessions S16 and S17. This companion narrates <code>content/v2/cs329h/lessons/u09_lesson.md</code>. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<p><strong>How to read the tags.</strong> Every number carries its lesson section. Anything the companion computes is tagged <span class="tag tag-toy">Illustration</span>. A <span class="tag tag-interp">Interpretation</span> tag marks the companion's own reading of the lesson. Where the lesson leaves a value out, the page says so in words.</p>
+</div>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> A fact, number, or mechanism from the lesson.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-interp">Interpretation</span> The companion's reading of why a lesson fact matters. The fact is the lesson's, the gloss is ours.</p>
+<p><span class="tag-ref">C01 · Contract 6</span> Points to the exact lesson section behind a claim or number.</p>
+</div>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">Three rules</a>
+<a href="#s2">Voters who lie</a>
+<a href="#s3">Adding the unaddable</a>
+<a href="#s4">Values not math</a>
+<a href="#wisdom">Wisdom index</a>
+<a href="#provenance">Provenance</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01, C02, C04</p>
+<h2>Three rules, no agreement</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 5, 6</span></p>
+<p>Individual rankings are inputs. The social ranking is the output of a rule, and the rule is a choice. The lesson toy: three voters, ballots A>B>C, B>C>A, C>A>B. Plurality tallies 1-1-1, a tie. Borda tallies 3-3-3, a tie. Condorcet: no winner. Three rules, no agreement. What the group wants is undefined without the rule. Lesson figure u09_f01 draws the three rule boxes.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u09-ballot.jpg" alt="Watercolor of a ballot box with paper ballots">
+<figcaption><span class="tag tag-toy">Illustration</span> The ballot box as watercolor. The same ballots go in. Three different rules read them three different ways. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 5, 6</span></p>
+<p>Arrow: with 3 or more candidates, no ranked voting rule satisfies all four of unrestricted domain, Pareto, independence of irrelevant alternatives, and non-dictatorship. Something must give. The lesson's spoiler makes IIA concrete. Without D, plurality elects A at 4-3-2. D enters, loses pairwise to B 2-7, yet plurality flips to B at A2 D2 B3 C2. Adding a loser changed the winner: IIA violated. The proof intuition: IIA plus Pareto force a swing voter who becomes decisive on all pairs, a dictator. Lesson figure u09_f03 tabulates the axioms.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 5, 6</span></p>
+<p>The Condorcet cycle: A beats B 2-1, B beats C 2-1, C beats A 2-1. Margins +1, +1, +1. No Condorcet winner exists. Majority rule contradicts itself from sincere ballots, no trickery. Adding two A>B>C ballots breaks it: margins +3, +3, +1, transitive A>B>C. The lesson simulates cycle frequency under impartial culture: 0.081 for 11 voters, seed 0. And the agenda decides: vote A-vs-B first, then the winner vs C, and C wins the tournament though no Condorcet winner exists. The procedure, not the voters, picks. Lesson figure u09_f02 draws the triangle.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 280" role="img" aria-label="Condorcet cycle with 2-1 margins on each edge">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The majority contradicts itself</text>
+<g><title>A beats B 2-1</title><circle cx="160" cy="140" r="34" fill="#31405e"/><text x="160" y="148" text-anchor="middle" font-size="18" font-family="Georgia" fill="#faf6ee">A</text></g>
+<g><title>B beats C 2-1</title><circle cx="480" cy="140" r="34" fill="#31405e"/><text x="480" y="148" text-anchor="middle" font-size="18" font-family="Georgia" fill="#faf6ee">B</text></g>
+<g><title>C beats A 2-1</title><circle cx="320" cy="220" r="34" fill="#a94f27"/><text x="320" y="228" text-anchor="middle" font-size="18" font-family="Georgia" fill="#faf6ee">C</text></g>
+<line x1="196" y1="140" x2="444" y2="140" stroke="#5d7050" stroke-width="2.5" marker-end="url(#ah9)"/>
+<line x1="452" y1="162" x2="348" y2="198" stroke="#5d7050" stroke-width="2.5" marker-end="url(#ah9)"/>
+<line x1="292" y1="198" x2="188" y2="162" stroke="#5d7050" stroke-width="2.5" marker-end="url(#ah9)"/>
+<defs><marker id="ah9" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#5d7050" stroke-width="1.5"/></marker></defs>
+<text x="320" y="120" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">A beats B, 2-1</text>
+<text x="430" y="200" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">B beats C, 2-1</text>
+<text x="210" y="200" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">C beats A, 2-1</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 6</span> Same numbers as lesson figure u09_f02. <span class="tag tag-toy">Illustration</span> The diagram is the companion's drawing of the lesson's cycle.</figcaption>
+</figure>
+<div class="nugget" id="nugget-rules">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 7</span></h4>
+<p class="big">Three rules, no agreement: plurality 1-1-1, Borda 3-3-3, Condorcet none. The group want is undefined without the rule.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Anyone announcing a group preference without naming the rule reports half a method. The rule is prior to the data.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A panel ranking job candidates. Plurality, Borda, and pairwise votes can each crown a different hire from the same interviews.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-spoiler">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 7</span></h4>
+<p class="big">The spoiler: D enters, loses to B 2-7, and flips the plurality winner from A to B. Adding a loser changed the winner.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>IIA is the axiom that losers should not matter. Plurality violates it in the open, on a toy anyone can check.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A team picking a restaurant. The intern suggests a joke option, and the vote flips. The joke option was the spoiler.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C03, C05, C10</p>
+<h2>Voters who lie</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 5, 6</span></p>
+<p>Gibbard-Satterthwaite: with 3 or more outcomes, every non-dictatorial deterministic rule is manipulable. Some voter can profit by lying. The lesson's found example, by exhaustive search: Borda, sincere profile (A>B>C, B>A>C, B>A>C). Sincere totals: A4 B5 C0, B wins on the tie-break. Voter 0, whose true order is A>B>C, misreports A>C>B. New totals: A4 B4 C1, the tie-break elects A. Voter 0 gains: A over B. The lie pays. Lesson figure u09_f04 draws both tallies.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 5, 6</span></p>
+<p>Strategic voting is a game. The lesson's 2-player version: voter 0 against voter 1, sincere or strategic each. Payoffs are the rank of the outcome in the voter's true order. (Sincere, sincere) gives B, payoffs (1, 0). Any profile with voter 0 strategic gives A, payoffs (0, 1). Voter 0 has a strictly dominant strategic move. Equilibria can differ wildly from sincere outcomes. Lesson figure u09_f05 draws the matrix.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5, 6</span></p>
+<p>The theorems scope ranked, deterministic, unrestricted-domain rules. They do not rule out the escapes: 2 candidates where majority works, single-peaked domains where the median voter's top is the Condorcet winner, cardinal ballots like range voting, or randomized rules like random dictator. The lesson's single-peaked worked example: ideals 0.2, 0.4, 0.8 over candidates at 0, 0.5, 1.0. Margins: B>A +1, B>C +1, A>C +1. The median peak, B, beats all pairwise. The honest use of impossibility is to pick your poison deliberately.</p>
+</div>
+<div class="nugget" id="nugget-lie">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 7</span></h4>
+<p class="big">The profitable lie: sincere A4 B5 C0 elects B. Misreported A4 B4 C1 elects A. The lie pays.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Strategyproofness is unattainable in general, so every real rule lives with gaming. Design for the game, not for sincerity.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Auction bidding. The sincere bid loses to the shaded bid. The rules assume gaming because the bidders do.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-escape">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 7</span></h4>
+<p class="big">The theorems have escapes: 2 candidates, single-peaked domains, cardinal ballots, randomization. Pick your poison deliberately.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Invoking Arrow to claim voting is impossible is a misuse. The theorem scopes ranked rules. The escapes are the engineering.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A board vote. Restrict the domain to single-peaked options and the median voter decides cleanly.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C06, C07, C08</p>
+<h2>Adding the unaddable</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 3, 5, 6</span></p>
+<p>Cardinal aggregation compares numbers across people, but utility scales are personal. The lesson toy: voter 1 scores A=100, B=0. Voter 2 scores A=0, B=1. Raw sums: A=100, B=1, A wins by a mile. Normalize voter 1 to [0,1]: A=1, B=1, a tie. A meaning-preserving rescale flipped the verdict from landslide to tie. Individual orders never changed. The sum is meaningless without comparable scales. Lesson figure u09_f06 draws both scalings.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 5, 6</span></p>
+<p>The Condorcet jury theorem is the optimistic case: voters share the goal of the truth and get noisy signals. With n odd voters, each correct with probability p > 0.5, independently, the majority's accuracy climbs toward certainty. The lesson's binomial numbers: n = 5, p = 0.6 gives 0.6826. n = 101 gives 0.9791. The fragile assumption is independence. Correlated errors void it: voters who all watch the same misleading news are confidently wrong together.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u09-jury.jpg" alt="Watercolor of twelve empty chairs in a jury box">
+<figcaption><span class="tag tag-toy">Illustration</span> The jury box as watercolor. Twelve chairs, each right 60 percent of the time. Together they are right far more often, if none copies the others. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The jury toy. Move competence and crowd size. The browser sums the exact binomial for the majority's accuracy.</p>
+<p><label>competence p <input type="range" id="jp" min="0.51" max="0.99" step="0.01" value="0.6"></label> <code id="jpv">0.60</code></p>
+<p><label>voters n <input type="range" id="jn" min="1" max="501" step="2" value="101"></label> <code id="jnv">101</code></p>
+<p class="small" id="jout">Majority accuracy appears here.</p>
+<p class="small muted"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 6</span> The lesson reports 0.6826 at n = 5 and 0.9791 at n = 101. The toy must reproduce both.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 5, 6</span></p>
+<p>Report accuracy per group, not just pooled. The lesson toy: two groups of 500, accuracies 0.87 and 0.59, pooled 0.73. The pooled number looks fine. Group B at 0.59 is near chance. The pooled 0.73 is the size-weighted mean, and it hides a failing minority. The fix is data or modeling per group, not more pooled data. Lesson figure u09_f07 draws the three bars.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 260" role="img" aria-label="Pooled accuracy 0.73 hides group B at 0.59">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The pooled number hides the failing group</text>
+<g><title>Group A: 0.87</title><rect x="120" y="80" width="348" height="40" fill="#31405e" rx="4"/><text x="473" y="105" font-size="13" font-family="Georgia" fill="#31405e">0.87</text><text x="100" y="105" font-size="13" font-family="Georgia" fill="#6f6355" text-anchor="end">A</text></g>
+<g><title>Group B: 0.59</title><rect x="120" y="140" width="236" height="40" fill="#a94f27" rx="4"/><text x="361" y="165" font-size="13" font-family="Georgia" fill="#a94f27">0.59</text><text x="100" y="165" font-size="13" font-family="Georgia" fill="#6f6355" text-anchor="end">B</text></g>
+<g><title>Pooled: 0.73</title><rect x="120" y="200" width="292" height="40" fill="#6f6355" rx="4"/><text x="417" y="225" font-size="13" font-family="Georgia" fill="#6f6355">pooled 0.73</text></g>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 6</span> Same numbers as lesson figure u09_f07. Slice always. Model per group when the disparity is large and the groups are stable.</figcaption>
+</figure>
+<div class="nugget" id="nugget-scale">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 3, 7</span></h4>
+<p class="big">The rescale flips the landslide to a tie: 100 to 1 becomes 1 to 1. The sum is meaningless without comparable scales.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Your 8/10 and my 8/10 are not the same 8. Any cardinal aggregation chooses a scale, and the scale can choose the winner.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Adding happiness across people. The utilitarian sum needs a common currency. Without one it is theater.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-jury">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 7</span></h4>
+<p class="big">The jury: 0.6826 at n = 5, 0.9791 at n = 101. Independence is the load-bearing wall.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The theorem is the mathematical case for diverse panels. Correlated errors are the failure mode: one shared bias makes the crowd confidently wrong.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A panel of doctors. Five independent specialists beat one brilliant one, if each clears one half and none copies the others.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-pooled">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 7</span></h4>
+<p class="big">Pooled 0.73 hides group B at 0.59. The average is fine. The minority is near chance.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>A pooled metric is a majority metric. The disparity, max minus min, is the number that matters.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A medical test across populations. Overall accuracy high, one population failed. Slice or the test lies.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C09, C11, C12</p>
+<h2>Values, not math</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5</span></p>
+<p>Every aggregation bakes in values: whose ballots count, how they are weighted, what the rule maximizes. These are normative choices. They cannot be derived from the ballots. The lesson's design memo names the four elements: franchise, ballot form, rule, tie-breaks, each with a named decider and a reason. Arrow says no rule is neutral, GS says no rule is strategyproof, C06 says sums need scales. The designer must own the tradeoffs explicitly instead of hiding behind the data.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 5</span></p>
+<p>Practical relaxation turns impossibility into engineering: pick a rule, document the violated axiom, add guardrails. The lesson's template: Borda drops IIA, the guardrail watches for spoiler-like flips between elections, the review revisits the rule yearly. On the cycle profile, Borda with the guardrail flags the 3-3-3 near-tie for human review instead of silently tie-breaking. Impossibility constrains the choice. It does not forbid shipping.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 3, 5, 6</span></p>
+<p>The Pareto frontier is the set of policies where no group can gain without another losing. The lesson toy: policy t in [0,1], w_A = sqrt(t), w_B = sqrt(1-t). At t = 0.25: (0.500, 0.866). At t = 0.5: (0.707, 0.707). At t = 0.75: (0.866, 0.500). Max-sum and max-min both pick t = 0.5 here. Every point on the frontier is efficient. Choosing among them is values, not math. Lesson figure u09_f08 draws the concave curve.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u09-scales.jpg" alt="Watercolor of a brass scale weighing two fruits">
+<figcaption><span class="tag tag-toy">Illustration</span> The scales as watercolor. Every point on the frontier balances. The choice of point is not on the scales. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Pareto frontier from (0,1) to (1,0) with points at t 0.25, 0.5, 0.75">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Every point is efficient. Choosing is values.</text>
+<polyline points="60,240 200,150 320,120 440,150 580,240" fill="none" stroke="#31405e" stroke-width="2.5"/>
+<g><title>t = 0.25: (0.500, 0.866)</title><circle cx="200" cy="150" r="6" fill="#31405e"/><text x="200" y="135" text-anchor="middle" font-size="12" font-family="Georgia">0.500, 0.866</text></g>
+<g><title>t = 0.5: (0.707, 0.707)</title><circle cx="320" cy="120" r="6" fill="#5d7050"/><text x="320" y="105" text-anchor="middle" font-size="12" font-family="Georgia">0.707, 0.707</text></g>
+<g><title>t = 0.75: (0.866, 0.500)</title><circle cx="440" cy="150" r="6" fill="#31405e"/><text x="440" y="135" text-anchor="middle" font-size="12" font-family="Georgia">0.866, 0.500</text></g>
+<text x="320" y="270" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">max-sum and max-min both pick t = 0.5 on this symmetric toy</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 6</span> Same numbers as lesson figure u09_f08. <span class="tag tag-toy">Illustration</span> The curve shape is the companion's plot of the lesson's formula. The three points are the lesson's.</figcaption>
+</figure>
+<div class="nugget" id="nugget-frontier">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 3, 7</span></h4>
+<p class="big">The frontier: (0.500, 0.866), (0.707, 0.707), (0.866, 0.500). Every point is efficient. Choosing among them is values, not math.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Efficiency narrows the options to the curve. It never picks the point. Max-sum and max-min are values wearing formulas.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Splitting a budget between two teams. The frontier is the math. The split is the values.</dd>
+</dl>
+</div>
+</section>
+<section class="block wisdom" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Eight nuggets, indexed</h2>
+<ol>
+<li><a href="#nugget-rules">Three rules, no agreement.</a> Name the rule or the number is half a method.</li>
+<li><a href="#nugget-spoiler">The spoiler flips the winner.</a> Losers should not matter. In plurality they do.</li>
+<li><a href="#nugget-lie">The profitable lie.</a> Design for the game, not for sincerity.</li>
+<li><a href="#nugget-escape">The theorems have escapes.</a> Pick your poison deliberately.</li>
+<li><a href="#nugget-scale">The rescale flips the landslide.</a> Sums need comparable scales.</li>
+<li><a href="#nugget-jury">The jury.</a> 0.6826 at n = 5, 0.9791 at n = 101.</li>
+<li><a href="#nugget-pooled">Pooled 0.73 hides 0.59.</a> Slice always.</li>
+<li><a href="#nugget-frontier">Every point is efficient.</a> Choosing is values.</li>
+</ol>
+<p class="backlink"><a href="../index.html">Back to the CS329H course index</a></p>
+</section>
+</div>
+<footer id="provenance"><div class="wrap">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cs329h/lessons/u09_lesson.md</code>. No full lecture transcript exists for S16 and S17, and no lecture anecdotes appear. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING. Quoted words from the lesson source: 0, counted by <code>companions/tools/quote_recount.py</code> with the blockquote plus quoted-phrase method, footer excluded. Lesson figures u09_f01 through u09_f08 are referenced where the lesson places them. The charts on this page re-plot the lesson's computed toy numbers with concept and contract citations. The jury toy sums the exact binomial in the browser. No official source video is on record for this session, so no embed appears. The watercolors are original illustrations made for this companion.</p>
+</div></footer>
+<script>
+function binom9(n,k){
+var r=1
+var kk=k
+if(k>n-k){kk=n-k}
+var i=1
+while(i<=kk){r=r*(n-kk+i)/i
+i=i+1}
+return r
+}
+function updJury9(){
+var p=parseFloat(document.getElementById("jp").value)
+var n=parseInt(document.getElementById("jn").value,10)
+document.getElementById("jpv").textContent=p.toFixed(2)
+document.getElementById("jnv").textContent=n.toFixed(0)
+var m=Math.floor(n/2)+1
+var s=0
+var k=m
+while(k<=n){s+=binom9(n,k)*Math.pow(p,k)*Math.pow(1-p,n-k)
+k=k+1}
+document.getElementById("jout").textContent="P(majority correct) "+s.toFixed(4)
+}
+document.getElementById("jp").addEventListener("input",updJury9)
+document.getElementById("jn").addEventListener("input",updJury9)
+updJury9()
+</script>
+</body>
+
+</html>

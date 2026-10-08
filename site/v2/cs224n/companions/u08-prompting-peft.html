@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS224N U08: Prompting and efficient adaptation, a companion</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+<p class="kicker">CS224N · Companion artifact U08 of 15</p>
+<h1>Prompting and efficient adaptation</h1>
+<p class="dek">Change behavior cheaply: with words (prompting) or with a few parameters (PEFT). The prompt is the program, the delta is the steering wheel.</p>
+<div class="legend" aria-label="Source tags">
+<span class="tag tag-lesson">From the lesson</span>
+<span class="tag tag-toy">Illustration</span>
+<span class="tag tag-companion">Companion</span>
+</div>
+<p class="small muted">“From the lesson” marks facts from <code>lessons/u08_prompting_peft.md</code>. “Illustration” marks interactive toys that run the lesson’s rules over tiny inputs. “Companion” marks advice from the companion author. Tags after each section name the lesson leaf, for example C04.</p>
+</header>
+<nav class="small" aria-label="Sections">
+<p><strong>On this page:</strong> 1 · the prompt is the program · 2 · the context is a dataset · 3 · choose the k examples · 4 · measure the spread · 5 · scratch paper · 6 · an election · 7 · a small steering wheel · 8 · a detour · 9 · a small rudder · 10 · a fair fight · 11 · one weight, two masters · 12 · a bouncer at the door · <a href="#wisdom">wisdom index</a></p>
+</nav>
+<figure>
+<img class="illustration" src="assets/u08-program.jpg" alt="Watercolor illustration of a person handing a recipe card to a cook in a kitchen">
+<figcaption><span class="tag tag-toy">Illustration</span> The prompt is the program: hand the model the recipe, it follows it with no weight updates.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>The prompt is the program</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>No gradients, no data, just a prompt. How can the model do a new task? The prompt contains the task description (zero-shot) or a few examples (few-shot), and the model continues the pattern. The prompt is the program. Pretraining taught it to continue, SFT taught it the format. No weights change. The "learning" is in the context.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: sentiment with 2 shots ("great -> pos", "awful -> neg"), query "loved it", the model continues "pos". Zero-shot works when the instruction names a known pattern, few-shot works by showing the pattern. The limit: the context window bounds k, and the model never truly learns (no weight updates).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that few-shot teaches the task. The model mimics the examples' surface (format, label words) without the underlying rule: change the label words and performance collapses. The examples steer the model, they do not train it.</p>
+</div>
+<div class="nugget" id="nugget-program">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">Prompting steers, it does not teach. The examples steer a frozen model. They are not training data.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose prompting for exploration and low-volume tasks. Choose fine-tuning when the behavior must be reliable and cheap at inference.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Distinguish steering from training in every plan. Steering is reversible and per-call. Training is permanent.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>The context is a dataset</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>The weights are frozen. Where does the "learning" happen? The leading account: the forward pass implements a learning algorithm over the context (the examples are data, the attention is the update). The honest version: this is an active research question, not settled. The sketch: linear attention can implement one step of gradient descent on the context examples. The sketch motivates, not proves.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 0-shot 55 percent, 4-shot 72 percent, 16-shot 74 percent on a toy task. The curve rises then flattens: the context teaches, then the window fills. The model was meta-trained by pretraining: next-token prediction on diverse text rewards the ability to pick up patterns fast.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p>The broken assumption is that more shots always help. The toy curve flattens. Some tasks degrade past k (distraction, wrong pattern reinforcement). Measure your curve, do not assume it.</p>
+</div>
+<figure>
+<div id="chart-icl"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4</span> The in-context curve, hand-set and labeled illustrative: 55, 72, 74 percent at 0, 4, 16 shots. Rises, then flattens.</figcaption>
+</figure>
+<div class="nugget" id="nugget-dataset">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §3, §11</span></h4>
+<p class="big">Treat the context as a dataset and the forward pass as the learner. Then measure the learning curve like any dataset: it saturates.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose ICL for flexibility (change tasks per prompt). Choose fine-tuning for permanence.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every learning curve saturates. Find the knee before paying for more context.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Choose the k examples</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>Which k examples? Random, or chosen? The demos are the training set you do not train on: same rules as U07 C02's instruction data, compressed into k slots. Desiderata: correct, diverse, formatted like the query, near the decision boundary. Selection: random baseline, retrieval (nearest to the query), manual curation.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: random 4-shot 68 percent, retrieved 4-shot 75 percent, curated 4-shot 78 percent. Selection matters, with diminishing returns. Retrieval picks examples like the query and usually beats random.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §11</span></p>
+<p>The broken assumption is that the best demos are the most similar. The nearest demos may all show one class. The set needs diversity, not just similarity. Balance classes in the k.</p>
+</div>
+<figure>
+<div id="chart-demo"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4</span> Demo selection, hand-set and labeled illustrative: random 68, retrieved 75, curated 78 percent. Selection matters.</figcaption>
+</figure>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Measure the spread</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>Rephrase the prompt. Does the answer change? Prompts are brittle programs: small rephrases move accuracy by points. The model is sensitive to word choice, order, and format. From <code>compute_u08.py</code>: three paraphrases score 0.994, 0.919, 0.999 under a fixed toy scorer, std 0.036. The protocol: fixed task, paraphrase set, score each, report the spread.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4, §5</span></p>
+<p>Small here (toy scorer). On real models the spread is the number you report. Mitigations: average over paraphrases, tune the prompt on a dev set, or fine-tune (which bakes the behavior in).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that the tuned prompt generalizes. Prompts overfit the dev set like any hyperparameter. Hold out prompt-dev data, or the tuning is theater.</p>
+</div>
+<figure>
+<div id="chart-sens"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4</span> The spread, from <code>compute_u08.py</code> (executed 2026-10-06): 0.994, 0.919, 0.999. Std 0.036.</figcaption>
+</figure>
+<div class="nugget" id="nugget-spread">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §3, §11</span></h4>
+<p class="big">Sensitivity is measured, not assumed. Score paraphrases under a fixed scorer and report the spread.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the protocol (measure the spread). Choose fine-tuning when the spread must be zero.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every tuned input is a hyperparameter. Hold out data for it, or the tuning is theater.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The spread meter. The protocol is C04’s. The scores are yours. Prefilled with the lesson numbers.</p>
+<p>scores (comma separated) <input class="text" id="sns" value="0.994,0.919,0.999" aria-label="Scores" style="width:170px"></p>
+<p><button class="btn" id="snb">Measure spread</button></p>
+<p class="small" id="snnote"></p>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Scratch paper</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>"Think step by step" improves math scores. What changed? The format buys serial compute: n reasoning tokens = n extra forward passes to work the problem. The model generates the steps, each step conditions on the last. It also exposes the work for checking.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 2-step arithmetic, direct answer 61 percent, with steps 79 percent. The gap is the scratch paper working. Hard problems split into easy steps, and the model gets one forward pass per step.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that the steps show the model's reasoning. Models produce plausible steps for answers they reached otherwise (post-hoc rationalization, shown by intervention studies). Useful, not faithful.</p>
+</div>
+<figure>
+<div id="chart-scratch"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4</span> The scratch-paper gap, hand-set and labeled illustrative: direct 61, with steps 79 percent.</figcaption>
+</figure>
+<div class="nugget" id="nugget-scratch">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §3, §11</span></h4>
+<p class="big">Reasoning formats buy serial compute, not transparency. The steps are generated text, optimized to look right.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the format for decomposable hard tasks. Choose direct for easy ones (the steps add noise).</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Useful is not faithful. Check the work by intervention (corrupt a step, watch the answer), not by reading.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>An election</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>One sample might be wrong. What do five say? Sample diverse reasoning paths, take the most common answer. An election: each sample is a vote, the majority wins. The math is the binomial: it helps exactly when errors are independent (different paths, different mistakes).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4, §5</span></p>
+<p>From <code>compute_u08.py</code>: p = 0.6, majority of 5 = 0.6826. The number is exact (binomial), not estimated. The gain shrinks as p approaches 1 (already right) and reverses below 0.5 (majority of wrong).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §11</span></p>
+<p>The broken assumption is that voting always helps. At p = 0.4, majority of 5 = 0.3174, worse than one sample. Voting amplifies the majority opinion, right or wrong. Correlated errors (the model always makes the same mistake) vote the same wrong way.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u08-vote.jpg" alt="Watercolor illustration of five hands dropping ballots into a wooden box">
+<figcaption><span class="tag tag-toy">Illustration</span> Self-consistency: an election over sampled reasoning paths.</figcaption>
+</figure>
+<figure>
+<div id="chart-vote"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4</span> The vote, from <code>compute_u08.py</code> (executed 2026-10-06): single sample 0.6, majority of 5 0.6826.</figcaption>
+</figure>
+<div class="nugget" id="nugget-vote">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §3, §11</span></h4>
+<p class="big">Voting amplifies the majority, right or wrong. It helps when errors are independent and p sits above one half.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose voting when p sits in the middle and errors are diverse. Skip it when p is near 1 or errors correlate.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>An ensemble only helps when its members disagree. Correlated voters add cost, not wisdom.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The ballot box. The binomial is C06’s. The per-sample accuracy is yours. Prefilled with the lesson toy.</p>
+<p>p (per sample) <input class="text" id="vvp" value="0.6" aria-label="Per-sample accuracy"></p>
+<p>n (votes) <input class="text" id="vvn" value="5" aria-label="Vote count"></p>
+<p><button class="btn" id="vvb">Count votes</button></p>
+<p class="small" id="vvnote"></p>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>A small steering wheel</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>Full fine-tuning updates 7B params. What if the task needs 0.06 percent of that? PEFT freezes the base weights and trains a tiny add-on: adapters (C08), LoRA (C09), prefixes, prompt tuning. A small steering wheel on a big ship. The add-on steers. The ship (knowledge, fluency) stays.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4, §5</span></p>
+<p>From <code>compute_u08.py</code>: LoRA at r = 8 trains 4.19M params (0.060 percent of 7B), adapters 33.6M at b = 64. The shared mechanism: restrict the update to a low-dimensional subspace. Fewer params = less memory (no optimizer states for W), less overfitting, cheaper storage per task (one small delta each).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §11</span></p>
+<p>The broken assumption is that PEFT matches full tuning everywhere. Pretraining-new-domain tasks (new language): the delta is not small, PEFT underfits. Match the method to the distance.</p>
+</div>
+<figure>
+<div id="chart-peft"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4</span> Trainable params, from <code>compute_u08.py</code> (executed 2026-10-06): full 7B vs LoRA 4.19M (0.060 percent) vs adapters 33.6M. Log scale.</figcaption>
+</figure>
+<div class="nugget" id="nugget-wheel">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
+<p class="big">The task-specific delta is small. Freeze the ship, train the steering wheel, store one small delta per task.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose PEFT for many tasks, small data, limited GPUs. Choose full tuning for far distributions and abundant data.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Size the tool to the distance. A small delta suffices when the base already knows the neighborhood.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>A detour</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>Where does the small module plug in? After attention and after the FFN: x + Adapter(x), with Adapter = W_up relu(W_down x). A detour: the signal passes through a narrow corridor (down to b, back up to d) added residually. The corridor is the only trained part. Two per layer (post-attn, post-FFN) is the standard placement.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4, §5</span></p>
+<p>From <code>compute_u08.py</code>: bottleneck b = 64 at d = 4096. Per adapter 524288, per layer (x2) 1048576, 32 layers 3.36e7. Eight times LoRA's count at these settings. Unlike LoRA, the adapter stays in the graph at inference (extra latency: the honest cost).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that adapters are free at inference. The extra matmuls add latency per token per layer. At 32 layers x2 adapters it is measurable. LoRA merges, adapters do not.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The adapter counter. The bottleneck arithmetic is C08’s. The sizes are yours. Prefilled with the lesson toy.</p>
+<p>d (model width) <input class="text" id="add" value="4096" aria-label="Model width"></p>
+<p>b (bottleneck) <input class="text" id="adb" value="64" aria-label="Bottleneck"></p>
+<p>layers <input class="text" id="adl" value="32" aria-label="Layers"></p>
+<p><button class="btn" id="adbtn">Count params</button></p>
+<p class="small" id="adnote"></p>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>A small rudder</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>The weight update dW is (d, d). What if it is low-rank? dW = BA, B (d, r), A (r, d), r = 8. Train A, B, freeze W. Forward: (W + BA)x. A small rudder on a big weight: the update lives in a rank-r subspace, 2dr params instead of d². Initialize A random, B zero: the delta starts at zero (base model at step 0).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4, §5</span></p>
+<p>From <code>compute_u08.py</code>: per matrix 65536, ratio 256:1 vs full. 32 layers Q+V: 4.19M, 0.060% of 7B. rank(BA) is at most r. Merging: W' = W + (alpha/r) BA, computed once, then A, B are discarded for serving. At inference, add BA into W once: the deployed model is one matrix, zero extra latency.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is that rank 8 suffices for everything. The true update on a far task is high-rank. With r = 8 it underfits. The rank is a capacity knob, tune it.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u08-rudder.jpg" alt="Watercolor illustration of a tiny rudder steering a huge ship at sea">
+<figcaption><span class="tag tag-toy">Illustration</span> LoRA: a small rudder on a big weight. Merged at serving time, zero extra latency.</figcaption>
+</figure>
+<div class="nugget" id="nugget-rudder">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §11</span></h4>
+<p class="big">LoRA's whole trick: rank(BA) is at most r, so the update costs 2dr instead of d², and it merges into W for free serving.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose LoRA as the default PEFT (the standard). Raise r when the task is far. The method degrades gracefully toward full tuning.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A low-rank constraint is a capacity knob. Tune it like one, not like a constant.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The LoRA counter. The rank arithmetic is C09’s. The sizes are yours. Prefilled with the lesson toy.</p>
+<p>d (model width) <input class="text" id="lrd" value="4096" aria-label="Model width"></p>
+<p>r (rank) <input class="text" id="lrr" value="8" aria-label="Rank"></p>
+<p>layers (Q+V each) <input class="text" id="lrl" value="32" aria-label="Layers"></p>
+<p><button class="btn" id="lrbtn">Count params</button></p>
+<p class="small" id="lrnote"></p>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>A fair fight</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>The errors.md entry (U08 T2) warns against unequal comparisons. What is the fair fight? A menu, not a ranking. Full tuning: all params, max capacity, max memory (U06: 12 GB at 1B), one model per task. PEFT: delta only, less memory, one base + many deltas, less capacity. The task's distance from base decides.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §4, §5</span></p>
+<p>Hand-set comparison table, labeled as such, 7B model. Full: 7B updated, ~100+ GB training memory, 14 GB per task stored. LoRA r=8: 4.19M updated, base + delta memory, 8 MB per task stored. The rule: compare at equal data and equal tuning effort. The five axes: params updated, memory, storage per task, capacity, inference cost.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p>The broken assumption is "PEFT won, so it is better." The comparison gave PEFT more tuning (or full tuning less data). Unequal effort is the most common fake win.</p>
+</div>
+<div class="nugget" id="nugget-fair">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §3, §11</span></h4>
+<p class="big">Compare at equal data and equal tuning effort. Unequal effort is the most common fake win in the PEFT literature.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The errors.md rule: equal rank/tokens or no claim. Vary one thing: the update subspace.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every method comparison needs a fairness audit first. Read the tuning budgets before the bar charts.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>One weight, two masters</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>Fine-tune on task B. What happens to task A? New writing over old. Gradient descent on B moves the weights toward B's optimum, away from A's. The further B's optimum, the worse the forgetting. PEFT forgets less (the base is frozen). Full tuning forgets freely.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §4, §5</span></p>
+<p>From <code>compute_u08.py</code>, a real numpy run: linear model, A: y = 2x, B: y = -x. Task A loss 0.0 before B, 10.1885 after. The weight ends at -1.000 (B's optimum). It served A at 2.0, serves B at -1.0, it cannot be both. Mitigations: replay (mix A data), freeze (PEFT), regularize toward A (EWC, the named method).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p>The broken assumption is that a little fine-tuning will not hurt. The toy: full retraining on B erased A completely. Even "little" tuning moves the shared weights. Measure A after.</p>
+</div>
+<figure>
+<div id="chart-forget"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §4</span> Task A loss before and after training on B, from a real numpy run in <code>compute_u08.py</code> (executed 2026-10-06): 0.0 to 10.1885.</figcaption>
+</figure>
+<div class="nugget" id="nugget-masters">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §3, §11</span></h4>
+<p class="big">One weight cannot serve two opposed optima. Fine-tuning on B erases A unless you replay, freeze, or regularize.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose replay/PEFT for sequential tasks. Choose multitask training when all data is available at once.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Shared parameters are shared fate. After every adaptation, re-measure what you cared about before.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>A bouncer at the door</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>The model must emit JSON. How do you know it did? A bouncer at the door. Parse (is it JSON?), schema (does it have the fields?), semantics (are the values sane?). Each layer catches a different failure: truncation, wrong keys, right shape wrong content.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4, §5</span></p>
+<p>From <code>compute_u08.py</code>: 5 outputs, 2 valid JSON. Valid 2/5. The failures: truncated JSON, non-JSON, empty value. The standard loop: retry with the error message appended.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §11</span></p>
+<p>The broken assumption is that valid JSON means correct output. '{"ans": 5}' parses and fits the schema but may be the wrong answer. Validation checks the shape, not the truth.</p>
+</div>
+<div class="nugget" id="nugget-bouncer">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §3, §11</span></h4>
+<p class="big">Validation makes wrong outputs visible. It does not make the model right. Layer the checks. Parse, schema, semantics, then retry with the error appended.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose validation + retry as the default. Choose constrained decoding when the format is load-bearing.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Check the shape at the door, the truth inside. A passing format check is the start of verification, not the end.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The JSON bouncer. The parse rule is C12’s. The outputs are yours, one per line.</p>
+<p><textarea class="text" id="jsdocs" rows="5" style="width:100%" aria-label="Outputs">{"ans": 4}
+{"ans": 5
+not json
+{"ans": }
+{"ans": 4, "why": "ok"}</textarea></p>
+<p><button class="btn" id="jsbtn">Check them</button></p>
+<p class="small" id="jsnote"></p>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-program"><span class="wnum">01</span>Prompting steers, it does not teach <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-dataset"><span class="wnum">02</span>The context is a dataset <span class="muted">· C02</span></a></li>
+<li><a href="#nugget-spread"><span class="wnum">03</span>Measure the spread <span class="muted">· C04</span></a></li>
+<li><a href="#nugget-scratch"><span class="wnum">04</span>Useful, not faithful <span class="muted">· C05</span></a></li>
+<li><a href="#nugget-vote"><span class="wnum">05</span>Voting amplifies the majority <span class="muted">· C06</span></a></li>
+<li><a href="#nugget-wheel"><span class="wnum">06</span>Freeze the ship, train the wheel <span class="muted">· C07</span></a></li>
+<li><a href="#nugget-rudder"><span class="wnum">07</span>rank(BA) is at most r <span class="muted">· C09</span></a></li>
+<li><a href="#nugget-fair"><span class="wnum">08</span>Unequal effort is a fake win <span class="muted">· C10</span></a></li>
+<li><a href="#nugget-masters"><span class="wnum">09</span>One weight, two masters <span class="muted">· C11</span></a></li>
+<li><a href="#nugget-bouncer"><span class="wnum">10</span>Check the shape at the door <span class="muted">· C12</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u08_prompting_peft.md</code> (CS224N, Unit 08). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The concept inventory is REQUESTED-BRANCH, the reading list OFFICIAL-SOURCE via SRC-02. Every computed number traces to the lesson’s script <code>visuals/compute_u08.py</code> (executed 2026-10-06). Hand-set toys are labeled as such in the text. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+<p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
+<p class="small">Built as Companion 8 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 250
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function lineChart(id, xs, ys, xLabels) {
+  const host = document.getElementById(id)
+  const W = 760
+  const H = 320
+  const padL = 56
+  const padR = 20
+  const padT = 16
+  const padB = 44
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  const y0 = Math.min.apply(null, ys)
+  const y1 = Math.max.apply(null, ys)
+  const X = function(i) { return padL + i / (xs.length - 1) * (W - padL - padR) }
+  const Y = function(v) { return padT + (y1 - v) / ((y1 - y0) || 1) * (H - padT - padB) }
+  const d = xs.map(function(x, i) { return (i === 0 ? "M" : "L") + X(i).toFixed(1) + " " + Y(ys[i]).toFixed(1) }).join(" ")
+  svg.appendChild(svgEl("path", {d: d, fill: "none", stroke: INDIGO, "stroke-width": 3}))
+  xs.forEach(function(x, i) {
+    const dot = svgEl("circle", {cx: X(i).toFixed(1), cy: Y(ys[i]).toFixed(1), r: 6, fill: CLAY})
+    const tip = svgEl("title", {})
+    tip.textContent = xLabels[i] + ": " + ys[i]
+    dot.appendChild(tip)
+    svg.appendChild(dot)
+    const lab = svgEl("text", {x: X(i).toFixed(1), y: H - 22, "font-size": 13, "text-anchor": "middle", fill: MUT, "font-family": MONO})
+    lab.textContent = xLabels[i]
+    svg.appendChild(lab)
+  })
+  host.appendChild(svg)
+}
+
+function logBarChart(id, rows) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 250
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  const lmax = Math.log10(Math.max.apply(null, rows.map(function(r) { return r[1] })))
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 160) * (Math.log10(r[1]) / lmax)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + " params (log scale)"
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[3]
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function runSens() {
+  const parts = document.getElementById("sns").value.split(",")
+  const note = document.getElementById("snnote")
+  const vals = parts.map(function(x) { return parseFloat(x) }).filter(function(v) { return !isNaN(v) })
+  if (vals.length < 2) {
+    note.textContent = "Give at least two scores."
+    return
+  }
+  let mean = 0
+  vals.forEach(function(v) { mean = mean + v })
+  mean = mean / vals.length
+  let sd = 0
+  vals.forEach(function(v) { sd = sd + (v - mean) * (v - mean) })
+  sd = Math.sqrt(sd / vals.length)
+  note.textContent = vals.length + " paraphrases, mean " + mean.toFixed(3) + ", std " + sd.toFixed(3) + ". The lesson numbers: 0.994, 0.919, 0.999, std 0.036."
+}
+
+function runVote() {
+  const p = parseFloat(document.getElementById("vvp").value)
+  const n = parseInt(document.getElementById("vvn").value, 10)
+  const note = document.getElementById("vvnote")
+  if (!(p > 0) || !(p < 1) || !(n >= 1) || (n % 2) === 0) {
+    note.textContent = "Give p strictly between 0 and 1 and an odd vote count."
+    return
+  }
+  const need = (n + 1) / 2
+  let acc = 0
+  let k = need
+  while (k <= n) {
+    let c = 1
+    let j = 1
+    while (j <= k) { c = c * (n - k + j) / j, j = j + 1 }
+    acc = acc + c * Math.pow(p, k) * Math.pow(1 - p, n - k)
+    k = k + 1
+  }
+  const verdict = (acc > p) ? "voting helps" : "voting hurts: p below one half, the majority amplifies the wrong side"
+  note.textContent = "Single " + p.toFixed(3) + ", majority of " + n + " " + acc.toFixed(4) + ": " + verdict + ". The lesson toy: 0.6 -> 0.6826."
+}
+
+function runAdapter() {
+  const d = parseFloat(document.getElementById("add").value)
+  const b = parseFloat(document.getElementById("adb").value)
+  const L = parseFloat(document.getElementById("adl").value)
+  const note = document.getElementById("adnote")
+  if (!(d > 0) || !(b > 0) || !(L > 0)) {
+    note.textContent = "All sizes must be positive."
+    return
+  }
+  const per = 2 * d * b
+  const total = 2 * per * L
+  note.textContent = "Per adapter " + per.toLocaleString("en-US") + ", per layer x2 " + (2 * per).toLocaleString("en-US") + ", " + L + " layers " + total.toExponential(2) + ". The lesson toy: 524288, 1048576, 3.36e7."
+}
+
+function runLoRA() {
+  const d = parseFloat(document.getElementById("lrd").value)
+  const r = parseFloat(document.getElementById("lrr").value)
+  const L = parseFloat(document.getElementById("lrl").value)
+  const note = document.getElementById("lrnote")
+  if (!(d > 0) || !(r > 0) || !(L > 0)) {
+    note.textContent = "All sizes must be positive."
+    return
+  }
+  const per = 2 * d * r
+  const total = 2 * per * L
+  const share = total / 7e9 * 100
+  note.textContent = "Per matrix " + per.toLocaleString("en-US") + ", " + L + " layers Q+V " + total.toExponential(2) + " (" + share.toFixed(3) + "% of 7B). The lesson toy: 65536, 4.19e6, 0.060%."
+}
+
+function runJSON() {
+  const docs = document.getElementById("jsdocs").value.split("\n").map(function(d) { return d.trim() }).filter(function(d) { return d.length > 0 })
+  const note = document.getElementById("jsnote")
+  let valid = 0
+  const bad = []
+  docs.forEach(function(d, i) {
+    try {
+      JSON.parse(d)
+      valid = valid + 1
+    } catch (e) {
+      bad.push(i + 1)
+    }
+  })
+  note.textContent = "Valid " + valid + " of " + docs.length + ". Rejected lines: " + (bad.length ? bad.join(", ") : "none") + ". The lesson toy: 2/5 valid."
+}
+
+document.getElementById("snb").addEventListener("click", runSens)
+document.getElementById("vvb").addEventListener("click", runVote)
+document.getElementById("adbtn").addEventListener("click", runAdapter)
+document.getElementById("lrbtn").addEventListener("click", runLoRA)
+document.getElementById("jsbtn").addEventListener("click", runJSON)
+
+lineChart("chart-icl", [0, 1, 2], [55, 72, 74], ["0-shot", "4-shot", "16-shot"])
+barChart("chart-demo", [["random 4-shot", 68, CLAY], ["retrieved 4-shot", 75, INDIGO], ["curated 4-shot", 78, SAGE]], 80, "%")
+barChart("chart-sens", [["paraphrase 1", 0.994, SAGE], ["paraphrase 2", 0.919, CLAY], ["paraphrase 3", 0.999, SAGE]], 1.05, "")
+barChart("chart-scratch", [["direct answer", 61, CLAY], ["with steps", 79, SAGE]], 80, "%")
+barChart("chart-vote", [["single sample", 0.6, CLAY], ["majority of 5", 0.6826, SAGE]], 0.72, "")
+logBarChart("chart-peft", [["full tuning", 7e9, CLAY, "7B"], ["LoRA r=8", 4.19e6, SAGE, "4.19M (0.060%)"], ["adapters b=64", 3.36e7, INDIGO, "33.6M"]])
+barChart("chart-forget", [["task A loss before B", 0.0, SAGE], ["task A loss after B", 10.1885, CLAY]], 11, "")
+</script>
+</body>
+</html>

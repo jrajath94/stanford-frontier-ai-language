@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U05 Companion: RLHF and DPO · CS329H</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:900px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband a{color:var(--paper)}
+header.hero{padding:52px 0 6px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:660px}
+.notice{border:1px solid var(--line)}
+.notice{background:var(--paper2)}
+.notice{border-radius:10px}
+.notice{padding:16px 20px}
+.notice{margin:26px 0}
+.notice{font-size:16px}
+.notice p{margin:.45em 0}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:16px 20px}
+.legend{margin:26px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-interp{background:transparent}
+.tag-interp{color:var(--indigo)}
+.tag-interp{border:1.5px solid var(--indigo)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+section.block{padding:34px 0 10px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.12em}
+.secnum{text-transform:uppercase}
+.secnum{color:var(--clay)}
+.secnum{margin:0 0 4px}
+h2{font-size:32px}
+h2{line-height:1.2}
+h2{margin:.1em 0 .5em}
+h3{font-size:22px}
+h3{margin:1.2em 0 .4em}
+.prose-narrow{max-width:720px}
+figure{margin:28px 0}
+figure{background:#fff}
+figure{border:1px solid var(--line)}
+figure{border-radius:10px}
+figure{padding:18px 18px 8px}
+figcaption{font-size:15px}
+figcaption{color:var(--muted)}
+figcaption{padding:10px 4px 12px}
+figcaption{line-height:1.55}
+img.illus{width:100%}
+img.illus{border-radius:8px}
+img.illus{display:block}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:5px solid var(--clay)}
+.nugget{background:#fff}
+.nugget{border-radius:8px}
+.nugget{padding:18px 22px}
+.nugget{margin:30px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:14px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:20px}
+.nugget .big{line-height:1.5}
+.nugget .big{margin:.2em 0 .6em}
+.nugget dl{margin:0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{margin:10px 0 2px}
+.nugget dd{margin:0 0 6px}
+.nugget dd{font-size:16.5px}
+.lab{border:1px dashed var(--amber)}
+.lab{background:var(--ambersoft)}
+.lab{border-radius:10px}
+.lab{padding:18px 22px}
+.lab{margin:28px 0}
+.toy{border:1px solid var(--indigo)}
+.toy{background:var(--indigosoft)}
+.toy{border-radius:10px}
+.toy{padding:18px 22px}
+.toy{margin:28px 0}
+.toy input[type=number]{width:64px}
+.toy input[type=number]{font-family:var(--mono)}
+.toy input[type=number]{font-size:15px}
+.toy input[type=number]{padding:4px 6px}
+.toy input[type=number]{margin:2px 6px 2px 2px}
+.toy label{font-family:var(--sans)}
+.toy label{font-size:14px}
+.btn{font-family:var(--sans)}
+.btn{font-size:15px}
+.btn{background:var(--ink)}
+.btn{color:var(--paper)}
+.btn{border:none}
+.btn{border-radius:8px}
+.btn{padding:10px 18px}
+.btn{cursor:pointer}
+.btn{margin:8px 8px 8px 0}
+.btn.ghost{background:transparent}
+.btn.ghost{color:var(--ink)}
+.btn.ghost{border:1.5px solid var(--ink)}
+table.data{border-collapse:collapse}
+table.data{margin:14px 0}
+table.data{font-size:16px}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.06em}
+table.data th{text-align:left}
+table.data th{padding:8px 14px 8px 0}
+table.data td{padding:8px 14px 8px 0}
+table.data td{border-top:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+code{font-family:var(--mono)}
+code{font-size:.88em}
+code{background:var(--paper2)}
+code{padding:1px 6px}
+code{border-radius:5px}
+.wisdom ol{padding-left:22px}
+.wisdom li{margin:10px 0}
+.wisdom a{color:var(--clay)}
+footer{background:var(--ink)}
+footer{color:var(--paper)}
+footer{margin-top:56px}
+footer{padding:40px 0 60px}
+footer p{font-size:15.5px}
+footer{line-height:1.6}
+footer code{background:rgba(255,255,255,.12)}
+footer a{color:var(--paper)}
+.backlink{font-family:var(--sans)}
+.backlink{font-size:15px}
+.backlink{margin:34px 0 0}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CS329H · Stanford · Interactive companion · <a href="../index.html">course index</a></div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">U05 · RLHF and DPO</p>
+<h1>The leash and the shortcut</h1>
+<p class="dek">How do human preferences become a language model? First a reward model learns to score responses like the annotators. Then the policy chases the reward on a KL leash. Then DPO skips the middleman and reads the reward off the policy itself. This unit derives each step and shows where each one lies.</p>
+</header>
+<figure>
+<img class="illus" src="assets/u05-hero.jpg" alt="Watercolor of a dog on a leash straining toward treats">
+<figcaption><span class="tag tag-toy">Illustration</span> The KL leash as watercolor. The treats are reward. The leash is beta. Pull too hard and you leave the trusted yard. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="notice">
+<p><strong>Sourcing.</strong> No full transcript exists for sessions S08 and S09. This companion narrates <code>content/v2/cs329h/lessons/u05_lesson.md</code>. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<p><strong>How to read the tags.</strong> Every number carries its lesson section. Anything the companion computes is tagged <span class="tag tag-toy">Illustration</span>. A <span class="tag tag-interp">Interpretation</span> tag marks the companion's own reading of the lesson. Where the lesson leaves a value out, the page says so in words.</p>
+</div>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> A fact, number, or mechanism from the lesson.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-interp">Interpretation</span> The companion's reading of why a lesson fact matters. The fact is the lesson's, the gloss is ours.</p>
+<p><span class="tag-ref">C01 · Contract 6</span> Points to the exact lesson section behind a claim or number.</p>
+</div>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">The scorer</a>
+<a href="#s2">The leash</a>
+<a href="#s3">The shortcut</a>
+<a href="#s4">When the proxy lies</a>
+<a href="#s5">Whose preference</a>
+<a href="#wisdom">Wisdom index</a>
+<a href="#provenance">Provenance</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01, C02</p>
+<h2>The preference dataset and its scorer</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 4, 5</span></p>
+<p>Each record is a contest between two responses to the same prompt: (x, y_w, y_l), prompt x, winning response y_w, losing response y_l. Pairing on x removes prompt difficulty as a confound: the comparison is purely about response quality given x. This is why RLHF data is paired and not separate per-response ratings. A great answer to a hard prompt would otherwise rank below a mediocre answer to an easy prompt.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 5, 6</span></p>
+<p>The reward model is a Bradley-Terry score for responses: r(x, y) is the strength of response y to prompt x. Training pushes the winner's score above the loser's with the logistic loss on the margin: -log sigma(r(y_w) - r(y_l)). This is exactly the U01 engine with items as responses and the prompt as context. The lesson toy uses the tides pair with margin 1.5: loss 0.201. Margin 0 gives 0.693. Margin -1.5 gives 1.701. Lesson figure u05_f02 draws the falling loss curve.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Logistic loss falls from 1.70 at margin minus 1.5 to 0.20 at margin 1.5">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The loss falls as the margin grows</text>
+<polyline points="60.0,26.0 112.0,62.3 164.0,96.1 216.0,126.9 268.0,154.2 320.0,177.4 372.0,196.4 424.0,211.4 476.0,222.8 528.0,231.1 580.0,237.2" fill="none" stroke="#31405e" stroke-width="2.5"/>
+<g><title>Margin -1.5, loss 1.701</title><circle cx="195" cy="111" r="5" fill="#a94f27"/><text x="195" y="95" text-anchor="middle" font-size="13" font-family="Georgia" fill="#a94f27">1.70</text></g>
+<g><title>Margin 0, loss 0.693</title><circle cx="320" cy="177" r="5" fill="#5d7050"/><text x="320" y="161" text-anchor="middle" font-size="13" font-family="Georgia" fill="#5d7050">0.69</text></g>
+<g><title>Margin 1.5, loss 0.201</title><circle cx="445" cy="217" r="5" fill="#31405e"/><text x="445" y="201" text-anchor="middle" font-size="13" font-family="Georgia" fill="#31405e">0.20</text></g>
+<text x="320" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">margin r(y_w) - r(y_l), loss -log sigma(margin)</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 6</span> Same numbers as lesson figure u05_f02. The gradient pushes the winner up and the loser down in proportion to (1 - p): the U01 update rule, unchanged.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 11</span></p>
+<p>The reward model is a proxy. It fits the training pairs but may misjudge off-distribution responses. The policy later generates responses unlike anything in the reward training data, and the proxy's verdicts there are guesses wearing a score.</p>
+</div>
+<div class="nugget" id="nugget-paired">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 5, 11</span></h4>
+<p class="big">Pair on the prompt, or prompt difficulty becomes a confound the reward model cannot see.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Unpaired ratings mix two signals: how good the response is and how hard the prompt was. The pairing subtracts the second one by design.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Product reviews. Pair two products reviewed by the same person before you rank them, or reviewer generosity swamps product quality.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C03, C04, C05, C06</p>
+<h2>The objective and its leash</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 5, 6</span></p>
+<p>The RL objective is expected reward under the policy: J(pi) = E[r(x, y)]. Without a leash, all mass piles onto the single best response. The lesson toy with rewards [2, 1, 0]: the unconstrained optimum puts 1.0 on the first response for an expected reward of 2.0. The degenerate optimum is a feature of the math, not a bug in the code. This is why the KL leash exists.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 5, 6</span></p>
+<p>Beta is the price of deviating from the reference. The penalized objective is E[r] - beta KL(pi || pi_ref). High beta: stay close, modest reward. Low beta: chase reward, drift far. The lesson traces the frontier across six betas. Beta 0.2 gives KL 1.06 and reward 1.99. Beta 0.5 gives 0.66 and 1.85. Beta 1 gives 0.27 and 1.58. Beta 2 gives 0.08 and 1.32. Beta 5 gives 0.01 and 1.13. Beta 20 gives 0.00 and 1.03, approaching the uniform mean of 1.0. Lesson figure u05_f03 plots the full frontier.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u05-frontier.jpg" alt="Watercolor of a curved frontier line with small flags along it">
+<figcaption><span class="tag tag-toy">Illustration</span> The reward-KL frontier as watercolor. Every flag is a beta. Move left for reward, move down for safety. The price is posted on the curve. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 640 320" role="img" aria-label="Reward-KL frontier from beta 20 at KL 0.00 reward 1.03 to beta 0.2 at KL 1.06 reward 1.99">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Beta prices the deviation</text>
+<polyline points="80,240 95,235 155,200 290,160 470,105 600,80" fill="none" stroke="#31405e" stroke-width="2.5"/>
+<g><title>Beta 20: KL 0.00, reward 1.03</title><circle cx="80" cy="240" r="6" fill="#5d7050"/><text x="80" y="270" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">b=20</text></g>
+<g><title>Beta 5: KL 0.01, reward 1.13</title><circle cx="95" cy="235" r="6" fill="#5d7050"/><text x="95" y="222" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">b=5</text></g>
+<g><title>Beta 2: KL 0.08, reward 1.32</title><circle cx="155" cy="200" r="6" fill="#31405e"/><text x="155" y="187" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">b=2</text></g>
+<g><title>Beta 1: KL 0.27, reward 1.58</title><circle cx="290" cy="160" r="6" fill="#31405e"/><text x="290" y="147" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">b=1</text></g>
+<g><title>Beta 0.5: KL 0.66, reward 1.85</title><circle cx="470" cy="105" r="6" fill="#a94f27"/><text x="470" y="92" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">b=0.5</text></g>
+<g><title>Beta 0.2: KL 1.06, reward 1.99</title><circle cx="600" cy="80" r="6" fill="#a94f27"/><text x="600" y="67" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">b=0.2</text></g>
+<text x="320" y="300" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">KL from reference (right) against expected reward (up)</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 6</span> Same numbers as lesson figure u05_f03. Tune beta on held-out preference loss, not on training reward: the training reward always wants a smaller beta.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 5, 6</span></p>
+<p>The optimum has a closed form. Maximize the penalized objective with a Lagrange multiplier and the answer falls out: pi*(y) proportional to pi_ref(y) exp(r(y)/beta). The optimum tilts the reference toward high reward. Small beta tilts hard. Large beta barely tilts. The lesson toy: beta 5 gives [0.40, 0.33, 0.27], a gentle tilt. Beta 0.5 gives [0.87, 0.12, 0.02], nearly greedy. Lesson figure u05_f04 draws both bar charts.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 3, 5, 6</span></p>
+<p>The reference is home base: the model we trust, usually the SFT model. Everything is relative to it: the frontier, the tilt, the beta price. Change the reference and the whole frontier moves. With a uniform reference the beta-20 policy is [0.37, 0.33, 0.30]: it barely moves from uniform. The honest limit: a weak reference caps the policy. The leash pulls toward mediocrity if home base is mediocre.</p>
+</div>
+<div class="nugget" id="nugget-leash">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 5, C04 · Contract 3</span></h4>
+<p class="big">The unconstrained optimum is degenerate. The KL leash is not a safety add-on. It is the objective.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Expected reward alone always collapses to one response. Any RLHF run without a KL term optimizes a target whose optimum is a single repeated output.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A chatbot that must stay on-brand. Beta is the dial between the brand voice and the reward chase.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-tilt">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 5</span></h4>
+<p class="big">The optimum tilts the reference: multiply by exp(r/beta), renormalize. The reference is the prior, beta is its strength.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The closed form turns a whole RL run into three lines of arithmetic on the toy. It is the fixed point every algorithm in this unit targets.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Softmax with temperature. The same exponential tilting, the same beta dial, one line of code.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Turn the beta dial on the lesson's three-response toy. The code computes the exact KL-constrained optimum from C05 in your browser.</p>
+<p><label>beta <input type="range" id="beta" min="0.2" max="20" step="0.1" value="5"></label> <code id="betav">5.0</code></p>
+<p class="small" id="betaout">Policy appears here.</p>
+<p class="small muted"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 6</span> Rewards [2, 1, 0], uniform reference. At beta = 5 the readout must show about [0.40, 0.33, 0.27]. At beta = 0.5 about [0.87, 0.12, 0.02].</p>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C07, C08</p>
+<h2>Skipping the middleman</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 5, 6</span></p>
+<p>DPO reads the reward off the policy itself. From the C05 optimum, solve for the reward: r(y) = beta log(pi*(y)/pi_ref(y)) + const. Plug this into the Bradley-Terry likelihood on a preference pair and the constants cancel. The reward model never appears. What remains is a logistic loss directly on the policy's log-ratios: -log sigma(beta log(pi(y_w)/pi_ref(y_w)) - beta log(pi(y_l)/pi_ref(y_l))). The implicit reward is beta times the log-ratio of policy to reference. Train the policy so the winner's implicit reward beats the loser's. The lesson toy: implicit margin 2.0 at beta 0.5 gives loss -log sigma(1.0) = 0.313. Margin 0 gives 0.693. Lesson figure u05_f05 draws the loss curve.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 5</span></p>
+<p>Two algorithms, one goal. PPO learns a reward model, then explores with it online. DPO skips the middleman and fits the policy to the pairs directly. PPO can discover. DPO can only distill. On the three-response toy both target the same closed-form optimum: beta 0.5 gives [0.87, 0.12, 0.02]. They differ in how they get there, not where. The comparison table from lesson figure u05_f06:</p>
+</div>
+<table class="data">
+<tr><th></th><th>PPO</th><th>DPO</th></tr>
+<tr><td>Objective</td><td class="num">clipped surrogate</td><td class="num">logistic on margins</td></tr>
+<tr><td>Reward model</td><td class="num">separate, trained</td><td class="num">implicit in the policy</td></tr>
+<tr><td>Sampling</td><td class="num">online rollouts</td><td class="num">offline pairs</td></tr>
+<tr><td>KL control</td><td class="num">penalty plus clip</td><td class="num">beta</td></tr>
+<tr><td>Stability</td><td class="num">touchy</td><td class="num">supervised-like</td></tr>
+<tr><td>Cost</td><td class="num">rollouts and tuning</td><td class="num">one supervised pass</td></tr>
+</table>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 10, 11</span></p>
+<p>The choice is about exploration versus simplicity. Choose PPO when the policy must venture beyond the data. Choose DPO when the pairs already cover the good region. The failure modes differ too: PPO with a hacked reward explores into the exploit, while DPO on narrow pairs never sees the exploit but also never discovers better responses.</p>
+</div>
+<div class="nugget" id="nugget-dpo">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 5</span></h4>
+<p class="big">DPO reads the reward off the policy. The constants cancel, the reward model disappears, and the loss is supervised.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The derivation turns an RL problem into a classification problem. No rollouts, no value function, no clipping. The price is the assumption that the policy can represent the KL-constrained optimum.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Your team has one GPU-week and a fixed preference dataset. DPO is the honest pick. PPO earns its cost only when exploration matters.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C09, C10, C11</p>
+<h2>When the proxy lies</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5, 6</span></p>
+<p>Feedback bias is a thumb on the scale: position, length, sycophancy, or politeness push choices without reflecting true quality. The reward model learns the thumb, not just the quality. This is the U01 context effect applied to responses. If longer answers win 65 percent regardless of quality, the reward model learns longer is better with gap log(0.65/0.35) = 0.62 utils of pure bias. A truly better short answer needs a true gap above 0.62 just to break even. The fork: model the bias explicitly when deployment differs from annotation, or accept it when they match.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5, 6</span></p>
+<p>The reward model is a proxy with blind spots. Optimization finds the blind spots: outputs that score high and disappoint humans. The proxy climbs. The truth peaks and falls. The lesson toy makes it numeric: proxy 0.1t, true 0.1t - 0.004t^2. At step 12 the true reward peaks at 0.62 while the proxy reads 1.2. At step 50 the true reward is -5.0 while the proxy reads 5.0. Lesson figure u05_f07 plots both curves. Goodhart's law in one line: when a measure becomes a target, it stops being a good measure.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u05-fork.jpg" alt="Watercolor of two paths diverging in a forest, one rising to light, one falling to shadow">
+<figcaption><span class="tag tag-toy">Illustration</span> The proxy and the truth diverge like the two paths. Early on they walk together. Keep optimizing and they part ways. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 640 320" role="img" aria-label="Proxy reward climbs to 5.0 while true reward peaks at 0.62 at step 12 then falls to minus 5.0">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The proxy climbs. The truth peaks and falls.</text>
+<polyline points="60.0,149.1 143.2,135.9 226.4,122.7 309.6,109.5 392.8,96.3 476.0,83.0 559.2,69.8" fill="none" stroke="#5d7050" stroke-width="2.5"/>
+<polyline points="60.0,149.1 143.2,140.1 226.4,139.6 309.6,147.5 392.8,163.9 476.0,188.8 559.2,222.1" fill="none" stroke="#a94f27" stroke-width="2.5"/>
+<g><title>Step 12: true reward peaks at 0.62, proxy at 1.2</title><circle cx="184" cy="141" r="5" fill="#a94f27"/><text x="184" y="128" text-anchor="middle" font-size="13" font-family="Georgia" fill="#a94f27">step 12: truth peaks</text></g>
+<g><title>Step 50: true reward minus 5.0, proxy 5.0</title><circle cx="560" cy="222" r="5" fill="#a94f27"/><text x="540" y="240" font-size="13" font-family="Georgia" fill="#a94f27">truth -5.0</text><text x="560" y="60" font-size="13" font-family="Georgia" fill="#5d7050">proxy 5.0</text></g>
+<text x="450" y="150" font-size="13" font-family="Georgia" fill="#5d7050">proxy 0.1t</text>
+<text x="450" y="200" font-size="13" font-family="Georgia" fill="#a94f27">true 0.1t - 0.004t^2</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 6</span> Same numbers as lesson figure u05_f07. The monitor is a held-out human eval tracked alongside the proxy. Stop when they diverge. The monitor costs human labels: that is the price of honesty.</figcaption>
+</figure>
+<div class="nugget" id="nugget-goodhart">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5</span></h4>
+<p class="big">When a measure becomes a target, it stops being a good measure. The proxy climbs while the truth peaks and falls.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The divergence appears before the proxy saturates. A rising reward curve is not evidence of improvement. It is evidence of optimization.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A sales team bonused on calls. Calls rise, revenue peaks, then falls. The bonus was the proxy, and the team optimized it exactly.</dd>
+</dl>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 6, C11 · Contract 3, 6</span></p>
+<p>The bias arithmetic has a sharp edge. Debiasing with the wrong sign doubles the bias: correcting a length effect that was actually quality makes things worse, not better. And offline data is a photograph of the past. The DPO identity assumes the policy sits at the KL-constrained optimum for the current reward. A shifted policy breaks the identity. The lesson's staleness toy: the old policy puts 0.5 on the winner, the current policy puts 0.9 there. The pair is now uninformative, the policy already prefers the winner, but DPO still pushes the margin. Wasted gradient on a decided contest. The fix is fresh data or iterative DPO: recollect periodically.</p>
+</div>
+<div class="nugget" id="nugget-bias">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 5, 6, 11</span></h4>
+<p class="big">A biased margin is a thumb on the scale. 0.62 utils of pure bias means the truth needs 0.62 just to break even.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The reward absorbs the bias into r. Every downstream decision inherits the thumb, compounded by optimization.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Five-star ratings. Position, length, and politeness shape them the same way. Measure the bias before you train on the stars.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C12</p>
+<h2>Whose preference</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 3, 5, 6</span></p>
+<p>Disagreement is not always noise. Two annotators can both be right: one values conciseness, the other values thoroughness. The lesson's 4-annotator toy reports pairwise agreement 0.86, 0.90, 0.86, 0.88, 0.81, mean pairwise 0.80. High agreement on facts with taste-splitting on style is the signature of a diverse panel. Lesson figure u05_f08 draws the agreement matrix.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 260" role="img" aria-label="Pairwise annotator agreement between 0.81 and 0.90, mean 0.80">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Who agrees with whom</text>
+<g><title>A1-A2: 0.86</title><rect x="60" y="70" width="250" height="26" fill="#31405e" rx="4"/><text x="315" y="88" font-size="13" font-family="Georgia" fill="#faf6ee">A1-A2: 0.86</text></g>
+<g><title>A1-A3: 0.90</title><rect x="60" y="104" width="260" height="26" fill="#31405e" rx="4"/><text x="325" y="122" font-size="13" font-family="Georgia" fill="#faf6ee">A1-A3: 0.90</text></g>
+<g><title>A1-A4: 0.86</title><rect x="60" y="138" width="250" height="26" fill="#31405e" rx="4"/><text x="315" y="156" font-size="13" font-family="Georgia" fill="#faf6ee">A1-A4: 0.86</text></g>
+<g><title>A2-A3: 0.88</title><rect x="60" y="172" width="255" height="26" fill="#31405e" rx="4"/><text x="320" y="190" font-size="13" font-family="Georgia" fill="#faf6ee">A2-A3: 0.88</text></g>
+<g><title>A3-A4: 0.81</title><rect x="60" y="206" width="235" height="26" fill="#a94f27" rx="4"/><text x="300" y="224" font-size="13" font-family="Georgia" fill="#faf6ee">A3-A4: 0.81</text></g>
+<text x="480" y="150" font-size="13" font-family="Georgia" fill="#6f6355">mean pairwise 0.80</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 6</span> Same numbers as lesson figure u05_f08. Only the five above-diagonal pairs are reported. The mean is the lesson's stated 0.80. The fork: model subpopulations, learn a shared reward plus personal offsets, or serve the plurality. Each choice is a value, not a theorem.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 10, 11</span></p>
+<p>The majority-vote model averages away the minority: a 70/30 split becomes 100/0 in the training signal (illustrative example). The disagreement is a fact about the world, not a bug in the annotators. The lesson closes with four questions: which annotator, whose preference, which disagreement matters, and who gets to decide. The companion adds none. Those questions are the point.</p>
+</div>
+<div class="nugget" id="nugget-disagreement">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 5, 10</span></h4>
+<p class="big">Disagreement is not always noise. Taste-splitting on style is the signature of a diverse panel, and the majority vote averages it away.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>A 70/30 split becomes 100/0 in the training signal. The policy learns the majority's style as if it were the truth.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A divided electorate. Any model trained on the majority vote inherits the averaging, and the minority has no recourse.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-questions">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 10</span></h4>
+<p class="big">Which annotator? Whose preference? Which disagreement matters? Who gets to decide? These are values, not theorems.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>No formula resolves them. The training choices encode the answers whether or not anyone writes them down.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every aligned product ships an implicit answer. Reading the answers off the training choices is the audit.</dd>
+</dl>
+</div>
+</section>
+<section class="block wisdom" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Eight nuggets, indexed</h2>
+<ol>
+<li><a href="#nugget-paired">Pair on the prompt.</a> Prompt difficulty is a confound, and pairing subtracts it.</li>
+<li><a href="#nugget-leash">The unconstrained optimum is degenerate.</a> The leash is the objective.</li>
+<li><a href="#nugget-tilt">The optimum tilts the reference.</a> Multiply by exp(r/beta), renormalize.</li>
+<li><a href="#nugget-dpo">DPO reads the reward off the policy.</a> The reward model disappears.</li>
+<li><a href="#nugget-goodhart">When a measure becomes a target, it stops being a good measure.</a> The proxy climbs, the truth peaks and falls.</li>
+<li><a href="#nugget-bias">A biased margin is a thumb on the scale.</a> 0.62 utils of pure bias.</li>
+<li><a href="#nugget-disagreement">Disagreement is not always noise.</a> The majority vote averages the minority away.</li>
+<li><a href="#nugget-questions">Which annotator? Whose preference? Who decides?</a> Values, not theorems.</li>
+</ol>
+<p class="backlink"><a href="../index.html">Back to the CS329H course index</a></p>
+</section>
+</div>
+<footer id="provenance"><div class="wrap">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cs329h/lessons/u05_lesson.md</code>. No full lecture transcript exists for S08 and S09, and no lecture anecdotes appear. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING. Quoted words from the lesson source: 0, counted by <code>companions/tools/quote_recount.py</code> with the blockquote plus quoted-phrase method, footer excluded. Lesson figures u05_f01 through u05_f08 are referenced where the lesson places them. The charts on this page re-plot the lesson's computed toy numbers with concept and contract citations. The beta-dial toy computes the lesson's C05 closed form exactly. No official source video is on record for this session, so no embed appears. The three watercolors are original illustrations made for this companion.</p>
+</div></footer>
+<script>
+function updBeta(){
+var b=parseFloat(document.getElementById("beta").value)
+var r=[2,1,0]
+var ref=[1/3,1/3,1/3]
+var z=r.reduce(function(a,ri,i){return a+ref[i]*Math.exp(ri/b)},0)
+var pi=r.map(function(ri,i){return ref[i]*Math.exp(ri/b)/z})
+var kl=pi.reduce(function(a,p,i){return a+p*Math.log(p/ref[i])},0)
+var rew=pi.reduce(function(a,p,i){return a+p*r[i]},0)
+document.getElementById("betav").textContent=b.toFixed(1)
+document.getElementById("betaout").textContent="policy ["+pi.map(function(p){return p.toFixed(2)}).join(", ")+"], KL "+kl.toFixed(2)+", reward "+rew.toFixed(2)
+}
+document.getElementById("beta").addEventListener("input",updBeta)
+updBeta()
+</script>
+</body>
+
+</html>

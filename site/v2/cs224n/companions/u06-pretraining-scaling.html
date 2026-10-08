@@ -441,8 +441,8 @@ span.ptag, .ptag {
 <nav aria-label="Sections" class="small">
 <p><strong>On this page:</strong> 1 · the mask recipe · 2 · the 6.74x signal · 3 · one word, many vectors · 4 · the corpus is the curriculum · 5 · one budget, two dials · 6 · a ruler, not a crystal ball · 7 · the tax on every step · 8 · the exam leaked · 9 · the workshop and the furniture · 10 · the passport · 11 · three levels of eval · 12 · the memory problem · <a href="#wisdom">wisdom index</a></p>
 </nav>
-<figure class="paint inset" data-entrance="bloom">
-<div class="frame"><div class="stage"><img alt="Watercolor illustration of a person painting over words in a sentence while watching both sides through binoculars" class="illustration base" loading="lazy" src="assets/u06-mask.jpg"/></div></div>
+<figure data-phase2="1" data-scene="u06-pretraining-scaling-hero" class="paint inset" data-entrance="bloom">
+<div class="frame"><div class="stage"><img alt="Watercolor illustration of a person painting over words in a sentence while watching both sides through binoculars" class="illustration base" loading="lazy" src="assets/u06-mask.jpg"/><img alt="" aria-hidden="true" class="ly mul" data-obj="hero-subject" data-depth="14" loading="lazy" src="assets/u06-pretraining-scaling-hero-layer.png" style="left:5%;top:5%;width:90%"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> Masked training: cover some words, predict them from full context on both sides.</figcaption></figure>
 <section class="block col" data-chapter="1" data-title="The mask recipe" id="s1"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">1</span></div><div><p class="ch-meta"><span class="ts">Unit 1</span> · C01</p><h2>The mask recipe</h2></div></div>
 <div class="prose-narrow">
@@ -474,7 +474,7 @@ span.ptag, .ptag {
 <div id="chart-signal"></div>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C02 §4</span> Training signal per pass at n = 512, from <code>compute_u06.py</code> (executed 2026-10-06): AR predicts 512 tokens, MLM ~77. Ratio 6.74x.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-signal"><div class="tag-price"><span class="tag-big">2</span><span class="tag-unit">Nugget 2 · From the lesson C02 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 2 · From the lesson C02 §3, §11</div><div class="tag-eye">The lesson</div><p class="">The objective shapes the model more than the architecture does. MLM buys bidirectionality with 15 percent signal, and AR buys full signal with one direction.</p><p><b>Why it matters. </b>Choose AR for generation and for scale (the modern default). Choose MLM when bidirectional context matters more than signal volume (small understanding models).</p><p><b>Transfer. </b>Before tuning the model, check the objective: the loss function is the strongest design decision.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
+<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-signal"><div class="tag-price"><span class="tag-big tight">1 direction</span><span class="tag-unit">From the lesson C02 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 2 · From the lesson C02 §3, §11</div><div class="tag-eye">The lesson</div><p class="">The objective shapes the model more than the architecture does. MLM buys bidirectionality with 15 percent signal, and AR buys full signal with one direction.</p><p><b>Why it matters. </b>Choose AR for generation and for scale (the modern default). Choose MLM when bidirectional context matters more than signal volume (small understanding models).</p><p><b>Transfer. </b>Before tuning the model, check the objective: the loss function is the strongest design decision.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="One word, many vectors" id="s3"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">3</span></div><div><p class="ch-meta"><span class="ts">Unit 3</span> · C03</p><h2>One word, many vectors</h2></div></div>
 <div class="prose-narrow">
@@ -521,10 +521,10 @@ a river flows to the sea</textarea></p>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 §11</span></p>
 <p>The broken assumption is that the ratio is a law of nature. It is a fit to specific data and architectures: new data mixes or architectures shift it. Treat it as a starting point, then fit your own (C06).</p>
 </div>
-<figure class="paint inset" data-entrance="sketch">
+<figure data-phase2="1" data-scene="u06-pretraining-scaling-s2" class="paint inset" data-entrance="sketch">
 <div class="frame"><div class="stage"><img alt="Watercolor illustration of a giant scale balancing a tiny box against a huge stack of papers" class="illustration base" loading="lazy" src="assets/u06-scale.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> One budget, two dials: params on one side, tokens on the other, C = 6ND on the beam.</figcaption></figure>
-<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-budget"><div class="tag-price"><span class="tag-big">5</span><span class="tag-unit">Nugget 5 · From the lesson C05 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C05 §3, §11</div><div class="tag-eye">The lesson</div><p class="">C = 6ND is the whole planning conversation in one equation. 20 tokens per param is the empirical balance point, not a law.</p><p><b>Why it matters. </b>Choose 20:1 for training efficiency. Choose larger N when inference cost dominates the lifetime bill (the deployment argument).</p><p><b>Transfer. </b>Every allocation problem has a balance ratio. Write the equation first, then argue.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
+<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-budget"><div class="tag-price"><span class="tag-big">20 tokens</span><span class="tag-unit">per param is the empirical balance point · From the lesson C05 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C05 §3, §11</div><div class="tag-eye">The lesson</div><p class="">C = 6ND is the whole planning conversation in one equation. 20 tokens per param is the empirical balance point, not a law.</p><p><b>Why it matters. </b>Choose 20:1 for training efficiency. Choose larger N when inference cost dominates the lifetime bill (the deployment argument).</p><p><b>Transfer. </b>Every allocation problem has a balance ratio. Write the equation first, then argue.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
 <div class="toy">
 <p><span class="ptag ptag-illustration">Illustration</span> Budget calculator. The C = 6ND arithmetic is C05’s. The numbers are yours.</p>
 <p>N (params, billions) <input aria-label="Params in billions" class="text" id="bgn" value="0.1"/></p>
@@ -546,7 +546,7 @@ a river flows to the sea</textarea></p>
 <div id="chart-power"></div>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 §4</span> The illustrative form L = 10 N^{-0.05}, from <code>compute_u06.py</code> (executed 2026-10-06): each doubling of N cuts loss 3.4 percent. Log-scale x axis.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="nugget-ruler"><div class="tag-price"><span class="tag-big">6</span><span class="tag-unit">Nugget 6 · From the lesson C06 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C06 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Scaling laws are fitted lines, not laws of nature. Trust them within 10x of the data. Beyond that, run the experiment.</p><p><b>Why it matters. </b>Choose power-law fits for planning within range. Beyond that, the residuals are the honest answer.</p><p><b>Transfer. </b>A smooth metric can hide lumpy capability. Track both the loss curve and the task scores.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
+<aside class="tag" data-chapter="s6" data-sign-label="Unit" data-sign-num="6" id="nugget-ruler"><div class="tag-price"><span class="tag-big">10x</span><span class="tag-unit">data · From the lesson C06 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C06 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Scaling laws are fitted lines, not laws of nature. Trust them within 10x of the data. Beyond that, run the experiment.</p><p><b>Why it matters. </b>Choose power-law fits for planning within range. Beyond that, the residuals are the honest answer.</p><p><b>Transfer. </b>A smooth metric can hide lumpy capability. Track both the loss curve and the task scores.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 06</span></div></div></aside>
 <div class="toy">
 <p><span class="ptag ptag-illustration">Illustration</span> The doubling test. Type a model size and see the illustrative form L = 10 N^{-0.05} predict it, then the doubling ratio.</p>
 <p>N (params) <input aria-label="Params" class="text" id="pwn" value="100000000"/></p>
@@ -563,7 +563,7 @@ a river flows to the sea</textarea></p>
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C07 §11</span></p>
 <p>The broken assumption is that more GPUs mean proportionally faster. The 1.75 GB tax per step at fixed batch: small batches make communication dominate. Scale the batch with p, or the speedup stalls.</p>
 </div>
-<aside class="tag" data-chapter="s7" data-sign-label="Unit" data-sign-num="7" id="nugget-tax"><div class="tag-price"><span class="tag-big">7</span><span class="tag-unit">Nugget 7 · From the lesson C07 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C07 §3, §11</div><div class="tag-eye">The lesson</div><p class="">The allreduce tax is bounded: 2(p-1)/p of the model per step, approaching 2× as p grows. Communication is a fixed cost, not a surprise.</p><p><b>Why it matters. </b>Choose data-parallel when the model fits one GPU. Combine with model-parallel at scale (3-D parallelism). Scale the batch with p.</p><p><b>Transfer. </b>Price coordination separately from computation. Distributed systems bill you for agreement.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 07</span></div></div></aside>
+<aside class="tag" data-chapter="s7" data-sign-label="Unit" data-sign-num="7" id="nugget-tax"><div class="tag-price"><span class="tag-big">1 gpu</span><span class="tag-unit">From the lesson C07 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C07 §3, §11</div><div class="tag-eye">The lesson</div><p class="">The allreduce tax is bounded: 2(p-1)/p of the model per step, approaching 2× as p grows. Communication is a fixed cost, not a surprise.</p><p><b>Why it matters. </b>Choose data-parallel when the model fits one GPU. Combine with model-parallel at scale (3-D parallelism). Scale the batch with p.</p><p><b>Transfer. </b>Price coordination separately from computation. Distributed systems bill you for agreement.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 07</span></div></div></aside>
 <div class="toy">
 <p><span class="ptag ptag-illustration">Illustration</span> The tax calculator. The 2(p-1)/p formula is C07’s. The fleet is yours.</p>
 <p>GPUs (p) <input aria-label="GPU count" class="text" id="txp" value="8"/></p>
@@ -625,7 +625,7 @@ a river flows to the sea</textarea></p>
 <div id="chart-ppl"></div>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C11 §4</span> The perplexity triplet, hand-computed and labeled illustrative: train 30.0, clean held-out 36.2, leaked held-out 22.2. The leak looks like a win. It is fraud.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s11" data-sign-label="Unit" data-sign-num="11" id="nugget-eval"><div class="tag-price"><span class="tag-big">10</span><span class="tag-unit">Nugget 10 · From the lesson C11 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · From the lesson C11 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Report all three numbers or report nothing: train, clean held-out, and the provenance check. The gap between them is the interesting part.</p><p><b>Why it matters. </b>Choose the three levels. Choose private benchmarks when the claim is capabilities (C08).</p><p><b>Transfer. </b>A metric without provenance is a number without meaning. Publish the contamination rule alongside the score.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 11</span></div></div></aside>
+<aside class="tag" data-chapter="s11" data-sign-label="Unit" data-sign-num="11" id="nugget-eval"><div class="tag-price"><span class="tag-big">3 numbers</span><span class="tag-unit">report nothing · From the lesson C11 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 10 · From the lesson C11 §3, §11</div><div class="tag-eye">The lesson</div><p class="">Report all three numbers or report nothing: train, clean held-out, and the provenance check. The gap between them is the interesting part.</p><p><b>Why it matters. </b>Choose the three levels. Choose private benchmarks when the claim is capabilities (C08).</p><p><b>Transfer. </b>A metric without provenance is a number without meaning. Publish the contamination rule alongside the score.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 11</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="The memory problem" id="s12"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">12</span></div><div><p class="ch-meta"><span class="ts">Unit 12</span> · C12</p><h2>The memory problem</h2></div></div>
 <div class="prose-narrow">
@@ -640,7 +640,7 @@ a river flows to the sea</textarea></p>
 <div id="chart-mem"></div>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 §4</span> Training memory for 1B params in fp16, from <code>compute_u06.py</code> (executed 2026-10-06): Adam states dominate at 8 of 12 GB.</figcaption>
 </figure>
-<figure class="paint inset" data-entrance="bloom">
+<figure data-phase2="1" data-scene="u06-pretraining-scaling-s3" class="paint inset" data-entrance="bloom">
 <div class="frame"><div class="stage"><img alt="Watercolor illustration of a long ruler fading into fog, a hand marking where the straight line disappears" class="illustration base" loading="lazy" src="assets/u06-ruler.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The ruler fades where the fit ends: scaling laws predict within range, not past it.</figcaption></figure>
 <div class="toy">
@@ -1493,5 +1493,43 @@ barChart("chart-mem", [["weights (2 B/param)", 2, INDIGO], ["grads (2 B/param)",
   });
 })();
 
-</script></body>
+</script><script>
+(function(){if(!window.CompanionFX)return;var FX=window.CompanionFX;
+FX.registerScene('u06-pretraining-scaling-hero',{
+ init:function(F,FX){
+  F._m=FX.motes(F.stage,F.W,F.H,24,7);
+  F._g=FX.glows(F.stage,F.W,F.H,[[F.W*0.5,F.H*0.30,Math.min(F.W,F.H)*0.22]],'screen','#E8A94B')[0];
+ },
+ pose:function(S,FX){
+  var F=S.F;F._m.tick(S.t);
+  F._g.style.opacity=(0.20+0.10*FX.flicker(S.t,3)).toFixed(3);
+  return {'hero-subject':{x:7*Math.sin(S.t*0.6),y:5*Math.sin(S.t*0.83+1),r:0,s:1,o:1}};
+ } });
+FX.registerScene('u06-pretraining-scaling-s2',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+FX.registerScene('u06-pretraining-scaling-s3',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+})();
+</script>
+</body>
 </html>

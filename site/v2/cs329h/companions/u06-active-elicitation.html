@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U06 Companion: Active elicitation and assistance games · CS329H</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:900px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband a{color:var(--paper)}
+header.hero{padding:52px 0 6px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:660px}
+.notice{border:1px solid var(--line)}
+.notice{background:var(--paper2)}
+.notice{border-radius:10px}
+.notice{padding:16px 20px}
+.notice{margin:26px 0}
+.notice{font-size:16px}
+.notice p{margin:.45em 0}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:16px 20px}
+.legend{margin:26px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-interp{background:transparent}
+.tag-interp{color:var(--indigo)}
+.tag-interp{border:1.5px solid var(--indigo)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+section.block{padding:34px 0 10px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.12em}
+.secnum{text-transform:uppercase}
+.secnum{color:var(--clay)}
+.secnum{margin:0 0 4px}
+h2{font-size:32px}
+h2{line-height:1.2}
+h2{margin:.1em 0 .5em}
+h3{font-size:22px}
+h3{margin:1.2em 0 .4em}
+.prose-narrow{max-width:720px}
+figure{margin:28px 0}
+figure{background:#fff}
+figure{border:1px solid var(--line)}
+figure{border-radius:10px}
+figure{padding:18px 18px 8px}
+figcaption{font-size:15px}
+figcaption{color:var(--muted)}
+figcaption{padding:10px 4px 12px}
+figcaption{line-height:1.55}
+img.illus{width:100%}
+img.illus{border-radius:8px}
+img.illus{display:block}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:5px solid var(--clay)}
+.nugget{background:#fff}
+.nugget{border-radius:8px}
+.nugget{padding:18px 22px}
+.nugget{margin:30px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:14px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:20px}
+.nugget .big{line-height:1.5}
+.nugget .big{margin:.2em 0 .6em}
+.nugget dl{margin:0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{margin:10px 0 2px}
+.nugget dd{margin:0 0 6px}
+.nugget dd{font-size:16.5px}
+.lab{border:1px dashed var(--amber)}
+.lab{background:var(--ambersoft)}
+.lab{border-radius:10px}
+.lab{padding:18px 22px}
+.lab{margin:28px 0}
+.toy{border:1px solid var(--indigo)}
+.toy{background:var(--indigosoft)}
+.toy{border-radius:10px}
+.toy{padding:18px 22px}
+.toy{margin:28px 0}
+.toy input[type=number]{width:64px}
+.toy input[type=number]{font-family:var(--mono)}
+.toy input[type=number]{font-size:15px}
+.toy input[type=number]{padding:4px 6px}
+.toy input[type=number]{margin:2px 6px 2px 2px}
+.toy label{font-family:var(--sans)}
+.toy label{font-size:14px}
+.btn{font-family:var(--sans)}
+.btn{font-size:15px}
+.btn{background:var(--ink)}
+.btn{color:var(--paper)}
+.btn{border:none}
+.btn{border-radius:8px}
+.btn{padding:10px 18px}
+.btn{cursor:pointer}
+.btn{margin:8px 8px 8px 0}
+.btn.ghost{background:transparent}
+.btn.ghost{color:var(--ink)}
+.btn.ghost{border:1.5px solid var(--ink)}
+table.data{border-collapse:collapse}
+table.data{margin:14px 0}
+table.data{font-size:16px}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.06em}
+table.data th{text-align:left}
+table.data th{padding:8px 14px 8px 0}
+table.data td{padding:8px 14px 8px 0}
+table.data td{border-top:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+code{font-family:var(--mono)}
+code{font-size:.88em}
+code{background:var(--paper2)}
+code{padding:1px 6px}
+code{border-radius:5px}
+.wisdom ol{padding-left:22px}
+.wisdom li{margin:10px 0}
+.wisdom a{color:var(--clay)}
+footer{background:var(--ink)}
+footer{color:var(--paper)}
+footer{margin-top:56px}
+footer{padding:40px 0 60px}
+footer p{font-size:15.5px}
+footer{line-height:1.6}
+footer code{background:rgba(255,255,255,.12)}
+footer a{color:var(--paper)}
+.backlink{font-family:var(--sans)}
+.backlink{font-size:15px}
+.backlink{margin:34px 0 0}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CS329H · Stanford · Interactive companion · <a href="../index.html">course index</a></div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">U06 · Active elicitation and assistance games</p>
+<h1>Which question is worth asking</h1>
+<p class="dek">Questions cost attention. The value of information prices each one in the units of the decision it serves. Then the harder game: the human knows the goal and the agent does not. This unit builds the VoI machinery, the assistance game where the agent reads the human like a sensor, and the bandits that learn with a human in the loop.</p>
+</header>
+<figure>
+<img class="illus" src="assets/u06-hero.jpg" alt="Watercolor of a lighthouse beam sweeping across dark water">
+<figcaption><span class="tag tag-toy">Illustration</span> The lighthouse as watercolor. One beam, many dark waters. VoI decides which patch the beam sweeps. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="notice">
+<p><strong>Sourcing.</strong> No full transcript exists for sessions S10 and S11. This companion narrates <code>content/v2/cs329h/lessons/u06_lesson.md</code>. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<p><strong>Lesson inconsistency disclosed.</strong> In C09 the toy runs T = 300 rounds (Contract 2) but the figure alt text says T = 200 (Contract 15). Both are stated as written. The regret numbers are reported with the T = 300 the toy specifies.</p>
+<p><strong>How to read the tags.</strong> Every number carries its lesson section. Anything the companion computes is tagged <span class="tag tag-toy">Illustration</span>. A <span class="tag tag-interp">Interpretation</span> tag marks the companion's own reading of the lesson. Where the lesson leaves a value out, the page says so in words.</p>
+</div>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> A fact, number, or mechanism from the lesson.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-interp">Interpretation</span> The companion's reading of why a lesson fact matters. The fact is the lesson's, the gloss is ours.</p>
+<p><span class="tag-ref">C01 · Contract 6</span> Points to the exact lesson section behind a claim or number.</p>
+</div>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">Price the question</a>
+<a href="#s2">The helping game</a>
+<a href="#s3">Bandits with help</a>
+<a href="#s4">Burden and the plan</a>
+<a href="#wisdom">Wisdom index</a>
+<a href="#provenance">Provenance</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01, C02, C03</p>
+<h2>Price the question</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 5, 6</span></p>
+<p>Value of information is the expected improvement in the final decision from asking. The formula: VoI(q) = E over answers of the best expected utility after the answer, minus the best expected utility now. The lesson toy: the utility gap g is -0.5 or 1.5, prior 0.5 each. Without the query, choose A for expected gap 0.5. With the query: g = -0.5 means pick B for 0, g = 1.5 means pick A for 1.5. Expected after: 0.75. VoI = 0.25. Lesson figure u06_f01 draws the prior bars and the posterior decisions.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 280" role="img" aria-label="VoI 0.25: expected utility 0.5 without the query, 0.75 with it">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The question is worth 0.25</text>
+<g><title>Best without the query: 0.50</title><rect x="120" y="120" width="160" height="120" fill="#6f6355" rx="4"/><text x="200" y="112" text-anchor="middle" font-size="15" font-family="Georgia">0.50</text><text x="200" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">without: pick A</text></g>
+<g><title>Best with the query: 0.75</title><rect x="360" y="80" width="160" height="160" fill="#31405e" rx="4"/><text x="440" y="72" text-anchor="middle" font-size="15" font-family="Georgia">0.75</text><text x="440" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">with: 0 or 1.5 by answer</text></g>
+<text x="320" y="150" text-anchor="middle" font-size="15" font-family="Georgia" fill="#a94f27">VoI 0.25</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 6</span> Same numbers as lesson figure u06_f01. VoI is never negative for a Bayesian decider: ignoring the answer is always allowed. It is zero when the answer cannot flip the decision.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 3, 5, 6</span></p>
+<p>Three questions, one slot. Rank by expected variance reduction. The lesson toy: prior gap N(0,1), three queries with noise sd 0.7, 1.0, 1.5. The gain formula gives 1/(1+s^2): 0.671, 0.500, 0.308. Query 1 wins. The noisiest question teaches the least. Lesson figure u06_f02 draws the three bars.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 280" role="img" aria-label="Expected gains 0.67, 0.50, 0.31 for noise sd 0.7, 1.0, 1.5">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The quietest question teaches most</text>
+<g><title>Noise 0.7: gain 0.67</title><rect x="80" y="90" width="120" height="150" fill="#31405e" rx="4"/><text x="140" y="82" text-anchor="middle" font-size="14" font-family="Georgia">0.67</text><text x="140" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">sd 0.7</text></g>
+<g><title>Noise 1.0: gain 0.50</title><rect x="280" y="130" width="120" height="110" fill="#5d7050" rx="4"/><text x="340" y="122" text-anchor="middle" font-size="14" font-family="Georgia">0.50</text><text x="340" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">sd 1.0</text></g>
+<g><title>Noise 1.5: gain 0.31</title><rect x="480" y="170" width="120" height="70" fill="#a94f27" rx="4"/><text x="540" y="162" text-anchor="middle" font-size="14" font-family="Georgia">0.31</text><text x="540" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">sd 1.5</text></g>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 · Contract 6</span> Same numbers as lesson figure u06_f02. The ranking assumes the noise model is honest. A query with s = 0.01 on paper that humans answer at chance teaches nothing.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 5, 6</span></p>
+<p>Uncertainty over preferences is a posterior. The lesson toy: gap g with posterior N(0.8, 0.16), 2000 samples, seed 0. Sample mean 0.79, sample sd 0.40, P(g > 0) = 0.978. The spread drives elicitation: wide spread means ask more. Lesson figure u06_f03 draws the histogram.</p>
+</div>
+<div class="nugget" id="nugget-voi">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 7</span></h4>
+<p class="big">VoI prices the question in the units of the decision. The toy question is worth 0.25 utils. Ask it when the elicitation costs less.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The price and the value share units, so the rule is arithmetic: ask when VoI exceeds cost. The lesson's counterexample makes it concrete: VoI 0.25 against cost 0.4 means do not ask.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A doctor ordering a test. The test's VoI is the expected improvement in the treatment choice. Order it when that clears the price and the risk.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-zero">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 8, 11</span></h4>
+<p class="big">VoI is zero when the answer cannot flip the decision. A question that changes nothing is worth nothing, however interesting.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>This is the check that kills most question backlogs. If every possible answer leads to the same action, the elicitation is theater.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Polling a decided voter. The answer is certain and changes nothing. VoI zero.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C04, C05, C06</p>
+<h2>The helping game</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 5, 6</span></p>
+<p>An assistance game has two players and one payoff. The human knows the reward function. The agent does not. Both want the same thing: the expected common reward. The human's actions are evidence about the hidden objective theta. The agent holds a belief over theta and updates it on everything the human does. This is a POMDP with the human in the loop.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 6, C06 · Contract 6</span></p>
+<p>The tea toy makes it numeric. Theta is tea or coffee, prior 0.5 each. The human reaches for the left cupboard. The likelihoods: P(reach left | tea) = 0.8, P(reach left | coffee) = 0.3. Bayes: posterior for tea = 0.8 times 0.5 over (0.8 times 0.5 + 0.3 times 0.5) = 0.727. The agent brews tea. The expected common reward rises from 0.5 to 0.727. Lesson figure u06_f04 draws the belief loop.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u06-tea.jpg" alt="Watercolor of two cups of tea, one being reached for">
+<figcaption><span class="tag tag-toy">Illustration</span> The tea toy as watercolor. The reach is evidence. The belief moves from 0.5 to 0.727 on one gesture. Watercolor, original to this companion.</figcaption>
+</figure>
+<figure>
+<svg class="chart" viewBox="0 0 640 260" role="img" aria-label="Belief in tea rises from 0.5 to 0.727 on the reach">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">One gesture moves the belief</text>
+<g><title>Prior 0.50</title><rect x="120" y="110" width="150" height="100" fill="#6f6355" rx="4"/><text x="195" y="102" text-anchor="middle" font-size="14" font-family="Georgia">0.50</text><text x="195" y="230" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">prior</text></g>
+<text x="320" y="165" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">reach left: 0.8 if tea, 0.3 if coffee</text>
+<g><title>Posterior 0.727</title><rect x="370" y="66" width="150" height="144" fill="#31405e" rx="4"/><text x="445" y="58" text-anchor="middle" font-size="14" font-family="Georgia">0.727</text><text x="445" y="230" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">posterior</text></g>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 6, C06 · Contract 6</span> Same numbers as the lesson's toy. The belief is a sufficient statistic of the history: acting on raw history without it is intractable.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The belief toy. Move the likelihoods and the browser runs the lesson's C06 Bayes update.</p>
+<p><label>P(reach left | tea) <input type="range" id="lt" min="0.5" max="1" step="0.05" value="0.8"></label> <code id="ltv">0.80</code></p>
+<p><label>P(reach left | coffee) <input type="range" id="lc" min="0" max="0.5" step="0.05" value="0.3"></label> <code id="lcv">0.30</code></p>
+<p class="small" id="bout">Posterior appears here.</p>
+<p class="small muted"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 6</span> With the lesson's likelihoods the readout must show posterior 0.727.</p>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 5, 6</span></p>
+<p>The objective is shared, but the information differs. The human acts with full knowledge of theta. The agent acts on a belief. An agent that ignores the human and guesses at random gets expected payoff 0.5. The belief-driven agent gets 0.727. Watching the human is worth 0.227. Misalignment here comes from ignorance, not malice: the agent wants the same thing and cannot see it.</p>
+</div>
+<div class="nugget" id="nugget-help">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 7</span></h4>
+<p class="big">The human knows the goal, the agent does not, both want the same thing. The human's behavior is the agent's sensor.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>This reframes assistance: the agent is not following instructions, it performs inference. Every action the human takes is a noisy reading of theta.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A junior assistant and a busy manager. The assistant watches what the manager reaches for and updates the model of what matters.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-ignorance">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 7</span></h4>
+<p class="big">Misalignment comes from ignorance, not malice. Watching the human is worth 0.227 in the toy.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The failure mode is the agent that does not look: random guessing at 0.5 while the evidence sits in plain sight. The fix is inference, not obedience.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Coach and player. The coach who watches the player's habits beats the coach with the better playbook but closed eyes.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C07, C08, C09</p>
+<h2>Bandits with help</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 5, 6</span></p>
+<p>A contextual bandit shows a context, takes an arm, earns a reward. The policy maps contexts to arms. The lesson toy: morning and evening, tea and coffee, rewards [[0.8, 0.3], [0.2, 0.9]]. The optimal policy serves tea in the morning (0.8) and coffee in the evening (0.9). Contexts equally likely: expected reward 0.85. A context-blind policy that always serves tea gets 0.5. Context is worth 0.35. Lesson figure u06_f06 carries the comparison table.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u06-bandit.jpg" alt="Watercolor of three vintage slot machines">
+<figcaption><span class="tag tag-toy">Illustration</span> The bandit as watercolor. Three machines, one lever pulled. The context says which machine pays. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 5, 6</span></p>
+<p>In an assisted bandit the agent proposes and the human disposes. The human veto bounds the downside of exploration. The lesson toy for the morning: the agent suggests uniformly, the human overrides a wrong suggestion with probability 0.9. Team reward = 0.5 times 0.8 + 0.5 times (0.9 times 0.8 + 0.1 times 0.3) = 0.775. Solo uniform gets 0.55. Assistance is worth 0.225. The failure case is the rubber stamp: override probability 0.1 under fatigue gives 0.575, barely above solo, minus the attention cost: net negative.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Team reward 0.775 against solo 0.55, rubber-stamp 0.575">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The veto bounds the downside</text>
+<g><title>Solo uniform: 0.55</title><rect x="80" y="160" width="120" height="80" fill="#6f6355" rx="4"/><text x="140" y="152" text-anchor="middle" font-size="14" font-family="Georgia">0.55</text><text x="140" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">solo</text></g>
+<g><title>Assisted team: 0.775</title><rect x="280" y="105" width="120" height="135" fill="#5d7050" rx="4"/><text x="340" y="97" text-anchor="middle" font-size="14" font-family="Georgia">0.775</text><text x="340" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">team: veto 0.9</text></g>
+<g><title>Rubber stamp: 0.575</title><rect x="480" y="152" width="120" height="88" fill="#a94f27" rx="4"/><text x="540" y="144" text-anchor="middle" font-size="14" font-family="Georgia">0.575</text><text x="540" y="258" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">rubber stamp: veto 0.1</text></g>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 6</span> Same numbers as the lesson's toy. The veto is a safety filter with a per-veto cost. Below the break-even override rate, remove the human.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5, 6</span></p>
+<p>Exploration cost is cumulative regret. The lesson toy: 3-arm Bernoulli [0.6, 0.55, 0.5], seed 0. Greedy regret 29.6, epsilon-greedy (0.1) regret 2.4. Greedy locks onto a suboptimal arm and pays linearly. Epsilon-greedy pays a steady exploration tax and finds the best arm. The lesson's Contract 2 runs T = 300 rounds while its Contract 15 alt text says T = 200. Both are stated as written, and the regret numbers are reported with the toy's T = 300. Lesson figure u06_f07 draws the two curves.</p>
+</div>
+<div class="nugget" id="nugget-context">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 7</span></h4>
+<p class="big">Context is worth 0.35 in the toy. The context-blind policy earns 0.5 where the context-aware earns 0.85.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The 0.35 is the price of ignoring the situation. Any policy that does not condition on context leaves it on the table.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>News recommendation. The same reader wants different articles morning and evening. The context-blind feed serves one of them badly.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-veto">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 7</span></h4>
+<p class="big">The human veto bounds the downside: team 0.775 against solo 0.55. The team can explore more aggressively because the veto caps the cost.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Assistance changes the exploration economics. The agent can try the uncertain arm because the human catches the mistake.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Autopilot with a pilot. The automation flies the uncertain approach. The pilot is the veto.</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-rubber">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 11</span></h4>
+<p class="big">The rubber stamp kills the team. Override probability 0.1 gives 0.575, barely above solo, minus the attention cost: net negative.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>A human in the loop who never vetoes is a cost with no benefit. Measure the override rate against break-even, and remove the human below it.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Code review. The reviewer who approves everything adds latency, not safety. Track the catch rate.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C10, C11, C12</p>
+<h2>Burden, privacy, the plan</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5, 6</span></p>
+<p>Elicitation burden is the human-side cost: time, attention, fatigue. Each extra query buys less than the last. The lesson toy: Gaussian gap, query noise sd 1. Marginal gains for queries 1 to 5: 0.5, 0.167, 0.083, 0.05, 0.033. The fifth query buys 0.033 where the first bought 0.5. Stop when the marginal gain falls below the cost per query. Lesson figure u06_f08 draws the falling bars.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Marginal gains fall from 0.5 to 0.033 across five queries">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">The fifth query buys almost nothing</text>
+<g><title>Query 1: 0.500</title><rect x="60" y="60" width="80" height="192" fill="#31405e" rx="4"/><text x="100" y="52" text-anchor="middle" font-size="13" font-family="Georgia">0.50</text><text x="100" y="272" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">1</text></g>
+<g><title>Query 2: 0.167</title><rect x="164" y="188" width="80" height="64" fill="#31405e" rx="4"/><text x="204" y="180" text-anchor="middle" font-size="13" font-family="Georgia">0.17</text><text x="204" y="272" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">2</text></g>
+<g><title>Query 3: 0.083</title><rect x="268" y="220" width="80" height="32" fill="#5d7050" rx="4"/><text x="308" y="212" text-anchor="middle" font-size="13" font-family="Georgia">0.08</text><text x="308" y="272" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">3</text></g>
+<g><title>Query 4: 0.050</title><rect x="372" y="233" width="80" height="19" fill="#5d7050" rx="4"/><text x="412" y="225" text-anchor="middle" font-size="13" font-family="Georgia">0.05</text><text x="412" y="272" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">4</text></g>
+<g><title>Query 5: 0.033</title><rect x="476" y="239" width="80" height="13" fill="#a94f27" rx="4"/><text x="516" y="231" text-anchor="middle" font-size="13" font-family="Georgia">0.03</text><text x="516" y="272" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">5</text></g>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 6</span> Same numbers as lesson figure u06_f08. Fatigue makes it worse: later answers get noisier, so realized gains fall faster than the model says.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 5</span></p>
+<p>Preferences are personal data. The answers, the query sequence, and the inferred posterior are all sensitive: each answer reduces uncertainty about theta, which is the point of elicitation and also the leak. The lesson's minimization rule: ask only decision-relevant queries (C01), aggregate where possible, expire raw answers. Anonymized preference traces re-identify: preferences are fingerprints.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 3, 5, 6</span></p>
+<p>The case design assembles the unit into a plan. The lesson's hypothetical product case: 200 beta users, 5 queries each, 1000 answers, stop when marginal gain falls below 0.02 or the budget is spent, metric held-out pairwise accuracy on 200 pairs. Every number is labeled hypothetical in the lesson. The hypothetical projection: the 1000 answers cut posterior variance by about 0.9 on the toy model. The design flows from the unit: VoI ranks the queries, the posterior tracks uncertainty, the marginal rule stops, the privacy checklist screens, and the metric is decided before data collection.</p>
+</div>
+<div class="nugget" id="nugget-marginal">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 7</span></h4>
+<p class="big">Stop when the marginal gain falls below the cost per query. The fifth query buys 0.033 where the first bought 0.5.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The budget binds before the information runs out. The marginal rule turns that into a stopping decision instead of a feeling.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A survey that is too long. Each extra question buys less and annoys more. The marginal rule says where to cut.</dd>
+</dl>
+</div>
+</section>
+<section class="block wisdom" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Eight nuggets, indexed</h2>
+<ol>
+<li><a href="#nugget-voi">VoI prices the question.</a> Ask when it exceeds cost.</li>
+<li><a href="#nugget-zero">VoI is zero when the answer cannot flip the decision.</a> Interesting is not valuable.</li>
+<li><a href="#nugget-help">The human's behavior is the agent's sensor.</a> Assistance is inference.</li>
+<li><a href="#nugget-ignorance">Misalignment from ignorance, not malice.</a> Watching is worth 0.227.</li>
+<li><a href="#nugget-context">Context is worth 0.35.</a> Condition on the situation.</li>
+<li><a href="#nugget-veto">The veto bounds the downside.</a> Team 0.775 against solo 0.55.</li>
+<li><a href="#nugget-rubber">The rubber stamp kills the team.</a> Measure the override rate.</li>
+<li><a href="#nugget-marginal">Stop on the marginal rule.</a> The fifth query buys 0.033.</li>
+</ol>
+<p class="backlink"><a href="../index.html">Back to the CS329H course index</a></p>
+</section>
+</div>
+<footer id="provenance"><div class="wrap">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cs329h/lessons/u06_lesson.md</code>. No full lecture transcript exists for S10 and S11, and no lecture anecdotes appear. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING. Quoted words from the lesson source: 0, counted by <code>companions/tools/quote_recount.py</code> with the blockquote plus quoted-phrase method, footer excluded. Lesson figures u06_f01 through u06_f08 are referenced where the lesson places them. The charts on this page re-plot the lesson's computed toy numbers with concept and contract citations. The belief toy runs the lesson's C06 Bayes update in the browser. In C09 the toy specifies T = 300 rounds while the figure alt text says T = 200. Both are stated as written. No official source video is on record for this session, so no embed appears. The three watercolors are original illustrations made for this companion.</p>
+</div></footer>
+<script>
+function updBelief(){
+var lt=parseFloat(document.getElementById("lt").value)
+var lc=parseFloat(document.getElementById("lc").value)
+document.getElementById("ltv").textContent=lt.toFixed(2)
+document.getElementById("lcv").textContent=lc.toFixed(2)
+var post=lt*0.5/(lt*0.5+lc*0.5)
+document.getElementById("bout").textContent="posterior P(tea | reach left) "+post.toFixed(3)+", expected reward "+post.toFixed(3)
+}
+document.getElementById("lt").addEventListener("input",updBelief)
+document.getElementById("lc").addEventListener("input",updBelief)
+updBelief()
+</script>
+</body>
+
+</html>

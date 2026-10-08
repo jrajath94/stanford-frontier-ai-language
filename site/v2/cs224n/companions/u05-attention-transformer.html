@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U05 Companion: Attention and Transformers · CS224N</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">Stanford CS224N · Unit 05 · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero" id="top">
+<p class="kicker">Companion 5 of 15 · narrated from the lesson document</p>
+<h1>Attention and transformers</h1>
+<p class="dek">Position 3 reads position 1 directly, no squeezing through lossy steps. This companion walks the full arc of Unit 05: query, key, and value as a retrieval system, the calibration scale, multiple heads, masks, residuals, positions, the feedforward block, cost, and the KV cache.</p>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> The idea, and every number beside it, comes from the cited section of <code>lessons/u05_attention_transformer.md</code>. The phrasing is the companion’s.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-companion">companion</span> Companion voice: the idea above the tag is from the lesson. The generalization below it is the companion’s.</p>
+<p class="small muted">Provenance: no full lecture transcript exists for this session. The 2026 lecture videos are restricted and unviewed, and the 2024 playlist was not viewed. This page narrates the lesson document, not a video. The concept inventory is REQUESTED-BRANCH. The reading list is OFFICIAL-SOURCE via SRC-02.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u05-hero.jpg" alt="Watercolor of a lighthouse beam blending three boats reflections into one glowing path">
+<figcaption><span class="tag tag-toy">Illustration</span> The U05 idea in one image: the query is the beam, the keys are the boats, and the output is the blend of their reflections. A retrieval system made of light. Watercolor, original to this companion.</figcaption>
+</figure>
+</header>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">1 QKV</a>
+<a href="#s2">2 Scale</a>
+<a href="#s3">3 MHA</a>
+<a href="#s4">4 Masks</a>
+<a href="#s5">5 Residual</a>
+<a href="#s6">6 Positions</a>
+<a href="#s7">7 FFN</a>
+<a href="#s8">8 Enc/Dec</a>
+<a href="#s9">9 Shapes</a>
+<a href="#s10">10 Cost</a>
+<a href="#s11">11 KV cache</a>
+<a href="#s12">12 Build it</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>A retrieval system made of vectors</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>Position 3 needs information from position 1. The RNN would squeeze it through 2 lossy steps (U04 C04). Can position 3 read position 1 directly? The query asks “who is parallel to me”, the keys answer, and the values carry the content. A retrieval system. The query is the question, the keys are the index, the values are the documents. Attention scores match the question against the index, and the weights fetch a blend of the documents. Three learned projections let the model use different geometry for asking, indexing, and carrying.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §5, §6</span></p>
+<p>S_ij = q_i · k_j: every position scores every position, O(n² d_k). P = softmax(S / sqrt(d_k)). Out_i = sum_j P_ij v_j: a convex combination of values. No recurrence, no convolution. The only mixing is the weighted sum. From <code>compute_u05.py</code>: q = (1,0), K rows (1,0), (0,1), (−1,0), V rows (2,0), (0,2), (−2,0). Scores (0.707, 0, −0.707). Weights (0.576, 0.284, 0.140). Output (0.872, 0.568) = 0.576 v1 + 0.284 v2 + 0.140 v3.</p>
+</div>
+<figure>
+<div id="chart-qkv"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §6</span> One query’s weights, from <code>compute_u05.py</code> (executed 2026-10-06): (0.576, 0.284, 0.140) over the three keys. The blend (0.872, 0.568) leans on the parallel key.</figcaption>
+</figure>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Blend toy. The retrieval arithmetic is C01’s. The vectors start at the lesson’s toy and are yours to change.</p>
+<p>query q <input class="text" id="atq" value="1,0" aria-label="Query vector"></p>
+<p>keys (bar separated) <input class="text" id="atk" value="1,0 | 0,1 | -1,0" aria-label="Key vectors"></p>
+<p>values (bar separated) <input class="text" id="atv" value="2,0 | 0,2 | -2,0" aria-label="Value vectors"></p>
+<p><button class="btn" id="atbtn">Attend</button></p>
+<p class="small" id="atnote"></p>
+</div>
+<div class="nugget" id="nugget-retrieval">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">Attention is a retrieval system: the query is the question, the keys are the index, the values are the documents. Attention weights explain the routing. They do not explain the model.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Different weight matrices can give the same output, because the values carry the content and the weights are one factor. Weights are a clue, not an explanation. Do not ship interpretability claims on weights alone.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose attention when any position may need any other (long range). Choose the RNN when n is huge and locality suffices. The retrieval framing tells you which regime you are in.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>The scale is a calibration knob</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>d_k = 64, q and k have unit-variance entries. What do the raw dot products look like? Dot variance = d_k = 64, std = 8. Softmax of values spread over ±16 collapses to one-hot. The head stops blending and stops learning: softmax saturates, gradients vanish. The scale is a calibration knob. Raw dots grow with d_k. Dividing by sqrt(d_k) restores unit variance, so the softmax stays in its sensitive range. Without it, big models (big d_k) get peaked attention and dead gradients for free.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §5, §6</span></p>
+<p>Var of the sum = d_k under independence. Softmax saturates when inputs differ by more than about 5: with std 8, one key wins by luck of the draw. Dividing by 8 brings the spread back to about 1, where softmax discriminates instead of collapsing. From <code>compute_u05.py</code>, d_k = 64, 8 keys: unscaled, max weight 0.866, entropy 0.571 (near one-hot). Scaled by 1/8: max weight 0.218, entropy 1.974 (spread out).</p>
+</div>
+<figure>
+<div id="chart-scale"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §6</span> The scale’s effect at d_k = 64, from <code>compute_u05.py</code> (executed 2026-10-06): unscaled entropy 0.571 (near one-hot, max weight 0.866), scaled entropy 1.974 (spread, max weight 0.218). The division restores the sensitive range.</figcaption>
+</figure>
+<div class="nugget" id="nugget-knob">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §3, §11</span></h4>
+<p class="big">The scale is not a minor detail. An unscaled head at d_k = 64 is a different mechanism: argmax routing with dead gradients.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Entropy 0.571 versus 1.974 is the difference between a head that blends and a head that points. The init argument is tight: divide by sqrt(d_k) by default.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Tune only if attention entropy looks wrong in a trained model. The default is principled. Deviations need evidence.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Scale probe. The variance argument is C02’s. Slide d_k and watch the raw spread grow.</p>
+<p>d_k <input class="range" type="range" id="sdk" min="4" max="256" step="4" value="64" aria-label="Key dimension"></p>
+<p class="small" id="sdknote"></p>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>A panel of specialists</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>One head gives one blend. What if position 3 needs “subject” from position 1 and “tense” from position 2 at once? h = 4 heads, d = 32, d_k = 8. Each head learns its own QKV geometry, the outputs concat and re-project. A panel of specialists, not one generalist. Each head attends in its own subspace (syntax, coreference, position). The output projection mixes the specialists’ reports. One head with d_k = 32 is not the same: the split forces separate score matrices.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §5, §6</span></p>
+<p>Head_i = attention(X W_qi, X W_ki, X W_vi). MHA = concat(heads) W_o. Parameters: 4 d² (Q, K, V, O projections). Compute: h times the single-head cost, same total FLOPs as one big head, but h independent (n, n) score matrices. Shape trace from <code>compute_u05.py</code>, n = 8, d = 32, h = 4: per-head scores (8, 8), per-head out (8, 8), concat (8, 32), W_o (32, 32).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §11</span></p>
+<p>The broken assumption is that heads specialize cleanly. Trained heads often redundantly attend to the same positions, and some heads can be pruned with no loss. Specialization is a tendency, not a guarantee. Do not assign linguistic roles to heads without probing.</p>
+</div>
+<div class="nugget" id="nugget-panel">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §3, §11</span></h4>
+<p class="big">Specialization is a tendency, not a guarantee. Prune heads one by one and measure the loss delta: a long tail, a few heads matter.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>One wide head has the same FLOPs but one routing decision. The split into h heads buys h independent score matrices, not more compute.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose MHA as the default. Choose fewer, wider heads when d_k below 32 starts to hurt, empirically. Do not narrate heads as linguists without evidence.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>The mask is the architecture</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>The decoder predicts w_4 from w_1..w_3, but the full (n, n) score matrix lets position 3 see position 5. How is the future hidden? Add −1e9 above the diagonal, then softmax. The upper triangle becomes exactly 0. A one-way mirror. The causal mask blinds each position to the future, the padding mask blinds all positions to filler. Both are added to the scores before softmax: −inf becomes 0 weight. After softmax is too late: the mass already moved, and renormalizing leaks rank information.</p>
+<figure>
+<img class="illus" src="assets/u05-mirror.jpg" alt="Watercolor of a one-way mirror with light passing one way and blocked the other">
+<figcaption><span class="tag tag-toy">Illustration</span> The causal mask as watercolor: a one-way mirror. Light (information) passes left to right and is blocked the other way. The arrow of time, painted. Watercolor, original to this companion.</figcaption>
+</figure>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §5, §6</span></p>
+<p>softmax(z_i − 1e9) = 0 up to float precision: exp(−1e9) underflows to 0. The row renormalizes over allowed positions only. From <code>compute_u05.py</code>, 4×4 random scores: row sums (1, 1, 1, 1), upper-triangle max 0.0. Row 1: (1.00, 0, 0, 0). Row 3: (0.50, 0.18, 0.32, 0). Masking after softmax (zeroing weights then renormalizing) gives different numbers: the disallowed scores shaped the distribution before they were cut.</p>
+</div>
+<figure>
+<div id="chart-maskrow"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §6</span> Row 3 of the masked 4×4, from <code>compute_u05.py</code> (executed 2026-10-06): (0.50, 0.18, 0.32, 0). The future is exactly 0, the row sums to 1, and the mass moved only among allowed positions.</figcaption>
+</figure>
+<div class="nugget" id="nugget-mirror">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §3, §11</span></h4>
+<p class="big">Mask before softmax, never after. After is too late: the future already shaped the distribution before it was cut.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The buggy version looks better in validation because it peeked. Test: weights must be exactly 0 above the diagonal, not just small.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose causal for generation (the arrow of time). Choose the padding mask whenever batches are padded. Choose neither only for full bidirectional encoding.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Mask timing toy. The mechanism is C04’s. Three scores at position 3 (sees 1, 2, 3 only). The prefilled scores reproduce the lesson’s row exactly.</p>
+<p>Scores (position 1, 2, 3) <input class="text" id="mk" value="0,-1.022,-0.446" aria-label="Scores"></p>
+<p><button class="btn" id="mkbtn">Mask, then softmax</button></p>
+<p class="small" id="mknote"></p>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>Express lanes and stabilizers</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>Twelve attention layers, each a learned function. What stops the gradient from dying across them (U04 C06 all over again)? y = x + F(x). The gradient dy/dx = I + dF/dx: the identity path carries signal even if F’s gradient vanishes. The block learns a correction, not a replacement. Residuals are express lanes. Each sublayer adds its contribution to the running representation, and the gradient flows back along the skip untouched. Layer norm is the stabilizer: it re-centers each vector (mean 0, var 1) so the scale never drifts across layers.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §5, §6</span></p>
+<p>dL/dx = dL/dy (I + dF/dx): the identity term guarantees a full-strength path. Layer norm: (x − mu)/sigma × gamma + beta. Differentiable, per token, no batch statistics (unlike batch norm, which breaks on variable sequences). From <code>compute_u05.py</code>: x = (1,2,3,4,5), normalized mean ~0, var 1.0.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that norm placement is cosmetic. Deep post-norm stacks need learning-rate warmup to train at all: the gradient through 24 post-norm layers without warmup explodes or stalls. Placement is a stability decision. Choose pre-norm for deep stacks, post-norm only to match a legacy checkpoint.</p>
+</div>
+<div class="nugget" id="nugget-lanes">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §3, §11</span></h4>
+<p class="big">The block learns a correction, not a replacement. The identity path guarantees a full-strength gradient even when the sublayer’s gradient vanishes.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Batch norm is wrong for sequences: batch statistics leak across variable lengths. Layer norm is per token, no batch statistics, no leak.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Placement is a stability decision, stated up front. Post-norm without warmup on deep stacks is the classic stall.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>Attention sees a bag. Positions label it.</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>Attention is a set operation: permute the input, permute the output identically. Where did word order go? “Dog bites man” versus “man bites dog” have the same multiset. Without positions, the model cannot tell them apart. Add a position vector to each token embedding (or bias the scores, as in relative schemes). The model then has both “what” and “where”. Sinusoids give a fixed ruler, learned encodings give a fitted ruler. Both break at unseen lengths.</p>
+<figure>
+<img class="illus" src="assets/u05-ruler.jpg" alt="Watercolor of a ruler decorated with alternating fast and slow sine waves">
+<figcaption><span class="tag tag-toy">Illustration</span> The sinusoid as watercolor: a ruler of waves. The fast wave moves a lot per step, the slow wave barely moves. Together they name every position. Watercolor, original to this companion.</figcaption>
+</figure>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §5, §6</span></p>
+<p>Sinusoid: each dimension is a wave with a different frequency, and PE(pos + k) is a linear function of PE(pos) (rotation), so relative offsets are learnable. Learned: row pos of a table, no extrapolation past n_max. From <code>compute_u05.py</code>, d = 4: PE(0) = (0, 1, 0, 1). PE(1) = (0.841, 0.540, 0.010, 1.000). The fast wave (freq 1) moved a lot, the slow wave (freq 0.01) barely moved. That is the ruler working.</p>
+</div>
+<figure>
+<div id="chart-pe"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6</span> PE(1) at d = 4, from <code>compute_u05.py</code> (executed 2026-10-06): (0.841, 0.540, 0.010, 1.000). PE(0) = (0, 1, 0, 1). The fast dimension moved, the slow one barely did.</figcaption>
+</figure>
+<div class="nugget" id="nugget-bag">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §3, §11</span></h4>
+<p class="big">Without any position signal the architecture is permutation-equivariant. No signal, no order, no matter how much data.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The model does not learn order from the data anyway. Attention scores depend only on content pairs, so the architecture cannot invent “where”.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose absolute positions for the standard. Choose relative when length generalization matters more. All schemes assume a max length somewhere.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Ruler toy. The sinusoid formula is C06’s: PE(pos, 2i) = sin(pos / 10000^(2i/d)), PE(pos, 2i+1) = cos(pos / 10000^(2i/d)). At d = 4, pos = 1, it reproduces the lesson’s PE(1) exactly.</p>
+<p>Position <input class="range" type="range" id="pepos" min="0" max="20" step="1" value="1" aria-label="Position"></p>
+<p class="small" id="penote"></p>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>The FFN is half the block</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>Attention only mixes positions. Where does per-position computation happen? The FFN applies to each of the n vectors independently: (n, d) → (n, 4d) → (n, d). Same weights at every position. Attention is the meeting. The FFN is the desk work after. Each position processes its own vector through a two-layer MLP: expand, activate, contract. The 4x expansion is the capacity knob. Most of the model’s parameters live here.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §5, §6</span></p>
+<p>Per-position means no cross-talk, so it parallelizes trivially over n. The expansion gives the MLP room for features, and the contraction returns to the residual width d so the add typechecks (C05). Shape trace, hand-done and labeled as such: d = 32, n = 8. In (8, 32) → hidden (8, 128) → out (8, 32). Parameters: 32×128 + 128 + 128×32 + 32 = 8320.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §11</span></p>
+<p>The broken assumption is that the FFN is just a nonlinearity. Remove it and keep attention: the model loses most of its capacity (2/3 of params) and per-position depth. Ablations show the drop. It is half the block, not a garnish.</p>
+</div>
+<div class="nugget" id="nugget-desk">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
+<p class="big">Attention is the meeting. The FFN is the desk work after. Remove the FFN and you lose two thirds of the parameters and all per-position depth.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The 4x expansion is the capacity knob. Shrink it (2x) when parameters are the budget, but know the shrink removes half the block capacity.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>When a component looks like a garnish, ablate it before dismissing it. The FFN’s share of the FLOP bill (8.59 of 11.3 GFLOP at n = 512, d = 1024) says it is the main course.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>Three floor plans from one brick</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>One block design, three jobs: classify, generate, translate. What changes? Encoder (BERT-style): no causal mask, read the label off [CLS]. Decoder (GPT-style): causal mask, predict next. Encoder-decoder: encoder reads the source (no mask), decoder writes with cross-attention to the encoder. Three floor plans from one brick. Encoder-only: bidirectional, for understanding (classify, extract). Decoder-only: causal, for generation (the modern default). Encoder-decoder: two stacks joined by cross-attention, for conditioned generation (translation, summarization).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §5, §6</span></p>
+<p>No new math: the distinction is which masks and which K/V sources. Cross-attention shape trace, hand-done and labeled as such: n_dec = 6, n_enc = 10, d = 32. Scores (6, 10), weights (6, 10) with rows summing to 1, out (6, 32).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that decoder-only can do everything encoder-decoder can. With a 10k-token source and a short target, the decoder-only model re-reads the source every layer at full n² cost, while encoder-decoder reads it once. The floor plan has a price.</p>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Shapes are types</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>The loss is nan and the shapes all “look right”. Where is the bug? A transformer layer is a pipeline of typed transforms, and a mismatch is a compile error you have to write yourself. The discipline: assert every intermediate. The assert that fires names the bug. Shapes are types.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §6</span></p>
+<p>The trace, from <code>compute_u05.py</code>’s MHA section and hand-extended through the FFN (labeled where hand-extended): per-head scores (8, 8), per-head out (8, 8), concat (8, 32), W_o (32, 32), FFN hidden (8, 128), FFN out (8, 32). The lab implements the trace as asserts.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is that the shapes matched, so the code is right. Transposed scores (n, n) still typecheck (square): the mask lands on the wrong axis. Shapes are necessary, not sufficient. Pair them with the value checks in C01 to C04.</p>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Two different bills</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>Training is fast (parallel over n) but inference crawls (serial over n). Why both? Per layer: attention O(n² d), FFN O(n d²). Training does all n positions at once. Inference generates one token at a time, re-reading the context. Two different bills. The transformer trains like a parallel machine and generates like an RNN.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §5, §6</span></p>
+<p>Projections: 4 matmuls of (n, d) @ (d, d): 4 n d². Scores: (n, d)(d, n) per head: n² d total. Blend: same. FFN: 16 n d². At large n the n² term dominates, at small n the FFN does. Toy, hand-done and labeled as such: n = 512, d = 1024, one layer. Attention: 2 × 512² × 1024 = 0.54 GFLOP. FFN: 16 × 512 × 1024² = 8.59 GFLOP. Projections: 4 × 512 × 1024² = 2.15 GFLOP. Total about 11.3 GFLOP per layer forward. The FFN dominates at this n. The n² term takes over past n ~ 8d.</p>
+</div>
+<figure>
+<div id="chart-cost"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §6</span> The FLOP bill at n = 512, d = 1024, one layer, hand-computed and labeled illustrative: attention 0.54, FFN 8.59, projections 2.15 GFLOP. Total about 11.3. The FFN dominates until n ~ 8d.</figcaption>
+</figure>
+<div class="nugget" id="nugget-bills">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §3, §11</span></h4>
+<p class="big">FLOPs do not predict speed. At small n the model is memory-bandwidth bound (loading weights), not compute bound. Roofline thinking beats FLOP counting for inference.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Doubling d barely changes step time when the bottleneck is weight movement. Count the bytes moved, not just the multiplies.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose the standard transformer when quality comes first. Choose linear attention or SSMs when n is extreme (100k+) and the bill dominates.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Bill calculator. The FLOP formulas are C10’s. The sizes are yours. Prefilled with the lesson’s toy.</p>
+<p>n (sequence length) <input class="text" id="cn" value="512" aria-label="Sequence length"></p>
+<p>d (model width) <input class="text" id="cd" value="1024" aria-label="Model width"></p>
+<p><button class="btn" id="cbtn">Price one layer</button></p>
+<p class="small" id="cnote"></p>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>The memo pad: memory for speed</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>Generating token 17 recomputes keys and values for tokens 1..16, and they did not change. A memo pad. The past’s keys and values are frozen (causal: they never change), so store them once and attend against the pad. Each new token appends one row. The pad grows with the conversation: memory for speed. Without cache, step t costs O(t² d), total over n steps O(n³ d). With cache, step t costs O(t d), total O(n² d). The saving is a full factor of n in the total.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §6</span></p>
+<p>From <code>compute_u05.py</code>, n = 16, d = 8, per head per layer: no cache 23936, cached 2176, ratio 11.0x. The ratio grows with n (about 2n/3 here, linear in n).</p>
+</div>
+<figure>
+<div id="chart-cache"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §6</span> The cache’s saving at n = 16, d = 8, per head per layer, from <code>compute_u05.py</code> (executed 2026-10-06): 23936 without cache versus 2176 with cache, an 11.0x ratio that grows with n.</figcaption>
+</figure>
+<div class="nugget" id="nugget-memo">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §3, §11</span></h4>
+<p class="big">The cache is not free. Long contexts OOM on the cache, not the weights: 2 × layers × n × d floats of memo pad.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the cache always for autoregressive decoding: it is exact and standard. Evict or compress only when memory forces it. The fix for a cache OOM is cache quantization or eviction, not smaller weights.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every memoization trades memory for speed. Price the pad before you assume it is free.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Write it cold</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>Can you write the layer without looking? n = 4, d = 16, h = 2. Embeddings + sinusoid in, pre-norm MHA + residual, pre-norm FFN + residual, out. Every shape asserted (C09). The layer as a recipe: normalize, attend, add, normalize, transform, add. Six lines of numpy with asserts between them. If you can write it cold, you own the architecture. If not, the gaps point back to the concept that needs work.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §6</span></p>
+<p>The lab runs it: output shape (4, 16), finite values, and the check that matters: permuting the input without PE permutes the output, with PE it does not. That check is the whole unit in one experiment.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §11</span></p>
+<p>The broken assumption is “I understand it because I read it.” The transpose trap (C09) is the counterexample: readers miss it, writers catch it. Writing is the test.</p>
+</div>
+<div class="nugget" id="nugget-cold">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §3, §11</span></h4>
+<p class="big">Writing is the test. Time yourself writing the layer cold, then list the concepts you hesitated on: the hesitations map to real gaps.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The order is the architecture: PE add → LN → MHA → residual → LN → FFN → residual. Any other order is a different model.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose writing over rereading whenever the goal is ownership. Reading confirms recognition. Writing exposes the gaps.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-retrieval"><span class="wnum">01</span>Attention is a retrieval system <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-knob"><span class="wnum">02</span>The scale is a calibration knob <span class="muted">· C02</span></a></li>
+<li><a href="#nugget-panel"><span class="wnum">03</span>A panel of specialists <span class="muted">· C03</span></a></li>
+<li><a href="#nugget-mirror"><span class="wnum">04</span>Mask before softmax, never after <span class="muted">· C04</span></a></li>
+<li><a href="#nugget-lanes"><span class="wnum">05</span>The block learns a correction <span class="muted">· C05</span></a></li>
+<li><a href="#nugget-bag"><span class="wnum">06</span>Attention sees a bag <span class="muted">· C06</span></a></li>
+<li><a href="#nugget-desk"><span class="wnum">07</span>The FFN is half the block <span class="muted">· C07</span></a></li>
+<li><a href="#nugget-bills"><span class="wnum">08</span>FLOPs do not predict speed <span class="muted">· C10</span></a></li>
+<li><a href="#nugget-memo"><span class="wnum">09</span>The cache is not free <span class="muted">· C11</span></a></li>
+<li><a href="#nugget-cold"><span class="wnum">10</span>Writing is the test <span class="muted">· C12</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u05_attention_transformer.md</code> (CS224N, Unit 05). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The concept inventory is REQUESTED-BRANCH, the reading list OFFICIAL-SOURCE via SRC-02. Every number on this page traces to the lesson’s computed script <code>visuals/compute_u05.py</code> (executed 2026-10-06) or to hand-computed examples the lesson labels as such. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+<p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
+<p class="small">Built as Companion 5 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 230
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function num(id, dflt) {
+  const v = parseFloat(document.getElementById(id).value)
+  if (isNaN(v)) { return dflt }
+  return v
+}
+function vec2(id) {
+  const parts = document.getElementById(id).value.split(",")
+  return [parseFloat(parts[0]) || 0, parseFloat(parts[1]) || 0]
+}
+function vecList(id) {
+  const out = []
+  const segs = document.getElementById(id).value.split("|")
+  segs.forEach(function(s) {
+    const parts = s.split(",")
+    out.push([parseFloat(parts[0]) || 0, parseFloat(parts[1]) || 0])
+  })
+  return out
+}
+
+function runAttend() {
+  const q = vec2("atq")
+  const ks = vecList("atk")
+  const vs = vecList("atv")
+  const note = document.getElementById("atnote")
+  if (ks.length !== vs.length || ks.length === 0) {
+    note.textContent = "Give the same count of keys and values, at least one of each."
+    return
+  }
+  const dk = 2
+  const scores = ks.map(function(k) { return (q[0] * k[0] + q[1] * k[1]) / Math.sqrt(dk) })
+  const e = scores.map(function(s) { return Math.exp(s) })
+  let sum = 0
+  e.forEach(function(v) { sum = sum + v })
+  const w = e.map(function(v) { return v / sum })
+  const out = [0, 0]
+  w.forEach(function(p, i) { out[0] = out[0] + p * vs[i][0], out[1] = out[1] + p * vs[i][1] })
+  note.textContent = "Weights: (" + w.map(function(v) { return v.toFixed(3) }).join(", ") + "). Blend: (" + out[0].toFixed(3) + ", " + out[1].toFixed(3) + "). The lesson toy gives (0.576, 0.284, 0.140) and (0.872, 0.568)."
+}
+
+function runScale() {
+  const dk = parseFloat(document.getElementById("sdk").value)
+  const std = Math.sqrt(dk)
+  const note = document.getElementById("sdknote")
+  const verdict = (std > 5) ? "The raw spread exceeds the softmax sensitive range: one key wins by luck, gradients die." : "The raw spread stays in the sensitive range."
+  note.textContent = "d_k = " + dk + ". Raw dot std = sqrt(" + dk + ") = " + std.toFixed(2) + ". Spread about +-" + (2 * std).toFixed(1) + ". " + verdict + " The lesson numbers: entropy 0.571 unscaled vs 1.974 scaled at d_k = 64."
+}
+
+function runMask() {
+  const parts = document.getElementById("mk").value.split(",")
+  const z = parts.map(function(p) { return parseFloat(p) || 0 })
+  const note = document.getElementById("mknote")
+  if (z.length !== 3) {
+    note.textContent = "Give exactly three scores."
+    return
+  }
+  const e = z.map(function(v) { return Math.exp(v) })
+  const s = e[0] + e[1] + e[2]
+  const p = e.map(function(v) { return v / s })
+  note.textContent = "Masked softmax over positions 1-3: (" + p.map(function(v) { return v.toFixed(2) }).join(", ") + ", 0). Row sums to 1, the future is exactly 0. Prefilled scores reproduce the lesson row (0.50, 0.18, 0.32, 0)."
+}
+
+function runPE() {
+  const pos = parseInt(document.getElementById("pepos").value, 10)
+  const d = 4
+  const pe = []
+  let i = 0
+  while (i < d / 2) {
+    const div = Math.pow(10000, 2 * i / d)
+    pe.push(Math.sin(pos / div))
+    pe.push(Math.cos(pos / div))
+    i = i + 1
+  }
+  document.getElementById("penote").textContent = "PE(" + pos + ") = (" + pe.map(function(v) { return v.toFixed(3) }).join(", ") + "). At pos = 1: (0.841, 0.540, 0.010, 1.000), exactly the lesson numbers."
+}
+
+function runCost() {
+  const n = num("cn", 512)
+  const d = num("cd", 1024)
+  const note = document.getElementById("cnote")
+  if (n <= 0 || d <= 0) {
+    note.textContent = "Sizes must be positive."
+    return
+  }
+  const attn = 2 * n * n * d / 1e9
+  const ffn = 16 * n * d * d / 1e9
+  const proj = 4 * n * d * d / 1e9
+  const total = attn + ffn + proj
+  const dom = (attn > ffn) ? "attention (n^2) dominates" : "the FFN dominates"
+  note.textContent = "Attention " + attn.toFixed(2) + " + FFN " + ffn.toFixed(2) + " + projections " + proj.toFixed(2) + " = " + total.toFixed(2) + " GFLOP per layer. " + dom + " at this n."
+}
+
+document.getElementById("atbtn").addEventListener("click", runAttend)
+document.getElementById("sdk").addEventListener("input", runScale)
+document.getElementById("mkbtn").addEventListener("click", runMask)
+document.getElementById("pepos").addEventListener("input", runPE)
+document.getElementById("cbtn").addEventListener("click", runCost)
+
+barChart("chart-qkv", [["key 1 (parallel)", 0.576, SAGE], ["key 2 (orthogonal)", 0.284, INDIGO], ["key 3 (opposite)", 0.140, CLAY]], 0.6, "")
+barChart("chart-scale", [["unscaled entropy", 0.571, CLAY], ["scaled entropy", 1.974, SAGE], ["unscaled max weight", 0.866, CLAY], ["scaled max weight", 0.218, SAGE]], 2.0, "")
+barChart("chart-maskrow", [["pos 1", 0.50, INDIGO], ["pos 2", 0.18, INDIGO], ["pos 3", 0.32, INDIGO], ["pos 4 (future)", 0.0, CLAY]], 0.55, "")
+barChart("chart-pe", [["dim 1 (fast)", 0.841, INDIGO], ["dim 2", 0.540, INDIGO], ["dim 3 (slow)", 0.010, SAGE], ["dim 4", 1.000, SAGE]], 1.05, "")
+barChart("chart-cost", [["attention", 0.54, INDIGO], ["FFN", 8.59, CLAY], ["projections", 2.15, AMBER]], 9.0, " GFLOP")
+barChart("chart-cache", [["no cache", 23936, CLAY], ["cached", 2176, SAGE]], 24000, "")
+runScale()
+runPE()
+</script>
+</body>
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U03 Companion: Choice estimation and Bayesian learning · CS329H</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:900px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+.topband a{color:var(--paper)}
+header.hero{padding:52px 0 6px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:44px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:660px}
+.notice{border:1px solid var(--line)}
+.notice{background:var(--paper2)}
+.notice{border-radius:10px}
+.notice{padding:16px 20px}
+.notice{margin:26px 0}
+.notice{font-size:16px}
+.notice p{margin:.45em 0}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:16px 20px}
+.legend{margin:26px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-interp{background:transparent}
+.tag-interp{color:var(--indigo)}
+.tag-interp{border:1.5px solid var(--indigo)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+section.block{padding:34px 0 10px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.12em}
+.secnum{text-transform:uppercase}
+.secnum{color:var(--clay)}
+.secnum{margin:0 0 4px}
+h2{font-size:32px}
+h2{line-height:1.2}
+h2{margin:.1em 0 .5em}
+h3{font-size:22px}
+h3{margin:1.2em 0 .4em}
+.prose-narrow{max-width:720px}
+figure{margin:28px 0}
+figure{background:#fff}
+figure{border:1px solid var(--line)}
+figure{border-radius:10px}
+figure{padding:18px 18px 8px}
+figcaption{font-size:15px}
+figcaption{color:var(--muted)}
+figcaption{padding:10px 4px 12px}
+figcaption{line-height:1.55}
+img.illus{width:100%}
+img.illus{border-radius:8px}
+img.illus{display:block}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:5px solid var(--clay)}
+.nugget{background:#fff}
+.nugget{border-radius:8px}
+.nugget{padding:18px 22px}
+.nugget{margin:30px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:14px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:20px}
+.nugget .big{line-height:1.5}
+.nugget .big{margin:.2em 0 .6em}
+.nugget dl{margin:0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{margin:10px 0 2px}
+.nugget dd{margin:0 0 6px}
+.nugget dd{font-size:16.5px}
+.lab{border:1px dashed var(--amber)}
+.lab{background:var(--ambersoft)}
+.lab{border-radius:10px}
+.lab{padding:18px 22px}
+.lab{margin:28px 0}
+.toy{border:1px solid var(--indigo)}
+.toy{background:var(--indigosoft)}
+.toy{border-radius:10px}
+.toy{padding:18px 22px}
+.toy{margin:28px 0}
+.toy input[type=number]{width:64px}
+.toy input[type=number]{font-family:var(--mono)}
+.toy input[type=number]{font-size:15px}
+.toy input[type=number]{padding:4px 6px}
+.toy input[type=number]{margin:2px 6px 2px 2px}
+.toy label{font-family:var(--sans)}
+.toy label{font-size:14px}
+.btn{font-family:var(--sans)}
+.btn{font-size:15px}
+.btn{background:var(--ink)}
+.btn{color:var(--paper)}
+.btn{border:none}
+.btn{border-radius:8px}
+.btn{padding:10px 18px}
+.btn{cursor:pointer}
+.btn{margin:8px 8px 8px 0}
+.btn.ghost{background:transparent}
+.btn.ghost{color:var(--ink)}
+.btn.ghost{border:1.5px solid var(--ink)}
+table.data{border-collapse:collapse}
+table.data{margin:14px 0}
+table.data{font-size:16px}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.06em}
+table.data th{text-align:left}
+table.data th{padding:8px 14px 8px 0}
+table.data td{padding:8px 14px 8px 0}
+table.data td{border-top:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+code{font-family:var(--mono)}
+code{font-size:.88em}
+code{background:var(--paper2)}
+code{padding:1px 6px}
+code{border-radius:5px}
+.wisdom ol{padding-left:22px}
+.wisdom li{margin:10px 0}
+.wisdom a{color:var(--clay)}
+footer{background:var(--ink)}
+footer{color:var(--paper)}
+footer{margin-top:56px}
+footer{padding:40px 0 60px}
+footer p{font-size:15.5px}
+footer{line-height:1.6}
+footer code{background:rgba(255,255,255,.12)}
+footer a{color:var(--paper)}
+.backlink{font-family:var(--sans)}
+.backlink{font-size:15px}
+.backlink{margin:34px 0 0}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">CS329H · Stanford · Interactive companion · <a href="../index.html">course index</a></div></div>
+<div class="wrap">
+<header class="hero">
+<p class="kicker">U03 · Choice estimation and Bayesian learning</p>
+<h1>Yesterday's belief, today's data</h1>
+<p class="dek">How do we fit parameters when some of the data never arrives, and how do we combine what we believed before with what the data says? This unit starts at the maximum likelihood peak, climbs it with EM when labels are hidden, and then lets a prior pull the peak toward yesterday's belief.</p>
+</header>
+<figure>
+<img class="illus" src="assets/u03-hero.jpg" alt="Watercolor of three overlapping bell curves in indigo, clay, and sage">
+<figcaption><span class="tag tag-toy">Illustration</span> Prior, likelihood, posterior: three curves, one update. Multiply the first two, renormalize, and you get the third. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="notice">
+<p><strong>Sourcing.</strong> No full transcript exists for sessions S05 and S06. This companion narrates <code>content/v2/cs329h/lessons/u03_lesson.md</code>. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING.</p>
+<p><strong>How to read the tags.</strong> Every number carries its lesson section. Anything the companion computes is tagged <span class="tag tag-toy">Illustration</span>. A <span class="tag tag-interp">Interpretation</span> tag marks the companion's own reading of the lesson. Where the lesson leaves a value out, the page says so in words.</p>
+</div>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> A fact, number, or mechanism from the lesson.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-interp">Interpretation</span> The companion's reading of why a lesson fact matters. The fact is the lesson's, the gloss is ours.</p>
+<p><span class="tag-ref">C01 · Contract 6</span> Points to the exact lesson section behind a claim or number.</p>
+</div>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">The peak</a>
+<a href="#s2">EM climbs</a>
+<a href="#s3">Prior times likelihood</a>
+<a href="#s4">Penalties and honesty</a>
+<a href="#s5">Missing and uncertain</a>
+<a href="#wisdom">Wisdom index</a>
+<a href="#provenance">Provenance</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01, C02</p>
+<h2>The peak and what it misses</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 5, 6</span></p>
+<p>The MLE is a peak-finder. Plot how probable the data looks under each candidate parameter, and pick the peak. It uses the data and nothing else. The toy: 7 wins in 10 trials, true bias 0.65. The log-likelihood is 7 log p + 3 log(1 - p). Differentiate and the maximizer falls out at p = 0.70. The second derivative is negative, so it is a maximum. The gap from the truth comes from sample noise: with n = 10 the standard error is sqrt(0.7 times 0.3 / 10) = 0.145. Lesson figure u03_f01 plots the curve and marks the peak at 0.70 with the truth at 0.65.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Likelihood curve for 7 wins in 10 trials, peak at 0.70, truth at 0.65">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Seven wins in ten trials: the peak is at 0.70</text>
+<polyline points="60.0,240.0 86.0,240.0 112.0,240.0 138.0,239.9 164.0,239.4 190.0,237.8 216.0,233.6 242.0,224.9 268.0,209.8 294.0,186.9 320.0,156.6 346.0,121.5 372.0,86.9 398.0,60.4 424.0,50.0 450.0,61.8 476.0,96.6 502.0,147.5 528.0,199.1 554.0,232.5 580.0,240.0" fill="none" stroke="#31405e" stroke-width="2.5"/>
+<line x1="424" y1="50" x2="424" y2="262" stroke="#a94f27" stroke-width="2"/>
+<circle cx="424" cy="50" r="5" fill="#a94f27"><title>MLE peak at 0.70</title></circle>
+<text x="424" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#a94f27">MLE 0.70</text>
+<line x1="398" y1="60" x2="398" y2="262" stroke="#5d7050" stroke-width="1.5" stroke-dasharray="5,4"/>
+<text x="398" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#5d7050">truth 0.65</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 6</span> Same numbers as lesson figure u03_f01. The curve is the normalized likelihood p^7 (1-p)^3. With n = 10 the peak is honest but noisy.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 11, C02 · Contract 3, 5, 11</span></p>
+<p>Two limits. Under misspecification the MLE converges to the family member closest in KL divergence, not to the truth. Fitting a single coin bias to mixture data is the counterexample. And when the data comes from two hidden groups, a latent variable is a missing column in the spreadsheet: sum over its possible values to get the likelihood of what you saw. Direct optimization is hard because the log of a sum does not split. EM handles it by working with the complete-data likelihood instead. The non-identifiable warning: a mixture of two Bernoullis observed only through binary outcomes has a flat likelihood. The lesson build verified it: every start gave -277.0138. The latent variable adds nothing identifiable there.</p>
+</div>
+<div class="nugget" id="nugget-peak">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 · Contract 3, 9</span></h4>
+<p class="big">The MLE is a peak-finder that uses the data and nothing else. Fast, consistent, and noisy at small n.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>0.70 against a truth of 0.65 is not a failure. It is the expected wobble of ten trials, priced at a standard error of 0.145.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Estimate click-through from 70 clicks in 100 shows. The MLE is 0.70, and the honest report includes the error bar.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C03</p>
+<h2>EM climbs, never slips</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 3, 5, 6</span></p>
+<p>EM guesses the labels softly, fits the parameters to the soft labels, then re-guesses. Each round explains the data better than the last. The E-step sets the lower bound to touch the true likelihood by using the posterior over the latent labels. The M-step maximizes the bound. Since the bound touches and then rises, the true likelihood rises too: monotone ascent. The lesson toy fits 400 scores from two Gaussians with hidden group labels. Over 40 iterations the log-likelihood climbs from -775.9 to -738.2, monotone, recovering means -0.99 and 1.97 against truths of -1.0 and 2.0. Lesson figure u03_f02 draws the rising curve.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u03-climb.jpg" alt="Watercolor of a switchback path climbing a hill to a flag at the summit">
+<figcaption><span class="tag tag-toy">Illustration</span> EM as a climb: the E-step finds the footing, the M-step takes the step, and the path never goes down. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 8, 11</span></p>
+<p>The correctness check is an assertion on the diffs: the likelihood never decreases. With true labels supplied, one M-step gives the supervised MLE. The failure mode is local optima. Different starts give different answers, and symmetric starts in a symmetric mixture never break symmetry. The lesson verified the trap: Bernoulli starts all stuck at -277.0. The fix is multiple random restarts, kept honest by held-out likelihood.</p>
+</div>
+<div class="nugget" id="nugget-em">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 · Contract 5, 11</span></h4>
+<p class="big">The log of a sum does not split. EM climbs a touching lower bound instead, and the likelihood can only rise.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Monotone ascent is a debugging superpower. If your likelihood ever falls, the bug is in the M-step, and you know exactly where to look.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Missing annotation labels are latent variables. EM fits the annotator model and the labels together, softly.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C04, C05, C06</p>
+<h2>Prior times likelihood</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 3, 5, 6</span></p>
+<p>The prior is yesterday's belief as a distribution. Multiply by what the data says, renormalize, and you get today's belief. More data means the data's voice gets louder. The conjugate toy: a Beta(2,2) prior on the coin bias, 7 wins in 10 trials. Beta prior times Binomial likelihood gives a Beta posterior, exponents add: Beta(9,5). The posterior mean is 9/14 = 0.643, sitting between the prior mean 0.5 and the MLE 0.70. The 90 percent interval is 0.42 to 0.83. Lesson figure u03_f03 plots prior, likelihood, and posterior.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 11</span></p>
+<p>The dogmatic prior is the counterexample. A point mass at 0.5 gives a point-mass posterior: no learning, ever. Beta(1000,1000) with n = 10 lets the data move the mean by only 0.005. A prior that cannot be moved is not a belief. It is a refusal.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Posterior Beta(9,5) curve with mean 0.643 marked">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Posterior Beta(9,5): yesterday times today</text>
+<polyline points="60.0,240.0 80.8,240.0 101.6,240.0 122.4,240.0 143.2,239.9 164.0,239.6 184.8,238.5 205.6,236.0 226.4,230.7 247.2,221.3 268.0,206.5 288.8,185.4 309.6,158.6 330.4,127.9 351.2,96.8 372.0,70.2 392.8,53.3 413.6,50.7 434.4,64.7 455.2,94.2 476.0,134.0 496.8,175.8 517.6,210.6 538.4,231.7 559.2,239.3 580.0,240.0" fill="none" stroke="#31405e" stroke-width="2.5"/>
+<line x1="394" y1="53" x2="394" y2="262" stroke="#a94f27" stroke-width="2"/>
+<circle cx="394" cy="53" r="5" fill="#a94f27"><title>Posterior mean 0.643</title></circle>
+<text x="394" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#a94f27">mean 0.643</text>
+<text x="120" y="100" font-size="13" font-family="Georgia" fill="#6f6355">prior mean 0.5</text>
+<text x="470" y="100" font-size="13" font-family="Georgia" fill="#6f6355">MLE 0.70</text>
+<text x="320" y="292" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">90 percent interval 0.42 to 0.83</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 · Contract 6</span> The posterior density for the 7-in-10 toy. The mean lands between the prior and the data, closer to whichever carries more weight.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 5, 6</span></p>
+<p>MAP is the MLE with the prior pulling toward its center. Weak prior: near the MLE. Strong prior: near the prior's favorite. The log posterior is the log-likelihood plus the log-prior, so maximizing it equals maximizing the likelihood minus a penalty. For the Beta(a,a) prior the closed form is MAP = (7 + a - 1)/(10 + 2a - 2). As the prior strength grows 1, 2, 10, 50, the MAP moves 0.700, 0.667, 0.571, 0.519. Strength 1 is the uniform prior and recovers the MLE. Lesson figure u03_f04 draws the falling bars.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="MAP falls from 0.700 to 0.519 as prior strength grows from 1 to 50">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Stronger prior, stronger pull toward 0.5</text>
+<g><title>Prior strength 1, MAP 0.700</title><rect x="80" y="96" width="110" height="144" fill="#31405e" rx="4"/><text x="135" y="88" text-anchor="middle" font-size="14" font-family="Georgia">0.700</text><text x="135" y="260" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">a = 1</text></g>
+<g><title>Prior strength 2, MAP 0.667</title><rect x="220" y="106" width="110" height="134" fill="#31405e" rx="4"/><text x="275" y="98" text-anchor="middle" font-size="14" font-family="Georgia">0.667</text><text x="275" y="260" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">a = 2</text></g>
+<g><title>Prior strength 10, MAP 0.571</title><rect x="360" y="130" width="110" height="110" fill="#5d7050" rx="4"/><text x="415" y="122" text-anchor="middle" font-size="14" font-family="Georgia">0.571</text><text x="415" y="260" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">a = 10</text></g>
+<g><title>Prior strength 50, MAP 0.519</title><rect x="500" y="143" width="110" height="97" fill="#8a5a17" rx="4"/><text x="555" y="135" text-anchor="middle" font-size="14" font-family="Georgia">0.519</text><text x="555" y="260" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">a = 50</text></g>
+<text x="320" y="292" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">MAP = (7 + a - 1) / (10 + 2a - 2), Beta(a,a) prior</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 6</span> Same numbers as lesson figure u03_f04. The prior washes out as n grows, but at n = 10 it does real work.</figcaption>
+</figure>
+<div class="nugget" id="nugget-map">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 3, 5</span></h4>
+<p class="big">MAP is the MLE with the prior pulling. The penalty is the prior in disguise.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Every regularized objective is a MAP estimate with the prior written out. Naming the prior makes the shrinkage honest.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Ridge regression is MAP with a Gaussian prior. Lambda is the prior strength, and the path above is its price curve.</dd>
+</dl>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 3, 5, 6</span></p>
+<p>The point prediction plugs one number in. The predictive distribution averages over every plausible number, weighted by the posterior. The average keeps the uncertainty. For the Beta-Binomial the integral collapses to the posterior mean 0.643, but the spread matters: the 90 percent interval is 0.423 to 0.830 from 5000 posterior draws, so reporting 0.64 alone overstates confidence badly. The full predictive distribution over the probability itself is the Beta(9,5) density. Lesson figure u03_f05 shows the histogram with the interval.</p>
+</div>
+<div class="nugget" id="nugget-predictive">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 · Contract 3, 5</span></h4>
+<p class="big">The point prediction hides the spread. Average over the posterior when the decision needs the uncertainty.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>0.64 with an interval of 0.42 to 0.83 is a different claim than 0.64 alone. The first invites caution. The second invites overconfidence.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>When should a chatbot abstain? When the predictive interval is wide, not when the point estimate is low.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Pull the prior strength and watch the MAP slide from the data toward the prior. The formula is the lesson's C05 closed form. The slider is yours.</p>
+<p><label>Prior strength a <input type="range" id="pra" min="1" max="50" step="1" value="2"></label> <code id="prav">2</code></p>
+<p class="small" id="mapout">MAP appears here.</p>
+<p class="small muted"><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 · Contract 5</span> 7 wins in 10 trials, Beta(a,a) prior. At a = 1 the slider must read 0.700, at a = 50 it must read 0.519.</p>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C07, C08, C09</p>
+<h2>Penalties and honesty</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 3, 5, 6</span></p>
+<p>Does finetuning a pretrained model resemble a Bayesian update? The lesson draws the clean mathematical cousin. Prior: weights near the pretrained point, theta drawn from a Normal centered at theta_pre. MAP objective: log-likelihood minus the squared distance to the pretrained weights over 2 tau squared. The quadratic penalty is weight decay toward the pretrained point, not toward zero. Small tau keeps the model near pretraining. Large tau lets the data dominate. The scalar toy: prior mean 0, data suggesting 2.0 with standard error 0.5, prior sd 1.0. The posterior mean is (0/1 + 2.0/0.25)/(1 + 4) = 1.6, landing between prior and data, closer to the data. This is why finetuning from a good start needs less data than training from scratch: the prior carries information.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 · Contract 11</span></p>
+<p>The prior can be wrong. Pretraining on the wrong domain pulls the model away from the truth. The Bayesian reading of destroyed pretrained capability: the prior was too weak or the data too strong.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 5, 6</span></p>
+<p>Regularization is a budget on parameter size. The ridge penalty charges lambda per squared unit of score, so the fit spends its budget where the data insists. The penalized objective is l(s) minus (lambda/2) times the squared norm, which is a Gaussian prior N(0, 1/lambda) on the scores. The penalty gradient is minus lambda s, pulling every score toward zero each step. Gaps shrink monotonically in lambda. The lesson path: lambda 0.01, 0.1, 0.5, 1, 2, 5, 10 gives A-B gaps 5.08, 3.23, 2.06, 1.61, 1.21, 0.75, 0.48. The penalty also fixes the separable-data divergence from U01: the optimum is always finite. Lesson figure u03_f06 draws the falling paths.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 320" role="img" aria-label="A-B gap falls from 5.08 to 0.48 as lambda rises from 0.01 to 10">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Raise lambda, shrink the gap</text>
+<polyline points="80,60 163,96 247,130 330,148 413,164 497,182 580,193" fill="none" stroke="#a94f27" stroke-width="2.5"/>
+<g><title>lambda 0.01, gap 5.08</title><circle cx="80" cy="60" r="6" fill="#31405e"/><text x="80" y="44" text-anchor="middle" font-size="13" font-family="Georgia">5.08</text><text x="80" y="292" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">0.01</text></g>
+<g><title>lambda 0.1, gap 3.23</title><circle cx="163" cy="96" r="6" fill="#31405e"/><text x="163" y="80" text-anchor="middle" font-size="13" font-family="Georgia">3.23</text><text x="163" y="292" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">0.1</text></g>
+<g><title>lambda 0.5, gap 2.06</title><circle cx="247" cy="130" r="6" fill="#31405e"/><text x="247" y="114" text-anchor="middle" font-size="13" font-family="Georgia">2.06</text><text x="247" y="292" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">0.5</text></g>
+<g><title>lambda 1, gap 1.61</title><circle cx="330" cy="148" r="6" fill="#31405e"/><text x="330" y="132" text-anchor="middle" font-size="13" font-family="Georgia">1.61</text><text x="330" y="292" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">1</text></g>
+<g><title>lambda 2, gap 1.21</title><circle cx="413" cy="164" r="6" fill="#31405e"/><text x="413" y="148" text-anchor="middle" font-size="13" font-family="Georgia">1.21</text><text x="413" y="292" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">2</text></g>
+<g><title>lambda 5, gap 0.75</title><circle cx="497" cy="182" r="6" fill="#31405e"/><text x="497" y="166" text-anchor="middle" font-size="13" font-family="Georgia">0.75</text><text x="497" y="292" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">5</text></g>
+<g><title>lambda 10, gap 0.48</title><circle cx="580" cy="193" r="6" fill="#31405e"/><text x="580" y="177" text-anchor="middle" font-size="13" font-family="Georgia">0.48</text><text x="580" y="292" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">10</text></g>
+<text x="320" y="312" text-anchor="middle" font-size="12" font-family="Georgia" fill="#6f6355">lambda, log axis</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 6</span> Same numbers as lesson figure u03_f06. Too much lambda kills real signal: at lambda = 10 the gap is 0.48 though the data strongly supports a large gap. Pick lambda by held-out log-loss, not by the path plot.</figcaption>
+</figure>
+<div class="nugget" id="nugget-budget">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 · Contract 3, 11</span></h4>
+<p class="big">Regularization is a budget on parameter size. The fit spends it where the data insists, and overspending returns the prior, not the truth.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The same penalty that tames the separable-data divergence can erase genuine signal. Lambda = 10 on strong data is not caution. It is deletion.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Weight decay in neural nets. Lambda is the budget, and the budget needs a held-out justification.</dd>
+</dl>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 5, 6</span></p>
+<p>Calibration means the probabilities mean what they say. Bin the predictions, check each bin's hit rate, and plot predicted versus empirical. The diagonal is the goal. Overconfidence comes from sharp gaps: multiplying true gaps by 1.3 pushes predictions toward 0 and 1 faster than reality. The lesson toy: 2000 fresh pairs, a slightly overconfident model, 10 bins, mean absolute gap 0.044. Lesson figure u03_f07 shows the reliability curve sagging below the diagonal.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u03-calibration.jpg" alt="Watercolor of a diagonal line with ink dots hugging it, one dot drifting below">
+<figcaption><span class="tag tag-toy">Illustration</span> The calibration diagonal as watercolor. Every dot is a bin's hit rate against its predicted probability. The drifter below the line is overconfidence. Watercolor, original to this companion.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 10, 11</span></p>
+<p>The quick fix is temperature scaling: one parameter. The nonparametric fix is isotonic regression, for miscalibration with shape. And calibration on the training set lies: the model is calibrated where it overfit. Perfect train calibration with terrible test calibration is the counterexample to skip.</p>
+</div>
+<div class="nugget" id="nugget-calibration">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 · Contract 3, 11</span></h4>
+<p class="big">The model says 0.80. Does the event happen 80 percent of the time? If not, the number is decoration.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Decisions consume probabilities as facts. An uncalibrated 0.80 spends confidence the model does not have.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A medical risk score. Calibration is not a nicety there. It is the difference between a number and a lie.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C10, C11, C12</p>
+<h2>What is absent, what is uncertain</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 3, 5, 6</span></p>
+<p>Data goes missing for reasons. MCAR: the reason is unrelated to the outcome, and the estimates stay unbiased, only noisier. MAR: missingness depends on observed data. MNAR: missingness depends on the missing value itself. Under MNAR the survivors mislead. The lesson toy: gaps drawn from a Normal with mean 1.0 and sd 0.6, n = 3000, pairs with absolute gap below 0.5 judged only 20 percent of the time. The full-sample log-odds gap is 0.910. The naive estimate on the kept data is 1.077: close pairs went missing, so the survivors look more decisive than reality. Inverse-probability weighting with the true sampling probabilities recovers 0.899. The lab verifies the direction and the correction.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Full-sample gap 0.910, naive estimate 1.077, IPW correction 0.899">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Missing close pairs inflates the gap</text>
+<g><title>Full-sample gap 0.910</title><rect x="80" y="120" width="120" height="132" fill="#5d7050" rx="4"/><text x="140" y="112" text-anchor="middle" font-size="15" font-family="Georgia">0.910</text><text x="140" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">full sample</text></g>
+<g><title>Naive estimate on kept data 1.077</title><rect x="280" y="80" width="120" height="172" fill="#a94f27" rx="4"/><text x="340" y="72" text-anchor="middle" font-size="15" font-family="Georgia">1.077</text><text x="340" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">naive</text></g>
+<g><title>IPW corrected 0.899</title><rect x="480" y="123" width="120" height="129" fill="#31405e" rx="4"/><text x="540" y="115" text-anchor="middle" font-size="15" font-family="Georgia">0.899</text><text x="540" y="272" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">IPW</text></g>
+<text x="340" y="292" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">n = 3000, seed 0. IPW needs the true sampling probabilities.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 · Contract 6</span> The naive estimate overstates the gap because the missing pairs are the close ones. IPW with misspecified weights can bias more than ignoring the problem: the math is easy, the mechanism is hard.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 5, 6</span></p>
+<p>Two kinds of uncertainty. The world is random: the coin still flips. That is aleatoric. We are ignorant: the bias might be 0.5 or 0.8. That is epistemic. Data shrinks the second, never the first. The law of total variance splits them: Var = E[p(1-p)] + Var(p). For the Beta(9,5) posterior the expected aleatoric term is 0.218 and the epistemic term is 0.0153, total 0.233. Most uncertainty here is aleatoric. More data barely helps. Better features would. The decomposition guides where to spend: epistemic high means collect data, aleatoric high means improve the model or accept noise.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 260" role="img" aria-label="Aleatoric uncertainty 0.218 against epistemic 0.0153">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Most of the uncertainty is the world, not our ignorance</text>
+<g><title>Aleatoric: expected p times 1 minus p, 0.218</title><rect x="60" y="70" width="480" height="34" fill="#31405e" rx="4"/><text x="300" y="93" font-size="14" font-family="Georgia" fill="#faf6ee">aleatoric 0.218</text></g>
+<g><title>Epistemic: posterior variance of p, 0.0153</title><rect x="60" y="118" width="34" height="34" fill="#a94f27" rx="4"/><text x="110" y="141" font-size="14" font-family="Georgia">epistemic 0.015</text></g>
+<text x="60" y="190" font-size="13" font-family="Georgia" fill="#6f6355">Total predictive variance 0.233. The coin flips no matter how much data arrives.</text>
+<text x="60" y="212" font-size="13" font-family="Georgia" fill="#6f6355">Under misspecification the split misleads: the noise term absorbs model error.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 6</span> Same arithmetic as the lesson lab. <span class="tag tag-toy">Illustration</span> The companion's ratio from the lesson's two numbers: the bar lengths say fourteen times more noise than ignorance.</figcaption>
+</figure>
+<div class="nugget" id="nugget-uncertainty">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 · Contract 3, 9</span></h4>
+<p class="big">Data shrinks ignorance, never randomness. Split the uncertainty before you decide whether to collect more data.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Collecting data against aleatoric noise wastes budget. The 0.218 term does not move no matter how many labels you buy.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>More annotation or better prompts? The decomposition answers: epistemic high means annotate, aleatoric high means rewrite the prompt.</dd>
+</dl>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 3, 5, 6</span></p>
+<p>Cross-validation is a tournament: each fold takes a turn as the unseen test. The mean score and its spread are the honest report. The lesson toy: 500 comparisons, true gap 1.0, five folds. Accuracies 0.74, 0.61, 0.79, 0.73, 0.65. Mean 0.704, sd 0.062. In-sample accuracy 0.73 sits inside the fold spread. The failure case is leakage across folds: the same annotator's pairs in train and test inflate accuracy, and time-ordered data shuffled naively lets the future leak into the past. Lesson figure u03_f08 draws the five bars with mean and spread.</p>
+</div>
+<figure>
+<svg class="chart" viewBox="0 0 640 300" role="img" aria-label="Five fold accuracies 0.74, 0.61, 0.79, 0.73, 0.65 with mean 0.704">
+<text x="20" y="28" font-size="15" font-family="Georgia" font-weight="bold">Five folds, one honest report</text>
+<g><title>Fold 1 accuracy 0.74</title><rect x="60" y="120" width="80" height="132" fill="#31405e" rx="4"/><text x="100" y="112" text-anchor="middle" font-size="13" font-family="Georgia">0.74</text></g>
+<g><title>Fold 2 accuracy 0.61</title><rect x="160" y="158" width="80" height="94" fill="#31405e" rx="4"/><text x="200" y="150" text-anchor="middle" font-size="13" font-family="Georgia">0.61</text></g>
+<g><title>Fold 3 accuracy 0.79</title><rect x="260" y="104" width="80" height="148" fill="#31405e" rx="4"/><text x="300" y="96" text-anchor="middle" font-size="13" font-family="Georgia">0.79</text></g>
+<g><title>Fold 4 accuracy 0.73</title><rect x="360" y="123" width="80" height="129" fill="#31405e" rx="4"/><text x="400" y="115" text-anchor="middle" font-size="13" font-family="Georgia">0.73</text></g>
+<g><title>Fold 5 accuracy 0.65</title><rect x="460" y="146" width="80" height="106" fill="#31405e" rx="4"/><text x="500" y="138" text-anchor="middle" font-size="13" font-family="Georgia">0.65</text></g>
+<line x1="40" y1="134" x2="560" y2="134" stroke="#a94f27" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="570" y="138" font-size="13" font-family="Georgia" fill="#a94f27">mean 0.704</text>
+<text x="320" y="282" text-anchor="middle" font-size="13" font-family="Georgia" fill="#6f6355">n = 500, seed 0. In-sample 0.73 sits inside the spread.</text>
+</svg>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 6</span> Same numbers as lesson figure u03_f08. Stratify by outcome when classes are imbalanced. One held-out split is cheaper and noisier. k-fold is for model comparison.</figcaption>
+</figure>
+<div class="nugget" id="nugget-honest">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 · Contract 3, C06 · Contract 3</span></h4>
+<p class="big">Report the mean, the spread, and what varies. A number without its uncertainty is a rumor.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The fold spread 0.062 is information, not embarrassment. It says how much the verdict could move on a different split.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A clinical trial readout. Mean effect, confidence interval, and the protocol that produced both, or the result does not travel.</dd>
+</dl>
+</div>
+</section>
+<section class="block wisdom" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Eight nuggets, indexed</h2>
+<ol>
+<li><a href="#nugget-peak">The MLE is a peak-finder.</a> Fast, consistent, noisy at small n.</li>
+<li><a href="#nugget-em">The log of a sum does not split.</a> EM climbs a touching bound instead.</li>
+<li><a href="#nugget-map">MAP is the MLE with the prior pulling.</a> The penalty is the prior in disguise.</li>
+<li><a href="#nugget-predictive">The point prediction hides the spread.</a> Average over the posterior.</li>
+<li><a href="#nugget-budget">Regularization is a budget on parameter size.</a> Overspending returns the prior.</li>
+<li><a href="#nugget-calibration">The model says 0.80.</a> Does the event happen 80 percent of the time?</li>
+<li><a href="#nugget-uncertainty">Data shrinks ignorance, never randomness.</a> Split before you spend.</li>
+<li><a href="#nugget-honest">Report the mean, the spread, and what varies.</a> Uncertainty is information.</li>
+</ol>
+<p class="backlink"><a href="../index.html">Back to the CS329H course index</a></p>
+</section>
+</div>
+<footer id="provenance"><div class="wrap">
+<p><strong>Provenance.</strong> This companion narrates <code>content/v2/cs329h/lessons/u03_lesson.md</code>. No full lecture transcript exists for S05 or S06, and no lecture anecdotes appear. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING. Quoted words from the lesson source: 0, counted by <code>companions/tools/quote_recount.py</code> with the blockquote plus quoted-phrase method, footer excluded. Lesson figures u03_f01 through u03_f08 are referenced where the lesson places them. The charts on this page re-plot the lesson's computed toy numbers with concept and contract citations. The MAP slider runs the lesson's C05 closed form. No official source video is on record for these sessions, so no embed appears. The three watercolors are original illustrations made for this companion.</p>
+</div></footer>
+<script>
+function updMap(){
+var a=parseFloat(document.getElementById("pra").value)
+document.getElementById("prav").textContent=a.toFixed(0)
+var map=(7+a-1)/(10+2*a-2)
+document.getElementById("mapout").textContent="MAP = "+map.toFixed(3)+" at prior strength "+a.toFixed(0)
+}
+document.getElementById("pra").addEventListener("input",updMap)
+updMap()
+</script>
+</body>
+
+</html>

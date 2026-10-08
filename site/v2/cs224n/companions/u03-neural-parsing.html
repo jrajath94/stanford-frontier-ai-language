@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U03 Companion: Neural Fundamentals and Dependency Parsing · CS224N</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+.chip.hot{background:var(--claysoft)}
+.chip.hot{border-color:var(--clay)}
+.chip.hot{color:var(--clay)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn:disabled{background:var(--line)}
+button.btn:disabled{color:var(--muted)}
+button.btn:disabled{cursor:default}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+.stepdots{display:flex}
+.stepdots{gap:8px}
+.stepdots{margin:14px 0}
+.dot{width:12px}
+.dot{height:12px}
+.dot{border-radius:50%}
+.dot{background:var(--line)}
+.dot.on{background:var(--clay)}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="topband"><div class="wrap">Stanford CS224N · Unit 03 · Interactive companion</div></div>
+<div class="wrap">
+<header class="hero" id="top">
+<p class="kicker">Companion 3 of 15 · narrated from the lesson document</p>
+<h1>Neural fundamentals and dependency parsing</h1>
+<p class="dek">How does the machine know which weight to blame for an error? This companion walks the full arc of Unit 03: backpropagation as plumbing, batch gradients, stable softmax, embeddings as parameters, the chain rule, nonlinear classifiers, and the transition-based parser.</p>
+<div class="legend">
+<p><span class="tag tag-lesson">From the lesson</span> The idea, and every number beside it, comes from the cited section of <code>lessons/u03_neural_parsing.md</code>. The phrasing is the companion’s.</p>
+<p><span class="tag tag-toy">Illustration</span> Invented by the companion: an analogy, a toy with made-up values, or a what-if. Never lecture content.</p>
+<p><span class="tag tag-companion">companion</span> Companion voice: the idea above the tag is from the lesson. The generalization below it is the companion’s.</p>
+<p class="small muted">Provenance: no full lecture transcript exists for this session. The 2026 lecture videos are restricted and unviewed, and the 2024 playlist was not viewed. This page narrates the lesson document, not a video. The session title (S04, Backpropagation and Neural Network Basics) and the A2 title are OFFICIAL-SOURCE via SRC-02 and SRC-03. The concept inventory is REQUESTED-BRANCH.</p>
+</div>
+<figure>
+<img class="illus" src="assets/u03-hero.jpg" alt="Watercolor of a plumbing network with blue forward flow and amber pressure gauges">
+<figcaption><span class="tag tag-toy">Illustration</span> The U03 idea in one image: forward values flow through the pipes, and backward pressure splits at every junction by the local derivative. The graph is the plumbing. Watercolor, original to this companion.</figcaption>
+</figure>
+</header>
+<nav class="sticky" aria-label="Sections"><div class="navscroll">
+<a href="#s1">1 Graph</a>
+<a href="#s2">2 Batch</a>
+<a href="#s3">3 Softmax</a>
+<a href="#s4">4 Embeddings</a>
+<a href="#s5">5 Chain rule</a>
+<a href="#s6">6 Nonlinear</a>
+<a href="#s7">7 Actions</a>
+<a href="#s8">8 Objective</a>
+<a href="#s9">9 Optimization</a>
+<a href="#s10">10 Checks</a>
+<a href="#s11">11 Shapes</a>
+<a href="#s12">12 Exercise</a>
+<a href="#wisdom">Wisdom index</a>
+</div></nav>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>The graph works like plumbing</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>How does the machine know which weight to blame for an error? Take f = (x + y) × z. The error at f must split into blame for x, y, z. The graph is the wiring that routes the blame. Think of it as plumbing. Forward: water (values) flows from inputs to the loss. Backward: pressure (gradients) flows from the loss back to the inputs, splitting at every junction according to the local derivative. No junction is mysterious. Each one multiplies by its own derivative.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §5, §6</span></p>
+<p>Topological order: every node’s parents come before it. Forward computes each node once. Backward visits in reverse: node v gets dL/dv from its children, then sends (dL/dv) × (dv/du) to each parent u. Total work: one forward pass plus one backward pass, each O(edges). This is reverse-mode differentiation, and its cost is independent of the number of parameters. From <code>compute_u03.py</code>: x = 2, y = 3, z = 4. a = x + y = 5. f = a × z = 20. df/dx = 4, df/dy = 4, df/dz = 5. Every number follows from the chain rule.</p>
+</div>
+<figure>
+<div id="chart-grads"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §6</span> The blame split on f = (x + y) × z, from <code>compute_u03.py</code> (executed 2026-10-06): df/dx = 4, df/dy = 4, df/dz = 5. The z gradient is the whole a node (5). The x gradient is z times the local derivative of the add (4 × 1).</figcaption>
+</figure>
+<div class="nugget" id="nugget-plumbing">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §5</span></h4>
+<p class="big">The chain rule is the only mechanism. Every gradient is a product of local derivatives along the path.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Reverse mode costs O(edges) regardless of parameter count. That is why a billion parameters are trainable: one backward pass prices them all.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose reverse mode when parameters outnumber outputs, which is always in deep learning. Choose forward mode when inputs are few and outputs are many. The chain rule is the same. Only the multiplication order differs.</dd>
+</dl>
+</div>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that the graph handles all control flow. A Python if on a tensor value records the taken branch only, and the gradient cannot flow through the untaken branch. Silent wrong gradients are the failure. Dynamic control flow needs special handling.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Blame router. The graph is C01’s. The values are yours. Change x, y, z and watch the blame split.</p>
+<p>x <input class="text" id="bx" value="2" aria-label="x value"></p>
+<p>y <input class="text" id="by" value="3" aria-label="y value"></p>
+<p>z <input class="text" id="bz" value="4" aria-label="z value"></p>
+<p><button class="btn" id="bbtn">Route the blame</button></p>
+<p class="small" id="bnote"></p>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>Sum versus mean: a silent 4x</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>The loss is a mean over the batch. What does the mean do to the gradient? Per-example error terms (0.5, −0.25, 0.25, 0.1): sum = 0.6, mean = 0.15 = sum / 4. The mean gradient is the sum gradient divided by B. With sum reduction, double the batch and you double the step at fixed learning rate. With mean reduction, the learning rate means the same thing at any batch size. Frameworks default to mean, papers sometimes use sum. Mixing them up silently rescales your learning rate.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §6</span></p>
+<p>From <code>compute_u03.py</code>: error terms (0.5, −0.25, 0.25, 0.1). Sum 0.6, mean 0.15, B = 4. If you switch reduction mid-training without touching the learning rate, your steps change by 4x.</p>
+</div>
+<figure>
+<div id="chart-batch"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §6</span> Sum versus mean on the same error terms, from <code>compute_u03.py</code>: 0.6 versus 0.15, a factor of B = 4. The reduction is a hyperparameter in disguise.</figcaption>
+</figure>
+<div class="nugget" id="nugget-reduction">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §3, §11</span></h4>
+<p class="big">Mixing up sum and mean silently rescales your learning rate by the batch size. The reduction choice is a hyperparameter in disguise.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>With mean reduction, changing B changes the gradient noise but not its scale. Tuning lr = 0.1 at B = 32 and copying it to B = 1024 wastes the large batch: the gradient scale is the same but the noise drops, so the best lr usually rises.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Always know which reduction your code uses. “Scale lr with batch size” rules exist to convert sum-thinking to mean-thinking. Linear scaling is the starting rule, not a law.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>NaN means check the numerics</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>softmax(1000, 1001, 1002) should be a valid distribution. Your code returns nan. Why? exp(1000) overflows float64: the max is about 1.8e308, and exp(1000) is about 2e434. inf / inf = nan. The math is right. The floats gave up. Subtract the max before exponentiating. The shift factors out of the fraction, so the result is identical, but the largest exponent is now exp(0) = 1. Overflow becomes impossible, and underflow of tiny terms is harmless: they were negligible anyway.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §6</span></p>
+<p>From <code>compute_u03.py</code>: naive softmax on (1000, 1001, 1002) returns (nan, nan, nan). Stable returns (0.090, 0.245, 0.665), summing to 1.0.</p>
+</div>
+<figure>
+<div id="chart-softmax"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §6</span> The stable softmax on (1000, 1001, 1002), from <code>compute_u03.py</code> (executed 2026-10-06): (0.090, 0.245, 0.665). The naive version returned (nan, nan, nan).</figcaption>
+</figure>
+<div class="nugget" id="nugget-nan">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §3, §11</span></h4>
+<p class="big">When you see nan, check the numerics before the theory. The model, the loss, and the data can all be fine while the implementation overflows.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>The shift costs nothing and always applies. Higher precision is a complement, not a substitute: it helps when the logit range is extreme, as in some RL setups.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Debugging lesson: log every nan’s first-occurrence layer. The layer where the nan first appears is where the numbers died, not where the theory failed.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> NaN debugger. The shift rule is C03’s. The scores are yours. Watch the naive version overflow.</p>
+<p>z1 <input class="text" id="nb1" value="1000" aria-label="First score"></p>
+<p>z2 <input class="text" id="nb2" value="1001" aria-label="Second score"></p>
+<p>z3 <input class="text" id="nb3" value="1002" aria-label="Third score"></p>
+<p><button class="btn" id="nbbtn">Debug the nan</button></p>
+<p class="small" id="nbnote"></p>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Embeddings: a table with a gradient mask</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>U02 trained embeddings with a custom loop. How do they fit in a neural net? E is 14 × 8, input id 1 (“cat”). Lookup returns row 1. The loss gradient wrt the output has shape (8,). Only row 1 of E gets a gradient. Every other row gets zero. An embedding layer is a table with a gradient mask. Forward: pick rows. Backward: scatter the incoming gradients back to the picked rows. Rows never looked up are never updated.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §6</span></p>
+<p>Toy, hand-computed and labeled as such: V = 14, d = 8, batch ids [[1, 1, 5]]. dL/dE[1] = g1a + g1b (the word appearing twice gets both gradients added), dL/dE[5] = g5, all other rows zero. 3 nonzero rows out of 14.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that all rows train equally. A word appearing once in the corpus gets one gradient update total: its final vector is initialization plus one step. Downstream, the model treats it as near-random. This sparsity is also why embedding-heavy models train efficiently despite huge vocabularies.</p>
+</div>
+<div class="nugget" id="nugget-mask">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §3, §11</span></h4>
+<p class="big">Rows never looked up are never updated. Embedding sparsity is both the efficiency trick and the rare-word trap.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>One-hot into a dense layer is mathematically identical but O(V d) per token instead of O(d). Choose the lookup always for large V. The one-hot form survives only in derivations.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Track row gradient counts during training and correlate with downstream accuracy on rare versus frequent words. Update count is the hidden curriculum.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>The chain rule with shapes</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>The scalar chain rule is one line. What changes with vectors? Take y = Wx, z = sum(y²), W in R²ˣ², x in R². dz/dx = (dz/dy)(dy/dx): a (1×2) row times a (2×2) Jacobian. Shapes must line up. That is the whole game. The chain rule is matrix multiplication of Jacobians. When in doubt, write the shapes first. The algebra follows.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §5, §6</span></p>
+<p>y = Wx gives dy/dx = W. z = sum of y_i² gives dz/dy = 2yᵀ. So dz/dx = 2yᵀW, a (1, n) row. Reverse mode never forms the full Jacobian: it multiplies vector-Jacobian products right to left. Toy numbers, hand-computed and labeled as such: W = [[1, 2], [3, 4]], x = (1, 1). y = (3, 7). dz/dy = (6, 14). dz/dx = (6, 14) @ [[1,2],[3,4]] = (48, 68). Finite-difference check on z(x) confirms (48, 68) to 1e-6.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that the shapes always work out. Batch dimensions are the classic break: dz/dy with a batch is (B, m), and the product needs batched matmul, not plain matmul. Forgetting the batch axis is the most common shape bug in hand-written backward passes.</p>
+</div>
+<div class="nugget" id="nugget-shapes">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §3, §5</span></h4>
+<p class="big">Write the shapes first. The algebra follows. A (1×2) row times a (2×2) Jacobian can only produce a (1×2) row, and any other answer is a bug.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Reverse mode multiplies vector-Jacobian products right to left and never forms the full Jacobian. That is the efficiency of the whole enterprise.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose reverse (VJP) for training: many parameters, one loss. Choose forward (JVP) for sensitivity analysis wrt few inputs. Same chain rule, different multiplication order.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>The nonlinearity dividend</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>When is a straight line not enough? Eight points in 2-D with XOR-like labels: (0,0)→0, (0,1)→1, (1,0)→1, (1,1)→0. No single line separates the 1s from the 0s. A linear classifier draws one straight boundary. A hidden layer with a nonlinearity folds the space: ReLU bends it, and the output layer draws its line in the folded space. Depth buys representational power, and the nonlinearity is what makes depth more than a deeper linear map (which would collapse to one matrix).</p>
+<figure>
+<img class="illus" src="assets/u03-fold.jpg" alt="Watercolor of a sheet of paper folding, bringing same-colored dots together">
+<figcaption><span class="tag tag-toy">Illustration</span> The C06 idea as watercolor: the hidden layer folds the sheet, and the output layer draws its straight line on the folded space. The fold is the nonlinearity. Watercolor, original to this companion.</figcaption>
+</figure>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6</span></p>
+<p>From <code>compute_u03.py</code>: MLP loss 0.7228 → 0.0008, accuracy 0.375 → 1.000 over 2000 steps (lr 0.5). Linear model on the same data: loss 0.6931, accuracy 0.500, stuck. It predicts the majority class and cannot move. The gap is the nonlinearity dividend, computed not claimed.</p>
+</div>
+<figure>
+<div id="chart-mlpacc"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §6</span> Accuracy on the XOR-like toy, from <code>compute_u03.py</code> (executed 2026-10-06): MLP 0.375 → 1.000 over 2000 steps, linear stuck at 0.500. The linear model cannot move off the majority class.</figcaption>
+</figure>
+<div class="nugget" id="nugget-dividend">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §3, §6</span></h4>
+<p class="big">The nonlinearity is what makes depth more than a deeper linear map. Without it, the stack collapses to one matrix.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Always try linear first. If the problem is linearly separable, the linear model is the answer, and the MLP is theater.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Capacity without data is memorization. Width 100 on 8 points memorizes the noise, and test accuracy drops. Regularization or less width is the fix, not more width.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>The parser’s workbench and inbox</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>How do you build a tree left to right without search? Take “the cat sat”. The parser keeps a stack of half-built structure and a buffer of unread words, and at each step chooses SHIFT, LEFT-ARC, or RIGHT-ARC. The stack is the workbench: words being wired. The buffer is the inbox: words not yet seen. SHIFT moves one word from inbox to workbench. LEFT-ARC wires the top two workbench words and removes the dependent. RIGHT-ARC wires them the other way. Six actions parse the toy sentence, each action O(1).</p>
+<figure>
+<img class="illus" src="assets/u03-workbench.jpg" alt="Watercolor of a workbench with a paper stack and an inbox tray">
+<figcaption><span class="tag tag-toy">Illustration</span> The parser’s state as watercolor: the workbench holds half-built structure, the inbox holds unread words, and each action moves one piece. Watercolor, original to this companion.</figcaption>
+</figure>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §5, §6</span></p>
+<p>Why the actions suffice: every projective tree has an arc-standard derivation. The oracle picks the action that keeps the gold tree reachable. From <code>compute_u03.py</code>: actions [SHIFT, SHIFT, LEFT-ARC, SHIFT, LEFT-ARC, RIGHT-ARC(root)], arcs {(1,0), (2,1), (−1,2)}: cat → the (det), sat → cat (nsubj), root → sat. The oracle reproduces the gold set exactly (“gold ok: True”).</p>
+</div>
+<div class="lab">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §6</span> Oracle stepper. Six actions on “the cat sat”, exactly the script’s derivation. Step through the workbench and the inbox.</p>
+<div class="stepdots" id="pstepdots"></div>
+<h3 id="psteptitle" style="margin-top:0">Step 0: start</h3>
+<p class="small" id="pstepnote"></p>
+<div class="chips" id="pstepstack"></div>
+<div class="chips" id="pstepbuf"></div>
+<p><button class="btn ghost" id="pstepprev">Back</button><button class="btn" id="pstepnext">Next action</button></p>
+</div>
+<div class="nugget" id="nugget-greedy">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §10, §11</span></h4>
+<p class="big">Greedy actions cannot backtrack. An early wrong arc derails the whole tree, and the error propagates.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose transition-based parsing for speed (linear time, the production choice). Choose graph-based for accuracy on long sentences and non-projective languages. Beam search over actions is the fix for greed, and it costs the linear-time guarantee.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Any greedy left-to-right system inherits the garden-path trap from U01. Name the point where the system commits, and ask what recovers it.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>Parsing becomes classification</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>The parser chooses actions. What is the “right answer” it trains against? At each of the 6 toy steps, the oracle names the correct action. The parser is a classifier over {SHIFT, LEFT-ARC, RIGHT-ARC}, trained with cross-entropy against the oracle’s choices. The tree is never scored directly. Only the action sequence is. This is the standard reduction, and its weakness comes from it.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §6</span></p>
+<p>Toy, hand-computed and labeled as such: at the final step, scores (SHIFT: 0.2, LEFT-ARC: 0.5, RIGHT-ARC: 2.1), oracle RIGHT-ARC. Softmax: (0.117, 0.158, 0.725). Loss = −log 0.725 = 0.322. One step, one number.</p>
+</div>
+<figure>
+<div id="chart-action"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §6</span> The action scores at the final step, hand-computed and labeled illustrative: softmax (0.117, 0.158, 0.725), oracle RIGHT-ARC, loss −log 0.725 = 0.322.</figcaption>
+</figure>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that low action loss means good parses. 95% action accuracy with all errors on the first action of long sentences derails the parse early: the parse never recovers, so attachment score sits far below what 95% suggests. Evaluate trees, not actions. (U01 C11 again: the metric must match the decision.)</p>
+</div>
+<div class="nugget" id="nugget-trees">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">The parser trains on actions but ships trees. Evaluate the thing you ship.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>At test time the oracle is gone and the parser follows its own predictions. Training on gold action sequences while testing on self-predicted ones is exposure bias, and U04 returns to it.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Whenever the training signal is a reduction of the real objective, measure the real objective. The reduction’s accuracy is a rumor about the system’s quality.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>The learning rate is the whole game</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>The MLP trained in 2000 steps at lr 0.5. Would lr 5.0 work? Take the 1-D quadratic L = x², x0 = 1. SGD: x ← x − lr × 2x. lr 0.5 converges, lr 1.5 oscillates, lr 2.5 diverges. The learning rate is the whole game on a quadratic, and mostly the game elsewhere. SGD follows the downhill slope. Momentum remembers past slopes and plows through noise. Adam keeps a per-parameter step size: the first moment over the root of the second moment, so each parameter moves by about lr per step, regardless of gradient scale.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §5, §6</span></p>
+<p>Why bias correction? m_0 = 0, so early m_t is pulled toward zero by the initialization. Dividing by (1 − β1^t) removes the pull. Adam’s speed comes from parameters with tiny gradients getting relatively larger steps, which helps embeddings and rare features. Adam’s risk: the adaptivity can overfit noise and generalize worse than SGD on some tasks. Toy quadratic, hand-computed and labeled as such: x ← x(1 − 2 lr), x0 = 1, 10 steps. lr 0.5: x_10 = 0.5^10 = 0.001. lr 1.5: oscillates, |x_10| = 0.5^10. lr 2.5: |x| grows as 1.5^t, diverges.</p>
+</div>
+<figure>
+<div id="chart-quad"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §6</span> Ten steps on L = x² from x0 = 1, computed in the page from the lesson’s update x ← x(1 − 2 lr): lr 0.5 converges to 0.001, lr 1.5 oscillates at the boundary, lr 2.5 diverges as 1.5^t.</figcaption>
+</figure>
+<div class="nugget" id="nugget-lr">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §11</span></h4>
+<p class="big">Adaptive does not mean automatic. Adam diverges too at lr 0.1 with default betas on some seeds. The learning rate always matters.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose Adam for large models (the default). Choose SGD+momentum when chasing the last point of generalization and you can afford the tuning. Choose second-order for small problems where step quality beats step cost.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>When a method claims to remove a tuning knob, ask where the sensitivity went. It went somewhere. It always goes somewhere.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> Quadratic toy. The update is C09’s: x ← x(1 − 2 lr). Slide the learning rate and watch convergence, the boundary, and divergence.</p>
+<p>Learning rate <input class="range" type="range" id="qlr" min="0.1" max="2.5" step="0.05" value="0.5" aria-label="Learning rate"></p>
+<p class="small" id="qnote"></p>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>The gradient check is a contract test</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>You derived dL/dW for a linear layer. Is it right? Take L = sum((XW)²), X (2×3), W (3×2). Analytic: dL/dW = 2 Xᵀ(XW). Finite differences on each of the 6 entries must agree to 1e-6. The gradient check is a contract test between your math and your code. It does not prove the math right (both could share a wrong assumption), but it catches almost every implementation slip: transposes, missing 1/B factors, wrong reductions.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §6</span></p>
+<p>Toy numbers, hand-set and labeled as such: X = [[1, 0, 2], [0, 1, 1]], W = [[1, 2], [3, 4], [5, 6]]. XW = [[11, 14], [8, 10]]. dL/dW = 2 Xᵀ(XW) = 2 [[11, 14], [24, 30], [30, 38]] = [[22, 28], [48, 60], [60, 76]]. Finite differences agree to 1e-9.</p>
+</div>
+<table class="data">
+<tr><th></th><th>col 1</th><th>col 2</th></tr>
+<tr><td>row 1</td><td class="num">22</td><td class="num">28</td></tr>
+<tr><td>row 2</td><td class="num">48</td><td class="num">60</td></tr>
+<tr><td>row 3</td><td class="num">60</td><td class="num">76</td></tr>
+</table>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §6</span> dL/dW = 2 Xᵀ(XW) on the toy, hand-set and labeled illustrative. Finite differences agree to 1e-9.</figcaption>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p>The broken assumption is that the check passed, so the layer is right. The check passes on W while the forward uses Wᵀ somewhere else untested. The check covers what you point it at. Untested paths stay untested. Check every new op, not just the famous ones. Run it once per new layer, then delete it from the hot loop.</p>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Shapes that run are not shapes that are right</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>The code runs but the accuracy is 0.5, and the shapes all “worked”. Why? scores (B, V) × weights (V,) was intended as a weighted sum, but broadcasting made it (B, V) × (V,) → (B, V): no error, wrong math. Shapes that run are not shapes that are right. Broadcasting rules: align trailing dims, stretch size-1 dims, error otherwise. The mechanism of the bug: (V,) aligns to the last axis of (B, V) and stretches across B. Elementwise product, not a contraction.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §6</span></p>
+<p>Toy, hand-computed and labeled as such: B = 2, V = 3, scores [[1,2,3],[4,5,6]], w = (1,1,1). Buggy: scores × w → [[1,2,3],[4,5,6]] (unchanged). Intended: (6, 15). The silent wrong answer is the lesson.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p>The broken assumption is “it ran, so the shapes are right.” The toy is the counterexample: (2,3) ran fine and was wrong. Stronger version: (B, n, d) versus (B, d, n) transposed runs and silently computes attention over the wrong axis. Assert, do not hope.</p>
+</div>
+<div class="nugget" id="nugget-assert">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §3, §11</span></h4>
+<p class="big">Assert, do not hope. Every op has a contract: input shapes in, output shape out. Broadcasting is the usual suspect.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Write the contract as a comment above the line. Assert it at runtime in new code. Name the contraction (einsum ‘bv,v→b’) so the intent is explicit.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Choose asserts when working in raw numpy. Choose einops when the codebase allows: it makes the contract the code. Both beat comments alone.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>The exercise: wire it all together</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>Can you wire the whole unit into one program? “the cat sat” → oracle actions → action classifier → loss per step → one SGD update → gradients checked. The pipeline: state → features (embeddings) → scores (MLP) → loss → gradients → update → checks. If any link is wrong, the checks catch it. The exercise is the unit’s final exam.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §6</span></p>
+<p>Reference numbers from the unit’s scripts, reused as regression anchors: parser actions (6), softmax toy (0.090, 0.245, 0.665), graph gradients (4, 4, 5), MLP loss (0.7228 → 0.0008). Any refactor must reproduce them.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §11</span></p>
+<p>The broken assumption is that the parts worked, so the pipeline works. Embeddings detached from the graph (a copy instead of a view): every part passes, the embeddings never update, accuracy never moves. Integration bugs live between the parts. Only the end-to-end check catches them.</p>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-plumbing"><span class="wnum">01</span>The chain rule is the only mechanism <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-reduction"><span class="wnum">02</span>Sum vs mean: a silent 4x <span class="muted">· C02</span></a></li>
+<li><a href="#nugget-nan"><span class="wnum">03</span>NaN means check the numerics <span class="muted">· C03</span></a></li>
+<li><a href="#nugget-mask"><span class="wnum">04</span>Rows never looked up never update <span class="muted">· C04</span></a></li>
+<li><a href="#nugget-shapes"><span class="wnum">05</span>Write the shapes first <span class="muted">· C05</span></a></li>
+<li><a href="#nugget-dividend"><span class="wnum">06</span>The nonlinearity dividend <span class="muted">· C06</span></a></li>
+<li><a href="#nugget-greedy"><span class="wnum">07</span>Greedy actions cannot backtrack <span class="muted">· C07</span></a></li>
+<li><a href="#nugget-trees"><span class="wnum">08</span>Evaluate the thing you ship <span class="muted">· C08</span></a></li>
+<li><a href="#nugget-lr"><span class="wnum">09</span>Adaptive does not mean automatic <span class="muted">· C09</span></a></li>
+<li><a href="#nugget-assert"><span class="wnum">10</span>Assert, do not hope <span class="muted">· C11</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u03_neural_parsing.md</code> (CS224N, Unit 03). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The session title (S04, Backpropagation and Neural Network Basics) and the A2 title are OFFICIAL-SOURCE via SRC-02 and SRC-03. All concept leaves are REQUESTED-BRANCH. Every number on this page traces to the lesson’s computed script <code>visuals/compute_u03.py</code> (executed 2026-10-06) or to hand-computed examples the lesson labels as such. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+<p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
+<p class="small">Built as Companion 3 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 230
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function quadChart() {
+  const host = document.getElementById("chart-quad")
+  const W = 760
+  const H = 380
+  const mL = 64
+  const mR = 30
+  const mT = 26
+  const mB = 54
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  const curves = [[0.5, SAGE, "lr 0.5: converges"], [1.5, AMBER, "lr 1.5: boundary"], [2.5, CLAY, "lr 2.5: diverges"]]
+  const vmax = 30
+  function X(t) { return mL + t / 10 * (W - mL - mR) }
+  function Y(v) { return mT + (1 - Math.min(Math.abs(v), vmax) / vmax) * (H - mT - mB) }
+  svg.appendChild(svgEl("line", {x1: mL, x2: W - mR, y1: Y(0), y2: Y(0), stroke: "#e2d7c2", "stroke-width": 1}))
+  curves.forEach(function(c) {
+    const lr = c[0]
+    let d = ""
+    let x = 1
+    let t = 0
+    while (t <= 10) {
+      d = d + (t === 0 ? "M" : "L") + X(t).toFixed(1) + " " + Y(x).toFixed(1) + " "
+      x = x * (1 - 2 * lr)
+      t = t + 1
+    }
+    const p = svgEl("path", {d: d, fill: "none", stroke: c[1], "stroke-width": 3})
+    const tip = svgEl("title", {})
+    tip.textContent = c[2]
+    p.appendChild(tip)
+    svg.appendChild(p)
+  })
+  const legend = [["lr 0.5: converges to 0.001", SAGE], ["lr 1.5: oscillates at boundary", AMBER], ["lr 2.5: diverges as 1.5^t", CLAY]]
+  legend.forEach(function(l, i) {
+    const y = mT + 10 + i * 24
+    svg.appendChild(svgEl("rect", {x: W - 300, y: y - 12, width: 18, height: 12, fill: l[1]}))
+    const t = svgEl("text", {x: W - 274, y: y, "font-size": 13, fill: INK, "font-family": SANS})
+    t.textContent = l[0]
+    svg.appendChild(t)
+  })
+  const xl = svgEl("text", {x: W - mR, y: H - 12, "font-size": 13, fill: MUT, "text-anchor": "end", "font-family": SANS})
+  xl.textContent = "step"
+  svg.appendChild(xl)
+  const yl = svgEl("text", {x: 14, y: 20, "font-size": 13, fill: MUT, "font-family": SANS})
+  yl.textContent = "|x| (clipped)"
+  svg.appendChild(yl)
+  host.appendChild(svg)
+}
+
+function num(id, dflt) {
+  const v = parseFloat(document.getElementById(id).value)
+  if (isNaN(v)) { return dflt }
+  return v
+}
+
+function runBackprop() {
+  const x = num("bx", 2)
+  const y = num("by", 3)
+  const z = num("bz", 4)
+  const a = x + y
+  const f = a * z
+  document.getElementById("bnote").textContent = "Forward: a = x + y = " + a + ", f = a x z = " + f + ". Backward: df/dx = " + z + ", df/dy = " + z + ", df/dz = " + a + ". Each junction multiplies by its local derivative."
+}
+
+function runNan() {
+  const z = [num("nb1", 1000), num("nb2", 1001), num("nb3", 1002)]
+  const note = document.getElementById("nbnote")
+  const naive = z.map(function(v) { return Math.exp(v) })
+  const m = Math.max.apply(null, z)
+  const sh = z.map(function(v) { return Math.exp(v - m) })
+  const s = sh[0] + sh[1] + sh[2]
+  const p = sh.map(function(v) { return (v / s).toFixed(3) })
+  const nanTxt = (naive[0] === Infinity) ? "(nan, nan, nan): exp overflowed" : "ok"
+  note.textContent = "Naive: " + nanTxt + ". Shifted by max (" + m + "): (" + p.join(", ") + "), sums to 1.0. Same math, different floats."
+}
+
+function runQuad() {
+  const lr = parseFloat(document.getElementById("qlr").value)
+  let x = 1
+  let t = 0
+  while (t < 10) { x = x * (1 - 2 * lr), t = t + 1 }
+  const note = document.getElementById("qnote")
+  const mode = (Math.abs(1 - 2 * lr) < 1) ? "converges" : (Math.abs(1 - 2 * lr) === 1 ? "oscillates at the boundary" : "diverges")
+  note.textContent = "lr = " + lr.toFixed(2) + ". After 10 steps x = " + x.toExponential(2) + ". Verdict: " + mode + "."
+}
+
+const PSTEPS = [
+  {t: "Step 0: start", n: "The oracle has not acted yet. Workbench: ROOT. Inbox: the, cat, sat.",
+   s: ["ROOT"], b: ["the", "cat", "sat"], a: "next: SHIFT"},
+  {t: "Step 1: SHIFT", n: "Move one word from inbox to workbench. Nothing is wired yet.",
+   s: ["ROOT", "the"], b: ["cat", "sat"], a: "next: SHIFT"},
+  {t: "Step 2: SHIFT", n: "The workbench holds ROOT, the, cat. The top two words are candidates for an arc.",
+   s: ["ROOT", "the", "cat"], b: ["sat"], a: "next: LEFT-ARC"},
+  {t: "Step 3: LEFT-ARC", n: "Wire cat -> the (det). The dependent (the) leaves the workbench. Arc (1, 0) recorded.",
+   s: ["ROOT", "cat"], b: ["sat"], a: "next: SHIFT"},
+  {t: "Step 4: SHIFT", n: "Bring sat onto the workbench. The top two are cat and sat.",
+   s: ["ROOT", "cat", "sat"], b: [], a: "next: LEFT-ARC"},
+  {t: "Step 5: LEFT-ARC", n: "Wire sat -> cat (nsubj). The dependent (cat) leaves. Arc (2, 1) recorded.",
+   s: ["ROOT", "sat"], b: [], a: "next: RIGHT-ARC(root)"},
+  {t: "Step 6: RIGHT-ARC(root)", n: "Wire root -> sat. Arc (-1, 2) recorded. The inbox is empty, the tree is done.",
+   s: ["ROOT"], b: [], a: "done: 3 arcs"}
+]
+let pcur = 0
+function renderP() {
+  const s = PSTEPS[pcur]
+  document.getElementById("psteptitle").textContent = s.t
+  document.getElementById("pstepnote").textContent = s.n
+  const st = document.getElementById("pstepstack")
+  st.textContent = ""
+  s.s.forEach(function(w) { st.appendChild(el("span", "chip", "stack: " + w)) })
+  const bf = document.getElementById("pstepbuf")
+  bf.textContent = ""
+  if (s.b.length === 0) { bf.appendChild(el("span", "chip plain", "inbox: empty")) }
+  s.b.forEach(function(w) { bf.appendChild(el("span", "chip plain", "inbox: " + w)) })
+  st.appendChild(el("span", "chip hot", s.a))
+  const dots = document.getElementById("pstepdots")
+  dots.textContent = ""
+  PSTEPS.forEach(function(stp, i) {
+    const d = el("span", "dot" + (i === pcur ? " on" : ""))
+    d.setAttribute("role", "button")
+    d.setAttribute("aria-label", "Go to step " + i)
+    d.addEventListener("click", function() { pcur = i, renderP() })
+    dots.appendChild(d)
+  })
+  document.getElementById("pstepprev").disabled = (pcur === 0)
+  document.getElementById("pstepnext").disabled = (pcur === PSTEPS.length - 1)
+}
+
+document.getElementById("bbtn").addEventListener("click", runBackprop)
+document.getElementById("nbbtn").addEventListener("click", runNan)
+document.getElementById("qlr").addEventListener("input", runQuad)
+document.getElementById("pstepprev").addEventListener("click", function() { if (pcur > 0) { pcur = pcur - 1, renderP() } })
+document.getElementById("pstepnext").addEventListener("click", function() { if (pcur < PSTEPS.length - 1) { pcur = pcur + 1, renderP() } })
+
+barChart("chart-grads", [["df/dx", 4, INDIGO], ["df/dy", 4, INDIGO], ["df/dz", 5, CLAY]], 5, "")
+barChart("chart-batch", [["sum", 0.6, CLAY], ["mean (sum / 4)", 0.15, SAGE]], 0.6, "")
+barChart("chart-softmax", [["p1", 0.090, INDIGO], ["p2", 0.245, INDIGO], ["p3", 0.665, SAGE]], 0.7, "")
+barChart("chart-mlpacc", [["MLP, start", 0.375, CLAY], ["MLP, 2000 steps", 1.0, SAGE], ["linear, stuck", 0.5, INDIGO]], 1.0, "")
+barChart("chart-action", [["SHIFT", 0.117, INDIGO], ["LEFT-ARC", 0.158, INDIGO], ["RIGHT-ARC (oracle)", 0.725, SAGE]], 0.8, "")
+quadChart()
+renderP()
+runQuad()
+</script>
+</body>
+</html>

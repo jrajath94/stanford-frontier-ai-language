@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS224N U14: Multimodality and guest research, a companion</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+<p class="kicker">CS224N · Companion artifact U14 of 15</p>
+<h1>Multimodality and guest research</h1>
+<p class="dek">A second sense: images next to text. The last three sections are about honesty itself: how to handle guest research you have not inspected.</p>
+<div class="legend" aria-label="Source tags">
+<span class="tag tag-lesson">From the lesson</span>
+<span class="tag tag-toy">Illustration</span>
+<span class="tag tag-companion">Companion</span>
+</div>
+<p class="small muted">“From the lesson” marks facts from <code>lessons/u14_multimodality_guest.md</code>. “Illustration” marks interactive toys that run the lesson’s rules over tiny inputs. “Companion” marks advice from the companion author. Sections C10 to C12 follow the lesson’s own honesty protocol for uninspected material: cards, not claims. Tags after each section name the lesson leaf, for example C04.</p>
+</header>
+<nav class="small" aria-label="Sections">
+<p><strong>On this page:</strong> 1 · tokens all the way down · 2 · the meeting point has a price · 3 · images eat the window first · 4 · two craftsmen, one bill · 5 · the paradigm follows the data · 6 · the receptionist must not nap · 7 · the joint space is the meeting room · 8 · the same school, new students · 9 · the judge needs the image · 10 · the card is the whole lesson · 11 · claims have passports · 12 · the gap ledger · <a href="#wisdom">wisdom index</a></p>
+</nav>
+<figure>
+<img class="illustration" src="assets/u14-patches.jpg" alt="Watercolor illustration of a photograph cut into a grid of squares rearranging into a row">
+<figcaption><span class="tag tag-toy">Illustration</span> The vision encoder is a translator: pixels in, tokens out.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>Tokens all the way down</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>The model reads text as tokens. What is an image to it? The vision encoder is a translator: pixels in, tokens out. After translation the transformer cannot tell which tokens came from eyes and which from text. That blindness is the point. The mechanism is the patchify: reshape the image into N patches, flatten, project to d. Position embeddings mark the grid.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: a 224x224 image cut into 16x16 patches: 224/16 = 14 per side, 196 patch tokens, each a linear projection of pixels. The image becomes a sentence of 196 "words". At d = 1024, the image is 196 tokens before a word is read.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that the grid preserves detail. Small text in the image blurs past reading at 16x16. Resolution is a choice, not a given.</p>
+</div>
+<div class="nugget" id="nugget-patches">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">Translate every modality to tokens and the stack stays unified. The blindness of the transformer to token origins is the design.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose patch tokens for a unified stack. Choose a separate vision tower when the vision task needs its own capacity.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>One common representation removes special cases. Pay for it in resolution choices.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The patchify machine. The grid rule is C01’s. The image size is yours. Prefilled with the lesson toy.</p>
+<p>image side <input class="text" id="pxs" value="224" aria-label="Image side"></p>
+<p>patch side <input class="text" id="pxp" value="16" aria-label="Patch side"></p>
+<p><button class="btn" id="pxb">Patchify</button></p>
+<p class="small" id="pxnote"></p>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>The meeting point has a price</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>Do image and text mix at the input or at the output? Early fusion is one room: both modalities enter the same stack as tokens. Late fusion is two rooms with a door: separate towers, joined by projections at the end.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4, §5</span></p>
+<p>From <code>compute_u14.py</code>: early fusion adds 0 extra params (the shared stack does the work). Late fusion adds 2 projections per layer: 2 d^2 L = 5.03e7 at d = 1024, L = 24. On a 7B model that is 0.7 percent: small but not free.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p>The broken assumption is that early fusion is always cheaper. The image tokens bloat every layer's attention to n^2. Params are not the only bill.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u14-rooms.jpg" alt="Watercolor illustration of two rooms with a door, one full of pictures, one full of books">
+<figcaption><span class="tag tag-toy">Illustration</span> Early fusion is one room, late fusion is two rooms with a door.</figcaption>
+</figure>
+<figure>
+<div id="chart-fuse"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4</span> Extra params, from <code>compute_u14.py</code> (executed 2026-10-06): early 0, late 5.03e7. Log scale.</figcaption>
+</figure>
+<div class="nugget" id="nugget-meeting">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §3, §11</span></h4>
+<p class="big">The meeting point has a price in params and in attention. Early is tight, late is modular: choose by the integration you need.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose early for tight integration. Choose late when the towers are pretrained and frozen.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every interface has a cost. Price both the wiring and the compute it implies.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The fusion pricer. The 2 d^2 L rule is C02’s. The sizes are yours. Prefilled with the lesson toy.</p>
+<p>d <input class="text" id="fud" value="1024" aria-label="d"></p>
+<p>layers L <input class="text" id="ful" value="24" aria-label="Layers"></p>
+<p><button class="btn" id="fub">Price it</button></p>
+<p class="small" id="funote"></p>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Images eat the window first</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>The input is an image plus a question. What does the model see first? The stream is a mixed tape: image tokens, then text, or interleaved. Share = image tokens over total. In a causal model, put the image first so the text can attend to it.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4, §5</span></p>
+<p>From <code>compute_u14.py</code>: 256 image tokens + 512 text tokens = 768, image share 0.333. A third of the window is vision.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §11</span></p>
+<p>The broken assumption is that order does not matter. Text before image in a causal model: the question cannot see the image. Order is architecture.</p>
+</div>
+<figure>
+<div id="chart-budget"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4</span> The token budget, from <code>compute_u14.py</code> (executed 2026-10-06): 256 image + 512 text, image share 0.333.</figcaption>
+</figure>
+<div class="nugget" id="nugget-window">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §3, §11</span></h4>
+<p class="big">Images eat the window first. Budget the tokens, and put the image where the question can see it.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the token stream for simplicity. Choose cross-attention when the image is large and the text is long.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Order is architecture in causal models. Place context where it can be attended to.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The budget meter. The share rule is C03’s. The counts are yours. Prefilled with the lesson toy.</p>
+<p>image tokens <input class="text" id="tki" value="256" aria-label="Image tokens"></p>
+<p>text tokens <input class="text" id="tkt" value="512" aria-label="Text tokens"></p>
+<p><button class="btn" id="tkb">Budget</button></p>
+<p class="small" id="tknote"></p>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Two craftsmen, one bill</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>The model writes a caption and draws the image. How? Joint generation is two craftsmen sharing a shop: the text engine writes, the image engine draws, and they must agree on the subject. Agreement is the hard part.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4, §5</span></p>
+<p>From <code>compute_u14.py</code>: autoregressive text (128 tokens at cost 1) plus diffusion image (20 steps at cost 8): 128 + 160 = 288. The image costs more than the text. The mechanism is the schedule: generate text, condition the image on it (or jointly).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that the modalities agree. The caption says "red car", the image shows blue. Joint training, not just joint billing, fixes agreement.</p>
+</div>
+<figure>
+<div id="chart-bill"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4</span> The joint bill, from <code>compute_u14.py</code> (executed 2026-10-06): text 128, image 160, total 288.</figcaption>
+</figure>
+<div class="nugget" id="nugget-bill">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §3, §11</span></h4>
+<p class="big">Two engines, one bill, and agreement is the hard part. Joint billing does not buy joint agreement.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose generation when the image must be novel. Choose retrieval when it exists already.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>When two systems must agree, train the agreement, not just the parts.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>The paradigm follows the data</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>Text is autoregressive, images are diffusion. Why? Text has a natural order (left to right), images do not. The paradigm follows the data's structure. Autoregression tells a story: one token at a time, each conditioned on the past. Diffusion sculpts: start from noise, refine everywhere at once. Stories need order, pictures need global coherence.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: AR text at 128 tokens, diffusion at 20 steps. The text is the plan, the image is the execution. AR factorizes the joint as a product of conditionals. Diffusion learns to reverse a noise process. The interface: AR text conditions the diffusion.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that the paradigms compose cleanly. The diffusion may ignore the AR text (weak conditioning). Strengthen the conditioning, measure agreement.</p>
+</div>
+<div class="nugget" id="nugget-paradigm">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §3, §11</span></h4>
+<p class="big">Match the generative paradigm to the data's structure. Ordered data gets stories, unordered data gets sculpting.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose diffusion for image quality. Choose AR tokens for a unified model.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Let the data's structure choose the method. Interfaces between paradigms need measured agreement.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>The receptionist must not nap</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>One stack for both senses, or specialists? Experts are specialists, the router is the receptionist. Image tokens go to image experts, text to text experts. If the receptionist naps, one expert does everything: collapse.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4, §5</span></p>
+<p>From <code>compute_u14.py</code>: 8 experts (4 image, 4 text), 10 tokens routed as [3,2,3,2,3,2,2,3], aux loss 1.04. Aux = mean((load / mean)^2). Perfect balance gives 1.0. Near 1.0: healthy, no collapse.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §11</span></p>
+<p>The broken assumption is that the router balances. With aux weight 0, one expert takes all. The aux loss is load-bearing.</p>
+</div>
+<figure>
+<div id="chart-route"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4</span> Expert loads, from <code>compute_u14.py</code> (executed 2026-10-06): [3,2,3,2,3,2,2,3], aux 1.04. Balanced.</figcaption>
+</figure>
+<div class="nugget" id="nugget-router">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §3, §11</span></h4>
+<p class="big">The aux loss is load-bearing. Without it the router collapses to one expert and the specialists starve.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose experts for capacity without per-token cost. Choose dense for simplicity. Watch the aux loss.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every routing system needs a balance term. Unchecked, traffic collapses to one lane.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The balance meter. The aux rule is C06’s. The loads are yours. Prefilled with the lesson toy.</p>
+<p>loads (comma separated) <input class="text" id="rtl" value="3,2,3,2,3,2,2,3" aria-label="Loads" style="width:170px"></p>
+<p><button class="btn" id="rtb">Balance</button></p>
+<p class="small" id="rtnote"></p>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>The joint space is the meeting room</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>The query is text, the answer is an image. How do they meet? U09 C07's fusion, across senses: embed text and images into one space, score by similarity. The weight w dials which sense leads. Fused = w times image + (1 - w) times text.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4, §5</span></p>
+<p>From <code>compute_u14.py</code>: text score 0.72, image score 0.41, fused at w = 0.5: 0.565. w = 0.0 gives 0.720, w = 1.0 gives 0.410. Tune w on a dev set.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §11</span></p>
+<p>The broken assumption is that the space aligns. The text query may match the wrong image's caption-like region. Alignment needs the training. Check it.</p>
+</div>
+<figure>
+<div id="chart-fused"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4</span> Fused score vs w, from <code>compute_u14.py</code> (executed 2026-10-06): 0.720 at w=0.0, 0.565 at w=0.5, 0.410 at w=1.0.</figcaption>
+</figure>
+<div class="nugget" id="nugget-jointspace">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
+<p class="big">The joint space is the meeting room, and the weight dials which sense leads. Sweep it and check the index.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose joint retrieval when images lack captions. Choose captions when they exist (cheaper).</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Shared spaces need tuning and verification. A mix weight is never set once.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>The same school, new students</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>The model sees images and text. How does it learn to answer questions? Instruction tuning is the same school, new students: instruction triples (image, question, answer), SFT loss on the answer tokens, same recipe as U07, new modality. The gradients reach the vision encoder through the stack.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 10k triples, loss falls, VQA accuracy rises 0.12. The format teaches the task.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that tuning teaches vision. The model may learn to answer from the text alone, ignoring the image (the language prior). Test with image-ablated inputs.</p>
+</div>
+<div class="nugget" id="nugget-school">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">Instruction tuning is the same school with new students. Test that the vision was learned, not bypassed: ablate the image.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose tuning when the behavior must be reliable. Choose zero-shot for exploration.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Strong priors route around new inputs. Ablation tests reveal whether the input was used.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>The judge needs the image</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>The model describes an image. Who grades it? U10 C03's judge, new modality: the judge must see the image too. A blind judge grades text, not the pair. The mechanism is U10 C03's: kappa for agreement, Brier for calibration.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: a judge model scores 100 descriptions, agrees with humans at kappa 0.55 with the image, 0.31 without. The 0.55 is U10's number, reused honestly. The 0.31 is illustrative. The judge is an instrument. Calibrate it.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is that the judge sees what the model saw. Different resolutions, different crops. Match the inputs.</p>
+</div>
+<figure>
+<div id="chart-kappa"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4</span> Judge agreement, hand-set toy, labeled as such: kappa 0.55 with the image (U10's number, reused honestly), 0.31 without (illustrative).</figcaption>
+</figure>
+<div class="nugget" id="nugget-judge">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §11</span></h4>
+<p class="big">The judge is an instrument: it must see what the model saw. Calibrate it and match its inputs.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the judge for scale, humans for the gate. Never trust an uncalibrated judge.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every measuring instrument needs calibration and the same inputs as the measured system.</dd>
+</dl>
+</div>
+</section>
+<section class="block honesty" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>The card is the whole lesson</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3, §4</span></p>
+<p>The leaf names a guest artifact. What do you teach? The card reads: "title: guest Tinker/LoRA artifacts (inventory label), content: not inspected, claims: none". The card is the whole lesson. A title is a pointer to work you have not seen. Teaching the pointer honestly means saying what it points at (unknown) and how you would verify it (the artifact list).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p>The broken assumption is that "Tinker" means the product. The label could be a codename, a demo, or a typo. Do not resolve ambiguity by guessing.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §9</span></p>
+<p>No new math. The mechanism is the boundary: the leaf stays open until an artifact is inspected. C12 tracks it.</p>
+</div>
+<div class="card">
+<p class="card-title">Reading card · guest Tinker/LoRA artifacts</p>
+<dl class="card-dl">
+<dt>title</dt><dd>guest Tinker/LoRA artifacts (inventory label)</dd>
+<dt>content</dt><dd>not inspected</dd>
+<dt>claims</dt><dd>none</dd>
+<dt>closure rule</dt><dd>inspect a named artifact</dd>
+</dl>
+</div>
+<div class="nugget" id="nugget-card">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §3, §11</span></h4>
+<p class="big">The card is the whole lesson. When the material is uninspected, the honest move is a card, not a claim.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Keep the leaf visible and honest rather than dropping it. The card preserves the pointer.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>An uninspected pointer is not knowledge. Name the boundary. Do not guess past it.</dd>
+</dl>
+</div>
+</section>
+<section class="block honesty" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Claims have passports</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3, §4</span></p>
+<p>Someone says "the guest showed X". How do you check? Three classes: (a) inspected artifact, (b) schedule title, (c) hearsay. "The guest showed X" needs (a). The schedule gives (b). Everything else is (c). The mechanism is the routing: each claim about a talk gets a class, each class has a citation format. Demote on doubt.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p>The broken assumption is that the schedule title is the talk. Tentative schedules change (the course says so). The title is a plan, not a transcript.</p>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The passport check. The classes are C11’s. The claims are yours to test. Try the lesson’s examples first.</p>
+<p><button class="btn clb" data-claim="S20 was a guest session on multimodality">“S20 was a guest session on multimodality”</button>
+<button class="btn clb" data-claim="The guest showed early fusion">“The guest showed early fusion”</button>
+<button class="btn clb" data-claim="This unit covers 12 requested-branch leaves">“This unit covers 12 requested-branch leaves”</button></p>
+<p class="small" id="clnote"></p>
+</div>
+</section>
+<section class="block honesty" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>The gap ledger</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3, §4</span></p>
+<p>What is still unknown after this unit? The ledger, hand-set and labeled as such: S20 talk content (uninspected), Tinker/LoRA artifacts (uninspected), all C01 to C09 mechanisms (requested-branch, toy-taught). Each with its closure rule. Every open item names what would close it.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §11</span></p>
+<p>The broken assumption is that the ledger is complete. The gap you forgot is the risk. The audit (a different agent) checks.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §5</span></p>
+<p>From <code>compute_u14.py</code>: U14 has 12 leaves, all class REQUESTED-BRANCH, total 12.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u14-ledger.jpg" alt="Watercolor illustration of an open ledger with rows marked unknown and a magnifying glass">
+<figcaption><span class="tag tag-toy">Illustration</span> The gap ledger is the unit’s honesty file: every open item names what would close it.</figcaption>
+</figure>
+<div class="card">
+<p class="card-title">Gap ledger · U14 (hand-set, from the lesson)</p>
+<dl class="card-dl">
+<dt>S20 talk content</dt><dd>uninspected · closure: inspect the session or its artifacts</dd>
+<dt>Tinker/LoRA artifacts</dt><dd>uninspected · closure: inspect a named artifact (C10 card)</dd>
+<dt>C01 to C09 mechanisms</dt><dd>requested-branch, toy-taught · closure: requested leaves stay marked as requested</dd>
+</dl>
+</div>
+<figure>
+<div id="chart-claims"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §5</span> U14 leaves by claim class, from <code>compute_u14.py</code> (executed 2026-10-06): 12 requested-branch.</figcaption>
+</figure>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>The ten nuggets</h2>
+<ol class="nugget-list">
+<li><a href="#nugget-patches">Translate every modality to tokens and the stack stays unified (§1)</a></li>
+<li><a href="#nugget-meeting">The meeting point has a price in params and in attention (§2)</a></li>
+<li><a href="#nugget-window">Images eat the window first. Budget the tokens (§3)</a></li>
+<li><a href="#nugget-bill">Joint billing does not buy joint agreement (§4)</a></li>
+<li><a href="#nugget-paradigm">Match the generative paradigm to the data's structure (§5)</a></li>
+<li><a href="#nugget-router">The aux loss is load-bearing (§6)</a></li>
+<li><a href="#nugget-jointspace">The joint space is the meeting room (§7)</a></li>
+<li><a href="#nugget-school">Ablate the image to prove the vision was learned (§8)</a></li>
+<li><a href="#nugget-judge">The judge is an instrument: calibrate it (§9)</a></li>
+<li><a href="#nugget-card">When the material is uninspected, the honest move is a card (§10)</a></li>
+</ol>
+</section>
+</div>
+<footer class="wrap">
+<p class="small">PROVENANCE · CS224N companion artifact U14 of 15 · Multimodality and guest research.</p>
+<p class="small">Narrated from <code>lessons/u14_multimodality_guest.md</code> (requested branch). Transcript status: NONE (official site inspected. 2026 videos restricted-unviewed. 2024 playlist not viewed). Numbers from <code>visuals/compute_u14.py</code>, executed 2026-10-06. Late fusion 5.03e7 vs early 0 at d=1024 L=24. Routing loads [3,2,3,2,3,2,2,3], aux 1.04. Tokens 256+512=768, image share 0.333. Joint gen cost 288 (128 at 1 plus 20 steps at 8). Fused retrieval 0.720/0.565/0.410 at w=0.0/0.5/1.0. Claim classes 12 REQUESTED-BRANCH. Hand-set toys labeled as such: 196 patches (224/16), VQA +0.12 on 10k triples, kappa 0.55 with image (U10's number, reused honestly) and 0.31 without (illustrative). Quote budget: 0 quoted words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. Guest protocol: S20 talk content and Tinker/LoRA artifacts are UNINSPECTED per the lesson. Use honesty cards (C10), claim classes (C11), and the gap ledger (C12). No content inferred from speaker names or titles.</p>
+<p class="small">Historical photos: none. No verifiable candidate found. Illustrations only, generated via the image pipeline and labeled as such.</p>
+</footer>
+<script>
+function el(id) { return document.getElementById(id) }
+function num(id, fb) {
+  var v = parseFloat(el(id).value)
+  return isNaN(v) ? fb : v
+}
+function fmt(n) {
+  if (n >= 1e9) { return (n/1e9).toFixed(2) + "e9" }
+  if (n >= 1e6) { return (n/1e6).toFixed(2) + "e6" }
+  if (n >= 1e3) { return (n/1e3).toFixed(1) + "k" }
+  return String(Math.round(n * 1000) / 1000)
+}
+function logBar(id, labels, values, unit) {
+  var host = el(id)
+  var w = 720
+  var rowH = 46
+  var top = 26
+  var labW = 190
+  var bot = 30
+  var h = top + rowH * values.length + bot
+  var maxL = 0
+  values.forEach(function(v) {
+    var l = Math.log10(Math.max(v, 1))
+    if (l > maxL) { maxL = l }
+  })
+  var s = '<svg class="chart" viewBox="0 0 ' + w + ' ' + h + '" role="img">'
+  s = s + '<text class="chart-label" x="' + (labW + 4) + '" y="14">log scale . ' + unit + '</text>'
+  values.forEach(function(v, i) {
+    var l = Math.log10(Math.max(v, 1))
+    var bw = (l / maxL) * (w - labW - 60)
+    var y = top + i * rowH
+    s = s + '<text class="chart-label" x="0" y="' + (y + 22) + '">' + labels[i] + '</text>'
+    s = s + '<rect x="' + labW + '" y="' + y + '" width="' + bw.toFixed(1) + '" height="30" fill="' + (i === 0 ? "#9d5c63" : "#1e5a8a") + '"/>'
+    s = s + '<text class="chart-label" x="' + (labW + bw + 8) + '" y="' + (y + 22) + '">' + fmt(v) + '</text>'
+  })
+  s = s + '</svg>'
+  host.innerHTML = s
+}
+function barChart(id, rows, maxV, unit) {
+  var host = el(id)
+  var w = 720
+  var h = rows.length * 44 + 60
+  var s = '<svg class="chart" viewBox="0 0 ' + w + ' ' + h + '" role="img">'
+  s = s + '<text class="chart-label" x="0" y="16">' + unit + '</text>'
+  rows.forEach(function(r, i) {
+    var y = 30 + i * 44
+    var bw = (r[1] / maxV) * (w - 190)
+    s = s + '<text class="chart-label" x="0" y="' + (y + 24) + '">' + r[0] + '</text>'
+    s = s + '<rect x="180" y="' + y + '" width="' + bw.toFixed(1) + '" height="28" fill="' + r[3] + '"/>'
+    s = s + '<text class="chart-label" x="' + (186 + bw) + '" y="' + (y + 20) + '">' + r[2] + '</text>'
+  })
+  s = s + '</svg>'
+  host.innerHTML = s
+}
+function onload() {
+  logBar("chart-fuse", ["early fusion extra params", "late fusion extra params"], [0, 5.03e7], "params")
+  barChart("chart-route", [["E0","3","3","#1e5a8a"],["E1","2","2","#9d5c63"],["E2","3","3","#1e5a8a"],["E3","2","2","#9d5c63"],["E4","3","3","#1e5a8a"],["E5","2","2","#9d5c63"],["E6","2","2","#9d5c63"],["E7","3","3","#1e5a8a"]], 4, "tokens routed")
+  barChart("chart-budget", [["image tokens","256","256","#1e5a8a"],["text tokens","512","512","#9d5c63"]], 512, "tokens")
+  barChart("chart-bill", [["text 128 at cost 1","128","128","#1e5a8a"],["image 20 steps at cost 8","160","160","#9d5c63"]], 160, "cost units")
+  barChart("chart-fused", [["w = 0.0","0.720","0.720","#1e5a8a"],["w = 0.5","0.565","0.565","#9d5c63"],["w = 1.0","0.410","0.410","#d9a441"]], 0.72, "fused score")
+  barChart("chart-kappa", [["with image","0.55","0.55","#1e5a8a"],["without image","0.31","0.31","#9d5c63"]], 0.55, "kappa (hand toy)")
+  barChart("chart-claims", [["requested-branch","12","12","#1e5a8a"]], 12, "leaves")
+}
+function runPatchify() {
+  var side = Math.max(1, Math.round(num("pxs", 224)))
+  var p = Math.max(1, Math.round(num("pxp", 16)))
+  var n = Math.floor(side / p)
+  el("pxnote").textContent = "Grid: " + n + " per side, " + (n * n) + " patch tokens. Lesson toy: 14 per side, 196 patches at 224/16."
+}
+function runFusion() {
+  var d = Math.max(1, num("fud", 1024))
+  var L = Math.max(1, num("ful", 24))
+  var late = 2 * d * d * L
+  el("funote").textContent = "Late fusion: 2 d^2 L = " + fmt(late) + " params. Early fusion: 0. Lesson toy at d=1024, L=24: 5.03e7."
+}
+function runBudget() {
+  var i = Math.max(0, num("tki", 256))
+  var t = Math.max(0, num("tkt", 512))
+  var tot = i + t
+  var share = tot > 0 ? i / tot : 0
+  el("tknote").textContent = "Total " + tot + " tokens, image share " + share.toFixed(3) + ". Lesson toy: 768, 0.333."
+}
+function runRoute() {
+  var raw = el("rtl").value.split(",").map(function(x) { return parseFloat(x.trim()) }).filter(function(x) { return !isNaN(x) && x >= 0 })
+  if (raw.length === 0) {
+    el("rtnote").textContent = "Enter loads first."
+    return
+  }
+  var mean = raw.reduce(function(a,b){ return a+b },0) / raw.length
+  var aux = raw.reduce(function(a,b){ return a + Math.pow(b/mean, 2) },0) / raw.length
+  el("rtnote").textContent = "Aux = " + aux.toFixed(2) + " (1.0 is perfect balance. Lesson toy [3,2,3,2,3,2,2,3] gives 1.04)."
+}
+function bindClaims() {
+  var known = {
+    "S20 was a guest session on multimodality": "(b) schedule title: cite the schedule, not the talk.",
+    "This unit covers 12 requested-branch leaves": "(a) inspected artifact: counted in this build's lessons."
+  }
+  var buttons = document.querySelectorAll(".clb")
+  buttons.forEach(function(b) {
+    b.addEventListener("click", function() {
+      var c = b.getAttribute("data-claim")
+      var r = known[c] || "(c) hearsay: needs (a) before it can travel."
+      el("clnote").textContent = '"' + c + '" -> ' + r + ' "The guest showed early fusion" would be (c): do not repeat.'
+    })
+  })
+}
+function onready() {
+  onload()
+  el("pxb").addEventListener("click", runPatchify)
+  el("fub").addEventListener("click", runFusion)
+  el("tkb").addEventListener("click", runBudget)
+  el("rtb").addEventListener("click", runRoute)
+  bindClaims()
+}
+window.addEventListener("DOMContentLoaded", onready)
+</script>
+</body>
+</html>

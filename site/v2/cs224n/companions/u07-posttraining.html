@@ -441,8 +441,8 @@ span.ptag, .ptag {
 <nav aria-label="Sections" class="small">
 <p><strong>On this page:</strong> 1 · show, do not tell · 2 · the demos are the spec · 3 · a judge that scores · 4 · pairs are votes · 5 · three teachers · 6 · a trust region of arithmetic · 7 · the reward, solved out · 8 · a leash, not a target · 9 · the map ends at the border · 10 · the statue of the goal · 11 · the reward inherits the judges · 12 · the only honest eval · <a href="#wisdom">wisdom index</a></p>
 </nav>
-<figure class="paint inset" data-entrance="bloom">
-<div class="frame"><div class="stage"><img alt="Watercolor illustration of a student copying a teacher's demonstration strokes on paper" class="illustration base" loading="lazy" src="assets/u07-demo.jpg"/></div></div>
+<figure data-phase2="1" data-scene="u07-posttraining-hero" class="paint inset" data-entrance="bloom">
+<div class="frame"><div class="stage"><img alt="Watercolor illustration of a student copying a teacher's demonstration strokes on paper" class="illustration base" loading="lazy" src="assets/u07-demo.jpg"/><img alt="" aria-hidden="true" class="ly mul" data-obj="hero-subject" data-depth="14" loading="lazy" src="assets/u07-posttraining-hero-layer.png" style="left:5%;top:5%;width:90%"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> SFT: show, do not tell. The model imitates curated demonstrations.</figcaption></figure>
 <section class="block col" data-chapter="1" data-title="Show, do not tell" id="s1"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">1</span></div><div><p class="ch-meta"><span class="ts">Unit 1</span> · C01</p><h2>Show, do not tell</h2></div></div>
 <div class="prose-narrow">
@@ -518,7 +518,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C05 §11</span></p>
 <p>The broken assumption is that more RL is better. Over-optimized policies get high reward and low quality (C10). The KL leash and early stopping are load-bearing, not optional.</p>
 </div>
-<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-teachers"><div class="tag-price"><span class="tag-big">3</span><span class="tag-unit">Nugget 3 · From the lesson C05 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C05 §3, §11</div><div class="tag-eye">The lesson</div><p class="">RLHF is three teachers in sequence, not one trick. Format, then taste, then exploration, each stage bounded by a leash.</p><p><b>Why it matters. </b>Choose RLHF when the reward needs to generalize beyond pairs (online exploration). Choose DPO for simplicity and stability.</p><p><b>Transfer. </b>Stage the learning: imitate first, judge second, explore third. Skipping stages costs more than it saves.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
+<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-teachers"><div class="tag-price"><span class="tag-big">3 teachers</span><span class="tag-unit">sequence not one trick · From the lesson C05 §3, §11</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C05 §3, §11</div><div class="tag-eye">The lesson</div><p class="">RLHF is three teachers in sequence, not one trick. Format, then taste, then exploration, each stage bounded by a leash.</p><p><b>Why it matters. </b>Choose RLHF when the reward needs to generalize beyond pairs (online exploration). Choose DPO for simplicity and stability.</p><p><b>Transfer. </b>Stage the learning: imitate first, judge second, explore third. Skipping stages costs more than it saves.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="A trust region of arithmetic" id="s6"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">6</span></div><div><p class="ch-meta"><span class="ts">Unit 6</span> · C06</p><h2>A trust region of arithmetic</h2></div></div>
 <div class="prose-narrow">
@@ -570,7 +570,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 §11</span></p>
 <p>The broken assumption is that a small KL means a good run. KL near zero with high reward can mean the reward was gamed without moving the distribution much (subtle hacking). Watch the reward and the quality, not just the KL.</p>
 </div>
-<figure class="paint inset" data-entrance="sketch">
+<figure data-phase2="1" data-scene="u07-posttraining-s2" class="paint inset" data-entrance="sketch">
 <div class="frame"><div class="stage"><img alt="Watercolor illustration of a dog on a loose leash exploring a park" class="illustration base" loading="lazy" src="assets/u07-leash.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The KL leash: explore freely, but pay for every step away from the reference.</figcaption></figure>
 <figure>
@@ -611,7 +611,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 §11</span></p>
 <p>The broken assumption is that we will notice the hacking. Subtle hacking (slightly longer answers, slightly more confident) passes casual inspection. Notice needs measurement: human eval on the optimized policy, not the reward curve.</p>
 </div>
-<figure class="paint inset" data-entrance="bloom">
+<figure data-phase2="1" data-scene="u07-posttraining-s3" class="paint inset" data-entrance="bloom">
 <div class="frame"><div class="stage"><img alt="Watercolor illustration of a climber polishing a marble statue beside the real smaller goal behind it" class="illustration base" loading="lazy" src="assets/u07-statue.jpg"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> Optimizing the proxy polishes the statue, not the goal.</figcaption></figure>
 <figure>
@@ -1492,5 +1492,43 @@ barChart("chart-eval", [["wins", 120, SAGE], ["ties", 30, INDIGO], ["losses", 50
   });
 })();
 
-</script></body>
+</script><script>
+(function(){if(!window.CompanionFX)return;var FX=window.CompanionFX;
+FX.registerScene('u07-posttraining-hero',{
+ init:function(F,FX){
+  F._m=FX.motes(F.stage,F.W,F.H,24,7);
+  F._g=FX.glows(F.stage,F.W,F.H,[[F.W*0.5,F.H*0.30,Math.min(F.W,F.H)*0.22]],'screen','#E8A94B')[0];
+ },
+ pose:function(S,FX){
+  var F=S.F;F._m.tick(S.t);
+  F._g.style.opacity=(0.20+0.10*FX.flicker(S.t,3)).toFixed(3);
+  return {'hero-subject':{x:7*Math.sin(S.t*0.6),y:5*Math.sin(S.t*0.83+1),r:0,s:1,o:1}};
+ } });
+FX.registerScene('u07-posttraining-s2',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+FX.registerScene('u07-posttraining-s3',{
+ init:function(F,FX){
+  var pts=[],i;for(i=0;i<10;i++)pts.push([F.W*(0.12+0.76*Math.random()),F.H*(0.12+0.64*Math.random()),10+Math.random()*16]);
+  F._sp=FX.sparkles(F.stage,F.W,F.H,pts);
+  F._rp=FX.ripple(F.stage,F.W,F.H,F.W*0.5,F.H*0.72);
+ },
+ pose:function(S,FX){
+  var F=S.F,i,k;
+  for(i=0;i<F._sp.length;i++){k=((S.t*0.6)+i*0.37)%1;F._sp[i].style.transform='scale('+Math.max(0.001,Math.sin(Math.PI*k)).toFixed(3)+')';}
+  for(i=0;i<F._rp.length;i++){var u=((S.t/6)+i/2)%1;F._rp[i].setAttribute('rx',(u*90).toFixed(1));F._rp[i].setAttribute('ry',(u*34).toFixed(1));F._rp[i].style.opacity=(0.5*(1-u)).toFixed(3);}
+  return {};
+ } });
+})();
+</script>
+</body>
 </html>

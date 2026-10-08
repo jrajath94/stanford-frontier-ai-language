@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS224N U11: Reasoning and test-time compute, a companion</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+<p class="kicker">CS224N · Companion artifact U11 of 15</p>
+<h1>Reasoning and test-time compute</h1>
+<p class="dek">Spend compute after training: sample more, check the answers, decode faster. Inference is a budget. Spend it where it moves the score.</p>
+<div class="legend" aria-label="Source tags">
+<span class="tag tag-lesson">From the lesson</span>
+<span class="tag tag-toy">Illustration</span>
+<span class="tag tag-companion">Companion</span>
+</div>
+<p class="small muted">“From the lesson” marks facts from <code>lessons/u11_reasoning_testtime.md</code>. “Illustration” marks interactive toys that run the lesson’s rules over tiny inputs. “Companion” marks advice from the companion author. Tags after each section name the lesson leaf, for example C04.</p>
+</header>
+<nav class="small" aria-label="Sections">
+<p><strong>On this page:</strong> 1 · a spotlight on the steps · 2 · a lock with one key · 3 · the honest reading card · 4 · bouncer and inspector · 5 · a second chance machine · 6 · check p first · 7 · water broadly · 8 · the small proposes, the big disposes · 9 · reasoning eval tilts · 10 · count first · 11 · spend to the knee · 12 · stories, not causes · <a href="#wisdom">wisdom index</a></p>
+</nav>
+<figure>
+<img class="illustration" src="assets/u11-vote.jpg" alt="Watercolor illustration of a committee raising vote cards around a table">
+<figcaption><span class="tag tag-toy">Illustration</span> Sampling is a second chance machine. Committees beat individuals when members err independently.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>A spotlight on the steps</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>You supervise the steps, not just the answer. What changes? Supervision is a spotlight. Point it at the answer and the model learns answers. Point it at the steps and the model learns checkable work. The spotlight does not make the work true, it makes it visible. The mechanism is the loss: answer loss on the final token, step loss on intermediates.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: labeling 1000 steps costs 10x labeling 1000 answers (steps are longer to judge). The budget question: steps or more answers? The step-trained model debugs better (its steps are checkable), but the steps are still not proven causal (C12).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that supervised steps are the model's reasoning. The model learns plausible steps that ratify a guessed answer (rationalization, U08 C05). Supervised, not faithful.</p>
+</div>
+<div class="nugget" id="nugget-spotlight">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">Step labels buy checkable work, not true work. The spotlight makes steps visible, never faithful.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose step labels when steps must be auditable. Choose answer-only when only the answer matters.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Supervision aims the spotlight. It does not certify what the light lands on.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>A lock with one key</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>The reward is a unit test. Can the model hack it? Math answer checked by exact match on the final number: hacking needs the right number, which is the task. The reward is the task. A verifiable reward is a lock with one key: the right answer. A learned reward is a lock the model can pick (U07 C10). Verifiable rewards trade generality for honesty.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 100 math items, verifier exact-match. Reward 1 on 63, 0 on 37. The policy gradient pushes toward the 63. No judge in the loop: RL with a ground-truth reward, no reward model, no preference data, no hacking surface beyond the verifier itself.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p>The broken assumption is that the verifier is correct. The test suite misses an edge case, the model learns the exploit and scores 1 on wrong code. Verify the verifier.</p>
+</div>
+<div class="nugget" id="nugget-lock">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §3, §11</span></h4>
+<p class="big">A verifiable reward trades generality for honesty. The one remaining attack surface is the verifier itself.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose verifiable rewards for math, code, games. Choose learned rewards where no verifier exists (open-ended writing).</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Ground-truth checks beat learned judges wherever a check exists. Audit the checker.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>The honest reading card</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>The schedule lists DeepSeek-R1 and DAPO. What do you actually know? The lesson's answer is a protocol, not a summary: the honest reading card. Title, venue, the claim in one sentence, "not read" stamped on the rest. A reading list is a map, not the territory. The card records the boundary: title known, claims unverified, paper not opened.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: the card for DeepSeek-R1 reads "title known from the reading list, content not inspected in this build". The card is the deliverable. It stops title-dropping from becoming knowledge-claims: every claim about the paper cites the card or the paper.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §11</span></p>
+<p>The broken assumption is that the title tells you the method. Titles undersell ablations and oversell novelty. Read before you repeat.</p>
+</div>
+<div class="nugget" id="nugget-card">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §3, §11</span></h4>
+<p class="big">The card is the deliverable. Title known, content not inspected: write that down instead of inferring the method from the name.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the card when time-boxed. Choose reading before any claim that depends on the content.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Label the boundary of your knowledge on every unread source. Unread is not unknown, it is uninspected.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The honesty card. Type a paper title. The card stamps what is known and what is not.</p>
+<p>title <input class="text" id="rdt" value="DeepSeek-R1" aria-label="Paper title" style="width:200px"></p>
+<p><button class="btn" id="rdb">Make the card</button></p>
+<p class="small" id="rdnote"></p>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>Bouncer and inspector</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>Do you check the final answer or every step? Outcome verification is the bouncer at the exit: right answer, come in. Process verification is the inspector on the line: every step must hold. The inspector costs more and catches more. Outcome check costs 1 unit, catches wrong answers. Process check costs 5 units, catches wrong steps too.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 10 traces, 4 with right answers, 2 with right steps. Outcome keeps 4, process keeps 2. Process is stricter and 5x the cost. The answer is right but the steps are wrong: outcome passes, process fails. Process selection can prune early: kill a trace at the first bad step.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that verified steps mean a right answer. Every step checks out, the conclusion is a non sequitur. Verify the logic, not just the steps.</p>
+</div>
+<figure>
+<div id="chart-filter"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4</span> The two filters, hand-set and labeled illustrative: of 10 traces, outcome keeps 4, process keeps 2.</figcaption>
+</figure>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>A second chance machine</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>One sample gives 0.60. What do 21 give? Sampling is a second chance machine. Each draw is a guess, the majority is the committee. Committees beat individuals when the members err independently. P(majority right) is the binomial tail: at p = 0.6 the tail grows with n.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4, §5</span></p>
+<p>From <code>compute_u11.py</code>: majority at p = 0.6 gives 0.6000 (n = 1), 0.6826 (n = 5), 0.7535 (n = 11), 0.8256 (n = 21). The gains shrink: +0.083, +0.071, +0.072. Diminishing but real. More samples, same model, better answer.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that errors are independent. The model repeats its favorite wrong answer 21 times, the majority is wrong with confidence. Correlated errors break the committee.</p>
+</div>
+<figure>
+<div id="chart-major"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4</span> The majority curve, from <code>compute_u11.py</code> (executed 2026-10-06): 0.6000, 0.6826, 0.7535, 0.8256 at n = 1, 5, 11, 21.</figcaption>
+</figure>
+<div class="nugget" id="nugget-machine">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §3, §11</span></h4>
+<p class="big">Sampling is the cheapest accuracy on a fixed model. The committee works when its members err independently.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose sampling when the model is fixed and latency allows. Choose training when the budget is per-query forever.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A second chance is a real strategy. Price it against retraining before you dismiss it.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The committee. The binomial tail is C05’s. The per-sample accuracy is yours. Prefilled with the lesson toy.</p>
+<p>p <input class="text" id="mjp" value="0.6" aria-label="Per-sample accuracy"></p>
+<p>n (odd) <input class="text" id="mjn" value="5" aria-label="Sample count"></p>
+<p><button class="btn" id="mjb">Vote</button></p>
+<p class="small" id="mjnote"></p>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>Check p first</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>The model reasons three ways and answers twice "A" once "B". What is the answer? "A". The paths differ, the answer is stable. Stability is the signal. Self-consistency is C05 with reasoning traces: sample diverse paths, vote the answers. Diverse paths that converge are stronger evidence than one path.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4, §5</span></p>
+<p>From <code>compute_u11.py</code>: at p = 0.4, majority of 5 gives 0.3174, of 11 gives 0.2465. Voting on a weak reasoner makes it worse. Check p first, then vote. Temperature 0 gives 5 identical paths: the "vote" is theater. Measure path diversity, not just n.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §11</span></p>
+<p>The broken assumption is "diverse paths." Identical paths are one path with extra steps. Diversity must be measured.</p>
+</div>
+<figure>
+<div id="chart-rev"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4</span> The reversal, from <code>compute_u11.py</code> (executed 2026-10-06): at p = 0.4, majority of 5 gives 0.3174, of 11 gives 0.2465. Below one half, voting hurts.</figcaption>
+</figure>
+<div class="nugget" id="nugget-checkp">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §3, §11</span></h4>
+<p class="big">Check p first, then vote. Below one half the majority amplifies the wrong side, and identical paths are not a vote.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose self-consistency for breadth over paths. Choose depth for a single hard derivation.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Measure the thing the method assumes. Here: per-sample accuracy and path diversity.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Water broadly</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>100 samples, 10 prompts or 1 prompt? The budget is water, the prompts are plants. Diminishing returns mean the tenth liter on one plant beats the hundredth. Water broadly. Total = m times g(B/m). With g concave, the sum is maximized by spreading (Jensen's inequality working for you).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4, §5</span></p>
+<p>From <code>compute_u11.py</code>, gain(n) = 1 - exp(-n/20): 10 prompts x 10 gives 3.935, 1 prompt x 100 gives 0.993. The deep allocation wastes 75 percent of the budget on saturated returns.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §11</span></p>
+<p>The broken assumption is that gains are concave. A task with a threshold (needs 50 samples to click): spreading gives 10 x 10 = 0. Know the shape before you spread.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u11-water.jpg" alt="Watercolor illustration of a gardener watering many small plants evenly">
+<figcaption><span class="tag tag-toy">Illustration</span> The budget is water, the prompts are plants. Diminishing returns favor breadth.</figcaption>
+</figure>
+<figure>
+<div id="chart-alloc"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4</span> The allocation, from <code>compute_u11.py</code> (executed 2026-10-06): 10 x 10 gives 3.935, 1 x 100 gives 0.993.</figcaption>
+</figure>
+<div class="nugget" id="nugget-water">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
+<p class="big">With concave gains, spreading the budget beats deepening it. Know the gain shape before you spread.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the fixed split for simplicity. Choose adaptive when gains differ across prompts (hard ones deserve more).</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Diminishing returns argue for breadth. Thresholds argue for depth. Measure which world you are in.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The waterer. The gain rule g(n) = 1 - exp(-n/20) is C07’s. The budget split is yours.</p>
+<p>budget <input class="text" id="wab" value="100" aria-label="Budget"></p>
+<p>prompts m <input class="text" id="wam" value="10" aria-label="Prompts"></p>
+<p><button class="btn" id="wabtn">Allocate</button></p>
+<p class="small" id="wanote"></p>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>The small proposes, the big disposes</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>The big model is slow, the small model is fast but worse. Can they team up? The small model proposes, the big model disposes. Each proposed token is checked against the big model's distribution and accepted or corrected. The output is exactly the big model's, only faster.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4, §5</span></p>
+<p>From <code>compute_u11.py</code>: draft 5 tokens, accept each with p = 0.7. Expected accepted run = (1 - a^(g+1)) / (1 - a) = 2.941. Each pass yields about 3 tokens for about 1 target forward pass plus 5 cheap drafts. Same output distribution, fewer big-model calls.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that the draft is cheap enough. A draft at half the target's cost with a = 0.3: the overhead exceeds the gain. Measure a and the draft cost first.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u11-draft.jpg" alt="Watercolor illustration of an apprentice sketching while a master checks each stroke">
+<figcaption><span class="tag tag-toy">Illustration</span> Speculative decoding: the draft proposes, the target verifies. Exact output, fewer slow calls.</figcaption>
+</figure>
+<figure>
+<div id="chart-spec"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4</span> The draft pass, from <code>compute_u11.py</code> (executed 2026-10-06): 2.941 of 5 drafts accepted on average.</figcaption>
+</figure>
+<div class="nugget" id="nugget-spec">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">Draft cheap, verify exact. Speculation buys latency, never quality: the output distribution is unchanged.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose speculation when you need the big model's quality at lower latency. Choose the small model when its quality suffices.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Cheap proposals plus exact verification is a general pattern. Price the verifier before you adopt it.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The draft desk. The acceptance formula is C08’s. The draft quality is yours. Prefilled with the lesson toy.</p>
+<p>accept prob a <input class="text" id="spa" value="0.7" aria-label="Accept probability"></p>
+<p>draft length g <input class="text" id="spg" value="5" aria-label="Draft length"></p>
+<p><button class="btn" id="spb">Draft</button></p>
+<p class="small" id="spnote"></p>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Reasoning eval tilts</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>The model writes long traces and wins. Is it reasoning or typing? Reasoning evals have the same tilts as all evals, plus one: trace length looks like thought. Control for it or measure typing skill.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: the judge prefers the longer trace 0.62 of the time, blinded to length 0.53. The 0.09 is length bias, U10's lesson applied. Report the blinded number.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is that the answer check is enough. The trace is gibberish but the answer is right, and the eval rewards the pair. Check traces when traces are the claim.</p>
+</div>
+<figure>
+<div id="chart-tilt"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4</span> The trace-length tilt, hand-set and labeled illustrative: raw 0.62, blinded 0.53.</figcaption>
+</figure>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Count first</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>The reasoning model fails 40 percent of the time. Where? U09 C12's autopsy, specialized: reasoning adds the rationalization class (steps that look right and are not). Count first, fix the biggest class.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §4, §5</span></p>
+<p>From <code>compute_u11.py</code>, 60 traces: wrong tool 14, bad args 11, no stop 9, retrieval miss 12, rationalized trace 8, other 6. The top two classes are 26 of 60: nearly half the failures. Wrong tool (14) and retrieval miss (12) dominate, so the sprint is tools and retrieval, not the reasoner.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p>The broken assumption is that the classes are disjoint. A bad-arg call that also used the wrong tool: allow the secondary label, keep the primary.</p>
+</div>
+<figure>
+<div id="chart-fail"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §4</span> The failure taxonomy, from <code>compute_u11.py</code> (executed 2026-10-06): 60 traces, top two classes 26.</figcaption>
+</figure>
+<div class="nugget" id="nugget-count">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §3, §11</span></h4>
+<p class="big">Count first, fix the biggest class. The taxonomy says where the sprint goes, not intuition.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the taxonomy past 20 failures. Choose intuition for a handful.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Sort failure classes by frequency, fix in order, re-measure. Autopsy before surgery.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Spend to the knee</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>Samples cost money. Where is the knee? The frontier is the menu: each point is a (cost, quality) pair. The knee is where the menu stops being worth it. Spend to the knee, not past it. The mechanism is the ratio: delta quality over delta cost per step. When the ratio falls below your value of quality, stop.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §4, §5</span></p>
+<p>From <code>compute_u11.py</code>: (1, 0.55), (4, 0.68), (16, 0.75), (64, 0.79). 1 to 4 buys +0.13, 4 to 16 buys +0.07, 16 to 64 buys +0.04. The knee is near 16: past it, 4x the cost for +0.04. The price of quality rises 3x across the curve.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p>The broken assumption is that the curve is stable. A new prompt shifts the whole curve. The old knee is wrong. Re-measure per prompt family.</p>
+</div>
+<figure>
+<div id="chart-knee"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §4</span> The cost-quality frontier, from <code>compute_u11.py</code> (executed 2026-10-06): the knee sits near 16 samples.</figcaption>
+</figure>
+<div class="nugget" id="nugget-knee">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §3, §11</span></h4>
+<p class="big">Spend to the knee, not past it. The knee is where delta quality over delta cost bends.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the knee per task. Choose fixed n when latency must be predictable.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every budget has a knee. Find it on your curve, not someone else's.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The knee finder. Paste (samples, accuracy) pairs, one per line, and see the marginal gains.</p>
+<p><textarea class="text" id="knp" rows="4" style="width:100%" aria-label="Pairs">1,0.55
+4,0.68
+16,0.75
+64,0.79</textarea></p>
+<p><button class="btn" id="knb">Find the knee</button></p>
+<p class="small" id="knnote"></p>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Stories, not causes</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>The trace looks perfect. Do you believe it? A trace is a story the model tells about its answer. Stories can be true, useful, and still not the cause. Treat traces as evidence, not as proof.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 20 traces, corrupt the middle step, 14 answers unchanged. The steps are mostly decoration on this task. The mechanism is the intervention: change the step, watch the answer. No change means the step did not cause the answer.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §11</span></p>
+<p>The broken assumption is that failing the test means the model deceives. The model may genuinely use the step but stay steady under corruption (redundant reasoning). The test is one-sided: pass is evidence, fail is not proof of deceit.</p>
+</div>
+<div class="nugget" id="nugget-stories">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §3, §11</span></h4>
+<p class="big">Corrupt a step and watch the answer. If it does not change, the step was decoration. Traces are evidence, not proof.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the intervention test when traces justify decisions. Choose trust for low-stakes chat.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Intervene to test causality. Reading is not testing.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-spotlight"><span class="wnum">01</span>Supervised, not faithful <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-lock"><span class="wnum">02</span>A lock with one key <span class="muted">· C02</span></a></li>
+<li><a href="#nugget-card"><span class="wnum">03</span>The card is the deliverable <span class="muted">· C03</span></a></li>
+<li><a href="#nugget-machine"><span class="wnum">04</span>The committee works when independent <span class="muted">· C05</span></a></li>
+<li><a href="#nugget-checkp"><span class="wnum">05</span>Check p first <span class="muted">· C06</span></a></li>
+<li><a href="#nugget-water"><span class="wnum">06</span>Water broadly <span class="muted">· C07</span></a></li>
+<li><a href="#nugget-spec"><span class="wnum">07</span>Draft cheap, verify exact <span class="muted">· C08</span></a></li>
+<li><a href="#nugget-count"><span class="wnum">08</span>Count first <span class="muted">· C10</span></a></li>
+<li><a href="#nugget-knee"><span class="wnum">09</span>Spend to the knee <span class="muted">· C11</span></a></li>
+<li><a href="#nugget-stories"><span class="wnum">10</span>Traces are evidence, not proof <span class="muted">· C12</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u11_reasoning_testtime.md</code> (CS224N, Unit 11). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The concept inventory is REQUESTED-BRANCH, the reading list OFFICIAL-SOURCE via SRC-02. Every computed number traces to the lesson’s script <code>visuals/compute_u11.py</code> (executed 2026-10-06). Hand-set toys are labeled as such in the text. Paper titles in C03 follow the lesson’s own protocol: title known from the schedule, content not inspected, no claims made about the papers. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+<p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
+<p class="small">Built as Companion 11 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 250
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function lineChart(id, series, xLabels) {
+  const host = document.getElementById(id)
+  const W = 760
+  const H = 320
+  const padL = 56
+  const padR = 20
+  const padT = 16
+  const padB = 44
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  const all = []
+  series.forEach(function(s) { s.ys.forEach(function(v) { all.push(v) }) })
+  const y0 = Math.min.apply(null, all)
+  const y1 = Math.max.apply(null, all)
+  const X = function(i) { return padL + i / (xLabels.length - 1) * (W - padL - padR) }
+  const Y = function(v) { return padT + (y1 - v) / ((y1 - y0) || 1) * (H - padT - padB) }
+  series.forEach(function(s) {
+    const d = s.ys.map(function(v, i) { return (i === 0 ? "M" : "L") + X(i).toFixed(1) + " " + Y(v).toFixed(1) }).join(" ")
+    svg.appendChild(svgEl("path", {d: d, fill: "none", stroke: s.color, "stroke-width": 3}))
+    s.ys.forEach(function(v, i) {
+      const dot = svgEl("circle", {cx: X(i).toFixed(1), cy: Y(v).toFixed(1), r: 6, fill: s.color})
+      const tip = svgEl("title", {})
+      tip.textContent = s.name + " n = " + xLabels[i] + ": " + v
+      dot.appendChild(tip)
+      svg.appendChild(dot)
+    })
+  })
+  xLabels.forEach(function(x, i) {
+    const lab = svgEl("text", {x: X(i).toFixed(1), y: H - 22, "font-size": 13, "text-anchor": "middle", fill: MUT, "font-family": MONO})
+    lab.textContent = "n=" + x
+    svg.appendChild(lab)
+  })
+  series.forEach(function(s, i) {
+    const lg = svgEl("text", {x: padL + i * 220, y: H - 4, "font-size": 13, fill: s.color, "font-family": SANS})
+    lg.textContent = s.name
+    svg.appendChild(lg)
+  })
+  host.appendChild(svg)
+}
+
+function binom(n, k) {
+  let c = 1
+  let j = 1
+  while (j <= k) { c = c * (n - k + j) / j, j = j + 1 }
+  return c
+}
+function majority(p, n) {
+  const need = (n + 1) / 2
+  let acc = 0
+  let k = need
+  while (k <= n) {
+    acc = acc + binom(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k)
+    k = k + 1
+  }
+  return acc
+}
+
+function runCard() {
+  const t = document.getElementById("rdt").value.trim()
+  const note = document.getElementById("rdnote")
+  if (t.length === 0) {
+    note.textContent = "Give the title."
+    return
+  }
+  note.textContent = "Card: title '" + t + "' known from the schedule. Content not inspected. Claims: none. Status: not read. This is the lesson's protocol: the card is the deliverable."
+}
+
+function runMaj() {
+  const p = parseFloat(document.getElementById("mjp").value)
+  const n = parseInt(document.getElementById("mjn").value, 10)
+  const note = document.getElementById("mjnote")
+  if (!(p > 0) || !(p < 1) || !(n >= 1) || (n % 2) === 0) {
+    note.textContent = "Give p strictly between 0 and 1 and an odd n."
+    return
+  }
+  const m = majority(p, n)
+  const verdict = (m > p) ? "voting helps" : "voting hurts"
+  note.textContent = "Single " + p.toFixed(3) + ", majority of " + n + " " + m.toFixed(4) + ": " + verdict + ". The lesson: 0.6 -> 0.6826 at n = 5. 0.4 -> 0.3174."
+}
+
+function runAlloc() {
+  const B = parseFloat(document.getElementById("wab").value)
+  const m = parseFloat(document.getElementById("wam").value)
+  const note = document.getElementById("wanote")
+  if (!(B > 0) || !(m >= 1) || m > B) {
+    note.textContent = "Need a positive budget and a prompt count between 1 and the budget."
+    return
+  }
+  const per = B / m
+  const total = m * (1 - Math.exp(-per / 20))
+  const deep = 1 * (1 - Math.exp(-B / 20))
+  note.textContent = m + " prompts x " + per.toFixed(1) + " samples: total gain " + total.toFixed(3) + ". 1 prompt x " + B + ": " + deep.toFixed(3) + ". The lesson: 10x10 gives 3.935, 1x100 gives 0.993."
+}
+
+function runSpec() {
+  const a = parseFloat(document.getElementById("spa").value)
+  const g = parseInt(document.getElementById("spg").value, 10)
+  const note = document.getElementById("spnote")
+  if (!(a > 0) || !(a < 1) || !(g >= 1)) {
+    note.textContent = "Give a strictly between 0 and 1 and a draft length of at least 1."
+    return
+  }
+  const exp = (1 - Math.pow(a, g + 1)) / (1 - a)
+  note.textContent = "Expected accepted per pass: " + exp.toFixed(3) + " of " + g + " drafts. The lesson toy: a = 0.7, g = 5, 2.941 accepted."
+}
+
+function runKnee() {
+  const lines = document.getElementById("knp").value.split("\n").map(function(x) { return x.trim() }).filter(function(x) { return x.length > 0 })
+  const note = document.getElementById("knnote")
+  const pts = []
+  let bad = false
+  lines.forEach(function(x) {
+    const parts = x.split(",")
+    const s = parseFloat(parts[0])
+    const q = parseFloat(parts[1])
+    if (isNaN(s) || isNaN(q)) { bad = true } else { pts.push([s, q]) }
+  })
+  if (bad || pts.length < 2) {
+    note.textContent = "Give at least two clean pairs."
+    return
+  }
+  const gains = []
+  let i = 1
+  while (i < pts.length) {
+    gains.push("+" + (pts[i][1] - pts[i - 1][1]).toFixed(2) + " for " + (pts[i][0] / pts[i - 1][0]).toFixed(0) + "x cost")
+    i = i + 1
+  }
+  note.textContent = "Marginal gains: " + gains.join(", ") + ". The lesson: +0.13, +0.07, +0.04. The knee is where the gain stops being worth the cost."
+}
+
+document.getElementById("rdb").addEventListener("click", runCard)
+document.getElementById("mjb").addEventListener("click", runMaj)
+document.getElementById("wabtn").addEventListener("click", runAlloc)
+document.getElementById("spb").addEventListener("click", runSpec)
+document.getElementById("knb").addEventListener("click", runKnee)
+
+lineChart("chart-major", [{name: "p = 0.6", color: SAGE, ys: [0.6000, 0.6826, 0.7535, 0.8256]}], ["1", "5", "11", "21"])
+lineChart("chart-rev", [{name: "p = 0.4", color: CLAY, ys: [0.4000, 0.3174, 0.2465]}], ["1", "5", "11"])
+barChart("chart-filter", [["outcome keeps", 4, SAGE], ["process keeps", 2, INDIGO]], 10, " of 10")
+barChart("chart-alloc", [["10 prompts x 10", 3.935, SAGE], ["1 prompt x 100", 0.993, CLAY]], 4, "")
+barChart("chart-spec", [["accepted", 2.941, SAGE], ["rejected", 2.059, CLAY]], 5, " of 5")
+barChart("chart-tilt", [["raw", 0.62, CLAY], ["blinded", 0.53, SAGE]], 0.65, "")
+barChart("chart-fail", [["wrong tool", 14, CLAY], ["retrieval miss", 12, CLAY], ["bad args", 11, AMBER], ["no stop", 9, AMBER], ["rationalized", 8, INDIGO], ["other", 6, INDIGO]], 15, "")
+lineChart("chart-knee", [{name: "accuracy", color: INDIGO, ys: [0.55, 0.68, 0.75, 0.79]}], ["1", "4", "16", "64"])
+</script>
+</body>
+</html>

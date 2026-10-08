@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 <!DOCTYPE html>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -432,8 +434,8 @@ span.ptag, .ptag {
 <h1>The leash and the shortcut</h1>
 <p class="dek">How do human preferences become a language model? First a reward model learns to score responses like the annotators. Then the policy chases the reward on a KL leash. Then DPO skips the middleman and reads the reward off the policy itself. This unit derives each step and shows where each one lies.</p>
 </header>
-<figure class="paint inset" data-entrance="bloom">
-<div class="frame"><div class="stage"><img alt="Watercolor of a dog on a leash straining toward treats" class="base" loading="lazy" src="assets/u05-hero.jpg"/></div></div>
+<figure class="paint inset" data-entrance="bloom" data-hero="" data-scene="p2-h-u05-hero">
+<div class="frame"><div class="stage"><img alt="Watercolor of a dog on a leash straining toward treats" class="base" fetchpriority="high" height="1280" loading="lazy" src="assets/u05-hero.jpg" width="1920"/><img alt="" aria-hidden="true" class="ly mul" data-depth="14" data-obj="dog" src="assets/u05-rlhf-dpo-hero-layer.png" style="left:13%;top:36%;width:42%;"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The KL leash as watercolor. The treats are reward. The leash is beta. Pull too hard and you leave the trusted yard. Watercolor, original to this companion.</figcaption></figure>
 <div class="notice">
 <p><strong>Sourcing.</strong> No full transcript exists for sessions S08 and S09. This companion narrates <code>content/v2/cs329h/lessons/u05_lesson.md</code>. All twelve concepts are taught as independent theory: the lesson marks the sessions PLANNED and every concept PLANNED / SOURCE ATTRIBUTION PENDING.</p>
@@ -467,7 +469,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C02 · Contract 11</span></p>
 <p>The reward model is a proxy. It fits the training pairs but may misjudge off-distribution responses. The policy later generates responses unlike anything in the reward training data, and the proxy's verdicts there are guesses wearing a score.</p>
 </div>
-<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-paired"><div class="tag-price"><span class="tag-big">1</span><span class="tag-unit">Nugget 1 · From the lesson C01 · Contract 5, 11</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 · Contract 5, 11</div><div class="tag-eye">The lesson</div><p class="">Pair on the prompt, or prompt difficulty becomes a confound the reward model cannot see.</p><p><b>Why it matters. </b>Unpaired ratings mix two signals: how good the response is and how hard the prompt was. The pairing subtracts the second one by design.</p><p><b>Transfer. </b>Product reviews. Pair two products reviewed by the same person before you rank them, or reviewer generosity swamps product quality.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
+<aside class="tag" data-chapter="s1" data-sign-label="Unit" data-sign-num="1" id="nugget-paired"><div class="tag-price"><span class="tag-big">1 pair</span><span class="tag-unit">pair on the prompt or confound it</span></div><div class="tag-body"><div class="tag-title">Nugget 1 · From the lesson C01 · Contract 5, 11</div><div class="tag-eye">The lesson</div><p class="">Pair on the prompt, or prompt difficulty becomes a confound the reward model cannot see.</p><p><b>Why it matters. </b>Unpaired ratings mix two signals: how good the response is and how hard the prompt was. The pairing subtracts the second one by design.</p><p><b>Transfer. </b>Product reviews. Pair two products reviewed by the same person before you rank them, or reviewer generosity swamps product quality.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 01</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="The objective and its leash" id="s2"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">2</span></div><div><p class="ch-meta"><span class="ts">Unit 2</span> · C03, C04, C05, C06</p><h2>The objective and its leash</h2></div></div>
 <div class="prose-narrow">
@@ -476,8 +478,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C04 · Contract 3, 5, 6</span></p>
 <p>Beta is the price of deviating from the reference. The penalized objective is E[r] - beta KL(pi || pi_ref). High beta: stay close, modest reward. Low beta: chase reward, drift far. The lesson traces the frontier across six betas. Beta 0.2 gives KL 1.06 and reward 1.99. Beta 0.5 gives 0.66 and 1.85. Beta 1 gives 0.27 and 1.58. Beta 2 gives 0.08 and 1.32. Beta 5 gives 0.01 and 1.13. Beta 20 gives 0.00 and 1.03, approaching the uniform mean of 1.0. Lesson figure u05_f03 plots the full frontier.</p>
 </div>
-<figure class="paint inset" data-entrance="sketch">
-<div class="frame"><div class="stage"><img alt="Watercolor of a curved frontier line with small flags along it" class="base" loading="lazy" src="assets/u05-frontier.jpg"/></div></div>
+<figure class="paint inset" data-entrance="sketch" data-scene="p2-h-u05-frontier">
+<div class="frame"><div class="stage"><img alt="Watercolor of a curved frontier line with small flags along it" class="base" height="1280" loading="lazy" src="assets/u05-frontier.jpg" width="1920"/></div></div>
 <figcaption><span class="ptag ptag-illustration">Illustration</span> The reward-KL frontier as watercolor. Every flag is a beta. Move left for reward, move down for safety. The price is posted on the curve. Watercolor, original to this companion.</figcaption></figure>
 <figure>
 <svg aria-label="Reward-KL frontier from beta 20 at KL 0.00 reward 1.03 to beta 0.2 at KL 1.06 reward 1.99" class="chart" role="img" viewbox="0 0 640 320">
@@ -499,8 +501,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C06 · Contract 3, 5, 6</span></p>
 <p>The reference is home base: the model we trust, usually the SFT model. Everything is relative to it: the frontier, the tilt, the beta price. Change the reference and the whole frontier moves. With a uniform reference the beta-20 policy is [0.37, 0.33, 0.30]: it barely moves from uniform. The honest limit: a weak reference caps the policy. The leash pulls toward mediocrity if home base is mediocre.</p>
 </div>
-<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-leash"><div class="tag-price"><span class="tag-big">2</span><span class="tag-unit">Nugget 2 · From the lesson C03 · Contract 5, C04 · Contract 3</span></div><div class="tag-body"><div class="tag-title">Nugget 2 · From the lesson C03 · Contract 5, C04 · Contract 3</div><div class="tag-eye">The lesson</div><p class="">The unconstrained optimum is degenerate. The KL leash is not a safety add-on. It is the objective.</p><p><b>Why it matters. </b>Expected reward alone always collapses to one response. Any RLHF run without a KL term optimizes a target whose optimum is a single repeated output.</p><p><b>Transfer. </b>A chatbot that must stay on-brand. Beta is the dial between the brand voice and the reward chase.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
-<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-tilt"><div class="tag-price"><span class="tag-big">3</span><span class="tag-unit">Nugget 3 · From the lesson C05 · Contract 3, 5</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C05 · Contract 3, 5</div><div class="tag-eye">The lesson</div><p class="">The optimum tilts the reference: multiply by exp(r/beta), renormalize. The reference is the prior, beta is its strength.</p><p><b>Why it matters. </b>The closed form turns a whole RL run into three lines of arithmetic on the toy. It is the fixed point every algorithm in this unit targets.</p><p><b>Transfer. </b>Softmax with temperature. The same exponential tilting, the same beta dial, one line of code.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
+<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-leash"><div class="tag-price"><span class="tag-big">KL</span><span class="tag-unit">the leash is the objective</span></div><div class="tag-body"><div class="tag-title">Nugget 2 · From the lesson C03 · Contract 5, C04 · Contract 3</div><div class="tag-eye">The lesson</div><p class="">The unconstrained optimum is degenerate. The KL leash is not a safety add-on. It is the objective.</p><p><b>Why it matters. </b>Expected reward alone always collapses to one response. Any RLHF run without a KL term optimizes a target whose optimum is a single repeated output.</p><p><b>Transfer. </b>A chatbot that must stay on-brand. Beta is the dial between the brand voice and the reward chase.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
+<aside class="tag" data-chapter="s2" data-sign-label="Unit" data-sign-num="2" id="nugget-tilt"><div class="tag-price"><span class="tag-big">e^(r/β)</span><span class="tag-unit">the optimum tilts the reference</span></div><div class="tag-body"><div class="tag-title">Nugget 3 · From the lesson C05 · Contract 3, 5</div><div class="tag-eye">The lesson</div><p class="">The optimum tilts the reference: multiply by exp(r/beta), renormalize. The reference is the prior, beta is its strength.</p><p><b>Why it matters. </b>The closed form turns a whole RL run into three lines of arithmetic on the toy. It is the fixed point every algorithm in this unit targets.</p><p><b>Transfer. </b>Softmax with temperature. The same exponential tilting, the same beta dial, one line of code.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 02</span></div></div></aside>
 <div class="toy">
 <p><span class="ptag ptag-illustration">Illustration</span> Turn the beta dial on the lesson's three-response toy. The code computes the exact KL-constrained optimum from C05 in your browser.</p>
 <p><label>beta <input id="beta" max="20" min="0.2" step="0.1" type="range" value="5"/></label> <code id="betav">5.0</code></p>
@@ -528,7 +530,7 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C08 · Contract 10, 11</span></p>
 <p>The choice is about exploration versus simplicity. Choose PPO when the policy must venture beyond the data. Choose DPO when the pairs already cover the good region. The failure modes differ too: PPO with a hacked reward explores into the exploit, while DPO on narrow pairs never sees the exploit but also never discovers better responses.</p>
 </div>
-<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-dpo"><div class="tag-price"><span class="tag-big">4</span><span class="tag-unit">Nugget 4 · From the lesson C07 · Contract 3, 5</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C07 · Contract 3, 5</div><div class="tag-eye">The lesson</div><p class="">DPO reads the reward off the policy. The constants cancel, the reward model disappears, and the loss is supervised.</p><p><b>Why it matters. </b>The derivation turns an RL problem into a classification problem. No rollouts, no value function, no clipping. The price is the assumption that the policy can represent the KL-constrained optimum.</p><p><b>Transfer. </b>Your team has one GPU-week and a fixed preference dataset. DPO is the honest pick. PPO earns its cost only when exploration matters.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
+<aside class="tag" data-chapter="s3" data-sign-label="Unit" data-sign-num="3" id="nugget-dpo"><div class="tag-price"><span class="tag-big">0 rollouts</span><span class="tag-unit">RL becomes classification</span></div><div class="tag-body"><div class="tag-title">Nugget 4 · From the lesson C07 · Contract 3, 5</div><div class="tag-eye">The lesson</div><p class="">DPO reads the reward off the policy. The constants cancel, the reward model disappears, and the loss is supervised.</p><p><b>Why it matters. </b>The derivation turns an RL problem into a classification problem. No rollouts, no value function, no clipping. The price is the assumption that the policy can represent the KL-constrained optimum.</p><p><b>Transfer. </b>Your team has one GPU-week and a fixed preference dataset. DPO is the honest pick. PPO earns its cost only when exploration matters.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 03</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="When the proxy lies" id="s4"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">4</span></div><div><p class="ch-meta"><span class="ts">Unit 4</span> · C09, C10, C11</p><h2>When the proxy lies</h2></div></div>
 <div class="prose-narrow">
@@ -552,12 +554,12 @@ span.ptag, .ptag {
 </svg>
 <figcaption><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C10 · Contract 6</span> Same numbers as lesson figure u05_f07. The monitor is a held-out human eval tracked alongside the proxy. Stop when they diverge. The monitor costs human labels: that is the price of honesty.</figcaption>
 </figure>
-<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-goodhart"><div class="tag-price"><span class="tag-big">5</span><span class="tag-unit">Nugget 5 · From the lesson C10 · Contract 3, 5</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C10 · Contract 3, 5</div><div class="tag-eye">The lesson</div><p class="">When a measure becomes a target, it stops being a good measure. The proxy climbs while the truth peaks and falls.</p><p><b>Why it matters. </b>The divergence appears before the proxy saturates. A rising reward curve is not evidence of improvement. It is evidence of optimization.</p><p><b>Transfer. </b>A sales team bonused on calls. Calls rise, revenue peaks, then falls. The bonus was the proxy, and the team optimized it exactly.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
+<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-goodhart"><div class="tag-price"><span class="tag-big">1 peak</span><span class="tag-unit">truth peaks, then falls</span></div><div class="tag-body"><div class="tag-title">Nugget 5 · From the lesson C10 · Contract 3, 5</div><div class="tag-eye">The lesson</div><p class="">When a measure becomes a target, it stops being a good measure. The proxy climbs while the truth peaks and falls.</p><p><b>Why it matters. </b>The divergence appears before the proxy saturates. A rising reward curve is not evidence of improvement. It is evidence of optimization.</p><p><b>Transfer. </b>A sales team bonused on calls. Calls rise, revenue peaks, then falls. The bonus was the proxy, and the team optimized it exactly.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
 <div class="prose-narrow">
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C09 · Contract 6, C11 · Contract 3, 6</span></p>
 <p>The bias arithmetic has a sharp edge. Debiasing with the wrong sign doubles the bias: correcting a length effect that was actually quality makes things worse, not better. And offline data is a photograph of the past. The DPO identity assumes the policy sits at the KL-constrained optimum for the current reward. A shifted policy breaks the identity. The lesson's staleness toy: the old policy puts 0.5 on the winner, the current policy puts 0.9 there. The pair is now uninformative, the policy already prefers the winner, but DPO still pushes the margin. Wasted gradient on a decided contest. The fix is fresh data or iterative DPO: recollect periodically.</p>
 </div>
-<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-bias"><div class="tag-price"><span class="tag-big">6</span><span class="tag-unit">Nugget 6 · From the lesson C09 · Contract 5, 6, 11</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C09 · Contract 5, 6, 11</div><div class="tag-eye">The lesson</div><p class="">A biased margin is a thumb on the scale. 0.62 utils of pure bias means the truth needs 0.62 just to break even.</p><p><b>Why it matters. </b>The reward absorbs the bias into r. Every downstream decision inherits the thumb, compounded by optimization.</p><p><b>Transfer. </b>Five-star ratings. Position, length, and politeness shape them the same way. Measure the bias before you train on the stars.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
+<aside class="tag" data-chapter="s4" data-sign-label="Unit" data-sign-num="4" id="nugget-bias"><div class="tag-price"><span class="tag-big">0.62</span><span class="tag-unit">utils of pure bias to break even</span></div><div class="tag-body"><div class="tag-title">Nugget 6 · From the lesson C09 · Contract 5, 6, 11</div><div class="tag-eye">The lesson</div><p class="">A biased margin is a thumb on the scale. 0.62 utils of pure bias means the truth needs 0.62 just to break even.</p><p><b>Why it matters. </b>The reward absorbs the bias into r. Every downstream decision inherits the thumb, compounded by optimization.</p><p><b>Transfer. </b>Five-star ratings. Position, length, and politeness shape them the same way. Measure the bias before you train on the stars.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 04</span></div></div></aside>
 </section>
 <section class="block col" data-chapter="1" data-title="Whose preference" id="s5"><div class="ch-head"><div class="aisle"><span class="l">Unit</span><span class="n">5</span></div><div><p class="ch-meta"><span class="ts">Unit 5</span> · C12</p><h2>Whose preference</h2></div></div>
 <div class="prose-narrow">
@@ -580,8 +582,8 @@ span.ptag, .ptag {
 <p><span class="ptag ptag-src">From the lesson</span><span class="tag-ref">C12 · Contract 10, 11</span></p>
 <p>The majority-vote model averages away the minority: a 70/30 split becomes 100/0 in the training signal (illustrative example). The disagreement is a fact about the world, not a bug in the annotators. The lesson closes with four questions: which annotator, whose preference, which disagreement matters, and who gets to decide. The companion adds none. Those questions are the point.</p>
 </div>
-<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-disagreement"><div class="tag-price"><span class="tag-big">7</span><span class="tag-unit">Nugget 7 · From the lesson C12 · Contract 5, 10</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C12 · Contract 5, 10</div><div class="tag-eye">The lesson</div><p class="">Disagreement is not always noise. Taste-splitting on style is the signature of a diverse panel, and the majority vote averages it away.</p><p><b>Why it matters. </b>A 70/30 split becomes 100/0 in the training signal. The policy learns the majority's style as if it were the truth.</p><p><b>Transfer. </b>A divided electorate. Any model trained on the majority vote inherits the averaging, and the minority has no recourse.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
-<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-questions"><div class="tag-price"><span class="tag-big">8</span><span class="tag-unit">Nugget 8 · From the lesson C12 · Contract 10</span></div><div class="tag-body"><div class="tag-title">Nugget 8 · From the lesson C12 · Contract 10</div><div class="tag-eye">The lesson</div><p class="">Which annotator? Whose preference? Which disagreement matters? Who gets to decide? These are values, not theorems.</p><p><b>Why it matters. </b>No formula resolves them. The training choices encode the answers whether or not anyone writes them down.</p><p><b>Transfer. </b>Every aligned product ships an implicit answer. Reading the answers off the training choices is the audit.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
+<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-disagreement"><div class="tag-price"><span class="tag-big">70/30→100/0</span><span class="tag-unit">the vote erases the split</span></div><div class="tag-body"><div class="tag-title">Nugget 7 · From the lesson C12 · Contract 5, 10</div><div class="tag-eye">The lesson</div><p class="">Disagreement is not always noise. Taste-splitting on style is the signature of a diverse panel, and the majority vote averages it away.</p><p><b>Why it matters. </b>A 70/30 split becomes 100/0 in the training signal. The policy learns the majority's style as if it were the truth.</p><p><b>Transfer. </b>A divided electorate. Any model trained on the majority vote inherits the averaging, and the minority has no recourse.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
+<aside class="tag" data-chapter="s5" data-sign-label="Unit" data-sign-num="5" id="nugget-questions"><div class="tag-price"><span class="tag-big">4 Qs</span><span class="tag-unit">values, not theorems</span></div><div class="tag-body"><div class="tag-title">Nugget 8 · From the lesson C12 · Contract 10</div><div class="tag-eye">The lesson</div><p class="">Which annotator? Whose preference? Which disagreement matters? Who gets to decide? These are values, not theorems.</p><p><b>Why it matters. </b>No formula resolves them. The training choices encode the answers whether or not anyone writes them down.</p><p><b>Transfer. </b>Every aligned product ships an implicit answer. Reading the answers off the training choices is the audit.</p><div class="tag-sku"><svg aria-hidden="true" class="bars"></svg><span>UNIT 05</span></div></div></aside>
 </section>
 <section class="col" id="playbook-sec">
 <h3 class="sub">The playbook</h3>
@@ -1260,5 +1262,46 @@ updBeta()
   });
 })();
 
-</script></body>
+</script><script>
+<script>
+/* Phase 2 scenes (Builder 2): CompanionFX overlay life. Pure code, zero image cost. */
+(function(){
+var FX = window.CompanionFX; if(!FX) return;
+FX.registerScene("p2-h-u05-hero", {
+  init: function(F, FX) {
+    F._fx_motes = FX.motes(F.stage, F.W, F.H, 12, 25);
+    F._fx_spark = FX.sparkles(F.stage, F.W, F.H, [[700, 450, 20], [1100, 550, 22]]);
+  },
+  pose: function(S, FX) {
+    var t = S.t, F = S.F, et = S.et;
+    F._fx_motes.tick(t);
+    var k = FX.smoothstep(0, 1, Math.min(1, et/1.4));
+    F._fx_spark.forEach(function(st,i){
+      var tw = 0.55 + 0.45*FX.flicker(t, i*1.7);
+      st.style.transform = 'scale(' + (k*tw).toFixed(3) + ')';
+    });
+    return {"dog": {x: 6*Math.sin(t*0.6)}};
+  }
+});
+FX.registerScene("p2-h-u05-frontier", {
+  init: function(F, FX) {
+    F._fx_spark = FX.sparkles(F.stage, F.W, F.H, [[960, 640, 24], [700, 800, 20]]);
+    F._fx_glows = FX.glows(F.stage, F.W, F.H, [[960, 640, 150]], 'screen', '#FFE9B0');
+  },
+  pose: function(S, FX) {
+    var t = S.t, F = S.F, et = S.et;
+    var k = FX.smoothstep(0, 1, Math.min(1, et/1.4));
+    F._fx_spark.forEach(function(st,i){
+      var tw = 0.55 + 0.45*FX.flicker(t, i*1.7);
+      st.style.transform = 'scale(' + (k*tw).toFixed(3) + ')';
+    });
+    F._fx_glows.forEach(function(c,i){
+      c.style.opacity = (0.3+0.22*FX.flicker(t, i*2.3)).toFixed(3);
+    });
+    return {};
+  }
+});
+})();
+</script>
+</body>
 </html>

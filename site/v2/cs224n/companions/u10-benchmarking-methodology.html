@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS224N U10: Benchmarking and research methodology, a companion</title>
+<style>
+:root{--paper:#faf6ee}
+:root{--paper2:#f3ecdd}
+:root{--ink:#221a12}
+:root{--muted:#6f6355}
+:root{--line:#e2d7c2}
+:root{--clay:#a94f27}
+:root{--claysoft:#f6e3d3}
+:root{--indigo:#31405e}
+:root{--indigosoft:#e2e7f0}
+:root{--sage:#5d7050}
+:root{--sagesoft:#e4e9da}
+:root{--amber:#8a5a17}
+:root{--ambersoft:#f7ecd4}
+:root{--serif:Georgia,"Times New Roman",serif}
+:root{--sans:system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth}
+body{background:var(--paper)}
+body{color:var(--ink)}
+body{font-family:var(--serif)}
+body{font-size:18px}
+body{line-height:1.65}
+body{margin:0}
+.wrap{max-width:880px}
+.wrap{margin:0 auto}
+.wrap{padding:0 24px}
+.topband{background:var(--ink)}
+.topband{color:var(--paper)}
+.topband{padding:10px 0}
+.topband{font-family:var(--sans)}
+.topband{font-size:13px}
+.topband{letter-spacing:.12em}
+.topband{text-transform:uppercase}
+header.hero{padding:56px 0 8px}
+.kicker{font-family:var(--sans)}
+.kicker{font-size:13px}
+.kicker{letter-spacing:.14em}
+.kicker{text-transform:uppercase}
+.kicker{color:var(--clay)}
+h1{font-size:46px}
+h1{line-height:1.12}
+h1{margin:.35em 0 .3em}
+h1{font-weight:700}
+.dek{font-size:21px}
+.dek{color:var(--muted)}
+.dek{max-width:640px}
+.legend{border:1px solid var(--line)}
+.legend{background:var(--paper2)}
+.legend{border-radius:10px}
+.legend{padding:18px 22px}
+.legend{margin:28px 0}
+.legend{font-size:16px}
+.legend p{margin:.4em 0}
+.tag{display:inline-block}
+.tag{font-family:var(--sans)}
+.tag{font-size:11px}
+.tag{font-weight:700}
+.tag{letter-spacing:.1em}
+.tag{text-transform:uppercase}
+.tag{padding:3px 10px}
+.tag{border-radius:20px}
+.tag{margin-right:8px}
+.tag{vertical-align:2px}
+.tag-lesson{background:var(--ink)}
+.tag-lesson{color:var(--paper)}
+.tag-toy{background:transparent}
+.tag-toy{color:var(--amber)}
+.tag-toy{border:1.5px solid var(--amber)}
+.tag-ref{font-family:var(--mono)}
+.tag-ref{font-size:12px}
+.tag-ref{color:var(--muted)}
+.tag-ref{margin-left:6px}
+.tag-companion{background:transparent}
+.tag-companion{color:var(--muted)}
+.tag-companion{border:1.5px solid var(--muted)}
+nav.sticky{position:sticky}
+nav.sticky{top:0}
+nav.sticky{z-index:50}
+nav.sticky{background:var(--paper)}
+nav.sticky{border-top:1px solid var(--line)}
+nav.sticky{border-bottom:1px solid var(--line)}
+nav.sticky{font-family:var(--sans)}
+.navscroll{display:flex}
+.navscroll{gap:4px}
+.navscroll{overflow-x:auto}
+.navscroll{padding:8px 0}
+.navscroll{white-space:nowrap}
+.navscroll a{color:var(--muted)}
+.navscroll a{text-decoration:none}
+.navscroll a{font-size:13px}
+.navscroll a{padding:6px 10px}
+.navscroll a{border-radius:16px}
+.navscroll a:hover{background:var(--paper2)}
+.navscroll a:hover{color:var(--ink)}
+section.block{padding:44px 0 8px}
+section.block{border-top:1px solid var(--line)}
+section.block{margin-top:36px}
+.secnum{font-family:var(--sans)}
+.secnum{font-size:13px}
+.secnum{letter-spacing:.14em}
+.secnum{color:var(--clay)}
+.secnum{text-transform:uppercase}
+h2{font-size:32px}
+h2{margin:.25em 0 .5em}
+h2{line-height:1.2}
+h3{font-size:22px}
+h3{margin:1.6em 0 .5em}
+p{margin:.7em 0}
+.prose-narrow{max-width:680px}
+figure{margin:28px 0}
+figure{padding:0}
+figcaption{font-family:var(--sans)}
+figcaption{font-size:13px}
+figcaption{color:var(--muted)}
+figcaption{margin-top:10px}
+figcaption{line-height:1.5}
+img.illus{width:100%}
+img.illus{border-radius:10px}
+img.illus{border:1px solid var(--line)}
+img.illus{display:block}
+.nugget{border:1px solid var(--line)}
+.nugget{border-left:6px solid var(--clay)}
+.nugget{background:#fffdf8}
+.nugget{border-radius:8px}
+.nugget{padding:20px 24px}
+.nugget{margin:26px 0}
+.nugget h4{font-family:var(--sans)}
+.nugget h4{font-size:15px}
+.nugget h4{letter-spacing:.06em}
+.nugget h4{text-transform:uppercase}
+.nugget h4{color:var(--clay)}
+.nugget h4{margin:0 0 8px}
+.nugget .big{font-size:22px}
+.nugget .big{line-height:1.35}
+.nugget .big{margin:.3em 0}
+.nugget dl{margin:.6em 0 0}
+.nugget dt{font-family:var(--sans)}
+.nugget dt{font-size:13px}
+.nugget dt{font-weight:700}
+.nugget dt{letter-spacing:.08em}
+.nugget dt{text-transform:uppercase}
+.nugget dt{color:var(--muted)}
+.nugget dt{margin-top:10px}
+.nugget dd{margin:2px 0 0 0}
+table.data{border-collapse:collapse}
+table.data{width:100%}
+table.data{margin:20px 0}
+table.data{font-size:16px}
+table.data{background:#fffdf8}
+table.data th{font-family:var(--sans)}
+table.data th{font-size:13px}
+table.data th{text-transform:uppercase}
+table.data th{letter-spacing:.08em}
+table.data th{text-align:left}
+table.data th{padding:10px 12px}
+table.data th{border-bottom:2px solid var(--ink)}
+table.data td{padding:9px 12px}
+table.data td{border-bottom:1px solid var(--line)}
+table.data td.num{font-family:var(--mono)}
+table.data td.num{font-size:15px}
+code{font-family:var(--mono)}
+code{font-size:.86em}
+code{background:var(--paper2)}
+code{padding:2px 6px}
+code{border-radius:4px}
+pre{background:var(--ink)}
+pre{color:var(--paper)}
+pre{padding:18px 20px}
+pre{border-radius:8px}
+pre{overflow-x:auto}
+pre{font-size:14.5px}
+pre{line-height:1.55}
+pre code{background:transparent}
+pre code{color:var(--paper)}
+pre code{padding:0}
+.toy{border:1.5px dashed var(--amber)}
+.toy{border-radius:10px}
+.toy{padding:20px 22px}
+.toy{margin:24px 0}
+.toy{background:#fffdf6}
+.lab{border:1px solid var(--line)}
+.lab{border-radius:10px}
+.lab{padding:20px 22px}
+.lab{margin:24px 0}
+.lab{background:#fffdf8}
+.chips{display:flex}
+.chips{flex-wrap:wrap}
+.chips{gap:8px}
+.chips{margin:14px 0}
+.chip{font-family:var(--mono)}
+.chip{font-size:15px}
+.chip{background:var(--indigosoft)}
+.chip{border:1px solid var(--indigo)}
+.chip{color:var(--indigo)}
+.chip{padding:6px 12px}
+.chip{border-radius:6px}
+.chip.plain{background:var(--paper2)}
+.chip.plain{border-color:var(--line)}
+.chip.plain{color:var(--ink)}
+button.btn{font-family:var(--sans)}
+button.btn{font-size:15px}
+button.btn{font-weight:600}
+button.btn{background:var(--ink)}
+button.btn{color:var(--paper)}
+button.btn{border:none}
+button.btn{border-radius:8px}
+button.btn{padding:10px 18px}
+button.btn{cursor:pointer}
+button.btn{margin:6px 8px 6px 0}
+button.btn:hover{background:var(--clay)}
+button.btn.ghost{background:transparent}
+button.btn.ghost{color:var(--ink)}
+button.btn.ghost{border:1.5px solid var(--ink)}
+input.text{font-family:var(--mono)}
+input.text{font-size:16px}
+input.text{padding:10px 14px}
+input.text{border:1.5px solid var(--line)}
+input.text{border-radius:8px}
+input.text{width:100%}
+input.text{max-width:420px}
+input.text{background:#fffdf8}
+input.range{width:100%}
+input.range{max-width:420px}
+.callout{border-left:4px solid var(--indigo)}
+.callout{padding:6px 0 6px 18px}
+.callout{margin:20px 0}
+.callout{color:var(--ink)}
+.wisdom{list-style:none}
+.wisdom{padding:0}
+.wisdom li{border-bottom:1px solid var(--line)}
+.wisdom li{padding:12px 0}
+.wisdom a{color:var(--ink)}
+.wisdom a{text-decoration:none}
+.wisdom a:hover{color:var(--clay)}
+.wisdom .wnum{font-family:var(--sans)}
+.wisdom .wnum{font-size:12px}
+.wisdom .wnum{color:var(--clay)}
+.wisdom .wnum{font-weight:700}
+.wisdom .wnum{margin-right:10px}
+footer.prov{border-top:2px solid var(--ink)}
+footer.prov{margin-top:56px}
+footer.prov{padding:28px 0 64px}
+footer.prov{font-size:15px}
+footer.prov{color:var(--muted)}
+svg.chart{width:100%}
+svg.chart{height:auto}
+svg.chart{display:block}
+svg.chart{background:#fffdf8}
+svg.chart{border:1px solid var(--line)}
+svg.chart{border-radius:10px}
+.tip{font-family:var(--sans)}
+.tip{font-size:13px}
+.small{font-size:15px}
+.muted{color:var(--muted)}
+.cols{display:grid}
+.cols{grid-template-columns:1fr 1fr}
+.cols{gap:18px}
+@media(max-width:700px){.cols{grid-template-columns:1fr}}
+@media(max-width:700px){h1{font-size:34px}}
+@media(max-width:700px){h2{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="masthead">
+<p class="kicker">CS224N · Companion artifact U10 of 15</p>
+<h1>Benchmarking and research methodology</h1>
+<p class="dek">Know what a number means. A score without an interval is a rumor, a benchmark without a contamination check is a hope.</p>
+<div class="legend" aria-label="Source tags">
+<span class="tag tag-lesson">From the lesson</span>
+<span class="tag tag-toy">Illustration</span>
+<span class="tag tag-companion">Companion</span>
+</div>
+<p class="small muted">“From the lesson” marks facts from <code>lessons/u10_benchmarking_methodology.md</code>. “Illustration” marks interactive toys that run the lesson’s rules over tiny inputs. “Companion” marks advice from the companion author. Tags after each section name the lesson leaf, for example C04.</p>
+</header>
+<nav class="small" aria-label="Sections">
+<p><strong>On this page:</strong> 1 · no winner declared · 2 · the map and the territory · 3 · calibrate the instrument · 4 · an open-book exam graded closed-book · 5 · the interval is the claim · 6 · the scorer is part of the benchmark · 7 · replicate first · 8 · the mean hides the slice · 9 · name the tilt · 10 · write the contract first · 11 · kill it on paper · 12 · borrowed and built · <a href="#wisdom">wisdom index</a></p>
+</nav>
+<figure>
+<img class="illustration" src="assets/u10-exam.jpg" alt="Watercolor illustration of an exam paper with an error bar around a grade">
+<figcaption><span class="tag tag-toy">Illustration</span> Every score is a sample. The interval is the honest claim, the point is the center.</figcaption>
+</figure>
+<section class="block" id="s1">
+<p class="secnum">Section 1 · C01</p>
+<h2>No winner declared</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §2, §3</span></p>
+<p>Model A scores 0.78, model B scores 0.76. Did A win? A benchmark is an exam with a fixed syllabus. The toy Wilson interval for 78/100 is [0.689, 0.850]. B's 0.76 sits inside A's interval. No winner declared.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §4, §5</span></p>
+<p>From <code>compute_u10.py</code>: 78/100 gives [0.689, 0.850], 780/1000 gives [0.753, 0.805]. Ten times the items, same point, honest claim. The score is fixed, the claim shrinks with n. A mean hides the slices (C08): two models with the same mean can differ by 0.26 on a slice.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §11</span></p>
+<p>The broken assumption is that higher mean means better model. A wins the mean, B wins every slice that matters to you (C08). Read the slices before the mean.</p>
+</div>
+<figure>
+<div id="chart-wilson"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §4</span> Wilson 95 percent intervals, from <code>compute_u10.py</code> (executed 2026-10-06): 0.78 on 100 items is [0.689, 0.850]. On 1000 items [0.753, 0.805].</figcaption>
+</figure>
+<div class="nugget" id="nugget-winner">
+<h4>Nugget 1 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C01 §3, §11</span></h4>
+<p class="big">If B's score sits inside A's interval, there is no winner. The interval is the claim. The point is the center.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose public benchmarks for comparability. Choose bespoke evals when the public syllabus misses your deployment.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Never declare a win without an interval. Overlapping intervals mean the race is still on.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The Wilson interval. The formula is C01’s. The counts are yours. Prefilled with the lesson toy.</p>
+<p>hits <input class="text" id="wsk" value="78" aria-label="Hits"></p>
+<p>items <input class="text" id="wsn" value="100" aria-label="Items"></p>
+<p><button class="btn" id="wsb">Interval</button></p>
+<p class="small" id="wsnote"></p>
+</div>
+</section>
+<section class="block" id="s2">
+<p class="secnum">Section 2 · C02</p>
+<h2>The map and the territory</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §2, §3</span></p>
+<p>The benchmark has 50 tasks, yours is not among them. What does 0.78 mean for you? The benchmark is a map. Coverage asks whether your territory is on it. A high score on the map is not a high score on your ground.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 50 tasks, 6 capabilities, column "tool use under permission errors" empty. The benchmark's 0.78 covers 5 of 6. Report 5/6 covered, not 0.78. The mechanism is the matrix: rows are benchmark tasks, columns are capabilities your deployment needs. An empty column is an untested capability. Fill it or admit it.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C02 §11</span></p>
+<p>The broken assumption is that nearby tasks predict yours. The model aces summarization benchmarks and fails your meeting-notes task (different length, different noise). Nearby is not same.</p>
+</div>
+</section>
+<section class="block" id="s3">
+<p class="secnum">Section 3 · C03</p>
+<h2>Calibrate the instrument</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §2, §3</span></p>
+<p>The judge prefers A over B. Do you believe it? A judge is a measuring instrument. Calibrate it like one: agreement with humans (kappa), confidence against reality (Brier, reliability). An uncalibrated judge is an opinion with a GPU.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4, §5</span></p>
+<p>From <code>compute_u10.py</code>: two judges agree on 78 of 100 items, kappa 0.551 (chance-corrected). Kappa removes the agreement that chance would give: with yes-rates 0.60 and 0.55, chance alone agrees 0.51 of the time, so 0.78 observed is kappa 0.551. The judge's confidence bins miscalibrate with Brier 0.17: stated 0.8, observed 0.67 in one bin. Overconfident.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §11</span></p>
+<p>The broken assumption is that the judge is neutral. The judge prefers longer answers and the model's own style. Calibrate on style-balanced pairs.</p>
+</div>
+<figure>
+<div id="chart-rel"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §4</span> One reliability bin, from <code>compute_u10.py</code> (executed 2026-10-06): stated 0.80, observed 0.67. Overconfident.</figcaption>
+</figure>
+<div class="nugget" id="nugget-calibrate">
+<h4>Nugget 2 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C03 §3, §11</span></h4>
+<p class="big">Calibrate the judge before you trust its verdicts. Agreement with humans, confidence against reality.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the judge for scale, with calibration. Choose humans for the final gate.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every instrument gets calibrated. A model judge is an instrument with strong opinions.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The kappa meter. The chance correction is C03’s. The agreement rates are yours. Prefilled with the lesson toy.</p>
+<p>observed agreement <input class="text" id="kpo" value="0.78" aria-label="Observed agreement"></p>
+<p>chance agreement <input class="text" id="kpe" value="0.51" aria-label="Chance agreement"></p>
+<p><button class="btn" id="kpb">Kappa</button></p>
+<p class="small" id="kpnote"></p>
+</div>
+</section>
+<section class="block" id="s4">
+<p class="secnum">Section 4 · C04</p>
+<h2>An open-book exam graded closed-book</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §2, §3</span></p>
+<p>The model saw the test during training. What is the score worth? Contamination is an open-book exam graded as closed-book. The model is not smarter. The test is compromised. The inflation equals the leak share times the memorization gap.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4, §5</span></p>
+<p>From <code>compute_u10.py</code>: 200 items, 40 leaked at 0.95, 160 clean at 0.70. Reported: 0.20 × 0.95 + 0.80 × 0.70 = 0.75. Clean-only: 0.70. The leak is worth 0.05 of pure inflation. Quarantine the 40, rescore, report 0.70 with the quarantine noted.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §11</span></p>
+<p>The broken assumption is that overlap means memorization. Common phrases overlap without the answer leaking. The probe needs the answer-bearing spans, not any n-gram.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u10-leak.jpg" alt="Watercolor illustration of a student peeking at an open book during an exam">
+<figcaption><span class="tag tag-toy">Illustration</span> Contamination: the model is not smarter, the test is compromised.</figcaption>
+</figure>
+<figure>
+<div id="chart-contam"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §4</span> Reported vs clean, from <code>compute_u10.py</code> (executed 2026-10-06): 0.75 reported, 0.70 clean. The gap is 0.05 of pure inflation.</figcaption>
+</figure>
+<div class="nugget" id="nugget-contam">
+<h4>Nugget 3 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C04 §3, §11</span></h4>
+<p class="big">Small leaks, measurable lies. The inflation is the leak share times the memorization gap: quarantine and rescore.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose quarantine when the train set is fixed. Choose fresh sets for high-stakes claims.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every benchmark needs a contamination audit. A score without one is a hope.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The contamination mixer. The mixture formula is C04’s. The leak is yours. Prefilled with the lesson toy.</p>
+<p>leak share L <input class="text" id="ctl" value="0.20" aria-label="Leak share"></p>
+<p>leaked score <input class="text" id="ctm" value="0.95" aria-label="Leaked score"></p>
+<p>clean score <input class="text" id="ctc" value="0.70" aria-label="Clean score"></p>
+<p><button class="btn" id="ctb">Mix</button></p>
+<p class="small" id="ctnote"></p>
+</div>
+</section>
+<section class="block" id="s5">
+<p class="secnum">Section 5 · C05</p>
+<h2>The interval is the claim</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §2, §3</span></p>
+<p>How many items make a claim? Every score is a sample. The interval is the honest claim, the point is the center. Small n, wide claim. Margin 0.02 at 95 percent needs n = 2401 for p = 0.5. Your 200-item benchmark has margin about 0.07: say that.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §4, §5</span></p>
+<p>From <code>compute_u10.py</code>: n = 2401. The mechanism: SE at p = 0.5, n = 200 is sqrt(0.25 / 200) = 0.035, margin 1.96 times that = 0.069. The n for margin m: (z / m)^2 × 0.25 = 2401 at m = 0.02.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §11</span></p>
+<p>The broken assumption is that items are independent. 200 items from 10 templates: the effective n is near 10. The interval lies. Report the template count too.</p>
+</div>
+<div class="nugget" id="nugget-interval">
+<h4>Nugget 4 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C05 §3, §11</span></h4>
+<p class="big">If your benchmark has 200 items, your margin is about 0.07. Say so. The interval is the honest claim.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose Wilson for proportions. Choose bootstrap for exotic metrics. Always state n and the margin.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>A score without a sample size is a rumor. A score without a margin is a boast.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The sample-size planner. The n-for-margin rule is C05’s. The margin is yours.</p>
+<p>margin <input class="text" id="ssm" value="0.02" aria-label="Margin"></p>
+<p><button class="btn" id="ssb">How many items?</button></p>
+<p class="small" id="ssnote"></p>
+</div>
+</section>
+<section class="block" id="s6">
+<p class="secnum">Section 6 · C06</p>
+<h2>The scorer is part of the benchmark</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §2, §3</span></p>
+<p>The model answers correctly but not exactly. What does exact match say? "Paris" vs "paris": exact match 0, normalized match 1. The format is a judgment, not a fact. The scorer is part of the benchmark: exact match rewards formatting obedience, multiple choice rewards the right letter, judge scoring rewards whatever the judge likes.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: 100 answers, 12 differ only by case. Exact: 0.78, normalized: 0.90. The 0.12 gap is format, not knowledge. The mechanism is the pipeline: generate, normalize, compare. Each stage can flip the score. Report the normalization with the number.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §11</span></p>
+<p>The broken assumption is that exact match is objective. The 0.12 case gap says otherwise. Objectivity needs the normalization stated.</p>
+</div>
+<figure>
+<div id="chart-format"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C06 §4</span> The format gap, hand-set and labeled illustrative: exact 0.78, normalized 0.90. The 0.12 is format, not knowledge.</figcaption>
+</figure>
+</section>
+<section class="block" id="s7">
+<p class="secnum">Section 7 · C07</p>
+<h2>Replicate first</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §2, §3</span></p>
+<p>Your method beats the baseline by 0.03. Did you run the baseline right? The baseline is the control group. A win against a broken baseline is a win against nothing. Replicate first, then compare, with intervals on both sides.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: the paper claims 0.78, your rerun gives 0.74 with interval [0.65, 0.82]. The claim sits inside your interval: no evidence of a difference. If the reported number falls outside your rerun's interval, something differs (version, data, bug). Debug before you innovate.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §11</span></p>
+<p>The broken assumption is that the baseline in the paper is the baseline in the code. The paper may use a better prompt than the released code. Replicate the artifact, not the text.</p>
+</div>
+<figure>
+<div id="chart-rerun"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §4</span> The rerun verdict, hand-set and labeled illustrative: reported 0.78 sits inside the rerun interval [0.65, 0.82]. Replicated within noise.</figcaption>
+</figure>
+<div class="nugget" id="nugget-replicate">
+<h4>Nugget 5 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C07 §3, §11</span></h4>
+<p class="big">Replicate the artifact, not the text. A reported win needs its own interval on both sides.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose replication for any claim you will defend. Choose trust for exploration only.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>The control group comes first. A win against nothing is nothing.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s8">
+<p class="secnum">Section 8 · C08</p>
+<h2>The mean hides the slice</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §2, §3</span></p>
+<p>The mean is 0.78. Is the model ready? The mean is a summary, the slices are the story. A model can be excellent on average and unusable for your users. Cut by what matters: language, topic, difficulty. Delta = slice score minus overall.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4, §5</span></p>
+<p>From <code>compute_u10.py</code>: overall 0.78, slice A 0.52 (delta -0.26), slice B 0.86 (delta +0.08). The -0.26 is the headline, not the 0.78. Small slices need their own intervals (C05's n rule applies per slice).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §11</span></p>
+<p>The broken assumption is that the mean represents the slices. The mean is a weighted lie when the weights are not your users.</p>
+</div>
+<figure>
+<img class="illustration" src="assets/u10-slices.jpg" alt="Watercolor illustration of a pie with one slice lifted out">
+<figcaption><span class="tag tag-toy">Illustration</span> The mean is a summary, the slices are the story. Cut by what matters.</figcaption>
+</figure>
+<figure>
+<div id="chart-slices"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §4</span> The slices, from <code>compute_u10.py</code> (executed 2026-10-06): overall 0.78, slice A 0.52, slice B 0.86. Delta -0.26 on A.</figcaption>
+</figure>
+<div class="nugget" id="nugget-slices">
+<h4>Nugget 6 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C08 §3, §11</span></h4>
+<p class="big">The -0.26 is the headline, not the 0.78. Read the slices before the mean, and give small slices their own intervals.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose slices for deployment decisions. Choose the mean for quick comparisons.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Disaggregate every summary before you act on it. The worst slice is the product.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The slice reader. The delta rule is C08’s. The scores are yours. Prefilled with the lesson toy.</p>
+<p>overall <input class="text" id="slo" value="0.78" aria-label="Overall"></p>
+<p>slice A <input class="text" id="sla" value="0.52" aria-label="Slice A"></p>
+<p>slice B <input class="text" id="slb" value="0.86" aria-label="Slice B"></p>
+<p><button class="btn" id="slbtn">Disaggregate</button></p>
+<p class="small" id="slnote"></p>
+</div>
+</section>
+<section class="block" id="s9">
+<p class="secnum">Section 9 · C09</p>
+<h2>Name the tilt</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §2, §3</span></p>
+<p>The judge prefers model A. Is A better or longer? Every instrument has a tilt. Benchmarks tilt toward their items, judges tilt toward style. Name the tilt, measure it, control it. Unmeasured tilt is a confounder.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: blinding the judge to length moves the win rate from 0.62 to 0.53. The 0.09 was length bias. The correction: report the blinded number. The mechanism is comparison: the win rate with and without the suspected bias factor. The difference is the bias estimate.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §11</span></p>
+<p>The broken assumption is that blinding fixed it. The judge may prefer its own model's phrasing even blinded (style survives blinding). Controls are iterative.</p>
+</div>
+<figure>
+<div id="chart-bias"></div>
+<figcaption><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §4</span> The tilt, hand-set and labeled illustrative: unblinded 0.62, blinded 0.53. The 0.09 was length bias.</figcaption>
+</figure>
+<div class="nugget" id="nugget-tilt">
+<h4>Nugget 7 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C09 §3, §11</span></h4>
+<p class="big">Name the tilt, measure it, control it. Report the blinded number, and re-check: controls are iterative.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose controls for published claims. Choose raw numbers for internal iteration.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Every measurement has a tilt. Find it with a control, not with confidence.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s10">
+<p class="secnum">Section 10 · C10</p>
+<h2>Write the contract first</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §2, §3</span></p>
+<p>The model scores 0.78. Do you ship? The criterion is the contract, the metric is the measurement. Write the contract before you measure, or you will negotiate with yourself after. This blocks HARKing (hypothesizing after the results are known).</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: criterion "worst slice above 0.70 with n = 500 per slice". Slice A is 0.52. No ship, regardless of the mean. Another: criterion "mean above 0.75 and no slice below 0.70". Result: mean 0.78, slice A 0.52. Verdict: fail. The mean passed, the contract did not.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §11</span></p>
+<p>The broken assumption is that the criterion was right. The criterion may demand 0.95 on a task humans do at 0.80. The criterion needs its own review.</p>
+</div>
+<div class="nugget" id="nugget-contract">
+<h4>Nugget 8 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C10 §3, §11</span></h4>
+<p class="big">Write the ship criterion before you measure. The mean passed, the contract did not: the contract wins.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose pre-registration for ship decisions. Choose exploration for research.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Decide the rule before the numbers arrive. Post-hoc rules are negotiations with yourself.</dd>
+</dl>
+</div>
+</section>
+<section class="block" id="s11">
+<p class="secnum">Section 11 · C11</p>
+<h2>Kill it on paper</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §2, §3</span></p>
+<p>Three project ideas, four weeks. Which one? A project is a bet. The scorecard prices the bet: feasible, data, metric, compute, novelty. Can you do it, can you measure it, does it matter. Kill early, kill on paper, kill without shame. Below 3/5: rescope or drop.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §4, §5</span></p>
+<p>Hand-set toy, labeled as such (the shared toy from <code>compute_u15.py</code>): idea scores 3/5. The missing two (metric defined, novelty) are exactly the rescope targets. Evidence, not vibes: "data available" fails if the dataset needs a license you do not have.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §11</span></p>
+<p>The broken assumption is that the scores are honest. Check each cell with evidence before you trust the total.</p>
+</div>
+<div class="nugget" id="nugget-kill">
+<h4>Nugget 9 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C11 §3, §11</span></h4>
+<p class="big">Kill projects on paper with a scorecard. The cheapest experiment is the one you never run.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the scorecard for time-boxed work. Choose curiosity for open-ended research.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Price every bet before you place it. Below 3/5: rescope or drop.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The scorecard. Five cells, one point each: feasible, data, metric, compute, novelty. Check the ones with evidence.</p>
+<p>Idea <input class="text" id="sci" value="RAG over meeting notes" aria-label="Idea" style="width:200px"></p>
+<p><button class="btn" id="scb">Score my idea</button></p>
+<p class="small" id="scnote"></p>
+</div>
+</section>
+<section class="block" id="s12">
+<p class="secnum">Section 12 · C12</p>
+<h2>Borrowed and built</h2>
+<div class="prose-narrow">
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §2, §3</span></p>
+<p>The project works. What did you contribute? The report has two columns: borrowed and built. Borrowed is fine, it must be labeled. Built is the contribution. A report with an empty built column is a tutorial, not a project.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §4, §5</span></p>
+<p>Hand-set toy, labeled as such: borrowed: transformer, BPE, Adam. Built: the chunk-size sweep and the split-rate rule. The rule is the contribution. The mechanism is the ledger: every component gets a source or an author. The novelty bar: one falsifiable claim that was not known before.</p>
+<p><span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §11</span></p>
+<p>The broken assumption is that a negative result is not a contribution. The rerank sweep that found nothing is a contribution if the test was fair: negative results are data.</p>
+</div>
+<div class="nugget" id="nugget-ledger">
+<h4>Nugget 10 · <span class="tag tag-lesson">From the lesson</span><span class="tag-ref">C12 §3, §11</span></h4>
+<p class="big">Keep the ledger from day one: borrowed in one column, built in the other. One new falsifiable claim is the bar.</p>
+<dl>
+<dt>Why it matters <span class="tag tag-companion">companion</span></dt><dd>Choose the ledger for anything public. The alternative is misconduct.</dd>
+<dt>Transfer <span class="tag tag-companion">companion</span></dt><dd>Label what you borrowed, name what you built. Negative results count when the test was fair.</dd>
+</dl>
+</div>
+<div class="toy">
+<p><span class="tag tag-toy">Illustration</span> The ledger. Type what you borrowed and what you built, one per line.</p>
+<p>borrowed <textarea class="text" id="lgbo" rows="3" style="width:100%" aria-label="Borrowed">transformer
+BPE
+Adam</textarea></p>
+<p>built <textarea class="text" id="lgbu" rows="3" style="width:100%" aria-label="Built">chunk-size sweep
+split-rate rule</textarea></p>
+<p><button class="btn" id="lgb">Audit the ledger</button></p>
+<p class="small" id="lgnote"></p>
+</div>
+</section>
+<section class="block" id="wisdom">
+<p class="secnum">Wisdom index</p>
+<h2>Ten nuggets, one page</h2>
+<p class="small muted">Each nugget states the idea in plain words, why it matters, and the transferable principle. Every one is anchored to its lesson section.</p>
+<ol class="wisdom">
+<li><a href="#nugget-winner"><span class="wnum">01</span>No winner without an interval <span class="muted">· C01</span></a></li>
+<li><a href="#nugget-calibrate"><span class="wnum">02</span>Calibrate the instrument <span class="muted">· C03</span></a></li>
+<li><a href="#nugget-contam"><span class="wnum">03</span>Small leaks, measurable lies <span class="muted">· C04</span></a></li>
+<li><a href="#nugget-interval"><span class="wnum">04</span>The interval is the claim <span class="muted">· C05</span></a></li>
+<li><a href="#nugget-replicate"><span class="wnum">05</span>Replicate the artifact <span class="muted">· C07</span></a></li>
+<li><a href="#nugget-slices"><span class="wnum">06</span>The mean hides the slice <span class="muted">· C08</span></a></li>
+<li><a href="#nugget-tilt"><span class="wnum">07</span>Name the tilt <span class="muted">· C09</span></a></li>
+<li><a href="#nugget-contract"><span class="wnum">08</span>Write the contract first <span class="muted">· C10</span></a></li>
+<li><a href="#nugget-kill"><span class="wnum">09</span>Kill it on paper <span class="muted">· C11</span></a></li>
+<li><a href="#nugget-ledger"><span class="wnum">10</span>Borrowed and built <span class="muted">· C12</span></a></li>
+</ol>
+</section>
+<footer class="prov">
+<p><strong>Provenance.</strong> This companion narrates <code>lessons/u10_benchmarking_methodology.md</code> (CS224N, Unit 10). No full lecture transcript exists: the 2026 videos are restricted and unviewed, and the 2024 playlist was not viewed. The concept inventory is REQUESTED-BRANCH, the reading list OFFICIAL-SOURCE via SRC-02. Every computed number traces to the lesson’s script <code>visuals/compute_u10.py</code> (executed 2026-10-06). Hand-set toys are labeled as such in the text. Toys run the lesson’s rules over tiny inputs and are labeled <span class="tag tag-toy">Illustration</span>. No historical photographs were used: no verifiable candidate fit this unit’s material, so none were invented.</p>
+<p class="small">Direct quotations from the source: 0 words. Quoted terms, example sentences, and prompt strings are the lesson's own toy material, narrated rather than quoted. All prose is narration or paraphrase of the lesson document.</p>
+<p class="small">Built as Companion 10 of the CS224N companion series. Self-contained: no external libraries, no network calls. Works from <code>file://</code>.</p>
+</footer>
+</div>
+<script>
+function el(tag, cls, text) {
+  const e = document.createElement(tag)
+  if (cls) { e.className = cls }
+  if (text !== undefined && text !== null) { e.textContent = text }
+  return e
+}
+function svgEl(tag, attrs) {
+  const n = document.createElementNS("http://www.w3.org/2000/svg", tag)
+  for (const k in attrs) { n.setAttribute(k, attrs[k]) }
+  return n
+}
+const INK = "#221a12"
+const MUT = "#6f6355"
+const CLAY = "#a94f27"
+const INDIGO = "#31405e"
+const SAGE = "#5d7050"
+const AMBER = "#8a5a17"
+const SERIF = "Georgia, serif"
+const SANS = "system-ui, sans-serif"
+const MONO = "ui-monospace, monospace"
+
+function barChart(id, rows, maxV, unit) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 250
+  const rowH = 46
+  const padT = 14
+  const padB = 10
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH
+    const lab = svgEl("text", {x: 12, y: y + 27, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    const bw = (W - labelW - 130) * (r[1] / maxV)
+    const bar = svgEl("rect", {x: labelW, y: y + 9, width: Math.max(bw, 3), height: 24, rx: 4, fill: r[2]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[1] + unit
+    bar.appendChild(tip)
+    svg.appendChild(bar)
+    const val = svgEl("text", {x: labelW + Math.max(bw, 3) + 10, y: y + 27, "font-size": 14, fill: INK, "font-family": MONO})
+    val.textContent = r[1] + unit
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function intervalChart(id, rows, lo, hi) {
+  const host = document.getElementById(id)
+  const W = 760
+  const labelW = 250
+  const rowH = 56
+  const padT = 14
+  const padB = 14
+  const H = padT + rows.length * rowH + padB
+  const svg = svgEl("svg", {viewBox: "0 0 " + W + " " + H, "class": "chart", role: "img"})
+  const X = function(v) { return labelW + (v - lo) / (hi - lo) * (W - labelW - 60) }
+  rows.forEach(function(r, i) {
+    const y = padT + i * rowH + rowH / 2
+    const lab = svgEl("text", {x: 12, y: y + 5, "font-size": 14, fill: INK, "font-family": SANS})
+    lab.textContent = r[0]
+    svg.appendChild(lab)
+    svg.appendChild(svgEl("line", {x1: X(r[1]).toFixed(1), y1: y, x2: X(r[3]).toFixed(1), y2: y, stroke: r[4], "stroke-width": 4}))
+    svg.appendChild(svgEl("line", {x1: X(r[1]).toFixed(1), y1: y - 8, x2: X(r[1]).toFixed(1), y2: y + 8, stroke: r[4], "stroke-width": 4}))
+    svg.appendChild(svgEl("line", {x1: X(r[3]).toFixed(1), y1: y - 8, x2: X(r[3]).toFixed(1), y2: y + 8, stroke: r[4], "stroke-width": 4}))
+    const dot = svgEl("circle", {cx: X(r[2]).toFixed(1), cy: y, r: 7, fill: r[4]})
+    const tip = svgEl("title", {})
+    tip.textContent = r[0] + ": " + r[2] + " [" + r[1] + ", " + r[3] + "]"
+    dot.appendChild(tip)
+    svg.appendChild(dot)
+    const val = svgEl("text", {x: X(r[3]).toFixed(1) + 10, y: y + 5, "font-size": 13, fill: MUT, "font-family": MONO})
+    val.textContent = "[" + r[1] + ", " + r[3] + "]"
+    svg.appendChild(val)
+  })
+  host.appendChild(svg)
+}
+
+function runWilson() {
+  const k = parseFloat(document.getElementById("wsk").value)
+  const n = parseFloat(document.getElementById("wsn").value)
+  const note = document.getElementById("wsnote")
+  if (!(k >= 0) || !(n > 0) || k > n) {
+    note.textContent = "Need 0 below hits below items, items positive."
+    return
+  }
+  const z = 1.96
+  const p = k / n
+  const den = 1 + z * z / n
+  const c = p + z * z / (2 * n)
+  const d = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
+  const lo = (c - d) / den
+  const hi = (c + d) / den
+  note.textContent = p.toFixed(3) + " on " + n + " items: 95% interval [" + lo.toFixed(3) + ", " + hi.toFixed(3) + "]. The lesson: 78/100 gives [0.689, 0.850]."
+}
+
+function runKappa() {
+  const po = parseFloat(document.getElementById("kpo").value)
+  const pe = parseFloat(document.getElementById("kpe").value)
+  const note = document.getElementById("kpnote")
+  if (isNaN(po) || isNaN(pe) || pe >= 1) {
+    note.textContent = "Give two agreement rates, chance below 1."
+    return
+  }
+  const k = (po - pe) / (1 - pe)
+  note.textContent = "Kappa = " + k.toFixed(3) + ". The lesson toy: 0.78 observed, 0.51 chance, kappa 0.551."
+}
+
+function runContam() {
+  const L = parseFloat(document.getElementById("ctl").value)
+  const sm = parseFloat(document.getElementById("ctm").value)
+  const sc = parseFloat(document.getElementById("ctc").value)
+  const note = document.getElementById("ctnote")
+  if (isNaN(L) || L < 0 || L > 1 || isNaN(sm) || isNaN(sc)) {
+    note.textContent = "Give a leak share between 0 and 1 and two scores."
+    return
+  }
+  const rep = L * sm + (1 - L) * sc
+  note.textContent = "Reported " + rep.toFixed(3) + ", clean-only " + sc.toFixed(3) + ", inflation " + (rep - sc).toFixed(3) + ". The lesson toy: 0.75 reported, 0.70 clean, 0.05 inflation."
+}
+
+function runSize() {
+  const m = parseFloat(document.getElementById("ssm").value)
+  const note = document.getElementById("ssnote")
+  if (!(m > 0) || m >= 1) {
+    note.textContent = "Give a margin strictly between 0 and 1."
+    return
+  }
+  const n = Math.ceil(Math.pow(1.96 / m, 2) * 0.25)
+  note.textContent = "n = " + n.toLocaleString("en-US") + " items for margin " + m + " at 95%. The lesson: margin 0.02 needs 2401."
+}
+
+function runSlice() {
+  const o = parseFloat(document.getElementById("slo").value)
+  const a = parseFloat(document.getElementById("sla").value)
+  const b = parseFloat(document.getElementById("slb").value)
+  const note = document.getElementById("slnote")
+  if (isNaN(o) || isNaN(a) || isNaN(b)) {
+    note.textContent = "Give three scores."
+    return
+  }
+  note.textContent = "Slice A delta " + (a - o).toFixed(2) + ", slice B delta " + (b - o).toFixed(2) + ". The lesson toy: -0.26 and +0.08."
+}
+
+function runScore() {
+  const idea = document.getElementById("sci").value.trim()
+  const note = document.getElementById("scnote")
+  if (idea.length === 0) {
+    note.textContent = "Name the idea first."
+    return
+  }
+  note.textContent = idea + ": 3/5 in the lesson toy (feasible, data, compute yes. Metric and novelty missing). Check each cell with evidence, then rescope or drop below 3."
+}
+
+function runLedger() {
+  const bo = document.getElementById("lgbo").value.split("\n").map(function(x) { return x.trim() }).filter(function(x) { return x.length > 0 })
+  const bu = document.getElementById("lgbu").value.split("\n").map(function(x) { return x.trim() }).filter(function(x) { return x.length > 0 })
+  const note = document.getElementById("lgnote")
+  const verdict = bu.length === 0 ? "empty built column: this is a tutorial, not a project." : bu.length + " built item" + (bu.length > 1 ? "s" : "") + ": the contribution is named."
+  note.textContent = "Borrowed " + bo.length + ", built " + bu.length + ". " + verdict + " The lesson toy: borrowed transformer, BPE, Adam. Built: the sweep and the rule."
+}
+
+document.getElementById("wsb").addEventListener("click", runWilson)
+document.getElementById("kpb").addEventListener("click", runKappa)
+document.getElementById("ctb").addEventListener("click", runContam)
+document.getElementById("ssb").addEventListener("click", runSize)
+document.getElementById("slbtn").addEventListener("click", runSlice)
+document.getElementById("scb").addEventListener("click", runScore)
+document.getElementById("lgb").addEventListener("click", runLedger)
+
+intervalChart("chart-wilson", [["78 of 100", 0.689, 0.78, 0.850, CLAY], ["780 of 1000", 0.753, 0.78, 0.805, SAGE]], 0.6, 0.9)
+barChart("chart-rel", [["stated", 0.80, INDIGO], ["observed", 0.67, CLAY]], 0.85, "")
+barChart("chart-contam", [["reported", 0.75, CLAY], ["clean-only", 0.70, SAGE]], 0.78, "")
+barChart("chart-format", [["exact match", 0.78, CLAY], ["normalized", 0.90, SAGE]], 0.95, "")
+intervalChart("chart-rerun", [["paper claim", 0.78, 0.78, 0.78, INDIGO], ["your rerun", 0.65, 0.74, 0.82, SAGE]], 0.6, 0.9)
+barChart("chart-slices", [["overall", 0.78, INDIGO], ["slice A", 0.52, CLAY], ["slice B", 0.86, SAGE]], 0.9, "")
+barChart("chart-bias", [["unblinded", 0.62, CLAY], ["blinded", 0.53, SAGE]], 0.65, "")
+</script>
+</body>
+</html>

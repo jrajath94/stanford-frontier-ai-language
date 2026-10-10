@@ -1,0 +1,209 @@
+{
+ "schemaVersion": 1,
+ "itemId": "u13_questions",
+ "itemKind": "lesson",
+ "revision": "1c4df988730ecc1aca228fbe46872fabe6abba71066018b346a9a927e1d36746",
+ "sections": [
+  {
+   "anchor": "breadth-6",
+   "title": "Breadth questions",
+   "minutes": 1,
+   "endAnchor": "breadth-6-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "concept direction",
+     "definition": "A direction in activation space separating labeled examples.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "probe",
+     "definition": "A classifier on activations; it proves correlation, nothing more.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "causal intervention",
+     "definition": "Remove or patch a component and measure the change.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "steering",
+     "definition": "Add alpha times a direction to shift behavior.",
+     "anchor": "breadth-6-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-6-r1",
+     "question": "What is a concept direction, and what does a probe prove?",
+     "answer": "A direction separating labeled examples in activation space. A probe proves correlation only.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r2",
+     "question": "What is the difference between behavioral and mechanistic evidence?",
+     "answer": "Behavioral is what the model does, scored. Mechanistic is how, via circuits and interventions.",
+     "anchor": "breadth-6-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders-2-x-5",
+   "title": "Deep ladder drills",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-2-x-5-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "ablation",
+     "definition": "Project out the direction and remeasure the effect.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "counterfactual",
+     "definition": "Same input with the component removed; the difference is its contribution.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "disparity ratio",
+     "definition": "A bias metric; far from 1.0 demands an explanation, not a verdict.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-2-x-5-r1",
+     "question": "L1 covers interventions. What does 'no effect after ablation' mean?",
+     "answer": "Backup circuits exist, or the intervention was not surgical.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r2",
+     "question": "L2 covers bias measurement. Why is the disparity ratio not a verdict?",
+     "answer": "A perfect predictor on different base rates still gives a low ratio.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-2",
+   "title": "Analytical questions",
+   "minutes": 1,
+   "endAnchor": "analytical-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "honest label",
+     "definition": "The label the evidence supports, such as correlate rather than truth direction.",
+     "anchor": "analytical-2-p01"
+    },
+    {
+     "term": "ECE",
+     "definition": "Expected calibration error; report the hard-slice number for deployment.",
+     "anchor": "analytical-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-2-r1",
+     "question": "Q7: probe hits 0.83 on 'truth' but fires on confident lies too. What is the honest label?",
+     "answer": "A steerable correlate of truth-like text, not a truth direction.",
+     "anchor": "analytical-2-p01"
+    },
+    {
+     "id": "analytical-2-r2",
+     "question": "Q8: ECE is 0.425 overall but 0.60 on hard slices, and deployment is all hard slices. What do you report?",
+     "answer": "Report the hard-slice 0.60 with the slice table; the overall number is irrelevant.",
+     "anchor": "analytical-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebugging-1",
+   "title": "Implementation and debugging",
+   "minutes": 1,
+   "endAnchor": "implementationdebugging-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "working range",
+     "definition": "The alpha range where steering works without breaking the model.",
+     "anchor": "implementationdebugging-1-p01"
+    },
+    {
+     "term": "alpha",
+     "definition": "Steering strength; 10 broke the model here.",
+     "anchor": "implementationdebugging-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebugging-1-r1",
+     "question": "Q9: steering at alpha 10 breaks the model (perplexity +5). List fixes, cheapest first.",
+     "answer": "Lower alpha into the working range, sweep for the knee, verify causality, or abandon steering.",
+     "anchor": "implementationdebugging-1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-2",
+   "title": "Changed-constraint questions",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "extraction rate",
+     "definition": "How often planted canaries come back out of the model.",
+     "anchor": "changed-constraint-2-p01"
+    },
+    {
+     "term": "coverage",
+     "definition": "A lower bound on red-team findings, never a safety proof.",
+     "anchor": "changed-constraint-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-2-r1",
+     "question": "Q10: canary test shows 0.185 extraction on user-data training. Name two defenses and each limit.",
+     "answer": "Deduplication, limited by rare singletons; differential privacy, limited by utility cost.",
+     "anchor": "changed-constraint-2-p01"
+    },
+    {
+     "id": "changed-constraint-2-r2",
+     "question": "Q11: the red team found nothing in 2 days. Can you ship?",
+     "answer": "No. Coverage is a lower bound; ship on the checklist, not the absence of findings.",
+     "anchor": "changed-constraint-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique-1",
+   "title": "Research critique",
+   "minutes": 1,
+   "endAnchor": "research-critique-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "truth direction",
+     "definition": "The claimed activation direction for truth.",
+     "anchor": "research-critique-1-p01"
+    },
+    {
+     "term": "correlate",
+     "definition": "A signal that tracks truth-like text without being truth.",
+     "anchor": "research-critique-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-1-r1",
+     "question": "Q12: 'We found the truth direction.' What is the task?",
+     "answer": "Steelman the claim, then give the strongest counterexample from the unit.",
+     "anchor": "research-critique-1-p01"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,492 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-transfer-sets",
+ "itemKind": "lesson",
+ "revision": "ba1cbcd3705eed8c8966b63aaaea509fbaa71b96d04005f52e07e5088d40e044",
+ "sections": [
+  {
+   "anchor": "transfer-sets-changed-scenarios-across-units",
+   "title": "Transfer sets , changed scenarios across units",
+   "minutes": 1,
+   "endAnchor": "transfer-sets-changed-scenarios-across-units-end",
+   "blocks": [
+    {
+     "anchor": "transfer-sets-changed-scenarios-across-units-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "transfer",
+     "definition": "Applying a concept under a changed constraint, not recalling it.",
+     "anchor": "transfer-sets-changed-scenarios-across-units-p01"
+    },
+    {
+     "term": "constraint",
+     "definition": "The one changed condition per set.",
+     "anchor": "transfer-sets-changed-scenarios-across-units-p01"
+    },
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "transfer-sets-changed-scenarios-across-units-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "transfer-sets-changed-scenarios-across-units-r1",
+     "question": "How many transfer sets are there?",
+     "answer": "Ten, each changing one constraint.",
+     "anchor": "transfer-sets-changed-scenarios-across-units-p01"
+    },
+    {
+     "id": "transfer-sets-changed-scenarios-across-units-r2",
+     "question": "Where are the full keys?",
+     "answer": "In keys-transfer.md.",
+     "anchor": "transfer-sets-changed-scenarios-across-units-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "t1-bpe-with-a-byte-budget-u01",
+   "title": "T1 , BPE with a byte budget (U01)",
+   "minutes": 1,
+   "endAnchor": "t1-bpe-with-a-byte-budget-u01-end",
+   "blocks": [
+    {
+     "anchor": "t1-bpe-with-a-byte-budget-u01-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "byte budget",
+     "definition": "8 KB of firmware for the tokenizer.",
+     "anchor": "t1-bpe-with-a-byte-budget-u01-p01"
+    },
+    {
+     "term": "fertility",
+     "definition": "Tokens per word; it drives latency.",
+     "anchor": "t1-bpe-with-a-byte-budget-u01-list01"
+    },
+    {
+     "term": "merge table",
+     "definition": "The BPE table; too big for the budget.",
+     "anchor": "t1-bpe-with-a-byte-budget-u01-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t1-bpe-with-a-byte-budget-u01-r1",
+     "question": "What constraint does T1 set?",
+     "answer": "The tokenizer must fit in 8 KB of firmware.",
+     "anchor": "t1-bpe-with-a-byte-budget-u01-p01"
+    },
+    {
+     "id": "t1-bpe-with-a-byte-budget-u01-r2",
+     "question": "What two things must the answer name?",
+     "answer": "Two mitigations that keep the model usable, and what fertility does to latency.",
+     "anchor": "t1-bpe-with-a-byte-budget-u01-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t2-rope-at-4x-context-u02",
+   "title": "T2 , RoPE at 4x context (U02)",
+   "minutes": 1,
+   "endAnchor": "t2-rope-at-4x-context-u02-end",
+   "blocks": [
+    {
+     "anchor": "t2-rope-at-4x-context-u02-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "naive extension",
+     "definition": "Using 4k-fit RoPE angles at 16k directly.",
+     "anchor": "t2-rope-at-4x-context-u02-list01"
+    },
+    {
+     "term": "4k fit",
+     "definition": "RoPE angles were fit to 4k.",
+     "anchor": "t2-rope-at-4x-context-u02-p01"
+    },
+    {
+     "term": "tradeoff",
+     "definition": "What each fix costs.",
+     "anchor": "t2-rope-at-4x-context-u02-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t2-rope-at-4x-context-u02-r1",
+     "question": "What must the model do?",
+     "answer": "Serve 16k after training at 4k.",
+     "anchor": "t2-rope-at-4x-context-u02-p01"
+    },
+    {
+     "id": "t2-rope-at-4x-context-u02-r2",
+     "question": "What must each fix carry?",
+     "answer": "Its tradeoff and a test without a 16k benchmark.",
+     "anchor": "t2-rope-at-4x-context-u02-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t3-moe-with-one-expert-down-u03",
+   "title": "T3 , MoE with one expert down (U03)",
+   "minutes": 1,
+   "endAnchor": "t3-moe-with-one-expert-down-u03-end",
+   "blocks": [
+    {
+     "anchor": "t3-moe-with-one-expert-down-u03-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "dead expert",
+     "definition": "One of 8 experts lost to a hardware fault.",
+     "anchor": "t3-moe-with-one-expert-down-u03-list01"
+    },
+    {
+     "term": "load balancing",
+     "definition": "How the router spreads tokens; it sets how the damage lands.",
+     "anchor": "t3-moe-with-one-expert-down-u03-p01"
+    },
+    {
+     "term": "serving-time mitigations",
+     "definition": "Fixes applied at serving, not training.",
+     "anchor": "t3-moe-with-one-expert-down-u03-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t3-moe-with-one-expert-down-u03-r1",
+     "question": "What caused the outage?",
+     "answer": "A hardware fault took one expert down at serving time.",
+     "anchor": "t3-moe-with-one-expert-down-u03-p01"
+    },
+    {
+     "id": "t3-moe-with-one-expert-down-u03-r2",
+     "question": "What two things must the answer give?",
+     "answer": "Two serving-time mitigations and how load balancing affects the damage.",
+     "anchor": "t3-moe-with-one-expert-down-u03-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t4-lora-rank-under-memory-pressure-u04",
+   "title": "T4 , LoRA rank under memory pressure (U04)",
+   "minutes": 1,
+   "endAnchor": "t4-lora-rank-under-memory-pressure-u04-end",
+   "blocks": [
+    {
+     "anchor": "t4-lora-rank-under-memory-pressure-u04-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "20 MB",
+     "definition": "The adapter memory budget.",
+     "anchor": "t4-lora-rank-under-memory-pressure-u04-p01"
+    },
+    {
+     "term": "max rank",
+     "definition": "The largest rank fitting 20 MB across 32 layers of 4096x4096 in fp16.",
+     "anchor": "t4-lora-rank-under-memory-pressure-u04-list01"
+    },
+    {
+     "term": "full fine-tune",
+     "definition": "The fallback when rank cannot hold the task.",
+     "anchor": "t4-lora-rank-under-memory-pressure-u04-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t4-lora-rank-under-memory-pressure-u04-r1",
+     "question": "What does rank 64 violate?",
+     "answer": "The 20 MB adapter budget.",
+     "anchor": "t4-lora-rank-under-memory-pressure-u04-p01"
+    },
+    {
+     "id": "t4-lora-rank-under-memory-pressure-u04-r2",
+     "question": "What three things must the answer compute or state?",
+     "answer": "The max rank, what capability is lost first, and when to switch to full fine-tune.",
+     "anchor": "t4-lora-rank-under-memory-pressure-u04-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t5-dpo-with-55-annotator-agreement-u05",
+   "title": "T5 , DPO with 55% annotator agreement (U05)",
+   "minutes": 1,
+   "endAnchor": "t5-dpo-with-55-annotator-agreement-u05-end",
+   "blocks": [
+    {
+     "anchor": "t5-dpo-with-55-annotator-agreement-u05-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "annotator agreement",
+     "definition": "55%: barely above chance.",
+     "anchor": "t5-dpo-with-55-annotator-agreement-u05-p01"
+    },
+    {
+     "term": "BT loss",
+     "definition": "What the DPO objective learns from the labels.",
+     "anchor": "t5-dpo-with-55-annotator-agreement-u05-list01"
+    },
+    {
+     "term": "data-side fixes",
+     "definition": "Repairs to labels before any training change.",
+     "anchor": "t5-dpo-with-55-annotator-agreement-u05-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t5-dpo-with-55-annotator-agreement-u05-r1",
+     "question": "What do the labels look like?",
+     "answer": "Barely above chance at 55% agreement.",
+     "anchor": "t5-dpo-with-55-annotator-agreement-u05-list01"
+    },
+    {
+     "id": "t5-dpo-with-55-annotator-agreement-u05-r2",
+     "question": "What choice must the answer defend?",
+     "answer": "DPO or RLHF here, and why.",
+     "anchor": "t5-dpo-with-55-annotator-agreement-u05-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t6-rlvr-with-a-slow-verifier-u06",
+   "title": "T6 , RLVR with a slow verifier (U06)",
+   "minutes": 1,
+   "endAnchor": "t6-rlvr-with-a-slow-verifier-u06-end",
+   "blocks": [
+    {
+     "anchor": "t6-rlvr-with-a-slow-verifier-u06-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "30 s verifier",
+     "definition": "The unit-test verifier's cost per program.",
+     "anchor": "t6-rlvr-with-a-slow-verifier-u06-p01"
+    },
+    {
+     "term": "G = 64",
+     "definition": "The group size multiplying the cost.",
+     "anchor": "t6-rlvr-with-a-slow-verifier-u06-list01"
+    },
+    {
+     "term": "proxy verifier",
+     "definition": "A fast stand-in for the slow true verifier.",
+     "anchor": "t6-rlvr-with-a-slow-verifier-u06-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t6-rlvr-with-a-slow-verifier-u06-r1",
+     "question": "What are the raw numbers?",
+     "answer": "30 s per program, G = 64.",
+     "anchor": "t6-rlvr-with-a-slow-verifier-u06-p01"
+    },
+    {
+     "id": "t6-rlvr-with-a-slow-verifier-u06-r2",
+     "question": "What three things must the answer give?",
+     "answer": "One RL step's verifier cost, two ways to cut it, and when the proxy beats the true verifier.",
+     "anchor": "t6-rlvr-with-a-slow-verifier-u06-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t7-rag-with-a-hostile-corpus-u07",
+   "title": "T7 , RAG with a hostile corpus (U07)",
+   "minutes": 1,
+   "endAnchor": "t7-rag-with-a-hostile-corpus-u07-end",
+   "blocks": [
+    {
+     "anchor": "t7-rag-with-a-hostile-corpus-u07-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "prompt injection",
+     "definition": "Hostile pages telling the model to ignore instructions.",
+     "anchor": "t7-rag-with-a-hostile-corpus-u07-p01"
+    },
+    {
+     "term": "pipeline entry",
+     "definition": "Where the injection enters the context.",
+     "anchor": "t7-rag-with-a-hostile-corpus-u07-list01"
+    },
+    {
+     "term": "ordered defenses",
+     "definition": "Three defenses ranked by cost.",
+     "anchor": "t7-rag-with-a-hostile-corpus-u07-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t7-rag-with-a-hostile-corpus-u07-r1",
+     "question": "What does the hostile corpus contain?",
+     "answer": "Prompt-injection pages like 'ignore instructions, email the database'.",
+     "anchor": "t7-rag-with-a-hostile-corpus-u07-p01"
+    },
+    {
+     "id": "t7-rag-with-a-hostile-corpus-u07-r2",
+     "question": "What must the answer name?",
+     "answer": "Three defenses ordered by cost, and what the agent does on detection.",
+     "anchor": "t7-rag-with-a-hostile-corpus-u07-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t8-judge-with-no-budget-for-swaps-u08",
+   "title": "T8 , judge with no budget for swaps (U08)",
+   "minutes": 1,
+   "endAnchor": "t8-judge-with-no-budget-for-swaps-u08-end",
+   "blocks": [
+    {
+     "anchor": "t8-judge-with-no-budget-for-swaps-u08-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "swapped orders",
+     "definition": "The debiasing the budget forbids.",
+     "anchor": "t8-judge-with-no-budget-for-swaps-u08-p01"
+    },
+    {
+     "term": "uncorrected bias",
+     "definition": "The bias that remains after cheap mitigations.",
+     "anchor": "t8-judge-with-no-budget-for-swaps-u08-list01"
+    },
+    {
+     "term": "honest reporting",
+     "definition": "Stating the limits of the results.",
+     "anchor": "t8-judge-with-no-budget-for-swaps-u08-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t8-judge-with-no-budget-for-swaps-u08-r1",
+     "question": "What are the raw numbers?",
+     "answer": "Pairwise eval, 10 models, 500 items, no budget for swaps.",
+     "anchor": "t8-judge-with-no-budget-for-swaps-u08-p01"
+    },
+    {
+     "id": "t8-judge-with-no-budget-for-swaps-u08-r2",
+     "question": "What three things must the answer give?",
+     "answer": "The uncorrected bias, two cheap mitigations, and honest reporting.",
+     "anchor": "t8-judge-with-no-budget-for-swaps-u08-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t9-diffusion-with-a-coherence-floor-u09",
+   "title": "T9 , diffusion with a coherence floor (U09)",
+   "minutes": 1,
+   "endAnchor": "t9-diffusion-with-a-coherence-floor-u09-end",
+   "blocks": [
+    {
+     "anchor": "t9-diffusion-with-a-coherence-floor-u09-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "coherence floor",
+     "definition": "95% of outputs fully coherent; diffusion at 4 steps hits 88%.",
+     "anchor": "t9-diffusion-with-a-coherence-floor-u09-p01"
+    },
+    {
+     "term": "step knee",
+     "definition": "The step count where quality flattens.",
+     "anchor": "t9-diffusion-with-a-coherence-floor-u09-list01"
+    },
+    {
+     "term": "serial fallback",
+     "definition": "Abandoning diffusion for this product.",
+     "anchor": "t9-diffusion-with-a-coherence-floor-u09-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t9-diffusion-with-a-coherence-floor-u09-r1",
+     "question": "What is the gap?",
+     "answer": "95% required versus 88% at 4 steps.",
+     "anchor": "t9-diffusion-with-a-coherence-floor-u09-p01"
+    },
+    {
+     "id": "t9-diffusion-with-a-coherence-floor-u09-r2",
+     "question": "What three things must the answer give?",
+     "answer": "Two ways to buy coherence, the knee measurement, and when to abandon diffusion.",
+     "anchor": "t9-diffusion-with-a-coherence-floor-u09-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t10-agent-with-a-30-second-budget-u06u07",
+   "title": "T10 , agent with a 30-second budget (U06+U07)",
+   "minutes": 1,
+   "endAnchor": "t10-agent-with-a-30-second-budget-u06u07-end",
+   "blocks": [
+    {
+     "anchor": "t10-agent-with-a-30-second-budget-u06u07-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "30-second budget",
+     "definition": "The whole agent turn must finish in 30 s; ReAct averages 45 s.",
+     "anchor": "t10-agent-with-a-30-second-budget-u06u07-p01"
+    },
+    {
+     "term": "three sinks",
+     "definition": "Where the time goes.",
+     "anchor": "t10-agent-with-a-30-second-budget-u06u07-list01"
+    },
+    {
+     "term": "last resort",
+     "definition": "The final option and its cost.",
+     "anchor": "t10-agent-with-a-30-second-budget-u06u07-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t10-agent-with-a-30-second-budget-u06u07-r1",
+     "question": "What is the gap?",
+     "answer": "30 s budget versus 45 s ReAct average.",
+     "anchor": "t10-agent-with-a-30-second-budget-u06u07-p01"
+    },
+    {
+     "id": "t10-agent-with-a-30-second-budget-u06u07-r2",
+     "question": "What three things must the answer name?",
+     "answer": "The three time sinks, two latency cuts, and the last resort with its cost.",
+     "anchor": "t10-agent-with-a-30-second-budget-u06u07-list01"
+    }
+   ]
+  }
+ ]
+}

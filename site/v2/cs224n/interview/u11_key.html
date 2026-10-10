@@ -135,8 +135,9 @@
       <h1>Interview · U11 keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-key-u11">Interview key , U11</h1>
+<span id="interview-key-u11-end" data-end></span>
 <h2 id="breadth">Breadth</h2>
-<p>A1. Step labels buy auditability, answer labels buy accuracy.
+<p id="breadth-p01" data-kind="example" data-term="auditability">A1. Step labels buy auditability, answer labels buy accuracy.
 Steps can rationalize: supervised, not faithful.
 A2. A reward a program checks. No learned middle layer. Main
 failure: a buggy verifier teaches exploits.
@@ -148,35 +149,40 @@ A5. Split a fixed sample budget across prompts vs depth. Rule:
 concave gains favor breadth (3.935 vs 0.993).
 A6. Traces are stories, not proofs. The corruption test decides
 whether a step caused the answer.</p>
+<span id="breadth-end" data-end></span>
 <h2 id="deep-ladders">Deep ladders</h2>
-<p>L1. (1) Sum C(n,k) p^k (1-p)^(n-k) over k &gt; n/2. (2) 0.6000,
+<p id="deep-ladders-p01" data-kind="example" data-term="correlated errors">L1. (1) Sum C(n,k) p^k (1-p)^(n-k) over k &gt; n/2. (2) 0.6000,
 0.6826, 0.7535, 0.8256. (3) The tail shrinks below 0.5. (4)
 Correlated errors: the committee shares the bias. (5) Measure
 pairwise wrong-answer agreement vs independence.</p>
-<p>L2. (1) Accept the draft prefix while it matches the target
+<p id="deep-ladders-p02" data-kind="prose" data-term="interior optimum">L2. (1) Accept the draft prefix while it matches the target
 distribution, resample at the first reject. (2) (1 - 0.7^6) /
 0.3 = 2.941. (3) Geometric run with the bonus token. (4) The
 overhead exceeds the gain: measure a and draft cost first.
 (5) Sweep g, measure wall-clock speedup, expect an interior
 optimum.</p>
+<span id="deep-ladders-end" data-end></span>
 <h2 id="analytical">Analytical</h2>
-<p>A7. 10x10: 3.935. 5x20: 5 x 0.632 = 3.161. 1x100: 0.993.
+<p id="analytical-p01" data-kind="example" data-term="3.935">A7. 10x10: 3.935. 5x20: 5 x 0.632 = 3.161. 1x100: 0.993.
 10x10 wins: concave gains favor breadth.
 A8. Outcome: 4 kept per 20 cost units. Process: 2 kept per 60.
 Per dollar, outcome wins 6x. Choose process only when the
 steps are the product.</p>
+<span id="analytical-end" data-end></span>
 <h2 id="implementationdebugging">Implementation/debugging</h2>
-<p>A9. (1) Check temperature: 0 gives identical paths. (2) Check
+<p id="implementationdebugging-p01" data-kind="example" data-term="temperature 0">A9. (1) Check temperature: 0 gives identical paths. (2) Check
 path diversity (distinct answers). (3) Check p: below 0.5 the
 vote is harmful anyway. (4) Check the answer extractor.</p>
+<span id="implementationdebugging-end" data-end></span>
 <h2 id="changed-constraint">Changed-constraint</h2>
-<p>A10. Yes. Two passes verify 2 x 5 drafts: about 5.9 tokens vs 2
+<p id="changed-constraint-p01" data-kind="example" data-term="5.9 tokens">A10. Yes. Two passes verify 2 x 5 drafts: about 5.9 tokens vs 2
 greedy, if the draft is cheap and a is near 0.7. The guarantee
 holds regardless.
 A11. No. Threshold gains are not concave: 10x10 gives 0, 1x100
 clicks. Know the gain shape before spreading.</p>
+<span id="changed-constraint-end" data-end></span>
 <h2 id="research-critique">Research critique</h2>
-<p>A12. Steelman: the steps decompose the problem and often check
+<p id="research-critique-p01" data-kind="example" data-term="14 of 20">A12. Steelman: the steps decompose the problem and often check
 out, they expose the work for audit. Counterexample: the
 corruption test, 14 of 20 answers unchanged after breaking a
 step. Useful, not faithful.</p>
@@ -184,7 +190,8 @@ step. Useful, not faithful.</p>
       <nav class="pager"><a href="../interview/u11_questions.html"><span class="lbl">← Previous</span>Interview · U11 questions</a><a href="../interview/u12_questions.html"><span class="lbl">Next →</span>Interview · U12 questions</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-p02" data-kind="prose" data-term="stories">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-end" data-end></span>
     </footer>
   </main>
 </div>

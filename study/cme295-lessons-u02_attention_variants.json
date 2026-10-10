@@ -1,0 +1,698 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-lessons-u02_attention_variants",
+ "itemKind": "lesson",
+ "revision": "1a86787d562096a6c76ce125e8cf72f4ce20615b4cac27f36de0d0800269c75e",
+ "sections": [
+  {
+   "anchor": "u02_attention_variants-intro-p01",
+   "title": "U02 \u00b7 Transformer variants and positional mechanisms",
+   "minutes": 1,
+   "endAnchor": "u02_attention_variants-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u02_attention_variants-intro-p02",
+     "definition": "The claim class for MHA/MQA/GQA, position embeddings, and model families.",
+     "term": "OFFICIAL-SYLLABUS"
+    },
+    {
+     "anchor": "u02_attention_variants-intro-p02",
+     "definition": "The claim class for extensions like approximation, cache math, and complexity.",
+     "term": "REQUESTED-BRANCH"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u02_attention_variants-intro-p02",
+     "answer": "L2 (Oct 2, 2026).",
+     "id": "u02_attention_variants-intro-r1",
+     "question": "What is the lecture anchor for U02?"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood",
+   "title": "not yet understood",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "not-yet-understood-li01",
+     "definition": "A sampling control for next-token generation. It arrives in U03.",
+     "term": "temperature"
+    },
+    {
+     "anchor": "not-yet-understood-li02",
+     "definition": "A fine-tuning method. It arrives with training and adaptation in U04.",
+     "term": "LoRA"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "not-yet-understood-li05",
+     "answer": "U07. It covers retrieval pipelines and ReAct loops.",
+     "id": "not-yet-understood-r1",
+     "question": "Which unit covers RAG and agents?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-projections-softmax-stability-rotation",
+   "title": "local remediation , projections, softmax stability, rotation",
+   "minutes": 1,
+   "endAnchor": "local-remediation-projections-softmax-stability-rotation-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-projections-softmax-stability-rotation-p02",
+     "definition": "A learned linear map. It rotates, scales, and mixes axes.",
+     "term": "projection"
+    },
+    {
+     "anchor": "local-remediation-projections-softmax-stability-rotation-p03",
+     "definition": "It subtracts the max before exp. The shift prevents overflow and changes nothing.",
+     "term": "stable softmax"
+    },
+    {
+     "anchor": "local-remediation-projections-softmax-stability-rotation-p04",
+     "definition": "Rotary position embedding. It applies 2D rotation per position.",
+     "term": "RoPE"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-projections-softmax-stability-rotation-p04",
+     "answer": "Rotations compose by adding angles, and RoPE applies this fact per position.",
+     "id": "local-remediation-projections-softmax-stability-rotation-r1",
+     "question": "Why does R(a)R(b) = R(a+b) matter for RoPE?"
+    },
+    {
+     "anchor": "local-remediation-projections-softmax-stability-rotation-p03",
+     "answer": "softmax([0, 1]). The max-shift changes nothing mathematically.",
+     "id": "local-remediation-projections-softmax-stability-rotation-r2",
+     "question": "What does softmax([1000, 1001]) equal?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-attention-approximation",
+   "title": "c01: attention approximation",
+   "minutes": 3,
+   "endAnchor": "c01-attention-approximation-end",
+   "blocks": [
+    {
+     "anchor": "c01-attention-approximation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-attention-approximation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-attention-approximation-p03",
+     "definition": "phi: R^d -> R^m. It approximates the softmax kernel as an inner product.",
+     "term": "feature map"
+    },
+    {
+     "anchor": "c01-attention-approximation-p05",
+     "definition": "The approximation matches exp(q.k) in expectation. Variance is the price.",
+     "term": "unbiased"
+    },
+    {
+     "anchor": "c01-attention-approximation-p05",
+     "definition": "D. It keeps approximated rows summing to 1.",
+     "term": "row normalizer"
+    },
+    {
+     "anchor": "c01-attention-approximation-p06",
+     "definition": "It uses random features with E[phi(q).phi(k)] = exp(q.k).",
+     "term": "Performer"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-attention-approximation-p08",
+     "answer": "It computes S = phi(K)^T V once, then multiplies per query. The product associates right to left.",
+     "id": "c01-attention-approximation-r1",
+     "question": "How does linear attention avoid the T x T matrix?"
+    },
+    {
+     "anchor": "c01-attention-approximation-p12",
+     "answer": "At small m the variance swamps the signal and training diverges. Unbiasedness says nothing about a single run.",
+     "id": "c01-attention-approximation-r2",
+     "question": "Why can an unbiased approximation still fail?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-mha",
+   "title": "c02: mha",
+   "minutes": 3,
+   "endAnchor": "c02-mha-end",
+   "blocks": [
+    {
+     "anchor": "c02-mha-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-mha-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-mha-p02",
+     "definition": "Multi-head attention. h parallel heads with private projections, concatenated.",
+     "term": "MHA"
+    },
+    {
+     "anchor": "c02-mha-p03",
+     "definition": "Per-head dimension. d divided by h.",
+     "term": "d_k"
+    },
+    {
+     "anchor": "c02-mha-p06",
+     "definition": "1/sqrt(d_k). It keeps dot products O(1) at init so the softmax starts diffuse.",
+     "term": "1/sqrt(d_k)"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-mha-p07",
+     "answer": "q.k in 16 dims has variance 16. Dividing by 4 restores unit scale so the softmax starts diffuse.",
+     "id": "c02-mha-r1",
+     "question": "Why divide by sqrt(d_k)?"
+    },
+    {
+     "anchor": "c02-mha-p10",
+     "answer": "Heads starve. More heads means thinner heads with less capacity each.",
+     "id": "c02-mha-r2",
+     "question": "What happens past d_k = 32 at fixed d?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-mqa",
+   "title": "c03: mqa",
+   "minutes": 3,
+   "endAnchor": "c03-mqa-end",
+   "blocks": [
+    {
+     "anchor": "c03-mqa-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-mqa-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-mqa-p02",
+     "definition": "Multi-query attention. Many query heads share 1 KV head.",
+     "term": "MQA"
+    },
+    {
+     "anchor": "c03-mqa-p03",
+     "definition": "Stored keys and values. MQA shrinks it 32x in the toy.",
+     "term": "KV cache"
+    },
+    {
+     "anchor": "c03-mqa-p06",
+     "definition": "The number of key/value heads. MQA sets it to 1.",
+     "term": "kv_heads"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-mqa-p03",
+     "answer": "The K and V heads. Queries keep private projections.",
+     "id": "c03-mqa-r1",
+     "question": "What is shared in MQA?"
+    },
+    {
+     "anchor": "c03-mqa-p12",
+     "answer": "Small models trained with MQA underperform MHA. The capacity cut bites when the model is already small.",
+     "id": "c03-mqa-r2",
+     "question": "When does MQA sharing hurt?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-gqa",
+   "title": "c04: gqa",
+   "minutes": 3,
+   "endAnchor": "c04-gqa-end",
+   "blocks": [
+    {
+     "anchor": "c04-gqa-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-gqa-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-gqa-p02",
+     "definition": "Grouped-query attention. G groups of query heads share one KV head each.",
+     "term": "GQA"
+    },
+    {
+     "anchor": "c04-gqa-p04",
+     "definition": "Group count. G = h is MHA, G = 1 is MQA.",
+     "term": "G"
+    },
+    {
+     "anchor": "c04-gqa-p06",
+     "definition": "Converting MHA to GQA by mean-pooling KV heads within groups, then continued training.",
+     "term": "upcasting"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-gqa-p04",
+     "answer": "The number of KV groups. G = h gives MHA, G = 1 gives MQA.",
+     "id": "c04-gqa-r1",
+     "question": "What does G control?"
+    },
+    {
+     "anchor": "c04-gqa-p12",
+     "answer": "Mean-pooling KV heads without it drops quality. The recovery run restores it.",
+     "id": "c04-gqa-r2",
+     "question": "Why does free conversion need continued training?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-learnedfixed-positions",
+   "title": "c05: learned/fixed positions",
+   "minutes": 3,
+   "endAnchor": "c05-learnedfixed-positions-end",
+   "blocks": [
+    {
+     "anchor": "c05-learnedfixed-positions-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-learnedfixed-positions-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-learnedfixed-positions-p05",
+     "definition": "Fixed position codes from sines and cosines. They extend to any length.",
+     "term": "sinusoid"
+    },
+    {
+     "anchor": "c05-learnedfixed-positions-p06",
+     "definition": "The period of a sinusoid pair. Short waves track exact offsets.",
+     "term": "wavelength"
+    },
+    {
+     "anchor": "c05-learnedfixed-positions-p10",
+     "definition": "Max trained length for learned positions. Past it, rows are garbage.",
+     "term": "T_max"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-learnedfixed-positions-p05",
+     "answer": "p_{m,2i} = sin(m / 10000^{2i/d}), p_{m,2i+1} = cos(m / 10000^{2i/d}).",
+     "id": "c05-learnedfixed-positions-r1",
+     "question": "Write the sinusoid formula."
+    },
+    {
+     "anchor": "c05-learnedfixed-positions-p12",
+     "answer": "Position T_max + 5 has no trained row. The model sees garbage and generation degrades.",
+     "id": "c05-learnedfixed-positions-r2",
+     "question": "Why cannot learned positions extrapolate?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-rope-rotation",
+   "title": "c06: rope rotation",
+   "minutes": 3,
+   "endAnchor": "c06-rope-rotation-end",
+   "blocks": [
+    {
+     "anchor": "c06-rope-rotation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-rope-rotation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-rope-rotation-p02",
+     "definition": "Rotary position embedding. It spins Q/K pairs by angles proportional to position.",
+     "term": "RoPE"
+    },
+    {
+     "anchor": "c06-rope-rotation-p05",
+     "definition": "Per-pair rotation frequency. Position m rotates pair i by m * theta_i.",
+     "term": "theta_i"
+    },
+    {
+     "anchor": "c06-rope-rotation-p06",
+     "definition": "The dot product of rotated pairs depends only on the offset n - m.",
+     "term": "relative property"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-rope-rotation-p06",
+     "answer": "Only the offset (n - m). No absolute m or n remains.",
+     "id": "c06-rope-rotation-r1",
+     "question": "What does the RoPE dot product depend on?"
+    },
+    {
+     "anchor": "c06-rope-rotation-p12",
+     "answer": "Unseen angle combinations. Perplexity explodes; fixes are larger base or position interpolation.",
+     "id": "c06-rope-rotation-r2",
+     "question": "What breaks RoPE past trained length?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-relative-effects",
+   "title": "c07: relative effects",
+   "minutes": 3,
+   "endAnchor": "c07-relative-effects-end",
+   "blocks": [
+    {
+     "anchor": "c07-relative-effects-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-relative-effects-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-relative-effects-p03",
+     "definition": "It subtracts a per-head slope times distance. No position vector exists.",
+     "term": "ALiBi"
+    },
+    {
+     "anchor": "c07-relative-effects-p04",
+     "definition": "A learned bucketed bias per offset, added to scores.",
+     "term": "T5 bias"
+    },
+    {
+     "anchor": "c07-relative-effects-p05",
+     "definition": "Per-head ALiBi slope. Far pairs pay m_h times distance.",
+     "term": "m_h"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-relative-effects-p08",
+     "answer": "B[h,i,j] = -m_h * |i - j|, added to scores before softmax.",
+     "id": "c07-relative-effects-r1",
+     "question": "Write the ALiBi bias."
+    },
+    {
+     "anchor": "c07-relative-effects-p06",
+     "answer": "The rule uses only i - j. It applies at any length, so extrapolation is structural.",
+     "id": "c07-relative-effects-r2",
+     "question": "Why do relative schemes extrapolate?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-encoderdecoder-layouts",
+   "title": "c08: encoder/decoder layouts",
+   "minutes": 3,
+   "endAnchor": "c08-encoderdecoder-layouts-end",
+   "blocks": [
+    {
+     "anchor": "c08-encoderdecoder-layouts-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-encoderdecoder-layouts-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-encoderdecoder-layouts-p04",
+     "definition": "It reads the whole input bidirectionally. Its mask is all zeros.",
+     "term": "encoder"
+    },
+    {
+     "anchor": "c08-encoderdecoder-layouts-p04",
+     "definition": "It writes left to right with a causal mask.",
+     "term": "decoder"
+    },
+    {
+     "anchor": "c08-encoderdecoder-layouts-p04",
+     "definition": "Decoder queries attend to encoder keys and values.",
+     "term": "cross-attention"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-encoderdecoder-layouts-p09",
+     "answer": "Encoder: unmasked. Decoder self: causal. Cross: all source positions allowed.",
+     "id": "c08-encoderdecoder-layouts-r1",
+     "question": "Draw the three masks."
+    },
+    {
+     "anchor": "c08-encoderdecoder-layouts-p12",
+     "answer": "Its bidirectional targets would leak the future. Generation needs causal masks.",
+     "id": "c08-encoderdecoder-layouts-r2",
+     "question": "Why cannot BERT generate left to right?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-bert-derivatives",
+   "title": "c09: bert derivatives",
+   "minutes": 3,
+   "endAnchor": "c09-bert-derivatives-end",
+   "blocks": [
+    {
+     "anchor": "c09-bert-derivatives-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-bert-derivatives-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-bert-derivatives-p03",
+     "definition": "Masked language modeling. Hide 15% of tokens, predict them from context.",
+     "term": "MLM"
+    },
+    {
+     "anchor": "c09-bert-derivatives-p04",
+     "definition": "Next-sentence prediction. RoBERTa dropped it with no loss.",
+     "term": "NSP"
+    },
+    {
+     "anchor": "c09-bert-derivatives-p04",
+     "definition": "A small student matches the teacher soft targets plus true labels.",
+     "term": "distillation"
+    },
+    {
+     "anchor": "c09-bert-derivatives-p06",
+     "definition": "The teacher uncertainty in soft targets. The student learns from it.",
+     "term": "dark knowledge"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-bert-derivatives-p04",
+     "answer": "MLM predicts masked tokens from both sides. NSP predicts whether sentence B follows A.",
+     "id": "c09-bert-derivatives-r1",
+     "question": "What do MLM and NSP predict?"
+    },
+    {
+     "anchor": "c09-bert-derivatives-p12",
+     "answer": "No loss. The signal was mostly topic, not order.",
+     "id": "c09-bert-derivatives-r2",
+     "question": "Why did RoBERTa drop NSP?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-cache-differences",
+   "title": "c10: cache differences",
+   "minutes": 3,
+   "endAnchor": "c10-cache-differences-end",
+   "blocks": [
+    {
+     "anchor": "c10-cache-differences-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-cache-differences-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-cache-differences-p04",
+     "definition": "It processes the prompt in parallel and writes all K/V.",
+     "term": "prefill"
+    },
+    {
+     "anchor": "c10-cache-differences-p04",
+     "definition": "It appends one token K/V per step and attends over the cache.",
+     "term": "decode"
+    },
+    {
+     "anchor": "c10-cache-differences-p05",
+     "definition": "Stored keys per layer with shape (B, kv_heads, T_cached, d_k).",
+     "term": "K_cache"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-cache-differences-p05",
+     "answer": "K_cache and V_cache: (B, kv_heads, T_cached, d_k).",
+     "id": "c10-cache-differences-r1",
+     "question": "What is stored per layer?"
+    },
+    {
+     "anchor": "c10-cache-differences-p12",
+     "answer": "A stale entry serves another user context. Cache keys must include the full prefix identity.",
+     "id": "c10-cache-differences-r2",
+     "question": "What breaks prefix caching?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-complexity",
+   "title": "c11: complexity",
+   "minutes": 3,
+   "endAnchor": "c11-complexity-end",
+   "blocks": [
+    {
+     "anchor": "c11-complexity-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-complexity-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-complexity-p05",
+     "definition": "The attention cost. QK^T and AV each cost T^2 d multiply-adds.",
+     "term": "T^2 d"
+    },
+    {
+     "anchor": "c11-complexity-p06",
+     "definition": "Scores dominate iff T > d. The regime flips at T = d.",
+     "term": "crossover"
+    },
+    {
+     "anchor": "c11-complexity-p08",
+     "definition": "It prints QK^T, AV, projections, FFN, and totals. The design tool.",
+     "term": "FLOP ledger"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-complexity-p06",
+     "answer": "O(T^2 d + T d^2). Scores and AV cost T^2 d, projections cost T d^2.",
+     "id": "c11-complexity-r1",
+     "question": "Write the per-layer big-O."
+    },
+    {
+     "anchor": "c11-complexity-p12",
+     "answer": "Poor memory locality can beat FLOP savings. Flash Attention keeps FLOPs and cuts IO.",
+     "id": "c11-complexity-r2",
+     "question": "Why does fewer FLOPs not mean faster?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-failure-cases",
+   "title": "c12: failure cases",
+   "minutes": 3,
+   "endAnchor": "c12-failure-cases-end",
+   "blocks": [
+    {
+     "anchor": "c12-failure-cases-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-failure-cases-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-failure-cases-p03",
+     "definition": "Position 0 absorbs mass when nothing matches. Softmax needs a dump.",
+     "term": "attention sink"
+    },
+    {
+     "anchor": "c12-failure-cases-p03",
+     "definition": "Token vectors converge toward rank-1. The residual and FFN fight it.",
+     "term": "rank collapse"
+    },
+    {
+     "anchor": "c12-failure-cases-p05",
+     "definition": "A sharp perplexity rise past trained length. It points at positions.",
+     "term": "perplexity cliff"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-failure-cases-p05",
+     "answer": "Extrapolation: perplexity cliff past trained length. Sink: position 0 absorbs mass. Rank collapse: token vectors converge.",
+     "id": "c12-failure-cases-r1",
+     "question": "Name three failures and their signatures."
+    },
+    {
+     "anchor": "c12-failure-cases-p12",
+     "answer": "Run the same diagnostics on a length-matched in-domain sample first.",
+     "id": "c12-failure-cases-r2",
+     "question": "How do you separate data shift from architecture failure?"
+    }
+   ]
+  }
+ ]
+}

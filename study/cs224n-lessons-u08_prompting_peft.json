@@ -1,0 +1,622 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-lessons-u08_prompting_peft",
+ "itemKind": "lesson",
+ "revision": "f7f8dcf375e628b756619e69fa2649819b4be066aed4e584390ae398d8dabc0c",
+ "sections": [
+  {
+   "anchor": "u08_prompting_peft-intro-p01",
+   "title": "U08 \u00b7 Prompting and efficient adaptation",
+   "minutes": 1,
+   "endAnchor": "u08_prompting_peft-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u08_prompting_peft-intro-p01",
+     "definition": "Instructor.",
+     "term": "Prof. Christopher Manning"
+    },
+    {
+     "anchor": "u08_prompting_peft-intro-p01",
+     "definition": "Build date of the unit\u2019s figures.",
+     "term": "2026-10-06"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u08_prompting_peft-intro-p01",
+     "answer": "U08 \u00b7 Prompting and efficient adaptation.",
+     "id": "u08_prompting_peft-intro-r1",
+     "question": "What unit is this?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation",
+   "title": "local remediation",
+   "minutes": 1,
+   "endAnchor": "local-remediation-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "A rank-8 delta to a 4096x4096 matrix has 65536 params, not 16.7M. LoRA\u2019s whole trick.",
+     "term": "R1"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Voting helps when errors are independent.",
+     "term": "R2"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Output validation checks syntax plus schema, not vibes.",
+     "term": "R3"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-p02",
+     "answer": "rank(BA) <= r: a rank-8 delta to 4096x4096 has 65536 params, not 16.7M.",
+     "id": "local-remediation-r1",
+     "question": "What is R1?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-zerofew-shot",
+   "title": "c01: zero/few-shot",
+   "minutes": 3,
+   "endAnchor": "c01-zerofew-shot-end",
+   "blocks": [
+    {
+     "anchor": "c01-zerofew-shot-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-zerofew-shot-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-zerofew-shot-p04",
+     "definition": "Zero-shot: describe the task in words. Few-shot: show k examples, then the new input.",
+     "term": "The prompt is the program"
+    },
+    {
+     "anchor": "c01-zerofew-shot-p05",
+     "definition": "Few-shot shows k demonstrations. No weights change.",
+     "term": "k shots"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-zerofew-shot-p04",
+     "answer": "Zero-shot: task description only. Few-shot: k examples, then the query.",
+     "id": "c01-zerofew-shot-r1",
+     "question": "What is zero-shot vs few-shot?"
+    },
+    {
+     "anchor": "c01-zerofew-shot-p07",
+     "answer": "Sentiment with 2 shots, query \u201cloved it\u201d, model continues \u201cpos\u201d.",
+     "id": "c01-zerofew-shot-r2",
+     "question": "What was the toy?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-in-context-learning",
+   "title": "c02: in-context learning",
+   "minutes": 3,
+   "endAnchor": "c02-in-context-learning-end",
+   "blocks": [
+    {
+     "anchor": "c02-in-context-learning-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-in-context-learning-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-in-context-learning-p04",
+     "definition": "Attention can implement gradient-like updates over the examples.",
+     "term": "The context is a dataset"
+    },
+    {
+     "anchor": "c02-in-context-learning-p06",
+     "definition": "More shots help to a point, then the curve flattens.",
+     "term": "saturates"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-in-context-learning-p07",
+     "answer": "0-shot 55%, 4-shot 72%, 16-shot 74%. Rises then flattens.",
+     "id": "c02-in-context-learning-r1",
+     "question": "What was the toy ICL curve?"
+    },
+    {
+     "anchor": "c02-in-context-learning-p05",
+     "answer": "No proposed mechanism is proven for full-scale models.",
+     "id": "c02-in-context-learning-r2",
+     "question": "What is the open question?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-demonstrations",
+   "title": "c03: demonstrations",
+   "minutes": 2,
+   "endAnchor": "c03-demonstrations-end",
+   "blocks": [
+    {
+     "anchor": "c03-demonstrations-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-demonstrations-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-demonstrations-p04",
+     "definition": "Same rules as instruction data, compressed into k slots.",
+     "term": "diversity over repetition"
+    },
+    {
+     "anchor": "c03-demonstrations-p03",
+     "definition": "Embed the query, take nearest demos. Usually beats random.",
+     "term": "retrieval"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-demonstrations-p07",
+     "answer": "Random 4-shot 68%, retrieved 75%, curated 78%.",
+     "id": "c03-demonstrations-r1",
+     "question": "What was the toy selection result?"
+    },
+    {
+     "anchor": "c03-demonstrations-p06",
+     "answer": "Near-duplicates of the query teach copying, not the task.",
+     "id": "c03-demonstrations-r2",
+     "question": "What is the selection risk?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-prompt-sensitivity",
+   "title": "c04: prompt sensitivity",
+   "minutes": 2,
+   "endAnchor": "c04-prompt-sensitivity-end",
+   "blocks": [
+    {
+     "anchor": "c04-prompt-sensitivity-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-prompt-sensitivity-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-prompt-sensitivity-p04",
+     "definition": "Small rephrases move accuracy by points.",
+     "term": "Prompts are brittle programs"
+    },
+    {
+     "anchor": "c04-prompt-sensitivity-p03",
+     "definition": "Sensitivity is measured, not assumed.",
+     "term": "the protocol"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-prompt-sensitivity-p07",
+     "answer": "Three paraphrases score 0.994, 0.919, 0.999, std 0.036.",
+     "id": "c04-prompt-sensitivity-r1",
+     "question": "What was the toy sensitivity?"
+    },
+    {
+     "anchor": "c04-prompt-sensitivity-p12",
+     "answer": "Prompts overfit the dev set like any hyperparameter. Hold out prompt-dev data.",
+     "id": "c04-prompt-sensitivity-r2",
+     "question": "What is the dev-set danger?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-observable-reasoning-formats",
+   "title": "c05: observable reasoning formats",
+   "minutes": 3,
+   "endAnchor": "c05-observable-reasoning-formats-end",
+   "blocks": [
+    {
+     "anchor": "c05-observable-reasoning-formats-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-observable-reasoning-formats-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-observable-reasoning-formats-p04",
+     "definition": "n reasoning tokens = n extra forward passes to work the problem.",
+     "term": "Scratch paper"
+    },
+    {
+     "anchor": "c05-observable-reasoning-formats-p04",
+     "definition": "No guarantee the steps caused the answer.",
+     "term": "faithfulness"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-observable-reasoning-formats-p07",
+     "answer": "2-step arithmetic: direct 61%, with steps 79%.",
+     "id": "c05-observable-reasoning-formats-r1",
+     "question": "What was the toy CoT gap?"
+    },
+    {
+     "anchor": "c05-observable-reasoning-formats-p13",
+     "answer": "Corrupt an early step: sometimes the answer does not change (unfaithful).",
+     "id": "c05-observable-reasoning-formats-r2",
+     "question": "What does the intervention test?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-self-consistency",
+   "title": "c06: self-consistency",
+   "minutes": 2,
+   "endAnchor": "c06-self-consistency-end",
+   "blocks": [
+    {
+     "anchor": "c06-self-consistency-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-self-consistency-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-self-consistency-p04",
+     "definition": "Each sample is a vote, the majority wins.",
+     "term": "An election"
+    },
+    {
+     "anchor": "c06-self-consistency-p05",
+     "definition": "Helps exactly when errors are independent.",
+     "term": "independence"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-self-consistency-p07",
+     "answer": "p = 0.6, majority of 5 = 0.6826.",
+     "id": "c06-self-consistency-r1",
+     "question": "What is the toy majority?"
+    },
+    {
+     "anchor": "c06-self-consistency-p12",
+     "answer": "p = 0.4: majority of 5 = 0.3174, worse than one sample.",
+     "id": "c06-self-consistency-r2",
+     "question": "When does voting hurt?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-peft",
+   "title": "c07: peft",
+   "minutes": 3,
+   "endAnchor": "c07-peft-end",
+   "blocks": [
+    {
+     "anchor": "c07-peft-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-peft-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-peft-p05",
+     "definition": "Freezes base weights, trains a tiny add-on. Many tasks, small data, limited GPUs.",
+     "term": "PEFT"
+    },
+    {
+     "anchor": "c07-peft-p03",
+     "definition": "0.060 percent of 7B. The task-specific delta is small.",
+     "term": "LoRA"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-peft-p04",
+     "answer": "Adapters, LoRA, prefixes, prompt tuning.",
+     "id": "c07-peft-r1",
+     "question": "What are the PEFT families?"
+    },
+    {
+     "anchor": "c07-peft-p10",
+     "answer": "Less memory and storage, less capacity on far tasks.",
+     "id": "c07-peft-r2",
+     "question": "What is the shared tradeoff?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-adapters",
+   "title": "c08: adapters",
+   "minutes": 2,
+   "endAnchor": "c08-adapters-end",
+   "blocks": [
+    {
+     "anchor": "c08-adapters-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-adapters-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-adapters-p04",
+     "definition": "Signal passes through a narrow corridor (down to b, back up to d) added residually.",
+     "term": "A detour"
+    },
+    {
+     "anchor": "c08-adapters-p06",
+     "definition": "LoRA merges, adapters do not. +2 small matmuls per adapter per token.",
+     "term": "inference cost"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-adapters-p07",
+     "answer": "Per adapter 524288, per layer 1048576, 32 layers 3.36e7. Eight times LoRA\u2019s count.",
+     "id": "c08-adapters-r1",
+     "question": "What was the toy adapter count?"
+    },
+    {
+     "anchor": "c08-adapters-p11",
+     "answer": "When the module must be swappable at runtime (multi-task serving).",
+     "id": "c08-adapters-r2",
+     "question": "When choose adapters over LoRA?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-lora",
+   "title": "c09: lora",
+   "minutes": 3,
+   "endAnchor": "c09-lora-end",
+   "blocks": [
+    {
+     "anchor": "c09-lora-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-lora-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-lora-p03",
+     "definition": "The update lives in a rank-r subspace: 2dr params instead of d^2.",
+     "term": "dW = BA"
+    },
+    {
+     "anchor": "c09-lora-p06",
+     "definition": "Add BA into W once: zero extra latency at inference.",
+     "term": "the merge"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-lora-p07",
+     "answer": "Per matrix 65536, 256:1 vs full. 32 layers Q+V: 4.19M, 0.060% of 7B.",
+     "id": "c09-lora-r1",
+     "question": "What was the toy LoRA count?"
+    },
+    {
+     "anchor": "c09-lora-p04",
+     "answer": "A random, B zero: the delta starts at zero (base model at step 0).",
+     "id": "c09-lora-r2",
+     "question": "How is it initialized?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-full-fine-tune-comparison",
+   "title": "c10: full fine-tune comparison",
+   "minutes": 3,
+   "endAnchor": "c10-full-fine-tune-comparison-end",
+   "blocks": [
+    {
+     "anchor": "c10-full-fine-tune-comparison-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-full-fine-tune-comparison-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-full-fine-tune-comparison-p04",
+     "definition": "Full tuning: max capacity, max memory. PEFT: less memory, less capacity.",
+     "term": "A menu, not a ranking"
+    },
+    {
+     "anchor": "c10-full-fine-tune-comparison-p11",
+     "definition": "Compare at equal data and equal tuning effort.",
+     "term": "the errors.md rule"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-full-fine-tune-comparison-p03",
+     "answer": "Params updated, memory, storage per task, capacity, inference cost.",
+     "id": "c10-full-fine-tune-comparison-r1",
+     "question": "What are the five axes?"
+    },
+    {
+     "anchor": "c10-full-fine-tune-comparison-p12",
+     "answer": "More tuning for PEFT or less data for full: unequal effort.",
+     "id": "c10-full-fine-tune-comparison-r2",
+     "question": "What is the most common fake win?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-forgetting",
+   "title": "c11: forgetting",
+   "minutes": 3,
+   "endAnchor": "c11-forgetting-end",
+   "blocks": [
+    {
+     "anchor": "c11-forgetting-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-forgetting-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-forgetting-p02",
+     "definition": "Fine-tune on task B, task A\u2019s loss jumps.",
+     "term": "catastrophic forgetting"
+    },
+    {
+     "anchor": "c11-forgetting-p06",
+     "definition": "Mix A batches into B training; keeps A\u2019s loss small.",
+     "term": "replay"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-forgetting-p07",
+     "answer": "Linear model: task A loss 0.0 before B, 10.1885 after.",
+     "id": "c11-forgetting-r1",
+     "question": "What was the toy forgetting?"
+    },
+    {
+     "anchor": "c11-forgetting-p06",
+     "answer": "Replay, freeze (PEFT), regularize toward A (EWC).",
+     "id": "c11-forgetting-r2",
+     "question": "What are the three mitigations?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-output-validation",
+   "title": "c12: output validation",
+   "minutes": 2,
+   "endAnchor": "c12-output-validation-end",
+   "blocks": [
+    {
+     "anchor": "c12-output-validation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-output-validation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-output-validation-p04",
+     "definition": "Parse, schema, semantics: each layer catches a different failure.",
+     "term": "A bouncer at the door"
+    },
+    {
+     "anchor": "c12-output-validation-p12",
+     "definition": "Validation checks the shape, not the truth.",
+     "term": "valid JSON"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-output-validation-p07",
+     "answer": "5 outputs, 2 valid JSON. Failures: truncated, non-JSON, empty value.",
+     "id": "c12-output-validation-r1",
+     "question": "What was the toy validation?"
+    },
+    {
+     "anchor": "c12-output-validation-p04",
+     "answer": "Parse (is it JSON?), schema (fields?), semantics (values sane?).",
+     "id": "c12-output-validation-r2",
+     "question": "What are the three layers?"
+    }
+   ]
+  },
+  {
+   "anchor": "unit-visual-map",
+   "title": "unit visual map",
+   "minutes": 1,
+   "endAnchor": "unit-visual-map-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "LoRA trains 0.060 percent of params.",
+     "term": "LoRA plate"
+    },
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "Majority of 5 at p 0.6 gives 0.683.",
+     "term": "election plate"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "unit-visual-map-end",
+     "answer": "LoRA 0.060% plate, majority-of-5 plate, task-B-erases-task-A plate.",
+     "id": "unit-visual-map-r1",
+     "question": "What three figures does the unit carry?"
+    }
+   ]
+  }
+ ]
+}

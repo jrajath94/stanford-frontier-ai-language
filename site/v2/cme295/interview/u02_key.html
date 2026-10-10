@@ -98,10 +98,11 @@
       <h1>Interview · U02 keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u02-interview-key">U02 interview key</h1>
-<p>Minimum sufficient explanation, strong answer, common red flags,
+<p id="u02-interview-key-p01" data-kind="keyIdea" data-reveal="rise" data-term="strong answer">Minimum sufficient explanation, strong answer, common red flags,
 scoring rubric, remediation per question. Keep it closed-book.</p>
+<span id="u02-interview-key-end" data-end></span>
 <h2 id="breadth">Breadth</h2>
-<ul>
+<ul id="breadth-list01" data-kind="example" data-term="MQA">
 <li>B1. Strong: the K and V heads are shared (one head), each query
   head keeps its private Q projection. Red flag: &ldquo;everything is
   shared&rdquo;. Rubric: shared vs private (2). Remediation: C03.</li>
@@ -122,8 +123,9 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
   encoder-decoder (causal self + full cross). Red flag: &ldquo;BERT is
   causal&rdquo;. Rubric: three masks (2). Remediation: C08.</li>
 </ul>
+<span id="breadth-end" data-end></span>
 <h2 id="deep-ladders">Deep ladders</h2>
-<ul>
+<ul id="deep-ladders-list01" data-kind="example" data-term="theta_i">
 <li>L1. Strong path: angle = m * theta_i, theta_i = base^{-2i/d},
   (0.5403, 0.8415), proof via R^T R composition, rope reshapes to
   pairs and rotates, checks m = 0 identity, norm, 1e-12 relative
@@ -139,8 +141,9 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
   d_k starvation and cache, crossover = measure latency
   cache vs recompute over T. Rubric: 2 per rung, 10 total.</li>
 </ul>
+<span id="deep-ladders-end" data-end></span>
 <h2 id="analytical-exercises">Analytical exercises</h2>
-<ul>
+<ul id="analytical-exercises-list01" data-kind="example" data-term="crossover">
 <li>E1. Strong: per-layer 2 * 4096^2 * 1024 = 3.44e10 FLOPs, scores
   fp16 = 16 * 4096^2 * 2 = 512 MiB. Crossover: T^2 d = 4 T d^2 -&gt;
   T = 4d = 4096. Red flag: forgetting the factor 2 or the head
@@ -151,8 +154,9 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
   the factor 2 for K and V. Rubric: bytes (2), both verdicts (2).
   Remediation: C10.</li>
 </ul>
+<span id="analytical-exercises-end" data-end></span>
 <h2 id="implementationdebug">Implementation/debug</h2>
-<ul>
+<ul id="implementationdebug-list01" data-kind="example" data-term="G divisible">
 <li>D1. Strong order: (1) verify G matches and divides h, (2) check
   the pooling (mean over the right heads), (3) compare logits of
   converted vs original on a canary set. Culprit: mean-pooling
@@ -162,8 +166,9 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
   Red flag: &ldquo;retrain from scratch&rdquo; as the first move. Rubric:
   checks (3), culprit (2), asserts (2). Remediation: C04.</li>
 </ul>
+<span id="implementationdebug-end" data-end></span>
 <h2 id="changed-constraint-scenarios">Changed-constraint scenarios</h2>
-<ul>
+<ul id="changed-constraint-scenarios-list01" data-kind="example" data-term="RoPE base">
 <li>S1. Strong: (1) larger RoPE base (breaks trained-length angle
   calibration, metric: perplexity at 128k vs 4k), (2) position
   interpolation, scale positions by 4k/128k (breaks fine-grained
@@ -176,8 +181,9 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
   perplexity. Red flag: no arithmetic. Rubric: variant + math (3),
   risk + monitor (2).</li>
 </ul>
+<span id="changed-constraint-scenarios-end" data-end></span>
 <h2 id="research-critique">Research-critique</h2>
-<ul>
+<ul id="research-critique-list01" data-kind="example" data-term="unbiased">
 <li>R1. Strong: claim = same expressivity at linear cost, counterexample
   = unbiased with high variance at small m diverges in practice,
   experiment = fix T and a copy task, sweep m, find the m where
@@ -191,7 +197,8 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
       <nav class="pager"><a href="../interview/u02_questions.html"><span class="lbl">← Previous</span>Interview · U02 questions</a><a href="../interview/u03_questions.html"><span class="lbl">Next →</span>Interview · U03 questions</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-p01" data-kind="prose" data-term="sweep m">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-end" data-end></span>
     </footer>
   </main>
 </div>

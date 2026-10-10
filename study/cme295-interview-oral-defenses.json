@@ -1,0 +1,432 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-oral-defenses",
+ "itemKind": "lesson",
+ "revision": "3842e8786f65c984253e2c15539faba020675f65d685fee0279fcc829a72787c",
+ "sections": [
+  {
+   "anchor": "oral-defenses-10-deep-ladders",
+   "title": "Oral defenses , 10 deep ladders",
+   "minutes": 1,
+   "endAnchor": "oral-defenses-10-deep-ladders-end",
+   "blocks": [
+    {
+     "anchor": "oral-defenses-10-deep-ladders-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "8 rungs",
+     "definition": "Define, toy, derive, implement, compare, debug, critique, design.",
+     "anchor": "oral-defenses-10-deep-ladders-p01"
+    },
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "oral-defenses-10-deep-ladders-p01"
+    },
+    {
+     "term": "oral defense",
+     "definition": "A deep ladder you climb aloud, rung by rung.",
+     "anchor": "oral-defenses-10-deep-ladders-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "oral-defenses-10-deep-ladders-r1",
+     "question": "What are the 8 rungs?",
+     "answer": "Define, intuitive toy, derive, implement and complexity, compare, debug, critique assumptions, design experiment or production transfer.",
+     "anchor": "oral-defenses-10-deep-ladders-p01"
+    },
+    {
+     "id": "oral-defenses-10-deep-ladders-r2",
+     "question": "Where are the keys?",
+     "answer": "In keys-oral.md.",
+     "anchor": "oral-defenses-10-deep-ladders-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "d1-attention",
+   "title": "D1 , attention",
+   "minutes": 1,
+   "endAnchor": "d1-attention-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "scaled dot-product attention",
+     "definition": "softmax(QK^T/sqrt(d))V; weights over values.",
+     "anchor": "d1-attention-list01"
+    },
+    {
+     "term": "sqrt(d)",
+     "definition": "Dot products grow as sqrt(d); the scale keeps variance at 1.",
+     "anchor": "d1-attention-list01"
+    },
+    {
+     "term": "permutation invariant",
+     "definition": "Without positions, attention ignores order.",
+     "anchor": "d1-attention-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d1-attention-r1",
+     "question": "What does rung 2 ask you to compute?",
+     "answer": "The weights for 2x2 scores [[1, 0], [0, 1]].",
+     "anchor": "d1-attention-list01"
+    },
+    {
+     "id": "d1-attention-r2",
+     "question": "What does rung 8 ask you to design?",
+     "answer": "An experiment proving the scale matters.",
+     "anchor": "d1-attention-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "d2-rope",
+   "title": "D2 , RoPE",
+   "minutes": 1,
+   "endAnchor": "d2-rope-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "rotary position embeddings",
+     "definition": "Each 2D pair of q/k rotated by an angle proportional to position.",
+     "anchor": "d2-rope-list01"
+    },
+    {
+     "term": "relative distance",
+     "definition": "The dot product of rotated vectors depends on the angle difference.",
+     "anchor": "d2-rope-list01"
+    },
+    {
+     "term": "base frequency",
+     "definition": "Sets the wavelength ladder; wrong values break long-range order.",
+     "anchor": "d2-rope-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d2-rope-r1",
+     "question": "What toy does rung 2 give?",
+     "answer": "Rotating the pair (1, 0) by 90 degrees.",
+     "anchor": "d2-rope-list01"
+    },
+    {
+     "id": "d2-rope-r2",
+     "question": "What does rung 6 ask you to debug?",
+     "answer": "Performance collapsing past trained length.",
+     "anchor": "d2-rope-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "d3-temperature-sampling",
+   "title": "D3 , temperature sampling",
+   "minutes": 1,
+   "endAnchor": "d3-temperature-sampling-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "temperature",
+     "definition": "Divides logits before softmax; reshapes sharpness.",
+     "anchor": "d3-temperature-sampling-list01"
+    },
+    {
+     "term": "top-k truncation",
+     "definition": "Cuts the tail by rank; temperature reshapes the whole distribution.",
+     "anchor": "d3-temperature-sampling-list01"
+    },
+    {
+     "term": "tempered sampling",
+     "definition": "softmax(logits/T); one extra division.",
+     "anchor": "d3-temperature-sampling-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d3-temperature-sampling-r1",
+     "question": "What probabilities does rung 2 ask for?",
+     "answer": "p at T = 0.5 and T = 2 for logits [2, 1, 0].",
+     "anchor": "d3-temperature-sampling-list01"
+    },
+    {
+     "id": "d3-temperature-sampling-r2",
+     "question": "What does rung 8 ask you to design?",
+     "answer": "A diversity-vs-quality sweep.",
+     "anchor": "d3-temperature-sampling-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "d4-lora",
+   "title": "D4 , LoRA",
+   "minutes": 1,
+   "endAnchor": "d4-lora-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "low-rank update",
+     "definition": "W + BA with B in R^(dxr), A in R^(rxk), r small.",
+     "anchor": "d4-lora-list01"
+    },
+    {
+     "term": "rank sweep",
+     "definition": "Training r in {1, 4, 16, 64} and plotting eval vs r.",
+     "anchor": "d4-lora-list01"
+    },
+    {
+     "term": "inference cost",
+     "definition": "The BAx term; tiny, and mergeable into W.",
+     "anchor": "d4-lora-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d4-lora-r1",
+     "question": "What toy does rung 2 give?",
+     "answer": "d = 4, k = 4, r = 1: count the parameters.",
+     "anchor": "d4-lora-list01"
+    },
+    {
+     "id": "d4-lora-r2",
+     "question": "What does rung 6 ask you to debug?",
+     "answer": "No learning at r = 1.",
+     "anchor": "d4-lora-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "d5-ppo-clipping",
+   "title": "D5 , PPO clipping",
+   "minutes": 1,
+   "endAnchor": "d5-ppo-clipping-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "clipped surrogate",
+     "definition": "E[min(rho A, clip(rho, 1-eps, 1+eps) A)].",
+     "anchor": "d5-ppo-clipping-list01"
+    },
+    {
+     "term": "trust region",
+     "definition": "Bounds the KL per step; the min takes the pessimistic side.",
+     "anchor": "d5-ppo-clipping-list01"
+    },
+    {
+     "term": "eps-sweep",
+     "definition": "Varying eps to trade stability against speed.",
+     "anchor": "d5-ppo-clipping-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d5-ppo-clipping-r1",
+     "question": "What toy does rung 2 give?",
+     "answer": "The objective for rho = 2.0, A = 1.0, eps = 0.2.",
+     "anchor": "d5-ppo-clipping-list01"
+    },
+    {
+     "id": "d5-ppo-clipping-r2",
+     "question": "What does rung 6 ask you to debug?",
+     "answer": "rho drifting to 10.",
+     "anchor": "d5-ppo-clipping-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "d6-grpo",
+   "title": "D6 , GRPO",
+   "minutes": 1,
+   "endAnchor": "d6-grpo-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "group-relative advantage",
+     "definition": "A_i = (r_i - mu)/sigma over the prompt group.",
+     "anchor": "d6-grpo-list01"
+    },
+    {
+     "term": "unbiased baseline",
+     "definition": "The group mean is action-independent.",
+     "anchor": "d6-grpo-list01"
+    },
+    {
+     "term": "all-tied check",
+     "definition": "The guard for groups with no contrast.",
+     "anchor": "d6-grpo-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d6-grpo-r1",
+     "question": "What toy does rung 2 give?",
+     "answer": "The advantage for rewards [1, 1, 0, 0].",
+     "anchor": "d6-grpo-list01"
+    },
+    {
+     "id": "d6-grpo-r2",
+     "question": "What does rung 7 ask you to critique?",
+     "answer": "What within-group comparability assumes.",
+     "anchor": "d6-grpo-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "d7-rag-pipeline",
+   "title": "D7 , RAG pipeline",
+   "minutes": 1,
+   "endAnchor": "d7-rag-pipeline-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "recall",
+     "definition": "H/R; the fraction of relevant docs found.",
+     "anchor": "d7-rag-pipeline-list01"
+    },
+    {
+     "term": "precision",
+     "definition": "H/K; the fraction of retrieved docs relevant.",
+     "anchor": "d7-rag-pipeline-list01"
+    },
+    {
+     "term": "two-stage bound",
+     "definition": "End quality <= recall@N x precision@M.",
+     "anchor": "d7-rag-pipeline-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d7-rag-pipeline-r1",
+     "question": "What toy does rung 2 give?",
+     "answer": "Recall and precision for R = 8, K = 20, H = 6.",
+     "anchor": "d7-rag-pipeline-list01"
+    },
+    {
+     "id": "d7-rag-pipeline-r2",
+     "question": "What does rung 8 ask you to design?",
+     "answer": "A chunk-size sweep experiment.",
+     "anchor": "d7-rag-pipeline-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "d8-judge-bias",
+   "title": "D8 , judge bias",
+   "minutes": 1,
+   "endAnchor": "d8-judge-bias-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "position bias",
+     "definition": "Favoring the first-presented answer.",
+     "anchor": "d8-judge-bias-list01"
+    },
+    {
+     "term": "verbosity bias",
+     "definition": "Favoring the longer answer.",
+     "anchor": "d8-judge-bias-list01"
+    },
+    {
+     "term": "swap cancellation",
+     "definition": "The mean of (obs1, 1 - obs2) equals p; bias cancels.",
+     "anchor": "d8-judge-bias-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d8-judge-bias-r1",
+     "question": "What toy does rung 2 give?",
+     "answer": "Debiasing the 0.70 and 0.45 orders.",
+     "anchor": "d8-judge-bias-list01"
+    },
+    {
+     "id": "d8-judge-bias-r2",
+     "question": "What does rung 8 ask you to design?",
+     "answer": "A bias-vs-length experiment.",
+     "anchor": "d8-judge-bias-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "d9-masked-diffusion",
+   "title": "D9 , masked diffusion",
+   "minutes": 1,
+   "endAnchor": "d9-masked-diffusion-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "mask schedule",
+     "definition": "Which tokens unmask at each diffusion step.",
+     "anchor": "d9-masked-diffusion-list01"
+    },
+    {
+     "term": "per-step cost",
+     "definition": "The cost of one diffusion decode step.",
+     "anchor": "d9-masked-diffusion-list01"
+    },
+    {
+     "term": "steps-vs-quality",
+     "definition": "The experiment trading step count against quality.",
+     "anchor": "d9-masked-diffusion-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d9-masked-diffusion-r1",
+     "question": "What toy does rung 2 give?",
+     "answer": "Unmasking the top 4 of 8 tokens by confidence.",
+     "anchor": "d9-masked-diffusion-list01"
+    },
+    {
+     "id": "d9-masked-diffusion-r2",
+     "question": "What does rung 6 ask you to debug?",
+     "answer": "Incoherent outputs at few steps.",
+     "anchor": "d9-masked-diffusion-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "d10-dpo",
+   "title": "D10 , DPO",
+   "minutes": 1,
+   "endAnchor": "d10-dpo-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "implicit reward",
+     "definition": "beta log(pi/pi_ref); the policy as reward.",
+     "anchor": "d10-dpo-list01"
+    },
+    {
+     "term": "margin",
+     "definition": "The gap the loss widens; track its growth.",
+     "anchor": "d10-dpo-p01"
+    },
+    {
+     "term": "BT assumption",
+     "definition": "Preferences are transitive and clean enough for Bradley-Terry.",
+     "anchor": "d10-dpo-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d10-dpo-r1",
+     "question": "What toy does rung 2 give?",
+     "answer": "The margin for beta = 0.1, log gaps (0.2, -1.2).",
+     "anchor": "d10-dpo-list01"
+    },
+    {
+     "id": "d10-dpo-r2",
+     "question": "What does rung 6 ask you to debug?",
+     "answer": "Chosen likelihood falling during training.",
+     "anchor": "d10-dpo-list01"
+    }
+   ]
+  }
+ ]
+}

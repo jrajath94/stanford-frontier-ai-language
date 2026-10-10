@@ -1,0 +1,209 @@
+{
+ "schemaVersion": 1,
+ "itemId": "u14_key",
+ "itemKind": "lesson",
+ "revision": "d1e2ae8cf9ed71cb0dc2991a22aaa37e931d75c608e19b90263ff9982845d6dc",
+ "sections": [
+  {
+   "anchor": "breadth",
+   "title": "Breadth answer key",
+   "minutes": 1,
+   "endAnchor": "breadth-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "196 tokens",
+     "definition": "Patches for 224x224 at 16x16; they eat the window at n-squared.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "early fusion",
+     "definition": "One shared stack, 0 extra params.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "late fusion",
+     "definition": "Separate towers plus projections; 5.03e7 extra here.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "router collapse",
+     "definition": "Every token routed to one expert.",
+     "anchor": "breadth-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-r1",
+     "question": "A1: how does an image become tokens, and what does it cost?",
+     "answer": "Patchify to 196 tokens. Cost: the tokens eat the window at n-squared attention.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "id": "breadth-r2",
+     "question": "A4: what is a modality expert, and what is router collapse?",
+     "answer": "A specialist FFN per modality. Collapse is the router sending everything to one expert.",
+     "anchor": "breadth-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders",
+   "title": "Deep ladder answer key",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "5.03e7",
+     "definition": "Late-fusion extra params at d=1024, L=24.",
+     "anchor": "deep-ladders-p01"
+    },
+    {
+     "term": "concat at input",
+     "definition": "Early fusion wiring.",
+     "anchor": "deep-ladders-p01"
+    },
+    {
+     "term": "guest card",
+     "definition": "Label, source, status, claims for an artifact.",
+     "anchor": "deep-ladders-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-r1",
+     "question": "L1: derive the late-fusion param count.",
+     "answer": "Two d-by-d projections per layer: 2 x 1024^2 x 24 = 5.03e7.",
+     "anchor": "deep-ladders-p01"
+    },
+    {
+     "id": "deep-ladders-r2",
+     "question": "L2: what goes on the guest card, and what is the no-claim rule?",
+     "answer": "Label, source, status, claims. No content claim without inspection.",
+     "anchor": "deep-ladders-p02"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical",
+   "title": "Analytical answer key",
+   "minutes": 1,
+   "endAnchor": "analytical-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "aux 5.28",
+     "definition": "Collapsed router load vs healthy 1.04.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "term": "image share",
+     "definition": "0.333 here; two options when the text budget is tight.",
+     "anchor": "analytical-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-r1",
+     "question": "A7: loads [8,1,1,0,0,0,0,0], aux weight 0. Diagnose and fix.",
+     "answer": "Collapse: aux 5.28 vs healthy 1.04. Turn on the aux loss and retrain the router.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "id": "analytical-r2",
+     "question": "A8: image share 0.333, need 2000 text tokens in 2048. Options?",
+     "answer": "Shrink the image and lose detail, or use cross-attention and add machinery.",
+     "anchor": "analytical-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebugging",
+   "title": "Debugging answer key",
+   "minutes": 1,
+   "endAnchor": "implementationdebugging-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "language prior",
+     "definition": "Answering from text habits while ignoring the image.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "term": "frozen encoder",
+     "definition": "A vision encoder with no gradient flow; check it third.",
+     "anchor": "implementationdebugging-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebugging-r1",
+     "question": "A9: VQA answers without looking at the image. Diagnoses in order?",
+     "answer": "Language prior, data that never needed the image, broken vision encoder, retrain on image-necessary triples.",
+     "anchor": "implementationdebugging-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint",
+   "title": "Changed-constraint answer key",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "inspectable artifact",
+     "definition": "What the released video becomes.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "term": "n-squared",
+     "definition": "Latency scales with stream length squared; cut image tokens first.",
+     "anchor": "changed-constraint-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-r1",
+     "question": "A10: the guest video goes public. What changes?",
+     "answer": "Watch it, take anchored notes, re-teach from it, upgrade claim classes it supports.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "id": "changed-constraint-r2",
+     "question": "A11: halve multimodal latency. First knob, and what breaks?",
+     "answer": "Cut image tokens first. Fine detail and the text budget break.",
+     "anchor": "changed-constraint-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique",
+   "title": "Research critique answer key",
+   "minutes": 1,
+   "endAnchor": "research-critique-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "text model with pictures",
+     "definition": "What the ablation test reveals.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "term": "input format",
+     "definition": "Accepting images and text, which is not multimodality.",
+     "anchor": "research-critique-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1",
+     "question": "A12: steelman 'truly multimodal', then break it.",
+     "answer": "Steelman: joint training, cross-modal transfer. Break: no accuracy drop on image ablation means text model with pictures.",
+     "anchor": "research-critique-p01"
+    }
+   ]
+  }
+ ]
+}

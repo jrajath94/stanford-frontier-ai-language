@@ -1,0 +1,763 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs329h-lessons-u06_lesson",
+ "itemKind": "lesson",
+ "revision": "fc9b4d428899a7c9f80e373b59f76e6f6c62bd008972b3c20760ccc0b4004e1f",
+ "sections": [
+  {
+   "anchor": "u06_lesson-intro",
+   "title": "U06 \u00b7 Active elicitation and assistance games",
+   "minutes": 1,
+   "endAnchor": "u06_lesson-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "P06 (probability)",
+     "definition": "Probability prerequisite for U06, covering posteriors used in elicitation.",
+     "anchor": "u06_lesson-intro-p01"
+    },
+    {
+     "term": "P17 (RL)",
+     "definition": "Reinforcement learning prerequisite for U06, covering bandits and policies.",
+     "anchor": "u06_lesson-intro-p01"
+    },
+    {
+     "term": "P18 (Bayesian)",
+     "definition": "Bayesian prerequisite for U06, covering beliefs and updating.",
+     "anchor": "u06_lesson-intro-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u06_lesson-intro-r1",
+     "question": "What background does U06 assume?",
+     "answer": "P06 probability, P17 RL, and P18 Bayesian. Local remediation opens the lesson.",
+     "anchor": "u06_lesson-intro-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "provenance",
+   "title": "Provenance",
+   "minutes": 1,
+   "endAnchor": "provenance-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "S10",
+     "definition": "The planned session 'Active elicitation for LLMs, and case studies' from 26 Oct 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "S11",
+     "definition": "The planned session 'Assistance games: assisted versus contextual bandits' from 28 Oct 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "planned / source attribution pending",
+     "definition": "All twelve concepts are taught as independent theory, not yet verified against a source.",
+     "anchor": "provenance-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "provenance-r1",
+     "question": "What is the status of sessions S10 and S11?",
+     "answer": "Both are planned, for 26 Oct and 28 Oct 2026. All twelve concepts are taught as independent theory.",
+     "anchor": "provenance-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-value-of-information-contextual-bandits-partial-observability",
+   "title": "Local remediation: value of information, contextual bandits, partial observability",
+   "minutes": 1,
+   "endAnchor": "local-remediation-value-of-information-contextual-bandits-partial-observability-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "value of information",
+     "definition": "VoI(q) prices one question in the units of the decision payoff; ask when VoI exceeds elicitation cost.",
+     "anchor": "local-remediation-value-of-information-contextual-bandits-partial-observability-p01"
+    },
+    {
+     "term": "contextual bandit",
+     "definition": "Each round shows a context x, the agent picks an arm a, and earns reward r(x, a).",
+     "anchor": "local-remediation-value-of-information-contextual-bandits-partial-observability-p02"
+    },
+    {
+     "term": "partial observability",
+     "definition": "The agent does not see the world state; in assistance the hidden state is the human's objective theta.",
+     "anchor": "local-remediation-value-of-information-contextual-bandits-partial-observability-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "local-remediation-value-of-information-contextual-bandits-partial-observability-r1",
+     "question": "When is a query worth asking?",
+     "answer": "When its VoI exceeds its elicitation cost.",
+     "anchor": "local-remediation-value-of-information-contextual-bandits-partial-observability-p01"
+    },
+    {
+     "id": "local-remediation-value-of-information-contextual-bandits-partial-observability-r2",
+     "question": "What does the agent hold under partial observability?",
+     "answer": "A belief b(theta) over the human's objective, updated on the human's behavior.",
+     "anchor": "local-remediation-value-of-information-contextual-bandits-partial-observability-p03"
+    }
+   ]
+  },
+  {
+   "anchor": "russian-doll-ladder-for-the-major-mechanism-value-of-information",
+   "title": "Russian-doll ladder for the major mechanism (value of information)",
+   "minutes": 1,
+   "endAnchor": "russian-doll-ladder-for-the-major-mechanism-value-of-information-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "VoI",
+     "definition": "Expected best utility after the answer minus best utility now.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-value-of-information-list01"
+    },
+    {
+     "term": "elicitation cost",
+     "definition": "The cost subtracted from VoI in the asking rule.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-value-of-information-list01"
+    },
+    {
+     "term": "expected information gain",
+     "definition": "Pure uncertainty reduction, compared against decision-relevant VoI in shell 8.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-value-of-information-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-value-of-information-r1",
+     "question": "What does shell 5 check?",
+     "answer": "VoI >= 0 always for a Bayesian decider.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-value-of-information-list01"
+    },
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-value-of-information-r2",
+     "question": "When should you not ask?",
+     "answer": "When the query has VoI 0.25 but elicitation cost 0.4; net value is negative.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-value-of-information-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood-dependency-list",
+   "title": "Not-yet-understood dependency list",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-dependency-list-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "CIRL",
+     "definition": "Cooperative inverse reinforcement learning; solution methods beyond the formulation taught here.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "human cognitive models",
+     "definition": "Models of question answering, treated as a noise channel.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "large-scale annotation operations",
+     "definition": "Covered conceptually only.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "not-yet-understood-dependency-list-r1",
+     "question": "How are human cognitive models treated?",
+     "answer": "As a noise channel.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c01-value-of-information",
+   "title": "cs329h-U06-C01: value of information",
+   "minutes": 3,
+   "endAnchor": "cs329h-u06-c01-value-of-information-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c01-value-of-information-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c01-value-of-information-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u06-c01-value-of-information-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "value of information",
+     "definition": "The expected improvement in the final decision from asking.",
+     "anchor": "cs329h-u06-c01-value-of-information-p01"
+    },
+    {
+     "term": "VoI",
+     "definition": "0.25 on the toy: expected 0.75 after the query against 0.5 now.",
+     "anchor": "cs329h-u06-c01-value-of-information-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c01-value-of-information-r1",
+     "question": "How is VoI = 0.25 computed?",
+     "answer": "Prior mean gap 0.5, choose A for 0.5. After the query: g = -0.5 -> pick B (0), g = 1.5 -> pick A (1.5). Expected 0.75. VoI = 0.25.",
+     "anchor": "cs329h-u06-c01-value-of-information-p06"
+    },
+    {
+     "id": "cs329h-u06-c01-value-of-information-r2",
+     "question": "When is computed VoI wrong?",
+     "answer": "When the answer model is overconfident; a query that 'reveals' g with random answers has true VoI 0.",
+     "anchor": "cs329h-u06-c01-value-of-information-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c02-query-choice",
+   "title": "cs329h-U06-C02: query choice",
+   "minutes": 3,
+   "endAnchor": "cs329h-u06-c02-query-choice-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c02-query-choice-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c02-query-choice-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u06-c02-query-choice-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "expected variance reduction",
+     "definition": "Rank queries by it; the noisiest question teaches the least.",
+     "anchor": "cs329h-u06-c02-query-choice-p03"
+    },
+    {
+     "term": "gain",
+     "definition": "1/(1+s^2); for s = 0.7: 0.671.",
+     "anchor": "cs329h-u06-c02-query-choice-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c02-query-choice-r1",
+     "question": "Which query wins on the toy?",
+     "answer": "Query 1, with gains 0.67, 0.50, 0.31.",
+     "anchor": "cs329h-u06-c02-query-choice-p06"
+    },
+    {
+     "id": "cs329h-u06-c02-query-choice-r2",
+     "question": "When is the 'best' query unanswerable?",
+     "answer": "When the noise model is wrong; s = 0.01 on paper but humans answer at chance.",
+     "anchor": "cs329h-u06-c02-query-choice-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c03-preference-uncertainty",
+   "title": "cs329h-U06-C03: preference uncertainty",
+   "minutes": 2,
+   "endAnchor": "cs329h-u06-c03-preference-uncertainty-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c03-preference-uncertainty-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c03-preference-uncertainty-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u06-c03-preference-uncertainty-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "posterior",
+     "definition": "The current belief about the preference; its spread drives elicitation.",
+     "anchor": "cs329h-u06-c03-preference-uncertainty-p01"
+    },
+    {
+     "term": "parameter uncertainty",
+     "definition": "Shrinks with more queries, unlike noise.",
+     "anchor": "cs329h-u06-c03-preference-uncertainty-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c03-preference-uncertainty-r1",
+     "question": "What is P(g > 0) on the toy?",
+     "answer": "0.978, with sample mean 0.79 and sd 0.40.",
+     "anchor": "cs329h-u06-c03-preference-uncertainty-p06"
+    },
+    {
+     "id": "cs329h-u06-c03-preference-uncertainty-r2",
+     "question": "When does the posterior mislead?",
+     "answer": "When the likelihood missed a bias; all samples say g > 0 but the true gap is negative.",
+     "anchor": "cs329h-u06-c03-preference-uncertainty-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c04-assistance-formulation",
+   "title": "cs329h-U06-C04: assistance formulation",
+   "minutes": 3,
+   "endAnchor": "cs329h-u06-c04-assistance-formulation-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c04-assistance-formulation-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c04-assistance-formulation-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u06-c04-assistance-formulation-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "assistance game",
+     "definition": "Two players, common payoff; the human knows the reward function and the agent infers it.",
+     "anchor": "cs329h-u06-c04-assistance-formulation-p01"
+    },
+    {
+     "term": "POMDP",
+     "definition": "The formulation: the agent keeps a belief over theta and acts to maximize expected common reward.",
+     "anchor": "cs329h-u06-c04-assistance-formulation-p05"
+    },
+    {
+     "term": "theta",
+     "definition": "The human's objective, the hidden state in assistance.",
+     "anchor": "cs329h-u06-c04-assistance-formulation-p04"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c04-assistance-formulation-r1",
+     "question": "What happens on the tea/coffee toy?",
+     "answer": "Prior 0.5; the human reaches for the left cupboard, the belief shifts to 0.727, the agent brews tea.",
+     "anchor": "cs329h-u06-c04-assistance-formulation-p06"
+    },
+    {
+     "id": "cs329h-u06-c04-assistance-formulation-r2",
+     "question": "When does the agent 'help' wrongly?",
+     "answer": "When the human is not optimal; reaching left out of habit misreads as preference.",
+     "anchor": "cs329h-u06-c04-assistance-formulation-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c05-humanagent-objectives",
+   "title": "cs329h-U06-C05: human/agent objectives",
+   "minutes": 3,
+   "endAnchor": "cs329h-u06-c05-humanagent-objectives-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c05-humanagent-objectives-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c05-humanagent-objectives-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u06-c05-humanagent-objectives-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "shared objective",
+     "definition": "The objective is shared, but information and action sets differ.",
+     "anchor": "cs329h-u06-c05-humanagent-objectives-p01"
+    },
+    {
+     "term": "misalignment",
+     "definition": "Comes from ignorance, not malice.",
+     "anchor": "cs329h-u06-c05-humanagent-objectives-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c05-humanagent-objectives-r1",
+     "question": "What is watching the human worth?",
+     "answer": "0.227: the agent with belief 0.727 gets 0.727 against 0.5 for random guessing.",
+     "anchor": "cs329h-u06-c05-humanagent-objectives-p06"
+    },
+    {
+     "id": "cs329h-u06-c05-humanagent-objectives-r2",
+     "question": "When is the 'common' payoff a lie?",
+     "answer": "When the human wants tea but the agent optimizes click-based 'satisfaction' and brews coffee.",
+     "anchor": "cs329h-u06-c05-humanagent-objectives-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c06-partial-observability",
+   "title": "cs329h-U06-C06: partial observability",
+   "minutes": 2,
+   "endAnchor": "cs329h-u06-c06-partial-observability-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c06-partial-observability-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c06-partial-observability-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "partial observability",
+     "definition": "Agent decisions condition on a belief, not on the world state.",
+     "anchor": "cs329h-u06-c06-partial-observability-p01"
+    },
+    {
+     "term": "theta",
+     "definition": "The human's objective; the belief b(theta) is a sufficient statistic of the history.",
+     "anchor": "cs329h-u06-c06-partial-observability-p02"
+    },
+    {
+     "term": "sufficient statistic",
+     "definition": "The belief; acting on raw history without it is intractable.",
+     "anchor": "cs329h-u06-c06-partial-observability-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c06-partial-observability-r1",
+     "question": "What is the posterior on the toy?",
+     "answer": "Prior 0.5/0.5 with P(reach left | tea) = 0.8 and P(reach left | coffee) = 0.3 gives posterior tea = 0.727.",
+     "anchor": "cs329h-u06-c06-partial-observability-p06"
+    },
+    {
+     "id": "cs329h-u06-c06-partial-observability-r2",
+     "question": "What happens with a wrong observation model?",
+     "answer": "The belief concentrates on the wrong theta.",
+     "anchor": "cs329h-u06-c06-partial-observability-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c07-contextual-bandit",
+   "title": "cs329h-U06-C07: contextual bandit",
+   "minutes": 2,
+   "endAnchor": "cs329h-u06-c07-contextual-bandit-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c07-contextual-bandit-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c07-contextual-bandit-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "contextual bandit",
+     "definition": "Shows a context, takes an arm, earns a reward; the policy maps contexts to arms.",
+     "anchor": "cs329h-u06-c07-contextual-bandit-p01"
+    },
+    {
+     "term": "optimal policy",
+     "definition": "pi*(x) = argmax_a mu(x, a); morning -> tea (0.8), evening -> coffee (0.9).",
+     "anchor": "cs329h-u06-c07-contextual-bandit-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c07-contextual-bandit-r1",
+     "question": "What is context worth on the toy?",
+     "answer": "0.35: 0.85 with context against 0.5 for always-tea.",
+     "anchor": "cs329h-u06-c07-contextual-bandit-p06"
+    },
+    {
+     "id": "cs329h-u06-c07-contextual-bandit-r2",
+     "question": "What breaks the fixed map?",
+     "answer": "Non-stationary contexts; evening tea becomes popular but the policy keeps serving coffee.",
+     "anchor": "cs329h-u06-c07-contextual-bandit-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c08-assisted-bandit",
+   "title": "cs329h-U06-C08: assisted bandit",
+   "minutes": 2,
+   "endAnchor": "cs329h-u06-c08-assisted-bandit-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c08-assisted-bandit-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c08-assisted-bandit-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "assisted bandit",
+     "definition": "Human and agent jointly choose; the agent proposes and the human disposes.",
+     "anchor": "cs329h-u06-c08-assisted-bandit-p01"
+    },
+    {
+     "term": "safety filter",
+     "definition": "The human veto, bounding the downside at a cost per veto.",
+     "anchor": "cs329h-u06-c08-assisted-bandit-p05"
+    },
+    {
+     "term": "rubber-stamps",
+     "definition": "Override probability dropping to 0.1 under fatigue, making assistance net negative.",
+     "anchor": "cs329h-u06-c08-assisted-bandit-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c08-assisted-bandit-r1",
+     "question": "What is assistance worth on the toy?",
+     "answer": "0.225: team 0.775 against solo 0.55.",
+     "anchor": "cs329h-u06-c08-assisted-bandit-p06"
+    },
+    {
+     "id": "cs329h-u06-c08-assisted-bandit-r2",
+     "question": "When is assistance net negative?",
+     "answer": "When the human rubber-stamps; team 0.575 barely above 0.55 minus attention cost.",
+     "anchor": "cs329h-u06-c08-assisted-bandit-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c09-exploration-cost",
+   "title": "cs329h-U06-C09: exploration cost",
+   "minutes": 2,
+   "endAnchor": "cs329h-u06-c09-exploration-cost-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c09-exploration-cost-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c09-exploration-cost-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u06-c09-exploration-cost-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "exploration cost",
+     "definition": "Cumulative regret: the gap between the best arm reward and what the policy earned, summed over rounds.",
+     "anchor": "cs329h-u06-c09-exploration-cost-p01"
+    },
+    {
+     "term": "epsilon-greedy",
+     "definition": "Pays a steady exploration tax but finds the best arm.",
+     "anchor": "cs329h-u06-c09-exploration-cost-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c09-exploration-cost-r1",
+     "question": "Greedy versus epsilon-greedy regret?",
+     "answer": "29.6 versus 2.4.",
+     "anchor": "cs329h-u06-c09-exploration-cost-p06"
+    },
+    {
+     "id": "cs329h-u06-c09-exploration-cost-r2",
+     "question": "When is regret meaningless?",
+     "answer": "With non-stationary arms; the best arm changing at t = 100 misleads both policies' accounting.",
+     "anchor": "cs329h-u06-c09-exploration-cost-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c10-elicitation-burden",
+   "title": "cs329h-U06-C10: elicitation burden",
+   "minutes": 2,
+   "endAnchor": "cs329h-u06-c10-elicitation-burden-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c10-elicitation-burden-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c10-elicitation-burden-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u06-c10-elicitation-burden-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "elicitation burden",
+     "definition": "The human-side cost: time, attention, fatigue.",
+     "anchor": "cs329h-u06-c10-elicitation-burden-p03"
+    },
+    {
+     "term": "marginal gains",
+     "definition": "0.500, 0.167, 0.083, 0.050, 0.033; stop when the gain falls below the cost per query.",
+     "anchor": "cs329h-u06-c10-elicitation-burden-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c10-elicitation-burden-r1",
+     "question": "What are the marginal gains?",
+     "answer": "0.500, 0.167, 0.083, 0.050, 0.033.",
+     "anchor": "cs329h-u06-c10-elicitation-burden-p06"
+    },
+    {
+     "id": "cs329h-u06-c10-elicitation-burden-r2",
+     "question": "Why do realized gains fall faster?",
+     "answer": "Fatigue makes later answers noisier; the fifth query's true gain is 0.008, not 0.033.",
+     "anchor": "cs329h-u06-c10-elicitation-burden-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c11-privacy",
+   "title": "cs329h-U06-C11: privacy",
+   "minutes": 2,
+   "endAnchor": "cs329h-u06-c11-privacy-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c11-privacy-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c11-privacy-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "personal data",
+     "definition": "Preferences are personal data; queries and answers leak them.",
+     "anchor": "cs329h-u06-c11-privacy-p03"
+    },
+    {
+     "term": "minimization",
+     "definition": "Ask only decision-relevant queries, aggregate where possible, expire raw answers.",
+     "anchor": "cs329h-u06-c11-privacy-p05"
+    },
+    {
+     "term": "re-identify",
+     "definition": "'Anonymized' preference traces re-identify users; preferences are fingerprints.",
+     "anchor": "cs329h-u06-c11-privacy-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c11-privacy-r1",
+     "question": "Why is concentration the leak?",
+     "answer": "Each answer reduces uncertainty about theta; that is the point of elicitation and also the leak.",
+     "anchor": "cs329h-u06-c11-privacy-p05"
+    },
+    {
+     "id": "cs329h-u06-c11-privacy-r2",
+     "question": "What is the re-identification counterexample?",
+     "answer": "Release the query log without names; the pattern still singles out the user.",
+     "anchor": "cs329h-u06-c11-privacy-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u06-c12-practical-case-design",
+   "title": "cs329h-U06-C12: practical case design",
+   "minutes": 3,
+   "endAnchor": "cs329h-u06-c12-practical-case-design-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u06-c12-practical-case-design-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u06-c12-practical-case-design-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "case design",
+     "definition": "Who we ask, what we ask, when we stop, how we know it worked; every number labeled hypothetical.",
+     "anchor": "cs329h-u06-c12-practical-case-design-p03"
+    },
+    {
+     "term": "metric",
+     "definition": "Decided before data collection (U10-C01).",
+     "anchor": "cs329h-u06-c12-practical-case-design-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u06-c12-practical-case-design-r1",
+     "question": "How does the design flow?",
+     "answer": "VoI ranks queries, the posterior tracks uncertainty, the marginal rule stops, the privacy checklist screens.",
+     "anchor": "cs329h-u06-c12-practical-case-design-p05"
+    },
+    {
+     "id": "cs329h-u06-c12-practical-case-design-r2",
+     "question": "What breaks the case?",
+     "answer": "A beta population that does not represent deployment; the tuned persona pleases beta users and misses everyone else.",
+     "anchor": "cs329h-u06-c12-practical-case-design-p11"
+    }
+   ]
+  }
+ ]
+}

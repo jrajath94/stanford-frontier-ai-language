@@ -1,0 +1,627 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-lessons-u05_attention_transformer",
+ "itemKind": "lesson",
+ "revision": "c156d148ee627e0ad15f3be7693795d8e732db0f85ff9eca1c5db1c4ed221011",
+ "sections": [
+  {
+   "anchor": "u05_attention_transformer-intro-p01",
+   "title": "U05 \u00b7 Attention and transformers",
+   "minutes": 1,
+   "endAnchor": "u05_attention_transformer-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u05_attention_transformer-intro-p01",
+     "definition": "Instructor.",
+     "term": "Prof. Christopher Manning"
+    },
+    {
+     "anchor": "u05_attention_transformer-intro-p01",
+     "definition": "Build date of the unit\u2019s figures.",
+     "term": "2026-10-06"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u05_attention_transformer-intro-p01",
+     "answer": "U05 \u00b7 Attention and transformers.",
+     "id": "u05_attention_transformer-intro-r1",
+     "question": "What unit is this?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation",
+   "title": "local remediation",
+   "minutes": 1,
+   "endAnchor": "local-remediation-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Dot product as similarity: parallel = high, orthogonal = zero, opposite = negative.",
+     "term": "R1"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Every attention row is a probability distribution over positions.",
+     "term": "R2"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "If a product does not typecheck, the code is wrong.",
+     "term": "R3"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-p02",
+     "answer": "(0.576, 0.284, 0.140), sum 1.000.",
+     "id": "local-remediation-r1",
+     "question": "What is softmax(0.707, 0, -0.707)?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-querykeyvalue",
+   "title": "c01: query/key/value",
+   "minutes": 3,
+   "endAnchor": "c01-querykeyvalue-end",
+   "blocks": [
+    {
+     "anchor": "c01-querykeyvalue-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-querykeyvalue-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-querykeyvalue-p04",
+     "definition": "The question. Scores match it against the keys.",
+     "term": "query"
+    },
+    {
+     "anchor": "c01-querykeyvalue-p04",
+     "definition": "The index. Attention scores match the query against it.",
+     "term": "keys"
+    },
+    {
+     "anchor": "c01-querykeyvalue-p04",
+     "definition": "The documents. The weights fetch a blend of them.",
+     "term": "values"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-querykeyvalue-p07",
+     "answer": "(0.872, 0.568) = 0.576 v1 + 0.284 v2 + 0.140 v3.",
+     "id": "c01-querykeyvalue-r1",
+     "question": "What was the toy output?"
+    },
+    {
+     "anchor": "c01-querykeyvalue-p12",
+     "answer": "Different weight matrices can give the same output. Weights are a clue, not an explanation.",
+     "id": "c01-querykeyvalue-r2",
+     "question": "Why don\u2019t attention weights explain the model?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-scaled-weights",
+   "title": "c02: scaled weights",
+   "minutes": 3,
+   "endAnchor": "c02-scaled-weights-end",
+   "blocks": [
+    {
+     "anchor": "c02-scaled-weights-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-scaled-weights-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-scaled-weights-p04",
+     "definition": "The calibration knob. Restores unit variance so softmax stays sensitive.",
+     "term": "1/sqrt(d_k)"
+    },
+    {
+     "anchor": "c02-scaled-weights-p06",
+     "definition": "Peaked attention with dead gradients. The unscaled head becomes argmax routing.",
+     "term": "saturation"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-scaled-weights-p07",
+     "answer": "Unscaled: max weight 0.866, entropy 0.571 (near one-hot). Scaled: max 0.218, entropy 1.974.",
+     "id": "c02-scaled-weights-r1",
+     "question": "What were the two regimes?"
+    },
+    {
+     "anchor": "c02-scaled-weights-p06",
+     "answer": "Var(sum q_i k_i) = d_k under independence. At d_k = 64, std = 8.",
+     "id": "c02-scaled-weights-r2",
+     "question": "Why does the dot variance grow?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-mha",
+   "title": "c03: mha",
+   "minutes": 3,
+   "endAnchor": "c03-mha-end",
+   "blocks": [
+    {
+     "anchor": "c03-mha-p05",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-mha-p17",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-mha-p05",
+     "definition": "h heads in separate subspaces; outputs concat and re-project. Same FLOPs as one big head.",
+     "term": "multi-head attention"
+    },
+    {
+     "anchor": "c03-mha-p06",
+     "definition": "Head dimension. d divisible by h, heads share no parameters.",
+     "term": "d_k = d/h"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-mha-p08",
+     "answer": "Per-head scores (8,8), per-head out (8,8), concat (8,32), W_o (32,32). n=8, d=32, h=4.",
+     "id": "c03-mha-r1",
+     "question": "What was the shape trace?"
+    },
+    {
+     "anchor": "c03-mha-p13",
+     "answer": "No. Trained heads often redundantly attend to the same positions; some prune with no loss.",
+     "id": "c03-mha-r2",
+     "question": "Do heads specialize cleanly?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-masks",
+   "title": "c04: masks",
+   "minutes": 3,
+   "endAnchor": "c04-masks-end",
+   "blocks": [
+    {
+     "anchor": "c04-masks-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-masks-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-masks-p05",
+     "definition": "Blinds each position to the future. Added to scores before softmax.",
+     "term": "causal mask"
+    },
+    {
+     "anchor": "c04-masks-p04",
+     "definition": "The causal mask blinds to the future, the padding mask blinds to filler.",
+     "term": "one-way mirror"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-masks-p07",
+     "answer": "Row 1: (1.00, 0, 0, 0). Row 3: (0.50, 0.18, 0.32, 0). Upper-triangle max 0.0.",
+     "id": "c04-masks-r1",
+     "question": "What were the toy row patterns?"
+    },
+    {
+     "anchor": "c04-masks-p12",
+     "answer": "The disallowed scores shaped the distribution before they were cut. Renormalizing leaks rank information.",
+     "id": "c04-masks-r2",
+     "question": "Why is masking after softmax wrong?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-residualnormalization",
+   "title": "c05: residual/normalization",
+   "minutes": 3,
+   "endAnchor": "c05-residualnormalization-end",
+   "blocks": [
+    {
+     "anchor": "c05-residualnormalization-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-residualnormalization-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-residualnormalization-p03",
+     "definition": "The identity path carries gradient even if F\u2019s gradient vanishes.",
+     "term": "residual"
+    },
+    {
+     "anchor": "c05-residualnormalization-p06",
+     "definition": "Per-token mean/var norm with learned gain and bias. No batch statistics.",
+     "term": "layer norm"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-residualnormalization-p07",
+     "answer": "x = (1,2,3,4,5): mean -0.0, var 1.000000.",
+     "id": "c05-residualnormalization-r1",
+     "question": "What was the toy norm result?"
+    },
+    {
+     "anchor": "c05-residualnormalization-p10",
+     "answer": "Pre-norm trains more stably at depth (modern default). Deep post-norm needs warmup.",
+     "id": "c05-residualnormalization-r2",
+     "question": "Pre-norm vs post-norm?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-positions",
+   "title": "c06: positions",
+   "minutes": 3,
+   "endAnchor": "c06-positions-end",
+   "blocks": [
+    {
+     "anchor": "c06-positions-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-positions-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-positions-p05",
+     "definition": "Fixed ruler: each dimension a wave with a different frequency.",
+     "term": "sinusoid"
+    },
+    {
+     "anchor": "c06-positions-p09",
+     "definition": "Attention scores depend only on content pairs. No signal, no order.",
+     "term": "permutation-equivariance"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-positions-p07",
+     "answer": "(0.841, 0.540, 0.010, 1.000). The fast wave moved a lot, the slow wave barely moved.",
+     "id": "c06-positions-r1",
+     "question": "What was PE(1) at d = 4?"
+    },
+    {
+     "anchor": "c06-positions-p12",
+     "answer": "Without any position signal the architecture is permutation-equivariant.",
+     "id": "c06-positions-r2",
+     "question": "Why can\u2019t the model learn order from data alone?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-feedforward",
+   "title": "c07: feedforward",
+   "minutes": 3,
+   "endAnchor": "c07-feedforward-end",
+   "blocks": [
+    {
+     "anchor": "c07-feedforward-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-feedforward-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-feedforward-p05",
+     "definition": "Per-position two-layer MLP: expand 4x, activate, contract. 8 d^2 params per layer.",
+     "term": "FFN"
+    },
+    {
+     "anchor": "c07-feedforward-p04",
+     "definition": "Each position processes its own vector. No cross-talk.",
+     "term": "desk work"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-feedforward-p07",
+     "answer": "(8,32) -> (8,128) -> (8,32). 8320 params at d = 32.",
+     "id": "c07-feedforward-r1",
+     "question": "What was the shape trace and param count?"
+    },
+    {
+     "anchor": "c07-feedforward-p12",
+     "answer": "The model loses 2/3 of its params and per-position depth. Ablations show the drop.",
+     "id": "c07-feedforward-r2",
+     "question": "What happens if you remove the FFN?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-encoderdecoder-distinctions",
+   "title": "c08: encoder/decoder distinctions",
+   "minutes": 3,
+   "endAnchor": "c08-encoderdecoder-distinctions-end",
+   "blocks": [
+    {
+     "anchor": "c08-encoderdecoder-distinctions-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-encoderdecoder-distinctions-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-encoderdecoder-distinctions-p05",
+     "definition": "The decoder queries the encoder. Padding mask only; the source is fully known.",
+     "term": "cross-attention"
+    },
+    {
+     "anchor": "c08-encoderdecoder-distinctions-p04",
+     "definition": "Causal mask, predict next. One stack, one loss, scales.",
+     "term": "decoder-only"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-encoderdecoder-distinctions-p07",
+     "answer": "Scores (6,10), rows sum to 1, out (6,32). n_dec = 6, n_enc = 10.",
+     "id": "c08-encoderdecoder-distinctions-r1",
+     "question": "What was the cross-attention trace?"
+    },
+    {
+     "anchor": "c08-encoderdecoder-distinctions-p12",
+     "answer": "Long source, short target: decoder-only re-reads the source every layer at full n^2 cost.",
+     "id": "c08-encoderdecoder-distinctions-r2",
+     "question": "When does enc-dec beat decoder-only?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-shape-checks",
+   "title": "c09: shape checks",
+   "minutes": 3,
+   "endAnchor": "c09-shape-checks-end",
+   "blocks": [
+    {
+     "anchor": "c09-shape-checks-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-shape-checks-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-shape-checks-p04",
+     "definition": "A mismatch is a compile error you have to write yourself.",
+     "term": "shapes are types"
+    },
+    {
+     "anchor": "c09-shape-checks-p12",
+     "definition": "The mask lands on the wrong axis. Shapes pass, values fail.",
+     "term": "transpose trap"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-shape-checks-p05",
+     "answer": "12. X (8,32) through FFN out (8,32).",
+     "id": "c09-shape-checks-r1",
+     "question": "How many shapes in the trace?"
+    },
+    {
+     "anchor": "c09-shape-checks-p12",
+     "answer": "Shapes are necessary, not sufficient. Pair them with value checks.",
+     "id": "c09-shape-checks-r2",
+     "question": "What does the transpose trap prove?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-traininginference-cost",
+   "title": "c10: training/inference cost",
+   "minutes": 3,
+   "endAnchor": "c10-traininginference-cost-end",
+   "blocks": [
+    {
+     "anchor": "c10-traininginference-cost-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-traininginference-cost-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-traininginference-cost-p10",
+     "definition": "4x the context = 16x the attention FLOPs. The transformer\u2019s defining bill.",
+     "term": "n^2 bill"
+    },
+    {
+     "anchor": "c10-traininginference-cost-p12",
+     "definition": "At small n the model is memory-bandwidth bound, not compute bound.",
+     "term": "roofline"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-traininginference-cost-p07",
+     "answer": "Attention 0.54, FFN 8.59, projections 2.15 GFLOP. Total ~11.3 GFLOP per layer. n=512, d=1024.",
+     "id": "c10-traininginference-cost-r1",
+     "question": "What was the toy FLOP budget?"
+    },
+    {
+     "anchor": "c10-traininginference-cost-p07",
+     "answer": "Past n ~ 8d.",
+     "id": "c10-traininginference-cost-r2",
+     "question": "When does attention pass the FFN?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-kv-cache-bridge",
+   "title": "c11: kv cache bridge",
+   "minutes": 3,
+   "endAnchor": "c11-kv-cache-bridge-end",
+   "blocks": [
+    {
+     "anchor": "c11-kv-cache-bridge-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-kv-cache-bridge-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-kv-cache-bridge-p05",
+     "definition": "The past\u2019s keys and values are frozen; store them once. Memory for speed.",
+     "term": "KV cache"
+    },
+    {
+     "anchor": "c11-kv-cache-bridge-p04",
+     "definition": "Store the past once, attend against the pad. Each new token appends one row.",
+     "term": "memo pad"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-kv-cache-bridge-p07",
+     "answer": "No cache 23936, cached 2176, ratio 11.0x. The ratio grows with n.",
+     "id": "c11-kv-cache-bridge-r1",
+     "question": "What was the toy saving?"
+    },
+    {
+     "anchor": "c11-kv-cache-bridge-p10",
+     "answer": "2 L n d floats. 32 layers, n = 8k, d = 4096: 2 GB in fp16.",
+     "id": "c11-kv-cache-bridge-r2",
+     "question": "What is the memory price?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-independent-implementation",
+   "title": "c12: independent implementation",
+   "minutes": 2,
+   "endAnchor": "c12-independent-implementation-end",
+   "blocks": [
+    {
+     "anchor": "c12-independent-implementation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-independent-implementation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-independent-implementation-p04",
+     "definition": "Six lines of numpy with asserts. If you can write it cold, you own the architecture.",
+     "term": "recipe"
+    },
+    {
+     "anchor": "c12-independent-implementation-p11",
+     "definition": "The selection is effort: write the layer without looking.",
+     "term": "write it cold"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-independent-implementation-p06",
+     "answer": "PE add -> LN -> MHA -> residual -> LN -> FFN -> residual.",
+     "id": "c12-independent-implementation-r1",
+     "question": "What are the six lines?"
+    },
+    {
+     "anchor": "c12-independent-implementation-p07",
+     "answer": "Without PE, permuting input permutes output. With PE, it does not.",
+     "id": "c12-independent-implementation-r2",
+     "question": "What is the PE permutation check?"
+    }
+   ]
+  },
+  {
+   "anchor": "unit-visual-map",
+   "title": "unit visual map",
+   "minutes": 1,
+   "endAnchor": "unit-visual-map-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "One query\u2019s weights pick the values: retrieval blend.",
+     "term": "weights pick values"
+    },
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "1/sqrt(d_k) softens the distribution: entropy 0.571 to 1.974.",
+     "term": "softens"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "unit-visual-map-end",
+     "answer": "Weights pick values (QKV), 1/sqrt(d_k) softens the distribution, causal mask zeroes future weights.",
+     "id": "unit-visual-map-r1",
+     "question": "What three figures does the unit carry?"
+    }
+   ]
+  }
+ ]
+}

@@ -135,8 +135,9 @@
       <h1>Interview · U07 keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-key-u07">Interview key , U07</h1>
+<span id="interview-key-u07-end" data-end></span>
 <h2 id="breadth">Breadth</h2>
-<p>A1. Format and style (how to answer), not facts. Loss on response
+<p id="breadth-p01" data-kind="example" data-term="KL leash">A1. Format and style (how to answer), not facts. Loss on response
 tokens of demos.
 A2. Quality, diversity, coverage across tasks. Diversity wins per
 demo.
@@ -146,40 +147,45 @@ A5. Bounds each policy update to [1-eps, 1+eps] ratio, takes the
 pessimistic of clipped and unclipped.
 A6. Inverts the KL-regularized optimum so the BT loss trains the
 policy directly on pairs. No RL, no exploration.</p>
+<span id="breadth-end" data-end></span>
 <h2 id="deep-ladders">Deep ladders</h2>
-<p>L1. (1) -log sigmoid(r_c - r_r). (2) 0.7109, 0.3412. (3) dL/dgap =
+<p id="deep-ladders-p01" data-kind="example" data-term="(1-P)">L1. (1) -log sigmoid(r_c - r_r). (2) 0.7109, 0.3412. (3) dL/dgap =
 -(1-P): uncertain pairs teach most. (4) The reward is a proxy
 trained on stale/noisy pairs (C09-C11). (5) Held-out human pairs,
 measure agreement (~0.7 expected).</p>
-<p>L2. (1) PPO: E[min(rA, clip(r)A)], DPO: -log sigmoid(beta x
+<p id="deep-ladders-p02" data-kind="prose" data-term="0.7109">L2. (1) PPO: E[min(rA, clip(r)A)], DPO: -log sigmoid(beta x
 log-ratio gap). (2) 0.650/0.600, 0.6539. (3) Optimal policy gives r
 = beta log pi/pi_ref + const, substitute into BT. (4) Without the
 reference, chosen log-probs diverge unboundedly. (5) Fixed pairs:
 DPO first (cheap), if exploration is needed, PPO.</p>
+<span id="deep-ladders-end" data-end></span>
 <h2 id="analytical">Analytical</h2>
-<p>A7. (i) Reward hacking: the proxy&rsquo;s argmax left true quality
+<p id="analytical-p01" data-kind="example" data-term="stale reward">A7. (i) Reward hacking: the proxy&rsquo;s argmax left true quality
 (C10). (ii) Stale reward: the policy left the reward&rsquo;s training
 distribution (C09). Cheapest check: human-rank outputs at steps
 800 and 2000, if 800 wins, it is a hack or stale proxy, not progress.
 A8. The pairs were too easy (large gaps, saturated sigmoid):
 gradient ~0 despite falling loss. Confirm: mean |inside| &gt;&gt; 1, or
 mean P near 1.</p>
+<span id="analytical-end" data-end></span>
 <h2 id="implementationdebugging">Implementation/debugging</h2>
-<p>A9. (1) Check KL: exploded -&gt; raise beta. (2) Check reward: spiked
+<p id="implementationdebugging-p01" data-kind="example" data-term="raise beta">A9. (1) Check KL: exploded -&gt; raise beta. (2) Check reward: spiked
 -&gt; the reward has a hack, stop and inspect outputs. (3) Check
 eps: too large -&gt; lower it. (4) Check advantages: value loss
 diverged -&gt; retune value coefficient. (5) Check data: a bad batch
 -&gt; inspect the rollout.</p>
+<span id="implementationdebugging-end" data-end></span>
 <h2 id="changed-constraint">Changed-constraint</h2>
-<p>A10. Model-judged eval with a different judge model, plus the
+<p id="changed-constraint-p01" data-kind="example" data-term="different judge">A10. Model-judged eval with a different judge model, plus the
 reward model&rsquo;s own held-out agreement, plus spot human audits on a
 small sample. Report all three with the caveat that none is the
 truth.
 A11. Refusal is taught in SFT demos and reinforced in pairs/RL
 (the policy must prefer refusals). Prompt-only refusal breaks
 under paraphrase and pressure: the weights never learned it.</p>
+<span id="changed-constraint-end" data-end></span>
 <h2 id="research-critique">Research critique</h2>
-<p>A12. Steelman: RLHF demonstrably shifts model behavior toward
+<p id="research-critique-p01" data-kind="example" data-term="judges' votes">A12. Steelman: RLHF demonstrably shifts model behavior toward
 judged preferences across many tasks, the pipeline is the best
 working method we have. Counterexample: the reward is a proxy
 (C10), the judges are biased (C11), the data goes stale (C09),
@@ -190,7 +196,8 @@ distribution, nothing more.</p>
       <nav class="pager"><a href="../interview/u07_questions.html"><span class="lbl">← Previous</span>Interview · U07 questions</a><a href="../interview/u08_questions.html"><span class="lbl">Next →</span>Interview · U08 questions</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-p02" data-kind="prose" data-term="training distribution">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-end" data-end></span>
     </footer>
   </main>
 </div>

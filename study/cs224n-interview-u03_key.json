@@ -1,0 +1,567 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-interview-u03_key",
+ "itemKind": "lesson",
+ "revision": "9473f32d58eeaed9d16a45c328acd38bb9e44b5e7fdf380b12d9d905d847102e",
+ "sections": [
+  {
+   "anchor": "interview-key-u03",
+   "title": "Interview key , U03",
+   "minutes": 1,
+   "endAnchor": "interview-key-u03-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "interview key",
+     "definition": "The closed-book answer set for the unit.",
+     "anchor": "interview-key-u03"
+    },
+    {
+     "term": "u03",
+     "definition": "The unit this key covers.",
+     "anchor": "interview-key-u03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "interview-key-u03-r1",
+     "question": "What unit does this key cover?",
+     "answer": "U03.",
+     "anchor": "interview-key-u03"
+    }
+   ]
+  },
+  {
+   "anchor": "b1",
+   "title": "B1",
+   "minutes": 1,
+   "endAnchor": "b1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "O(edges)",
+     "definition": "Cost of each pass.",
+     "anchor": "b1-p01"
+    },
+    {
+     "term": "parents before children",
+     "definition": "Forward order.",
+     "anchor": "b1-p01"
+    },
+    {
+     "term": "sorting",
+     "definition": "The red flag: 'just sorting'.",
+     "anchor": "b1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "b1-r1",
+     "question": "What does forward visit?",
+     "answer": "Parents before children.",
+     "anchor": "b1-p01"
+    },
+    {
+     "id": "b1-r2",
+     "question": "What is the B1 red flag?",
+     "answer": "'Topological order is just sorting'.",
+     "anchor": "b1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "b2",
+   "title": "B2",
+   "minutes": 1,
+   "endAnchor": "b2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "scales with B",
+     "definition": "Sum does; mean does not.",
+     "anchor": "b2-p01"
+    },
+    {
+     "term": "lr scaling",
+     "definition": "The connected rules.",
+     "anchor": "b2-p01"
+    },
+    {
+     "term": "rescales steps",
+     "definition": "Switching mid-training rescales by B.",
+     "anchor": "b2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "b2-r1",
+     "question": "What happens when you switch mid-training?",
+     "answer": "Steps rescale by B.",
+     "anchor": "b2-p01"
+    },
+    {
+     "id": "b2-r2",
+     "question": "What is the B2 red flag?",
+     "answer": "'They are the same'.",
+     "anchor": "b2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "b3",
+   "title": "B3",
+   "minutes": 1,
+   "endAnchor": "b3-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "inf/inf",
+     "definition": "= nan.",
+     "anchor": "b3-p01"
+    },
+    {
+     "term": "subtract the max",
+     "definition": "The shift cancels in the fraction.",
+     "anchor": "b3-p01"
+    },
+    {
+     "term": "float64",
+     "definition": "The red-flag-only fix.",
+     "anchor": "b3-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "b3-r1",
+     "question": "Why does naive softmax return nan?",
+     "answer": "exp overflows to inf; inf/inf = nan.",
+     "anchor": "b3-p01"
+    },
+    {
+     "id": "b3-r2",
+     "question": "What is the one-line fix?",
+     "answer": "Subtract the max.",
+     "anchor": "b3-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "b4",
+   "title": "B4",
+   "minutes": 1,
+   "endAnchor": "b4-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "scatter-add",
+     "definition": "The repeated row gets the sum.",
+     "anchor": "b4-p01"
+    },
+    {
+     "term": "np.add.at",
+     "definition": "The correct op.",
+     "anchor": "b4-p01"
+    },
+    {
+     "term": "last-wins",
+     "definition": "The fancy-index trap.",
+     "anchor": "b4-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "b4-r1",
+     "question": "What does the backward pass do for a repeated id?",
+     "answer": "The repeated row gets the sum of incoming gradients.",
+     "anchor": "b4-p01"
+    },
+    {
+     "id": "b4-r2",
+     "question": "What is the B4 red flag?",
+     "answer": "'Each occurrence updates separately'.",
+     "anchor": "b4-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "b5",
+   "title": "B5",
+   "minutes": 1,
+   "endAnchor": "b5-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "(1,m)x(m,n)",
+     "definition": "The product shapes.",
+     "anchor": "b5-p01"
+    },
+    {
+     "term": "never materializes",
+     "definition": "The (m,n) Jacobian.",
+     "anchor": "b5-p01"
+    },
+    {
+     "term": "O(m + n)",
+     "definition": "VJP memory vs O(mn).",
+     "anchor": "b5-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "b5-r1",
+     "question": "Why does reverse mode never form the Jacobian?",
+     "answer": "It multiplies vector-Jacobian products.",
+     "anchor": "b5-p01"
+    },
+    {
+     "id": "b5-r2",
+     "question": "What is the B5 red flag?",
+     "answer": "Shape mismatch in the product.",
+     "anchor": "b5-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "b6",
+   "title": "B6",
+   "minutes": 1,
+   "endAnchor": "b6-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "not linearly separable",
+     "definition": "The labels.",
+     "anchor": "b6-p01"
+    },
+    {
+     "term": "folds the space",
+     "definition": "What the ReLU hidden layer does.",
+     "anchor": "b6-p01"
+    },
+    {
+     "term": "1.0 vs 0.5",
+     "definition": "The computed gap.",
+     "anchor": "b6-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "b6-r1",
+     "question": "What is the B6 red flag?",
+     "answer": "'More parameters'.",
+     "anchor": "b6-p01"
+    },
+    {
+     "id": "b6-r2",
+     "question": "What gap does the strong answer cite?",
+     "answer": "1.0 vs 0.5 accuracy.",
+     "anchor": "b6-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "d1-ladder",
+   "title": "D1 ladder",
+   "minutes": 1,
+   "endAnchor": "d1-ladder-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "df/dx = 4",
+     "definition": "At (2, 3, 4); df/dy = 4, df/dz = 5.",
+     "anchor": "d1-ladder-p01"
+    },
+    {
+     "term": "batch axis",
+     "definition": "The D1.4 diagnosis: plain matmul where batched was needed.",
+     "anchor": "d1-ladder-p01"
+    },
+    {
+     "term": "never 10M",
+     "definition": "Never finite-difference 10M params.",
+     "anchor": "d1-ladder-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d1-ladder-r1",
+     "question": "What are the three derivatives?",
+     "answer": "df/dx = 4, df/dy = 4, df/dz = 5.",
+     "anchor": "d1-ladder-p01"
+    },
+    {
+     "id": "d1-ladder-r2",
+     "question": "What for training versus the one-time check?",
+     "answer": "Reverse-mode for training; finite differences on a tiny slice for the check.",
+     "anchor": "d1-ladder-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "d2-ladder",
+   "title": "D2 ladder",
+   "minutes": 1,
+   "endAnchor": "d2-ladder-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "2n actions",
+     "definition": "Each word shifted once, popped once.",
+     "anchor": "d2-ladder-p01"
+    },
+    {
+     "term": "O(1)",
+     "definition": "Each action.",
+     "anchor": "d2-ladder-p01"
+    },
+    {
+     "term": "beam",
+     "definition": "Recovers from greedy errors.",
+     "anchor": "d2-ladder-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "d2-ladder-r1",
+     "question": "What are the D2.2 arcs?",
+     "answer": "(1,0), (2,1), (-1,2).",
+     "anchor": "d2-ladder-p01"
+    },
+    {
+     "id": "d2-ladder-r2",
+     "question": "What is the D2.5 experiment?",
+     "answer": "Greedy vs beam over the same classifier.",
+     "anchor": "d2-ladder-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "q1",
+   "title": "Q1",
+   "minutes": 1,
+   "endAnchor": "q1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "1.5032",
+     "definition": "The exp sum.",
+     "anchor": "q1-p01"
+    },
+    {
+     "term": "sum-to-zero",
+     "definition": "The gradient check: 0.090 + 0.245 - 0.335 = 0.",
+     "anchor": "q1-p01"
+    },
+    {
+     "term": "onehot(2)",
+     "definition": "dL/dz = p - onehot(2).",
+     "anchor": "q1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "q1-r1",
+     "question": "What are the probabilities?",
+     "answer": "(0.090, 0.245, 0.665).",
+     "anchor": "q1-p01"
+    },
+    {
+     "id": "q1-r2",
+     "question": "What is dL/dz?",
+     "answer": "(0.090, 0.245, -0.335).",
+     "anchor": "q1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "q2",
+   "title": "Q2",
+   "minutes": 1,
+   "endAnchor": "q2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "16384",
+     "definition": "Forward passes per check.",
+     "anchor": "q2-p01"
+    },
+    {
+     "term": "3x2",
+     "definition": "The tiny shape to check once.",
+     "anchor": "q2-p01"
+    },
+    {
+     "term": "never full size",
+     "definition": "Never check at full size in the loop.",
+     "anchor": "q2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "q2-r1",
+     "question": "How many forward passes?",
+     "answer": "2 x 8192 = 16384.",
+     "anchor": "q2-p01"
+    },
+    {
+     "id": "q2-r2",
+     "question": "What instead in practice?",
+     "answer": "Derive the analytic backward once; check on a tiny shape a single time.",
+     "anchor": "q2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "i1",
+   "title": "I1",
+   "minutes": 1,
+   "endAnchor": "i1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "fancy-index",
+     "definition": "Assignment overwrites on repeats.",
+     "anchor": "i1-p01"
+    },
+    {
+     "term": "last gradient wins",
+     "definition": "The silent drop.",
+     "anchor": "i1-p01"
+    },
+    {
+     "term": "np.add.at",
+     "definition": "The fix.",
+     "anchor": "i1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "i1-r1",
+     "question": "When does I1 look right?",
+     "answer": "On batches without repeats.",
+     "anchor": "i1-p01"
+    },
+    {
+     "id": "i1-r2",
+     "question": "What is the fix?",
+     "answer": "np.add.at(dE, ids, grad_out).",
+     "anchor": "i1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "s1",
+   "title": "S1",
+   "minutes": 1,
+   "endAnchor": "s1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "SWAP",
+     "definition": "The new action for crossing arcs.",
+     "anchor": "s1-p01"
+    },
+    {
+     "term": "structural",
+     "definition": "Projectivity is structural, not a parameter.",
+     "anchor": "s1-p01"
+    },
+    {
+     "term": "maximum spanning tree",
+     "definition": "The graph-based decoder option.",
+     "anchor": "s1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "s1-r1",
+     "question": "What is the smallest change?",
+     "answer": "Add a SWAP action, or switch to graph-based parsing.",
+     "anchor": "s1-p01"
+    },
+    {
+     "id": "s1-r2",
+     "question": "What can stay?",
+     "answer": "The objective and features.",
+     "anchor": "s1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "s2",
+   "title": "S2",
+   "minutes": 1,
+   "endAnchor": "s2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "8x smaller",
+     "definition": "256/32: the step shrinkage.",
+     "anchor": "s2-p01"
+    },
+    {
+     "term": "linear scaling",
+     "definition": "Scale the LR by 8 as the starting point.",
+     "anchor": "s2-p01"
+    },
+    {
+     "term": "first-epoch loss",
+     "definition": "The verification curve.",
+     "anchor": "s2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "s2-r1",
+     "question": "What happens on the first run?",
+     "answer": "Training crawls: 8x smaller steps than tuned.",
+     "anchor": "s2-p01"
+    },
+    {
+     "id": "s2-r2",
+     "question": "What is the fix?",
+     "answer": "Scale the learning rate by 8, or keep sum reduction and divide explicitly.",
+     "anchor": "s2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "r1",
+   "title": "R1",
+   "minutes": 1,
+   "endAnchor": "r1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "tag quality",
+     "definition": "What the comparison really measures.",
+     "anchor": "r1-p01"
+    },
+    {
+     "term": "predicted tags",
+     "definition": "The realistic setting for both.",
+     "anchor": "r1-p02"
+    },
+    {
+     "term": "report both",
+     "definition": "Gold-gold and predicted-predicted.",
+     "anchor": "r1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "r1-r1",
+     "question": "What is the confound?",
+     "answer": "Gold tags for the new parser, predicted tags for the baseline.",
+     "anchor": "r1-p01"
+    },
+    {
+     "id": "r1-r2",
+     "question": "What is the fair comparison?",
+     "answer": "Both use predicted tags, or both use gold tags.",
+     "anchor": "r1-p01"
+    }
+   ]
+  }
+ ]
+}

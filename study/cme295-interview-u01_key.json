@@ -1,0 +1,327 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-u01_key",
+ "itemKind": "lesson",
+ "revision": "926d5ddb08205a9c3a6d2187b022ea152d1f0ee865a3151e70ed8093a1f687e1",
+ "sections": [
+  {
+   "anchor": "u01-interview-key",
+   "title": "U01 interview key",
+   "minutes": 1,
+   "endAnchor": "u01-interview-key-end",
+   "blocks": [
+    {
+     "anchor": "u01-interview-key-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "strong answer",
+     "definition": "The minimum sufficient explanation that earns full marks.",
+     "anchor": "u01-interview-key-p01"
+    },
+    {
+     "term": "red flag",
+     "definition": "A common wrong answer that signals a misconception.",
+     "anchor": "u01-interview-key-p01"
+    },
+    {
+     "term": "rubric",
+     "definition": "The scoring breakdown per question part.",
+     "anchor": "u01-interview-key-p01"
+    },
+    {
+     "term": "remediation",
+     "definition": "The lesson reference to revisit after a miss.",
+     "anchor": "u01-interview-key-p01"
+    },
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "u01-interview-key-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u01-interview-key-r1",
+     "question": "What five parts does each U01 key entry carry?",
+     "answer": "Minimum sufficient explanation, strong answer, red flags, scoring rubric, and remediation.",
+     "anchor": "u01-interview-key-p01"
+    },
+    {
+     "id": "u01-interview-key-r2",
+     "question": "How should you use the key?",
+     "answer": "Keep it closed-book: attempt first, then check.",
+     "anchor": "u01-interview-key-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth",
+   "title": "Breadth",
+   "minutes": 1,
+   "endAnchor": "breadth-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "token id",
+     "definition": "An integer index, arbitrary and unordered.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "embedding",
+     "definition": "The learned dense vector at the id's row; geometry carries similarity.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "compression",
+     "definition": "Frequent pairs give the most tokens saved per merge.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "Elman RNN",
+     "definition": "h_t = tanh(W x_t + U h_{t-1} + b), W input-to-hidden, U hidden-to-hidden.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "forget gate",
+     "definition": "It multiplies the previous cell c_{t-1}; f_t near 1 preserves gradients.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "causal mask",
+     "definition": "Applied before softmax; -inf scores become zero weight with rows summing to 1.",
+     "anchor": "breadth-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-r1",
+     "question": "What is the red flag for B1?",
+     "answer": "Saying embeddings are one-hot.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "id": "breadth-r2",
+     "question": "What does the strong B5 answer say about post-softmax masking?",
+     "answer": "It steals mass or leaks gradients.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "id": "breadth-r3",
+     "question": "What shapes does strong B6 state?",
+     "answer": "Scores (B, h, T, T), logits (B, T, V).",
+     "anchor": "breadth-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders",
+   "title": "Deep ladders",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "pair count",
+     "definition": "Sum over words of frequency times adjacent occurrences.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "merge 1",
+     "definition": "(o, w) with count 4 on the toy corpus.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "rank order",
+     "definition": "Makes encoding deterministic.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "row sums",
+     "definition": "Masked-softmax rows must sum to 1; the triangle must be 0.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "train/eval gap",
+     "definition": "Great train loss with garbage generation signals a disabled mask.",
+     "anchor": "deep-ladders-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-r1",
+     "question": "What is the L1 strong-path merge 1?",
+     "answer": "(o, w) with count 4.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "id": "deep-ladders-r2",
+     "question": "What two checks does the L2 strong path name?",
+     "answer": "Row sums at 1 and the triangle at 0.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "id": "deep-ladders-r3",
+     "question": "What does the L2 experiment compare?",
+     "answer": "Training with and without the mask, comparing generation.",
+     "anchor": "deep-ladders-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-exercises",
+   "title": "Analytical exercises",
+   "minutes": 1,
+   "endAnchor": "analytical-exercises-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "fertility",
+     "definition": "Characters per word; 3.4 before the merge, 2.4 after.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "term": "d_k",
+     "definition": "d/h; here 512/8 = 64.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "term": "score bytes",
+     "definition": "Scores at T = 8192 reach 8.6 GB, dwarfing the weights.",
+     "anchor": "analytical-exercises-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-exercises-r1",
+     "question": "What is the E1 merge 1?",
+     "answer": "(t,h) or (h,e); the tie is broken by rule.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "id": "analytical-exercises-r2",
+     "question": "Which term dominates memory at T = 8192?",
+     "answer": "The scores at 8.6 GB, not the weights.",
+     "anchor": "analytical-exercises-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebug",
+   "title": "Implementation/debug",
+   "minutes": 1,
+   "endAnchor": "implementationdebug-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "mask test",
+     "definition": "Row sums at 1 and the future triangle at 0.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "term": "label shift",
+     "definition": "Labels shifted by one; a data-pipeline check.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "term": "three-line test",
+     "definition": "softmax(randn(4,4) + causal_mask(4)) with two asserts.",
+     "anchor": "implementationdebug-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebug-r1",
+     "question": "What is the most likely culprit in D1?",
+     "answer": "The mask disabled or applied after softmax.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "id": "implementationdebug-r2",
+     "question": "What does the three-line test assert?",
+     "answer": "Row sums at 1 and the future triangle at 0.",
+     "anchor": "implementationdebug-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-scenarios",
+   "title": "Changed-constraint scenarios",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-scenarios-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "ids shift",
+     "definition": "Retraining BPE shifts all ids; old embeddings misalign.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "term": "roundtrip test",
+     "definition": "A canary eval set run before and after the change.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "term": "byte fallback",
+     "definition": "Keeps V fixed but fertility explodes.",
+     "anchor": "changed-constraint-scenarios-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-scenarios-r1",
+     "question": "What breaks in the S1 strong answer?",
+     "answer": "All ids shift and old embeddings misalign.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "id": "changed-constraint-scenarios-r2",
+     "question": "Do the S2 embeddings fit in 256 MB?",
+     "answer": "Alone yes at 102.4 MB, but barely with the rest of the model.",
+     "anchor": "changed-constraint-scenarios-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique",
+   "title": "Research-critique",
+   "minutes": 1,
+   "endAnchor": "research-critique-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "steelman",
+     "definition": "High weight means the model used that token.",
+     "anchor": "research-critique-list01"
+    },
+    {
+     "term": "counterexample",
+     "definition": "Different weight patterns with the same output.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "term": "falsification",
+     "definition": "Output changes while weights stay fixed, or vice versa.",
+     "anchor": "research-critique-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1",
+     "question": "What is the R1 red flag?",
+     "answer": "Saying attention is explanation, period.",
+     "anchor": "research-critique-list01"
+    },
+    {
+     "id": "research-critique-r2",
+     "question": "What experiment does the strong answer design?",
+     "answer": "Perturb inputs to flip weights without changing the output, or vice versa.",
+     "anchor": "research-critique-list01"
+    }
+   ]
+  }
+ ]
+}

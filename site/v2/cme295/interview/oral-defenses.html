@@ -98,12 +98,13 @@
       <h1>Interview · Oral defenses</h1>
       <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="oral-defenses-10-deep-ladders">Oral defenses , 10 deep ladders</h1>
-<p>Draw a ladder, climb all 8 rungs closed-book. Keys in
+<p id="oral-defenses-10-deep-ladders-p01" data-kind="keyIdea" data-reveal="rise" data-term="8 rungs">Draw a ladder, climb all 8 rungs closed-book. Keys in
 <code>keys-oral.md</code>. Rungs: define, intuitive toy, derive, implement
 and complexity, compare, debug, critique assumptions, design
 experiment or production transfer.</p>
+<span id="oral-defenses-10-deep-ladders-end" data-end></span>
 <h2 id="d1-attention">D1 , attention</h2>
-<ol>
+<ol id="d1-attention-list01" data-kind="exercise" data-term="scaled dot-product attention">
 <li>Define scaled dot-product attention.</li>
 <li>Toy: 2x2 scores [[1, 0], [0, 1]], compute the weights.</li>
 <li>Derive why the scale is sqrt(d).</li>
@@ -113,8 +114,9 @@ experiment or production transfer.</p>
 <li>Critique: what does attention assume about positions?</li>
 <li>Design: an experiment proving the scale matters.</li>
 </ol>
+<span id="d1-attention-end" data-end></span>
 <h2 id="d2-rope">D2 , RoPE</h2>
-<ol>
+<ol id="d2-rope-list01" data-kind="exercise" data-term="rotary position embeddings">
 <li>Define rotary position embeddings.</li>
 <li>Toy: rotate the pair (1, 0) by 90 degrees.</li>
 <li>Derive why relative distance survives the rotation.</li>
@@ -124,8 +126,9 @@ experiment or production transfer.</p>
 <li>Critique: what breaks if the base frequency is wrong?</li>
 <li>Design: a length-generalization test.</li>
 </ol>
+<span id="d2-rope-end" data-end></span>
 <h2 id="d3-temperature-sampling">D3 , temperature sampling</h2>
-<ol>
+<ol id="d3-temperature-sampling-list01" data-kind="exercise" data-term="temperature">
 <li>Define temperature in softmax sampling.</li>
 <li>Toy: logits [2, 1, 0], compute p at T = 0.5 and T = 2.</li>
 <li>Derive the T -&gt; 0 and T -&gt; infinity limits.</li>
@@ -135,8 +138,9 @@ experiment or production transfer.</p>
 <li>Critique: what does temperature assume about the logits?</li>
 <li>Design: a diversity-vs-quality sweep.</li>
 </ol>
+<span id="d3-temperature-sampling-end" data-end></span>
 <h2 id="d4-lora">D4 , LoRA</h2>
-<ol>
+<ol id="d4-lora-list01" data-kind="exercise" data-term="low-rank update">
 <li>Define the low-rank update.</li>
 <li>Toy: d = 4, k = 4, r = 1, count the parameters.</li>
 <li>Derive the parameter savings vs full fine-tune.</li>
@@ -146,8 +150,9 @@ experiment or production transfer.</p>
 <li>Critique: what task structure does LoRA assume?</li>
 <li>Design: a rank sweep experiment.</li>
 </ol>
+<span id="d4-lora-end" data-end></span>
 <h2 id="d5-ppo-clipping">D5 , PPO clipping</h2>
-<ol>
+<ol id="d5-ppo-clipping-list01" data-kind="exercise" data-term="clipped surrogate">
 <li>Define the clipped surrogate objective.</li>
 <li>Toy: rho = 2.0, A = 1.0, eps = 0.2, compute the objective.</li>
 <li>Derive the pessimistic bound from the trust region.</li>
@@ -157,8 +162,9 @@ experiment or production transfer.</p>
 <li>Critique: does clipping guarantee improvement?</li>
 <li>Design: an eps-sweep experiment.</li>
 </ol>
+<span id="d5-ppo-clipping-end" data-end></span>
 <h2 id="d6-grpo">D6 , GRPO</h2>
-<ol>
+<ol id="d6-grpo-list01" data-kind="exercise" data-term="group-relative advantage">
 <li>Define the group-relative advantage.</li>
 <li>Toy: rewards [1, 1, 0, 0], compute A.</li>
 <li>Derive why the group mean is an unbiased baseline.</li>
@@ -168,8 +174,9 @@ experiment or production transfer.</p>
 <li>Critique: what does within-group comparability assume?</li>
 <li>Design: a group-size sweep experiment.</li>
 </ol>
+<span id="d6-grpo-end" data-end></span>
 <h2 id="d7-rag-pipeline">D7 , RAG pipeline</h2>
-<ol>
+<ol id="d7-rag-pipeline-list01" data-kind="exercise" data-term="recall">
 <li>Define recall and precision for retrieval.</li>
 <li>Toy: R = 8, K = 20, H = 6, compute both.</li>
 <li>Derive the two-stage bound (recall x precision).</li>
@@ -179,8 +186,9 @@ experiment or production transfer.</p>
 <li>Critique: what does the chunker assume?</li>
 <li>Design: a chunk-size sweep experiment.</li>
 </ol>
+<span id="d7-rag-pipeline-end" data-end></span>
 <h2 id="d8-judge-bias">D8 , judge bias</h2>
-<ol>
+<ol id="d8-judge-bias-list01" data-kind="exercise" data-term="position bias">
 <li>Define position bias and verbosity bias.</li>
 <li>Toy: orders give 0.70 and 0.45, debias.</li>
 <li>Derive the swap cancellation.</li>
@@ -190,8 +198,9 @@ experiment or production transfer.</p>
 <li>Critique: does swapping fix self-preference?</li>
 <li>Design: a bias-vs-length experiment.</li>
 </ol>
+<span id="d8-judge-bias-end" data-end></span>
 <h2 id="d9-masked-diffusion">D9 , masked diffusion</h2>
-<ol>
+<ol id="d9-masked-diffusion-list01" data-kind="exercise" data-term="mask schedule">
 <li>Define the mask schedule.</li>
 <li>Toy: 8 tokens, unmask the top 4 by confidence.</li>
 <li>Derive the training objective (masked cross-entropy).</li>
@@ -201,8 +210,9 @@ experiment or production transfer.</p>
 <li>Critique: what does parallel unmasking assume?</li>
 <li>Design: a steps-vs-quality experiment.</li>
 </ol>
+<span id="d9-masked-diffusion-end" data-end></span>
 <h2 id="d10-dpo">D10 , DPO</h2>
-<ol>
+<ol id="d10-dpo-list01" data-kind="exercise" data-term="implicit reward">
 <li>Define the implicit reward.</li>
 <li>Toy: beta = 0.1, log gaps (0.2, -1.2), compute the margin.</li>
 <li>Derive the inversion from the KL-regularized optimum.</li>
@@ -216,7 +226,8 @@ experiment or production transfer.</p>
       <nav class="pager"><a href="../interview/u09_key.html"><span class="lbl">← Previous</span>Interview · U09 keys</a><a href="../interview/keys-oral.html"><span class="lbl">Next →</span>Interview · Oral keys</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="d10-dpo-p01" data-kind="prose" data-term="margin">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="d10-dpo-end" data-end></span>
     </footer>
   </main>
 </div>

@@ -1,0 +1,840 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs329h-lessons-u03_lesson",
+ "itemKind": "lesson",
+ "revision": "1459d272d5a4d70362a8487c90f02b87dde834b6affb73e394c79b235f896c40",
+ "sections": [
+  {
+   "anchor": "u03_lesson-intro",
+   "title": "U03 \u00b7 Choice estimation and Bayesian learning",
+   "minutes": 1,
+   "endAnchor": "u03_lesson-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "P07 (estimation)",
+     "definition": "Estimation prerequisite for U03, covering likelihood and maximum likelihood estimation.",
+     "anchor": "u03_lesson-intro-p01"
+    },
+    {
+     "term": "P09 (optimization)",
+     "definition": "Optimization prerequisite for U03, covering gradient methods used in fitting.",
+     "anchor": "u03_lesson-intro-p01"
+    },
+    {
+     "term": "P18 (Bayesian inference)",
+     "definition": "Bayesian inference prerequisite for U03, covering priors, posteriors, and Bayes rule.",
+     "anchor": "u03_lesson-intro-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u03_lesson-intro-r1",
+     "question": "What background does U03 assume?",
+     "answer": "P07 estimation, P09 optimization, and P18 Bayesian inference. Local remediation opens the lesson.",
+     "anchor": "u03_lesson-intro-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "provenance",
+   "title": "Provenance",
+   "minutes": 1,
+   "endAnchor": "provenance-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "S05",
+     "definition": "The planned session 'Learning to predict choice: latent-variable estimation with MLE' from 7 Oct 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "S06",
+     "definition": "The planned session 'Bayesian estimation and finetuning' from 12 Oct 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "planned / source attribution pending",
+     "definition": "All twelve concepts are taught as independent theory, not yet verified against a source.",
+     "anchor": "provenance-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "provenance-r1",
+     "question": "What is the status of sessions S05 and S06?",
+     "answer": "Both are planned, for 7 Oct and 12 Oct 2026. All twelve concepts are taught as independent theory.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "id": "provenance-r2",
+     "question": "Which concepts are source-supported in U03?",
+     "answer": "None yet; all twelve are planned with source attribution pending.",
+     "anchor": "provenance-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound",
+   "title": "Local remediation: Bayes, log-likelihood, and the EM lower bound",
+   "minutes": 1,
+   "endAnchor": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound-end",
+   "blocks": [
+    {
+     "anchor": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "Bayes rule",
+     "definition": "p(theta | D) = p(D | theta) p(theta) / p(D).",
+     "anchor": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound-p01"
+    },
+    {
+     "term": "log-likelihood",
+     "definition": "l(theta) = log p(D | theta).",
+     "anchor": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound-p01"
+    },
+    {
+     "term": "EM lower bound",
+     "definition": "For any q(z), log p(D | theta) >= E_q[log p(D, z | theta)] - E_q[log q(z)].",
+     "anchor": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound-p01"
+    },
+    {
+     "term": "E-step",
+     "definition": "Sets q to the posterior p(z | D, theta), making the bound touch the true likelihood.",
+     "anchor": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound-p01"
+    },
+    {
+     "term": "M-step",
+     "definition": "Maximizes the bound in theta.",
+     "anchor": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound-r1",
+     "question": "What does the E-step do?",
+     "answer": "It sets q to the posterior p(z | D, theta). The bound touches the true likelihood after each E-step, so the likelihood never decreases.",
+     "anchor": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound-p01"
+    },
+    {
+     "id": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound-r2",
+     "question": "What is the observed likelihood with a latent variable z?",
+     "answer": "p(D | theta) = sum_z p(D, z | theta).",
+     "anchor": "local-remediation-bayes-log-likelihood-and-the-em-lower-bound-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "russian-doll-ladder-for-the-major-mechanism-bayesian-updating",
+   "title": "Russian-doll ladder for the major mechanism (Bayesian updating)",
+   "minutes": 1,
+   "endAnchor": "russian-doll-ladder-for-the-major-mechanism-bayesian-updating-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "prior",
+     "definition": "What was believed before the data; the toy uses Beta(2,2) on a coin bias.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bayesian-updating-list01"
+    },
+    {
+     "term": "posterior",
+     "definition": "Prior times likelihood, renormalized; the Beta-Binomial update gives Beta(9,5).",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bayesian-updating-list01"
+    },
+    {
+     "term": "conjugacy",
+     "definition": "The property that makes the posterior Beta(9,5) in closed form.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bayesian-updating-list01"
+    },
+    {
+     "term": "dogmatic prior",
+     "definition": "A point-mass prior that never learns.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bayesian-updating-list01"
+    },
+    {
+     "term": "hierarchical prior",
+     "definition": "The extension tested against a fixed prior on held-out log-loss.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bayesian-updating-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-bayesian-updating-r1",
+     "question": "What does shell 5 check?",
+     "answer": "With no data the posterior equals the prior; with infinite data it concentrates at the truth.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bayesian-updating-list01"
+    },
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-bayesian-updating-r2",
+     "question": "How do posteriors help in production?",
+     "answer": "They drive uncertainty-aware ranking; the stakeholder decision is when to abstain.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bayesian-updating-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood-dependency-list",
+   "title": "Not-yet-understood dependency list",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-dependency-list-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "MCMC",
+     "definition": "Sampling for non-conjugate posteriors, named but not implemented here.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "variational approximations",
+     "definition": "Approximate posteriors; the ELBO is stated in U03-C03, full VI is an extension.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "finetuning of large models",
+     "definition": "Covered as a conceptual link in U03-C07, not the systems.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "not-yet-understood-dependency-list-r1",
+     "question": "Where is the ELBO stated?",
+     "answer": "In U03-C03; full variational inference is an extension.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c01-mle",
+   "title": "cs329h-U03-C01: MLE",
+   "minutes": 3,
+   "endAnchor": "cs329h-u03-c01-mle-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c01-mle-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c01-mle-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u03-c01-mle-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "MLE",
+     "definition": "The peak-finder: the parameter that makes the data look most probable, using the data and nothing else.",
+     "anchor": "cs329h-u03-c01-mle-p01"
+    },
+    {
+     "term": "standard error",
+     "definition": "The gap's noise from n = 10: sqrt(0.7*0.3/10) = 0.145 on the toy.",
+     "anchor": "cs329h-u03-c01-mle-p06"
+    },
+    {
+     "term": "model misspecification",
+     "definition": "The MLE converges to the family member closest in KL, not to the truth.",
+     "anchor": "cs329h-u03-c01-mle-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c01-mle-r1",
+     "question": "What is the MLE on the toy?",
+     "answer": "p = 0.70 against a truth of 0.65; the gap comes from sample noise.",
+     "anchor": "cs329h-u03-c01-mle-p06"
+    },
+    {
+     "id": "cs329h-u03-c01-mle-r2",
+     "question": "What does the MLE converge to under misspecification?",
+     "answer": "The member of the family closest in KL, not the truth; e.g. fitting one coin bias to mixture data.",
+     "anchor": "cs329h-u03-c01-mle-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c02-latent-variables",
+   "title": "cs329h-U03-C02: latent variables",
+   "minutes": 3,
+   "endAnchor": "cs329h-u03-c02-latent-variables-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c02-latent-variables-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c02-latent-variables-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "latent variable",
+     "definition": "A missing column in the spreadsheet; you sum over its values to get the likelihood of what you saw.",
+     "anchor": "cs329h-u03-c02-latent-variables-p01"
+    },
+    {
+     "term": "marginal likelihood",
+     "definition": "The likelihood of what you saw, after summing over the latent variable.",
+     "anchor": "cs329h-u03-c02-latent-variables-p01"
+    },
+    {
+     "term": "complete-data likelihood",
+     "definition": "p(D, z | theta), which EM works with instead of the log of a sum.",
+     "anchor": "cs329h-u03-c02-latent-variables-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c02-latent-variables-r1",
+     "question": "Why is direct optimization hard?",
+     "answer": "The log of a sum does not split.",
+     "anchor": "cs329h-u03-c02-latent-variables-p05"
+    },
+    {
+     "id": "cs329h-u03-c02-latent-variables-r2",
+     "question": "When does a latent variable add nothing identifiable?",
+     "answer": "In a mixture of two Bernoullis observed only through binary outcomes; every start gave -277.0138.",
+     "anchor": "cs329h-u03-c02-latent-variables-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c03-em-where-applicable",
+   "title": "cs329h-U03-C03: EM where applicable",
+   "minutes": 3,
+   "endAnchor": "cs329h-u03-c03-em-where-applicable-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c03-em-where-applicable-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c03-em-where-applicable-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u03-c03-em-where-applicable-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "EM",
+     "definition": "Guesses the labels softly, fits parameters to the soft labels, then re-guesses, each round explaining the data better.",
+     "anchor": "cs329h-u03-c03-em-where-applicable-p01"
+    },
+    {
+     "term": "monotone ascent",
+     "definition": "The true likelihood rises each round because the M-step maximizes a bound touching it.",
+     "anchor": "cs329h-u03-c03-em-where-applicable-p05"
+    },
+    {
+     "term": "local optima",
+     "definition": "Different starts give different answers; symmetric starts in a symmetric mixture never break symmetry.",
+     "anchor": "cs329h-u03-c03-em-where-applicable-p09"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c03-em-where-applicable-r1",
+     "question": "Why does the likelihood rise monotonically?",
+     "answer": "The E-step makes the bound touch the true likelihood; the M-step maximizes the bound, so the true likelihood rises too.",
+     "anchor": "cs329h-u03-c03-em-where-applicable-p05"
+    },
+    {
+     "id": "cs329h-u03-c03-em-where-applicable-r2",
+     "question": "How do you escape local optima?",
+     "answer": "Multiple random restarts.",
+     "anchor": "cs329h-u03-c03-em-where-applicable-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c04-priorsposteriors",
+   "title": "cs329h-U03-C04: priors/posteriors",
+   "minutes": 3,
+   "endAnchor": "cs329h-u03-c04-priorsposteriors-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c04-priorsposteriors-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c04-priorsposteriors-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u03-c04-priorsposteriors-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "prior",
+     "definition": "Yesterday's belief as a distribution.",
+     "anchor": "cs329h-u03-c04-priorsposteriors-p02"
+    },
+    {
+     "term": "posterior",
+     "definition": "Today's belief: prior times data, renormalized.",
+     "anchor": "cs329h-u03-c04-priorsposteriors-p01"
+    },
+    {
+     "term": "conjugate",
+     "definition": "The case where Beta prior times Binomial likelihood gives a Beta posterior.",
+     "anchor": "cs329h-u03-c04-priorsposteriors-p01"
+    },
+    {
+     "term": "Beta(9,5)",
+     "definition": "The posterior with mean 0.643 and 90% interval [0.42, 0.83].",
+     "anchor": "cs329h-u03-c04-priorsposteriors-p04"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c04-priorsposteriors-r1",
+     "question": "How does the posterior mean relate to prior and MLE?",
+     "answer": "Posterior mean 9/14 = 0.643, between the prior mean 0.5 and the MLE 0.70.",
+     "anchor": "cs329h-u03-c04-priorsposteriors-p05"
+    },
+    {
+     "id": "cs329h-u03-c04-priorsposteriors-r2",
+     "question": "What does a dogmatic prior do?",
+     "answer": "A point mass at 0.5 gives a point-mass posterior: no learning ever.",
+     "anchor": "cs329h-u03-c04-priorsposteriors-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c05-map",
+   "title": "cs329h-U03-C05: MAP",
+   "minutes": 3,
+   "endAnchor": "cs329h-u03-c05-map-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c05-map-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c05-map-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u03-c05-map-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "MAP",
+     "definition": "The MLE with the prior pulling toward its center.",
+     "anchor": "cs329h-u03-c05-map-p01"
+    },
+    {
+     "term": "penalty",
+     "definition": "The log-prior term; maximizing the log posterior equals maximizing the likelihood minus a penalty.",
+     "anchor": "cs329h-u03-c05-map-p05"
+    },
+    {
+     "term": "shrinkage",
+     "definition": "The MAP moving 0.70 -> 0.67 -> 0.57 -> 0.52 as prior strength grows.",
+     "anchor": "cs329h-u03-c05-map-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c05-map-r1",
+     "question": "How does the MAP move with prior strength?",
+     "answer": "Prior strengths 1, 2, 10, 50 give MAP 0.700, 0.667, 0.571, 0.519.",
+     "anchor": "cs329h-u03-c05-map-p06"
+    },
+    {
+     "id": "cs329h-u03-c05-map-r2",
+     "question": "Is the MAP invariant to reparameterization?",
+     "answer": "No: the MAP of p is not the transform of the MAP of logit(p).",
+     "anchor": "cs329h-u03-c05-map-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c06-posterior-predictive",
+   "title": "cs329h-U03-C06: posterior predictive",
+   "minutes": 3,
+   "endAnchor": "cs329h-u03-c06-posterior-predictive-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c06-posterior-predictive-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c06-posterior-predictive-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u03-c06-posterior-predictive-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "predictive distribution",
+     "definition": "Averages over every plausible number, weighted by the posterior, keeping the uncertainty.",
+     "anchor": "cs329h-u03-c06-posterior-predictive-p03"
+    },
+    {
+     "term": "point prediction",
+     "definition": "Plugs one number in, overstating confidence.",
+     "anchor": "cs329h-u03-c06-posterior-predictive-p01"
+    },
+    {
+     "term": "distribution shift",
+     "definition": "The future differing from the past, which makes the predictive distribution honestly wrong.",
+     "anchor": "cs329h-u03-c06-posterior-predictive-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c06-posterior-predictive-r1",
+     "question": "How does the predictive differ from the point prediction?",
+     "answer": "The point prediction plugs one number in; the predictive averages over every plausible number weighted by the posterior.",
+     "anchor": "cs329h-u03-c06-posterior-predictive-p03"
+    },
+    {
+     "id": "cs329h-u03-c06-posterior-predictive-r2",
+     "question": "What are the predictive numbers?",
+     "answer": "Mean 0.643, 90% interval [0.423, 0.830] from 5000 posterior draws.",
+     "anchor": "cs329h-u03-c06-posterior-predictive-p06"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c07-finetuning-relation",
+   "title": "cs329h-U03-C07: finetuning relation",
+   "minutes": 3,
+   "endAnchor": "cs329h-u03-c07-finetuning-relation-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c07-finetuning-relation-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c07-finetuning-relation-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "finetuning",
+     "definition": "Moving toward the data while staying near the start; the pretrained model is the prior.",
+     "anchor": "cs329h-u03-c07-finetuning-relation-p01"
+    },
+    {
+     "term": "weight decay",
+     "definition": "The quadratic penalty toward the pretrained point, not toward zero.",
+     "anchor": "cs329h-u03-c07-finetuning-relation-p05"
+    },
+    {
+     "term": "tau",
+     "definition": "The prior sd; small tau keeps the model near pretraining, large tau lets the data dominate.",
+     "anchor": "cs329h-u03-c07-finetuning-relation-p04"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c07-finetuning-relation-r1",
+     "question": "What is the posterior mean on the scalar toy?",
+     "answer": "(0/1 + 2.0/0.25)/(1 + 4) = 1.6, between prior and data, closer to the data.",
+     "anchor": "cs329h-u03-c07-finetuning-relation-p06"
+    },
+    {
+     "id": "cs329h-u03-c07-finetuning-relation-r2",
+     "question": "When does the prior hurt?",
+     "answer": "When pretraining is on the wrong domain; a tight prior keeps code-like biases when finetuning a code model on poetry.",
+     "anchor": "cs329h-u03-c07-finetuning-relation-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c08-regularization",
+   "title": "cs329h-U03-C08: regularization",
+   "minutes": 3,
+   "endAnchor": "cs329h-u03-c08-regularization-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c08-regularization-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c08-regularization-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u03-c08-regularization-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "regularization",
+     "definition": "A budget on parameter size; the ridge penalty charges lambda per squared unit of score.",
+     "anchor": "cs329h-u03-c08-regularization-p03"
+    },
+    {
+     "term": "ridge",
+     "definition": "Gaussian MAP; the penalty gradient -lambda s pulls every score toward zero each step.",
+     "anchor": "cs329h-u03-c08-regularization-p01"
+    },
+    {
+     "term": "lambda",
+     "definition": "The penalty strength; the A-B gap falls 5.08 -> 0.48 as lambda goes 0.01 -> 10.",
+     "anchor": "cs329h-u03-c08-regularization-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c08-regularization-r1",
+     "question": "What does the lambda path show?",
+     "answer": "A-B gaps 5.08, 3.23, 2.06, 1.61, 1.21, 0.75, 0.48 for lambda 0.01 to 10.",
+     "anchor": "cs329h-u03-c08-regularization-p06"
+    },
+    {
+     "id": "cs329h-u03-c08-regularization-r2",
+     "question": "What does too much lambda do?",
+     "answer": "It kills real signal: at lambda = 10 the gap is 0.48 though the data supports a large gap.",
+     "anchor": "cs329h-u03-c08-regularization-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c09-calibration",
+   "title": "cs329h-U03-C09: calibration",
+   "minutes": 3,
+   "endAnchor": "cs329h-u03-c09-calibration-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c09-calibration-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c09-calibration-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u03-c09-calibration-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "calibration",
+     "definition": "Probabilities meaning what they say; the reliability diagram plots predicted versus empirical.",
+     "anchor": "cs329h-u03-c09-calibration-p01"
+    },
+    {
+     "term": "reliability diagram",
+     "definition": "Binned predictions with each bin's hit rate; the diagonal is the goal.",
+     "anchor": "cs329h-u03-c09-calibration-p01"
+    },
+    {
+     "term": "overconfidence",
+     "definition": "Sharp gaps pushing predictions toward 0 and 1 faster than reality.",
+     "anchor": "cs329h-u03-c09-calibration-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c09-calibration-r1",
+     "question": "What is the mean absolute gap on the toy?",
+     "answer": "0.044 across 10 bins, n = 2000.",
+     "anchor": "cs329h-u03-c09-calibration-p06"
+    },
+    {
+     "id": "cs329h-u03-c09-calibration-r2",
+     "question": "Why does train calibration lie?",
+     "answer": "The model is calibrated where it overfit; perfect train calibration can pair with terrible test calibration.",
+     "anchor": "cs329h-u03-c09-calibration-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c10-missingness",
+   "title": "cs329h-U03-C10: missingness",
+   "minutes": 3,
+   "endAnchor": "cs329h-u03-c10-missingness-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c10-missingness-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c10-missingness-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "MCAR",
+     "definition": "Missing completely at random; estimates stay unbiased, only noisier.",
+     "anchor": "cs329h-u03-c10-missingness-p04"
+    },
+    {
+     "term": "MNAR",
+     "definition": "Missing not at random, like hard pairs skipped; observed win rates tilt toward decisive outcomes.",
+     "anchor": "cs329h-u03-c10-missingness-p04"
+    },
+    {
+     "term": "IPW",
+     "definition": "Inverse-probability weighting; with true sampling probabilities it recovers 0.899 against the naive 1.077.",
+     "anchor": "cs329h-u03-c10-missingness-p06"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c10-missingness-r1",
+     "question": "What happens when hard pairs go missing?",
+     "answer": "The survivors look easier than reality; the naive log-odds gap is 1.077 versus the full-sample 0.910.",
+     "anchor": "cs329h-u03-c10-missingness-p06"
+    },
+    {
+     "id": "cs329h-u03-c10-missingness-r2",
+     "question": "When do wrong weights hurt?",
+     "answer": "IPW with misspecified sampling probabilities can bias more than ignoring the problem.",
+     "anchor": "cs329h-u03-c10-missingness-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c11-uncertainty",
+   "title": "cs329h-U03-C11: uncertainty",
+   "minutes": 2,
+   "endAnchor": "cs329h-u03-c11-uncertainty-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c11-uncertainty-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c11-uncertainty-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "aleatoric",
+     "definition": "The world's randomness; the coin still flips, and data never shrinks it.",
+     "anchor": "cs329h-u03-c11-uncertainty-p03"
+    },
+    {
+     "term": "epistemic",
+     "definition": "Our ignorance; the bias might be 0.5 or 0.8, and data shrinks it.",
+     "anchor": "cs329h-u03-c11-uncertainty-p03"
+    },
+    {
+     "term": "Var(p)",
+     "definition": "The epistemic part of the predictive variance, 0.016 on the toy.",
+     "anchor": "cs329h-u03-c11-uncertainty-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c11-uncertainty-r1",
+     "question": "Which uncertainty dominates on the toy?",
+     "answer": "Aleatoric: 0.218 versus 0.016 epistemic. More data barely helps; better features would.",
+     "anchor": "cs329h-u03-c11-uncertainty-p05"
+    },
+    {
+     "id": "cs329h-u03-c11-uncertainty-r2",
+     "question": "When does the decomposition mislead?",
+     "answer": "Under misspecification the 'aleatoric' term absorbs model error.",
+     "anchor": "cs329h-u03-c11-uncertainty-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u03-c12-held-out-choice-prediction",
+   "title": "cs329h-U03-C12: held-out choice prediction",
+   "minutes": 3,
+   "endAnchor": "cs329h-u03-c12-held-out-choice-prediction-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u03-c12-held-out-choice-prediction-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u03-c12-held-out-choice-prediction-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u03-c12-held-out-choice-prediction-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "cross-validation",
+     "definition": "A tournament where each fold takes a turn as the unseen test.",
+     "anchor": "cs329h-u03-c12-held-out-choice-prediction-p01"
+    },
+    {
+     "term": "leakage",
+     "definition": "The same annotator's pairs in train and test, inflating accuracy.",
+     "anchor": "cs329h-u03-c12-held-out-choice-prediction-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u03-c12-held-out-choice-prediction-r1",
+     "question": "What are the fold accuracies?",
+     "answer": "0.74, 0.61, 0.79, 0.73, 0.65: mean 0.70, sd 0.06. In-sample 0.73 sits inside the fold spread.",
+     "anchor": "cs329h-u03-c12-held-out-choice-prediction-p06"
+    },
+    {
+     "id": "cs329h-u03-c12-held-out-choice-prediction-r2",
+     "question": "What breaks with time-ordered data?",
+     "answer": "Naive shuffling lets the future leak into the past.",
+     "anchor": "cs329h-u03-c12-held-out-choice-prediction-p11"
+    }
+   ]
+  }
+ ]
+}

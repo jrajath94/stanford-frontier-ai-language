@@ -1,0 +1,779 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs329h-lessons-u04_lesson",
+ "itemKind": "lesson",
+ "revision": "987311c8e6edcb84100f5b8c22f684ab026de1fc1cc15e919f3649186073d9c1",
+ "sections": [
+  {
+   "anchor": "u04_lesson-intro",
+   "title": "U04 \u00b7 Fisher information and experimental design",
+   "minutes": 1,
+   "endAnchor": "u04_lesson-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "P05 (calculus)",
+     "definition": "Calculus prerequisite for U04, covering derivatives used in the score and curvature.",
+     "anchor": "u04_lesson-intro-p01"
+    },
+    {
+     "term": "P07 (estimation)",
+     "definition": "Estimation prerequisite for U04, covering likelihood and maximum likelihood estimation.",
+     "anchor": "u04_lesson-intro-p01"
+    },
+    {
+     "term": "P18 (Bayesian)",
+     "definition": "Bayesian prerequisite for U04, covering priors and posteriors.",
+     "anchor": "u04_lesson-intro-p01"
+    },
+    {
+     "term": "P22 (experiments)",
+     "definition": "Experiments prerequisite for U04, covering design and sample sizing.",
+     "anchor": "u04_lesson-intro-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u04_lesson-intro-r1",
+     "question": "What background does U04 assume?",
+     "answer": "P05 calculus, P07 estimation, P18 Bayesian, and P22 experiments. Local remediation opens the lesson.",
+     "anchor": "u04_lesson-intro-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "provenance",
+   "title": "Provenance",
+   "minutes": 1,
+   "endAnchor": "provenance-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "S07",
+     "definition": "The planned session 'Fisher information and optimal experimental design' from 14 Oct 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "planned / source attribution pending",
+     "definition": "All twelve concepts are taught as independent theory, not yet verified against a source.",
+     "anchor": "provenance-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "provenance-r1",
+     "question": "What is the status of session S07?",
+     "answer": "Planned for 14 Oct 2026. All twelve concepts are taught as independent theory.",
+     "anchor": "provenance-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-gradients-hessians-and-the-score-identity",
+   "title": "Local remediation: gradients, Hessians, and the score identity",
+   "minutes": 1,
+   "endAnchor": "local-remediation-gradients-hessians-and-the-score-identity-end",
+   "blocks": [
+    {
+     "anchor": "local-remediation-gradients-hessians-and-the-score-identity-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "score",
+     "definition": "s(p) = d/dp log L(p); its expectation at the true p is zero.",
+     "anchor": "local-remediation-gradients-hessians-and-the-score-identity-p01"
+    },
+    {
+     "term": "Hessian",
+     "definition": "The second derivative; its negative expectation is the Fisher information.",
+     "anchor": "local-remediation-gradients-hessians-and-the-score-identity-p01"
+    },
+    {
+     "term": "Fisher information",
+     "definition": "For the Bernoulli with n trials, I(p) = n/(p(1-p)).",
+     "anchor": "local-remediation-gradients-hessians-and-the-score-identity-p01"
+    },
+    {
+     "term": "regularity",
+     "definition": "The condition letting differentiation pass under the integral, needed for E[s] = 0.",
+     "anchor": "local-remediation-gradients-hessians-and-the-score-identity-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "local-remediation-gradients-hessians-and-the-score-identity-r1",
+     "question": "Why is E[s] = 0?",
+     "answer": "E[s] = integral (p'(x)/p(x)) p(x) dx = d/dp integral p(x) dx = d/dp 1 = 0, provided differentiation passes under the integral.",
+     "anchor": "local-remediation-gradients-hessians-and-the-score-identity-p01"
+    },
+    {
+     "id": "local-remediation-gradients-hessians-and-the-score-identity-r2",
+     "question": "What is the Fisher information for n Bernoulli trials?",
+     "answer": "I(p) = n/(p(1-p)).",
+     "anchor": "local-remediation-gradients-hessians-and-the-score-identity-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "russian-doll-ladder-for-the-major-mechanism-fisher-information",
+   "title": "Russian-doll ladder for the major mechanism (Fisher information)",
+   "minutes": 1,
+   "endAnchor": "russian-doll-ladder-for-the-major-mechanism-fisher-information-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "curvature",
+     "definition": "At the peak, 47.6 on the 7-in-10 toy.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-fisher-information-list01"
+    },
+    {
+     "term": "I(p)",
+     "definition": "Var(s), the curvature of log L.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-fisher-information-list01"
+    },
+    {
+     "term": "asymptotic variance",
+     "definition": "Of the MLE, 1/(n I).",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-fisher-information-list01"
+    },
+    {
+     "term": "singular information matrix",
+     "definition": "Design 1 in figure u04_f05, leaving a parameter unidentified.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-fisher-information-list01"
+    },
+    {
+     "term": "A-optimality",
+     "definition": "Compared with D-optimality on two designs in shell 8.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-fisher-information-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-fisher-information-r1",
+     "question": "What does shell 5 check?",
+     "answer": "The quadratic with curvature I matches the true log-likelihood near the peak.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-fisher-information-list01"
+    },
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-fisher-information-r2",
+     "question": "What does shell 6 predict?",
+     "answer": "Adding label noise makes information fall, measured in figure u04_f08.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-fisher-information-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood-dependency-list",
+   "title": "Not-yet-understood dependency list",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-dependency-list-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "Cram\u00e9r-Rao",
+     "definition": "Stated as the variance floor; the full proof is an extension.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "Bayesian experimental design",
+     "definition": "Named as the mutual-information alternative; the lesson uses Fisher-based design.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "adaptive stopping",
+     "definition": "U04-C10 covers the practice, not the sequential-testing theory.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "not-yet-understood-dependency-list-r1",
+     "question": "What does U04-C10 cover?",
+     "answer": "The practice of adaptive stopping, not the sequential-testing theory.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c01-score-function",
+   "title": "cs329h-U04-C01: score function",
+   "minutes": 3,
+   "endAnchor": "cs329h-u04-c01-score-function-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c01-score-function-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c01-score-function-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u04-c01-score-function-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "score",
+     "definition": "The slope of the log-likelihood; positive means move right, zero means you are at the peak.",
+     "anchor": "cs329h-u04-c01-score-function-p01"
+    },
+    {
+     "term": "gradient ascent",
+     "definition": "Climbs to the peak since the score is positive left of the MLE and negative right of it.",
+     "anchor": "cs329h-u04-c01-score-function-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c01-score-function-r1",
+     "question": "What is the score at p = 0.5 and p = 0.9 on the toy?",
+     "answer": "8.0 (push right) and -22.2 (push left); zero at 0.70.",
+     "anchor": "cs329h-u04-c01-score-function-p06"
+    },
+    {
+     "id": "cs329h-u04-c01-score-function-r2",
+     "question": "When does the score not exist?",
+     "answer": "For non-differentiable likelihoods, like a parameter at a kink; the MLE at a boundary has a nonzero one-sided score.",
+     "anchor": "cs329h-u04-c01-score-function-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c02-fisher-information",
+   "title": "cs329h-U04-C02: Fisher information",
+   "minutes": 3,
+   "endAnchor": "cs329h-u04-c02-fisher-information-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c02-fisher-information-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c02-fisher-information-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u04-c02-fisher-information-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "Fisher information",
+     "definition": "How fast the likelihood falls away from its peak; a sharp peak means the data speaks clearly.",
+     "anchor": "cs329h-u04-c02-fisher-information-p01"
+    },
+    {
+     "term": "quadratic",
+     "definition": "ll_max - 0.5 I (p - mle)^2, hugging the true curve near the peak.",
+     "anchor": "cs329h-u04-c02-fisher-information-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c02-fisher-information-r1",
+     "question": "What is I(0.7)?",
+     "answer": "10/0.21 = 47.62.",
+     "anchor": "cs329h-u04-c02-fisher-information-p06"
+    },
+    {
+     "id": "cs329h-u04-c02-fisher-information-r2",
+     "question": "When does the quadratic approximation fail?",
+     "answer": "Near p = 0 or 1, where information explodes and the parameter sits at the boundary.",
+     "anchor": "cs329h-u04-c02-fisher-information-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c03-curvature",
+   "title": "cs329h-U04-C03: curvature",
+   "minutes": 2,
+   "endAnchor": "cs329h-u04-c03-curvature-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c03-curvature-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c03-curvature-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "curvature",
+     "definition": "How fast the slope changes; high curvature means a needle peak and a precise estimate.",
+     "anchor": "cs329h-u04-c03-curvature-p01"
+    },
+    {
+     "term": "asymptotic sd",
+     "definition": "1/sqrt(I); 0.145 for I = 47.6, matching the Bernoulli SE.",
+     "anchor": "cs329h-u04-c03-curvature-p06"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c03-curvature-r1",
+     "question": "How does curvature set uncertainty?",
+     "answer": "Taylor gives a Gaussian with variance 1/I; curvature directly sets the width.",
+     "anchor": "cs329h-u04-c03-curvature-p05"
+    },
+    {
+     "id": "cs329h-u04-c03-curvature-r2",
+     "question": "What misleads with skewed likelihoods?",
+     "answer": "The symmetric interval misleads on the low side.",
+     "anchor": "cs329h-u04-c03-curvature-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c04-regularity-conditions",
+   "title": "cs329h-U04-C04: regularity conditions",
+   "minutes": 3,
+   "endAnchor": "cs329h-u04-c04-regularity-conditions-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c04-regularity-conditions-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c04-regularity-conditions-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "regularity conditions",
+     "definition": "The license to swap differentiation and integration: support must not move with the parameter.",
+     "anchor": "cs329h-u04-c04-regularity-conditions-p01"
+    },
+    {
+     "term": "Uniform(0, theta)",
+     "definition": "The violation: support moves with theta, the score identities fail, and the MLE converges at 1/n.",
+     "anchor": "cs329h-u04-c04-regularity-conditions-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c04-regularity-conditions-r1",
+     "question": "What breaks the score identities?",
+     "answer": "Support that moves with the parameter, as in x ~ Uniform(0, theta).",
+     "anchor": "cs329h-u04-c04-regularity-conditions-p05"
+    },
+    {
+     "id": "cs329h-u04-c04-regularity-conditions-r2",
+     "question": "How fast does the Uniform MLE converge?",
+     "answer": "1/n, not 1/sqrt(n); the Fisher information formula does not apply.",
+     "anchor": "cs329h-u04-c04-regularity-conditions-p06"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c05-identifiability",
+   "title": "cs329h-U04-C05: identifiability",
+   "minutes": 3,
+   "endAnchor": "cs329h-u04-c05-identifiability-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c05-identifiability-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c05-identifiability-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u04-c05-identifiability-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "singular information matrix",
+     "definition": "Some direction has zero information; the data cannot see it.",
+     "anchor": "cs329h-u04-c05-identifiability-p03"
+    },
+    {
+     "term": "null direction",
+     "definition": "The all-ones vector with I * 1 = 0 for unanchored Bradley-Terry.",
+     "anchor": "cs329h-u04-c05-identifiability-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c05-identifiability-r1",
+     "question": "What does design 1 versus design 2 show?",
+     "answer": "Design 1: I = [[2.35, 0],[0, 0]], det = 0, d2 unidentified. Design 2: det = 1.381.",
+     "anchor": "cs329h-u04-c05-identifiability-p06"
+    },
+    {
+     "id": "cs329h-u04-c05-identifiability-r2",
+     "question": "What does near-singular mean?",
+     "answer": "Weak identification with huge but finite variances.",
+     "anchor": "cs329h-u04-c05-identifiability-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c06-asymptotic-variance",
+   "title": "cs329h-U04-C06: asymptotic variance",
+   "minutes": 3,
+   "endAnchor": "cs329h-u04-c06-asymptotic-variance-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c06-asymptotic-variance-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c06-asymptotic-variance-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u04-c06-asymptotic-variance-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "asymptotic variance",
+     "definition": "About 1/(n I) for the MLE; invert it to size the study.",
+     "anchor": "cs329h-u04-c06-asymptotic-variance-p01"
+    },
+    {
+     "term": "n = 84",
+     "definition": "The sample size for SE 0.05 on the toy.",
+     "anchor": "cs329h-u04-c06-asymptotic-variance-p06"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c06-asymptotic-variance-r1",
+     "question": "How does SE fall with n?",
+     "answer": "0.145 at n = 10 to 0.014 at n = 1000.",
+     "anchor": "cs329h-u04-c06-asymptotic-variance-p05"
+    },
+    {
+     "id": "cs329h-u04-c06-asymptotic-variance-r2",
+     "question": "When is the asymptotic SE only approximate?",
+     "answer": "At n = 10, where the true sampling distribution is skewed.",
+     "anchor": "cs329h-u04-c06-asymptotic-variance-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c07-candidate-query-information",
+   "title": "cs329h-U04-C07: candidate query information",
+   "minutes": 3,
+   "endAnchor": "cs329h-u04-c07-candidate-query-information-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c07-candidate-query-information-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c07-candidate-query-information-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u04-c07-candidate-query-information-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "close contests",
+     "definition": "Gap near 0 carries the most information; foregone conclusions carry almost none.",
+     "anchor": "cs329h-u04-c07-candidate-query-information-p03"
+    },
+    {
+     "term": "Bernoulli variance",
+     "definition": "The Fisher information for the gap at p = sigma(d), peaking at p = 0.5.",
+     "anchor": "cs329h-u04-c07-candidate-query-information-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c07-candidate-query-information-r1",
+     "question": "How much does each gap teach?",
+     "answer": "Gap 0: 0.250, gap 1: 0.197, gap 2: 0.105; the gap-2 pair teaches less than half the gap-0 pair.",
+     "anchor": "cs329h-u04-c07-candidate-query-information-p06"
+    },
+    {
+     "id": "cs329h-u04-c07-candidate-query-information-r2",
+     "question": "What misranks queries?",
+     "answer": "Wrong gap estimates: a pair believed close but actually far wastes the label.",
+     "anchor": "cs329h-u04-c07-candidate-query-information-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c08-design-criteria",
+   "title": "cs329h-U04-C08: design criteria",
+   "minutes": 3,
+   "endAnchor": "cs329h-u04-c08-design-criteria-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c08-design-criteria-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c08-design-criteria-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "A-optimality",
+     "definition": "Minimizes the average variance, the trace of the inverse.",
+     "anchor": "cs329h-u04-c08-design-criteria-p03"
+    },
+    {
+     "term": "D-optimality",
+     "definition": "Maximizes the volume of information, the determinant.",
+     "anchor": "cs329h-u04-c08-design-criteria-p01"
+    },
+    {
+     "term": "blind spots",
+     "definition": "What both criteria punish.",
+     "anchor": "cs329h-u04-c08-design-criteria-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c08-design-criteria-r1",
+     "question": "How do the criteria rank the designs?",
+     "answer": "Design 1: A = infinity, D = 0. Design 2: A = 1.70, D = 1.38. Both prefer design 2 infinitely.",
+     "anchor": "cs329h-u04-c08-design-criteria-p05"
+    },
+    {
+     "id": "cs329h-u04-c08-design-criteria-r2",
+     "question": "When do the criteria mislead?",
+     "answer": "When the guessed gaps are wrong; design 2 looks best at gap 0.5 but true gaps of 3.0 carry little information either way.",
+     "anchor": "cs329h-u04-c08-design-criteria-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c09-active-data-selection",
+   "title": "cs329h-U04-C09: active data selection",
+   "minutes": 3,
+   "endAnchor": "cs329h-u04-c09-active-data-selection-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c09-active-data-selection-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c09-active-data-selection-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u04-c09-active-data-selection-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "active selection",
+     "definition": "Always asks the currently most informative question, then updates beliefs, then asks again.",
+     "anchor": "cs329h-u04-c09-active-data-selection-p01"
+    },
+    {
+     "term": "greedy",
+     "definition": "Banks 0.248 information per label against random's 0.177.",
+     "anchor": "cs329h-u04-c09-active-data-selection-p01"
+    },
+    {
+     "term": "myopia",
+     "definition": "Greedy ignores how today's query changes tomorrow's scores.",
+     "anchor": "cs329h-u04-c09-active-data-selection-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c09-active-data-selection-r1",
+     "question": "Greedy versus random after 30 labels?",
+     "answer": "Variance 0.119 greedy versus 0.159 random; greedy needs about 25% fewer labels.",
+     "anchor": "cs329h-u04-c09-active-data-selection-p06"
+    },
+    {
+     "id": "cs329h-u04-c09-active-data-selection-r2",
+     "question": "What does greedy never pick?",
+     "answer": "Two queries that are jointly informative but weak alone.",
+     "anchor": "cs329h-u04-c09-active-data-selection-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c10-budget",
+   "title": "cs329h-U04-C10: budget",
+   "minutes": 3,
+   "endAnchor": "cs329h-u04-c10-budget-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c10-budget-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c10-budget-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u04-c10-budget-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "knee",
+     "definition": "The point where the next label buys less than it costs.",
+     "anchor": "cs329h-u04-c10-budget-p03"
+    },
+    {
+     "term": "MSE",
+     "definition": "Falls 0.60 at n = 10 to 0.01 at n = 500 on the simulated curve.",
+     "anchor": "cs329h-u04-c10-budget-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c10-budget-r1",
+     "question": "Where do the first 50 labels land?",
+     "answer": "MSE 0.17 at n = 50; the first 50 labels buy most of the precision.",
+     "anchor": "cs329h-u04-c10-budget-p05"
+    },
+    {
+     "id": "cs329h-u04-c10-budget-r2",
+     "question": "What is non-monotone error?",
+     "answer": "A bad batch of labels can raise the error temporarily, e.g. adversarial annotators in the second batch.",
+     "anchor": "cs329h-u04-c10-budget-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c11-noise-effects",
+   "title": "cs329h-U04-C11: noise effects",
+   "minutes": 3,
+   "endAnchor": "cs329h-u04-c11-noise-effects-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c11-noise-effects-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c11-noise-effects-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u04-c11-noise-effects-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "relative information",
+     "definition": "Falls 1.00 to 0.00 for q = 0 to 0.5.",
+     "anchor": "cs329h-u04-c11-noise-effects-p05"
+    },
+    {
+     "term": "q = 0.3",
+     "definition": "Each label carries 13% of clean information, so about 7.7x the labels are needed.",
+     "anchor": "cs329h-u04-c11-noise-effects-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c11-noise-effects-r1",
+     "question": "How many labels at q = 0.3?",
+     "answer": "About 7.7x: relative information 0.130.",
+     "anchor": "cs329h-u04-c11-noise-effects-p06"
+    },
+    {
+     "id": "cs329h-u04-c11-noise-effects-r2",
+     "question": "What breaks the single-q formula?",
+     "answer": "Item-dependent noise, like hard pairs flipped more often.",
+     "anchor": "cs329h-u04-c11-noise-effects-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u04-c12-validation",
+   "title": "cs329h-U04-C12: validation",
+   "minutes": 2,
+   "endAnchor": "cs329h-u04-c12-validation-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u04-c12-validation-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u04-c12-validation-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "validation",
+     "definition": "Checking the design's promise against reality: achieved SEs, interval coverage, held-out loss.",
+     "anchor": "cs329h-u04-c12-validation-p03"
+    },
+    {
+     "term": "Goodhart",
+     "definition": "Optimizing the validation metric instead of the decision quality.",
+     "anchor": "cs329h-u04-c12-validation-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u04-c12-validation-r1",
+     "question": "What are the three checks?",
+     "answer": "Compare achieved SEs to planned SEs; check interval coverage on held-out data; compare the active-selection gain against the predicted gain.",
+     "anchor": "cs329h-u04-c12-validation-p05"
+    },
+    {
+     "id": "cs329h-u04-c12-validation-r2",
+     "question": "What does an achieved SE of 0.09 mean?",
+     "answer": "Against a planned 0.046, information came in at one quarter the planned rate: investigate noise or bad gap guesses.",
+     "anchor": "cs329h-u04-c12-validation-p06"
+    }
+   ]
+  }
+ ]
+}

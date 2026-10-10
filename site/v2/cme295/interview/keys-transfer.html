@@ -98,9 +98,10 @@
       <h1>Interview · Transfer keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="transfer-sets-key">Transfer sets key</h1>
-<p>Full keys for <code>transfer-sets.md</code>. Closed-book.</p>
+<p id="transfer-sets-key-p01" data-kind="keyIdea" data-reveal="rise" data-term="transfer-sets.md">Full keys for <code>transfer-sets.md</code>. Closed-book.</p>
+<span id="transfer-sets-key-end" data-end></span>
 <h2 id="t1">T1</h2>
-<ol>
+<ol id="t1-list01" data-kind="example" data-term="fertility explodes">
 <li>Strong: rare words shatter into many byte tokens, fertility
    explodes, and the model loses subword morphology. The merge
    table was the compression.</li>
@@ -110,8 +111,9 @@
 <li>Strong: fertility rises, so the same text costs more tokens,
    latency rises linearly with token count.</li>
 </ol>
+<span id="t1-end" data-end></span>
 <h2 id="t2">T2</h2>
-<ol>
+<ol id="t2-list01" data-kind="example" data-term="off-distribution">
 <li>Strong: RoPE rotation angles beyond the trained range are
    unseen, attention scores go off-distribution, the model
    babbles past 4k.</li>
@@ -122,8 +124,9 @@
    documents, plus a needle-in-haystack retrieval probe you
    build yourself.</li>
 </ol>
+<span id="t2-end" data-end></span>
 <h2 id="t3">T3</h2>
-<ol>
+<ol id="t3-list01" data-kind="example" data-term="dead expert">
 <li>Strong: they hit a dead expert, outputs degrade or the
    router must redistribute. Naive fallback drops them.</li>
 <li>Strong: redistribute to the next-best expert per token, or
@@ -132,8 +135,9 @@
    everywhere), imbalanced routing concentrates it (some
    tokens destroyed, most fine).</li>
 </ol>
+<span id="t3-end" data-end></span>
 <h2 id="t4">T4</h2>
-<ol>
+<ol id="t4-list01" data-kind="example" data-term="1,048,576 bytes">
 <li>Strong: per rank: 32 layers x 2 adapted matrices x
    r(4096+4096) params x 2 bytes = 64 x 8192 x 2 =
    1,048,576 bytes. 20 MiB / 1,048,576 = 20. Max rank 20
@@ -146,8 +150,9 @@
 <li>Strong: when rank 20 cannot move the needle on the eval,
    or when the task needs full-rank changes (new domain).</li>
 </ol>
+<span id="t4-end" data-end></span>
 <h2 id="t5">T5</h2>
-<ol>
+<ol id="t5-list01" data-kind="example" data-term="5% signal">
 <li>Strong: mostly noise. The BT loss fits the 5% signal and
    95% label noise, the reward becomes a noise amplifier.</li>
 <li>Strong: pilot a clearer rubric on 200 pairs and re-label,
@@ -156,8 +161,9 @@
 <li>Strong: neither trains well, but DPO fails cheaper and
    faster. Fix the data first, the algorithm second.</li>
 </ol>
+<span id="t5-end" data-end></span>
 <h2 id="t6">T6</h2>
-<ol>
+<ol id="t6-list01" data-kind="example" data-term="32 minutes">
 <li>Strong: 64 x 30 s = 32 minutes of verifier time per step,
    serial. Parallel workers divide it, but the bill stands.</li>
 <li>Strong: cache verifier results per (prompt, program hash),
@@ -167,8 +173,9 @@
    verifier above 0.9 and the speed ratio exceeds 10x. Then
    audit with the slow one weekly.</li>
 </ol>
+<span id="t6-end" data-end></span>
 <h2 id="t7">T7</h2>
-<ol>
+<ol id="t7-list01" data-kind="example" data-term="delimiters">
 <li>Strong: at retrieval, the hostile page enters the context
    as a trusted-looking document. The model reads it as data
    and obeys it as instruction.</li>
@@ -179,8 +186,9 @@
 <li>Strong: stop, do not act on the injected instruction, log
    the attempt, and either ask the user or skip the document.</li>
 </ol>
+<span id="t7-end" data-end></span>
 <h2 id="t8">T8</h2>
-<ol>
+<ol id="t8-list01" data-kind="example" data-term="position bias">
 <li>Strong: position bias. Every close call may be an order
    artifact.</li>
 <li>Strong: randomize which model goes first per pair (halves
@@ -190,8 +198,9 @@
    uncorrected&rdquo;, widen the tie band, and refuse to rank
    models within the bias margin.</li>
 </ol>
+<span id="t8-end" data-end></span>
 <h2 id="t9">T9</h2>
-<ol>
+<ol id="t9-list01" data-kind="example" data-term="confidence-thresholded unmasking">
 <li>Strong: confidence-thresholded unmasking (fewer, safer
    steps) and a final autoregressive polish pass on the
    uncertain tokens.</li>
@@ -200,8 +209,9 @@
 <li>Strong: when the knee sits above your latency budget.
    Then serial is the product answer.</li>
 </ol>
+<span id="t9-end" data-end></span>
 <h2 id="t10">T10</h2>
-<ol>
+<ol id="t10-list01" data-kind="example" data-term="three sinks">
 <li>Strong: model calls (the trace is long), tool latency
    (search is slow), and the observation round trips.</li>
 <li>Strong: cap the trace (fewer steps, same tools) and
@@ -214,7 +224,8 @@
       <nav class="pager"><a href="../interview/transfer-sets.html"><span class="lbl">← Previous</span>Interview · Transfer sets</a><a href="../capstones/research_grpo_extension.html"><span class="lbl">Next →</span>Capstone · Research</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="t10-p01" data-kind="prose" data-term="parallelize">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="t10-end" data-end></span>
     </footer>
   </main>
 </div>

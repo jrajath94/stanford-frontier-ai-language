@@ -1,0 +1,295 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-interview-u05_questions",
+ "itemKind": "lesson",
+ "revision": "35e2e3f50c0cb742ae81d694bff78835110ba7a6e2ab6e6039b84100e7e42c8d",
+ "sections": [
+  {
+   "anchor": "interview-bank-u05-attention-and-transformers",
+   "title": "Interview bank , U05 Attention and transformers",
+   "minutes": 1,
+   "endAnchor": "interview-bank-u05-attention-and-transformers-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "interview bank",
+     "definition": "The closed-book question set for the unit.",
+     "anchor": "interview-bank-u05-attention-and-transformers"
+    },
+    {
+     "term": "attention and transformers",
+     "definition": "The subject of this interview bank.",
+     "anchor": "interview-bank-u05-attention-and-transformers"
+    }
+   ],
+   "recall": [
+    {
+     "id": "interview-bank-u05-attention-and-transformers-r1",
+     "question": "What unit does this bank cover?",
+     "answer": "U05 Attention and transformers.",
+     "anchor": "interview-bank-u05-attention-and-transformers"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth-6",
+   "title": "Breadth (6)",
+   "minutes": 1,
+   "endAnchor": "breadth-6-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "query",
+     "definition": "One of three projections; asks what to look for.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "key",
+     "definition": "One of three projections; says what each position offers.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "value",
+     "definition": "One of three projections; carries the content.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "sqrt(d_k)",
+     "definition": "The divisor on attention scores.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "multi-head attention",
+     "definition": "What it adds over one wide head.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "causal mask",
+     "definition": "Goes before softmax, not after.",
+     "anchor": "breadth-6-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-6-r1",
+     "question": "What does Q4 ask about the mask?",
+     "answer": "Where the causal mask goes, and why not after softmax.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r2",
+     "question": "What does Q3 contrast?",
+     "answer": "Multi-head attention with one wide head.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r3",
+     "question": "What does Q6 ask?",
+     "answer": "Why attention needs position encodings at all.",
+     "anchor": "breadth-6-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders-2-x-5",
+   "title": "Deep ladders (2 x 5)",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-2-x-5-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "convex blend",
+     "definition": "The attention output; weights sum to 1.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "Var(q.k)",
+     "definition": "Equals d_k; the L2 derivation.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "term": "leaking mask",
+     "definition": "What the L2 experiment must catch.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "term": "entropy pair",
+     "definition": "Unscaled versus scaled entropy.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-2-x-5-r1",
+     "question": "What does L1 ask you to explain?",
+     "answer": "How two models can share attention weights but differ in outputs.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r2",
+     "question": "What does L2 ask you to prove?",
+     "answer": "That exp(-1e9) = 0 makes the mask exact.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r3",
+     "question": "What experiment does L2 design?",
+     "answer": "The experiment that catches a leaking mask.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-2",
+   "title": "Analytical (2)",
+   "minutes": 1,
+   "endAnchor": "analytical-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "post-norm",
+     "definition": "Will not train without warmup; the pre-norm twin trains fine.",
+     "anchor": "analytical-2-p01"
+    },
+    {
+     "term": "warmup",
+     "definition": "The cheapest fix for the post-norm run.",
+     "anchor": "analytical-2-p01"
+    },
+    {
+     "term": "14x",
+     "definition": "The step-time jump for 2k to 8k context, not 4x.",
+     "anchor": "analytical-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-2-r1",
+     "question": "What mechanism does Q7 ask for?",
+     "answer": "The mechanism behind the post-norm versus pre-norm difference.",
+     "anchor": "analytical-2-p01"
+    },
+    {
+     "id": "analytical-2-r2",
+     "question": "What term does Q8 blame?",
+     "answer": "The term explaining 14x step time for 4x context.",
+     "anchor": "analytical-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebugging-1",
+   "title": "Implementation/debugging (1)",
+   "minutes": 1,
+   "endAnchor": "implementationdebugging-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "repetition",
+     "definition": "The decoder drifts into it after 50 good tokens.",
+     "anchor": "implementationdebugging-1-p01"
+    },
+    {
+     "term": "50 tokens",
+     "definition": "How long generation stays good.",
+     "anchor": "implementationdebugging-1-p01"
+    },
+    {
+     "term": "one-line fix",
+     "definition": "What each check points to.",
+     "anchor": "implementationdebugging-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebugging-1-r1",
+     "question": "What is the Q9 symptom?",
+     "answer": "Good generation for 50 tokens, then repetition.",
+     "anchor": "implementationdebugging-1-p01"
+    },
+    {
+     "id": "implementationdebugging-1-r2",
+     "question": "What must the answer list?",
+     "answer": "The checks in order, with the one-line fix each points to.",
+     "anchor": "implementationdebugging-1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-2",
+   "title": "Changed-constraint (2)",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "4GB GPU",
+     "definition": "The inference budget; the KV cache alone is 6GB.",
+     "anchor": "changed-constraint-2-p01"
+    },
+    {
+     "term": "6GB cache",
+     "definition": "What must shrink to fit.",
+     "anchor": "changed-constraint-2-p01"
+    },
+    {
+     "term": "readout",
+     "definition": "What changes when the task becomes classification.",
+     "anchor": "changed-constraint-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-2-r1",
+     "question": "What does Q10 ask for?",
+     "answer": "Three moves in order of desperation.",
+     "anchor": "changed-constraint-2-p01"
+    },
+    {
+     "id": "changed-constraint-2-r2",
+     "question": "What three things change in Q11?",
+     "answer": "The mask, the readout, and the loss.",
+     "anchor": "changed-constraint-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique-1",
+   "title": "Research critique (1)",
+   "minutes": 1,
+   "endAnchor": "research-critique-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "looks at",
+     "definition": "The claim: attention weights show what the model looks at.",
+     "anchor": "research-critique-1-p01"
+    },
+    {
+     "term": "steelman",
+     "definition": "The strongest version of the claim.",
+     "anchor": "research-critique-1-p02"
+    },
+    {
+     "term": "counterexample",
+     "definition": "The strongest one from this unit.",
+     "anchor": "research-critique-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-1-r1",
+     "question": "What claim does Q12 target?",
+     "answer": "'Attention weights show what the model looks at.'",
+     "anchor": "research-critique-1-p01"
+    },
+    {
+     "id": "research-critique-1-r2",
+     "question": "What must the answer give?",
+     "answer": "The steelman, then the strongest counterexample from this unit.",
+     "anchor": "research-critique-1-p01"
+    }
+   ]
+  }
+ ]
+}

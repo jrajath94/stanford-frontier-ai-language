@@ -1,0 +1,622 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-lessons-u11_reasoning_testtime",
+ "itemKind": "lesson",
+ "revision": "8ce95921c52edb81656a1423633e246751e15267db4ac24e28953184f505e5de",
+ "sections": [
+  {
+   "anchor": "u11_reasoning_testtime-intro-p01",
+   "title": "U11 \u00b7 Reasoning and test-time compute",
+   "minutes": 1,
+   "endAnchor": "u11_reasoning_testtime-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u11_reasoning_testtime-intro-p01",
+     "definition": "Instructor.",
+     "term": "Prof. Christopher Manning"
+    },
+    {
+     "anchor": "u11_reasoning_testtime-intro-p01",
+     "definition": "Build date of the unit\u2019s figures.",
+     "term": "2026-10-06"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u11_reasoning_testtime-intro-p01",
+     "answer": "U11 \u00b7 Reasoning and test-time compute.",
+     "id": "u11_reasoning_testtime-intro-r1",
+     "question": "What unit is this?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation",
+   "title": "local remediation",
+   "minutes": 1,
+   "endAnchor": "local-remediation-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Voting helps when errors are independent.",
+     "term": "R1"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Voting hurts below 0.5. Check p first.",
+     "term": "R2"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Spread beats depth.",
+     "term": "R3"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-p02",
+     "answer": "At p=0.4: majority of 5 gives 0.3174, of 11 gives 0.2465. Voting hurts below 0.5.",
+     "id": "local-remediation-r1",
+     "question": "What is R2?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-reasoning-supervision",
+   "title": "c01: reasoning supervision",
+   "minutes": 3,
+   "endAnchor": "c01-reasoning-supervision-end",
+   "blocks": [
+    {
+     "anchor": "c01-reasoning-supervision-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-reasoning-supervision-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-reasoning-supervision-p04",
+     "definition": "Point it at the steps and the model learns checkable work.",
+     "term": "Supervision is a spotlight"
+    },
+    {
+     "anchor": "c01-reasoning-supervision-p05",
+     "definition": "Labeling 1000 steps costs 10x labeling 1000 answers.",
+     "term": "step labels"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-reasoning-supervision-p03",
+     "answer": "Checkable work, not proven causality: the steps are still not proven causal.",
+     "id": "c01-reasoning-supervision-r1",
+     "question": "What does step supervision buy?"
+    },
+    {
+     "anchor": "c01-reasoning-supervision-p07",
+     "answer": "Steps or more answers? Labeling 1000 steps costs 10x labeling 1000 answers.",
+     "id": "c01-reasoning-supervision-r2",
+     "question": "What is the cost question?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-verifiable-reward",
+   "title": "c02: verifiable reward",
+   "minutes": 3,
+   "endAnchor": "c02-verifiable-reward-end",
+   "blocks": [
+    {
+     "anchor": "c02-verifiable-reward-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-verifiable-reward-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-verifiable-reward-p04",
+     "definition": "A learned reward is a lock the model can pick.",
+     "term": "A verifiable reward is a lock with one key"
+    },
+    {
+     "anchor": "c02-verifiable-reward-p03",
+     "definition": "Verifiable rewards trade generality for honesty.",
+     "term": "the reward is the task"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-verifiable-reward-p07",
+     "answer": "100 math items: reward 1 on 63, 0 on 37. No judge in the loop.",
+     "id": "c02-verifiable-reward-r1",
+     "question": "What was the toy RL?"
+    },
+    {
+     "anchor": "c02-verifiable-reward-p12",
+     "answer": "A buggy test suite: the model learns the exploit and scores 1 on wrong code.",
+     "id": "c02-verifiable-reward-r2",
+     "question": "What is the verifier failure?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-deepseek-r1dapo-readings",
+   "title": "c03: deepseek-r1/dapo readings",
+   "minutes": 2,
+   "endAnchor": "c03-deepseek-r1dapo-readings-end",
+   "blocks": [
+    {
+     "anchor": "c03-deepseek-r1dapo-readings-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-deepseek-r1dapo-readings-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-deepseek-r1dapo-readings-p04",
+     "definition": "Title known, claims unverified, paper not opened.",
+     "term": "A reading list is a map, not the territory"
+    },
+    {
+     "anchor": "c03-deepseek-r1dapo-readings-p05",
+     "definition": "Stops title-dropping from becoming knowledge-claims.",
+     "term": "reading card"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-deepseek-r1dapo-readings-p09",
+     "answer": "No content claim appears without a read status of \u201cread\u201d.",
+     "id": "c03-deepseek-r1dapo-readings-r1",
+     "question": "What is the honesty rule?"
+    },
+    {
+     "anchor": "c03-deepseek-r1dapo-readings-p07",
+     "answer": "The card: title known from the S15 list, content not inspected.",
+     "id": "c03-deepseek-r1dapo-readings-r2",
+     "question": "What is the deliverable for unread papers?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-outcomeprocess-verification",
+   "title": "c04: outcome/process verification",
+   "minutes": 3,
+   "endAnchor": "c04-outcomeprocess-verification-end",
+   "blocks": [
+    {
+     "anchor": "c04-outcomeprocess-verification-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-outcomeprocess-verification-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-outcomeprocess-verification-p04",
+     "definition": "Process verification is the inspector on the line.",
+     "term": "Outcome verification is the bouncer at the exit"
+    },
+    {
+     "anchor": "c04-outcomeprocess-verification-p07",
+     "definition": "Process is stricter and 5x the cost.",
+     "term": "process keeps 2"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-outcomeprocess-verification-p07",
+     "answer": "10 traces: outcome keeps 4, process keeps 2.",
+     "id": "c04-outcomeprocess-verification-r1",
+     "question": "What was the toy selection?"
+    },
+    {
+     "anchor": "c04-outcomeprocess-verification-p12",
+     "answer": "Every step checks out, the conclusion is a non sequitur.",
+     "id": "c04-outcomeprocess-verification-r2",
+     "question": "What is the non-sequitur failure?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-repeated-sampling",
+   "title": "c05: repeated sampling",
+   "minutes": 2,
+   "endAnchor": "c05-repeated-sampling-end",
+   "blocks": [
+    {
+     "anchor": "c05-repeated-sampling-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-repeated-sampling-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-repeated-sampling-p04",
+     "definition": "Each draw is a guess, the majority is the committee.",
+     "term": "Sampling is a second chance machine"
+    },
+    {
+     "anchor": "c05-repeated-sampling-p06",
+     "definition": "At p=0.6 the tail grows with n, at p=0.4 it shrinks.",
+     "term": "the binomial tail"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-repeated-sampling-p07",
+     "answer": "0.6000, 0.6826, 0.7535, 0.8256 at n=1, 5, 11, 21. Gains shrink.",
+     "id": "c05-repeated-sampling-r1",
+     "question": "What was the toy curve?"
+    },
+    {
+     "anchor": "c05-repeated-sampling-p12",
+     "answer": "The model repeats its favorite wrong answer 21 times.",
+     "id": "c05-repeated-sampling-r2",
+     "question": "What is the correlated-errors failure?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-self-consistency",
+   "title": "c06: self-consistency",
+   "minutes": 2,
+   "endAnchor": "c06-self-consistency-end",
+   "blocks": [
+    {
+     "anchor": "c06-self-consistency-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-self-consistency-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-self-consistency-p03",
+     "definition": "Diverse paths that converge are stronger evidence than one path.",
+     "term": "Stability is the signal"
+    },
+    {
+     "anchor": "c06-self-consistency-p05",
+     "definition": "Errors independent across draws: the assumption every vote rests on.",
+     "term": "the load-bearing one"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-self-consistency-p04",
+     "answer": "C05 with reasoning traces: sample diverse paths, vote the answers.",
+     "id": "c06-self-consistency-r1",
+     "question": "What is self-consistency?"
+    },
+    {
+     "anchor": "c06-self-consistency-p12",
+     "answer": "5 identical paths: the vote is theater.",
+     "id": "c06-self-consistency-r2",
+     "question": "What is the temperature-0 theater?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-compute-allocation",
+   "title": "c07: compute allocation",
+   "minutes": 2,
+   "endAnchor": "c07-compute-allocation-end",
+   "blocks": [
+    {
+     "anchor": "c07-compute-allocation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-compute-allocation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-compute-allocation-p04",
+     "definition": "Diminishing returns: water broadly.",
+     "term": "The budget is water, the prompts are plants"
+    },
+    {
+     "anchor": "c07-compute-allocation-p03",
+     "definition": "Spread wins under concave gains.",
+     "term": "10 x 10"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-compute-allocation-p07",
+     "answer": "100 samples: 10x10 gives 3.935, 1x100 gives 0.993.",
+     "id": "c07-compute-allocation-r1",
+     "question": "What was the toy allocation?"
+    },
+    {
+     "anchor": "c07-compute-allocation-p12",
+     "answer": "Threshold tasks: needs 50 samples to click, spreading gives 10x10=0.",
+     "id": "c07-compute-allocation-r2",
+     "question": "When does spreading break?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-speculative-decode",
+   "title": "c08: speculative decode",
+   "minutes": 3,
+   "endAnchor": "c08-speculative-decode-end",
+   "blocks": [
+    {
+     "anchor": "c08-speculative-decode-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-speculative-decode-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-speculative-decode-p04",
+     "definition": "The output is exactly the big model\u2019s, only faster.",
+     "term": "The small model proposes, the big model disposes"
+    },
+    {
+     "anchor": "c08-speculative-decode-p06",
+     "definition": "Expected accepted tokens per pass: (1 - a^(g+1)) / (1 - a).",
+     "term": "2.941"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-speculative-decode-p07",
+     "answer": "Draft 5, accept p=0.7: expected 2.941 accepted per pass.",
+     "id": "c08-speculative-decode-r1",
+     "question": "What was the toy speculation?"
+    },
+    {
+     "anchor": "c08-speculative-decode-p12",
+     "answer": "A draft at half the target\u2019s cost with a=0.3: overhead exceeds the gain.",
+     "id": "c08-speculative-decode-r2",
+     "question": "What is the draft-cost failure?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-evaluation-bias",
+   "title": "c09: evaluation bias",
+   "minutes": 2,
+   "endAnchor": "c09-evaluation-bias-end",
+   "blocks": [
+    {
+     "anchor": "c09-evaluation-bias-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-evaluation-bias-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-evaluation-bias-p04",
+     "definition": "Control for it or measure typing skill.",
+     "term": "trace length looks like thought"
+    },
+    {
+     "anchor": "c09-evaluation-bias-p07",
+     "definition": "Report the blinded number.",
+     "term": "the 0.09"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-evaluation-bias-p07",
+     "answer": "Judge prefers longer trace 0.62, blinded 0.53: bias 0.09.",
+     "id": "c09-evaluation-bias-r1",
+     "question": "What was the toy eval bias?"
+    },
+    {
+     "anchor": "c09-evaluation-bias-p12",
+     "answer": "The trace is gibberish but the answer is right, and the eval rewards the pair.",
+     "id": "c09-evaluation-bias-r2",
+     "question": "What is the gibberish-trace failure?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-failure-analysis",
+   "title": "c10: failure analysis",
+   "minutes": 2,
+   "endAnchor": "c10-failure-analysis-end",
+   "blocks": [
+    {
+     "anchor": "c10-failure-analysis-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-failure-analysis-p17",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-failure-analysis-p05",
+     "definition": "wrong tool 14, bad args 11, no stop 9, retrieval miss 12, rationalized trace 8, other 6.",
+     "term": "the six classes"
+    },
+    {
+     "anchor": "c10-failure-analysis-p04",
+     "definition": "The new failure class.",
+     "term": "rationalization"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-failure-analysis-p07",
+     "answer": "60 traces: wrong tool 14, retrieval miss 12 dominate: nearly half.",
+     "id": "c10-failure-analysis-r1",
+     "question": "What was the toy failure count?"
+    },
+    {
+     "anchor": "c10-failure-analysis-p04",
+     "answer": "Count first, fix the biggest class.",
+     "id": "c10-failure-analysis-r2",
+     "question": "What is the fix order?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-cost-quality",
+   "title": "c11: cost-quality",
+   "minutes": 2,
+   "endAnchor": "c11-cost-quality-end",
+   "blocks": [
+    {
+     "anchor": "c11-cost-quality-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-cost-quality-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-cost-quality-p04",
+     "definition": "The knee is where the menu stops being worth it.",
+     "term": "The frontier is the menu"
+    },
+    {
+     "anchor": "c11-cost-quality-p03",
+     "definition": "Spend to the knee, not past it.",
+     "term": "the knee"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-cost-quality-p03",
+     "answer": "(1, 0.55), (4, 0.68), (16, 0.75), (64, 0.79). Knee near 16.",
+     "id": "c11-cost-quality-r1",
+     "question": "What was the toy frontier?"
+    },
+    {
+     "anchor": "c11-cost-quality-p12",
+     "answer": "A new prompt shifts the whole curve: re-measure per prompt family.",
+     "id": "c11-cost-quality-r2",
+     "question": "What shifts the knee?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-limits-of-trace-evidence",
+   "title": "c12: limits of trace evidence",
+   "minutes": 2,
+   "endAnchor": "c12-limits-of-trace-evidence-end",
+   "blocks": [
+    {
+     "anchor": "c12-limits-of-trace-evidence-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-limits-of-trace-evidence-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-limits-of-trace-evidence-p04",
+     "definition": "Treat traces as evidence, not as proof.",
+     "term": "A trace is a story the model tells about its answer"
+    },
+    {
+     "anchor": "c12-limits-of-trace-evidence-p06",
+     "definition": "No change means the step did not cause the answer.",
+     "term": "the corruption test"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-limits-of-trace-evidence-p07",
+     "answer": "20 traces, corrupt the middle step, 14 answers unchanged.",
+     "id": "c12-limits-of-trace-evidence-r1",
+     "question": "What was the toy corruption?"
+    },
+    {
+     "anchor": "c12-limits-of-trace-evidence-p12",
+     "answer": "Nothing about deceit: redundant reasoning is steady under corruption too.",
+     "id": "c12-limits-of-trace-evidence-r2",
+     "question": "What does failing the test prove?"
+    }
+   ]
+  },
+  {
+   "anchor": "unit-visual-map",
+   "title": "unit visual map",
+   "minutes": 1,
+   "endAnchor": "unit-visual-map-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "Majority vote at p=0.6: 0.600 to 0.826.",
+     "term": "majority plate"
+    },
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "Spec decode: 2.94 tokens per draft pass.",
+     "term": "spec plate"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "unit-visual-map-end",
+     "answer": "Majority-vote plate, spec-decode plate, allocation plate.",
+     "id": "unit-visual-map-r1",
+     "question": "What three figures does the unit carry?"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,622 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-lessons-u03_neural_parsing",
+ "itemKind": "lesson",
+ "revision": "b6fb741d4b21b4d0923d9b949f38f6beddd65efc5daaaddb37287ae62d83f9d1",
+ "sections": [
+  {
+   "anchor": "u03_neural_parsing-intro-p01",
+   "title": "U03 \u00b7 Neural fundamentals and dependency parsing",
+   "minutes": 1,
+   "endAnchor": "u03_neural_parsing-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u03_neural_parsing-intro-p02",
+     "definition": "For the session and A2 titles (SRC-03).",
+     "term": "OFFICIAL-SOURCE"
+    },
+    {
+     "anchor": "u03_neural_parsing-intro-p02",
+     "definition": "For the concept inventory below.",
+     "term": "REQUESTED-BRANCH"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u03_neural_parsing-intro-p02",
+     "answer": "S04 (Winter 2026: Tue Jan 13, Backpropagation and Neural Network Basics, A2 out).",
+     "id": "u03_neural_parsing-intro-r1",
+     "question": "What is the session anchor for U03?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-the-computational-graph-and-the-chain-rule",
+   "title": "local remediation , the computational graph and the chain rule",
+   "minutes": 1,
+   "endAnchor": "local-remediation-the-computational-graph-and-the-chain-rule-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-the-computational-graph-and-the-chain-rule-p02",
+     "definition": "A DAG of operations. Nodes hold values, edges carry them into operations.",
+     "term": "computational graph"
+    },
+    {
+     "anchor": "local-remediation-the-computational-graph-and-the-chain-rule-p03",
+     "definition": "Every gradient is a product of local derivatives along the path.",
+     "term": "chain rule"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-the-computational-graph-and-the-chain-rule-p03",
+     "answer": "df/dx = 4, df/dy = 4, df/dz = 5 for f = (x+y) x z at (2,3,4).",
+     "id": "local-remediation-the-computational-graph-and-the-chain-rule-r1",
+     "question": "What were the toy gradients?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-computational-graph",
+   "title": "c01: computational graph",
+   "minutes": 4,
+   "endAnchor": "c01-computational-graph-end",
+   "blocks": [
+    {
+     "anchor": "c01-computational-graph-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-computational-graph-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-computational-graph-p06",
+     "definition": "Every node\u2019s parents come before it. Forward computes each node once.",
+     "term": "topological order"
+    },
+    {
+     "anchor": "c01-computational-graph-p06",
+     "definition": "One forward plus one backward pass, each O(edges). Cost independent of parameter count.",
+     "term": "reverse-mode differentiation"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-computational-graph-p04",
+     "answer": "Forward: water (values) flows to the loss. Backward: pressure (gradients) flows back, splitting at junctions.",
+     "id": "c01-computational-graph-r1",
+     "question": "State the plumbing model."
+    },
+    {
+     "anchor": "c01-computational-graph-p10",
+     "answer": "O(nodes): every intermediate value must be kept for the backward pass.",
+     "id": "c01-computational-graph-r2",
+     "question": "What does the backward pass cost in memory?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-batch-gradients",
+   "title": "c02: batch gradients",
+   "minutes": 3,
+   "endAnchor": "c02-batch-gradients-end",
+   "blocks": [
+    {
+     "anchor": "c02-batch-gradients-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-batch-gradients-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-batch-gradients-p04",
+     "definition": "The gradient grows with the batch. Mixing with mean silently rescales the lr.",
+     "term": "sum reduction"
+    },
+    {
+     "anchor": "c02-batch-gradients-p04",
+     "definition": "Gradient is batch-size independent in expectation. Frameworks default to mean.",
+     "term": "mean reduction"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-batch-gradients-p07",
+     "answer": "Sum 0.6, mean 0.15, B = 4. Switching mid-training changes steps 4x.",
+     "id": "c02-batch-gradients-r1",
+     "question": "Sum vs mean on the toy?"
+    },
+    {
+     "anchor": "c02-batch-gradients-p12",
+     "answer": "Gradient scale is the same but noise drops 5.7x from B=32 to 1024. Linear scaling is the starting rule.",
+     "id": "c02-batch-gradients-r2",
+     "question": "Why does best lr rise with batch size?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-stable-softmax",
+   "title": "c03: stable softmax",
+   "minutes": 3,
+   "endAnchor": "c03-stable-softmax-end",
+   "blocks": [
+    {
+     "anchor": "c03-stable-softmax-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-stable-softmax-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-stable-softmax-p05",
+     "definition": "Subtract the max before exponentiating. Same result, overflow impossible.",
+     "term": "stable softmax"
+    },
+    {
+     "anchor": "c03-stable-softmax-p06",
+     "definition": "The e^{-m} cancels. Pure algebra, purely numerical benefit.",
+     "term": "shift invariance"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-stable-softmax-p07",
+     "answer": "(nan, nan, nan). Stable returns (0.090, 0.245, 0.665), summing to 1.0.",
+     "id": "c03-stable-softmax-r1",
+     "question": "What did naive softmax return on (1000, 1001, 1002)?"
+    },
+    {
+     "anchor": "c03-stable-softmax-p12",
+     "answer": "Not a wrong model: the implementation overflowed. Check the numerics before the theory.",
+     "id": "c03-stable-softmax-r2",
+     "question": "What does nan usually mean?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-embeddings-as-parameters",
+   "title": "c04: embeddings as parameters",
+   "minutes": 3,
+   "endAnchor": "c04-embeddings-as-parameters-end",
+   "blocks": [
+    {
+     "anchor": "c04-embeddings-as-parameters-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-embeddings-as-parameters-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-embeddings-as-parameters-p06",
+     "definition": "dL/dE[i] sums gradients of all positions with id i. Repeated ids accumulate.",
+     "term": "scatter-add"
+    },
+    {
+     "anchor": "c04-embeddings-as-parameters-p04",
+     "definition": "Forward picks rows; backward scatters gradients to picked rows only.",
+     "term": "gradient mask"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-embeddings-as-parameters-p07",
+     "answer": "Row 1 got g1a + g1b, row 5 got g5. 3 nonzero rows out of 14.",
+     "id": "c04-embeddings-as-parameters-r1",
+     "question": "What got gradients in the toy?"
+    },
+    {
+     "anchor": "c04-embeddings-as-parameters-p09",
+     "answer": "Fancy indexing assignment overwrites repeated ids instead of accumulating. Use np.add.at.",
+     "id": "c04-embeddings-as-parameters-r2",
+     "question": "Why is E[ids] = grads wrong?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-chain-rule",
+   "title": "c05: chain rule",
+   "minutes": 3,
+   "endAnchor": "c05-chain-rule-end",
+   "blocks": [
+    {
+     "anchor": "c05-chain-rule-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-chain-rule-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-chain-rule-p06",
+     "definition": "Vector-Jacobian product. O(m + n) memory vs O(mn) for the full Jacobian.",
+     "term": "VJP"
+    },
+    {
+     "anchor": "c05-chain-rule-p05",
+     "definition": "The matrix of partial derivatives. Numerator layout: (dim output, dim input).",
+     "term": "Jacobian"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-chain-rule-p07",
+     "answer": "(48, 68). (6, 14) @ [[1,2],[3,4]]. Confirmed by finite differences to 1e-6.",
+     "id": "c05-chain-rule-r1",
+     "question": "What was dz/dx for the toy?"
+    },
+    {
+     "anchor": "c05-chain-rule-p12",
+     "answer": "Forgetting the batch axis: dz/dy with a batch is (B, m), needing batched matmul.",
+     "id": "c05-chain-rule-r2",
+     "question": "What is the most common shape bug?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-nonlinear-classifiers",
+   "title": "c06: nonlinear classifiers",
+   "minutes": 3,
+   "endAnchor": "c06-nonlinear-classifiers-end",
+   "blocks": [
+    {
+     "anchor": "c06-nonlinear-classifiers-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-nonlinear-classifiers-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-nonlinear-classifiers-p03",
+     "definition": "The labels no straight line separates. Linear models fail, folded space succeeds.",
+     "term": "XOR"
+    },
+    {
+     "anchor": "c06-nonlinear-classifiers-p07",
+     "definition": "MLP 0.7228 -> 0.0008, acc 1.0; linear stuck at 0.6931, 0.5.",
+     "term": "nonlinearity dividend"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-nonlinear-classifiers-p09",
+     "answer": "ReLU replaced by identity: accuracy stays 0.5. Depth without nonlinearity collapses.",
+     "id": "c06-nonlinear-classifiers-r1",
+     "question": "What proves depth needs nonlinearity?"
+    },
+    {
+     "anchor": "c06-nonlinear-classifiers-p12",
+     "answer": "Memorization: the net memorizes the near-duplicate noise, test accuracy drops.",
+     "id": "c06-nonlinear-classifiers-r2",
+     "question": "What goes wrong at h = 100 on 8 points?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-parsing-state-and-actions",
+   "title": "c07: parsing state and actions",
+   "minutes": 3,
+   "endAnchor": "c07-parsing-state-and-actions-end",
+   "blocks": [
+    {
+     "anchor": "c07-parsing-state-and-actions-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-parsing-state-and-actions-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-parsing-state-and-actions-p04",
+     "definition": "Move one word from buffer to stack. O(1).",
+     "term": "SHIFT"
+    },
+    {
+     "anchor": "c07-parsing-state-and-actions-p04",
+     "definition": "Second-to-top becomes dependent of top; the dependent is removed.",
+     "term": "LEFT-ARC"
+    },
+    {
+     "anchor": "c07-parsing-state-and-actions-p04",
+     "definition": "Top becomes dependent of second-to-top; the dependent is removed.",
+     "term": "RIGHT-ARC"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-parsing-state-and-actions-p07",
+     "answer": "SHIFT, SHIFT, LEFT-ARC, SHIFT, LEFT-ARC, RIGHT-ARC(root). Arcs: cat -> the (det), sat -> cat (nsubj), root -> sat.",
+     "id": "c07-parsing-state-and-actions-r1",
+     "question": "What were the 6 toy actions and arcs?"
+    },
+    {
+     "anchor": "c07-parsing-state-and-actions-p10",
+     "answer": "Each word is shifted once and popped once: 2n actions.",
+     "id": "c07-parsing-state-and-actions-r2",
+     "question": "Why is transition-based parsing O(n)?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-supervised-objective",
+   "title": "c08: supervised objective",
+   "minutes": 3,
+   "endAnchor": "c08-supervised-objective-end",
+   "blocks": [
+    {
+     "anchor": "c08-supervised-objective-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-supervised-objective-p17",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-supervised-objective-p07",
+     "definition": "Cross-entropy against the oracle action per step. The tree is never scored directly.",
+     "term": "action loss"
+    },
+    {
+     "anchor": "c08-supervised-objective-p11",
+     "definition": "Training sees oracle states; test follows its own predictions.",
+     "term": "exposure bias"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-supervised-objective-p07",
+     "answer": "Scores (0.2, 0.5, 2.1), oracle RIGHT-ARC: softmax (0.117, 0.158, 0.725), loss 0.322.",
+     "id": "c08-supervised-objective-r1",
+     "question": "What was the toy step loss?"
+    },
+    {
+     "anchor": "c08-supervised-objective-p13",
+     "answer": "All errors on the first action of long sentences: the parse derails early. Evaluate trees, not actions.",
+     "id": "c08-supervised-objective-r2",
+     "question": "Why can 95% action accuracy give a bad parse?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-optimization",
+   "title": "c09: optimization",
+   "minutes": 4,
+   "endAnchor": "c09-optimization-end",
+   "blocks": [
+    {
+     "anchor": "c09-optimization-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-optimization-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-optimization-p05",
+     "definition": "Per-parameter step size: first moment over root of second moment. Roughly sign-like.",
+     "term": "Adam"
+    },
+    {
+     "anchor": "c09-optimization-p06",
+     "definition": "Early m_t is pulled toward zero by initialization; the division removes the pull.",
+     "term": "bias correction"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-optimization-p07",
+     "answer": "lr 0.5 converges (x_10 = 0.001), lr 1.5 oscillates, lr 2.5 diverges.",
+     "id": "c09-optimization-r1",
+     "question": "What were the three lr behaviors on the quadratic?"
+    },
+    {
+     "anchor": "c09-optimization-p12",
+     "answer": "Yes. lr = 0.1 diverges the toy MLP while 0.5 converges. Adaptive is not automatic.",
+     "id": "c09-optimization-r2",
+     "question": "Does Adam need tuning?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-tensor-derivative-checks",
+   "title": "c10: tensor derivative checks",
+   "minutes": 3,
+   "endAnchor": "c10-tensor-derivative-checks-end",
+   "blocks": [
+    {
+     "anchor": "c10-tensor-derivative-checks-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-tensor-derivative-checks-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-tensor-derivative-checks-p04",
+     "definition": "Catches transposes, missing 1/B factors, wrong reductions. Run once per new layer.",
+     "term": "contract test"
+    },
+    {
+     "anchor": "c10-tensor-derivative-checks-p05",
+     "definition": "Perturb each entry both ways. Must agree with analytic to 1e-6.",
+     "term": "central differences"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-tensor-derivative-checks-p07",
+     "answer": "dL/dW = [[22, 28], [48, 60], [60, 76]]. Finite differences agree to 1e-9.",
+     "id": "c10-tensor-derivative-checks-r1",
+     "question": "What was the toy result?"
+    },
+    {
+     "anchor": "c10-tensor-derivative-checks-p12",
+     "answer": "Untested paths: the check passes on W but the forward uses W.T somewhere else untested.",
+     "id": "c10-tensor-derivative-checks-r2",
+     "question": "What does a passing check not cover?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-shape-contracts",
+   "title": "c11: shape contracts",
+   "minutes": 3,
+   "endAnchor": "c11-shape-contracts-end",
+   "blocks": [
+    {
+     "anchor": "c11-shape-contracts-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-shape-contracts-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-shape-contracts-p04",
+     "definition": "Input shapes in, output shape out. Write it as a comment, assert it at runtime.",
+     "term": "shape contract"
+    },
+    {
+     "anchor": "c11-shape-contracts-p06",
+     "definition": "The usual suspect: silently extends dimensions, turning a bug into a valid tensor.",
+     "term": "broadcasting"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-shape-contracts-p07",
+     "answer": "(2, 3) unchanged, intended (6, 15). No error, wrong math.",
+     "id": "c11-shape-contracts-r1",
+     "question": "What did the buggy line produce?"
+    },
+    {
+     "anchor": "c11-shape-contracts-p06",
+     "answer": "Name the contraction: einsum \u2018bv,v->b\u2019. Assert, do not hope.",
+     "id": "c11-shape-contracts-r2",
+     "question": "What is the fix?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-original-exercise",
+   "title": "c12: original exercise",
+   "minutes": 3,
+   "endAnchor": "c12-original-exercise-end",
+   "blocks": [
+    {
+     "anchor": "c12-original-exercise-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-original-exercise-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-original-exercise-p07",
+     "definition": "Four numbers any refactor must reproduce.",
+     "term": "regression anchors"
+    },
+    {
+     "anchor": "c12-original-exercise-p12",
+     "definition": "Embeddings detached from the graph: every part passes, accuracy never moves.",
+     "term": "integration bugs"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-original-exercise-p04",
+     "answer": "State -> features -> scores -> loss -> gradients -> update -> checks.",
+     "id": "c12-original-exercise-r1",
+     "question": "What are the six pipeline stages?"
+    },
+    {
+     "anchor": "c12-original-exercise-p12",
+     "answer": "Every part passes, embeddings never update. Only the end-to-end check catches it.",
+     "id": "c12-original-exercise-r2",
+     "question": "What does the detached-embeddings counterexample show?"
+    }
+   ]
+  },
+  {
+   "anchor": "unit-visual-map",
+   "title": "unit visual map",
+   "minutes": 1,
+   "endAnchor": "unit-visual-map-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "Forward values above, gradients below: multiply by the local derivative.",
+     "term": "graph plate"
+    },
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "Shift by max: overflow before, valid distribution after.",
+     "term": "softmax plate"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "unit-visual-map-end",
+     "answer": "Graph plate (forward/backward), softmax plate (shift by max), one RIGHT-ARC action.",
+     "id": "unit-visual-map-r1",
+     "question": "What three figures does the unit carry?"
+    }
+   ]
+  }
+ ]
+}

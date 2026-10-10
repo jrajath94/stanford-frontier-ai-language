@@ -1,0 +1,622 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-lessons-u10_benchmarking_methodology",
+ "itemKind": "lesson",
+ "revision": "becc5e255feef03c0514eb6b4cca0d3f99f298c055e7e703b98d78bc9951ade4",
+ "sections": [
+  {
+   "anchor": "u10_benchmarking_methodology-intro-p01",
+   "title": "U10 \u00b7 Benchmarking and research methodology",
+   "minutes": 1,
+   "endAnchor": "u10_benchmarking_methodology-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u10_benchmarking_methodology-intro-p01",
+     "definition": "Instructor.",
+     "term": "Prof. Christopher Manning"
+    },
+    {
+     "anchor": "u10_benchmarking_methodology-intro-p01",
+     "definition": "Build date of the unit\u2019s figures.",
+     "term": "2026-10-06"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u10_benchmarking_methodology-intro-p01",
+     "answer": "U10 \u00b7 Benchmarking and research methodology.",
+     "id": "u10_benchmarking_methodology-intro-r1",
+     "question": "What unit is this?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation",
+   "title": "local remediation",
+   "minutes": 1,
+   "endAnchor": "local-remediation-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "A score without an interval is a rumor.",
+     "term": "R1"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "200 items, 40 leaked at 0.95, 160 clean at 0.70. Reported 0.75, clean-only 0.70.",
+     "term": "R2"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Margin 0.02 at 95 percent needs n = 2401 for p = 0.5.",
+     "term": "R3"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-p02",
+     "answer": "Wilson interval: 78/100 scores 0.780, 95% interval [0.689, 0.850].",
+     "id": "local-remediation-r1",
+     "question": "What is R1?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-mmluhelm-families",
+   "title": "c01: mmlu/helm families",
+   "minutes": 3,
+   "endAnchor": "c01-mmluhelm-families-end",
+   "blocks": [
+    {
+     "anchor": "c01-mmluhelm-families-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-mmluhelm-families-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-mmluhelm-families-p04",
+     "definition": "The family name tells you the syllabus, not the truth.",
+     "term": "A benchmark is an exam with a fixed syllabus"
+    },
+    {
+     "anchor": "c01-mmluhelm-families-p08",
+     "definition": "Report the interval with every score.",
+     "term": "never the point alone"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-mmluhelm-families-p07",
+     "answer": "78/100: [0.689, 0.850]. 780/1000: [0.753, 0.805].",
+     "id": "c01-mmluhelm-families-r1",
+     "question": "What was the toy interval?"
+    },
+    {
+     "anchor": "c01-mmluhelm-families-p03",
+     "answer": "B\u2019s 0.76 sits inside A\u2019s interval.",
+     "id": "c01-mmluhelm-families-r2",
+     "question": "Why no winner at 0.78 vs 0.76?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-task-coverage",
+   "title": "c02: task coverage",
+   "minutes": 2,
+   "endAnchor": "c02-task-coverage-end",
+   "blocks": [
+    {
+     "anchor": "c02-task-coverage-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-task-coverage-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-task-coverage-p04",
+     "definition": "A high score on the map is not a high score on your ground.",
+     "term": "The benchmark is a map"
+    },
+    {
+     "anchor": "c02-task-coverage-p06",
+     "definition": "An empty column is an untested capability.",
+     "term": "the coverage matrix"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-task-coverage-p07",
+     "answer": "50 tasks, 6 capabilities, one empty column. Report 5/6 covered, not 0.78.",
+     "id": "c02-task-coverage-r1",
+     "question": "What was the toy coverage?"
+    },
+    {
+     "anchor": "c02-task-coverage-p06",
+     "answer": "Fill the empty column or admit it.",
+     "id": "c02-task-coverage-r2",
+     "question": "What is the gap rule?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-judge-calibration",
+   "title": "c03: judge calibration",
+   "minutes": 2,
+   "endAnchor": "c03-judge-calibration-end",
+   "blocks": [
+    {
+     "anchor": "c03-judge-calibration-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-judge-calibration-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-judge-calibration-p04",
+     "definition": "Calibrate it: agreement with humans, confidence against reality.",
+     "term": "A judge is a measuring instrument"
+    },
+    {
+     "anchor": "c03-judge-calibration-p05",
+     "definition": "Chance-corrected agreement.",
+     "term": "kappa"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-judge-calibration-p07",
+     "answer": "kappa 0.551, Brier 0.17. Stated 0.8, observed 0.67: overconfident.",
+     "id": "c03-judge-calibration-r1",
+     "question": "What was the toy judge result?"
+    },
+    {
+     "anchor": "c03-judge-calibration-p12",
+     "answer": "Prefers longer answers and the model\u2019s own style.",
+     "id": "c03-judge-calibration-r2",
+     "question": "What is the judge\u2019s bias risk?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-contamination",
+   "title": "c04: contamination",
+   "minutes": 2,
+   "endAnchor": "c04-contamination-end",
+   "blocks": [
+    {
+     "anchor": "c04-contamination-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-contamination-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-contamination-p04",
+     "definition": "The inflation equals the leak share times the memorization gap.",
+     "term": "open-book exam graded as closed-book"
+    },
+    {
+     "anchor": "c04-contamination-p07",
+     "definition": "Flag leaked items, rescore on the clean set.",
+     "term": "the quarantine rule"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-contamination-p07",
+     "answer": "40 of 200 leaked: reported 0.75, clean-only 0.70. The leak is worth 0.05.",
+     "id": "c04-contamination-r1",
+     "question": "What was the toy contamination?"
+    },
+    {
+     "anchor": "c04-contamination-p05",
+     "answer": "Reported = L s_m + (1 - L) s_c.",
+     "id": "c04-contamination-r2",
+     "question": "What is the mixture formula?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-uncertainty",
+   "title": "c05: uncertainty",
+   "minutes": 2,
+   "endAnchor": "c05-uncertainty-end",
+   "blocks": [
+    {
+     "anchor": "c05-uncertainty-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-uncertainty-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-uncertainty-p04",
+     "definition": "The interval is the honest claim, the point is the center.",
+     "term": "Every score is a sample"
+    },
+    {
+     "anchor": "c05-uncertainty-p03",
+     "definition": "2401 items for a 0.02 margin at p=0.5.",
+     "term": "the n rule"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-uncertainty-p03",
+     "answer": "About 0.07.",
+     "id": "c05-uncertainty-r1",
+     "question": "What margin does 200 items give?"
+    },
+    {
+     "anchor": "c05-uncertainty-p12",
+     "answer": "200 items from 10 templates: effective n near 10. The interval lies.",
+     "id": "c05-uncertainty-r2",
+     "question": "What is the template trap?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-scoring-formats",
+   "title": "c06: scoring formats",
+   "minutes": 2,
+   "endAnchor": "c06-scoring-formats-end",
+   "blocks": [
+    {
+     "anchor": "c06-scoring-formats-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-scoring-formats-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-scoring-formats-p04",
+     "definition": "Exact match rewards formatting obedience.",
+     "term": "The scorer is part of the benchmark"
+    },
+    {
+     "anchor": "c06-scoring-formats-p07",
+     "definition": "100 answers, 12 differ only by case.",
+     "term": "the 0.12 gap"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-scoring-formats-p03",
+     "answer": "\u201cParis\u201d vs \u201cparis\u201d: exact match 0, normalized match 1.",
+     "id": "c06-scoring-formats-r1",
+     "question": "What was the toy scoring?"
+    },
+    {
+     "anchor": "c06-scoring-formats-p02",
+     "answer": "Exact match, multiple choice, judge.",
+     "id": "c06-scoring-formats-r2",
+     "question": "What are the three formats?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-baseline-replication",
+   "title": "c07: baseline replication",
+   "minutes": 2,
+   "endAnchor": "c07-baseline-replication-end",
+   "blocks": [
+    {
+     "anchor": "c07-baseline-replication-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-baseline-replication-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-baseline-replication-p04",
+     "definition": "A win against a broken baseline is a win against nothing.",
+     "term": "The baseline is the control group"
+    },
+    {
+     "anchor": "c07-baseline-replication-p09",
+     "definition": "Reported number inside your rerun\u2019s interval: replicated.",
+     "term": "the three verdicts"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-baseline-replication-p07",
+     "answer": "Reported 0.78, rerun 0.74, interval [0.65, 0.82]. 0.78 inside: replicated within noise.",
+     "id": "c07-baseline-replication-r1",
+     "question": "What was the toy replication?"
+    },
+    {
+     "anchor": "c07-baseline-replication-p09",
+     "answer": "Verdict underpowered: more items, not a claim.",
+     "id": "c07-baseline-replication-r2",
+     "question": "What if the interval is too wide?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-slices",
+   "title": "c08: slices",
+   "minutes": 2,
+   "endAnchor": "c08-slices-end",
+   "blocks": [
+    {
+     "anchor": "c08-slices-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-slices-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-slices-p04",
+     "definition": "Cut by what matters: language, topic, difficulty.",
+     "term": "The mean is a summary, the slices are the story"
+    },
+    {
+     "anchor": "c08-slices-p07",
+     "definition": "The headline, not the 0.78.",
+     "term": "the -0.26"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-slices-p07",
+     "answer": "Overall 0.78, slice A 0.52 (delta -0.26), slice B 0.86 (delta +0.08).",
+     "id": "c08-slices-r1",
+     "question": "What was the toy slice?"
+    },
+    {
+     "anchor": "c08-slices-p09",
+     "answer": "Deltas sum to zero when weighted by slice size.",
+     "id": "c08-slices-r2",
+     "question": "What is the weighted-zero check?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-bias",
+   "title": "c09: bias",
+   "minutes": 2,
+   "endAnchor": "c09-bias-end",
+   "blocks": [
+    {
+     "anchor": "c09-bias-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-bias-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-bias-p04",
+     "definition": "Name the tilt, measure it, control it.",
+     "term": "Every instrument has a tilt"
+    },
+    {
+     "anchor": "c09-bias-p06",
+     "definition": "The difference is the bias estimate.",
+     "term": "the control"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-bias-p07",
+     "answer": "Unblinded win rate 0.62, blinded 0.53, bias 0.09 (length).",
+     "id": "c09-bias-r1",
+     "question": "What was the toy bias?"
+    },
+    {
+     "anchor": "c09-bias-p05",
+     "answer": "Length, position, style, self-preference.",
+     "id": "c09-bias-r2",
+     "question": "What are the four bias classes?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-acceptance-criteria",
+   "title": "c10: acceptance criteria",
+   "minutes": 2,
+   "endAnchor": "c10-acceptance-criteria-end",
+   "blocks": [
+    {
+     "anchor": "c10-acceptance-criteria-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-acceptance-criteria-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-acceptance-criteria-p04",
+     "definition": "Write the contract before you measure.",
+     "term": "The criterion is the contract, the metric is the measurement"
+    },
+    {
+     "anchor": "c10-acceptance-criteria-p06",
+     "definition": "Pre-registration blocks it.",
+     "term": "HARKing"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-acceptance-criteria-p03",
+     "answer": "Criterion: worst slice above 0.70. Slice A 0.52. No ship, regardless of the mean.",
+     "id": "c10-acceptance-criteria-r1",
+     "question": "What was the toy decision?"
+    },
+    {
+     "anchor": "c10-acceptance-criteria-p09",
+     "answer": "Reproducible from the report and the criterion: no judgment calls at decision time.",
+     "id": "c10-acceptance-criteria-r2",
+     "question": "What makes a decision reproducible?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-project-choice",
+   "title": "c11: project choice",
+   "minutes": 2,
+   "endAnchor": "c11-project-choice-end",
+   "blocks": [
+    {
+     "anchor": "c11-project-choice-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-project-choice-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-project-choice-p04",
+     "definition": "The scorecard prices the bet.",
+     "term": "A project is a bet"
+    },
+    {
+     "anchor": "c11-project-choice-p06",
+     "definition": "Kill early, kill on paper, kill without shame.",
+     "term": "the kill rule"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-project-choice-p06",
+     "answer": "Feasible, data, metric, compute, novelty.",
+     "id": "c11-project-choice-r1",
+     "question": "What are the five criteria?"
+    },
+    {
+     "anchor": "c11-project-choice-p07",
+     "answer": "3/5: missing metric defined and novelty.",
+     "id": "c11-project-choice-r2",
+     "question": "What was the toy scorecard?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-contribution-accounting",
+   "title": "c12: contribution accounting",
+   "minutes": 2,
+   "endAnchor": "c12-contribution-accounting-end",
+   "blocks": [
+    {
+     "anchor": "c12-contribution-accounting-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-contribution-accounting-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-contribution-accounting-p04",
+     "definition": "Borrowed must be labeled. A report with an empty built column is a tutorial.",
+     "term": "borrowed and built"
+    },
+    {
+     "anchor": "c12-contribution-accounting-p06",
+     "definition": "The built column needs at least one.",
+     "term": "the novelty bar"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-contribution-accounting-p07",
+     "answer": "Borrowed: transformer, BPE, Adam. Built: the chunk-size sweep and the split-rate rule.",
+     "id": "c12-contribution-accounting-r1",
+     "question": "What was the toy accounting?"
+    },
+    {
+     "anchor": "c12-contribution-accounting-p12",
+     "answer": "Yes, if the test was fair: negative results are data.",
+     "id": "c12-contribution-accounting-r2",
+     "question": "Is a negative result a contribution?"
+    }
+   ]
+  },
+  {
+   "anchor": "unit-visual-map",
+   "title": "unit visual map",
+   "minutes": 1,
+   "endAnchor": "unit-visual-map-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "0.78 on 100 items is [0.689, 0.850].",
+     "term": "interval plate"
+    },
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "40 leaked items inflate 0.70 to 0.75.",
+     "term": "contamination plate"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "unit-visual-map-end",
+     "answer": "Wilson interval plate, contamination plate, judge reliability plate.",
+     "id": "unit-visual-map-r1",
+     "question": "What three figures does the unit carry?"
+    }
+   ]
+  }
+ ]
+}

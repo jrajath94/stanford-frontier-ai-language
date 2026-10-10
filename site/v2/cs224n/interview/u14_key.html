@@ -135,8 +135,9 @@
       <h1>Interview · U14 keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-key-u14">Interview key , U14</h1>
+<span id="interview-key-u14-end" data-end></span>
 <h2 id="breadth">Breadth</h2>
-<p>A1. Patchify: 196 tokens for 224x224 at 16x16. Cost: the tokens
+<p id="breadth-p01" data-kind="example" data-term="196 tokens">A1. Patchify: 196 tokens for 224x224 at 16x16. Cost: the tokens
 eat the window at n^2 attention.
 A2. Early: one shared stack, 0 extra params. Late: separate
 towers joined by projections, 5.03e7 extra at d = 1024, L = 24.
@@ -148,37 +149,42 @@ A5. Title known, content not inspected, claims none. The card
 is the whole lesson until inspection.
 A6. Inspected artifact, schedule title, hearsay. Demote on
 doubt.</p>
+<span id="breadth-end" data-end></span>
 <h2 id="deep-ladders">Deep ladders</h2>
-<p>L1. (1) 2 x 1024^2 x 24 = 5.03e7. (2) Early: concat at input.
+<p id="deep-ladders-p01" data-kind="example" data-term="concat at input">L1. (1) 2 x 1024^2 x 24 = 5.03e7. (2) Early: concat at input.
 Late: towers then project. (3) Two d x d projections per
 layer. (4) 196 image tokens in every layer&rsquo;s attention: the
 n^2 bill. (5) Equal total params, measure the task gap.</p>
-<p>L2. (1) Label, source, status, claims. (2) No content claim
+<p id="deep-ladders-p02" data-kind="prose" data-term="towers then project">L2. (1) Label, source, status, claims. (2) No content claim
 without inspection. (3) The leaf&rsquo;s only honest content is its
 boundary. (4) Codename guessing: the label could be anything.
 (5) Inspect the artifact, then re-teach the leaf.</p>
+<span id="deep-ladders-end" data-end></span>
 <h2 id="analytical">Analytical</h2>
-<p>A7. Collapse: aux 5.28 vs healthy 1.04, one expert takes 8 of
+<p id="analytical-p01" data-kind="example" data-term="aux 5.28">A7. Collapse: aux 5.28 vs healthy 1.04, one expert takes 8 of
 10 tokens. Fix: turn on the aux loss (weight &gt; 0) and retrain
 the router.
 A8. (i) Shrink the image: fewer patches, lose detail. (ii)
 Cross-attention instead of image tokens: no image tokens in
 the window, added machinery. Price detail vs complexity.</p>
+<span id="analytical-end" data-end></span>
 <h2 id="implementationdebugging">Implementation/debugging</h2>
-<p>A9. (1) The language prior: test with image ablation (cheapest,
+<p id="implementationdebugging-p01" data-kind="example" data-term="language prior">A9. (1) The language prior: test with image ablation (cheapest,
 already the symptom). (2) The triples never needed the image:
 audit the data. (3) The vision encoder is frozen or broken:
 check gradients. (4) Retrain with image-necessary triples.</p>
+<span id="implementationdebugging-end" data-end></span>
 <h2 id="changed-constraint">Changed-constraint</h2>
-<p>A10. The video becomes an inspectable artifact. Watch it, take
+<p id="changed-constraint-p01" data-kind="example" data-term="inspectable artifact">A10. The video becomes an inspectable artifact. Watch it, take
 notes with anchors, re-teach C01-C09 from it, and update the
 claim classes from requested-branch to official where the
 video supports them. C10&rsquo;s card gets its content.
 A11. Cut the image tokens first (fewer patches or a smaller
 image share): latency is n^2 in stream length. What breaks:
 fine detail (C01) and the text budget.</p>
+<span id="changed-constraint-end" data-end></span>
 <h2 id="research-critique">Research critique</h2>
-<p>A12. Steelman: one model reads both, joint training, cross-
+<p id="research-critique-p01" data-kind="example" data-term="text model with pictures">A12. Steelman: one model reads both, joint training, cross-
 modal transfer. Counterexample: the image-ablation test, no
 accuracy drop means it is a text model with pictures. Input
 format is not multimodality.</p>
@@ -186,7 +192,8 @@ format is not multimodality.</p>
       <nav class="pager"><a href="../interview/u14_questions.html"><span class="lbl">← Previous</span>Interview · U14 questions</a><a href="../interview/u15_questions.html"><span class="lbl">Next →</span>Interview · U15 questions</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-p02" data-kind="prose" data-term="input format">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-end" data-end></span>
     </footer>
   </main>
 </div>

@@ -1,0 +1,772 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-lessons-u01_nlp_foundations",
+ "itemKind": "lesson",
+ "revision": "ba08a8e6f50ac187c2d39c3a1a716459fe538bf81e122c467a98f09aa5c2fd78",
+ "sections": [
+  {
+   "anchor": "u01_nlp_foundations-intro-p01",
+   "title": "U01 \u00b7 NLP to transformer foundations",
+   "minutes": 1,
+   "endAnchor": "u01_nlp_foundations-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u01_nlp_foundations-intro-p02",
+     "definition": "The claim class marking content taken from the official syllabus.",
+     "term": "OFFICIAL-SYLLABUS"
+    },
+    {
+     "anchor": "u01_nlp_foundations-intro-p02",
+     "definition": "The lecture a unit maps to, here L1 from Sep 25, 2026.",
+     "term": "lecture anchor"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u01_nlp_foundations-intro-p02",
+     "answer": "The concept is planned but not yet verified. Verification comes from slide or transcript extraction.",
+     "id": "u01_nlp_foundations-intro-r1",
+     "question": "What does PLANNED / SOURCE ATTRIBUTION PENDING mean?"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood",
+   "title": "not yet understood",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "not-yet-understood-li01",
+     "definition": "How attention scores become weights at scale. It arrives in U02.",
+     "term": "attention internals"
+    },
+    {
+     "anchor": "not-yet-understood-li02",
+     "definition": "Rotary positional encoding. It arrives with positional encodings in U02.",
+     "term": "RoPE"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "not-yet-understood-li05",
+     "answer": "U05. It covers DPO and RLHF reward models.",
+     "id": "not-yet-understood-r1",
+     "question": "Which unit teaches preference optimization?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-vectors-softmax-logs-shapes",
+   "title": "local remediation , vectors, softmax, logs, shapes",
+   "minutes": 1,
+   "endAnchor": "local-remediation-vectors-softmax-logs-shapes-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-vectors-softmax-logs-shapes-p02",
+     "definition": "It measures alignment between vectors. Attention scores are dot products.",
+     "term": "dot product"
+    },
+    {
+     "anchor": "local-remediation-vectors-softmax-logs-shapes-p03",
+     "definition": "It turns scores into positive weights that sum to 1. Subtract the max first for stability.",
+     "term": "softmax"
+    },
+    {
+     "anchor": "local-remediation-vectors-softmax-logs-shapes-p04",
+     "definition": "Exp of the mean negative log probability. It measures model surprise.",
+     "term": "perplexity"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-vectors-softmax-logs-shapes-p03",
+     "answer": "For numerical stability. The result is identical.",
+     "id": "local-remediation-vectors-softmax-logs-shapes-r1",
+     "question": "Why subtract the max before exp in softmax?"
+    },
+    {
+     "anchor": "local-remediation-vectors-softmax-logs-shapes-p05",
+     "answer": "Right to left: the matrix maps 4 inputs to 3 outputs.",
+     "id": "local-remediation-vectors-softmax-logs-shapes-r2",
+     "question": "How do you read a shape like W in R^{4x3}?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-nlp-tasks",
+   "title": "c01: nlp tasks",
+   "minutes": 3,
+   "endAnchor": "c01-nlp-tasks-end",
+   "blocks": [
+    {
+     "anchor": "c01-nlp-tasks-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-nlp-tasks-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-nlp-tasks-p02",
+     "definition": "A function from text to a well-defined output.",
+     "term": "NLP task"
+    },
+    {
+     "anchor": "c01-nlp-tasks-p02",
+     "definition": "It models P(y | x) directly over a fixed label set.",
+     "term": "discriminative"
+    },
+    {
+     "anchor": "c01-nlp-tasks-p04",
+     "definition": "It tags spans of text with entity labels.",
+     "term": "named entity recognition"
+    },
+    {
+     "anchor": "c01-nlp-tasks-p06",
+     "definition": "The training loss for discriminative tasks over K classes.",
+     "term": "cross-entropy"
+    },
+    {
+     "anchor": "c01-nlp-tasks-p07",
+     "definition": "It sums word weights and ignores word order.",
+     "term": "bag-of-words"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-nlp-tasks-p04",
+     "answer": "The output space. Classification picks from a closed set, while translation and QA generate open text.",
+     "id": "c01-nlp-tasks-r1",
+     "question": "What decides the loss, the metric, and the architecture head?"
+    },
+    {
+     "anchor": "c01-nlp-tasks-p10",
+     "answer": "It cannot see word order. Both sentences sum the same word weights.",
+     "id": "c01-nlp-tasks-r2",
+     "question": "Why does bag-of-words confuse \u201cnot good\u201d with \u201cgood\u201d?"
+    },
+    {
+     "anchor": "c01-nlp-tasks-p11",
+     "answer": "When the output space is tiny and labeled data is absent.",
+     "id": "c01-nlp-tasks-r3",
+     "question": "When do rule-based systems beat learned models?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-tokenization",
+   "title": "c02: tokenization",
+   "minutes": 3,
+   "endAnchor": "c02-tokenization-end",
+   "blocks": [
+    {
+     "anchor": "c02-tokenization-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-tokenization-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-tokenization-p02",
+     "definition": "The step that converts raw text to integer token IDs.",
+     "term": "tokenization"
+    },
+    {
+     "anchor": "c02-tokenization-p02",
+     "definition": "Tokens per word. It falls as merges shorten sequences.",
+     "term": "fertility"
+    },
+    {
+     "anchor": "c02-tokenization-p03",
+     "definition": "Byte pair encoding. It repeatedly merges the most frequent adjacent pair.",
+     "term": "BPE"
+    },
+    {
+     "anchor": "c02-tokenization-p04",
+     "definition": "The order merges were learned. Encoding applies merges in rank order.",
+     "term": "merge rank"
+    },
+    {
+     "anchor": "c02-tokenization-p05",
+     "definition": "A pre-split text chunk. Merges never cross its boundary.",
+     "term": "pretoken"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-tokenization-p06",
+     "answer": "Merges apply in rank order, not discovery order. The same text always encodes the same way.",
+     "id": "c02-tokenization-r1",
+     "question": "What makes BPE encoding deterministic?"
+    },
+    {
+     "anchor": "c02-tokenization-p12",
+     "answer": "The model sees shifted ids and performance collapses while the code runs fine. Version the tokenizer with the model.",
+     "id": "c02-tokenization-r2",
+     "question": "What breaks when train and inference tokenizers differ?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-embeddings",
+   "title": "c03: embeddings",
+   "minutes": 3,
+   "endAnchor": "c03-embeddings-end",
+   "blocks": [
+    {
+     "anchor": "c03-embeddings-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-embeddings-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-embeddings-p02",
+     "definition": "A dictionary from token id to vector. Lookup selects a row.",
+     "term": "embedding table"
+    },
+    {
+     "anchor": "c03-embeddings-p03",
+     "definition": "Row selection from the table. It is O(1), not computation.",
+     "term": "lookup"
+    },
+    {
+     "anchor": "c03-embeddings-p07",
+     "definition": "It measures learned relatedness between rows.",
+     "term": "cosine similarity"
+    },
+    {
+     "anchor": "c03-embeddings-p11",
+     "definition": "A vector with one 1 and rest 0. It has no geometry and costs O(V).",
+     "term": "one-hot"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-embeddings-p05",
+     "answer": "E is in R^{V x d}. Row v is the vector for token id v.",
+     "id": "c03-embeddings-r1",
+     "question": "What is the shape of E and what does a row mean?"
+    },
+    {
+     "anchor": "c03-embeddings-p12",
+     "answer": "Antonyms like \u201cgood\u201d and \u201cbad\u201d share contexts and land near each other. Geometry reflects distributional similarity, not truth.",
+     "id": "c03-embeddings-r2",
+     "question": "Why can similar rows mislead?"
+    },
+    {
+     "anchor": "c03-embeddings-p06",
+     "answer": "Only rows for tokens in the batch. Absent tokens get no update.",
+     "id": "c03-embeddings-r3",
+     "question": "Which rows update on a training step?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-word2vec",
+   "title": "c04: word2vec",
+   "minutes": 3,
+   "endAnchor": "c04-word2vec-end",
+   "blocks": [
+    {
+     "anchor": "c04-word2vec-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-word2vec-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-word2vec-p02",
+     "definition": "It predicts context words from the center word.",
+     "term": "skip-gram"
+    },
+    {
+     "anchor": "c04-word2vec-p02",
+     "definition": "It scores the true pair high and k random pairs low, avoiding full softmax.",
+     "term": "negative sampling"
+    },
+    {
+     "anchor": "c04-word2vec-p11",
+     "definition": "It predicts the center word from context. Faster, worse for rare words.",
+     "term": "CBOW"
+    },
+    {
+     "anchor": "c04-word2vec-p11",
+     "definition": "It factorizes the co-occurrence matrix directly instead of training online.",
+     "term": "GloVe"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-word2vec-p06",
+     "answer": "It costs O(V) per step. Negative sampling replaces it with k + 1 logistic losses.",
+     "id": "c04-word2vec-r1",
+     "question": "Why is full softmax too expensive for word2vec?"
+    },
+    {
+     "anchor": "c04-word2vec-p12",
+     "answer": "The river and money senses average into one blurred vector. Contextual models fix this.",
+     "id": "c04-word2vec-r2",
+     "question": "Why does one vector per word fail for \u201cbank\u201d?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-recurrent-model",
+   "title": "c05: recurrent model",
+   "minutes": 3,
+   "endAnchor": "c05-recurrent-model-end",
+   "blocks": [
+    {
+     "anchor": "c05-recurrent-model-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-recurrent-model-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-recurrent-model-p02",
+     "definition": "The RNN memory. Each step mixes new input with the old summary.",
+     "term": "hidden state"
+    },
+    {
+     "anchor": "c05-recurrent-model-p02",
+     "definition": "Gradient decay over steps. With rho < 1 the signal shrinks like rho^k.",
+     "term": "vanishing gradient"
+    },
+    {
+     "anchor": "c05-recurrent-model-p05",
+     "definition": "One set of matrices reused at every time step.",
+     "term": "weight tying"
+    },
+    {
+     "anchor": "c05-recurrent-model-p06",
+     "definition": "It walks stored states in reverse, multiplying Jacobians at every hop.",
+     "term": "backprop through time"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-recurrent-model-p07",
+     "answer": "Gradients scale like rho^k over k steps. With U = 0.5, a signal from 10 steps back arrives at one-thousandth strength.",
+     "id": "c05-recurrent-model-r1",
+     "question": "Why cannot plain RNNs learn long dependencies?"
+    },
+    {
+     "anchor": "c05-recurrent-model-p10",
+     "answer": "Clipping handles exploding gradients. Vanishing needs architecture, not clipping.",
+     "id": "c05-recurrent-model-r2",
+     "question": "Why does gradient clipping not fix vanishing?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-lstm",
+   "title": "c06: lstm",
+   "minutes": 3,
+   "endAnchor": "c06-lstm-end",
+   "blocks": [
+    {
+     "anchor": "c06-lstm-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-lstm-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-lstm-p02",
+     "definition": "The LSTM conveyor belt. It updates by c_t = f_t * c_{t-1} + i_t * g_t.",
+     "term": "cell state"
+    },
+    {
+     "anchor": "c06-lstm-p02",
+     "definition": "The cell path where the gradient passes unchanged when the forget gate is 1.",
+     "term": "constant error carousel"
+    },
+    {
+     "anchor": "c06-lstm-p03",
+     "definition": "It decides what to erase from the cell. Near 1, the cell copies itself.",
+     "term": "forget gate"
+    },
+    {
+     "anchor": "c06-lstm-p11",
+     "definition": "It merges LSTM gates into fewer parameters with similar behavior.",
+     "term": "GRU"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-lstm-p06",
+     "answer": "It equals the forget gate f_t. Near 1, the gradient rides the cell unchanged, defeating vanishing.",
+     "id": "c06-lstm-r1",
+     "question": "What is dc_t/dc_{t-1} and why does it matter?"
+    },
+    {
+     "anchor": "c06-lstm-p12",
+     "answer": "With random init the forget gate starts near 0.5 and long dependencies still fail. Bias 1 starts the gate open.",
+     "id": "c06-lstm-r2",
+     "question": "Why initialize the forget bias to 1?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-attention",
+   "title": "c07: attention",
+   "minutes": 3,
+   "endAnchor": "c07-attention-end",
+   "blocks": [
+    {
+     "anchor": "c07-attention-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-attention-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-attention-p02",
+     "definition": "Softmaxed scores. They say how much each source state matters.",
+     "term": "alignment weights"
+    },
+    {
+     "anchor": "c07-attention-p02",
+     "definition": "The weighted sum of source states. It is an expectation over them.",
+     "term": "context vector"
+    },
+    {
+     "anchor": "c07-attention-p06",
+     "definition": "It mixes query and key with tanh, then projects to a scalar.",
+     "term": "additive score"
+    },
+    {
+     "anchor": "c07-attention-p11",
+     "definition": "It samples one state. Not differentiable, needs REINFORCE.",
+     "term": "hard attention"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-attention-p08",
+     "answer": "Score each state against the query, normalize with softmax, mix states by the weights.",
+     "id": "c07-attention-r1",
+     "question": "What are the three attention steps?"
+    },
+    {
+     "anchor": "c07-attention-p12",
+     "answer": "Different weight patterns can yield the same output. They are mechanism, not proof of reasoning.",
+     "id": "c07-attention-r2",
+     "question": "Why are attention weights not faithful explanations?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-transformer-blocks",
+   "title": "c08: transformer blocks",
+   "minutes": 3,
+   "endAnchor": "c08-transformer-blocks-end",
+   "blocks": [
+    {
+     "anchor": "c08-transformer-blocks-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-transformer-blocks-p17",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-transformer-blocks-p02",
+     "definition": "It carries the original signal past a sublayer: y = x + F(x).",
+     "term": "residual"
+    },
+    {
+     "anchor": "c08-transformer-blocks-p03",
+     "definition": "Norm inside the residual branch. More stable than post-norm at depth.",
+     "term": "pre-norm"
+    },
+    {
+     "anchor": "c08-transformer-blocks-p03",
+     "definition": "A two-layer MLP applied per position: d -> 4d -> d.",
+     "term": "FFN"
+    },
+    {
+     "anchor": "c08-transformer-blocks-p06",
+     "definition": "It normalizes to zero mean and unit variance, then scales and shifts.",
+     "term": "LayerNorm"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-transformer-blocks-p06",
+     "answer": "They give a direct gradient path. dL/dx includes dL/dy unchanged, so depth does not kill the signal.",
+     "id": "c08-transformer-blocks-r1",
+     "question": "Why do residuals help training?"
+    },
+    {
+     "anchor": "c08-transformer-blocks-p13",
+     "answer": "The net degrades below a 12-layer one. Depth needs the gradient highway.",
+     "id": "c08-transformer-blocks-r2",
+     "question": "What breaks without residuals at 24 layers?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-masks",
+   "title": "c09: masks",
+   "minutes": 3,
+   "endAnchor": "c09-masks-end",
+   "blocks": [
+    {
+     "anchor": "c09-masks-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-masks-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-masks-p02",
+     "definition": "It adds -inf above the diagonal so positions cannot read the future.",
+     "term": "causal mask"
+    },
+    {
+     "anchor": "c09-masks-p02",
+     "definition": "It sets -inf where the key is a pad token.",
+     "term": "padding mask"
+    },
+    {
+     "anchor": "c09-masks-p08",
+     "definition": "Softmax over scores plus mask. Forbidden cells get zero mass.",
+     "term": "masked softmax"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-masks-p06",
+     "answer": "exp(-inf) is 0, so forbidden cells get zero mass and rows still sum to 1. Zeroing after steals mass unless renormalized.",
+     "id": "c09-masks-r1",
+     "question": "Why add -inf before softmax instead of zeroing after?"
+    },
+    {
+     "anchor": "c09-masks-p09",
+     "answer": "Check row 0 is [1, 0, 0, 0] and every row sums to 1.",
+     "id": "c09-masks-r2",
+     "question": "How do you test that the mask ran?"
+    },
+    {
+     "anchor": "c09-masks-p10",
+     "answer": "NaN, since softmax over all -inf is undefined. Guard by never masking the diagonal.",
+     "id": "c09-masks-r3",
+     "question": "What does a fully masked row produce?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-shapes",
+   "title": "c10: shapes",
+   "minutes": 4,
+   "endAnchor": "c10-shapes-end",
+   "blocks": [
+    {
+     "anchor": "c10-shapes-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-shapes-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-shapes-p05",
+     "definition": "Head dimension. The model dimension d split across h heads.",
+     "term": "d_k"
+    },
+    {
+     "anchor": "c10-shapes-p05",
+     "definition": "QK^T attention logits with shape (B, h, T, T).",
+     "term": "scores"
+    },
+    {
+     "anchor": "c10-shapes-p05",
+     "definition": "Unnormalized scores over the vocabulary at each position.",
+     "term": "logits"
+    },
+    {
+     "anchor": "c10-shapes-p08",
+     "definition": "Runtime shape checks after each step. They catch transpose bugs.",
+     "term": "shape asserts"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-shapes-p05",
+     "answer": "Q is (B, h, T, d_k), scores are (B, h, T, T), logits are (B, T, V).",
+     "id": "c10-shapes-r1",
+     "question": "What are the shapes of Q, scores, and logits?"
+    },
+    {
+     "anchor": "c10-shapes-p04",
+     "answer": "Right to left: B sequences, T positions, d features.",
+     "id": "c10-shapes-r2",
+     "question": "How do you read (B, T, d)?"
+    },
+    {
+     "anchor": "c10-shapes-p12",
+     "answer": "Shape asserts on (B, h, T, T). The loss still decreases slowly, hiding the bug.",
+     "id": "c10-shapes-r3",
+     "question": "What catches the missing-transpose bug?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-neural-objectives",
+   "title": "c11: neural objectives",
+   "minutes": 3,
+   "endAnchor": "c11-neural-objectives-end",
+   "blocks": [
+    {
+     "anchor": "c11-neural-objectives-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-neural-objectives-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-neural-objectives-p02",
+     "definition": "Negative log probability of the true token, averaged. The LM training loss.",
+     "term": "cross-entropy"
+    },
+    {
+     "anchor": "c11-neural-objectives-p02",
+     "definition": "Exp of the loss. The effective vocabulary size the model hesitates between.",
+     "term": "perplexity"
+    },
+    {
+     "anchor": "c11-neural-objectives-p02",
+     "definition": "Training on ground-truth inputs. It keeps training parallel.",
+     "term": "teacher forcing"
+    },
+    {
+     "anchor": "c11-neural-objectives-p03",
+     "definition": "Loss units with natural log. Bits use log2.",
+     "term": "nats"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-neural-objectives-p12",
+     "answer": "It depends on the tokenization. The same text gives different numbers under different tokenizers.",
+     "id": "c11-neural-objectives-r1",
+     "question": "Why is perplexity meaningless across tokenizers?"
+    },
+    {
+     "anchor": "c11-neural-objectives-p06",
+     "answer": "Every position's target is known upfront, so the loss computes for all positions at once.",
+     "id": "c11-neural-objectives-r2",
+     "question": "What makes teacher forcing parallel?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-implementation-checks",
+   "title": "c12: implementation checks",
+   "minutes": 3,
+   "endAnchor": "c12-implementation-checks-end",
+   "blocks": [
+    {
+     "anchor": "c12-implementation-checks-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-implementation-checks-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-implementation-checks-p02",
+     "definition": "It compares analytic gradients to finite differences, expecting relative error under 1e-5.",
+     "term": "gradient check"
+    },
+    {
+     "anchor": "c12-implementation-checks-p05",
+     "definition": "The derivative by definition. Agreement with backprop validates the backward pass.",
+     "term": "finite differences"
+    },
+    {
+     "anchor": "c12-implementation-checks-p05",
+     "definition": "A fixed RNG integer. Two seeded runs give bitwise-identical loss.",
+     "term": "seed"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-implementation-checks-p08",
+     "answer": "Shape trace, mask test, gradient check in fp64, and two seeded runs compared.",
+     "id": "c12-implementation-checks-r1",
+     "question": "What are the four checks?"
+    },
+    {
+     "anchor": "c12-implementation-checks-p05",
+     "answer": "Finite differences need precision. Training can stay in fp32 or fp16.",
+     "id": "c12-implementation-checks-r2",
+     "question": "Why run the gradient check in fp64?"
+    }
+   ]
+  }
+ ]
+}

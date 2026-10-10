@@ -98,12 +98,13 @@
       <h1>Interview · U01 questions</h1>
       <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u01-interview-bank-questions">U01 interview bank , questions</h1>
-<p>Closed-book. Answer keys are in <code>u01_key.md</code>. Do not open the key before
+<p id="u01-interview-bank-questions-p01" data-kind="keyIdea" data-reveal="rise" data-term="closed-book">Closed-book. Answer keys are in <code>u01_key.md</code>. Do not open the key before
 attempting. Quotas per major lesson: 6 breadth, 2 deep ladders of 5
 follow-ups, 2 analytical exercises, 1 implementation/debug task, 2
 changed-constraint scenarios, 1 research-critique question.</p>
+<span id="u01-interview-bank-questions-end" data-end></span>
 <h2 id="breadth-6">Breadth (6)</h2>
-<p>B1. What is the difference between a token id and an embedding?
+<p id="breadth-6-p01" data-kind="exercise" data-term="token id">B1. What is the difference between a token id and an embedding?
 B2. Why does BPE merge the most frequent pair first?
 B3. Write the Elman RNN recurrence and name each matrix.
 B4. What does the forget gate multiply, and why does that matter for
@@ -111,8 +112,9 @@ gradients?
 B5. Why must the causal mask apply before the softmax?
 B6. State the shapes of the attention scores and the logits for
 (B, T, d) inputs with h heads and vocabulary V.</p>
+<span id="breadth-6-end" data-end></span>
 <h2 id="deep-ladders-2-x-5">Deep ladders (2 x 5)</h2>
-<p>L1. BPE training mechanics.
+<p id="deep-ladders-2-x-5-p01" data-kind="exercise" data-term="pair count">L1. BPE training mechanics.
 - L1.1 Define the pair count on a weighted corpus.
 - L1.2 Toy: compute merge 1 on {low x2, lower, lowest, new, newer}.
 - L1.3 Justify why merges apply in rank order at encode time.
@@ -120,7 +122,7 @@ B6. State the shapes of the attention scores and the logits for
 - L1.5 Compare BPE with word-level tokenization, debug an encoder
   that merges across spaces, critique the fixed-vocabulary
   assumption, propose the code-versus-prose merge experiment.</p>
-<p>L2. Masks and the softmax.
+<p id="deep-ladders-2-x-5-p02" data-kind="exercise" data-term="merge rank">L2. Masks and the softmax.
 - L2.1 Define the additive causal mask.
 - L2.2 Toy: masked softmax of [1, -inf, 2].
 - L2.3 Justify -inf-before-softmax from the softmax formula.
@@ -129,8 +131,9 @@ B6. State the shapes of the attention scores and the logits for
 - L2.5 Compare additive -inf with post-softmax zeroing, debug a run
   whose loss looks great but generates garbage, critique &ldquo;the mask
   ran&rdquo; as an assumption, propose the mask-ablation experiment.</p>
+<span id="deep-ladders-2-x-5-end" data-end></span>
 <h2 id="analytical-exercises-2">Analytical exercises (2)</h2>
-<p>E1. Corpus {the: 100, then: 40, their: 10} with end-of-word markers
+<p id="analytical-exercises-2-p01" data-kind="exercise" data-term="fertility">E1. Corpus {the: 100, then: 40, their: 10} with end-of-word markers
 ignored for this exercise. Compute the first BPE merge and its count.
 Then compute fertility (characters per word) before and after that
 single merge.
@@ -138,22 +141,25 @@ E2. A model has d = 512, h = 8, V = 32000. Compute d_k, the attention
 score shape for B = 4, T = 1024, and the embedding table size in fp16
 bytes. Which term dominates memory at T = 8192: the scores or the
 weights? Show the numbers.</p>
+<span id="analytical-exercises-2-end" data-end></span>
 <h2 id="implementationdebug-task-1">Implementation/debug task (1)</h2>
-<p>D1. A tiny attention net trains: loss decreases, but generated text is
+<p id="implementationdebug-task-1-p01" data-kind="exercise" data-term="mask test">D1. A tiny attention net trains: loss decreases, but generated text is
 incoherent and the eval loss is far above train loss. You may inspect
 shapes, the mask, and the data pipeline. List the ordered checks you
 run, what each rules out, and the most likely culprit. Then write the
 three-line mask test that would have caught it on day one.</p>
+<span id="implementationdebug-task-1-end" data-end></span>
 <h2 id="changed-constraint-scenarios-2">Changed-constraint scenarios (2)</h2>
-<p>S1. The vocabulary must support a new language with no shared
+<p id="changed-constraint-scenarios-2-p01" data-kind="exercise" data-term="ids shift">S1. The vocabulary must support a new language with no shared
 subwords, but the embedding table cannot grow. Propose a tokenization
 change, state what breaks (ids shift? fertility?), and how you detect
 the breakage.
 S2. Inference must run on a device with no fp32 and 256 MB RAM. The
 model has V = 50000, d = 1024. Compute the embedding table alone in
 fp16. Does it fit? Propose two changes and their costs.</p>
+<span id="changed-constraint-scenarios-2-end" data-end></span>
 <h2 id="research-critique-question-1">Research-critique question (1)</h2>
-<p>R1. &ldquo;Attention weights explain model decisions.&rdquo; Present the strongest
+<p id="research-critique-question-1-p01" data-kind="exercise" data-term="attention weights">R1. &ldquo;Attention weights explain model decisions.&rdquo; Present the strongest
 version of this claim, then the counterexample from the lesson, then
 design an experiment that tests whether weights are faithful
 explanations on one task. State the falsification condition.</p>
@@ -161,7 +167,8 @@ explanations on one task. State the falsification condition.</p>
       <nav class="pager"><a href="../labs/u09_lab_key.html"><span class="lbl">← Previous</span>Lab 09 · Keys</a><a href="../interview/u01_key.html"><span class="lbl">Next →</span>Interview · U01 keys</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-question-1-p02" data-kind="exercise" data-term="counterexample">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-question-1-end" data-end></span>
     </footer>
   </main>
 </div>

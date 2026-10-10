@@ -1,0 +1,621 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-lessons-u08_llm_evaluation",
+ "itemKind": "lesson",
+ "revision": "da1e27e5370dfa38a4c8370866fcc009936396ae3a57a706641f7ef0415e1348",
+ "sections": [
+  {
+   "anchor": "u08_llm_evaluation-intro-p01",
+   "title": "U08 \u00b7 LLM evaluation and judging",
+   "minutes": 1,
+   "endAnchor": "u08_llm_evaluation-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u08_llm_evaluation-intro-p02",
+     "definition": "Judge rubrics, judging modes, biases, human checks, metrics, benchmarks.",
+     "term": "OFFICIAL-SYLLABUS"
+    },
+    {
+     "anchor": "u08_llm_evaluation-intro-p02",
+     "definition": "Calibration, nondeterminism, blinding, contamination, uncertainty, cost.",
+     "term": "REQUESTED-BRANCH"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u08_llm_evaluation-intro-p02",
+     "answer": "L7 (Nov 13, 2026).",
+     "id": "u08_llm_evaluation-intro-r1",
+     "question": "What is the lecture anchor for U08?"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood",
+   "title": "not yet understood",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "not-yet-understood-li01",
+     "definition": "Masked diffusion models. They arrive in U09.",
+     "term": "diffusion"
+    },
+    {
+     "anchor": "not-yet-understood-li01",
+     "definition": "The final keystone review. It arrives in U09.",
+     "term": "keystone review"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "not-yet-understood-li01",
+     "answer": "U09. It covers diffusion, keystone review, and exams.",
+     "id": "not-yet-understood-r1",
+     "question": "What arrives in U09?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-win-rate-ece-confidence-interval",
+   "title": "local remediation , win rate, ece, confidence interval",
+   "minutes": 1,
+   "endAnchor": "local-remediation-win-rate-ece-confidence-interval-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-win-rate-ece-confidence-interval-p02",
+     "definition": "w/n. A wins w of n items; ties need a stated convention.",
+     "term": "win rate"
+    },
+    {
+     "anchor": "local-remediation-win-rate-ece-confidence-interval-p03",
+     "definition": "Bin predictions by confidence; sum (fraction in bin) x |accuracy - confidence|.",
+     "term": "ECE"
+    },
+    {
+     "anchor": "local-remediation-win-rate-ece-confidence-interval-p04",
+     "definition": "The 95% score interval for w wins in n trials.",
+     "term": "Wilson interval"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-win-rate-ece-confidence-interval-p04",
+     "answer": "[0.522, 0.709]. Small n means wide bands.",
+     "id": "local-remediation-win-rate-ece-confidence-interval-r1",
+     "question": "Wilson interval for n=100, w=62?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-judge-rubrics",
+   "title": "c01: judge rubrics",
+   "minutes": 2,
+   "endAnchor": "c01-judge-rubrics-end",
+   "blocks": [
+    {
+     "anchor": "c01-judge-rubrics-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-judge-rubrics-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-judge-rubrics-p03",
+     "definition": "The written law the judge model follows: criteria, scale, anchors.",
+     "term": "rubric"
+    },
+    {
+     "anchor": "c01-judge-rubrics-p03",
+     "definition": "One anchor example per level per criterion. They bought 0.23 agreement.",
+     "term": "anchors"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-judge-rubrics-p04",
+     "answer": "The rubric is the law, the judge is the court. Vague law gives arbitrary verdicts.",
+     "id": "c01-judge-rubrics-r1",
+     "question": "State the law-and-court model."
+    },
+    {
+     "anchor": "c01-judge-rubrics-p07",
+     "answer": "0.58 to 0.81. The anchors bought 0.23 of agreement.",
+     "id": "c01-judge-rubrics-r2",
+     "question": "Vague vs anchored rubric agreement?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-pointwisepairwise",
+   "title": "c02: pointwise/pairwise",
+   "minutes": 2,
+   "endAnchor": "c02-pointwisepairwise-end",
+   "blocks": [
+    {
+     "anchor": "c02-pointwisepairwise-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-pointwisepairwise-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-pointwisepairwise-p03",
+     "definition": "Scoring one answer alone (e.g. 7/10). A ruler; needs calibration.",
+     "term": "pointwise"
+    },
+    {
+     "anchor": "c02-pointwisepairwise-p03",
+     "definition": "Comparing two answers directly. A scale; the stabler signal.",
+     "term": "pairwise"
+    },
+    {
+     "anchor": "c02-pointwisepairwise-p05",
+     "definition": "Scores from pairs via mean-centered MLE. Stable across seeds.",
+     "term": "Bradley-Terry"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-pointwisepairwise-p04",
+     "answer": "Pointwise is a ruler, pairwise is a scale. Rulers need calibration, scales just compare.",
+     "id": "c02-pointwisepairwise-r1",
+     "question": "Ruler vs scale?"
+    },
+    {
+     "anchor": "c02-pointwisepairwise-p06",
+     "answer": "n(n-1)/2 pairs, O(n^2). Pointwise needs n scores, O(n).",
+     "id": "c02-pointwisepairwise-r2",
+     "question": "Pairwise cost for n models?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-positionverbosity-bias",
+   "title": "c03: position/verbosity bias",
+   "minutes": 3,
+   "endAnchor": "c03-positionverbosity-bias-end",
+   "blocks": [
+    {
+     "anchor": "c03-positionverbosity-bias-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-positionverbosity-bias-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-positionverbosity-bias-p03",
+     "definition": "The judge favoring the first-presented answer.",
+     "term": "position bias"
+    },
+    {
+     "anchor": "c03-positionverbosity-bias-p07",
+     "definition": "+200 tokens buys +0.08 win rate with no quality change.",
+     "term": "verbosity bias"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-positionverbosity-bias-p03",
+     "answer": "(0.70 + (1 - 0.45)) / 2 = 0.625. The swap averages out the position effect.",
+     "id": "c03-positionverbosity-bias-r1",
+     "question": "Compute the debiased estimate."
+    },
+    {
+     "anchor": "c03-positionverbosity-bias-p04",
+     "answer": "The judge is a tired reader. It likes what it sees first and what fills the page.",
+     "id": "c03-positionverbosity-bias-r2",
+     "question": "State the tired-reader model."
+    }
+   ]
+  },
+  {
+   "anchor": "c04-calibration",
+   "title": "c04: calibration",
+   "minutes": 2,
+   "endAnchor": "c04-calibration-end",
+   "blocks": [
+    {
+     "anchor": "c04-calibration-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-calibration-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-calibration-p03",
+     "definition": "Whether a judge\u2019s stated confidences match its actual accuracy.",
+     "term": "calibration"
+    },
+    {
+     "anchor": "c04-calibration-p06",
+     "definition": "Sum over bins (n_b/n) x |acc - conf|. A weighted honesty gap.",
+     "term": "ECE"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-calibration-p04",
+     "answer": "Calibration is honesty about doubt. A calibrated \u201c70%\u201d comes true 70% of the time.",
+     "id": "c04-calibration-r1",
+     "question": "What is calibration?"
+    },
+    {
+     "anchor": "c04-calibration-p07",
+     "answer": "0.074. The top bin is the liar.",
+     "id": "c04-calibration-r2",
+     "question": "ECE of the toy bins?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-nondeterminism",
+   "title": "c05: nondeterminism",
+   "minutes": 2,
+   "endAnchor": "c05-nondeterminism-end",
+   "blocks": [
+    {
+     "anchor": "c05-nondeterminism-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-nondeterminism-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-nondeterminism-p04",
+     "definition": "Same prompt, different answers across runs.",
+     "term": "nondeterminism"
+    },
+    {
+     "anchor": "c05-nondeterminism-p06",
+     "definition": "Temperature 0, fixed seed, pinned model version, log all three.",
+     "term": "pinning protocol"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-nondeterminism-p04",
+     "answer": "The judge is a die that remembers its last roll.",
+     "id": "c05-nondeterminism-r1",
+     "question": "State the die model."
+    },
+    {
+     "anchor": "c05-nondeterminism-p07",
+     "answer": "0.97 at temp 0, 0.88 at temp 0.7. A 0.03 delta is noise at 0.7, signal at 0.",
+     "id": "c05-nondeterminism-r2",
+     "question": "Agreement at temp 0 vs 0.7?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-human-checks",
+   "title": "c06: human checks",
+   "minutes": 2,
+   "endAnchor": "c06-human-checks-end",
+   "blocks": [
+    {
+     "anchor": "c06-human-checks-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-human-checks-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-human-checks-p04",
+     "definition": "The judge is an intern, humans are the partners who spot check.",
+     "term": "human gates"
+    },
+    {
+     "anchor": "c06-human-checks-p06",
+     "definition": "Rubric validation, spot checks, disagreement review. Layered trust.",
+     "term": "three gates"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-human-checks-p04",
+     "answer": "The judge is an intern, humans are the partners. The intern does the volume, the partners spot check.",
+     "id": "c06-human-checks-r1",
+     "question": "State the intern-and-partners model."
+    },
+    {
+     "anchor": "c06-human-checks-p07",
+     "answer": "Model 0.62, human 0.58, agreement 0.78. The 0.04 gap is inside the Wilson band.",
+     "id": "c06-human-checks-r2",
+     "question": "What did the audit toy show?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-blind-evaluation",
+   "title": "c07: blind evaluation",
+   "minutes": 2,
+   "endAnchor": "c07-blind-evaluation-end",
+   "blocks": [
+    {
+     "anchor": "c07-blind-evaluation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-blind-evaluation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-blind-evaluation-p04",
+     "definition": "Hiding model identity from the judge: no names, no styles, no tells.",
+     "term": "blinding"
+    },
+    {
+     "anchor": "c07-blind-evaluation-p03",
+     "definition": "The judge favoring its own model\u2019s outputs; 0.09 in the toy.",
+     "term": "self-preference"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-blind-evaluation-p04",
+     "answer": "Blinding is a blindfold on the judge. The verdict then rests on the words alone.",
+     "id": "c07-blind-evaluation-r1",
+     "question": "State the blindfold model."
+    },
+    {
+     "anchor": "c07-blind-evaluation-p07",
+     "answer": "0.09, falling to 0.03 after style normalization. Formatting was half the tell.",
+     "id": "c07-blind-evaluation-r2",
+     "question": "What was the blind-vs-unblind gap?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-contamination",
+   "title": "c08: contamination",
+   "minutes": 2,
+   "endAnchor": "c08-contamination-end",
+   "blocks": [
+    {
+     "anchor": "c08-contamination-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-contamination-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-contamination-p04",
+     "definition": "Benchmark items leaking into training; an open book passed off as closed.",
+     "term": "contamination"
+    },
+    {
+     "anchor": "c08-contamination-p05",
+     "definition": "Planted unique tokens whose appearance in outputs proves leakage.",
+     "term": "canary strings"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-contamination-p04",
+     "answer": "Contamination is an open book passed off as a closed exam. Quarantine the test set like a crime scene.",
+     "id": "c08-contamination-r1",
+     "question": "State the open-book model."
+    },
+    {
+     "anchor": "c08-contamination-p07",
+     "answer": "8.2 vs 24.6, gap 3.0x. Clean model gap is 1.15x.",
+     "id": "c08-contamination-r2",
+     "question": "Perplexity gap in the toy?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-appropriate-metrics",
+   "title": "c09: appropriate metrics",
+   "minutes": 2,
+   "endAnchor": "c09-appropriate-metrics-end",
+   "blocks": [
+    {
+     "anchor": "c09-appropriate-metrics-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-appropriate-metrics-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-appropriate-metrics-p04",
+     "definition": "Exact match fits short answers, judges fit open generation, task success fits agents.",
+     "term": "metric ladder"
+    },
+    {
+     "anchor": "c09-appropriate-metrics-p06",
+     "definition": "The metric must vary with what you change and be blind to what you do not.",
+     "term": "selection rule"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-appropriate-metrics-p04",
+     "answer": "Metrics are shoes, tasks are feet. Wrong shoes hurt every step.",
+     "id": "c09-appropriate-metrics-r1",
+     "question": "State the shoes-and-feet model."
+    },
+    {
+     "anchor": "c09-appropriate-metrics-p07",
+     "answer": "A, at 0.91 vs 0.43. The 0.48 correlation gap justifies the judge-call cost.",
+     "id": "c09-appropriate-metrics-r2",
+     "question": "Which metric ships?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-uncertainty",
+   "title": "c10: uncertainty",
+   "minutes": 3,
+   "endAnchor": "c10-uncertainty-end",
+   "blocks": [
+    {
+     "anchor": "c10-uncertainty-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-uncertainty-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-uncertainty-p04",
+     "definition": "Bands around eval numbers; report the blur or the photo lies by omission.",
+     "term": "uncertainty"
+    },
+    {
+     "anchor": "c10-uncertainty-p06",
+     "definition": "The true Wilson score interval; the earlier p \u00b1 1.96\u221a(p(1-p)/n) was the misnamed Wald interval.",
+     "term": "Wilson interval"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-uncertainty-p03",
+     "answer": "[0.522, 0.709] vs [0.452, 0.644]. The bands overlap: \u201cnot sure\u201d, not \u201cA wins\u201d.",
+     "id": "c10-uncertainty-r1",
+     "question": "0.62 vs 0.55 on 100 items: verdict?"
+    },
+    {
+     "anchor": "c10-uncertainty-p06",
+     "answer": "The Wald (normal-approximation) interval, misnamed.",
+     "id": "c10-uncertainty-r2",
+     "question": "What was the misnamed formula?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-costlatency",
+   "title": "c11: cost/latency",
+   "minutes": 2,
+   "endAnchor": "c11-costlatency-end",
+   "blocks": [
+    {
+     "anchor": "c11-costlatency-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-costlatency-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-costlatency-p04",
+     "definition": "Price every eval design before you buy it.",
+     "term": "eval bill"
+    },
+    {
+     "anchor": "c11-costlatency-p06",
+     "definition": "Bill = pairs \u00d7 items \u00d7 orders \u00d7 price. Latency = calls / throughput.",
+     "term": "bill formula"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-costlatency-p07",
+     "answer": "45,000 calls, $90 at $0.002. Sampled 100 items: $18, interval 2.2x wider.",
+     "id": "c11-costlatency-r1",
+     "question": "Bill for 10 models, 500 items, swapped?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-benchmark-interpretation",
+   "title": "c12: benchmark interpretation",
+   "minutes": 2,
+   "endAnchor": "c12-benchmark-interpretation-end",
+   "blocks": [
+    {
+     "anchor": "c12-benchmark-interpretation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-benchmark-interpretation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-benchmark-interpretation-p04",
+     "definition": "It reads temperature, not health. A broken thermometer reads whatever it wants.",
+     "term": "benchmark"
+    },
+    {
+     "anchor": "c12-benchmark-interpretation-p06",
+     "definition": "Bands, contamination, saturation, gaming, construct validity.",
+     "term": "five caveats"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-benchmark-interpretation-p04",
+     "answer": "A benchmark is a thermometer. It reads temperature, not health.",
+     "id": "c12-benchmark-interpretation-r1",
+     "question": "State the thermometer model."
+    },
+    {
+     "anchor": "c12-benchmark-interpretation-p07",
+     "answer": "Tie. Bands [0.893, 0.941] and [0.882, 0.932] overlap.",
+     "id": "c12-benchmark-interpretation-r2",
+     "question": "92 vs 91 on n=500: verdict?"
+    }
+   ]
+  }
+ ]
+}

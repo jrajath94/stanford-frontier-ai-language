@@ -1,0 +1,322 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-u03_questions",
+ "itemKind": "lesson",
+ "revision": "9b89dcdbc3a6b15342ba9f6fc0c980b91085ba95b21755870d5ce53b13b91fc0",
+ "sections": [
+  {
+   "anchor": "u03-interview-bank-questions",
+   "title": "U03 interview bank , questions",
+   "minutes": 1,
+   "endAnchor": "u03-interview-bank-questions-end",
+   "blocks": [
+    {
+     "anchor": "u03-interview-bank-questions-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "u03-interview-bank-questions-p01"
+    },
+    {
+     "term": "answer keys",
+     "definition": "The companion files with worked answers; open them only after attempting.",
+     "anchor": "u03-interview-bank-questions-p01"
+    },
+    {
+     "term": "deep ladders",
+     "definition": "Follow-up chains that deepen one topic from definition to experiment.",
+     "anchor": "u03-interview-bank-questions-p01"
+    },
+    {
+     "term": "breadth",
+     "definition": "Short questions that test wide coverage across the unit.",
+     "anchor": "u03-interview-bank-questions-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u03-interview-bank-questions-r1",
+     "question": "How many questions of each type does the U03 bank set?",
+     "answer": "Six breadth, two deep ladders of five follow-ups, two analytical exercises, one implementation/debug task, two changed-constraint scenarios, and one research-critique question.",
+     "anchor": "u03-interview-bank-questions-p01"
+    },
+    {
+     "id": "u03-interview-bank-questions-r2",
+     "question": "When may you open the answer key?",
+     "answer": "Only after attempting every question closed-book.",
+     "anchor": "u03-interview-bank-questions-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth-6",
+   "title": "Breadth (6)",
+   "minutes": 1,
+   "endAnchor": "breadth-6-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "temperature",
+     "definition": "The divisor T on logits; T -> 0 gives argmax, T -> infinity gives uniform.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "top-p",
+     "definition": "Nucleus sampling; it keeps the smallest set covering probability p.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "top-k",
+     "definition": "Truncation to the k highest-logit tokens.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "MoE router",
+     "definition": "The gate network that outputs expert weights per token.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "auxiliary loss",
+     "definition": "The load-balancing loss that prevents router collapse.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "ICL",
+     "definition": "In-context learning; the model adapts from examples with no weight change.",
+     "anchor": "breadth-6-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-6-r1",
+     "question": "What two limits does B1 ask for?",
+     "answer": "The temperature limits T -> 0 and T -> infinity.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r2",
+     "question": "What does B6 ask about ICL?",
+     "answer": "What ICL is, and what does not change during ICL.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r3",
+     "question": "What must B3 state about the MoE router?",
+     "answer": "What the router outputs and what the auxiliary loss prevents.",
+     "anchor": "breadth-6-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders-2-x-5",
+   "title": "Deep ladders (2 x 5)",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-2-x-5-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "tempered sampling",
+     "definition": "Sampling after dividing logits by T, then applying top-p.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "sampling order",
+     "definition": "Temperature first, then top-p; the order matters.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "term": "active fraction",
+     "definition": "The share of expert parameters used per token.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "router collapse",
+     "definition": "One expert taking most tokens; the aux loss fights it.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "aux-ablation",
+     "definition": "An experiment removing the auxiliary loss to test its effect.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-2-x-5-r1",
+     "question": "What toy does L1.2 ask for?",
+     "answer": "The distribution of [3, 1, 0, -1] at T = 0.5 and T = 2.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r2",
+     "question": "What toy does L2.2 ask for?",
+     "answer": "Routing the eight given gates with k = 2.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r3",
+     "question": "What does L1.5 ask you to debug?",
+     "answer": "High-T gibberish.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-exercises-2",
+   "title": "Analytical exercises (2)",
+   "minutes": 1,
+   "endAnchor": "analytical-exercises-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "entropy",
+     "definition": "The spread of a distribution; truncation lowers it.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "term": "active parameters",
+     "definition": "Expert parameters used per token under top-2 routing.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "term": "top-p renormalization",
+     "definition": "Rescaling the kept tokens' probabilities to sum to one.",
+     "anchor": "analytical-exercises-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-exercises-2-r1",
+     "question": "What must E1 compute about entropy?",
+     "answer": "Entropy before and after top-p = 0.75 truncation, and what truncation did to it.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "id": "analytical-exercises-2-r2",
+     "question": "What fraction must E2 state?",
+     "answer": "The active fraction of expert parameters per token.",
+     "anchor": "analytical-exercises-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebug-task-1",
+   "title": "Implementation/debug task (1)",
+   "minutes": 1,
+   "endAnchor": "implementationdebug-task-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "chat template",
+     "definition": "The format that marks system, user, and assistant turns.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "term": "template assertion",
+     "definition": "A test that the template renders roles correctly.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "term": "ordered checks",
+     "definition": "A debug sequence where each check rules out one failure.",
+     "anchor": "implementationdebug-task-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebug-task-1-r1",
+     "question": "What symptom does D1 report?",
+     "answer": "The model ignores the system prompt but follows user instructions.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "id": "implementationdebug-task-1-r2",
+     "question": "What regression guard must the answer write?",
+     "answer": "A template assertion that prevents regression.",
+     "anchor": "implementationdebug-task-1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-scenarios-2",
+   "title": "Changed-constraint scenarios (2)",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-scenarios-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "chain-of-thought",
+     "definition": "Generating reasoning steps before the answer.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "term": "tool use",
+     "definition": "Calling a calculator instead of computing in tokens.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "term": "distribution guards",
+     "definition": "Mechanisms that keep a high-T generator on topic.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-scenarios-2-r1",
+     "question": "What three options does S1 compare?",
+     "answer": "CoT, direct answer, and tool use for exact 6-digit arithmetic.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "id": "changed-constraint-scenarios-2-r2",
+     "question": "What must S2 name for each guard?",
+     "answer": "The order to apply it and how it changes the distribution.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique-question-1",
+   "title": "Research-critique question (1)",
+   "minutes": 1,
+   "endAnchor": "research-critique-question-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "faithfulness",
+     "definition": "Whether the stated steps actually cause the answer.",
+     "anchor": "research-critique-question-1-p01"
+    },
+    {
+     "term": "CoT",
+     "definition": "Chain-of-thought; the claim says it shows the model's reasoning.",
+     "anchor": "research-critique-question-1-p02"
+    },
+    {
+     "term": "falsification condition",
+     "definition": "The outcome that would prove the claim wrong.",
+     "anchor": "research-critique-question-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-question-1-r1",
+     "question": "What claim does R1 target?",
+     "answer": "That chain-of-thought shows the model's reasoning.",
+     "anchor": "research-critique-question-1-p01"
+    },
+    {
+     "id": "research-critique-question-1-r2",
+     "question": "What must the experiment test?",
+     "answer": "Whether the steps cause the answer.",
+     "anchor": "research-critique-question-1-p01"
+    }
+   ]
+  }
+ ]
+}

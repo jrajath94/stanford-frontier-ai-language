@@ -133,10 +133,10 @@
     <article>
       <nav class="breadcrumb"><a href="../index.html">Home</a> / <a href="#">CS224N: NLP with Deep Learning</a> / U15 · Project tutorials and open questions</nav>
       <h1>U15 · Project tutorials and open questions</h1>
-      <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
+      <p class="meta-line" id="u15_projects_open_questions-intro-p01" data-kind="prose" data-term="Prof. Christopher Manning">2026-10-06 · Instructor: Prof. Christopher Manning</p><span id="u15_projects_open_questions-intro-end" data-end></span>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u15-project-tutorials-and-open-questions">U15 , Project tutorials and open questions</h1>
 <h2 id="local-remediation">Local remediation</h2>
-<p>Bridges: <code>../shared/prerequisites/p02_python.md</code> (P02, the
+<p id="local-remediation-p01" data-kind="prose">Bridges: <code>../shared/prerequisites/p02_python.md</code> (P02, the
 working language), <code>../shared/prerequisites/p12_pytorch.md</code> (P12,
 tensors and stability), <code>../shared/prerequisites/p22_experiments.md</code>
 (P22, falsifiable projects), <code>../shared/prerequisites/p24_production.md</code>
@@ -144,930 +144,930 @@ tensors and stability), <code>../shared/prerequisites/p22_experiments.md</code>
 project: the tutorials (C01-C03), the default project recipe
 (C04-C05), the project machinery (C06-C10), and the open horizon
 (C11-C12).</p>
-<p>R1. Minimal GPT-2: V = 1000, d = 8, L = 4. Total 44,928 params.
+<p id="local-remediation-p02" data-kind="prose" data-term="R1">R1. Minimal GPT-2: V = 1000, d = 8, L = 4. Total 44,928 params.
 The recipe scales: the default project is this, bigger.
 R2. Seed variance: 5 seeds, mean 0.8045, std 0.0203. One seed
 is an anecdote, five are evidence.
 R3. Pipeline: proposal, milestone, poster, report. Four gates
-from SRC-04. Each gate needs a falsifiable claim, not a demo.</p>
+from SRC-04. Each gate needs a falsifiable claim, not a demo.</p><span id="local-remediation-end" data-end></span>
 <hr />
 <h3 id="c01-python-review">C01: Python review</h3>
-<p>Leaf id <code>cs224n-U15-C01</code>. Claim class REQUESTED-BRANCH.
+<p id="c01-python-review-p01" data-kind="prose">Leaf id <code>cs224n-U15-C01</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+<p id="c01-python-review-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
    Python review session of the Winter 2026 schedule (S03 per
    <code>course_map.md</code>). Scope: the Python you need for the
    course. Objectives: write clean numeric code, state the
    vectorization rule, avoid the loop trap. Depends on P02.</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: the loop over
+<p id="c01-python-review-p03" data-kind="example" data-term="The loop is the trap"><strong>Motivating question and toy.</strong> Question: the loop over
    1M tokens takes minutes, the vectorized version takes a
    second, why? Toy: numpy dot on 1M floats: 0.002 s. Python
    loop: 0.4 s. The loop is the trap.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> Python is the conductor, numpy is the
+<p id="c01-python-review-p04" data-kind="keyIdea" data-reveal="rise" data-term="Python is the conductor, numpy is the orchestra"><strong>Mental model.</strong> Python is the conductor, numpy is the
    orchestra. The conductor waves (calls), the orchestra
    plays (C loops). Conduct, do not play.</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Arrays,
+<p id="c01-python-review-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> Arrays,
    shapes, dtypes. Assumption: the data fits in memory (or
    batch it).</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> The mechanism is where the loop
+<p id="c01-python-review-p06" data-kind="prose"><strong>Derivation / mechanism.</strong> The mechanism is where the loop
    runs: C for numpy, Python for the for-loop. Same
    arithmetic, 200x the speed.</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> Toy (hand, labeled as such): the
+<p id="c01-python-review-p07" data-kind="example"><strong>Computed example.</strong> Toy (hand, labeled as such): the
    0.002 s vs 0.4 s above. Measure on your machine, the
    ratio holds.</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> <code>fast_dot(a,
+<p id="c01-python-review-p08" data-kind="steps"><strong>Algorithm and reference implementation.</strong> <code>fast_dot(a,
    b)</code>: numpy dot, shape check. ~4 lines. Test: matches the
    loop&rsquo;s answer.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> The answers
+<p id="c01-python-review-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> The answers
    match to 1e-10. Check: shapes agree before the call.</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c01-python-review-p10" data-kind="prose"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> Same FLOPs, different constant. The cost of the
    loop: your afternoon.</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c01-python-review-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     PyTorch (C02). Choose numpy for CPU labs. Choose torch
     for GPUs and autograd.</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c01-python-review-p12" data-kind="prose"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;vectorized is always faster.&rdquo; Counterexample:
     tiny arrays: the call overhead dominates. Vectorize the
     big loops.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c01-python-review-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: none, this is craft. The extension is the
     habit: profile before optimizing.</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c01-python-review-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A1 (breadth), L1
     (ladder: state the rule, time the toy, derive the loop
     location, diagnose the tiny-array case, design the
     profile habit).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E1: time both
+<p id="c01-python-review-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E1: time both
     versions. E2: find the crossover size. Keys in
     <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+<p id="c01-python-review-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
     is a timing (carried in text). Logged as an honest
     exception in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c01-python-review-end" data-end></span>
 <hr />
 <h3 id="c02-pytorch-tutorial">C02: PyTorch tutorial</h3>
-<p>Leaf id <code>cs224n-U15-C02</code>. Claim class REQUESTED-BRANCH.
+<p id="c02-pytorch-tutorial-p01" data-kind="prose">Leaf id <code>cs224n-U15-C02</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+<p id="c02-pytorch-tutorial-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
    PyTorch tutorial session (S06 per <code>course_map.md</code>). Scope:
    tensors, autograd, and stability. Objectives: build the
    graph, read a gradient, keep it stable. Depends on P12,
    U03.</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: who computes the
+<p id="c02-pytorch-tutorial-p03" data-kind="example"><strong>Motivating question and toy.</strong> Question: who computes the
    gradient? Toy: x = tensor(2.0, requires_grad=True), y =
    x**2, y.backward(): x.grad is 4.0. Autograd did the chain
    rule.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> PyTorch records what you did (the graph)
+<p id="c02-pytorch-tutorial-p04" data-kind="keyIdea" data-reveal="rise" data-term="You write the forward, it writes the backward"><strong>Mental model.</strong> PyTorch records what you did (the graph)
    and replays it backwards (the gradient). You write the
    forward, it writes the backward.</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Tensors,
+<p id="c02-pytorch-tutorial-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> Tensors,
    the graph, .grad. Assumption: the ops are differentiable
    (or the graph stops).</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> The mechanism is U03&rsquo;s chain
+<p id="c02-pytorch-tutorial-p06" data-kind="prose"><strong>Derivation / mechanism.</strong> The mechanism is U03&rsquo;s chain
    rule, automated: each op knows its local derivative, the
    engine multiplies them.</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> Toy (hand, labeled as such): x = 2,
+<p id="c02-pytorch-tutorial-p07" data-kind="example"><strong>Computed example.</strong> Toy (hand, labeled as such): x = 2,
    y = x^2 = 4, dy/dx = 2x = 4. The .grad reads 4.0.</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> <code>grad_check(
+<p id="c02-pytorch-tutorial-p08" data-kind="steps" data-term="grad_check"><strong>Algorithm and reference implementation.</strong> <code>grad_check(
    f, x)</code>: autograd vs finite difference. ~8 lines. Test:
    match to 1e-5.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> Finite
+<p id="c02-pytorch-tutorial-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> Finite
    differences agree (U03 C10&rsquo;s check). Check: no NaN in the
    grad.</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c02-pytorch-tutorial-p10" data-kind="prose"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> Backward costs about 2x forward. Stability: U03
    C03&rsquo;s softmax shift, C08&rsquo;s clipping.</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c02-pytorch-tutorial-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     numpy with hand gradients. Choose torch for models.
     Choose numpy for the course labs (this box has no torch).</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c02-pytorch-tutorial-p12" data-kind="prose"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;the graph is free.&rdquo; Counterexample: keeping
     the graph for 1000 steps eats memory. Detach or lose
     the graph.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c02-pytorch-tutorial-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: none, this is craft. The extension is grad
     checks on every new op.</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c02-pytorch-tutorial-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A2 (breadth: state
     the graph rule and the check).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E3: the x^2 toy.
+<p id="c02-pytorch-tutorial-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E3: the x^2 toy.
     E4: grad-check a softmax. Keys in <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+<p id="c02-pytorch-tutorial-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
     is a graph (carried in text). Logged as an honest
     exception in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c02-pytorch-tutorial-end" data-end></span>
 <hr />
 <h3 id="c03-hugging-face-tutorial">C03: Hugging Face tutorial</h3>
-<p>Leaf id <code>cs224n-U15-C03</code>. Claim class REQUESTED-BRANCH.
+<p id="c03-hugging-face-tutorial-p01" data-kind="prose">Leaf id <code>cs224n-U15-C03</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+<p id="c03-hugging-face-tutorial-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
    Hugging Face tutorial session (S13 per <code>course_map.md</code>).
    Scope: the standard model-and-data plumbing. Objectives:
    load a tokenizer and model, run a batch, name the
    versioning rule. Depends on C02, U12.</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: you need a
+<p id="c03-hugging-face-tutorial-p03" data-kind="example"><strong>Motivating question and toy.</strong> Question: you need a
    pretrained model in 5 lines, how? Toy: the tokenizer +
    model pair, one forward pass, logits out. The plumbing is
    the product.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> The hub is a library, the API is the
+<p id="c03-hugging-face-tutorial-p04" data-kind="keyIdea" data-reveal="rise" data-term="The hub is a library, the API is the librarian"><strong>Mental model.</strong> The hub is a library, the API is the
    librarian. You ask for a model by name and version, you
    get weights and config. Pin the version or the library
    moves under you.</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Model
+<p id="c03-hugging-face-tutorial-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> Model
    names, revisions, tokenizers, batches. Assumption: the
    name resolves to what you think (pin the revision).</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+<p id="c03-hugging-face-tutorial-p06" data-kind="prose"><strong>Derivation / mechanism.</strong> No new math. The mechanism is
    the pipeline: tokenize, batch, forward, decode. Each
    stage has a contract (shapes, padding).</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> Toy (hand, labeled as such): batch of
+<p id="c03-hugging-face-tutorial-p07" data-kind="example"><strong>Computed example.</strong> Toy (hand, labeled as such): batch of
    4, length 7, vocab 50: logits (4, 7, 50). The shapes are
    the contract (U03 C11&rsquo;s lesson).</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> <code>encode_batch(
+<p id="c03-hugging-face-tutorial-p08" data-kind="steps"><strong>Algorithm and reference implementation.</strong> <code>encode_batch(
    texts, tok)</code>: pad, mask, tensor. ~8 lines. Test: the
    shapes.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> The attention
+<p id="c03-hugging-face-tutorial-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> The attention
    mask zeros the padding. Check: decode(encode(s)) is s.</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c03-hugging-face-tutorial-p10" data-kind="prose"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> The hub download is the cost. The risk: an
    unpinned revision changes results.</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c03-hugging-face-tutorial-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     raw PyTorch, own data loading. Choose the hub for
     standard models. Choose raw for custom architectures.</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c03-hugging-face-tutorial-p12" data-kind="prose" data-term="Pin everything"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;the name is the model.&rdquo; Counterexample: the
     revision moved, your numbers changed. Pin everything.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c03-hugging-face-tutorial-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: none, this is craft. The extension is the
     version log.</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c03-hugging-face-tutorial-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A3 (breadth: state
     the pipeline and the pin rule).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E5: write the
+<p id="c03-hugging-face-tutorial-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E5: write the
     5-line load. E6: show the mask on padding. Keys in
     <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+<p id="c03-hugging-face-tutorial-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
     is a pipeline (carried in text). Logged as an honest
     exception in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c03-hugging-face-tutorial-end" data-end></span>
 <hr />
 <h3 id="c04-minimalist-gpt-2-objective">C04: minimalist GPT-2 objective</h3>
-<p>Leaf id <code>cs224n-U15-C04</code>. Claim class REQUESTED-BRANCH.
+<p id="c04-minimalist-gpt-2-objective-p01" data-kind="prose">Leaf id <code>cs224n-U15-C04</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
+<p id="c04-minimalist-gpt-2-objective-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to the
    final project description (SRC-04: default project implements
    parts of GPT-2). Scope: the smallest honest GPT-2. Objectives:
    count the params, write the loss, train the toy. Depends on
    U04, U05, R1.</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: what is the least
+<p id="c04-minimalist-gpt-2-objective-p03" data-kind="example"><strong>Motivating question and toy.</strong> Question: what is the least
    you can build and call it GPT-2? Toy: V = 1000, d = 8,
    L = 4: 44,928 params. Next-token cross-entropy. The
    recipe, miniature.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> GPT-2 is embeddings plus transformer
+<p id="c04-minimalist-gpt-2-objective-p04" data-kind="keyIdea" data-reveal="rise" data-term="Scale is a dial, not a different machine"><strong>Mental model.</strong> GPT-2 is embeddings plus transformer
    blocks plus a head, trained to predict the next token.
    The miniature has every part, just small. Scale is a
    dial, not a different machine.</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> V, d, L,
+<p id="c04-minimalist-gpt-2-objective-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> V, d, L,
    the param count, the loss. Assumption: the parts compose
    the same at scale (the scaling bet, U06).</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> Params = embeddings (Vd + nd)
+<p id="c04-minimalist-gpt-2-objective-p06" data-kind="prose"><strong>Derivation / mechanism.</strong> Params = embeddings (Vd + nd)
    + L times (attention + MLP). The loss is U04&rsquo;s next-token
    cross-entropy. The mechanism is the stack.</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> From <code>compute_u15.py</code>: 44,928 params.
+<p id="c04-minimalist-gpt-2-objective-p07" data-kind="example" data-term="44,928"><strong>Computed example.</strong> From <code>compute_u15.py</code>: 44,928 params.
    The toy loss falls 1.164 to 1.043 on random data (the
    probe learns the mean, honestly labeled).</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> <code>tiny_gpt2(
+<p id="c04-minimalist-gpt-2-objective-p08" data-kind="steps"><strong>Algorithm and reference implementation.</strong> <code>tiny_gpt2(
    V, d, L)</code>: the parts list. ~10 lines. Test: the param
    count.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> The count
+<p id="c04-minimalist-gpt-2-objective-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> The count
    matches the formula. Check: the loss falls on the toy.</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c04-minimalist-gpt-2-objective-p10" data-kind="prose"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> U06&rsquo;s scaling: the miniature teaches the
    plumbing, not the capabilities.</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c04-minimalist-gpt-2-objective-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     the full default project (parts of real GPT-2). Choose
     the miniature for understanding. Choose the default for
     the grade.</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c04-minimalist-gpt-2-objective-p12" data-kind="prose"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;the miniature predicts the full model.&rdquo;
     Counterexample: capabilities emerge with scale (U06).
     The miniature teaches mechanics, not emergence.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c04-minimalist-gpt-2-objective-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: scale d in {8, 32, 128}, measure the loss
     curve shape. Predict: same shape, lower floor.
     Falsifier: different shape (then scale changes the
     dynamics, interesting).</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c04-minimalist-gpt-2-objective-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A4 (breadth), L4
     (ladder: define the parts, count 44,928, derive the
     formula, diagnose the emergence gap, design the scale
     sweep).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E7: implement
+<p id="c04-minimalist-gpt-2-objective-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E7: implement
     the param counter, match 44,928. E8: train the probe,
     match the loss fall. Keys in <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+<p id="c04-minimalist-gpt-2-objective-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong>
     <img alt="u15_fig01" src="../assets/u15_fig01.png" title="u15_fig01" />: the param plate, Shell 2,
     source original toy. Audit row in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c04-minimalist-gpt-2-objective-end" data-end></span>
 <hr />
 <h3 id="c05-downstream-tasks">C05: downstream tasks</h3>
-<p>Leaf id <code>cs224n-U15-C05</code>. Claim class REQUESTED-BRANCH.
+<p id="c05-downstream-tasks-p01" data-kind="prose">Leaf id <code>cs224n-U15-C05</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+<p id="c05-downstream-tasks-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
    SRC-04 (default project: 3 downstream tasks). Scope: using
    the miniature on tasks. Objectives: define the transfer,
    report with uncertainty, state the fine-tune rule. Depends
    on C04, U06 C09.</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: the model is
+<p id="c05-downstream-tasks-p03" data-kind="example"><strong>Motivating question and toy.</strong> Question: the model is
    trained, now what? Toy: three tasks with toy scores:
    paraphrase 0.81 +/- 0.03, sentiment 0.93 +/- 0.01, QA 0.68
    +/- 0.05. Labeled toy, the template is the lesson.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> Pretraining is school, downstream tasks
+<p id="c05-downstream-tasks-p04" data-kind="keyIdea" data-reveal="rise" data-term="Pretraining is school, downstream tasks are the jobs"><strong>Mental model.</strong> Pretraining is school, downstream tasks
    are the jobs. The template: attach a head, fine-tune a
    little, report with intervals (U10&rsquo;s discipline).</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Task
+<p id="c05-downstream-tasks-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> Task
    scores with standard errors. Assumption: the scores are
    labeled toy (they are, say so).</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> The mechanism is U06 C09&rsquo;s
+<p id="c05-downstream-tasks-p06" data-kind="prose"><strong>Derivation / mechanism.</strong> The mechanism is U06 C09&rsquo;s
    transfer: the pretrained stack plus a task head. The
    reporting is U10&rsquo;s: intervals, slices.</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> From <code>compute_u15.py</code> (labeled toy):
+<p id="c05-downstream-tasks-p07" data-kind="example"><strong>Computed example.</strong> From <code>compute_u15.py</code> (labeled toy):
    the three scores above. QA&rsquo;s 0.05 SE is the widest: the
    task needs more items.</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> <code>downstream(
+<p id="c05-downstream-tasks-p08" data-kind="steps"><strong>Algorithm and reference implementation.</strong> <code>downstream(
    model, task)</code>: head, fine-tune, report. ~8 lines. Test:
    the template runs.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> Every score has
+<p id="c05-downstream-tasks-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> Every score has
    its SE. Check: the fine-tune uses a dev split.</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c05-downstream-tasks-p10" data-kind="prose"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> Fine-tuning is cheap. The cost is the eval items
    for honest SEs.</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c05-downstream-tasks-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     prompt the base model (U08). Choose fine-tuning for
     reliability. Choose prompting for speed.</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c05-downstream-tasks-p12" data-kind="prose" data-term="Never cite them as findings"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;the toy scores are real.&rdquo; Counterexample:
     they are template numbers. Never cite them as findings.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c05-downstream-tasks-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: run the template for real on the miniature.
     Predict: the pattern holds (sentiment &gt; paraphrase &gt;
     QA). Falsifier: any order (then the miniature differs,
     investigate).</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c05-downstream-tasks-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A5 (breadth: state
     the template and the toy label).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E9: run the
+<p id="c05-downstream-tasks-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E9: run the
     template. E10: widen QA&rsquo;s items, show the SE shrink.
     Keys in <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+<p id="c05-downstream-tasks-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
     is a template (carried in text). Logged as an honest
     exception in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c05-downstream-tasks-end" data-end></span>
 <hr />
 <h3 id="c06-proposalmilestonereport">C06: proposal/milestone/report</h3>
-<p>Leaf id <code>cs224n-U15-C06</code>. Claim class REQUESTED-BRANCH.
+<p id="c06-proposalmilestonereport-p01" data-kind="prose">Leaf id <code>cs224n-U15-C06</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+<p id="c06-proposalmilestonereport-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
    SRC-04 (proposal, milestone, poster, report). Scope: the
    four gates. Objectives: write each gate&rsquo;s one-pager, state
    the falsifiable rule, pass the gates. Depends on P22, U10
    C10-C12.</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: the project is 4
+<p id="c06-proposalmilestonereport-p03" data-kind="example"><strong>Motivating question and toy.</strong> Question: the project is 4
    weeks, how do you not drift? Toy: the proposal names the
    claim (&ldquo;k=5 beats k=1 on our QA&rdquo;), the milestone shows the
    first numbers, the poster tells the story, the report
    proves it. Each gate has a falsifiable claim.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> The gates are the project&rsquo;s spine. The
+<p id="c06-proposalmilestonereport-p04" data-kind="keyIdea" data-reveal="rise" data-term="The gates are the project’s spine"><strong>Mental model.</strong> The gates are the project&rsquo;s spine. The
    proposal promises, the milestone shows progress, the
    poster communicates, the report archives. A gate without
    a claim is a status meeting.</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Four
+<p id="c06-proposalmilestonereport-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> Four
    documents, each with a claim. Assumption: the claim
    survives contact with data (or it changes, honestly).</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+<p id="c06-proposalmilestonereport-p06" data-kind="prose"><strong>Derivation / mechanism.</strong> No new math. The mechanism is
    the gate: each document answers &ldquo;what did you claim, what
    did you find, what changed&rdquo;. The report is U10 C12&rsquo;s
    accounting plus U13 C12&rsquo;s impact.</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> Toy (hand, labeled as such): the
+<p id="c06-proposalmilestonereport-p07" data-kind="example"><strong>Computed example.</strong> Toy (hand, labeled as such): the
    proposal claim above, milestone numbers (k=5: 0.667 vs
    k=1: 0.000), the report&rsquo;s verdict. The numbers from U09&rsquo;s
    toys, reused honestly.</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> <code>gate_doc(
+<p id="c06-proposalmilestonereport-p08" data-kind="steps"><strong>Algorithm and reference implementation.</strong> <code>gate_doc(
    kind, claim, evidence)</code>: the template. ~6 lines. Test: all
    four kinds render.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> Every gate names
+<p id="c06-proposalmilestonereport-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> Every gate names
    its claim and its evidence. Check: the report&rsquo;s claims
    match the proposal&rsquo;s (or the changes are logged).</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c06-proposalmilestonereport-p10" data-kind="prose"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> Writing time. The cost of skipping a gate: drift.</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c06-proposalmilestonereport-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     one final report. Choose the gates for a team or a grade.
     Choose the single report for solo exploration.</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c06-proposalmilestonereport-p12" data-kind="prose"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;the proposal survives.&rdquo; Counterexample: the
     data kills the claim at the milestone. Change the claim,
     log the change, continue.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c06-proposalmilestonereport-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: none, this is operations. The extension is
     doing it.</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c06-proposalmilestonereport-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A6 (breadth), L6
     (ladder: define the gates, write the toy claim, derive
     the gate logic, diagnose the killed claim, design the
     change log).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E11: write the
+<p id="c06-proposalmilestonereport-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E11: write the
     proposal one-pager. E12: write the milestone with the
     U09 numbers. Keys in <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+<p id="c06-proposalmilestonereport-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong>
     <img alt="u15_fig03" src="../assets/u15_fig03.png" title="u15_fig03" />: the four gates, Shell 10,
     source SRC-04. Audit row in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c06-proposalmilestonereport-end" data-end></span>
 <hr />
 <h3 id="c07-project-scope">C07: project scope</h3>
-<p>Leaf id <code>cs224n-U15-C07</code>. Claim class REQUESTED-BRANCH.
+<p id="c07-project-scope-p01" data-kind="prose">Leaf id <code>cs224n-U15-C07</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+<p id="c07-project-scope-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
    SRC-04. Scope: sizing the project. Objectives: score the
    idea, cut it to fit, state the kill rule. Depends on U10
    C11.</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: the idea needs 8
+<p id="c07-project-scope-p03" data-kind="example"><strong>Motivating question and toy.</strong> Question: the idea needs 8
    weeks, you have 4, what goes? Toy: the scorecard 3/5
    (missing: metric defined, novelty). Define the metric:
    4/5. Cut the novelty: ship the measurement.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> U10 C11&rsquo;s scorecard, applied: scope is the
+<p id="c07-project-scope-p04" data-kind="keyIdea" data-reveal="rise" data-term="scope is the art of the shippable"><strong>Mental model.</strong> U10 C11&rsquo;s scorecard, applied: scope is the
    art of the shippable. A project that does one thing well
    beats a project that does three things badly.</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The five
+<p id="c07-project-scope-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> The five
    criteria, the cut list. Assumption: the cut preserves the
    claim (or the claim changes).</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> The mechanism is subtraction:
+<p id="c07-project-scope-p06" data-kind="prose"><strong>Derivation / mechanism.</strong> The mechanism is subtraction:
    list everything, cut until it fits the time box, keep the
    falsifiable core.</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> From <code>compute_u15.py</code>: 3/5. The two
+<p id="c07-project-scope-p07" data-kind="example"><strong>Computed example.</strong> From <code>compute_u15.py</code>: 3/5. The two
    missing are the rescope targets: define the metric
    (+1), cut novelty (ship at 4/5).</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> <code>rescope(idea,
+<p id="c07-project-scope-p08" data-kind="steps"><strong>Algorithm and reference implementation.</strong> <code>rescope(idea,
    weeks)</code>: score, cut, rescore. ~8 lines. Test: the toy
    3/5 to 4/5.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> The rescoped
+<p id="c07-project-scope-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> The rescoped
    idea fits the weeks. Check: the claim is still falsifiable.</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c07-project-scope-p10" data-kind="prose"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> An honest hour. The cost of skipping it: the 8-
    week idea in 4 weeks.</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c07-project-scope-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     do it all, sleep less. Choose scoping always. The
     alternative is the crunch.</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c07-project-scope-p12" data-kind="prose" data-term="Cut scope, never the control"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;the cut kept the claim.&rdquo; Counterexample: the
     cut removed the control group. Cut scope, never the
     control.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c07-project-scope-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: none, this is craft. The extension is the
     habit.</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c07-project-scope-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A7 (breadth: state
     the cut rule).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E13: score and
+<p id="c07-project-scope-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E13: score and
     cut the toy idea. E14: find the control in the cut list.
     Keys in <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+<p id="c07-project-scope-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
     is a cut (carried in text). Logged as an honest
     exception in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c07-project-scope-end" data-end></span>
 <hr />
 <h3 id="c08-original-implementation">C08: original implementation</h3>
-<p>Leaf id <code>cs224n-U15-C08</code>. Claim class REQUESTED-BRANCH.
+<p id="c08-original-implementation-p01" data-kind="prose">Leaf id <code>cs224n-U15-C08</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+<p id="c08-original-implementation-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
    SRC-04 (default project: implement parts of GPT-2). Scope:
    writing your own code. Objectives: implement from the
    spec, test each part, state the originality rule. Depends
    on C04, the course integrity policy (SRC-06).</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: the project says
+<p id="c08-original-implementation-p03" data-kind="example"><strong>Motivating question and toy.</strong> Question: the project says
    &ldquo;implement&rdquo;, what does that allow? Toy: you write the
    attention from U05&rsquo;s spec, test the shapes, cite the
    spec. Original code, cited ideas.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> Implementation is translation: spec to
+<p id="c08-original-implementation-p04" data-kind="keyIdea" data-reveal="rise" data-term="Implementation is translation"><strong>Mental model.</strong> Implementation is translation: spec to
    code. The spec is cited, the code is yours. Copying the
    translation is not translation.</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The spec,
+<p id="c08-original-implementation-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> The spec,
    your code, the tests, the citations. Assumption: the spec
    is complete enough to implement from.</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> The mechanism is the test: shape
+<p id="c08-original-implementation-p06" data-kind="prose"><strong>Derivation / mechanism.</strong> The mechanism is the test: shape
    checks (U03 C11), grad checks (U03 C10), the toy numbers.
    Tests are the proof of understanding.</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> Toy (hand, labeled as such): your
+<p id="c08-original-implementation-p07" data-kind="example"><strong>Computed example.</strong> Toy (hand, labeled as such): your
    attention matches the spec&rsquo;s shapes (4, 7, 50) and the
    grad check passes. The code is yours, the idea is cited.</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> The rule, not
+<p id="c08-original-implementation-p08" data-kind="steps"><strong>Algorithm and reference implementation.</strong> The rule, not
    code: spec in, tests green, citations attached. Test: the
    toy passes.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> All tests green.
+<p id="c08-original-implementation-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> All tests green.
    Check: no copied code without attribution.</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c08-original-implementation-p10" data-kind="prose"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> Your time. The cost of copying: the policy
    violation (SRC-06).</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c08-original-implementation-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     use the library. Choose implementation for the parts you
     must understand. Choose the library for the plumbing.</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c08-original-implementation-p12" data-kind="prose" data-term="The policy cares about provenance, not cosmetics"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;clean code means my code.&rdquo; Counterexample:
     renamed variables on copied code. The policy cares about
     provenance, not cosmetics.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c08-original-implementation-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: none, this is integrity. The extension is the
     habit.</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c08-original-implementation-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A8 (breadth: state
     the originality rule).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E15: implement one
+<p id="c08-original-implementation-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E15: implement one
     part from spec, test it. E16: cite the spec. Keys in
     <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+<p id="c08-original-implementation-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
     is a rule (carried in text). Logged as an honest
     exception in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c08-original-implementation-end" data-end></span>
 <hr />
 <h3 id="c09-reproducibility">C09: reproducibility</h3>
-<p>Leaf id <code>cs224n-U15-C09</code>. Claim class REQUESTED-BRANCH.
+<p id="c09-reproducibility-p01" data-kind="prose">Leaf id <code>cs224n-U15-C09</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+<p id="c09-reproducibility-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
    SRC-04. Scope: making the project rerunnable. Objectives:
    seed everything, log everything, state the tolerance.
    Depends on R2, P22.</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: your partner
+<p id="c09-reproducibility-p03" data-kind="example"><strong>Motivating question and toy.</strong> Question: your partner
    reruns your code, gets a different number, what broke? Toy:
    5 seeds give mean 0.8045, std 0.0203. The &ldquo;different
    number&rdquo; is inside the noise. Report the spread.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> Reproducibility is the receipt: seeds,
+<p id="c09-reproducibility-p04" data-kind="keyIdea" data-reveal="rise" data-term="Reproducibility is the receipt"><strong>Mental model.</strong> Reproducibility is the receipt: seeds,
    versions, data, commands. A result without a receipt is a
    story.</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Seeds, the
+<p id="c09-reproducibility-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> Seeds, the
    spread, the receipt. Assumption: the code is deterministic
    given the seed (true on CPU, mostly true on GPU).</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> The mechanism is the seed
+<p id="c09-reproducibility-p06" data-kind="prose"><strong>Derivation / mechanism.</strong> The mechanism is the seed
    sweep: run k seeds, report mean and std. The tolerance is
    the std: differences inside it are noise.</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> From <code>compute_u15.py</code>: mean 0.8045,
+<p id="c09-reproducibility-p07" data-kind="example"><strong>Computed example.</strong> From <code>compute_u15.py</code>: mean 0.8045,
    std 0.0203. A rerun at 0.79 is consistent, at 0.70 is
    not.</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> <code>seed_sweep(
+<p id="c09-reproducibility-p08" data-kind="steps"><strong>Algorithm and reference implementation.</strong> <code>seed_sweep(
    run, seeds)</code>: the stats. ~6 lines. Test: the toy numbers.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> The seeds are
+<p id="c09-reproducibility-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> The seeds are
    fixed and logged. Check: the receipt reruns.</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c09-reproducibility-p10" data-kind="prose" data-term="The cost of one run: an anecdote"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> k runs. The cost of one run: an anecdote.</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c09-reproducibility-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     one seed, one number. Choose the sweep for any claim.
     Choose one seed for debugging.</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c09-reproducibility-p12" data-kind="prose"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;same seed, same number.&rdquo; Counterexample: GPU
     nondeterminism, library versions. Log those too.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c09-reproducibility-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: none, this is craft. The extension is the
     receipt habit.</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c09-reproducibility-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A9 (breadth), L9
     (ladder: define the receipt, compute the spread, derive
     the tolerance, diagnose the GPU case, design the
     receipt).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E17: implement
+<p id="c09-reproducibility-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E17: implement
     <code>seed_sweep</code>, match the toy. E18: write the receipt for
     the U09 lab. Keys in <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong>
+<p id="c09-reproducibility-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong>
     <img alt="u15_fig02" src="../assets/u15_fig02.png" title="u15_fig02" />: the seed bars, Shell 5, source
     original toy. Audit row in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c09-reproducibility-end" data-end></span>
 <hr />
 <h3 id="c10-limitations">C10: limitations</h3>
-<p>Leaf id <code>cs224n-U15-C10</code>. Claim class REQUESTED-BRANCH.
+<p id="c10-limitations-p01" data-kind="prose">Leaf id <code>cs224n-U15-C10</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
+<p id="c10-limitations-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Maps to
    SRC-04 (the report). Scope: the honest limits section.
    Objectives: list the limits, rank them, state what each
    would take to fix. Depends on U10 C12, U12 C12.</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: the project
+<p id="c10-limitations-p03" data-kind="example"><strong>Motivating question and toy.</strong> Question: the project
    worked, what did it not do? Toy: the list: toy data (not
    real), 5 seeds (not 50), one language (not twelve), no
    human eval. Each with its fix cost.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> Limitations are the report&rsquo;s immune
+<p id="c10-limitations-p04" data-kind="keyIdea" data-reveal="rise" data-term="Limitations are the report’s immune system"><strong>Mental model.</strong> Limitations are the report&rsquo;s immune
    system: they stop the reader from overclaiming your
    work. A missing limitations section is a claim without a
    leash.</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The limit
+<p id="c10-limitations-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> The limit
    list with fix costs. Assumption: the list is complete
    (audit it).</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+<p id="c10-limitations-p06" data-kind="prose" data-term="the ranking"><strong>Derivation / mechanism.</strong> No new math. The mechanism is
    the ranking: the limit that most threatens the claim goes
    first.</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> Toy (hand, labeled as such): the four
+<p id="c10-limitations-p07" data-kind="example"><strong>Computed example.</strong> Toy (hand, labeled as such): the four
    limits above, ranked: toy data first (it threatens
    everything).</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> <code>limitations(
+<p id="c10-limitations-p08" data-kind="steps"><strong>Algorithm and reference implementation.</strong> <code>limitations(
    project)</code>: the ranked list. ~6 lines. Test: the toy list.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> Every claim in
+<p id="c10-limitations-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> Every claim in
    the report maps to a limit or a defense. Check: the top
    limit is named in the abstract.</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c10-limitations-p10" data-kind="prose"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> An honest hour. The cost of skipping it: the
    reviewer writes it for you, unkindly.</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c10-limitations-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     bury the limits. Choose honesty always. The alternative
     is the rebuttal.</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c10-limitations-p12" data-kind="prose"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;the list is complete.&rdquo; Counterexample: the
     limit you forgot. Have someone else read it.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c10-limitations-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: none, this is the close of the machinery.
     The extension is the habit.</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c10-limitations-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A10 (breadth:
     state the ranking rule).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E19: write the
+<p id="c10-limitations-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E19: write the
     limits for the U11 lab. E20: rank them. Keys in
     <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+<p id="c10-limitations-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
     is a list (carried in text). Logged as an honest
     exception in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c10-limitations-end" data-end></span>
 <hr />
 <h3 id="c11-open-questions-2026">C11: open questions 2026</h3>
-<p>Leaf id <code>cs224n-U15-C11</code>. Claim class REQUESTED-BRANCH.
+<p id="c11-open-questions-2026-p01" data-kind="prose">Leaf id <code>cs224n-U15-C11</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Scope: the
+<p id="c11-open-questions-2026-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Scope: the
    horizon as of the October 2026 baseline. Objectives: name
    the open questions, mark each as open (not answered), state
    what would close it. Depends on the whole course.</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: what is still
+<p id="c11-open-questions-2026-p03" data-kind="example"><strong>Motivating question and toy.</strong> Question: what is still
    unknown? Toy: the list: the ICL mechanism (U08), faithful
    reasoning (U11), the scaling limit (U06), multilingual
    parity (U12), mechanistic understanding (U13). Each open,
    each with a closing experiment.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> Open questions are the field&rsquo;s todo list.
+<p id="c11-open-questions-2026-p04" data-kind="keyIdea" data-reveal="rise" data-term="Open questions are the field’s todo list"><strong>Mental model.</strong> Open questions are the field&rsquo;s todo list.
    This course ends where research begins. The list is dated:
    October 2026. It will age.</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> Questions
+<p id="c11-open-questions-2026-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> Questions
    with closing criteria. Assumption: the list is partial
    (it is).</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+<p id="c11-open-questions-2026-p06" data-kind="prose"><strong>Derivation / mechanism.</strong> No new math. The mechanism is
    the criterion: each question names the experiment that
    would answer it.</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> Toy (hand, labeled as such): &ldquo;does
+<p id="c11-open-questions-2026-p07" data-kind="example"><strong>Computed example.</strong> Toy (hand, labeled as such): &ldquo;does
    ICL implement gradient descent?&rdquo; Closing: the
    construction or the refutation, with the experiment.</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> <code>open_list()</code>: the
+<p id="c11-open-questions-2026-p08" data-kind="steps"><strong>Algorithm and reference implementation.</strong> <code>open_list()</code>: the
    dated list. ~6 lines. Test: 5 questions, each with a
    criterion.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> Every question
+<p id="c11-open-questions-2026-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> Every question
    is marked open. Check: the date is on the list.</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c11-open-questions-2026-p10" data-kind="prose"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> Reading time. The cost of skipping it: thinking
    the field is done.</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c11-open-questions-2026-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     present answers. Choose open questions for honesty. The
     alternative is the textbook that aged badly.</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c11-open-questions-2026-p12" data-kind="prose"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;the list is the field.&rdquo; Counterexample: the
     question nobody asked yet. Lists are partial.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c11-open-questions-2026-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: the questions are the extensions. Pick one.</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c11-open-questions-2026-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A11 (breadth:
     name 3 open questions and their closing criteria), L11
     (ladder: name the questions, mark them open, derive the
@@ -1075,104 +1075,104 @@ Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
     experiment for one).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E21: write the
+<p id="c11-open-questions-2026-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E21: write the
     dated list. E22: add one question of your own with its
     criterion. Keys in <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+<p id="c11-open-questions-2026-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
     is a list (carried in text). Logged as an honest
     exception in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c11-open-questions-2026-end" data-end></span>
 <hr />
 <h3 id="c12-oral-defense">C12: oral defense</h3>
-<p>Leaf id <code>cs224n-U15-C12</code>. Claim class REQUESTED-BRANCH.
+<p id="c12-oral-defense-p01" data-kind="prose">Leaf id <code>cs224n-U15-C12</code>. Claim class REQUESTED-BRANCH.
 Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <ol>
 <li>
-<p><strong>Source mapping, scope, objectives, dependencies.</strong> Scope: the
+<p id="c12-oral-defense-p02" data-kind="prose"><strong>Source mapping, scope, objectives, dependencies.</strong> Scope: the
    course&rsquo;s close. Objectives: defend the project orally,
    handle the ladders, state the defense rubric. Depends on
    the whole course.</p>
 </li>
 <li>
-<p><strong>Motivating question and toy.</strong> Question: can you defend
+<p id="c12-oral-defense-p03" data-kind="example"><strong>Motivating question and toy.</strong> Question: can you defend
    your project out loud? Toy: the rubric: claim stated (1),
    evidence shown (1), limit named (1), transfer answered
    (1). Four points, no slides needed.</p>
 </li>
 <li>
-<p><strong>Mental model.</strong> The defense is the course in miniature:
+<p id="c12-oral-defense-p04" data-kind="keyIdea" data-reveal="rise" data-term="The defense is the course in miniature"><strong>Mental model.</strong> The defense is the course in miniature:
    say what you did, show the numbers, name the limits,
    answer the changed scenario. If you can defend it, you
    know it.</p>
 </li>
 <li>
-<p><strong>Objects, symbols, units, shapes, assumptions.</strong> The
+<p id="c12-oral-defense-p05" data-kind="definition"><strong>Objects, symbols, units, shapes, assumptions.</strong> The
    rubric, the ladders (interview banks). Assumption: the
    defender did the work (the integrity rule).</p>
 </li>
 <li>
-<p><strong>Derivation / mechanism.</strong> No new math. The mechanism is
+<p id="c12-oral-defense-p06" data-kind="prose"><strong>Derivation / mechanism.</strong> No new math. The mechanism is
    the oral ladder: define, compute, derive, diagnose,
    design. The interview banks are the practice ground.</p>
 </li>
 <li>
-<p><strong>Computed example.</strong> Toy (hand, labeled as such): the
+<p id="c12-oral-defense-p07" data-kind="example"><strong>Computed example.</strong> Toy (hand, labeled as such): the
    defense of the U09 lab: claim (recall at k), evidence
    (0.000/0.333/0.667/1.000), limit (toy corpus), transfer
    (hourly updates). Four points.</p>
 </li>
 <li>
-<p><strong>Algorithm and reference implementation.</strong> <code>defend(
+<p id="c12-oral-defense-p08" data-kind="steps"><strong>Algorithm and reference implementation.</strong> <code>defend(
    project)</code>: the four-point check. ~6 lines. Test: the toy
    scores 4.</p>
 </li>
 <li>
-<p><strong>Correctness checks and expected output.</strong> Every point has
+<p id="c12-oral-defense-p09" data-kind="prose"><strong>Correctness checks and expected output.</strong> Every point has
    evidence. Check: the transfer answer is not &ldquo;I do not
    know&rdquo; (it can be &ldquo;here is the experiment&rdquo;).</p>
 </li>
 <li>
-<p><strong>Complexity, memory, statistical efficiency, stability, practical
+<p id="c12-oral-defense-p10" data-kind="prose"><strong>Complexity, memory, statistical efficiency, stability, practical
    costs.</strong> An hour of talking. The cost of skipping it: the
    gap between writing and knowing.</p>
 </li>
 <li>
-<p><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
+<p id="c12-oral-defense-p11" data-kind="prose"><strong>Nearest alternatives and selection boundaries.</strong> Alternative:
     written exam. Choose oral for depth. Choose written for
     scale.</p>
 </li>
 <li>
-<p><strong>Failure case, broken assumption, counterexample.</strong> Broken
+<p id="c12-oral-defense-p12" data-kind="prose" data-term="The rubric scores evidence, not fluency"><strong>Failure case, broken assumption, counterexample.</strong> Broken
     assumption: &ldquo;fluent means correct.&rdquo; Counterexample: the
     fluent rationalization (U11 C12). The rubric scores
     evidence, not fluency.</p>
 </li>
 <li>
-<p><strong>Research reading and falsifiable extension.</strong> Falsifiable
+<p id="c12-oral-defense-p13" data-kind="aside"><strong>Research reading and falsifiable extension.</strong> Falsifiable
     extension: none, this is the close. The extension is the
     defense itself.</p>
 </li>
 <li>
-<p><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
+<p id="c12-oral-defense-p14" data-kind="prose"><strong>Breadth recall, deep oral ladder, unfamiliar transfer.</strong>
     Assessment block: <code>keys/u15_answers.md</code> A12 (breadth:
     state the rubric), L12 (ladder: state the claim, show
     the evidence, name the limit, answer the transfer,
     score the defense).</p>
 </li>
 <li>
-<p><strong>Lab/exercises with answers separated.</strong> E23: defend the
+<p id="c12-oral-defense-p15" data-kind="exercise"><strong>Lab/exercises with answers separated.</strong> E23: defend the
     U09 lab aloud. E24: defend the U11 lab aloud. Keys in
     <code>keys/u15_answers.md</code>.</p>
 </li>
 <li>
-<p><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
+<p id="c12-oral-defense-p16" data-kind="figure" data-reveal="fade"><strong>Visual units, provenance, accessibility, audit row.</strong> Claim
     is a rubric (carried in text). Logged as an honest
     exception in <code>visual_audit.md</code>.</p>
 </li>
-</ol>
+</ol><span id="c12-oral-defense-end" data-end></span>
 <hr />
 <h2 id="unit-visual-map">Unit visual map</h2>
 <table>
@@ -1204,7 +1204,7 @@ Status PLANNED / SOURCE ATTRIBUTION PENDING.</p>
 <td>SRC-04</td>
 </tr>
 </tbody>
-</table>
+</table><span id="unit-visual-map-end" data-end data-term="GPT-2 plate"></span>
       
       <nav class="pager"><a href="../labs/u05_lab.html"><span class="lbl">← Previous</span>Lab 05 · Attention and transformers</a><a href="../labs/u05_lab_key.html"><span class="lbl">Next →</span>Lab 05 · Keys</a></nav>
     </article>

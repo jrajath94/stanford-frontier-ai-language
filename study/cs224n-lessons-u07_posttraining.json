@@ -1,0 +1,622 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-lessons-u07_posttraining",
+ "itemKind": "lesson",
+ "revision": "96734f6f3c4b5647134e48fc497189baaf89387c9104713da017ff66073e60d4",
+ "sections": [
+  {
+   "anchor": "u07_posttraining-intro-p01",
+   "title": "U07 \u00b7 Post-training and preferences",
+   "minutes": 1,
+   "endAnchor": "u07_posttraining-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u07_posttraining-intro-p01",
+     "definition": "Instructor.",
+     "term": "Prof. Christopher Manning"
+    },
+    {
+     "anchor": "u07_posttraining-intro-p01",
+     "definition": "Build date of the unit\u2019s figures.",
+     "term": "2026-10-06"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u07_posttraining-intro-p01",
+     "answer": "U07 \u00b7 Post-training and preferences.",
+     "id": "u07_posttraining-intro-r1",
+     "question": "What unit is this?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation",
+   "title": "local remediation",
+   "minutes": 1,
+   "endAnchor": "local-remediation-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Maps a real gap to a probability. Every preference loss is -log sigmoid of something.",
+     "term": "R1"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Measures how far the policy drifted from the reference. The leash of the unit.",
+     "term": "R2"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Move log-probability up where the advantage is positive, down where negative.",
+     "term": "R3"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-p02",
+     "answer": "0.0253 for the toy distributions.",
+     "id": "local-remediation-r1",
+     "question": "What is the KL leash value?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-sft",
+   "title": "c01: sft",
+   "minutes": 3,
+   "endAnchor": "c01-sft-end",
+   "blocks": [
+    {
+     "anchor": "c01-sft-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-sft-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-sft-p04",
+     "definition": "Supervised fine-tuning: show, do not tell. Teaches format and style, not new facts.",
+     "term": "SFT"
+    },
+    {
+     "anchor": "c01-sft-p04",
+     "definition": "Prompt + ideal response, loss on the response. How to answer.",
+     "term": "show, do not tell"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-sft-p07",
+     "answer": "2.797 on the demo pair.",
+     "id": "c01-sft-r1",
+     "question": "What was the toy SFT loss?"
+    },
+    {
+     "anchor": "c01-sft-p12",
+     "answer": "Hallucination with confidence: the style of answering applied to things it does not know.",
+     "id": "c01-sft-r2",
+     "question": "What does SFT on unknown facts teach?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-instruction-data",
+   "title": "c02: instruction data",
+   "minutes": 3,
+   "endAnchor": "c02-instruction-data-end",
+   "blocks": [
+    {
+     "anchor": "c02-instruction-data-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-instruction-data-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-instruction-data-p04",
+     "definition": "Each pair says \u201cwhen asked X, answer like Y\u201d.",
+     "term": "demos are the spec"
+    },
+    {
+     "anchor": "c02-instruction-data-p04",
+     "definition": "One demo of a new task adds a capability; one more of the same adds little.",
+     "term": "diversity"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-instruction-data-p07",
+     "answer": "1000 demos, 50 tasks, 20 each. Adding 1000 of task 1: task-1 loss falls, others flat.",
+     "id": "c02-instruction-data-r1",
+     "question": "What was the toy coverage result?"
+    },
+    {
+     "anchor": "c02-instruction-data-p09",
+     "answer": "log(50) = 3.91.",
+     "id": "c02-instruction-data-r2",
+     "question": "What is the entropy of 50 uniform tasks?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-reward-model",
+   "title": "c03: reward model",
+   "minutes": 3,
+   "endAnchor": "c03-reward-model-end",
+   "blocks": [
+    {
+     "anchor": "c03-reward-model-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-reward-model-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-reward-model-p06",
+     "definition": "Turns the reward gap into a probability. The loss is logistic on the gap.",
+     "term": "Bradley-Terry"
+    },
+    {
+     "anchor": "c03-reward-model-p04",
+     "definition": "Reads (prompt, response), outputs a scalar. Trained on pairs.",
+     "term": "reward model"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-reward-model-p07",
+     "answer": "r = (1.2, 0.3), P(chosen) = 0.7109, loss 0.3412.",
+     "id": "c03-reward-model-r1",
+     "question": "What were the toy reward numbers?"
+    },
+    {
+     "anchor": "c03-reward-model-p11",
+     "answer": "Gaps matter, levels do not.",
+     "id": "c03-reward-model-r2",
+     "question": "Why is the reward ordinal, not cardinal?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-pairwise-preferences",
+   "title": "c04: pairwise preferences",
+   "minutes": 3,
+   "endAnchor": "c04-pairwise-preferences-end",
+   "blocks": [
+    {
+     "anchor": "c04-pairwise-preferences-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-pairwise-preferences-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-pairwise-preferences-p06",
+     "definition": "Preserve disagreement instead of hiding it. The honest version.",
+     "term": "soft labels"
+    },
+    {
+     "anchor": "c04-pairwise-preferences-p04",
+     "definition": "Sample two responses, ask judges to pick.",
+     "term": "pairs are votes"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-pairwise-preferences-p07",
+     "answer": "Hard label: A wins. Soft label: target 0.667, loss penalizes overconfidence.",
+     "id": "c04-pairwise-preferences-r1",
+     "question": "What was the 2-1 toy?"
+    },
+    {
+     "anchor": "c04-pairwise-preferences-p12",
+     "answer": "A 2-1 split on a hard pair: the majority erases the minority taste.",
+     "id": "c04-pairwise-preferences-r2",
+     "question": "Why is majority vote not the truth?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-rlhf",
+   "title": "c05: rlhf",
+   "minutes": 3,
+   "endAnchor": "c05-rlhf-end",
+   "blocks": [
+    {
+     "anchor": "c05-rlhf-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-rlhf-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-rlhf-p04",
+     "definition": "Format, then preference, then exploration. Each stage answers what the previous cannot.",
+     "term": "three teachers"
+    },
+    {
+     "anchor": "c05-rlhf-p05",
+     "definition": "The reward pulls toward high scores, the KL pulls toward the SFT model.",
+     "term": "E[r] - beta KL"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-rlhf-p03",
+     "answer": "SFT on demos, reward model on pairs, policy optimization against the reward with a KL leash.",
+     "id": "c05-rlhf-r1",
+     "question": "What are the three stages?"
+    },
+    {
+     "anchor": "c05-rlhf-p04",
+     "answer": "Format, then preference, then exploration.",
+     "id": "c05-rlhf-r2",
+     "question": "Why does the order matter?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-ppo",
+   "title": "c06: ppo",
+   "minutes": 3,
+   "endAnchor": "c06-ppo-end",
+   "blocks": [
+    {
+     "anchor": "c06-ppo-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-ppo-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-ppo-p04",
+     "definition": "Clips the policy ratio to [1-eps, 1+eps]. Never trust a big step.",
+     "term": "PPO"
+    },
+    {
+     "anchor": "c06-ppo-p04",
+     "definition": "Bounds each update. The min() takes the pessimistic of clipped and unclipped.",
+     "term": "trust region"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-ppo-p07",
+     "answer": "r = 1.3, A = 0.5: unclipped 0.650, clipped 0.600. The 0.050 is the trust region working.",
+     "id": "c06-ppo-r1",
+     "question": "What was the toy clip?"
+    },
+    {
+     "anchor": "c06-ppo-p12",
+     "answer": "The value function can still diverge, and the KL can still grow if beta is wrong.",
+     "id": "c06-ppo-r2",
+     "question": "What does clipping not bound?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-dpo",
+   "title": "c07: dpo",
+   "minutes": 3,
+   "endAnchor": "c07-dpo-end",
+   "blocks": [
+    {
+     "anchor": "c07-dpo-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-dpo-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-dpo-p04",
+     "definition": "Preference optimization without RL. The BT loss trains the policy directly on pairs.",
+     "term": "DPO"
+    },
+    {
+     "anchor": "c07-dpo-p12",
+     "definition": "Dropping it breaks the method: chosen log-probs diverge without bound.",
+     "term": "reference term"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-dpo-p07",
+     "answer": "beta = 0.1, gap 0.8: inside = 0.08, loss = 0.6539.",
+     "id": "c07-dpo-r1",
+     "question": "What was the toy DPO loss?"
+    },
+    {
+     "anchor": "c07-dpo-p12",
+     "answer": "Collapse: chosen log-probs pushed up without bound.",
+     "id": "c07-dpo-r2",
+     "question": "What happens without the reference term?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-referencekl-role",
+   "title": "c08: reference/kl role",
+   "minutes": 3,
+   "endAnchor": "c08-referencekl-role-end",
+   "blocks": [
+    {
+     "anchor": "c08-referencekl-role-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-referencekl-role-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-referencekl-role-p04",
+     "definition": "The KL term taxes distance from the reference. It does not say where to go.",
+     "term": "leash"
+    },
+    {
+     "anchor": "c08-referencekl-role-p04",
+     "definition": "Sets the tradeoff between optimization and risk.",
+     "term": "beta"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-referencekl-role-p07",
+     "answer": "KL 0.0253, at beta = 0.1 the penalty is 0.00253 per token.",
+     "id": "c08-referencekl-role-r1",
+     "question": "What was the toy penalty?"
+    },
+    {
+     "anchor": "c08-referencekl-role-p12",
+     "answer": "The reward may have been gamed without moving the distribution much.",
+     "id": "c08-referencekl-role-r2",
+     "question": "What does KL near zero with high reward mean?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-on-policy-data",
+   "title": "c09: on-policy data",
+   "minutes": 3,
+   "endAnchor": "c09-on-policy-data-end",
+   "blocks": [
+    {
+     "anchor": "c09-on-policy-data-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-on-policy-data-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-on-policy-data-p07",
+     "definition": "Reward accuracy 0.85 on old samples, 0.60 on the policy\u2019s new ones.",
+     "term": "staleness"
+    },
+    {
+     "anchor": "c09-on-policy-data-p04",
+     "definition": "The reward returns numbers past its training territory, but they are extrapolations.",
+     "term": "off the map"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-on-policy-data-p07",
+     "answer": "0.85 on pi_old\u2019s samples, 0.60 on pi\u2019s after 1000 RL steps.",
+     "id": "c09-on-policy-data-r1",
+     "question": "What was the toy staleness?"
+    },
+    {
+     "anchor": "c09-on-policy-data-p06",
+     "answer": "Iterate (fresh pairs, retrain the reward) or stay close (the KL leash).",
+     "id": "c09-on-policy-data-r2",
+     "question": "What are the two fixes?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-reward-hacking",
+   "title": "c10: reward hacking",
+   "minutes": 3,
+   "endAnchor": "c10-reward-hacking-end",
+   "blocks": [
+    {
+     "anchor": "c10-reward-hacking-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-reward-hacking-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-reward-hacking-p04",
+     "definition": "argmax r != argmax q. The default outcome, not an edge case.",
+     "term": "reward hacking"
+    },
+    {
+     "anchor": "c10-reward-hacking-p04",
+     "definition": "Length, confidence, sycophancy: what optimization pressure finds.",
+     "term": "hack signatures"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-reward-hacking-p07",
+     "answer": "Proxy argmax 0, true argmax 1. Optimizing the proxy picks the wrong answer.",
+     "id": "c10-reward-hacking-r1",
+     "question": "What was the toy flip?"
+    },
+    {
+     "anchor": "c10-reward-hacking-p13",
+     "answer": "Human rank peaks then falls as the reward rises across RL steps.",
+     "id": "c10-reward-hacking-r2",
+     "question": "What is the inverted-U prediction?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-annotation-bias",
+   "title": "c11: annotation bias",
+   "minutes": 3,
+   "endAnchor": "c11-annotation-bias-end",
+   "blocks": [
+    {
+     "anchor": "c11-annotation-bias-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-annotation-bias-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-annotation-bias-p03",
+     "definition": "The reward learns length as quality; the policy learns verbosity.",
+     "term": "length bias"
+    },
+    {
+     "anchor": "c11-annotation-bias-p12",
+     "definition": "Experts have stronger, more consistent biases: they agree on the wrong thing.",
+     "term": "agreement is not correctness"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-annotation-bias-p07",
+     "answer": "100 pairs, quality tied, longer wins 60. After length-balancing: 51.",
+     "id": "c11-annotation-bias-r1",
+     "question": "What was the toy bias measurement?"
+    },
+    {
+     "anchor": "c11-annotation-bias-p04",
+     "answer": "Length, position, sycophancy, cultural. Each needs a mitigation.",
+     "id": "c11-annotation-bias-r2",
+     "question": "What are the four bias modes?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-evaluation",
+   "title": "c12: evaluation",
+   "minutes": 3,
+   "endAnchor": "c12-evaluation-end",
+   "blocks": [
+    {
+     "anchor": "c12-evaluation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-evaluation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-evaluation-p04",
+     "definition": "Automated evals are cheap and gameable. Human eval is the standard.",
+     "term": "the reward curve is not an eval"
+    },
+    {
+     "anchor": "c12-evaluation-p05",
+     "definition": "The honest answer: blinded judges on fresh prompts, agreement measured.",
+     "term": "blinded pairwise"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-evaluation-p07",
+     "answer": "200 prompts: 120 wins, 30 ties, 50 losses. Win rate 60%, CI (53, 67), agreement 0.72.",
+     "id": "c12-evaluation-r1",
+     "question": "What was the toy human eval?"
+    },
+    {
+     "anchor": "c12-evaluation-p12",
+     "answer": "They leak into training and get gamed. Fresh prompts per eval, or the eval rots.",
+     "id": "c12-evaluation-r2",
+     "question": "Why can\u2019t eval prompts be reused?"
+    }
+   ]
+  },
+  {
+   "anchor": "unit-visual-map",
+   "title": "unit visual map",
+   "minutes": 1,
+   "endAnchor": "unit-visual-map-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "RLHF: three stages, three datasets.",
+     "term": "pipeline"
+    },
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "KL is a leash, not a target.",
+     "term": "leash plate"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "unit-visual-map-end",
+     "answer": "RLHF pipeline (three stages), reward gap 0.9 gives P 0.711, KL is a leash.",
+     "id": "unit-visual-map-r1",
+     "question": "What three figures does the unit carry?"
+    }
+   ]
+  }
+ ]
+}

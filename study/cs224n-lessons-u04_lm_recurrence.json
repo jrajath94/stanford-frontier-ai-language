@@ -1,0 +1,617 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-lessons-u04_lm_recurrence",
+ "itemKind": "lesson",
+ "revision": "64fbb6d9a2becdb6feb72dd1c0064fe958a0d759a2d6c0aaf72bc9facfd3e580",
+ "sections": [
+  {
+   "anchor": "u04_lm_recurrence-intro-p01",
+   "title": "U04 \u00b7 Language models and recurrence",
+   "minutes": 1,
+   "endAnchor": "u04_lm_recurrence-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u04_lm_recurrence-intro-p02",
+     "definition": "For the session title and reading list (SRC-02).",
+     "term": "OFFICIAL-SOURCE"
+    },
+    {
+     "anchor": "u04_lm_recurrence-intro-p02",
+     "definition": "For the concept inventory below.",
+     "term": "REQUESTED-BRANCH"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u04_lm_recurrence-intro-p02",
+     "answer": "S05 (Winter 2026: Thu Jan 15, Language Models and RNNs).",
+     "id": "u04_lm_recurrence-intro-r1",
+     "question": "What is the session anchor for U04?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-teacher-forcing-and-perplexity",
+   "title": "local remediation , teacher forcing and perplexity",
+   "minutes": 1,
+   "endAnchor": "local-remediation-teacher-forcing-and-perplexity-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-teacher-forcing-and-perplexity-p02",
+     "definition": "Training predicts from the true prefix. The model never sees its own mistakes.",
+     "term": "teacher forcing"
+    },
+    {
+     "anchor": "local-remediation-teacher-forcing-and-perplexity-p02",
+     "definition": "The train/test mismatch: gold prefixes in training, own predictions at test.",
+     "term": "exposure bias"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-teacher-forcing-and-perplexity-p03",
+     "answer": "2. exp(-log 0.5) = 2.",
+     "id": "local-remediation-teacher-forcing-and-perplexity-r1",
+     "question": "If a model assigns 0.5 to each correct word, what is its perplexity?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-chain-rule-the-lm-factorization",
+   "title": "c01: chain rule (the lm factorization)",
+   "minutes": 3,
+   "endAnchor": "c01-chain-rule-the-lm-factorization-end",
+   "blocks": [
+    {
+     "anchor": "c01-chain-rule-the-lm-factorization-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-chain-rule-the-lm-factorization-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-chain-rule-the-lm-factorization-p04",
+     "definition": "Turns a joint distribution into a sequence of next-word bets.",
+     "term": "chain rule"
+    },
+    {
+     "anchor": "c01-chain-rule-the-lm-factorization-p04",
+     "definition": "Training places all bets at once; generation places them one at a time.",
+     "term": "parallel training vs serial generation"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-chain-rule-the-lm-factorization-p07",
+     "answer": "-4.430. Perplexity 4.38.",
+     "id": "c01-chain-rule-the-lm-factorization-r1",
+     "question": "What was the toy log-likelihood?"
+    },
+    {
+     "anchor": "c01-chain-rule-the-lm-factorization-p12",
+     "answer": "The factorization fixes the information flow. The model cannot use the right side.",
+     "id": "c01-chain-rule-the-lm-factorization-r2",
+     "question": "Why can\u2019t a left-to-right model fill the middle?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-teacher-forcing",
+   "title": "c02: teacher forcing",
+   "minutes": 3,
+   "endAnchor": "c02-teacher-forcing-end",
+   "blocks": [
+    {
+     "anchor": "c02-teacher-forcing-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-teacher-forcing-p17",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-teacher-forcing-p08",
+     "definition": "Feed the model\u2019s own predictions back in. Serial, slow.",
+     "term": "free running"
+    },
+    {
+     "anchor": "c02-teacher-forcing-p04",
+     "definition": "The model always rides the true path, never learning to recover from errors.",
+     "term": "training wheels"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-teacher-forcing-p07",
+     "answer": "2.9543 nats at t = 2: the forced and free distributions barely overlap.",
+     "id": "c02-teacher-forcing-r1",
+     "question": "What was the toy KL?"
+    },
+    {
+     "anchor": "c02-teacher-forcing-p13",
+     "answer": "Training perplexity 1.326 (excellent) yet free-run KL 2.95 nats. Training loss measures forced performance.",
+     "id": "c02-teacher-forcing-r2",
+     "question": "What does the 1.326-vs-2.95 paradox show?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-perplexity",
+   "title": "c03: perplexity",
+   "minutes": 3,
+   "endAnchor": "c03-perplexity-end",
+   "blocks": [
+    {
+     "anchor": "c03-perplexity-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-perplexity-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-perplexity-p04",
+     "definition": "exp of mean NLL. As confused as choosing among that many words.",
+     "term": "perplexity"
+    },
+    {
+     "anchor": "c03-perplexity-p12",
+     "definition": "Memorization, tokenizer mismatch, task gap. The number is a filter, not a verdict.",
+     "term": "three breaks"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-perplexity-p07",
+     "answer": "1.326 from loss 0.2824. Excellent and almost meaningless: six training sentences.",
+     "id": "c03-perplexity-r1",
+     "question": "What was the toy perplexity?"
+    },
+    {
+     "anchor": "c03-perplexity-p11",
+     "answer": "Finer tokens inflate the count. Use bits per byte when tokenizers differ.",
+     "id": "c03-perplexity-r2",
+     "question": "Why can\u2019t you compare perplexities across tokenizers?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-rnn-state",
+   "title": "c04: rnn state",
+   "minutes": 3,
+   "endAnchor": "c04-rnn-state-end",
+   "blocks": [
+    {
+     "anchor": "c04-rnn-state-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-rnn-state-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-rnn-state-p04",
+     "definition": "A fixed d-dim vector summarizing the prefix. A lossy compressor.",
+     "term": "state"
+    },
+    {
+     "anchor": "c04-rnn-state-p05",
+     "definition": "One set of weights works for any length.",
+     "term": "weight tying"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-rnn-state-p07",
+     "answer": "h_1 = (0.762, 0), h_2 = (0.363, 0.762). The state carries a decayed trace of x_1.",
+     "id": "c04-rnn-state-r1",
+     "question": "What was the hand unroll?"
+    },
+    {
+     "anchor": "c04-rnn-state-p09",
+     "answer": "The state has no memory: h_t depends only on x_t.",
+     "id": "c04-rnn-state-r2",
+     "question": "What does W_h = 0 prove?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-bptt",
+   "title": "c05: bptt",
+   "minutes": 3,
+   "endAnchor": "c05-bptt-end",
+   "blocks": [
+    {
+     "anchor": "c05-bptt-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-bptt-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-bptt-p04",
+     "definition": "Backpropagation through time. The gradient for W_h sums per-layer contributions.",
+     "term": "BPTT"
+    },
+    {
+     "anchor": "c05-bptt-p10",
+     "definition": "Stops the backward chain every k steps. Dependencies longer than k are unlearnable.",
+     "term": "truncated BPTT"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-bptt-p07",
+     "answer": "Loss fell 2.8011 -> 0.2824 over 300 epochs. The script\u2019s inner loop is BPTT.",
+     "id": "c05-bptt-r1",
+     "question": "What did the training loop show?"
+    },
+    {
+     "anchor": "c05-bptt-p12",
+     "answer": "A 20-step dependency: the gradient for it is cut, unlearnable no matter how long it trains.",
+     "id": "c05-bptt-r2",
+     "question": "What does k = 5 break?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-vanishing-and-exploding-gradients",
+   "title": "c06: vanishing and exploding gradients",
+   "minutes": 3,
+   "endAnchor": "c06-vanishing-and-exploding-gradients-end",
+   "blocks": [
+    {
+     "anchor": "c06-vanishing-and-exploding-gradients-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-vanishing-and-exploding-gradients-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-vanishing-and-exploding-gradients-p03",
+     "definition": "Twenty multiplications by 0.8 give ~0.01: early steps get no signal.",
+     "term": "vanishing"
+    },
+    {
+     "anchor": "c06-vanishing-and-exploding-gradients-p03",
+     "definition": "Twenty multiplications by 1.2 give ~38: the updates explode.",
+     "term": "exploding"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-vanishing-and-exploding-gradients-p07",
+     "answer": "rho=0.8: 0.8, 0.3277, 0.1074, 0.0115. rho=1.2: 1.2, 2.4883, 6.1917, 38.3376.",
+     "id": "c06-vanishing-and-exploding-gradients-r1",
+     "question": "What were the eight norms?"
+    },
+    {
+     "anchor": "c06-vanishing-and-exploding-gradients-p12",
+     "answer": "0.8^100 = 2e-10. No optimizer recovers a signal that small; the information is gone.",
+     "id": "c06-vanishing-and-exploding-gradients-r2",
+     "question": "Why can\u2019t longer unrolls fix vanishing?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-lstm-and-gru-bridge",
+   "title": "c07: lstm and gru bridge",
+   "minutes": 4,
+   "endAnchor": "c07-lstm-and-gru-bridge-end",
+   "blocks": [
+    {
+     "anchor": "c07-lstm-and-gru-bridge-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-lstm-and-gru-bridge-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-lstm-and-gru-bridge-p03",
+     "definition": "f_t near 1: the gradient flows unchanged across the step.",
+     "term": "forget gate"
+    },
+    {
+     "anchor": "c07-lstm-and-gru-bridge-p06",
+     "definition": "The cell state path with derivative 1. The gate learns when to protect.",
+     "term": "constant error carousel"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-lstm-and-gru-bridge-p07",
+     "answer": "c_4 = 0.2, gradient dc_4/dc_0 = 0.1. The gate chose to forget at step 4.",
+     "id": "c07-lstm-and-gru-bridge-r1",
+     "question": "What was the toy cell result?"
+    },
+    {
+     "anchor": "c07-lstm-and-gru-bridge-p12",
+     "answer": "A badly initialized forget gate (near 0) wipes memory every step and the gradient still vanishes.",
+     "id": "c07-lstm-and-gru-bridge-r2",
+     "question": "Why does the forget gate start at bias 1.0?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-clipping",
+   "title": "c08: clipping",
+   "minutes": 3,
+   "endAnchor": "c08-clipping-end",
+   "blocks": [
+    {
+     "anchor": "c08-clipping-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-clipping-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-clipping-p04",
+     "definition": "Caps the step size when the gradient explodes. Contains the symptom, not the cause.",
+     "term": "clipping"
+    },
+    {
+     "anchor": "c08-clipping-p08",
+     "definition": "Rescale the full gradient vector. Direction kept, one exploding layer cannot hide.",
+     "term": "global norm clipping"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-clipping-p07",
+     "answer": "Norm 29.025 -> 1.000, direction kept (allclose True).",
+     "id": "c08-clipping-r1",
+     "question": "What did the toy clip do?"
+    },
+    {
+     "anchor": "c08-clipping-p12",
+     "answer": "Vanishing gradients (norm 2e-10): clipping cannot create signal.",
+     "id": "c08-clipping-r2",
+     "question": "What does clipping not fix?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-padding",
+   "title": "c09: padding",
+   "minutes": 3,
+   "endAnchor": "c09-padding-end",
+   "blocks": [
+    {
+     "anchor": "c09-padding-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-padding-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-padding-p03",
+     "definition": "Marks the scaffolding so the loss ignores padding. Built from lengths.",
+     "term": "mask"
+    },
+    {
+     "anchor": "c09-padding-p04",
+     "definition": "Makes the batch rectangular; the mask then marks it so the loss ignores it.",
+     "term": "scaffold"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-padding-p07",
+     "answer": "Masked 0.4, unmasked 1.983. The pad loss (9.9) dominates the unmasked number.",
+     "id": "c09-padding-r1",
+     "question": "Masked vs unmasked mean on the toy?"
+    },
+    {
+     "anchor": "c09-padding-p12",
+     "answer": "To predict pad_id everywhere: the most frequent \u201ctoken\u201d in a padded batch.",
+     "id": "c09-padding-r2",
+     "question": "What does the unmasked model learn?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-state-carry",
+   "title": "c10: state carry",
+   "minutes": 3,
+   "endAnchor": "c10-state-carry-end",
+   "blocks": [
+    {
+     "anchor": "c10-state-carry-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-state-carry-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-state-carry-p03",
+     "definition": "Each sequence starts from zeros. The default: sequences are independent.",
+     "term": "reset"
+    },
+    {
+     "anchor": "c10-state-carry-p06",
+     "definition": "Cuts the graph at chunk boundaries so BPTT never spans batches.",
+     "term": "detach"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-state-carry-p07",
+     "answer": "State carried by mistake: seq 2 inherits seq 1\u2019s summary, no shape error, wrong conditioning.",
+     "id": "c10-state-carry-r1",
+     "question": "What is the silent bug?"
+    },
+    {
+     "anchor": "c10-state-carry-p12",
+     "answer": "Mysteriously order-dependent scores: shuffle the validation set and the score changes.",
+     "id": "c10-state-carry-r2",
+     "question": "What is the validation symptom?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-decoding",
+   "title": "c11: decoding",
+   "minutes": 3,
+   "endAnchor": "c11-decoding-end",
+   "blocks": [
+    {
+     "anchor": "c11-decoding-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-decoding-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-decoding-p05",
+     "definition": "Scales logits before softmax. Low T sharpens, high T flattens.",
+     "term": "temperature"
+    },
+    {
+     "anchor": "c11-decoding-p04",
+     "definition": "Greedy: no risk, dull. Sampling: variety. The knob trades coherence for variety.",
+     "term": "risk knob"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-decoding-p07",
+     "answer": "Greedy: index 0. T = 0.5: top prob 0.828. T = 2.0: top prob 0.406.",
+     "id": "c11-decoding-r1",
+     "question": "What were the three toy settings?"
+    },
+    {
+     "anchor": "c11-decoding-p12",
+     "answer": "Top prob 0.406, the tail dominates, output incoherent. Creativity without control is noise.",
+     "id": "c11-decoding-r2",
+     "question": "What is the T = 2.0 failure?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-sequence-generalization",
+   "title": "c12: sequence generalization",
+   "minutes": 3,
+   "endAnchor": "c12-sequence-generalization-end",
+   "blocks": [
+    {
+     "anchor": "c12-sequence-generalization-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-sequence-generalization-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-sequence-generalization-p04",
+     "definition": "New word orders and seen lengths: fine. Much longer sequences: fail.",
+     "term": "length generalization"
+    },
+    {
+     "anchor": "c12-sequence-generalization-p04",
+     "definition": "d numbers cannot hold n words. Attention removes the ceiling.",
+     "term": "fixed-state ceiling"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-sequence-generalization-p09",
+     "answer": "Accuracy flat across lengths 4-6 (in-support).",
+     "id": "c12-sequence-generalization-r1",
+     "question": "What was the smoke test?"
+    },
+    {
+     "anchor": "c12-sequence-generalization-p12",
+     "answer": "The model learned the sentences, not the language. Generalization is measured off-support.",
+     "id": "c12-sequence-generalization-r2",
+     "question": "What does 0.862 on six sentences prove?"
+    }
+   ]
+  },
+  {
+   "anchor": "unit-visual-map",
+   "title": "unit visual map",
+   "minutes": 1,
+   "endAnchor": "unit-visual-map-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "One RNN step: fold the input in, squeeze through tanh.",
+     "term": "fold"
+    },
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "Teacher forcing vs free running: the input swap, one rule.",
+     "term": "input swap"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "unit-visual-map-end",
+     "answer": "One RNN step (fold), gradient norm vs time (log scale), teacher forcing vs free running.",
+     "id": "unit-visual-map-r1",
+     "question": "What three figures does the unit carry?"
+    }
+   ]
+  }
+ ]
+}

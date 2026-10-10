@@ -1,0 +1,316 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-u03_key",
+ "itemKind": "lesson",
+ "revision": "96d81e0f783289d80aaadef7e30f02bb1adf0f5ef9fe65a2f5f8157b8f664f70",
+ "sections": [
+  {
+   "anchor": "u03-interview-key",
+   "title": "U03 interview key",
+   "minutes": 1,
+   "endAnchor": "u03-interview-key-end",
+   "blocks": [
+    {
+     "anchor": "u03-interview-key-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "strong answer",
+     "definition": "The minimum sufficient explanation that earns full marks.",
+     "anchor": "u03-interview-key-p01"
+    },
+    {
+     "term": "red flag",
+     "definition": "A common wrong answer that signals a misconception.",
+     "anchor": "u03-interview-key-p01"
+    },
+    {
+     "term": "rubric",
+     "definition": "The scoring breakdown per question part.",
+     "anchor": "u03-interview-key-p01"
+    },
+    {
+     "term": "remediation",
+     "definition": "The lesson reference to revisit after a miss.",
+     "anchor": "u03-interview-key-p01"
+    },
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "u03-interview-key-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u03-interview-key-r1",
+     "question": "What five parts does each U03 key entry carry?",
+     "answer": "Minimum sufficient explanation, strong answer, red flags, scoring rubric, and remediation.",
+     "anchor": "u03-interview-key-p01"
+    },
+    {
+     "id": "u03-interview-key-r2",
+     "question": "How should you use the key?",
+     "answer": "Keep it closed-book: attempt first, then check.",
+     "anchor": "u03-interview-key-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth",
+   "title": "Breadth",
+   "minutes": 1,
+   "endAnchor": "breadth-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "temperature limits",
+     "definition": "T -> 0 gives one-hot on argmax; T -> infinity gives uniform.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "top-p",
+     "definition": "Keeps the smallest set with mass >= p; top-k keeps exactly k.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "router",
+     "definition": "Outputs gate probabilities over experts.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "aux loss",
+     "definition": "Prevents collapse to one expert.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "greedy loop",
+     "definition": "Walks into a high-probability cycle; sampling or a repetition penalty breaks it.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "ICL",
+     "definition": "Task behavior from prompt examples; no weight changes.",
+     "anchor": "breadth-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-r1",
+     "question": "What is the B1 red flag?",
+     "answer": "Saying T = 0 is the same as T small.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "id": "breadth-r2",
+     "question": "What three costs does strong B4 name?",
+     "answer": "Memory, compute, and position codes.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "id": "breadth-r3",
+     "question": "What is the B6 red flag?",
+     "answer": "Saying ICL fine-tunes the model.",
+     "anchor": "breadth-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders",
+   "title": "Deep ladders",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "tempered order",
+     "definition": "Temperature, then top-p, then sample: shape, cut, draw.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "routing toy",
+     "definition": "Gates with top-2 give E4/E3 weights [0.681, 0.319].",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "active check",
+     "definition": "k/E per token.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "usage entropy",
+     "definition": "The experiment metric for the aux on/off comparison.",
+     "anchor": "deep-ladders-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-r1",
+     "question": "What two distributions does the L1 strong path give?",
+     "answer": "[0.979, 0.018, 0.002, 0.000] and [0.579, 0.213, 0.129, 0.078].",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "id": "deep-ladders-r2",
+     "question": "What does 90% on one expert mean?",
+     "answer": "The aux loss is too small.",
+     "anchor": "deep-ladders-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-exercises",
+   "title": "Analytical exercises",
+   "minutes": 1,
+   "endAnchor": "analytical-exercises-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "renormalization",
+     "definition": "Forgetting it is the E1 red flag; top-p = 0.75 keeps 1 token here.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "term": "entropy drop",
+     "definition": "0.441 to 0 nats; truncation removed all choice.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "term": "active fraction",
+     "definition": "25%: 234.9M active of 939.5M total expert parameters.",
+     "anchor": "analytical-exercises-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-exercises-r1",
+     "question": "What did truncation do to entropy in E1?",
+     "answer": "It removed all choice: 0.441 to 0 nats.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "id": "analytical-exercises-r2",
+     "question": "What is the E2 active fraction?",
+     "answer": "25%.",
+     "anchor": "analytical-exercises-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebug",
+   "title": "Implementation/debug",
+   "minutes": 1,
+   "endAnchor": "implementationdebug-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "role markers",
+     "definition": "The exact token ids marking roles; the assert checks their order.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "term": "template mismatch",
+     "definition": "Markers differ from training; the model ignores the system prompt.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "term": "render check",
+     "definition": "Render the tokenized prompt and compare with the training template.",
+     "anchor": "implementationdebug-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebug-r1",
+     "question": "What is the D1 culprit?",
+     "answer": "Template mismatch: markers differ from training.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "id": "implementationdebug-r2",
+     "question": "What does the assert check?",
+     "answer": "That the exact marker ids appear in order.",
+     "anchor": "implementationdebug-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-scenarios",
+   "title": "Changed-constraint scenarios",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-scenarios-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "tool use",
+     "definition": "Wins for exact arithmetic: exact, one call.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "term": "CoT failure",
+     "definition": "Wrong 6-digit carries within 20 tokens; errors compound.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "term": "guard order",
+     "definition": "Lower T first, then top-p, then sample.",
+     "anchor": "changed-constraint-scenarios-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-scenarios-r1",
+     "question": "Why does CoT fail in S1?",
+     "answer": "It fails on 6-digit carries within 20 tokens and compounds errors.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "id": "changed-constraint-scenarios-r2",
+     "question": "What is the S2 guard order?",
+     "answer": "Temperature first, truncation second, sample last.",
+     "anchor": "changed-constraint-scenarios-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique",
+   "title": "Research-critique",
+   "minutes": 1,
+   "endAnchor": "research-critique-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "causal test",
+     "definition": "Perturb an intermediate step; check whether the answer changes.",
+     "anchor": "research-critique-list01"
+    },
+    {
+     "term": "decoration",
+     "definition": "Steps that do not affect the answer.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "term": "falsification",
+     "definition": "The answer stays invariant to step perturbations.",
+     "anchor": "research-critique-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1",
+     "question": "What is the R1 red flag?",
+     "answer": "Saying steps prove reasoning.",
+     "anchor": "research-critique-list01"
+    },
+    {
+     "id": "research-critique-r2",
+     "question": "What is the falsification?",
+     "answer": "The answer stays invariant to step perturbations.",
+     "anchor": "research-critique-list01"
+    }
+   ]
+  }
+ ]
+}

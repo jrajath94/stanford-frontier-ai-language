@@ -1,0 +1,268 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-interview-u07_key",
+ "itemKind": "lesson",
+ "revision": "ea0c1c710355393d82a952aec1e0b6f5403e1f472390e57ea8b0825b031fc645",
+ "sections": [
+  {
+   "anchor": "interview-key-u07",
+   "title": "Interview key , U07",
+   "minutes": 1,
+   "endAnchor": "interview-key-u07-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "interview key",
+     "definition": "The closed-book answer set for the unit.",
+     "anchor": "interview-key-u07"
+    },
+    {
+     "term": "u07",
+     "definition": "The unit this key covers.",
+     "anchor": "interview-key-u07"
+    }
+   ],
+   "recall": [
+    {
+     "id": "interview-key-u07-r1",
+     "question": "What unit does this key cover?",
+     "answer": "U07.",
+     "anchor": "interview-key-u07"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth",
+   "title": "Breadth",
+   "minutes": 1,
+   "endAnchor": "breadth-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "KL leash",
+     "definition": "What the RL stage keeps.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "pessimistic",
+     "definition": "Takes the pessimistic of clipped and unclipped.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "no exploration",
+     "definition": "DPO trains the policy directly on pairs.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "sigmoid(r_c - r_r)",
+     "definition": "The BT probability.",
+     "anchor": "breadth-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-r1",
+     "question": "What does A1 say SFT teaches?",
+     "answer": "Format and style, not facts.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "id": "breadth-r2",
+     "question": "What are the three A4 stages?",
+     "answer": "SFT (format), reward model (taste), RL with KL leash (policy).",
+     "anchor": "breadth-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders",
+   "title": "Deep ladders",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "(1-P)",
+     "definition": "Uncertain pairs teach most.",
+     "anchor": "deep-ladders-p01"
+    },
+    {
+     "term": "0.7109",
+     "definition": "The toy P; loss 0.3412.",
+     "anchor": "deep-ladders-p02"
+    },
+    {
+     "term": "diverge unboundedly",
+     "definition": "Chosen log-probs without the reference.",
+     "anchor": "deep-ladders-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-r1",
+     "question": "What does L1's argmax mismatch mean?",
+     "answer": "The reward is a proxy trained on stale/noisy pairs.",
+     "anchor": "deep-ladders-p01"
+    },
+    {
+     "id": "deep-ladders-r2",
+     "question": "What does L2 recommend first?",
+     "answer": "DPO first (cheap); PPO if exploration is needed.",
+     "anchor": "deep-ladders-p02"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical",
+   "title": "Analytical",
+   "minutes": 1,
+   "endAnchor": "analytical-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "stale reward",
+     "definition": "The policy left the reward's training distribution.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "term": "saturated sigmoid",
+     "definition": "Large gaps, gradient ~0.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "term": "mean |inside|",
+     "definition": "The confirming number.",
+     "anchor": "analytical-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-r1",
+     "question": "What is the cheapest A7 check?",
+     "answer": "Human-rank outputs at steps 800 and 2000.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "id": "analytical-r2",
+     "question": "What confirms the A8 diagnosis?",
+     "answer": "mean |inside| >> 1, or mean P near 1.",
+     "anchor": "analytical-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebugging",
+   "title": "Implementation/debugging",
+   "minutes": 1,
+   "endAnchor": "implementationdebugging-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "raise beta",
+     "definition": "When KL exploded.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "term": "bad batch",
+     "definition": "Inspect the rollout.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "term": "value coefficient",
+     "definition": "Retune when value loss diverged.",
+     "anchor": "implementationdebugging-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebugging-r1",
+     "question": "What are the five checks?",
+     "answer": "KL, reward, eps, advantages, data.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "id": "implementationdebugging-r2",
+     "question": "What does a reward spike mean?",
+     "answer": "The reward has a hack; stop and inspect outputs.",
+     "anchor": "implementationdebugging-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint",
+   "title": "Changed-constraint",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "different judge",
+     "definition": "Model-judged eval with a different judge model.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "term": "spot audits",
+     "definition": "Small-sample human audits.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "term": "paraphrase",
+     "definition": "What breaks prompt-only refusal.",
+     "anchor": "changed-constraint-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-r1",
+     "question": "What three things does A10 report?",
+     "answer": "Judge eval, reward held-out agreement, spot audits, all with caveats.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "id": "changed-constraint-r2",
+     "question": "Where is refusal taught?",
+     "answer": "In SFT demos and reinforced in pairs/RL.",
+     "anchor": "changed-constraint-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique",
+   "title": "Research critique",
+   "minutes": 1,
+   "endAnchor": "research-critique-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "judges' votes",
+     "definition": "What RLHF actually aligns with.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "term": "training distribution",
+     "definition": "The alignment's boundary.",
+     "anchor": "research-critique-p02"
+    },
+    {
+     "term": "best working method",
+     "definition": "The steelman's claim.",
+     "anchor": "research-critique-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1",
+     "question": "What is the steelman?",
+     "answer": "RLHF demonstrably shifts behavior toward judged preferences; it is the best working method we have.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "id": "research-critique-r2",
+     "question": "What is the counterexample?",
+     "answer": "Proxy reward, biased judges, stale data: it aligns with the judges' votes on the training distribution, nothing more.",
+     "anchor": "research-critique-p01"
+    }
+   ]
+  }
+ ]
+}

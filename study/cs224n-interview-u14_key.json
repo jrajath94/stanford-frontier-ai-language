@@ -1,0 +1,268 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-interview-u14_key",
+ "itemKind": "lesson",
+ "revision": "d1e2ae8cf9ed71cb0dc2991a22aaa37e931d75c608e19b90263ff9982845d6dc",
+ "sections": [
+  {
+   "anchor": "interview-key-u14",
+   "title": "Interview key , U14",
+   "minutes": 1,
+   "endAnchor": "interview-key-u14-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "interview key",
+     "definition": "The closed-book answer set for the unit.",
+     "anchor": "interview-key-u14"
+    },
+    {
+     "term": "u14",
+     "definition": "The unit this key covers.",
+     "anchor": "interview-key-u14"
+    }
+   ],
+   "recall": [
+    {
+     "id": "interview-key-u14-r1",
+     "question": "What unit does this key cover?",
+     "answer": "U14.",
+     "anchor": "interview-key-u14"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth",
+   "title": "Breadth",
+   "minutes": 1,
+   "endAnchor": "breadth-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "196 tokens",
+     "definition": "For 224x224 at 16x16.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "n^2 attention",
+     "definition": "The window cost.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "demote on doubt",
+     "definition": "The claim-class rule.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "aux loss",
+     "definition": "Prevents router collapse.",
+     "anchor": "breadth-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-r1",
+     "question": "What does early fusion cost?",
+     "answer": "0 extra params; one shared stack.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "id": "breadth-r2",
+     "question": "What does late fusion cost?",
+     "answer": "5.03e7 extra at d = 1024, L = 24.",
+     "anchor": "breadth-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders",
+   "title": "Deep ladders",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "concat at input",
+     "definition": "Early fusion wiring.",
+     "anchor": "deep-ladders-p01"
+    },
+    {
+     "term": "towers then project",
+     "definition": "Late fusion wiring.",
+     "anchor": "deep-ladders-p02"
+    },
+    {
+     "term": "codename guessing",
+     "definition": "The label could be anything.",
+     "anchor": "deep-ladders-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-r1",
+     "question": "What is the L1 param formula?",
+     "answer": "Two d x d projections per layer.",
+     "anchor": "deep-ladders-p01"
+    },
+    {
+     "id": "deep-ladders-r2",
+     "question": "What is the L2 no-claim rule?",
+     "answer": "No content claim without inspection.",
+     "anchor": "deep-ladders-p02"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical",
+   "title": "Analytical",
+   "minutes": 1,
+   "endAnchor": "analytical-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "aux 5.28",
+     "definition": "Vs healthy 1.04: collapse.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "term": "weight > 0",
+     "definition": "The fix: turn on the aux loss.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "term": "cross-attention",
+     "definition": "No image tokens in the window.",
+     "anchor": "analytical-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-r1",
+     "question": "What happened in A7?",
+     "answer": "Router collapse: one expert takes 8 of 10 tokens.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "id": "analytical-r2",
+     "question": "What are the two A8 options?",
+     "answer": "Shrink the image, or cross-attention instead of image tokens.",
+     "anchor": "analytical-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebugging",
+   "title": "Implementation/debugging",
+   "minutes": 1,
+   "endAnchor": "implementationdebugging-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "language prior",
+     "definition": "Test with image ablation.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "term": "frozen encoder",
+     "definition": "Check gradients.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "term": "image-necessary triples",
+     "definition": "Retrain with them.",
+     "anchor": "implementationdebugging-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebugging-r1",
+     "question": "What are the four diagnoses?",
+     "answer": "Language prior, data audit, vision encoder, retrain.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "id": "implementationdebugging-r2",
+     "question": "Which is cheapest?",
+     "answer": "The language prior test (already the symptom).",
+     "anchor": "implementationdebugging-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint",
+   "title": "Changed-constraint",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "inspectable artifact",
+     "definition": "What the video becomes.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "term": "requested-branch",
+     "definition": "Updated to official where the video supports.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "term": "fine detail",
+     "definition": "What cutting image tokens breaks.",
+     "anchor": "changed-constraint-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-r1",
+     "question": "What does A10 do with the video?",
+     "answer": "Watch it, take notes with anchors, re-teach C01-C09.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "id": "changed-constraint-r2",
+     "question": "What breaks when halving latency?",
+     "answer": "Fine detail and the text budget.",
+     "anchor": "changed-constraint-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique",
+   "title": "Research critique",
+   "minutes": 1,
+   "endAnchor": "research-critique-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "text model with pictures",
+     "definition": "The verdict if ablation changes nothing.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "term": "input format",
+     "definition": "Is not multimodality.",
+     "anchor": "research-critique-p02"
+    },
+    {
+     "term": "joint training",
+     "definition": "The steelman's claim.",
+     "anchor": "research-critique-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1",
+     "question": "What is the steelman?",
+     "answer": "One model reads both, joint training, cross-modal transfer.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "id": "research-critique-r2",
+     "question": "What is the counterexample?",
+     "answer": "The image-ablation test: no accuracy drop.",
+     "anchor": "research-critique-p01"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,322 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-u04_questions",
+ "itemKind": "lesson",
+ "revision": "e1dd1b27d3557aa5dd24b30d5e7665f74ec557b2e3015009fc4b8ba56db17350",
+ "sections": [
+  {
+   "anchor": "u04-interview-bank-questions",
+   "title": "U04 interview bank , questions",
+   "minutes": 1,
+   "endAnchor": "u04-interview-bank-questions-end",
+   "blocks": [
+    {
+     "anchor": "u04-interview-bank-questions-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "u04-interview-bank-questions-p01"
+    },
+    {
+     "term": "answer keys",
+     "definition": "The companion files with worked answers; open them only after attempting.",
+     "anchor": "u04-interview-bank-questions-p01"
+    },
+    {
+     "term": "deep ladders",
+     "definition": "Follow-up chains that deepen one topic from definition to experiment.",
+     "anchor": "u04-interview-bank-questions-p01"
+    },
+    {
+     "term": "breadth",
+     "definition": "Short questions that test wide coverage across the unit.",
+     "anchor": "u04-interview-bank-questions-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u04-interview-bank-questions-r1",
+     "question": "How many questions of each type does the U04 bank set?",
+     "answer": "Six breadth, two deep ladders of five follow-ups, two analytical exercises, one implementation/debug task, two changed-constraint scenarios, and one research-critique question.",
+     "anchor": "u04-interview-bank-questions-p01"
+    },
+    {
+     "id": "u04-interview-bank-questions-r2",
+     "question": "When may you open the answer key?",
+     "answer": "Only after attempting every question closed-book.",
+     "anchor": "u04-interview-bank-questions-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth-6",
+   "title": "Breadth (6)",
+   "minutes": 1,
+   "endAnchor": "breadth-6-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "pretraining loss",
+     "definition": "Next-token loss over raw text.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "SFT loss",
+     "definition": "Next-token loss over instruction pairs, masked to responses.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "Adam memory",
+     "definition": "Weights plus gradients plus two optimizer states; about 104 GiB for 7B in fp32.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "int8 quantization",
+     "definition": "Mapping weights to 8-bit integers with scale and zero-point.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "arithmetic intensity",
+     "definition": "FLOPs per byte moved; decode sits on the memory-bound side of the ridge.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "LoRA",
+     "definition": "Low-rank adapters; the forward adds (alpha/r) B A x.",
+     "anchor": "breadth-6-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-6-r1",
+     "question": "What one difference does B1 ask for?",
+     "answer": "The one difference between the pretraining loss and the SFT loss.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r2",
+     "question": "What equation and ratio must B5 give?",
+     "answer": "The LoRA forward equation and an explanation of alpha/r.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r3",
+     "question": "What four items does B6 ask for?",
+     "answer": "The four rows of a training budget sheet.",
+     "anchor": "breadth-6-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders-2-x-5",
+   "title": "Deep ladders (2 x 5)",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-2-x-5-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "rank constraint",
+     "definition": "r much smaller than d; it caps the adapter's expressiveness.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "alpha/r",
+     "definition": "The LoRA scaling factor on the low-rank update.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "term": "B = 0 init",
+     "definition": "Initializing B to zero so the adapter starts as identity.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "merge check",
+     "definition": "A test that merged weights match the adapter forward pass.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "activation term",
+     "definition": "The memory of saved activations, missing from the three-term bill.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-2-x-5-r1",
+     "question": "What toy does L1.2 ask for?",
+     "answer": "Parameter counts for d = 4096, r = 8.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r2",
+     "question": "What two bills does L2.2 compare?",
+     "answer": "The 104.3 GiB versus 13.1 GiB memory bills.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r3",
+     "question": "What experiment does L2.5 propose?",
+     "answer": "Measuring the activation term.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-exercises-2",
+   "title": "Analytical exercises (2)",
+   "minutes": 1,
+   "endAnchor": "analytical-exercises-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "trainable fraction",
+     "definition": "Adapter parameters divided by 13B.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "term": "optimizer-state bytes",
+     "definition": "The fp32 Adam states for the adapter alone.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "term": "attainable TFLOP/s",
+     "definition": "Peak throughput limited by intensity times bandwidth.",
+     "anchor": "analytical-exercises-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-exercises-2-r1",
+     "question": "What two quantities must E1 compute?",
+     "answer": "Trainable parameters and their fraction of 13B, plus optimizer-state bytes.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "id": "analytical-exercises-2-r2",
+     "question": "What batch-size question does E2 end with?",
+     "answer": "What batch size makes decode compute-bound at peak 300 TFLOP/s.",
+     "anchor": "analytical-exercises-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebug-task-1",
+   "title": "Implementation/debug task (1)",
+   "minutes": 1,
+   "endAnchor": "implementationdebug-task-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "loss mask",
+     "definition": "The mask that restricts SFT loss to response tokens.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "term": "format failure",
+     "definition": "Falling loss while the model answers in the wrong format.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "term": "mask assertion",
+     "definition": "A test that the loss mask covers exactly the responses.",
+     "anchor": "implementationdebug-task-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebug-task-1-r1",
+     "question": "What symptom does D1 report?",
+     "answer": "Falling loss but answers in the wrong format.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "id": "implementationdebug-task-1-r2",
+     "question": "What guard must the answer write?",
+     "answer": "A mask assertion that prevents regression.",
+     "anchor": "implementationdebug-task-1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-scenarios-2",
+   "title": "Changed-constraint scenarios (2)",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-scenarios-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "memory rows",
+     "definition": "Weights, adapter states, and activations summed against 24 GB.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "term": "new language",
+     "definition": "A language absent from pretraining, with 10M tokens of data.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "term": "deciding eval",
+     "definition": "The evaluation that settles LoRA r = 8 versus full fine-tune.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-scenarios-2-r1",
+     "question": "What must S1 build?",
+     "answer": "The memory rows for a 7B LoRA tune on one 24 GB GPU at T = 4096.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "id": "changed-constraint-scenarios-2-r2",
+     "question": "What choice must S2 defend?",
+     "answer": "LoRA r = 8 or full fine-tune for a new language.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique-question-1",
+   "title": "Research-critique question (1)",
+   "minutes": 1,
+   "endAnchor": "research-critique-question-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "elicitation",
+     "definition": "The claim that SFT surfaces existing knowledge rather than teaching facts.",
+     "anchor": "research-critique-question-1-p01"
+    },
+    {
+     "term": "format learning",
+     "definition": "Learning the answer format without gaining knowledge.",
+     "anchor": "research-critique-question-1-p02"
+    },
+    {
+     "term": "falsification condition",
+     "definition": "The outcome that would prove the claim wrong.",
+     "anchor": "research-critique-question-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-question-1-r1",
+     "question": "What claim does R1 target?",
+     "answer": "That SFT teaches the model new facts.",
+     "anchor": "research-critique-question-1-p01"
+    },
+    {
+     "id": "research-critique-question-1-r2",
+     "question": "What must the experiment separate?",
+     "answer": "Format learning from knowledge gain.",
+     "anchor": "research-critique-question-1-p01"
+    }
+   ]
+  }
+ ]
+}

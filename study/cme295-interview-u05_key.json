@@ -1,0 +1,301 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-u05_key",
+ "itemKind": "lesson",
+ "revision": "aa4a0f7e7896046fe9f5e242310a64327203c5f2886229221df990b145b4a0d5",
+ "sections": [
+  {
+   "anchor": "u05-interview-key",
+   "title": "U05 interview key",
+   "minutes": 1,
+   "endAnchor": "u05-interview-key-end",
+   "blocks": [
+    {
+     "anchor": "u05-interview-key-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "strong answer",
+     "definition": "The minimum sufficient explanation that earns full marks.",
+     "anchor": "u05-interview-key-p01"
+    },
+    {
+     "term": "red flag",
+     "definition": "A common wrong answer that signals a misconception.",
+     "anchor": "u05-interview-key-p01"
+    },
+    {
+     "term": "rubric",
+     "definition": "The scoring breakdown per question part.",
+     "anchor": "u05-interview-key-p01"
+    },
+    {
+     "term": "remediation",
+     "definition": "The lesson reference to revisit after a miss.",
+     "anchor": "u05-interview-key-p01"
+    },
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "u05-interview-key-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u05-interview-key-r1",
+     "question": "What five parts does each U05 key entry carry?",
+     "answer": "Minimum sufficient explanation, strong answer, red flags, scoring rubric, and remediation.",
+     "anchor": "u05-interview-key-p01"
+    },
+    {
+     "id": "u05-interview-key-r2",
+     "question": "How should you use the key?",
+     "answer": "Keep it closed-book: attempt first, then check.",
+     "anchor": "u05-interview-key-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth",
+   "title": "Breadth",
+   "minutes": 1,
+   "endAnchor": "breadth-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "BT formula",
+     "definition": "-log sigmoid(r_w - r_l).",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "RLHF outputs",
+     "definition": "SFT gives format, the reward model gives a judge, PPO gives control.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "clipped ratio",
+     "definition": "E[min(rho A, clip(rho, 1-eps, 1+eps) A)].",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "forward KL",
+     "definition": "Drift of pi from pi_ref, in nats, direction pi||pi_ref.",
+     "anchor": "breadth-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-r1",
+     "question": "What is the B1 red flag?",
+     "answer": "Using mean squared error on scores.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "id": "breadth-r2",
+     "question": "What are the B5 assumptions?",
+     "answer": "BT holds, the KL-regularized optimum is the target, the reference is adequate.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "id": "breadth-r3",
+     "question": "What is the B6 red flag?",
+     "answer": "Reversing the KL direction.",
+     "anchor": "breadth-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders",
+   "title": "Deep ladders",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "pessimistic min",
+     "definition": "min(2.0, 1.2) = 1.2; the trust region made pessimistic.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "displacement",
+     "definition": "Falling chosen likelihood during DPO training.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "log pi_w",
+     "definition": "The metric the L2 experiment tracks over training.",
+     "anchor": "deep-ladders-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-r1",
+     "question": "What does rho = 10 mean?",
+     "answer": "The policy outran the data; refresh rollouts, lower LR.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "id": "deep-ladders-r2",
+     "question": "What is the L2 margin?",
+     "answer": "0.1 * 1.4 = 0.14.",
+     "anchor": "deep-ladders-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-exercises",
+   "title": "Analytical exercises",
+   "minutes": 1,
+   "endAnchor": "analytical-exercises-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "GAE(0)",
+     "definition": "At t = 2 it equals 2: no future left to weight.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "term": "KL anchor",
+     "definition": "Beta sets the KL anchor strength; higher beta sharpens the preference.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "term": "loss numbers",
+     "definition": "Margin 1.5, sigmoid 0.818, loss 0.201.",
+     "anchor": "analytical-exercises-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-exercises-r1",
+     "question": "What is the E1 red flag?",
+     "answer": "Saying GAE(0) = 0.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "id": "analytical-exercises-r2",
+     "question": "What does doubling beta do in E2?",
+     "answer": "Margin 3.0, sigmoid 0.953, loss 0.049.",
+     "anchor": "analytical-exercises-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebug",
+   "title": "Implementation/debug",
+   "minutes": 1,
+   "endAnchor": "implementationdebug-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "divergence",
+     "definition": "Reward versus human spot scores diverging over time.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "term": "length trend",
+     "definition": "Rising mean length signals verbosity hacking.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "term": "logging cadence",
+     "definition": "Reward, KL, mean length, human spot score every N steps.",
+     "anchor": "implementationdebug-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebug-r1",
+     "question": "What is the D1 culprit?",
+     "answer": "Reward hacking: the policy exploits reward-model blind spots.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "id": "implementationdebug-r2",
+     "question": "What is the D1 red flag?",
+     "answer": "Training longer because reward is rising.",
+     "anchor": "implementationdebug-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-scenarios",
+   "title": "Changed-constraint scenarios",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-scenarios-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "agreement ceiling",
+     "definition": "The reward cannot beat 60% agreement; check it first.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "term": "length-stratified pairs",
+     "definition": "Pairs that teach detail without padding.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "term": "DPO choice",
+     "definition": "Offline and stable; no sampling loop amplifies the noise.",
+     "anchor": "changed-constraint-scenarios-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-scenarios-r1",
+     "question": "Why DPO in S1?",
+     "answer": "Offline and stable; RLHF would overfit the noisy reward and hack it.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "id": "changed-constraint-scenarios-r2",
+     "question": "What is the S2 red flag?",
+     "answer": "Capping the length, which kills the product need.",
+     "anchor": "changed-constraint-scenarios-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique",
+   "title": "Research-critique",
+   "minutes": 1,
+   "endAnchor": "research-critique-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "divergence point",
+     "definition": "The KL where reward and human preference part ways.",
+     "anchor": "research-critique-list01"
+    },
+    {
+     "term": "blinded preference",
+     "definition": "Human scores collected without seeing the source.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "term": "falsification",
+     "definition": "The curves track together at all KL.",
+     "anchor": "research-critique-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1",
+     "question": "What is the R1 red flag?",
+     "answer": "Calling the reward ground truth.",
+     "anchor": "research-critique-list01"
+    },
+    {
+     "id": "research-critique-r2",
+     "question": "What must the experiment plot?",
+     "answer": "Reward versus blinded human preference over a KL sweep.",
+     "anchor": "research-critique-list01"
+    }
+   ]
+  }
+ ]
+}

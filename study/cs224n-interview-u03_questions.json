@@ -1,0 +1,349 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-interview-u03_questions",
+ "itemKind": "lesson",
+ "revision": "8f6350f9b0bfb364c4979633b306bc71e3ee1fc04f55cdd1c7643b8cb5b89dbe",
+ "sections": [
+  {
+   "anchor": "interview-bank-u03-neural-fundamentals-and-dependency-parsing",
+   "title": "Interview bank , U03 Neural fundamentals and dependency parsing",
+   "minutes": 1,
+   "endAnchor": "interview-bank-u03-neural-fundamentals-and-dependency-parsing-end",
+   "blocks": [
+    {
+     "anchor": "interview-bank-u03-neural-fundamentals-and-dependency-parsing-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "test mode",
+     "definition": "Answer closed-book before opening the key.",
+     "anchor": "interview-bank-u03-neural-fundamentals-and-dependency-parsing-p01"
+    },
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "interview-bank-u03-neural-fundamentals-and-dependency-parsing-p01"
+    },
+    {
+     "term": "answer key",
+     "definition": "The companion file with worked answers; open it only after attempting.",
+     "anchor": "interview-bank-u03-neural-fundamentals-and-dependency-parsing-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "interview-bank-u03-neural-fundamentals-and-dependency-parsing-r1",
+     "question": "What does test mode require?",
+     "answer": "Answer closed-book before opening the key.",
+     "anchor": "interview-bank-u03-neural-fundamentals-and-dependency-parsing-p01"
+    },
+    {
+     "id": "interview-bank-u03-neural-fundamentals-and-dependency-parsing-r2",
+     "question": "Where is the answer key?",
+     "answer": "In interview/u03_key.md.",
+     "anchor": "interview-bank-u03-neural-fundamentals-and-dependency-parsing-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth-b1-b6",
+   "title": "Breadth (B1-B6)",
+   "minutes": 1,
+   "endAnchor": "breadth-b1-b6-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "computational graph",
+     "definition": "Nodes are ops; edges carry tensors.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "term": "topological order",
+     "definition": "What guarantees correct forward and backward passes.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "term": "stable softmax",
+     "definition": "Subtract the max first; the one-line NaN fix.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "term": "vector chain rule",
+     "definition": "The rule reverse mode applies without forming the Jacobian.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "term": "reverse mode",
+     "definition": "Backprop; it never forms the full Jacobian.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "term": "2-layer ReLU net",
+     "definition": "Solves the toy task where a linear model sits at 0.5.",
+     "anchor": "breadth-b1-b6-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-b1-b6-r1",
+     "question": "What breaks if you switch reduction mid-training?",
+     "answer": "The gradient scale; B2 asks what changes and what breaks.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "id": "breadth-b1-b6-r2",
+     "question": "What does B4 ask about repeated word ids?",
+     "answer": "What the backward pass does for a batch with a repeated word id.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "id": "breadth-b1-b6-r3",
+     "question": "What contrast does B6 ask for?",
+     "answer": "A 2-layer ReLU net versus a linear model on the toy task.",
+     "anchor": "breadth-b1-b6-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladder-1-from-graph-to-gradients-d11-d15",
+   "title": "Deep ladder 1 , from graph to gradients (D1.1-D1.5)",
+   "minutes": 1,
+   "endAnchor": "deep-ladder-1-from-graph-to-gradients-d11-d15-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "forward and backward",
+     "definition": "Defined on f = (x + y) x z.",
+     "anchor": "deep-ladder-1-from-graph-to-gradients-d11-d15-p01"
+    },
+    {
+     "term": "vector-Jacobian product",
+     "definition": "The memory saver over the full Jacobian for y = Wx.",
+     "anchor": "deep-ladder-1-from-graph-to-gradients-d11-d15-p01"
+    },
+    {
+     "term": "finite differences",
+     "definition": "The one-time check, not the training method.",
+     "anchor": "deep-ladder-1-from-graph-to-gradients-d11-d15-p01"
+    },
+    {
+     "term": "forward-mode",
+     "definition": "Compared against reverse-mode on 10M parameters, 1 output.",
+     "anchor": "deep-ladder-1-from-graph-to-gradients-d11-d15-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladder-1-from-graph-to-gradients-d11-d15-r1",
+     "question": "What point does D1.2 use?",
+     "answer": "(2, 3, 4) for df/dx, df/dy, df/dz.",
+     "anchor": "deep-ladder-1-from-graph-to-gradients-d11-d15-p01"
+    },
+    {
+     "id": "deep-ladder-1-from-graph-to-gradients-d11-d15-r2",
+     "question": "What does D1.5 ask you to choose?",
+     "answer": "The method for training versus the one-time check.",
+     "anchor": "deep-ladder-1-from-graph-to-gradients-d11-d15-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladder-2-parsing-as-classification-d21-d25",
+   "title": "Deep ladder 2 , parsing as classification (D2.1-D2.5)",
+   "minutes": 1,
+   "endAnchor": "deep-ladder-2-parsing-as-classification-d21-d25-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "parser state",
+     "definition": "Stack, buffer, and arc set.",
+     "anchor": "deep-ladder-2-parsing-as-classification-d21-d25-p01"
+    },
+    {
+     "term": "three actions",
+     "definition": "Shift, left-arc, right-arc.",
+     "anchor": "deep-ladder-2-parsing-as-classification-d21-d25-p01"
+    },
+    {
+     "term": "arc-standard",
+     "definition": "O(n) time parsing.",
+     "anchor": "deep-ladder-2-parsing-as-classification-d21-d25-p01"
+    },
+    {
+     "term": "attachment score",
+     "definition": "Far below 95% action accuracy on long sentences.",
+     "anchor": "deep-ladder-2-parsing-as-classification-d21-d25-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladder-2-parsing-as-classification-d21-d25-r1",
+     "question": "What toy does D2.2 replay?",
+     "answer": "The 6 actions on 'the cat sat', listing the arcs.",
+     "anchor": "deep-ladder-2-parsing-as-classification-d21-d25-p01"
+    },
+    {
+     "id": "deep-ladder-2-parsing-as-classification-d21-d25-r2",
+     "question": "What does D2.5 ask you to state?",
+     "answer": "The flaw in 'greedy is optimal because each action is optimal', and the experiment showing it.",
+     "anchor": "deep-ladder-2-parsing-as-classification-d21-d25-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-quantitative-q1-q2",
+   "title": "Analytical / quantitative (Q1-Q2)",
+   "minutes": 1,
+   "endAnchor": "analytical-quantitative-q1-q2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "stable softmax",
+     "definition": "Subtract max; the probabilities for logits (1, 2, 3).",
+     "anchor": "analytical-quantitative-q1-q2-p01"
+    },
+    {
+     "term": "gradient dL/dz",
+     "definition": "The cross-entropy gradient for true class 2.",
+     "anchor": "analytical-quantitative-q1-q2-p01"
+    },
+    {
+     "term": "gradient check",
+     "definition": "8192 finite differences; the cost Q2 asks you to count.",
+     "anchor": "analytical-quantitative-q1-q2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-quantitative-q1-q2-r1",
+     "question": "What numbers does Q1 give?",
+     "answer": "Logits (1, 2, 3), true class 2 (0-indexed).",
+     "anchor": "analytical-quantitative-q1-q2-p01"
+    },
+    {
+     "id": "analytical-quantitative-q1-q2-r2",
+     "question": "What does Q2 ask instead of the loop?",
+     "answer": "What you do in practice instead of 8192 finite differences.",
+     "anchor": "analytical-quantitative-q1-q2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementation-debug-i1",
+   "title": "Implementation / debug (I1)",
+   "minutes": 1,
+   "endAnchor": "implementation-debug-i1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "embed_backward",
+     "definition": "The buggy function.",
+     "anchor": "implementation-debug-i1-code01"
+    },
+    {
+     "term": "dE[ids]",
+     "definition": "The line that fails on repeated ids.",
+     "anchor": "implementation-debug-i1-p01"
+    },
+    {
+     "term": "repeated ids",
+     "definition": "The batches where it goes wrong.",
+     "anchor": "implementation-debug-i1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementation-debug-i1-r1",
+     "question": "When is I1 wrong?",
+     "answer": "On some batches but not others.",
+     "anchor": "implementation-debug-i1-p01"
+    },
+    {
+     "id": "implementation-debug-i1-r2",
+     "question": "What must the answer do?",
+     "answer": "Find the bug.",
+     "anchor": "implementation-debug-i1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-scenarios-s1-s2",
+   "title": "Changed-constraint scenarios (S1-S2)",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-scenarios-s1-s2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "non-projective trees",
+     "definition": "Crossing arcs arc-standard cannot produce.",
+     "anchor": "changed-constraint-scenarios-s1-s2-p01"
+    },
+    {
+     "term": "minibatches",
+     "definition": "32 with mean reduction, replacing full-batch.",
+     "anchor": "changed-constraint-scenarios-s1-s2-p01"
+    },
+    {
+     "term": "learning rate",
+     "definition": "Tuned for sum reduction at B = 256; now mismatched.",
+     "anchor": "changed-constraint-scenarios-s1-s2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-scenarios-s1-s2-r1",
+     "question": "What three options does S1 weigh?",
+     "answer": "New actions, new objective, or a different parser.",
+     "anchor": "changed-constraint-scenarios-s1-s2-p01"
+    },
+    {
+     "id": "changed-constraint-scenarios-s1-s2-r2",
+     "question": "What changed in S2?",
+     "answer": "Full-batch to minibatches of 32 with mean reduction, keeping the sum-reduction learning rate.",
+     "anchor": "changed-constraint-scenarios-s1-s2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique-r1",
+   "title": "Research critique (R1)",
+   "minutes": 1,
+   "endAnchor": "research-critique-r1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "gold POS tags",
+     "definition": "Given to the new parser at test time, not the baseline.",
+     "anchor": "research-critique-r1-p01"
+    },
+    {
+     "term": "confound",
+     "definition": "The tag mismatch R1 asks you to name.",
+     "anchor": "research-critique-r1-p02"
+    },
+    {
+     "term": "fair comparison",
+     "definition": "The comparison R1 asks you to design.",
+     "anchor": "research-critique-r1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1-r1",
+     "question": "What is the reported gain?",
+     "answer": "2% higher attachment score.",
+     "anchor": "research-critique-r1-p01"
+    },
+    {
+     "id": "research-critique-r1-r2",
+     "question": "What is the confound?",
+     "answer": "Gold POS tags at test time for the new parser, predicted tags for the baseline.",
+     "anchor": "research-critique-r1-p01"
+    }
+   ]
+  }
+ ]
+}

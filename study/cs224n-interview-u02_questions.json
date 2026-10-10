@@ -1,0 +1,349 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-interview-u02_questions",
+ "itemKind": "lesson",
+ "revision": "6c9e9453389c4a32e066674b520b881e87bc83295151dcec9b0545a5aa9409fc",
+ "sections": [
+  {
+   "anchor": "interview-bank-u02-word-vectors-and-cooccurrence",
+   "title": "Interview bank , U02 Word vectors and cooccurrence",
+   "minutes": 1,
+   "endAnchor": "interview-bank-u02-word-vectors-and-cooccurrence-end",
+   "blocks": [
+    {
+     "anchor": "interview-bank-u02-word-vectors-and-cooccurrence-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "test mode",
+     "definition": "Answer closed-book before opening the key.",
+     "anchor": "interview-bank-u02-word-vectors-and-cooccurrence-p01"
+    },
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "interview-bank-u02-word-vectors-and-cooccurrence-p01"
+    },
+    {
+     "term": "answer key",
+     "definition": "The companion file with worked answers; open it only after attempting.",
+     "anchor": "interview-bank-u02-word-vectors-and-cooccurrence-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "interview-bank-u02-word-vectors-and-cooccurrence-r1",
+     "question": "What does test mode require?",
+     "answer": "Answer closed-book before opening the key.",
+     "anchor": "interview-bank-u02-word-vectors-and-cooccurrence-p01"
+    },
+    {
+     "id": "interview-bank-u02-word-vectors-and-cooccurrence-r2",
+     "question": "Where is the answer key?",
+     "answer": "In interview/u02_key.md.",
+     "anchor": "interview-bank-u02-word-vectors-and-cooccurrence-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth-b1-b6",
+   "title": "Breadth (B1-B6)",
+   "minutes": 1,
+   "endAnchor": "breadth-b1-b6-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "one-hot",
+     "definition": "A V-long vector with one 1; similarity breaks on it.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "term": "distributed representations",
+     "definition": "Dense vectors where similarity works.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "term": "skip-gram",
+     "definition": "Predicts context from the center word.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "term": "CBOW",
+     "definition": "Predicts the center word from context.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "term": "negative sampling",
+     "definition": "Trains on k negatives per pair; avoids the full softmax.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "term": "GloVe",
+     "definition": "Factorizes cooccurrence counts with a weighting function f.",
+     "anchor": "breadth-b1-b6-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-b1-b6-r1",
+     "question": "What two objectives must B2 state?",
+     "answer": "Skip-gram and CBOW, and the direction each predicts.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "id": "breadth-b1-b6-r2",
+     "question": "What cost does B3's objective avoid?",
+     "answer": "The full softmax.",
+     "anchor": "breadth-b1-b6-p01"
+    },
+    {
+     "id": "breadth-b1-b6-r3",
+     "question": "What does B6 ask in one sentence?",
+     "answer": "The Levy-Goldberg result: what matrix skip-gram factorizes.",
+     "anchor": "breadth-b1-b6-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladder-1-from-counts-to-vectors-d11-d15",
+   "title": "Deep ladder 1 , from counts to vectors (D1.1-D1.5)",
+   "minutes": 1,
+   "endAnchor": "deep-ladder-1-from-counts-to-vectors-d11-d15-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "distributional hypothesis",
+     "definition": "Words in similar contexts have similar meanings.",
+     "anchor": "deep-ladder-1-from-counts-to-vectors-d11-d15-p01"
+    },
+    {
+     "term": "66 pairs",
+     "definition": "The (center, context) count for 18 tokens at window 2.",
+     "anchor": "deep-ladder-1-from-counts-to-vectors-d11-d15-p01"
+    },
+    {
+     "term": "noise distribution",
+     "definition": "Where the D1.4 diagnosis starts.",
+     "anchor": "deep-ladder-1-from-counts-to-vectors-d11-d15-p01"
+    },
+    {
+     "term": "streaming corpus",
+     "definition": "A corpus that never ends; GloVe's cooccurrence table breaks on it.",
+     "anchor": "deep-ladder-1-from-counts-to-vectors-d11-d15-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladder-1-from-counts-to-vectors-d11-d15-r1",
+     "question": "What does D1.2 ask, and why 66?",
+     "answer": "How many (center, context) pairs for 18 tokens at window 2, and why 66.",
+     "anchor": "deep-ladder-1-from-counts-to-vectors-d11-d15-p01"
+    },
+    {
+     "id": "deep-ladder-1-from-counts-to-vectors-d11-d15-r2",
+     "question": "What symptom does D1.4 report?",
+     "answer": "All pair cosines sit near 0.9 after training on 35 raw tokens.",
+     "anchor": "deep-ladder-1-from-counts-to-vectors-d11-d15-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladder-2-evaluation-and-limits-d21-d25",
+   "title": "Deep ladder 2 , evaluation and limits (D2.1-D2.5)",
+   "minutes": 1,
+   "endAnchor": "deep-ladder-2-evaluation-and-limits-d21-d25-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "intrinsic evaluation",
+     "definition": "Judging vectors directly, e.g. analogies.",
+     "anchor": "deep-ladder-2-evaluation-and-limits-d21-d25-p01"
+    },
+    {
+     "term": "extrinsic evaluation",
+     "definition": "Judging vectors on a downstream task.",
+     "anchor": "deep-ladder-2-evaluation-and-limits-d21-d25-p01"
+    },
+    {
+     "term": "exclusion rule",
+     "definition": "The analogy rule whose absence returns 'woman' at cosine 1.0.",
+     "anchor": "deep-ladder-2-evaluation-and-limits-d21-d25-p01"
+    },
+    {
+     "term": "polysemous",
+     "definition": "One word, several senses; its neighbor list mixes them.",
+     "anchor": "deep-ladder-2-evaluation-and-limits-d21-d25-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladder-2-evaluation-and-limits-d21-d25-r1",
+     "question": "What does D2.2 ask you to explain?",
+     "answer": "Why the analogy returns 'woman' at cosine 1.0 without the exclusion rule.",
+     "anchor": "deep-ladder-2-evaluation-and-limits-d21-d25-p01"
+    },
+    {
+     "id": "deep-ladder-2-evaluation-and-limits-d21-d25-r2",
+     "question": "What two counterarguments does D2.5 want?",
+     "answer": "Against '80% on analogies means we capture meaning'.",
+     "anchor": "deep-ladder-2-evaluation-and-limits-d21-d25-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-quantitative-q1-q2",
+   "title": "Analytical / quantitative (Q1-Q2)",
+   "minutes": 1,
+   "endAnchor": "analytical-quantitative-q1-q2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "multiply-adds",
+     "definition": "The per-pair cost comparison: O(V d) versus O(k d).",
+     "anchor": "analytical-quantitative-q1-q2-p01"
+    },
+    {
+     "term": "PMI",
+     "definition": "Pointwise mutual information; 1.569 nats for (cat, sat).",
+     "anchor": "analytical-quantitative-q1-q2-p01"
+    },
+    {
+     "term": "optimum gap",
+     "definition": "How far u_sat . v_cat = 0.30 sits from the target.",
+     "anchor": "analytical-quantitative-q1-q2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-quantitative-q1-q2-r1",
+     "question": "What ratio does Q1 ask for?",
+     "answer": "Full softmax versus negative sampling multiply-adds per pair.",
+     "anchor": "analytical-quantitative-q1-q2-p01"
+    },
+    {
+     "id": "analytical-quantitative-q1-q2-r2",
+     "question": "What numbers does Q2 give?",
+     "answer": "PMI(cat, sat) = 1.569 nats, k = 2, dot = 0.30.",
+     "anchor": "analytical-quantitative-q1-q2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementation-debug-i1",
+   "title": "Implementation / debug (I1)",
+   "minutes": 1,
+   "endAnchor": "implementation-debug-i1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "drift",
+     "definition": "All vectors moving in one direction.",
+     "anchor": "implementation-debug-i1-p01"
+    },
+    {
+     "term": "loss never falls",
+     "definition": "The training symptom.",
+     "anchor": "implementation-debug-i1-code01"
+    },
+    {
+     "term": "two bugs",
+     "definition": "The count I1 asks you to find and fix.",
+     "anchor": "implementation-debug-i1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementation-debug-i1-r1",
+     "question": "What are the I1 symptoms?",
+     "answer": "The loss never falls and all vectors drift in one direction.",
+     "anchor": "implementation-debug-i1-p01"
+    },
+    {
+     "id": "implementation-debug-i1-r2",
+     "question": "How many bugs?",
+     "answer": "Two.",
+     "anchor": "implementation-debug-i1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-scenarios-s1-s2",
+   "title": "Changed-constraint scenarios (S1-S2)",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-scenarios-s1-s2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "2 million types",
+     "definition": "The vocabulary that breaks the pipeline first.",
+     "anchor": "changed-constraint-scenarios-s1-s2-p01"
+    },
+    {
+     "term": "500 sentences",
+     "definition": "The tiny corpus for the new language.",
+     "anchor": "changed-constraint-scenarios-s1-s2-p01"
+    },
+    {
+     "term": "hand-built features",
+     "definition": "One option against skip-gram and GloVe.",
+     "anchor": "changed-constraint-scenarios-s1-s2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-scenarios-s1-s2-r1",
+     "question": "What three-way choice does S1 pose?",
+     "answer": "What breaks first: memory, the softmax, or the analogy test.",
+     "anchor": "changed-constraint-scenarios-s1-s2-p01"
+    },
+    {
+     "id": "changed-constraint-scenarios-s1-s2-r2",
+     "question": "What three options does S2 weigh?",
+     "answer": "Skip-gram, GloVe, or hand-built features.",
+     "anchor": "changed-constraint-scenarios-s1-s2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique-r1",
+   "title": "Research critique (R1)",
+   "minutes": 1,
+   "endAnchor": "research-critique-r1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "confounds",
+     "definition": "Three to list: 5x more epochs, larger window, single eval.",
+     "anchor": "research-critique-r1-p01"
+    },
+    {
+     "term": "controlled experiment",
+     "definition": "The experiment that removes each confound.",
+     "anchor": "research-critique-r1-p02"
+    },
+    {
+     "term": "analogy accuracy",
+     "definition": "The metric the 3% claim uses.",
+     "anchor": "research-critique-r1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1-r1",
+     "question": "What does the preprint claim?",
+     "answer": "A new embedding method beating skip-gram by 3% on analogy accuracy.",
+     "anchor": "research-critique-r1-p01"
+    },
+    {
+     "id": "research-critique-r1-r2",
+     "question": "What are the three confounds?",
+     "answer": "5x more epochs, a larger window, and a single evaluation.",
+     "anchor": "research-critique-r1-p01"
+    }
+   ]
+  }
+ ]
+}

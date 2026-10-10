@@ -1,0 +1,852 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs329h-lessons-u02_lesson",
+ "itemKind": "lesson",
+ "revision": "e495f0fdcc529f0271c0bd17b34ccc7848650a822efd3b743b15f368b8f363f3",
+ "sections": [
+  {
+   "anchor": "u02_lesson-intro",
+   "title": "U02 \u00b7 Random utility, axioms, and factor models",
+   "minutes": 1,
+   "endAnchor": "u02_lesson-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "P03 (vectors)",
+     "definition": "Vectors prerequisite for U02, covering dot products used in factor models.",
+     "anchor": "u02_lesson-intro-p01"
+    },
+    {
+     "term": "P06 (probability)",
+     "definition": "Probability prerequisite for U02, covering the Gumbel and softmax models used here.",
+     "anchor": "u02_lesson-intro-p01"
+    },
+    {
+     "term": "P07 (estimation)",
+     "definition": "Estimation prerequisite for U02, covering likelihood methods used in fitting.",
+     "anchor": "u02_lesson-intro-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u02_lesson-intro-r1",
+     "question": "What background does U02 assume?",
+     "answer": "P03 vectors, P06 probability, and P07 estimation. Local remediation opens the lesson.",
+     "anchor": "u02_lesson-intro-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "provenance",
+   "title": "Provenance",
+   "minutes": 1,
+   "endAnchor": "provenance-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "session S03",
+     "definition": "The lecture 'Random utility models and axiomatizations' from 30 Sep 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "session S04",
+     "definition": "The lecture 'Factor models' from 5 Oct 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "source-supported",
+     "definition": "Content verified against session materials at title level.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "planned / source attribution pending",
+     "definition": "A requested extension taught as independent theory, not yet verified against a source.",
+     "anchor": "provenance-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "provenance-r1",
+     "question": "Which concepts map to session S03?",
+     "answer": "Concepts C01 through C06, source-supported at title level.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "id": "provenance-r2",
+     "question": "Which concepts map to session S04?",
+     "answer": "Concepts C07 through C09, source-supported at title level.",
+     "anchor": "provenance-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-dot-products-and-the-gumbel-distribution",
+   "title": "Local remediation: dot products and the Gumbel distribution",
+   "minutes": 1,
+   "endAnchor": "local-remediation-dot-products-and-the-gumbel-distribution-end",
+   "blocks": [
+    {
+     "anchor": "local-remediation-dot-products-and-the-gumbel-distribution-p02",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "dot product",
+     "definition": "A sum over k of w_k v_k that measures alignment, used in factor models as the score w_j dot v_i.",
+     "anchor": "local-remediation-dot-products-and-the-gumbel-distribution-p01"
+    },
+    {
+     "term": "Gumbel(0,1)",
+     "definition": "The noise distribution with CDF exp(-exp(-e)); its argmax yields the softmax.",
+     "anchor": "local-remediation-dot-products-and-the-gumbel-distribution-p02"
+    },
+    {
+     "term": "softmax",
+     "definition": "The rule P(pick i) = exp(u_i)/sum_j exp(u_j) from independent Gumbel shocks.",
+     "anchor": "local-remediation-dot-products-and-the-gumbel-distribution-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "local-remediation-dot-products-and-the-gumbel-distribution-r1",
+     "question": "What does the dot product measure?",
+     "answer": "Alignment. The norm ||w|| is its length.",
+     "anchor": "local-remediation-dot-products-and-the-gumbel-distribution-p01"
+    },
+    {
+     "id": "local-remediation-dot-products-and-the-gumbel-distribution-r2",
+     "question": "What is the key Gumbel fact?",
+     "answer": "Independent Gumbel shocks make argmax_i (u_i + e_i) pick i with probability exp(u_i)/sum_j exp(u_j).",
+     "anchor": "local-remediation-dot-products-and-the-gumbel-distribution-p02"
+    }
+   ]
+  },
+  {
+   "anchor": "russian-doll-ladder-for-the-major-mechanism-random-utility",
+   "title": "Russian-doll ladder for the major mechanism (random utility)",
+   "minutes": 1,
+   "endAnchor": "russian-doll-ladder-for-the-major-mechanism-random-utility-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "craving shock",
+     "definition": "The random daily wobble added to fixed appeal in the snack toy.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-random-utility-list01"
+    },
+    {
+     "term": "argmax",
+     "definition": "The choice rule: pick the option with the highest noisy utility U_i.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-random-utility-list01"
+    },
+    {
+     "term": "softmax",
+     "definition": "The choice rule P(choose i) = exp(u_i)/sum_j exp(u_j).",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-random-utility-list01"
+    },
+    {
+     "term": "red bus / blue bus",
+     "definition": "The counterexample where IIA predicts the car drops to 0.50.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-random-utility-list01"
+    },
+    {
+     "term": "nested logit",
+     "definition": "The repair compared against the flat logit in shell 8.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-random-utility-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-random-utility-r1",
+     "question": "What does shell 5 check?",
+     "answer": "As the noise scale goes to 0, the choice becomes the deterministic argmax of u.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-random-utility-list01"
+    },
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-random-utility-r2",
+     "question": "What happens when a recommender adds near-duplicate items?",
+     "answer": "They cannibalize share under a flat logit.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-random-utility-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood-dependency-list",
+   "title": "Not-yet-understood dependency list",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-dependency-list-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "axiomatization proofs",
+     "definition": "Full Luce and McFadden proofs, stated as named conditions with intuition; proofs excluded.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "mixed logit",
+     "definition": "The heterogeneity fix, named with fitting deferred to U03 methods.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "nested logit",
+     "definition": "The conditions for identifying nested logit parameters, stated in C11.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "not-yet-understood-dependency-list-r1",
+     "question": "Where are nested logit identification conditions stated?",
+     "answer": "In C11.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "id": "not-yet-understood-dependency-list-r2",
+     "question": "When is mixed logit fitting covered?",
+     "answer": "In U03 methods; here it is only named as the heterogeneity fix.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c01-latent-utility",
+   "title": "cs329h-U02-C01: latent utility",
+   "minutes": 3,
+   "endAnchor": "cs329h-u02-c01-latent-utility-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c01-latent-utility-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c01-latent-utility-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u02-c01-latent-utility-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "latent utility",
+     "definition": "A hidden scoreboard where higher means wanted more, and you only see which option won each contest.",
+     "anchor": "cs329h-u02-c01-latent-utility-p01"
+    },
+    {
+     "term": "choice rule",
+     "definition": "The rule argmax_i U_i that turns utilities into a choice.",
+     "anchor": "cs329h-u02-c01-latent-utility-p05"
+    },
+    {
+     "term": "softmax",
+     "definition": "The choice probabilities from exponentiated utilities, as in shares [0.547, 0.331, 0.122].",
+     "anchor": "cs329h-u02-c01-latent-utility-p06"
+    },
+    {
+     "term": "scale",
+     "definition": "Utilities are revealed only up to this multiplicative factor.",
+     "anchor": "cs329h-u02-c01-latent-utility-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c01-latent-utility-r1",
+     "question": "What do you observe about utility?",
+     "answer": "Only which option won each contest. You never see the scoreboard.",
+     "anchor": "cs329h-u02-c01-latent-utility-p03"
+    },
+    {
+     "id": "cs329h-u02-c01-latent-utility-r2",
+     "question": "What are the softmax shares for u = [1.0, 0.5, -0.5]?",
+     "answer": "[0.547, 0.331, 0.122].",
+     "anchor": "cs329h-u02-c01-latent-utility-p06"
+    },
+    {
+     "id": "cs329h-u02-c01-latent-utility-r3",
+     "question": "What breaks a fixed-utility model?",
+     "answer": "Utility that moves during observation, like learning or satiation.",
+     "anchor": "cs329h-u02-c01-latent-utility-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c02-random-utility-distribution",
+   "title": "cs329h-U02-C02: random utility distribution",
+   "minutes": 3,
+   "endAnchor": "cs329h-u02-c02-random-utility-distribution-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c02-random-utility-distribution-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c02-random-utility-distribution-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u02-c02-random-utility-distribution-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "random utility model",
+     "definition": "Baseline liking plus a Gumbel wobble; the wobble's shape yields the softmax.",
+     "anchor": "cs329h-u02-c02-random-utility-distribution-p01"
+    },
+    {
+     "term": "Gumbel",
+     "definition": "The noise distribution whose exact shape makes win probabilities come out as the softmax.",
+     "anchor": "cs329h-u02-c02-random-utility-distribution-p01"
+    },
+    {
+     "term": "logit rule",
+     "definition": "P(choose i) = exp(u_i)/sum_j exp(u_j), derived by integrating over the Gumbel density.",
+     "anchor": "cs329h-u02-c02-random-utility-distribution-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c02-random-utility-distribution-r1",
+     "question": "How does the Gumbel shape produce the softmax?",
+     "answer": "Condition on e_1 = e, multiply the CDF terms, and integrate over the Gumbel density. The integral collapses to exp(u_1)/sum_j exp(u_j).",
+     "anchor": "cs329h-u02-c02-random-utility-distribution-p05"
+    },
+    {
+     "id": "cs329h-u02-c02-random-utility-distribution-r2",
+     "question": "What breaks the derivation?",
+     "answer": "Correlated shocks: if two options share unobserved appeal, the formula overstates substitution.",
+     "anchor": "cs329h-u02-c02-random-utility-distribution-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c03-choice-axioms",
+   "title": "cs329h-U02-C03: choice axioms",
+   "minutes": 3,
+   "endAnchor": "cs329h-u02-c03-choice-axioms-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c03-choice-axioms-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c03-choice-axioms-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u02-c03-choice-axioms-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "axioms",
+     "definition": "Hygiene rules for choices, like transitivity; without them no single ranking explains the data.",
+     "anchor": "cs329h-u02-c03-choice-axioms-p01"
+    },
+    {
+     "term": "transitivity",
+     "definition": "If A beats B and B beats C, then A beats C.",
+     "anchor": "cs329h-u02-c03-choice-axioms-p03"
+    },
+    {
+     "term": "revealed relation",
+     "definition": "The win relation implied by choices; a cycle refutes the single-utility story.",
+     "anchor": "cs329h-u02-c03-choice-axioms-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c03-choice-axioms-r1",
+     "question": "What does a cycle prove?",
+     "answer": "It refutes the single-utility story: no single ranking explains cyclic choices.",
+     "anchor": "cs329h-u02-c03-choice-axioms-p05"
+    },
+    {
+     "id": "cs329h-u02-c03-choice-axioms-r2",
+     "question": "How can sampling noise fake a cycle?",
+     "answer": "With few comparisons per pair, majority votes cycle by chance; 1-0 records on three pairs cycle with probability 1/4 under pure noise.",
+     "anchor": "cs329h-u02-c03-choice-axioms-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c04-consistency",
+   "title": "cs329h-U02-C04: consistency",
+   "minutes": 3,
+   "endAnchor": "cs329h-u02-c04-consistency-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c04-consistency-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c04-consistency-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "strong stochastic transitivity",
+     "definition": "If A usually beats B and B usually beats C, then A beats C at least as usually.",
+     "anchor": "cs329h-u02-c04-consistency-p03"
+    },
+    {
+     "term": "Bradley-Terry",
+     "definition": "The model giving p_ac = sigma(d_ab + d_bc) with d_ab = logit(p_ab).",
+     "anchor": "cs329h-u02-c04-consistency-p05"
+    },
+    {
+     "term": "logit",
+     "definition": "The inverse of sigma; d_ab = logit(p_ab) turns a probability into a gap.",
+     "anchor": "cs329h-u02-c04-consistency-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c04-consistency-r1",
+     "question": "What inequality must hold under Bradley-Terry?",
+     "answer": "p_ac >= max(p_ab, p_bc) whenever both exceed 0.5. A violation refutes the model.",
+     "anchor": "cs329h-u02-c04-consistency-p05"
+    },
+    {
+     "id": "cs329h-u02-c04-consistency-r2",
+     "question": "What must P_ac be when p_ab = p_bc = 0.7?",
+     "answer": "sigma(1.694) = 0.845.",
+     "anchor": "cs329h-u02-c04-consistency-p06"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c05-iia-conditions",
+   "title": "cs329h-U02-C05: IIA conditions",
+   "minutes": 3,
+   "endAnchor": "cs329h-u02-c05-iia-conditions-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c05-iia-conditions-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c05-iia-conditions-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u02-c05-iia-conditions-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "IIA",
+     "definition": "The ratio of two options' shares never changes when other options come or go.",
+     "anchor": "cs329h-u02-c05-iia-conditions-p01"
+    },
+    {
+     "term": "red bus / blue bus",
+     "definition": "The canonical counterexample: a near-duplicate option breaks IIA under the flat logit.",
+     "anchor": "cs329h-u02-c05-iia-conditions-p11"
+    },
+    {
+     "term": "car:red ratio",
+     "definition": "The 2:1 share ratio the logit preserves when the blue bus arrives.",
+     "anchor": "cs329h-u02-c05-iia-conditions-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c05-iia-conditions-r1",
+     "question": "What does IIA predict when the blue bus arrives?",
+     "answer": "Car 0.50, red 0.25, blue 0.25. Intuition says the car should keep 0.67 and the buses split 0.33.",
+     "anchor": "cs329h-u02-c05-iia-conditions-p06"
+    },
+    {
+     "id": "cs329h-u02-c05-iia-conditions-r2",
+     "question": "When does IIA fail?",
+     "answer": "When the newcomer copies an existing option.",
+     "anchor": "cs329h-u02-c05-iia-conditions-p03"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c06-choice-probabilities",
+   "title": "cs329h-U02-C06: choice probabilities",
+   "minutes": 2,
+   "endAnchor": "cs329h-u02-c06-choice-probabilities-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c06-choice-probabilities-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c06-choice-probabilities-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "choice probabilities",
+     "definition": "Multinomial shares from exponentiated utilities divided by their total.",
+     "anchor": "cs329h-u02-c06-choice-probabilities-p01"
+    },
+    {
+     "term": "partition function",
+     "definition": "The denominator of the softmax; its log is the expected maximum utility.",
+     "anchor": "cs329h-u02-c06-choice-probabilities-p05"
+    },
+    {
+     "term": "expected maximum utility",
+     "definition": "The log of the partition function, used in U05 for the regularized optimum.",
+     "anchor": "cs329h-u02-c06-choice-probabilities-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c06-choice-probabilities-r1",
+     "question": "How do you compute choice probabilities?",
+     "answer": "Exponentiate each utility, then divide by the total.",
+     "anchor": "cs329h-u02-c06-choice-probabilities-p03"
+    },
+    {
+     "id": "cs329h-u02-c06-choice-probabilities-r2",
+     "question": "What goes wrong with miscalibrated utilities?",
+     "answer": "Miscalibrated shares: overconfident u produces extreme shares.",
+     "anchor": "cs329h-u02-c06-choice-probabilities-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c07-factorization",
+   "title": "cs329h-U02-C07: factorization",
+   "minutes": 3,
+   "endAnchor": "cs329h-u02-c07-factorization-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c07-factorization-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c07-factorization-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u02-c07-factorization-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "taste vector",
+     "definition": "A respondent's embedding; the score is its dot product with the item's feature vector.",
+     "anchor": "cs329h-u02-c07-factorization-p03"
+    },
+    {
+     "term": "feature vector",
+     "definition": "An item's embedding in the same space as the taste vectors.",
+     "anchor": "cs329h-u02-c07-factorization-p03"
+    },
+    {
+     "term": "SVD",
+     "definition": "The method that recovers factors up to rotation, with max reconstruction error 0.000 on the toy.",
+     "anchor": "cs329h-u02-c07-factorization-p05"
+    },
+    {
+     "term": "rotation",
+     "definition": "The unidentified transformation of factors; M = R V' is exact up to it.",
+     "anchor": "cs329h-u02-c07-factorization-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c07-factorization-r1",
+     "question": "How does factorization compress the table?",
+     "answer": "20 entries come from 18 free numbers (minus rotation) when M = R V' exactly.",
+     "anchor": "cs329h-u02-c07-factorization-p05"
+    },
+    {
+     "id": "cs329h-u02-c07-factorization-r2",
+     "question": "When does the residual carry real signal?",
+     "answer": "When the rank exceeds d; a block-diagonal preference matrix needs rank equal to the number of blocks.",
+     "anchor": "cs329h-u02-c07-factorization-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c08-respondentitem-embeddings",
+   "title": "cs329h-U02-C08: respondent/item embeddings",
+   "minutes": 3,
+   "endAnchor": "cs329h-u02-c08-respondentitem-embeddings-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c08-respondentitem-embeddings-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c08-respondentitem-embeddings-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "embeddings",
+     "definition": "Positions of people and items on the same map; close means liked.",
+     "anchor": "cs329h-u02-c08-respondentitem-embeddings-p01"
+    },
+    {
+     "term": "cold-start fold-in",
+     "definition": "Triangulating a new person's position from known ratings, then predicting unseen items.",
+     "anchor": "cs329h-u02-c08-respondentitem-embeddings-p05"
+    },
+    {
+     "term": "collinear factors",
+     "definition": "Nearly parallel item factors that leave the position undetermined from two ratings.",
+     "anchor": "cs329h-u02-c08-respondentitem-embeddings-p06"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c08-respondentitem-embeddings-r1",
+     "question": "How do you place a new respondent?",
+     "answer": "Solve min_r sum (m_i - r . v_i)^2 over rated items, then predict unseen items by r . v_i.",
+     "anchor": "cs329h-u02-c08-respondentitem-embeddings-p05"
+    },
+    {
+     "id": "cs329h-u02-c08-respondentitem-embeddings-r2",
+     "question": "Why did the toy fold-in go wild?",
+     "answer": "Items 0 and 1 have nearly collinear factors, so two ratings do not determine the position; the item-4 prediction hit -12.42.",
+     "anchor": "cs329h-u02-c08-respondentitem-embeddings-p06"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c09-preference-heterogeneity",
+   "title": "cs329h-U02-C09: preference heterogeneity",
+   "minutes": 3,
+   "endAnchor": "cs329h-u02-c09-preference-heterogeneity-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c09-preference-heterogeneity-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c09-preference-heterogeneity-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u02-c09-preference-heterogeneity-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "heterogeneity",
+     "definition": "Different camps with different preferences; pooling them produces a middle number nobody holds.",
+     "anchor": "cs329h-u02-c09-preference-heterogeneity-p01"
+    },
+    {
+     "term": "mixture",
+     "definition": "A model of pooled choice as alpha sigma(d_1) + (1-alpha) sigma(d_2).",
+     "anchor": "cs329h-u02-c09-preference-heterogeneity-p01"
+    },
+    {
+     "term": "label switching",
+     "definition": "The failure where EM invents groups that do not exist under weak data.",
+     "anchor": "cs329h-u02-c09-preference-heterogeneity-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c09-preference-heterogeneity-r1",
+     "question": "What does pooling two opposite camps give?",
+     "answer": "0.50 while no individual is near 0.50; the simulation shows pooled 0.48 with groups at 0.88 and 0.08.",
+     "anchor": "cs329h-u02-c09-preference-heterogeneity-p05"
+    },
+    {
+     "id": "cs329h-u02-c09-preference-heterogeneity-r2",
+     "question": "What goes wrong with weak data?",
+     "answer": "EM invents spurious groups; pure noise splits into two 'groups' with enough parameters.",
+     "anchor": "cs329h-u02-c09-preference-heterogeneity-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c10-scale-ambiguity",
+   "title": "cs329h-U02-C10: scale ambiguity",
+   "minutes": 3,
+   "endAnchor": "cs329h-u02-c10-scale-ambiguity-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c10-scale-ambiguity-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c10-scale-ambiguity-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u02-c10-scale-ambiguity-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "scale tradeoff",
+     "definition": "Utility numbers and noise size are two dials with one effect, and only the ratio is real.",
+     "anchor": "cs329h-u02-c10-scale-ambiguity-p01"
+    },
+    {
+     "term": "observationally identical",
+     "definition": "(u, sigma_e) and (c u, c sigma_e) give identical choices since c > 0 preserves order.",
+     "anchor": "cs329h-u02-c10-scale-ambiguity-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c10-scale-ambiguity-r1",
+     "question": "Why are (u,1) and (2u,2) identical?",
+     "answer": "argmax_i (c u_i + c e_i) = argmax_i (u_i + e_i) since c > 0 preserves order.",
+     "anchor": "cs329h-u02-c10-scale-ambiguity-p05"
+    },
+    {
+     "id": "cs329h-u02-c10-scale-ambiguity-r2",
+     "question": "What is meaningless across fitted models?",
+     "answer": "Comparing utilities from models with different implicit scales; group A 'caring more' may just be less noise.",
+     "anchor": "cs329h-u02-c10-scale-ambiguity-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c11-estimation-assumptions",
+   "title": "cs329h-U02-C11: estimation assumptions",
+   "minutes": 3,
+   "endAnchor": "cs329h-u02-c11-estimation-assumptions-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c11-estimation-assumptions-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c11-estimation-assumptions-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "IID records",
+     "definition": "Independent identically distributed comparison records, the first clause of the estimator contract.",
+     "anchor": "cs329h-u02-c11-estimation-assumptions-p03"
+    },
+    {
+     "term": "low rank",
+     "definition": "The factor-model clause that the score matrix has low rank.",
+     "anchor": "cs329h-u02-c11-estimation-assumptions-p03"
+    },
+    {
+     "term": "connected comparison graph",
+     "definition": "The clause requiring every item to link to the rest through comparisons.",
+     "anchor": "cs329h-u02-c11-estimation-assumptions-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c11-estimation-assumptions-r1",
+     "question": "What are the estimator's clauses?",
+     "answer": "IID records, correct noise family, connected comparison graph, fixed scale, and low rank for factors.",
+     "anchor": "cs329h-u02-c11-estimation-assumptions-p03"
+    },
+    {
+     "id": "cs329h-u02-c11-estimation-assumptions-r2",
+     "question": "Why can the checklist mislead with tiny n?",
+     "answer": "Every check passes vacuously; 10 records pass all checks and still mislead.",
+     "anchor": "cs329h-u02-c11-estimation-assumptions-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u02-c12-counterexamples",
+   "title": "cs329h-U02-C12: counterexamples",
+   "minutes": 3,
+   "endAnchor": "cs329h-u02-c12-counterexamples-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u02-c12-counterexamples-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u02-c12-counterexamples-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u02-c12-counterexamples-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "counterexamples",
+     "definition": "The guardrails: cycles break scores, clones break IIA, groups break pooling, scale breaks interpretation.",
+     "anchor": "cs329h-u02-c12-counterexamples-p01"
+    },
+    {
+     "term": "nested logit",
+     "definition": "The repair that restores the car's 0.67 share against IIA's 0.50.",
+     "anchor": "cs329h-u02-c12-counterexamples-p04"
+    },
+    {
+     "term": "repairs",
+     "definition": "The fixes: nested logit for clones, mixtures for groups, fixed scale for interpretation.",
+     "anchor": "cs329h-u02-c12-counterexamples-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u02-c12-counterexamples-r1",
+     "question": "What four breakages does the battery cover?",
+     "answer": "Cycles break scores, clones break IIA, groups break pooling, scale breaks interpretation.",
+     "anchor": "cs329h-u02-c12-counterexamples-p03"
+    },
+    {
+     "id": "cs329h-u02-c12-counterexamples-r2",
+     "question": "What needs both repairs at once?",
+     "answer": "Real data mixing breakages, like cycles plus heterogeneity together.",
+     "anchor": "cs329h-u02-c12-counterexamples-p11"
+    }
+   ]
+  }
+ ]
+}

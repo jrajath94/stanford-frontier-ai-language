@@ -135,36 +135,43 @@
       <h1>Interview · U03 keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-key-u03">Interview key , U03</h1>
+<span id="interview-key-u03-end" data-end></span>
 <h2 id="b1">B1</h2>
-<p>Minimum: nodes hold values, edges carry flow, forward visits parents
+<p id="b1-p01" data-kind="example" data-term="O(edges)">Minimum: nodes hold values, edges carry flow, forward visits parents
 before children, backward visits children before parents. Strong:
 states the O(edges) cost of each pass. Red flag: &ldquo;topological order
 is just sorting&rdquo;. Rubric: 2. Remediation: C01.</p>
+<span id="b1-end" data-end></span>
 <h2 id="b2">B2</h2>
-<p>Minimum: sum scales with B, mean does not, switching mid-training
+<p id="b2-p01" data-kind="example" data-term="scales with B">Minimum: sum scales with B, mean does not, switching mid-training
 rescales steps by B. Strong: connects to lr scaling rules. Red flag:
 &ldquo;they are the same&rdquo;. Rubric: 2. Remediation: C02.</p>
+<span id="b2-end" data-end></span>
 <h2 id="b3">B3</h2>
-<p>Minimum: exp overflows to inf, inf/inf = nan, subtract the max, the
+<p id="b3-p01" data-kind="example" data-term="inf/inf">Minimum: exp overflows to inf, inf/inf = nan, subtract the max, the
 shift cancels in the fraction. Strong: proves the identity. Red flag:
 &ldquo;use float64 instead&rdquo; as the only fix. Rubric: 2. Remediation: C03.</p>
+<span id="b3-end" data-end></span>
 <h2 id="b4">B4</h2>
-<p>Minimum: scatter-add: the repeated row gets the sum of its incoming
+<p id="b4-p01" data-kind="example" data-term="scatter-add">Minimum: scatter-add: the repeated row gets the sum of its incoming
 gradients, other rows get zero. Strong: names np.add.at and the
 last-wins trap. Red flag: &ldquo;each occurrence updates separately&rdquo;.
 Rubric: 2. Remediation: C04.</p>
+<span id="b4-end" data-end></span>
 <h2 id="b5">B5</h2>
-<p>Minimum: dz/dx = dz/dy @ dy/dx with shapes (1,m)x(m,n), reverse mode
+<p id="b5-p01" data-kind="example" data-term="(1,m)x(m,n)">Minimum: dz/dx = dz/dy @ dy/dx with shapes (1,m)x(m,n), reverse mode
 multiplies vector-Jacobian products and never materializes the (m,n)
 matrix. Strong: quantifies the memory saving. Red flag: shape
 mismatch in the product. Rubric: 2. Remediation: C05.</p>
+<span id="b5-end" data-end></span>
 <h2 id="b6">B6</h2>
-<p>Minimum: the labels are not linearly separable, the ReLU hidden layer
+<p id="b6-p01" data-kind="example" data-term="not linearly separable">Minimum: the labels are not linearly separable, the ReLU hidden layer
 folds the space so the output layer can separate. Strong: cites the
 computed gap (1.0 vs 0.5 accuracy). Red flag: &ldquo;more parameters&rdquo;.
 Rubric: 2. Remediation: C06.</p>
+<span id="b6-end" data-end></span>
 <h2 id="d1-ladder">D1 ladder</h2>
-<p>D1.1 Forward: a = x + y, f = a z. Backward: df = 1, multiply by
+<p id="d1-ladder-p01" data-kind="example" data-term="df/dx = 4">D1.1 Forward: a = x + y, f = a z. Backward: df = 1, multiply by
 local derivatives in reverse.
 D1.2 df/dx = 4, df/dy = 4, df/dz = 5.
 D1.3 VJP: v^T W for y = Wx, cost O(m + n) memory vs O(mn) for the
@@ -175,8 +182,9 @@ B = 1 the shapes coincide and the bug hides.
 D1.5 Training: reverse-mode (one backward pass for 10M params).
 One-time check: finite differences on a tiny slice, or forward-mode
 if the tooling exists. Never finite-difference 10M params.</p>
+<span id="d1-ladder-end" data-end></span>
 <h2 id="d2-ladder">D2 ladder</h2>
-<p>D2.1 State (stack, buffer, arcs), SHIFT, LEFT-ARC, RIGHT-ARC.
+<p id="d2-ladder-p01" data-kind="example" data-term="2n actions">D2.1 State (stack, buffer, arcs), SHIFT, LEFT-ARC, RIGHT-ARC.
 D2.2 SHIFT, SHIFT, LEFT-ARC, SHIFT, LEFT-ARC, RIGHT-ARC(root), arcs
 (1,0), (2,1), (-1,2).
 D2.3 Each word is shifted once and popped once: at most 2n actions,
@@ -189,37 +197,43 @@ D2.5 Flaw: locally optimal actions need not compose into the
 globally optimal tree (garden-path). Experiment: greedy vs beam
 decoding over the same classifier, the gap concentrates on
 garden-path sentences.</p>
+<span id="d2-ladder-end" data-end></span>
 <h2 id="q1">Q1</h2>
-<p>Shifted: (-2,-1,0), exp (0.1353, 0.3679, 1.0), sum 1.5032,
+<p id="q1-p01" data-kind="example" data-term="1.5032">Shifted: (-2,-1,0), exp (0.1353, 0.3679, 1.0), sum 1.5032,
 p = (0.090, 0.245, 0.665). dL/dz = p - onehot(2) = (0.090, 0.245,
 -0.335). Strong answer shows the shift and the sum-to-zero check
 (0.090 + 0.245 - 0.335 = 0).</p>
+<span id="q1-end" data-end></span>
 <h2 id="q2">Q2</h2>
-<p>Central differences: 2 x 8192 = 16384 forward passes per check.
+<p id="q2-p01" data-kind="example" data-term="16384">Central differences: 2 x 8192 = 16384 forward passes per check.
 Instead: derive the analytic backward once, check it with finite
 differences on a tiny shape (e.g. 3x2) a single time, then trust the
 pattern. Never check at full size in the loop.</p>
+<span id="q2-end" data-end></span>
 <h2 id="i1">I1</h2>
-<p>Bug: <code>dE[ids] = grad_out</code> uses fancy-index assignment, which
+<p id="i1-p01" data-kind="example" data-term="fancy-index">Bug: <code>dE[ids] = grad_out</code> uses fancy-index assignment, which
 overwrites on repeated ids (last gradient wins) instead of
 accumulating. On batches without repeats it looks right, with a
 repeat it silently drops all but one gradient. Fix: <code>np.add.at(dE,
 ids, grad_out)</code>. Red flag: &ldquo;it works, the shapes match&rdquo;. Rubric: 2.
 Remediation: C04, C11.</p>
+<span id="i1-end" data-end></span>
 <h2 id="s1">S1</h2>
-<p>Arc-standard&rsquo;s projectivity is structural, not a parameter: no
+<p id="s1-p01" data-kind="example" data-term="SWAP">Arc-standard&rsquo;s projectivity is structural, not a parameter: no
 retraining fixes it. Smallest change: add a SWAP action (swap-based
 transition system handles crossing arcs) or switch to graph-based
 parsing with a maximum spanning tree decoder. The objective and
 features can stay.</p>
+<span id="s1-end" data-end></span>
 <h2 id="s2">S2</h2>
-<p>The first run takes 8x smaller steps than tuned (sum over 256 vs
+<p id="s2-p01" data-kind="example" data-term="8x smaller">The first run takes 8x smaller steps than tuned (sum over 256 vs
 mean over 32 differ by 256/32 = 8), so training crawls. Fix: scale
 the learning rate by 8 (linear scaling as the starting point) or
 keep sum reduction and divide explicitly. Verify by matching the
 first-epoch loss curve.</p>
+<span id="s2-end" data-end></span>
 <h2 id="r1">R1</h2>
-<p>Confound: the new parser sees gold POS tags at test time, the
+<p id="r1-p01" data-kind="example" data-term="tag quality">Confound: the new parser sees gold POS tags at test time, the
 baseline sees predicted tags, the comparison measures tag quality,
 not parsing. Fair comparison: both use predicted tags (the realistic
 setting), or both use gold tags (to isolate the parser). Report both.</p>
@@ -227,7 +241,8 @@ setting), or both use gold tags (to isolate the parser). Report both.</p>
       <nav class="pager"><a href="../labs/u13_lab.html"><span class="lbl">← Previous</span>Lab 13 · Interpretability and social impacts</a><a href="../labs/u13_lab_key.html"><span class="lbl">Next →</span>Lab 13 · Keys</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="r1-p02" data-kind="prose" data-term="predicted tags">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="r1-end" data-end></span>
     </footer>
   </main>
 </div>

@@ -1,0 +1,773 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs329h-lessons-u07_lesson",
+ "itemKind": "lesson",
+ "revision": "fcc20bc0d9603e89585e1e2f5fc397592ed9767aa5ef0ea9c0eae0a5ba34e472",
+ "sections": [
+  {
+   "anchor": "u07_lesson-intro",
+   "title": "U07 \u00b7 Acquisition, Thompson sampling, and dueling bandits",
+   "minutes": 1,
+   "endAnchor": "u07_lesson-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "P07 (statistical estimation)",
+     "definition": "Statistical estimation prerequisite for U07, covering estimators used in bandits.",
+     "anchor": "u07_lesson-intro-p01"
+    },
+    {
+     "term": "P17 (RL)",
+     "definition": "Reinforcement learning prerequisite for U07, covering bandits and policies.",
+     "anchor": "u07_lesson-intro-p01"
+    },
+    {
+     "term": "P18 (Bayesian)",
+     "definition": "Bayesian prerequisite for U07, covering posteriors and sampling.",
+     "anchor": "u07_lesson-intro-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u07_lesson-intro-r1",
+     "question": "What background does U07 assume?",
+     "answer": "P07 statistical estimation, P17 RL, and P18 Bayesian. Local remediation opens the lesson.",
+     "anchor": "u07_lesson-intro-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "provenance",
+   "title": "Provenance",
+   "minutes": 1,
+   "endAnchor": "provenance-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "S12",
+     "definition": "The planned session 'Acquisition functions and Thompson sampling' from 2 Nov 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "S13",
+     "definition": "The planned session 'Dueling bandits and preferential Bayesian optimization' from 4 Nov 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "planned / source attribution pending",
+     "definition": "All twelve concepts are taught as independent theory, not yet verified against a source.",
+     "anchor": "provenance-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "provenance-r1",
+     "question": "What is the status of sessions S12 and S13?",
+     "answer": "Both are planned, for 2 Nov and 4 Nov 2026. All twelve concepts are taught as independent theory.",
+     "anchor": "provenance-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-posterior-sampling-acquisition-functions-dueling-feedback",
+   "title": "Local remediation: posterior sampling, acquisition functions, dueling feedback",
+   "minutes": 1,
+   "endAnchor": "local-remediation-posterior-sampling-acquisition-functions-dueling-feedback-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "posterior sampling",
+     "definition": "Sample theta from the posterior, then act optimally for the sample.",
+     "anchor": "local-remediation-posterior-sampling-acquisition-functions-dueling-feedback-p01"
+    },
+    {
+     "term": "acquisition functions",
+     "definition": "Score each candidate query by expected usefulness; UCB, EI, and PI are examples.",
+     "anchor": "local-remediation-posterior-sampling-acquisition-functions-dueling-feedback-p02"
+    },
+    {
+     "term": "dueling feedback",
+     "definition": "Observe only which of two arms wins, never a numeric reward.",
+     "anchor": "local-remediation-posterior-sampling-acquisition-functions-dueling-feedback-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "local-remediation-posterior-sampling-acquisition-functions-dueling-feedback-r1",
+     "question": "What is probability matching?",
+     "answer": "P(action) = P(action is optimal); uncertainty becomes exploration with no tuning knob.",
+     "anchor": "local-remediation-posterior-sampling-acquisition-functions-dueling-feedback-p01"
+    },
+    {
+     "id": "local-remediation-posterior-sampling-acquisition-functions-dueling-feedback-r2",
+     "question": "How much information is in one duel?",
+     "answer": "One bit.",
+     "anchor": "local-remediation-posterior-sampling-acquisition-functions-dueling-feedback-p03"
+    }
+   ]
+  },
+  {
+   "anchor": "russian-doll-ladder-for-the-major-mechanism-thompson-sampling",
+   "title": "Russian-doll ladder for the major mechanism (Thompson sampling)",
+   "minutes": 1,
+   "endAnchor": "russian-doll-ladder-for-the-major-mechanism-thompson-sampling-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "probability matching",
+     "definition": "Uncertain arms are sampled in proportion to their chance of being best.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-thompson-sampling-list01"
+    },
+    {
+     "term": "Beta-Bernoulli update",
+     "definition": "The implemented update; run T = 300, seed 23.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-thompson-sampling-list01"
+    },
+    {
+     "term": "sublinear",
+     "definition": "Cumulative regret grows sublinearly; the best arm dominates pulls late.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-thompson-sampling-list01"
+    },
+    {
+     "term": "non-stationary arms",
+     "definition": "The counterexample where the posterior concentrates on stale history.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-thompson-sampling-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-thompson-sampling-r1",
+     "question": "What does shell 6 predict?",
+     "answer": "Prior Beta(10,10) gives slower learning.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-thompson-sampling-list01"
+    },
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-thompson-sampling-r2",
+     "question": "What does TS need in production?",
+     "answer": "A posterior that samples fast.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-thompson-sampling-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood-dependency-list",
+   "title": "Not-yet-understood dependency list",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-dependency-list-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "information-directed sampling",
+     "definition": "Beyond TS here.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "Gaussian process internals",
+     "definition": "Used at the interface level for preferential BO.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "regret proofs",
+     "definition": "Statements, not proofs.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "not-yet-understood-dependency-list-r1",
+     "question": "What is stated but not proved?",
+     "answer": "Regret proofs: statements, not proofs.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c01-posterior-sampling",
+   "title": "cs329h-U07-C01: posterior sampling",
+   "minutes": 2,
+   "endAnchor": "cs329h-u07-c01-posterior-sampling-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c01-posterior-sampling-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c01-posterior-sampling-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u07-c01-posterior-sampling-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "Thompson sampling",
+     "definition": "Sample a world from the posterior, then act as if the sample were true.",
+     "anchor": "cs329h-u07-c01-posterior-sampling-p01"
+    },
+    {
+     "term": "probability matching",
+     "definition": "P(pull a) = P(a is optimal | data); no epsilon to tune.",
+     "anchor": "cs329h-u07-c01-posterior-sampling-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c01-posterior-sampling-r1",
+     "question": "How often does TS pull arm 1 on the toy?",
+     "answer": "About 0.850, the posterior probability that arm 1 is best.",
+     "anchor": "cs329h-u07-c01-posterior-sampling-p06"
+    },
+    {
+     "id": "cs329h-u07-c01-posterior-sampling-r2",
+     "question": "When does TS fail?",
+     "answer": "With a misspecified posterior; TS confidently pulls a bad arm.",
+     "anchor": "cs329h-u07-c01-posterior-sampling-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c02-explorationexploitation",
+   "title": "cs329h-U07-C02: exploration/exploitation",
+   "minutes": 2,
+   "endAnchor": "cs329h-u07-c02-explorationexploitation-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c02-explorationexploitation-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c02-explorationexploitation-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u07-c02-explorationexploitation-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "tradeoff",
+     "definition": "Every pull both earns and teaches; good policies earn while they learn.",
+     "anchor": "cs329h-u07-c02-explorationexploitation-p01"
+    },
+    {
+     "term": "sublinearly",
+     "definition": "TS regret grows sublinearly; greedy grows linearly.",
+     "anchor": "cs329h-u07-c02-explorationexploitation-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c02-explorationexploitation-r1",
+     "question": "What are the regrets on the toy?",
+     "answer": "TS 4.0, epsilon-greedy 5.2, greedy 89.6.",
+     "anchor": "cs329h-u07-c02-explorationexploitation-p06"
+    },
+    {
+     "id": "cs329h-u07-c02-explorationexploitation-r2",
+     "question": "Why report seed variation?",
+     "answer": "Greedy can win on a lucky seed; the ordering may not replicate.",
+     "anchor": "cs329h-u07-c02-explorationexploitation-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c03-acquisition-functions",
+   "title": "cs329h-U07-C03: acquisition functions",
+   "minutes": 3,
+   "endAnchor": "cs329h-u07-c03-acquisition-functions-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c03-acquisition-functions-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c03-acquisition-functions-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u07-c03-acquisition-functions-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "acquisition function",
+     "definition": "Turns the posterior into a shopping list.",
+     "anchor": "cs329h-u07-c03-acquisition-functions-p03"
+    },
+    {
+     "term": "UCB",
+     "definition": "Optimistic: mu + k*sd.",
+     "anchor": "cs329h-u07-c03-acquisition-functions-p01"
+    },
+    {
+     "term": "EI",
+     "definition": "The expected gain over the best so far, with a closed form under Gaussian posteriors.",
+     "anchor": "cs329h-u07-c03-acquisition-functions-p01"
+    },
+    {
+     "term": "PI",
+     "definition": "The chance of any gain.",
+     "anchor": "cs329h-u07-c03-acquisition-functions-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c03-acquisition-functions-r1",
+     "question": "What are the toy scores?",
+     "answer": "UCB(k=2): 1.40, 1.90, 2.10. EI: 0.201, 0.153, 0.130. PI: 0.977, 0.421, 0.266.",
+     "anchor": "cs329h-u07-c03-acquisition-functions-p06"
+    },
+    {
+     "id": "cs329h-u07-c03-acquisition-functions-r2",
+     "question": "When do the scores misrank?",
+     "answer": "When the Gaussian posterior is wrong; heavy-tailed truth makes UCB with small k under-explore.",
+     "anchor": "cs329h-u07-c03-acquisition-functions-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c04-regret-assumptions",
+   "title": "cs329h-U07-C04: regret assumptions",
+   "minutes": 2,
+   "endAnchor": "cs329h-u07-c04-regret-assumptions-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c04-regret-assumptions-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c04-regret-assumptions-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u07-c04-regret-assumptions-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "regret bounds",
+     "definition": "Promises under assumptions: stationary rewards, bounded noise, a well-specified model.",
+     "anchor": "cs329h-u07-c04-regret-assumptions-p01"
+    },
+    {
+     "term": "sqrt(T) rate",
+     "definition": "Average regret per round goes to zero: the policy learns.",
+     "anchor": "cs329h-u07-c04-regret-assumptions-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c04-regret-assumptions-r1",
+     "question": "What voids the promise?",
+     "answer": "Breaking an assumption; non-stationarity voids the fixed-best-arm bound.",
+     "anchor": "cs329h-u07-c04-regret-assumptions-p11"
+    },
+    {
+     "id": "cs329h-u07-c04-regret-assumptions-r2",
+     "question": "What are the rates at T = 1000?",
+     "answer": "sqrt curve 31.6, linear curve 1000; the rates, not the constants, are the point.",
+     "anchor": "cs329h-u07-c04-regret-assumptions-p06"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c05-pairwise-feedback",
+   "title": "cs329h-U07-C05: pairwise feedback",
+   "minutes": 2,
+   "endAnchor": "cs329h-u07-c05-pairwise-feedback-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c05-pairwise-feedback-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c05-pairwise-feedback-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u07-c05-pairwise-feedback-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "dueling feedback",
+     "definition": "A pairwise comparison, not a number; one bit per duel.",
+     "anchor": "cs329h-u07-c05-pairwise-feedback-p01"
+    },
+    {
+     "term": "duel",
+     "definition": "The query; the winner is the answer.",
+     "anchor": "cs329h-u07-c05-pairwise-feedback-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c05-pairwise-feedback-r1",
+     "question": "What are the toy win probabilities?",
+     "answer": "P(arm1 beats arm2) = 0.599, P(arm1 beats arm4) = 0.846.",
+     "anchor": "cs329h-u07-c05-pairwise-feedback-p06"
+    },
+    {
+     "id": "cs329h-u07-c05-pairwise-feedback-r2",
+     "question": "What breaks BT on duels?",
+     "answer": "Intransitive strengths; BT forces transitivity and cannot fit cycles.",
+     "anchor": "cs329h-u07-c05-pairwise-feedback-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c06-winner-probability",
+   "title": "cs329h-U07-C06: winner probability",
+   "minutes": 2,
+   "endAnchor": "cs329h-u07-c06-winner-probability-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c06-winner-probability-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c06-winner-probability-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u07-c06-winner-probability-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "winner probability",
+     "definition": "P(i beats j) = E[sigma(s_i - s_j)], averaged over the posterior.",
+     "anchor": "cs329h-u07-c06-winner-probability-p03"
+    },
+    {
+     "term": "Jensen",
+     "definition": "E[sigma(gap)] != sigma(E[gap]); uncertainty widens probabilities toward 0.5.",
+     "anchor": "cs329h-u07-c06-winner-probability-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c06-winner-probability-r1",
+     "question": "Plug-in versus averaged on the toy?",
+     "answer": "P(1 beats 2): 0.599 plug-in, 0.5930 averaged. P(1 beats 4): 0.846 plug-in, 0.8360 averaged.",
+     "anchor": "cs329h-u07-c06-winner-probability-p06"
+    },
+    {
+     "id": "cs329h-u07-c06-winner-probability-r2",
+     "question": "When is the average confidently wrong?",
+     "answer": "When the posterior misses the true strength entirely, e.g. centered at the wrong sign.",
+     "anchor": "cs329h-u07-c06-winner-probability-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c07-dueling-bandit",
+   "title": "cs329h-U07-C07: dueling bandit",
+   "minutes": 2,
+   "endAnchor": "cs329h-u07-c07-dueling-bandit-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c07-dueling-bandit-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c07-dueling-bandit-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u07-c07-dueling-bandit-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "dueling bandit",
+     "definition": "Chooses a pair per round and observes the winner.",
+     "anchor": "cs329h-u07-c07-dueling-bandit-p01"
+    },
+    {
+     "term": "Copeland winner",
+     "definition": "The arm that beats the most others.",
+     "anchor": "cs329h-u07-c07-dueling-bandit-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c07-dueling-bandit-r1",
+     "question": "What are the Copeland scores?",
+     "answer": "0.718, 0.603, 0.452, 0.226; winner arm 1.",
+     "anchor": "cs329h-u07-c07-dueling-bandit-p06"
+    },
+    {
+     "id": "cs329h-u07-c07-dueling-bandit-r2",
+     "question": "When is 'the best arm' ill-defined?",
+     "answer": "With no Condorcet winner; Copeland still ranks but cycles make the best arm ill-defined.",
+     "anchor": "cs329h-u07-c07-dueling-bandit-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c08-preferential-bayesian-optimization",
+   "title": "cs329h-U07-C08: preferential Bayesian optimization",
+   "minutes": 2,
+   "endAnchor": "cs329h-u07-c08-preferential-bayesian-optimization-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c08-preferential-bayesian-optimization-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c08-preferential-bayesian-optimization-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u07-c08-preferential-bayesian-optimization-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "preferential BO",
+     "definition": "Fit a surrogate to pairwise comparisons, pick the next duel by acquisition, repeat.",
+     "anchor": "cs329h-u07-c08-preferential-bayesian-optimization-p01"
+    },
+    {
+     "term": "surrogate",
+     "definition": "Learns the shape from the pairs.",
+     "anchor": "cs329h-u07-c08-preferential-bayesian-optimization-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c08-preferential-bayesian-optimization-r1",
+     "question": "What is the loop?",
+     "answer": "(1) update pair posteriors, (2) pick leader vs challenger, (3) observe winner, (4) repeat.",
+     "anchor": "cs329h-u07-c08-preferential-bayesian-optimization-p05"
+    },
+    {
+     "id": "cs329h-u07-c08-preferential-bayesian-optimization-r2",
+     "question": "How far does best-so-far get?",
+     "answer": "From -19.600 to -1.600 against a true optimum of 0.0.",
+     "anchor": "cs329h-u07-c08-preferential-bayesian-optimization-p06"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c09-noisy-utility",
+   "title": "cs329h-U07-C09: noisy utility",
+   "minutes": 2,
+   "endAnchor": "cs329h-u07-c09-noisy-utility-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c09-noisy-utility-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c09-noisy-utility-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "noisy utility",
+     "definition": "U_i = u_i + eps_i; the winner is the argmax of noisy utilities.",
+     "anchor": "cs329h-u07-c09-noisy-utility-p03"
+    },
+    {
+     "term": "noise floor",
+     "definition": "Bounds learning: no policy identifies the best arm faster than the noise allows.",
+     "anchor": "cs329h-u07-c09-noisy-utility-p05"
+    },
+    {
+     "term": "irreducible error",
+     "definition": "Even the true best arm loses sometimes.",
+     "anchor": "cs329h-u07-c09-noisy-utility-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c09-noisy-utility-r1",
+     "question": "Gap 0.4: single duel versus majority of 9?",
+     "answer": "0.599 versus 0.731.",
+     "anchor": "cs329h-u07-c09-noisy-utility-p06"
+    },
+    {
+     "id": "cs329h-u07-c09-noisy-utility-r2",
+     "question": "When does 1/sqrt(n) averaging break?",
+     "answer": "When noise is not IID; later duels noisier makes the majority vote mislead.",
+     "anchor": "cs329h-u07-c09-noisy-utility-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c10-stopping",
+   "title": "cs329h-U07-C10: stopping",
+   "minutes": 2,
+   "endAnchor": "cs329h-u07-c10-stopping-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c10-stopping-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c10-stopping-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "stopping rule",
+     "definition": "Converts uncertainty into a decision: stop when confident enough or the budget runs out.",
+     "anchor": "cs329h-u07-c10-stopping-p01"
+    },
+    {
+     "term": "rule A",
+     "definition": "Controls the error rate.",
+     "anchor": "cs329h-u07-c10-stopping-p04"
+    },
+    {
+     "term": "rule B",
+     "definition": "Controls the cost; without it a misspecified model can query forever.",
+     "anchor": "cs329h-u07-c10-stopping-p04"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c10-stopping-r1",
+     "question": "When does P(arm1 winner) cross 0.95?",
+     "answer": "At round 43 on the toy; budget 300 never binds.",
+     "anchor": "cs329h-u07-c10-stopping-p06"
+    },
+    {
+     "id": "cs329h-u07-c10-stopping-r2",
+     "question": "What stops too early?",
+     "answer": "A miscalibrated posterior with the wrong winner.",
+     "anchor": "cs329h-u07-c10-stopping-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c11-compute-budget",
+   "title": "cs329h-U07-C11: compute budget",
+   "minutes": 2,
+   "endAnchor": "cs329h-u07-c11-compute-budget-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c11-compute-budget-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c11-compute-budget-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "compute budget",
+     "definition": "Decides the algorithm: cheap posteriors allow TS, expensive ones force UCB-on-a-surrogate or random.",
+     "anchor": "cs329h-u07-c11-compute-budget-p03"
+    },
+    {
+     "term": "n^3 refit",
+     "definition": "Why practical preferential BO refits lazily or uses sparse approximations.",
+     "anchor": "cs329h-u07-c11-compute-budget-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c11-compute-budget-r1",
+     "question": "GP refit versus Beta TS cost?",
+     "answer": "200^3 = 8,000,000 flops versus order k = 4 operations per round.",
+     "anchor": "cs329h-u07-c11-compute-budget-p06"
+    },
+    {
+     "id": "cs329h-u07-c11-compute-budget-r2",
+     "question": "What voids the theory for cheap methods?",
+     "answer": "Approximations like sparse GPs that undercover; TS then under-explores.",
+     "anchor": "cs329h-u07-c11-compute-budget-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u07-c12-experimental-comparison",
+   "title": "cs329h-U07-C12: experimental comparison",
+   "minutes": 2,
+   "endAnchor": "cs329h-u07-c12-experimental-comparison-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u07-c12-experimental-comparison-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u07-c12-experimental-comparison-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "fair comparison",
+     "definition": "Fixes the world, varies only the policy, multiplies seeds, reports regret with uncertainty.",
+     "anchor": "cs329h-u07-c12-experimental-comparison-p01"
+    },
+    {
+     "term": "preregistered metric",
+     "definition": "Part of the checklist, with negative-result reporting.",
+     "anchor": "cs329h-u07-c12-experimental-comparison-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u07-c12-experimental-comparison-r1",
+     "question": "What is the CI arithmetic?",
+     "answer": "With 20 seeds, se = sd/sqrt(20); TS mean 12.3 sd 4.0 gives CI [10.5, 14.1].",
+     "anchor": "cs329h-u07-c12-experimental-comparison-p06"
+    },
+    {
+     "id": "cs329h-u07-c12-experimental-comparison-r2",
+     "question": "What voids the comparison?",
+     "answer": "Policies seeing different worlds, e.g. TS getting easy seeds.",
+     "anchor": "cs329h-u07-c12-experimental-comparison-p11"
+    }
+   ]
+  }
+ ]
+}

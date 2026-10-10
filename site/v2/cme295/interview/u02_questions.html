@@ -98,12 +98,13 @@
       <h1>Interview · U02 questions</h1>
       <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u02-interview-bank-questions">U02 interview bank , questions</h1>
-<p>Closed-book. Answer keys are in <code>u02_key.md</code>. Do not open the key before
+<p id="u02-interview-bank-questions-p01" data-kind="keyIdea" data-reveal="rise" data-term="closed-book">Closed-book. Answer keys are in <code>u02_key.md</code>. Do not open the key before
 attempting. Quotas per major lesson: 6 breadth, 2 deep ladders of 5
 follow-ups, 2 analytical exercises, 1 implementation/debug task, 2
 changed-constraint scenarios, 1 research-critique question.</p>
+<span id="u02-interview-bank-questions-end" data-end></span>
 <h2 id="breadth-6">Breadth (6)</h2>
-<p>B1. What is shared across heads in MQA, and what stays private?
+<p id="breadth-6-p01" data-kind="exercise" data-term="MQA">B1. What is shared across heads in MQA, and what stays private?
 B2. Write the RoPE rotation for one pair and state the relative
 property in one line.
 B3. Why does the attention score divide by sqrt(d_k)?
@@ -112,8 +113,9 @@ change?
 B5. Contrast learned absolute positions with sinusoidal positions on
 extrapolation.
 B6. Name the three transformer layouts and the mask each uses.</p>
+<span id="breadth-6-end" data-end></span>
 <h2 id="deep-ladders-2-x-5">Deep ladders (2 x 5)</h2>
-<p>L1. RoPE mechanics.
+<p id="deep-ladders-2-x-5-p01" data-kind="exercise" data-term="rotation angle">L1. RoPE mechanics.
 - L1.1 Define the per-pair rotation angle.
 - L1.2 Toy: rotate (1, 0) by 1.0 rad.
 - L1.3 Prove (R(mt)q) . (R(nt)k) depends only on n - m.
@@ -122,7 +124,7 @@ B6. Name the three transformer layouts and the mask each uses.</p>
 - L1.5 Compare RoPE with ALiBi, debug a model that collapses past
   trained length, critique &ldquo;RoPE extrapolates&rdquo;, propose the
   base-size sweep experiment.</p>
-<p>L2. KV cache economics.
+<p id="deep-ladders-2-x-5-p02" data-kind="exercise" data-term="prefill/decode split">L2. KV cache economics.
 - L2.1 Define the per-layer cache content and shape.
 - L2.2 Toy: cache bytes for 32 layers, 1 KV head, d_k = 128,
   T = 2048, fp16.
@@ -132,30 +134,34 @@ B6. Name the three transformer layouts and the mask each uses.</p>
 - L2.5 Compare MHA/GQA/MQA caches, debug a serving OOM at long
   context, critique &ldquo;more heads is always better&rdquo;, propose the
   cache-vs-recompute crossover measurement.</p>
+<span id="deep-ladders-2-x-5-end" data-end></span>
 <h2 id="analytical-exercises-2">Analytical exercises (2)</h2>
-<p>E1. A model has 24 layers, d = 1024, h = 16, T = 4096. Compute the
+<p id="analytical-exercises-2-p01" data-kind="exercise" data-term="attention FLOPs">E1. A model has 24 layers, d = 1024, h = 16, T = 4096. Compute the
 attention score FLOPs per layer (QK^T + AV) and the fp16 memory of
 the scores for B = 1. At what T do the score FLOPs equal the
 projection FLOPs (T d^2 per layer, counting QKVO as 4 projections)?
 E2. GQA with G = 4 on a 32-layer model, d_k = 128, T = 8192, fp16.
 Compute the cache in GiB. If the GPU has 40 GB and weights take
 14 GB, does the cache fit for B = 1? For B = 4?</p>
+<span id="analytical-exercises-2-end" data-end></span>
 <h2 id="implementationdebug-task-1">Implementation/debug task (1)</h2>
-<p>D1. A GQA conversion (mean-pool KV heads, no continued training)
+<p id="implementationdebug-task-1-p01" data-kind="exercise" data-term="GQA conversion">D1. A GQA conversion (mean-pool KV heads, no continued training)
 shows a 5-point benchmark drop. You may inspect the conversion code,
 the cache math, and eval logs. List the ordered checks, the most
 likely culprit, and the fix. Then write the two asserts that guard
 the conversion.</p>
+<span id="implementationdebug-task-1-end" data-end></span>
 <h2 id="changed-constraint-scenarios-2">Changed-constraint scenarios (2)</h2>
-<p>S1. Context must reach 128k tokens but the RoPE base was tuned for
+<p id="changed-constraint-scenarios-2-p01" data-kind="exercise" data-term="RoPE base">S1. Context must reach 128k tokens but the RoPE base was tuned for
 4k. Name two fixes, the assumption each breaks, and how you detect
 success (one metric each).
 S2. Training budget allows MHA but serving budget allows only
 32 MiB of KV cache at T = 2048 (32 layers, d_k = 128, fp16).
 Which attention variant fits? Show the arithmetic. What quality
 risk do you accept, and how do you monitor it?</p>
+<span id="changed-constraint-scenarios-2-end" data-end></span>
 <h2 id="research-critique-question-1">Research-critique question (1)</h2>
-<p>R1. &ldquo;Linear attention is strictly better than softmax attention
+<p id="research-critique-question-1-p01" data-kind="exercise" data-term="linear attention">R1. &ldquo;Linear attention is strictly better than softmax attention
 because it is O(T d^2).&rdquo; Present the strongest version of this
 claim, then the variance counterexample, then design an experiment
 that finds the feature count m where quality matches exact
@@ -164,7 +170,8 @@ attention on one task. State the falsification condition.</p>
       <nav class="pager"><a href="../interview/u01_key.html"><span class="lbl">← Previous</span>Interview · U01 keys</a><a href="../interview/u02_key.html"><span class="lbl">Next →</span>Interview · U02 keys</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-question-1-p02" data-kind="exercise" data-term="variance counterexample">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-question-1-end" data-end></span>
     </footer>
   </main>
 </div>

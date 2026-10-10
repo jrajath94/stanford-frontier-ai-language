@@ -1,0 +1,622 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-lessons-u14_multimodality_guest",
+ "itemKind": "lesson",
+ "revision": "5685ff7a7aeb22ef9f11a7de417af641e14fe384c33d2dd89e74f07faf7962c4",
+ "sections": [
+  {
+   "anchor": "u14_multimodality_guest-intro-p01",
+   "title": "U14 \u00b7 Multimodality and guest research",
+   "minutes": 1,
+   "endAnchor": "u14_multimodality_guest-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u14_multimodality_guest-intro-p01",
+     "definition": "Instructor.",
+     "term": "Prof. Christopher Manning"
+    },
+    {
+     "anchor": "u14_multimodality_guest-intro-p01",
+     "definition": "Build date of the unit\u2019s figures.",
+     "term": "2026-10-06"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u14_multimodality_guest-intro-p01",
+     "answer": "U14 \u00b7 Multimodality and guest research.",
+     "id": "u14_multimodality_guest-intro-r1",
+     "question": "What unit is this?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation",
+   "title": "local remediation",
+   "minutes": 1,
+   "endAnchor": "local-remediation-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "The meeting point has a price.",
+     "term": "R1"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Balanced routing keeps every expert useful.",
+     "term": "R2"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Images eat the window first.",
+     "term": "R3"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-p02",
+     "answer": "Late fusion adds 5.03e7 params (d=1024, L=24); early fusion adds 0.",
+     "id": "local-remediation-r1",
+     "question": "What is R1?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-imagetext-representation",
+   "title": "c01: image/text representation",
+   "minutes": 3,
+   "endAnchor": "c01-imagetext-representation-end",
+   "blocks": [
+    {
+     "anchor": "c01-imagetext-representation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-imagetext-representation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-imagetext-representation-p04",
+     "definition": "Pixels in, tokens out. After translation the transformer cannot tell which tokens came from eyes.",
+     "term": "The vision encoder is a translator"
+    },
+    {
+     "anchor": "c01-imagetext-representation-p12",
+     "definition": "Small text blurs past reading at 16x16.",
+     "term": "the resolution trade"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-imagetext-representation-p07",
+     "answer": "224x224, 16x16 patches: 196 patch tokens.",
+     "id": "c01-imagetext-representation-r1",
+     "question": "What was the toy patchify?"
+    },
+    {
+     "anchor": "c01-imagetext-representation-p12",
+     "answer": "Small text in the image blurs past reading at 16x16.",
+     "id": "c01-imagetext-representation-r2",
+     "question": "What is the grid failure?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-earlylate-fusion",
+   "title": "c02: early/late fusion",
+   "minutes": 2,
+   "endAnchor": "c02-earlylate-fusion-end",
+   "blocks": [
+    {
+     "anchor": "c02-earlylate-fusion-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-earlylate-fusion-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-earlylate-fusion-p04",
+     "definition": "0 extra params.",
+     "term": "Early fusion is one room"
+    },
+    {
+     "anchor": "c02-earlylate-fusion-p04",
+     "definition": "Separate towers joined by projections: 5.03e7 extra params.",
+     "term": "Late fusion is two rooms with a door"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-earlylate-fusion-p07",
+     "answer": "Early 0 vs late 5.03e7 (d=1024, L=24). 0.7% of 7B.",
+     "id": "c02-earlylate-fusion-r1",
+     "question": "What was the toy param gap?"
+    },
+    {
+     "anchor": "c02-earlylate-fusion-p12",
+     "answer": "Image tokens bloat every layer\u2019s attention to n^2.",
+     "id": "c02-earlylate-fusion-r2",
+     "question": "When is early fusion not cheaper?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-mixed-modal-tokens",
+   "title": "c03: mixed-modal tokens",
+   "minutes": 2,
+   "endAnchor": "c03-mixed-modal-tokens-end",
+   "blocks": [
+    {
+     "anchor": "c03-mixed-modal-tokens-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-mixed-modal-tokens-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-mixed-modal-tokens-p04",
+     "definition": "Image tokens then text, or interleaved.",
+     "term": "The stream is a mixed tape"
+    },
+    {
+     "anchor": "c03-mixed-modal-tokens-p12",
+     "definition": "Text before image in a causal model: the question cannot see the image.",
+     "term": "Order is architecture"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-mixed-modal-tokens-p07",
+     "answer": "256 image + 512 text = 768, image share 0.333.",
+     "id": "c03-mixed-modal-tokens-r1",
+     "question": "What was the toy stream?"
+    },
+    {
+     "anchor": "c03-mixed-modal-tokens-p06",
+     "answer": "Image first in a causal model so the text can attend to it.",
+     "id": "c03-mixed-modal-tokens-r2",
+     "question": "What is the ordering rule?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-joint-generation",
+   "title": "c04: joint generation",
+   "minutes": 2,
+   "endAnchor": "c04-joint-generation-end",
+   "blocks": [
+    {
+     "anchor": "c04-joint-generation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-joint-generation-p17",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-joint-generation-p04",
+     "definition": "Text engine writes, image engine draws: agreement is the hard part.",
+     "term": "two craftsmen sharing a shop"
+    },
+    {
+     "anchor": "c04-joint-generation-p09",
+     "definition": "128 text tokens at cost 1 plus 20 diffusion steps at cost 8.",
+     "term": "288"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-joint-generation-p07",
+     "answer": "128 + 160 = 288. The image costs more than the text.",
+     "id": "c04-joint-generation-r1",
+     "question": "What was the toy joint cost?"
+    },
+    {
+     "anchor": "c04-joint-generation-p13",
+     "answer": "Caption says \u201cred car\u201d, the image shows blue.",
+     "id": "c04-joint-generation-r2",
+     "question": "What is the agreement failure?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-diffusionautoregressive-mix",
+   "title": "c05: diffusion/autoregressive mix",
+   "minutes": 2,
+   "endAnchor": "c05-diffusionautoregressive-mix-end",
+   "blocks": [
+    {
+     "anchor": "c05-diffusionautoregressive-mix-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-diffusionautoregressive-mix-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-diffusionautoregressive-mix-p04",
+     "definition": "Stories need order.",
+     "term": "Autoregression tells a story"
+    },
+    {
+     "anchor": "c05-diffusionautoregressive-mix-p04",
+     "definition": "Pictures need global coherence.",
+     "term": "Diffusion is sculpting"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-diffusionautoregressive-mix-p03",
+     "answer": "Text has a natural order; images do not.",
+     "id": "c05-diffusionautoregressive-mix-r1",
+     "question": "Why does the paradigm follow the data?"
+    },
+    {
+     "anchor": "c05-diffusionautoregressive-mix-p06",
+     "answer": "AR text conditions the diffusion: the prompt guides the sculpting.",
+     "id": "c05-diffusionautoregressive-mix-r2",
+     "question": "What is the interface?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-sparse-modality-experts",
+   "title": "c06: sparse modality experts",
+   "minutes": 2,
+   "endAnchor": "c06-sparse-modality-experts-end",
+   "blocks": [
+    {
+     "anchor": "c06-sparse-modality-experts-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-sparse-modality-experts-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-sparse-modality-experts-p04",
+     "definition": "Image tokens to image experts, text to text experts.",
+     "term": "Experts are specialists, the router is the receptionist"
+    },
+    {
+     "anchor": "c06-sparse-modality-experts-p12",
+     "definition": "Aux weight 0: one expert takes all.",
+     "term": "the aux loss is load-bearing"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-sparse-modality-experts-p07",
+     "answer": "8 experts, loads [3,2,3,2,3,2,2,3], aux loss 1.04.",
+     "id": "c06-sparse-modality-experts-r1",
+     "question": "What was the toy routing?"
+    },
+    {
+     "anchor": "c06-sparse-modality-experts-p12",
+     "answer": "Aux weight 0: one expert takes all.",
+     "id": "c06-sparse-modality-experts-r2",
+     "question": "What is the collapse rule?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-multimodal-retrieval",
+   "title": "c07: multimodal retrieval",
+   "minutes": 2,
+   "endAnchor": "c07-multimodal-retrieval-end",
+   "blocks": [
+    {
+     "anchor": "c07-multimodal-retrieval-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-multimodal-retrieval-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-multimodal-retrieval-p03",
+     "definition": "Embed text and images into one space, score by similarity.",
+     "term": "The joint space is the meeting room"
+    },
+    {
+     "anchor": "c07-multimodal-retrieval-p04",
+     "definition": "Fused = w image + (1-w) text.",
+     "term": "the weight w dials which sense leads"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-multimodal-retrieval-p07",
+     "answer": "Text 0.72, image 0.41: w=0.5 gives 0.565.",
+     "id": "c07-multimodal-retrieval-r1",
+     "question": "What was the toy fusion?"
+    },
+    {
+     "anchor": "c07-multimodal-retrieval-p11",
+     "answer": "When images have captions: cheaper.",
+     "id": "c07-multimodal-retrieval-r2",
+     "question": "When use captions instead?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-instruction-tuning",
+   "title": "c08: instruction tuning",
+   "minutes": 2,
+   "endAnchor": "c08-instruction-tuning-end",
+   "blocks": [
+    {
+     "anchor": "c08-instruction-tuning-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-instruction-tuning-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-instruction-tuning-p04",
+     "definition": "The format teaches the behavior; the vision encoder learns what the questions need.",
+     "term": "Instruction tuning is the same school, new students"
+    },
+    {
+     "anchor": "c08-instruction-tuning-p12",
+     "definition": "Test with image-ablated inputs.",
+     "term": "the language prior"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-instruction-tuning-p07",
+     "answer": "10k triples, loss falls, VQA accuracy rises 0.12.",
+     "id": "c08-instruction-tuning-r1",
+     "question": "What was the toy tuning?"
+    },
+    {
+     "anchor": "c08-instruction-tuning-p12",
+     "answer": "The model answers from text alone, ignoring the image.",
+     "id": "c08-instruction-tuning-r2",
+     "question": "What is the prior trap?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-reward-evaluation",
+   "title": "c09: reward evaluation",
+   "minutes": 2,
+   "endAnchor": "c09-reward-evaluation-end",
+   "blocks": [
+    {
+     "anchor": "c09-reward-evaluation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-reward-evaluation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-reward-evaluation-p04",
+     "definition": "The judge must see the image too.",
+     "term": "A blind judge grades text, not the pair"
+    },
+    {
+     "anchor": "c09-reward-evaluation-p07",
+     "definition": "The blind judge is worse.",
+     "term": "kappa 0.55 with image, 0.31 without"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-reward-evaluation-p07",
+     "answer": "Kappa 0.55 with image, 0.31 without.",
+     "id": "c09-reward-evaluation-r1",
+     "question": "What was the toy judge result?"
+    },
+    {
+     "anchor": "c09-reward-evaluation-p12",
+     "answer": "The judge sees the same image as the model: match resolutions and crops.",
+     "id": "c09-reward-evaluation-r2",
+     "question": "What is the input-matching rule?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-guest-tinkerlora-artifacts",
+   "title": "c10: guest tinker/lora artifacts",
+   "minutes": 2,
+   "endAnchor": "c10-guest-tinkerlora-artifacts-end",
+   "blocks": [
+    {
+     "anchor": "c10-guest-tinkerlora-artifacts-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-guest-tinkerlora-artifacts-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-guest-tinkerlora-artifacts-p04",
+     "definition": "Say what it points at (unknown) and how you would verify it.",
+     "term": "A title is a pointer to work you have not seen"
+    },
+    {
+     "anchor": "c10-guest-tinkerlora-artifacts-p09",
+     "definition": "Content: not inspected, claims: none.",
+     "term": "the no-claim rule"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-guest-tinkerlora-artifacts-p05",
+     "answer": "Label, source (the inventory), inspection status (none), claims (none).",
+     "id": "c10-guest-tinkerlora-artifacts-r1",
+     "question": "What is the card?"
+    },
+    {
+     "anchor": "c10-guest-tinkerlora-artifacts-p12",
+     "answer": "\u201cTinker means the product\u201d: the label could be a codename, a demo, or a typo.",
+     "id": "c10-guest-tinkerlora-artifacts-r2",
+     "question": "What is the codename trap?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-distinguish-actual-talk-content",
+   "title": "c11: distinguish actual talk content",
+   "minutes": 2,
+   "endAnchor": "c11-distinguish-actual-talk-content-end",
+   "blocks": [
+    {
+     "anchor": "c11-distinguish-actual-talk-content-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-distinguish-actual-talk-content-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-distinguish-actual-talk-content-p04",
+     "definition": "Class (a) travels anywhere, (b) with its title stamp, (c) does not travel.",
+     "term": "Claims have passports"
+    },
+    {
+     "anchor": "c11-distinguish-actual-talk-content-p06",
+     "definition": "When in doubt about a talk claim, demote the class.",
+     "term": "Demote on doubt"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-distinguish-actual-talk-content-p03",
+     "answer": "Inspected artifact, schedule title, hearsay.",
+     "id": "c11-distinguish-actual-talk-content-r1",
+     "question": "What are the three classes?"
+    },
+    {
+     "anchor": "c11-distinguish-actual-talk-content-p12",
+     "answer": "Tentative schedules change: the title is a plan, not a transcript.",
+     "id": "c11-distinguish-actual-talk-content-r2",
+     "question": "What is the title-as-talk trap?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-source-gaps",
+   "title": "c12: source gaps",
+   "minutes": 2,
+   "endAnchor": "c12-source-gaps-end",
+   "blocks": [
+    {
+     "anchor": "c12-source-gaps-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-source-gaps-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-source-gaps-p04",
+     "definition": "Every open item names what would close it.",
+     "term": "The gap ledger is the course\u2019s honesty file"
+    },
+    {
+     "anchor": "c12-source-gaps-p06",
+     "definition": "No row closes without the artifact.",
+     "term": "the closure rule"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-source-gaps-p03",
+     "answer": "S20 talk content, Tinker/LoRA artifacts, C01-C09 mechanisms.",
+     "id": "c12-source-gaps-r1",
+     "question": "What are the U14 open rows?"
+    },
+    {
+     "anchor": "c12-source-gaps-p06",
+     "answer": "The named artifact is inspected.",
+     "id": "c12-source-gaps-r2",
+     "question": "What closes a row?"
+    }
+   ]
+  },
+  {
+   "anchor": "unit-visual-map",
+   "title": "unit visual map",
+   "minutes": 1,
+   "endAnchor": "unit-visual-map-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "Early 0 vs late 5.03e7 params.",
+     "term": "fusion plate"
+    },
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "Routing aux loss 1.04.",
+     "term": "routing plate"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "unit-visual-map-end",
+     "answer": "Fusion plate, routing plate, 12-leaves plate.",
+     "id": "unit-visual-map-r1",
+     "question": "What three figures does the unit carry?"
+    }
+   ]
+  }
+ ]
+}

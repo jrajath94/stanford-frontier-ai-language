@@ -1,0 +1,773 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs329h-lessons-u05_lesson",
+ "itemKind": "lesson",
+ "revision": "bff12d36d058149b0d4c8417649ae6db765bf43a13dc5f0669fda9a807eb7530",
+ "sections": [
+  {
+   "anchor": "u05_lesson-intro",
+   "title": "U05 \u00b7 RLHF and DPO",
+   "minutes": 1,
+   "endAnchor": "u05_lesson-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "P08 (information theory)",
+     "definition": "Information theory prerequisite for U05, covering KL divergence used in the leash.",
+     "anchor": "u05_lesson-intro-p01"
+    },
+    {
+     "term": "P17 (RL)",
+     "definition": "Reinforcement learning prerequisite for U05, covering policies and expected reward.",
+     "anchor": "u05_lesson-intro-p01"
+    },
+    {
+     "term": "P18 (Bayesian)",
+     "definition": "Bayesian prerequisite for U05, covering priors and posteriors.",
+     "anchor": "u05_lesson-intro-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u05_lesson-intro-r1",
+     "question": "What background does U05 assume?",
+     "answer": "P08 information theory, P17 RL, and P18 Bayesian. Local remediation opens the lesson.",
+     "anchor": "u05_lesson-intro-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "provenance",
+   "title": "Provenance",
+   "minutes": 1,
+   "endAnchor": "provenance-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "S08",
+     "definition": "The planned session 'Reinforcement learning from human feedback' from 19 Oct 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "S09",
+     "definition": "The planned session 'Direct preference optimization' from 21 Oct 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "planned / source attribution pending",
+     "definition": "All twelve concepts are taught as independent theory, not yet verified against a source.",
+     "anchor": "provenance-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "provenance-r1",
+     "question": "What is the status of sessions S08 and S09?",
+     "answer": "Both are planned, for 19 Oct and 21 Oct 2026. All twelve concepts are taught as independent theory.",
+     "anchor": "provenance-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-kl-policy-gradients-and-the-dpo-reparameterization",
+   "title": "Local remediation: KL, policy gradients, and the DPO reparameterization",
+   "minutes": 1,
+   "endAnchor": "local-remediation-kl-policy-gradients-and-the-dpo-reparameterization-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "KL divergence",
+     "definition": "KL(pi || pi_ref) = sum_y pi(y) log(pi(y)/pi_ref(y)); it penalizes mass where the reference puts little.",
+     "anchor": "local-remediation-kl-policy-gradients-and-the-dpo-reparameterization-p01"
+    },
+    {
+     "term": "policy gradient",
+     "definition": "To increase expected reward, move probability mass toward high-reward outputs, with the KL penalty keeping the move small.",
+     "anchor": "local-remediation-kl-policy-gradients-and-the-dpo-reparameterization-p02"
+    },
+    {
+     "term": "DPO reparameterization",
+     "definition": "The KL-constrained optimum gives r(y) = beta log(pi(y)/pi_ref(y)) + const; the constant cancels in the Bradley-Terry likelihood.",
+     "anchor": "local-remediation-kl-policy-gradients-and-the-dpo-reparameterization-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "local-remediation-kl-policy-gradients-and-the-dpo-reparameterization-r1",
+     "question": "What does the DPO reparameterization achieve?",
+     "answer": "The reward model disappears; what remains is a logistic loss directly on the policy's log-ratios.",
+     "anchor": "local-remediation-kl-policy-gradients-and-the-dpo-reparameterization-p03"
+    },
+    {
+     "id": "local-remediation-kl-policy-gradients-and-the-dpo-reparameterization-r2",
+     "question": "What does the KL penalty do?",
+     "answer": "It penalizes putting mass where the reference puts little.",
+     "anchor": "local-remediation-kl-policy-gradients-and-the-dpo-reparameterization-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum",
+   "title": "Russian-doll ladder for the major mechanism (KL-constrained optimum)",
+   "minutes": 1,
+   "endAnchor": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "beta",
+     "definition": "The price of deviating from the reference.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum-list01"
+    },
+    {
+     "term": "Lagrange multipliers",
+     "definition": "The derivation method for the closed form in shell 4.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum-list01"
+    },
+    {
+     "term": "hacking",
+     "definition": "Corrupting the reward; the proxy climbs while the truth peaks and falls.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum-list01"
+    },
+    {
+     "term": "off-policy data",
+     "definition": "Breaks the optimum's validity.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum-list01"
+    },
+    {
+     "term": "PPO",
+     "definition": "Online, with a separate reward model.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum-list01"
+    },
+    {
+     "term": "DPO",
+     "definition": "Offline, with an implicit reward.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum-r1",
+     "question": "What does shell 5 check?",
+     "answer": "Beta -> infinity recovers the reference; beta -> 0 goes greedy.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum-list01"
+    },
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum-r2",
+     "question": "What is beta in production?",
+     "answer": "The stakeholder's dial between capability and safety.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-kl-constrained-optimum-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood-dependency-list",
+   "title": "Not-yet-understood dependency list",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-dependency-list-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "PPO internals",
+     "definition": "Clipping and GAE, compared at the objective level, not re-derived.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "transformer training systems",
+     "definition": "Out of scope; the policy is an abstract distribution here.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "human data collection at scale",
+     "definition": "Covered conceptually in U01-C10, not operationally.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "not-yet-understood-dependency-list-r1",
+     "question": "Where is human data collection covered?",
+     "answer": "Conceptually in U01-C10, not operationally.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c01-preference-data",
+   "title": "cs329h-U05-C01: preference data",
+   "minutes": 2,
+   "endAnchor": "cs329h-u05-c01-preference-data-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c01-preference-data-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c01-preference-data-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "preference dataset",
+     "definition": "RLHF pairs (x, y_w, y_l): two responses to the same prompt with a winner.",
+     "anchor": "cs329h-u05-c01-preference-data-p01"
+    },
+    {
+     "term": "(x, y_w, y_l)",
+     "definition": "The schema: prompt, winning response, losing response.",
+     "anchor": "cs329h-u05-c01-preference-data-p04"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c01-preference-data-r1",
+     "question": "Why pair on x?",
+     "answer": "Pairing on x removes prompt difficulty as a confound; the comparison is purely about response quality given x.",
+     "anchor": "cs329h-u05-c01-preference-data-p05"
+    },
+    {
+     "id": "cs329h-u05-c01-preference-data-r2",
+     "question": "What must the reward model learn on the toy?",
+     "answer": "Margin r(y_w) - r(y_l) > 0 for x = 'Explain tides'.",
+     "anchor": "cs329h-u05-c01-preference-data-p06"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c02-reward-model",
+   "title": "cs329h-U05-C02: reward model",
+   "minutes": 3,
+   "endAnchor": "cs329h-u05-c02-reward-model-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c02-reward-model-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c02-reward-model-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u05-c02-reward-model-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "reward model",
+     "definition": "A Bradley-Terry score r(x, y) for responses; training pushes the winner's score above the loser's.",
+     "anchor": "cs329h-u05-c02-reward-model-p01"
+    },
+    {
+     "term": "margin",
+     "definition": "r(y_w) - r(y_l); margin 1.5 gives loss 0.201.",
+     "anchor": "cs329h-u05-c02-reward-model-p02"
+    },
+    {
+     "term": "proxy",
+     "definition": "It fits the training pairs but may misjudge off-distribution responses.",
+     "anchor": "cs329h-u05-c02-reward-model-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c02-reward-model-r1",
+     "question": "What are the losses at margins 1.5, 0, -1.5?",
+     "answer": "0.201, 0.693, 1.701.",
+     "anchor": "cs329h-u05-c02-reward-model-p06"
+    },
+    {
+     "id": "cs329h-u05-c02-reward-model-r2",
+     "question": "Why is the reward model a proxy?",
+     "answer": "It fits the training pairs but may misjudge off-distribution responses.",
+     "anchor": "cs329h-u05-c02-reward-model-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c03-policy-objective",
+   "title": "cs329h-U05-C03: policy objective",
+   "minutes": 2,
+   "endAnchor": "cs329h-u05-c03-policy-objective-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c03-policy-objective-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c03-policy-objective-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "expected reward",
+     "definition": "The objective: put probability where the reward is high.",
+     "anchor": "cs329h-u05-c03-policy-objective-p03"
+    },
+    {
+     "term": "degenerate",
+     "definition": "The unconstrained maximizer: all mass on argmax r.",
+     "anchor": "cs329h-u05-c03-policy-objective-p05"
+    },
+    {
+     "term": "reward hacking",
+     "definition": "The policy finds high-reward outputs that humans would reject; the objective is misspecified, not misoptimized.",
+     "anchor": "cs329h-u05-c03-policy-objective-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c03-policy-objective-r1",
+     "question": "What does the unconstrained optimum do?",
+     "answer": "Puts 1.0 on the first response for rewards [2, 1, 0], expected reward 2.0.",
+     "anchor": "cs329h-u05-c03-policy-objective-p06"
+    },
+    {
+     "id": "cs329h-u05-c03-policy-objective-r2",
+     "question": "Why does the KL leash exist?",
+     "answer": "The unconstrained maximizer is degenerate: all mass on argmax r.",
+     "anchor": "cs329h-u05-c03-policy-objective-p05"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c04-kl-regularization",
+   "title": "cs329h-U05-C04: KL regularization",
+   "minutes": 3,
+   "endAnchor": "cs329h-u05-c04-kl-regularization-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c04-kl-regularization-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c04-kl-regularization-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u05-c04-kl-regularization-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "beta",
+     "definition": "The price of deviating from the reference.",
+     "anchor": "cs329h-u05-c04-kl-regularization-p02"
+    },
+    {
+     "term": "reward-KL frontier",
+     "definition": "Traced by the optimum: beta 0.2 gives (KL 1.06, reward 1.99).",
+     "anchor": "cs329h-u05-c04-kl-regularization-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c04-kl-regularization-r1",
+     "question": "What are the frontier endpoints?",
+     "answer": "Beta 0.2: (KL 1.06, reward 1.99). Beta 20: (KL 0.00, reward 1.03).",
+     "anchor": "cs329h-u05-c04-kl-regularization-p05"
+    },
+    {
+     "id": "cs329h-u05-c04-kl-regularization-r2",
+     "question": "What does too-small beta risk?",
+     "answer": "The policy drifts into regions where the reward model is wrong.",
+     "anchor": "cs329h-u05-c04-kl-regularization-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c05-regularized-optimum",
+   "title": "cs329h-U05-C05: regularized optimum",
+   "minutes": 3,
+   "endAnchor": "cs329h-u05-c05-regularized-optimum-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c05-regularized-optimum-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c05-regularized-optimum-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u05-c05-regularized-optimum-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "closed-form optimum",
+     "definition": "pi(y) proportional to pi_ref(y) exp(r(y)/beta).",
+     "anchor": "cs329h-u05-c05-regularized-optimum-p01"
+    },
+    {
+     "term": "Lagrange",
+     "definition": "The derivation method for the closed form.",
+     "anchor": "cs329h-u05-c05-regularized-optimum-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c05-regularized-optimum-r1",
+     "question": "What does beta 5 versus beta 0.5 give?",
+     "answer": "[0.40, 0.33, 0.27] versus [0.87, 0.12, 0.02].",
+     "anchor": "cs329h-u05-c05-regularized-optimum-p06"
+    },
+    {
+     "id": "cs329h-u05-c05-regularized-optimum-r2",
+     "question": "When is the 'optimum' exactly wrong?",
+     "answer": "With a hacked reward; the formula confidently recommends the exploit.",
+     "anchor": "cs329h-u05-c05-regularized-optimum-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c06-reference-distribution",
+   "title": "cs329h-U05-C06: reference distribution",
+   "minutes": 2,
+   "endAnchor": "cs329h-u05-c06-reference-distribution-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c06-reference-distribution-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c06-reference-distribution-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "reference",
+     "definition": "Home base: the model we trust; the KL penalty measures drift from it.",
+     "anchor": "cs329h-u05-c06-reference-distribution-p01"
+    },
+    {
+     "term": "pi_ref",
+     "definition": "Everything in C04-C05 is relative to it: the frontier, the tilt, the beta price.",
+     "anchor": "cs329h-u05-c06-reference-distribution-p04"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c06-reference-distribution-r1",
+     "question": "What happens with a uniform reference at beta 20?",
+     "answer": "The policy is near [0.37, 0.33, 0.30]; it barely moves from uniform.",
+     "anchor": "cs329h-u05-c06-reference-distribution-p06"
+    },
+    {
+     "id": "cs329h-u05-c06-reference-distribution-r2",
+     "question": "How can the reference cap the policy?",
+     "answer": "A weak reference pulls toward mediocrity; RLHF cannot exceed the reference by much at fixed beta.",
+     "anchor": "cs329h-u05-c06-reference-distribution-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c07-dpo-relation",
+   "title": "cs329h-U05-C07: DPO relation",
+   "minutes": 3,
+   "endAnchor": "cs329h-u05-c07-dpo-relation-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c07-dpo-relation-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c07-dpo-relation-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u05-c07-dpo-relation-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "implicit reward",
+     "definition": "Beta times the log-ratio of policy to reference, read off the policy itself.",
+     "anchor": "cs329h-u05-c07-dpo-relation-p03"
+    },
+    {
+     "term": "DPO loss",
+     "definition": "The logistic loss after the constants cancel; the reward model never appears.",
+     "anchor": "cs329h-u05-c07-dpo-relation-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c07-dpo-relation-r1",
+     "question": "What is the DPO loss at margin 2.0, beta 0.5?",
+     "answer": "-log sigma(1.0) = 0.313.",
+     "anchor": "cs329h-u05-c07-dpo-relation-p06"
+    },
+    {
+     "id": "cs329h-u05-c07-dpo-relation-r2",
+     "question": "What is off-policy staleness?",
+     "answer": "Pairs collected under older policies; DPO on stale pairs can lower the true objective while the loss falls.",
+     "anchor": "cs329h-u05-c07-dpo-relation-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c08-ppo-comparison",
+   "title": "cs329h-U05-C08: PPO comparison",
+   "minutes": 3,
+   "endAnchor": "cs329h-u05-c08-ppo-comparison-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c08-ppo-comparison-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c08-ppo-comparison-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u05-c08-ppo-comparison-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "PPO",
+     "definition": "Learns a reward model, then explores with it online; it can discover.",
+     "anchor": "cs329h-u05-c08-ppo-comparison-p01"
+    },
+    {
+     "term": "DPO",
+     "definition": "Skips the middleman and fits the policy to the pairs directly; it can only distill.",
+     "anchor": "cs329h-u05-c08-ppo-comparison-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c08-ppo-comparison-r1",
+     "question": "How do PPO and DPO differ?",
+     "answer": "Objective (surrogate vs logistic), reward model (separate vs implicit), sampling (online vs offline), KL control (penalty+clip vs beta), stability (touchy vs supervised-like).",
+     "anchor": "cs329h-u05-c08-ppo-comparison-p05"
+    },
+    {
+     "id": "cs329h-u05-c08-ppo-comparison-r2",
+     "question": "Where do both methods target?",
+     "answer": "The same closed-form optimum: beta 0.5 gives [0.87, 0.12, 0.02]; they differ in how they get there.",
+     "anchor": "cs329h-u05-c08-ppo-comparison-p06"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c09-feedback-bias",
+   "title": "cs329h-U05-C09: feedback bias",
+   "minutes": 2,
+   "endAnchor": "cs329h-u05-c09-feedback-bias-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c09-feedback-bias-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c09-feedback-bias-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "feedback bias",
+     "definition": "A thumb on the scale: position, length, sycophancy, or politeness push choices without reflecting true quality.",
+     "anchor": "cs329h-u05-c09-feedback-bias-p01"
+    },
+    {
+     "term": "0.62 utils",
+     "definition": "The apparent gap from a bias-only win rate of 0.65.",
+     "anchor": "cs329h-u05-c09-feedback-bias-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c09-feedback-bias-r1",
+     "question": "How does bias enter the reward?",
+     "answer": "The reward absorbs b into r; if longer answers win 65% regardless of quality, the model learns 'longer is better'.",
+     "anchor": "cs329h-u05-c09-feedback-bias-p05"
+    },
+    {
+     "id": "cs329h-u05-c09-feedback-bias-r2",
+     "question": "What doubles the bias?",
+     "answer": "Debiasing with the wrong b sign.",
+     "anchor": "cs329h-u05-c09-feedback-bias-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c10-reward-hacking",
+   "title": "cs329h-U05-C10: reward hacking",
+   "minutes": 3,
+   "endAnchor": "cs329h-u05-c10-reward-hacking-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c10-reward-hacking-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c10-reward-hacking-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u05-c10-reward-hacking-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "reward hacking",
+     "definition": "Optimization finds the proxy's blind spots: outputs that score high and disappoint humans.",
+     "anchor": "cs329h-u05-c10-reward-hacking-p01"
+    },
+    {
+     "term": "Goodhart",
+     "definition": "When a measure becomes a target, it stops being a good measure.",
+     "anchor": "cs329h-u05-c10-reward-hacking-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c10-reward-hacking-r1",
+     "question": "What does the toy show?",
+     "answer": "True reward peaks at step 12 (0.62) while the proxy climbs to step 50 (true -5.0, proxy 5.0).",
+     "anchor": "cs329h-u05-c10-reward-hacking-p06"
+    },
+    {
+     "id": "cs329h-u05-c10-reward-hacking-r2",
+     "question": "Can the monitor be hacked?",
+     "answer": "Yes, if it becomes the target; e.g. training against the eval set directly.",
+     "anchor": "cs329h-u05-c10-reward-hacking-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c11-off-policy-limits",
+   "title": "cs329h-U05-C11: off-policy limits",
+   "minutes": 3,
+   "endAnchor": "cs329h-u05-c11-off-policy-limits-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c11-off-policy-limits-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c11-off-policy-limits-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "stale data",
+     "definition": "A photograph of the past; the DPO identity assumes the optimum form, which degrades off-policy.",
+     "anchor": "cs329h-u05-c11-off-policy-limits-p01"
+    },
+    {
+     "term": "importance weights",
+     "definition": "pi/pi_old, correcting the mismatch in principle but with huge variance.",
+     "anchor": "cs329h-u05-c11-off-policy-limits-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c11-off-policy-limits-r1",
+     "question": "Why is the toy pair uninformative?",
+     "answer": "pi puts 0.9 on y_w already; DPO still pushes the margin, wasting gradient on a decided contest.",
+     "anchor": "cs329h-u05-c11-off-policy-limits-p06"
+    },
+    {
+     "id": "cs329h-u05-c11-off-policy-limits-r2",
+     "question": "When is fresh data worse?",
+     "answer": "If the reward is hacked; on-policy optimization into the exploit beats stale offline data.",
+     "anchor": "cs329h-u05-c11-off-policy-limits-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u05-c12-human-disagreement",
+   "title": "cs329h-U05-C12: human disagreement",
+   "minutes": 3,
+   "endAnchor": "cs329h-u05-c12-human-disagreement-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u05-c12-human-disagreement-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u05-c12-human-disagreement-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u05-c12-human-disagreement-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "disagreement",
+     "definition": "Two sources: noise (annotators err) and genuine taste differences.",
+     "anchor": "cs329h-u05-c12-human-disagreement-p01"
+    },
+    {
+     "term": "majority vote",
+     "definition": "A compromise, not the truth.",
+     "anchor": "cs329h-u05-c12-human-disagreement-p03"
+    },
+    {
+     "term": "shared bias",
+     "definition": "Makes annotators agree on the wrong answer, for example 90% agreement on a length-biased verdict.",
+     "anchor": "cs329h-u05-c12-human-disagreement-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u05-c12-human-disagreement-r1",
+     "question": "What are the agreement numbers?",
+     "answer": "0.86, 0.90, 0.86, 0.88, 0.81; mean pairwise agreement 0.80.",
+     "anchor": "cs329h-u05-c12-human-disagreement-p06"
+    },
+    {
+     "id": "cs329h-u05-c12-human-disagreement-r2",
+     "question": "When is disagreement genuine?",
+     "answer": "When it exceeds the noise model; fit per-group preferences instead of one.",
+     "anchor": "cs329h-u05-c12-human-disagreement-p05"
+    }
+   ]
+  }
+ ]
+}

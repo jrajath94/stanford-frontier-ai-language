@@ -135,9 +135,10 @@
       <h1>Interview · U03 questions</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-bank-u03-neural-fundamentals-and-dependency-parsing">Interview bank , U03 Neural fundamentals and dependency parsing</h1>
-<p>Test mode: answer closed-book before opening <code>interview/u03_key.md</code>.</p>
+<p id="interview-bank-u03-neural-fundamentals-and-dependency-parsing-p01" data-kind="keyIdea" data-reveal="rise" data-term="test mode">Test mode: answer closed-book before opening <code>interview/u03_key.md</code>.</p>
+<span id="interview-bank-u03-neural-fundamentals-and-dependency-parsing-end" data-end></span>
 <h2 id="breadth-b1-b6">Breadth (B1-B6)</h2>
-<p>B1. Define a computational graph and state what topological order
+<p id="breadth-b1-b6-p01" data-kind="exercise" data-term="computational graph">B1. Define a computational graph and state what topological order
 guarantees for the forward and backward passes.
 B2. Contrast sum and mean loss reduction: what changes in the
 gradient, and what breaks if you switch mid-training?
@@ -149,8 +150,9 @@ B5. Write the vector chain rule and explain why reverse mode never
 forms the full Jacobian.
 B6. Why can a 2-layer ReLU net solve the toy task while a linear
 model sits at 0.5 accuracy?</p>
+<span id="breadth-b1-b6-end" data-end></span>
 <h2 id="deep-ladder-1-from-graph-to-gradients-d11-d15">Deep ladder 1 , from graph to gradients (D1.1-D1.5)</h2>
-<p>D1.1 Define forward and backward on f = (x + y) x z.
+<p id="deep-ladder-1-from-graph-to-gradients-d11-d15-p01" data-kind="exercise" data-term="forward and backward">D1.1 Define forward and backward on f = (x + y) x z.
 D1.2 Toy: compute df/dx, df/dy, df/dz at (2, 3, 4).
 D1.3 Derive the vector-Jacobian product for y = Wx and its memory
 saving over the full Jacobian.
@@ -159,47 +161,53 @@ when B &gt; 1. Diagnose.
 D1.5 Compare reverse-mode, forward-mode, and finite differences on a
 model with 10M parameters and 1 output. Which do you use for
 training, and which for a one-time check?</p>
+<span id="deep-ladder-1-from-graph-to-gradients-d11-d15-end" data-end></span>
 <h2 id="deep-ladder-2-parsing-as-classification-d21-d25">Deep ladder 2 , parsing as classification (D2.1-D2.5)</h2>
-<p>D2.1 Define the parser state and the three actions.
+<p id="deep-ladder-2-parsing-as-classification-d21-d25-p01" data-kind="exercise" data-term="parser state">D2.1 Define the parser state and the three actions.
 D2.2 Toy: replay the 6 actions on &ldquo;the cat sat&rdquo; and list the arcs.
 D2.3 Derive why arc-standard parsing is O(n) time.
 D2.4 Debug: action accuracy is 95% but attachment score is far lower,
 with errors clustered on long sentences. Explain.
 D2.5 Critique: &ldquo;greedy transition parsing is optimal because each
 action is optimal.&rdquo; State the flaw and the experiment that shows it.</p>
+<span id="deep-ladder-2-parsing-as-classification-d21-d25-end" data-end></span>
 <h2 id="analytical-quantitative-q1-q2">Analytical / quantitative (Q1-Q2)</h2>
-<p>Q1. Softmax-cross-entropy on 3 classes: logits (1, 2, 3), true class
+<p id="analytical-quantitative-q1-q2-p01" data-kind="exercise" data-term="stable softmax">Q1. Softmax-cross-entropy on 3 classes: logits (1, 2, 3), true class
 2 (0-indexed). Compute the probabilities with the stable softmax and
 the gradient dL/dz.
 Q2. A linear layer: X (32, 128), W (128, 64). Your backward pass
 allocates dL/dW by an explicit loop over the 8192 entries with one
 finite-difference each. How many forward passes does one gradient
 check cost, and what do you do instead in practice?</p>
+<span id="analytical-quantitative-q1-q2-end" data-end></span>
 <h2 id="implementation-debug-i1">Implementation / debug (I1)</h2>
-<p>I1. This embedding backward is wrong on some batches but right on
+<p id="implementation-debug-i1-p01" data-kind="exercise" data-term="dE[ids]">I1. This embedding backward is wrong on some batches but right on
 others. Find the bug.</p>
-<pre><code class="language-python">def embed_backward(grad_out, ids, V, d):
+<pre id="implementation-debug-i1-code01" data-kind="prose" data-term="embed_backward"><code class="language-python">def embed_backward(grad_out, ids, V, d):
     import numpy as np
     dE = np.zeros((V, d))
     dE[ids] = grad_out
     return dE
 </code></pre>
+<span id="implementation-debug-i1-end" data-end></span>
 <h2 id="changed-constraint-scenarios-s1-s2">Changed-constraint scenarios (S1-S2)</h2>
-<p>S1. The parser must now handle non-projective trees (crossing arcs).
+<p id="changed-constraint-scenarios-s1-s2-p01" data-kind="exercise" data-term="non-projective trees">S1. The parser must now handle non-projective trees (crossing arcs).
 Arc-standard cannot produce them. What is the smallest change to the
 system: new actions, new objective, or a different parser?
 S2. Training moves from full-batch to minibatches of 32 with mean
 reduction, but the tuned learning rate came from sum reduction at
 B = 256. What happens on the first run, and what is the fix?</p>
+<span id="changed-constraint-scenarios-s1-s2-end" data-end></span>
 <h2 id="research-critique-r1">Research critique (R1)</h2>
-<p>R1. A preprint reports a new parser with 2% higher attachment score,
+<p id="research-critique-r1-p01" data-kind="exercise" data-term="gold POS tags">R1. A preprint reports a new parser with 2% higher attachment score,
 trained with gold POS tags at test time while the baseline uses
 predicted tags. Name the confound and the fair comparison.</p>
       
       <nav class="pager"><a href="../labs/u12_lab_key.html"><span class="lbl">← Previous</span>Lab 12 · Keys</a><a href="../labs/u13_lab.html"><span class="lbl">Next →</span>Lab 13 · Interpretability and social impacts</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-r1-p02" data-kind="exercise" data-term="confound">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-r1-end" data-end></span>
     </footer>
   </main>
 </div>

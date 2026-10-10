@@ -1,0 +1,322 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-u01_questions",
+ "itemKind": "lesson",
+ "revision": "fbb03f4c6e28d8ca94a982e3bc807d3325fc5036003cf2e228b25271c62ee02d",
+ "sections": [
+  {
+   "anchor": "u01-interview-bank-questions",
+   "title": "U01 interview bank , questions",
+   "minutes": 1,
+   "endAnchor": "u01-interview-bank-questions-end",
+   "blocks": [
+    {
+     "anchor": "u01-interview-bank-questions-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "u01-interview-bank-questions-p01"
+    },
+    {
+     "term": "answer keys",
+     "definition": "The companion files with worked answers; open them only after attempting.",
+     "anchor": "u01-interview-bank-questions-p01"
+    },
+    {
+     "term": "deep ladders",
+     "definition": "Follow-up chains that deepen one topic from definition to experiment.",
+     "anchor": "u01-interview-bank-questions-p01"
+    },
+    {
+     "term": "breadth",
+     "definition": "Short questions that test wide coverage across the unit.",
+     "anchor": "u01-interview-bank-questions-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u01-interview-bank-questions-r1",
+     "question": "How many questions of each type does the U01 bank set?",
+     "answer": "Six breadth, two deep ladders of five follow-ups, two analytical exercises, one implementation/debug task, two changed-constraint scenarios, and one research-critique question.",
+     "anchor": "u01-interview-bank-questions-p01"
+    },
+    {
+     "id": "u01-interview-bank-questions-r2",
+     "question": "When may you open the answer key?",
+     "answer": "Only after attempting every question closed-book.",
+     "anchor": "u01-interview-bank-questions-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth-6",
+   "title": "Breadth (6)",
+   "minutes": 1,
+   "endAnchor": "breadth-6-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "token id",
+     "definition": "An integer index into the vocabulary; it carries no meaning by itself.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "embedding",
+     "definition": "The learned dense vector stored at a token id's row.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "BPE",
+     "definition": "Byte pair encoding; it merges the most frequent symbol pair repeatedly.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "Elman RNN",
+     "definition": "A recurrent net with hidden state h_t = tanh(W x_t + U h_{t-1} + b).",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "forget gate",
+     "definition": "The LSTM gate that multiplies the previous cell state elementwise.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "causal mask",
+     "definition": "A mask that hides future positions before the softmax.",
+     "anchor": "breadth-6-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-6-r1",
+     "question": "B1 contrasts two things. What are they?",
+     "answer": "A token id, an arbitrary integer index, and an embedding, the learned dense vector at that row.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r2",
+     "question": "What must B5 justify about the causal mask?",
+     "answer": "That the mask must apply before the softmax, not after.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r3",
+     "question": "Which matrices does B3 ask you to name?",
+     "answer": "Each matrix in the Elman RNN recurrence: input-to-hidden, hidden-to-hidden, and bias.",
+     "anchor": "breadth-6-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders-2-x-5",
+   "title": "Deep ladders (2 x 5)",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-2-x-5-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "pair count",
+     "definition": "The frequency of each adjacent symbol pair on the corpus.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "merge rank",
+     "definition": "The order in which pairs merged; encoding applies merges in this order.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "term": "additive causal mask",
+     "definition": "A matrix of 0 and -inf added to scores before softmax.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "term": "masked softmax",
+     "definition": "Softmax over scores with -inf at masked positions, so they get zero weight.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "term": "row-sum check",
+     "definition": "A test that each masked-softmax row sums to one.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-2-x-5-r1",
+     "question": "What toy does L1.2 ask you to compute?",
+     "answer": "Merge 1 on the corpus {low x2, lower, lowest, new, newer}.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r2",
+     "question": "What does L2.2 ask for?",
+     "answer": "The masked softmax of the vector [1, -inf, 2].",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r3",
+     "question": "What experiment does L1.5 propose?",
+     "answer": "A code-versus-prose merge experiment.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-exercises-2",
+   "title": "Analytical exercises (2)",
+   "minutes": 1,
+   "endAnchor": "analytical-exercises-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "fertility",
+     "definition": "Characters per word here; it gauges how finely text is split.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "term": "embedding table",
+     "definition": "The V-by-d matrix holding one vector per token id.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "term": "attention scores",
+     "definition": "The QK^T values that become weights after softmax.",
+     "anchor": "analytical-exercises-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-exercises-2-r1",
+     "question": "What corpus does E1 use?",
+     "answer": "{the: 100, then: 40, their: 10}, with end-of-word markers ignored.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "id": "analytical-exercises-2-r2",
+     "question": "What must E2 decide from the numbers?",
+     "answer": "Whether the scores or the weights dominate memory at T = 8192.",
+     "anchor": "analytical-exercises-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebug-task-1",
+   "title": "Implementation/debug task (1)",
+   "minutes": 1,
+   "endAnchor": "implementationdebug-task-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "mask test",
+     "definition": "A three-line check that the causal mask is applied correctly.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "term": "train-eval gap",
+     "definition": "Eval loss far above train loss; it signals a bug or bad generalization.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "term": "ordered checks",
+     "definition": "A debug sequence where each check rules out one failure.",
+     "anchor": "implementationdebug-task-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebug-task-1-r1",
+     "question": "What symptoms does D1 report?",
+     "answer": "Loss decreases, but generated text is incoherent and eval loss far exceeds train loss.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "id": "implementationdebug-task-1-r2",
+     "question": "What artifact must the answer produce?",
+     "answer": "A three-line mask test that would have caught the bug on day one.",
+     "anchor": "implementationdebug-task-1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-scenarios-2",
+   "title": "Changed-constraint scenarios (2)",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-scenarios-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "ids shift",
+     "definition": "Token ids changing meaning after a vocabulary change.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "term": "fertility",
+     "definition": "Tokens per word; it rises when subwords stop being shared.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "term": "fp16",
+     "definition": "Half precision; it halves the embedding table bytes versus fp32.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-scenarios-2-r1",
+     "question": "What constraint does S1 impose?",
+     "answer": "Support a new language with no shared subwords while the embedding table cannot grow.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "id": "changed-constraint-scenarios-2-r2",
+     "question": "What arithmetic does S2 require?",
+     "answer": "The embedding table size in fp16 for V = 50000, d = 1024, against 256 MB RAM.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique-question-1",
+   "title": "Research-critique question (1)",
+   "minutes": 1,
+   "endAnchor": "research-critique-question-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "attention weights",
+     "definition": "The softmax outputs; the claim says they explain decisions.",
+     "anchor": "research-critique-question-1-p01"
+    },
+    {
+     "term": "counterexample",
+     "definition": "A case that breaks the strongest version of a claim.",
+     "anchor": "research-critique-question-1-p02"
+    },
+    {
+     "term": "falsification condition",
+     "definition": "The outcome that would prove the claim wrong.",
+     "anchor": "research-critique-question-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-question-1-r1",
+     "question": "What claim does R1 target?",
+     "answer": "That attention weights explain model decisions.",
+     "anchor": "research-critique-question-1-p01"
+    },
+    {
+     "id": "research-critique-question-1-r2",
+     "question": "What three parts must the answer build?",
+     "answer": "The strongest version of the claim, the counterexample, and an experiment with a falsification condition.",
+     "anchor": "research-critique-question-1-p01"
+    }
+   ]
+  }
+ ]
+}

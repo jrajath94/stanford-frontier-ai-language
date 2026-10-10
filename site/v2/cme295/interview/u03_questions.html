@@ -98,20 +98,22 @@
       <h1>Interview · U03 questions</h1>
       <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u03-interview-bank-questions">U03 interview bank , questions</h1>
-<p>Closed-book. Answer keys are in <code>u03_key.md</code>. Do not open the key before
+<p id="u03-interview-bank-questions-p01" data-kind="keyIdea" data-reveal="rise" data-term="closed-book">Closed-book. Answer keys are in <code>u03_key.md</code>. Do not open the key before
 attempting. Quotas per major lesson: 6 breadth, 2 deep ladders of 5
 follow-ups, 2 analytical exercises, 1 implementation/debug task, 2
 changed-constraint scenarios, 1 research-critique question.</p>
+<span id="u03-interview-bank-questions-end" data-end></span>
 <h2 id="breadth-6">Breadth (6)</h2>
-<p>B1. State the temperature limits T -&gt; 0 and T -&gt; infinity.
+<p id="breadth-6-p01" data-kind="exercise" data-term="temperature">B1. State the temperature limits T -&gt; 0 and T -&gt; infinity.
 B2. What does top-p keep, and how does it differ from top-k?
 B3. In MoE, what does the router output and what does the auxiliary
 loss prevent?
 B4. Name the three costs of longer context.
 B5. Why does greedy decoding loop, and what breaks the loop?
 B6. What is ICL, and what does not change during ICL?</p>
+<span id="breadth-6-end" data-end></span>
 <h2 id="deep-ladders-2-x-5">Deep ladders (2 x 5)</h2>
-<p>L1. Temperature and truncation.
+<p id="deep-ladders-2-x-5-p01" data-kind="exercise" data-term="tempered sampling">L1. Temperature and truncation.
 - L1.1 Define p_i = softmax(z_i / T).
 - L1.2 Toy: distribution of [3, 1, 0, -1] at T = 0.5 and T = 2.
 - L1.3 Justify both limits from the formula.
@@ -119,7 +121,7 @@ B6. What is ICL, and what does not change during ICL?</p>
 - L1.5 Compare temperature vs truncation, debug high-T gibberish,
   critique &ldquo;higher T is more creative&rdquo;, propose the T-sweep
   experiment on factual vs story tasks.</p>
-<p>L2. MoE routing.
+<p id="deep-ladders-2-x-5-p02" data-kind="exercise" data-term="sampling order">L2. MoE routing.
 - L2.1 Define gates g = softmax(x W_g) and the top-k rule.
 - L2.2 Toy: route with gates [0.03, 0.11, 0.09, 0.20, 0.43, 0.09,
   0.03, 0.02], k = 2.
@@ -128,30 +130,34 @@ B6. What is ICL, and what does not change during ICL?</p>
 - L2.5 Compare MoE with dense, debug one expert taking 90% of
   tokens, critique &ldquo;experts specialize&rdquo;, propose the aux-ablation
   experiment.</p>
+<span id="deep-ladders-2-x-5-end" data-end></span>
 <h2 id="analytical-exercises-2">Analytical exercises (2)</h2>
-<p>E1. Logits [4, 2, 0]. Compute the T = 1 distribution, then top-p =
+<p id="analytical-exercises-2-p01" data-kind="exercise" data-term="entropy">E1. Logits [4, 2, 0]. Compute the T = 1 distribution, then top-p =
 0.75 (renormalized). Then compute the entropy before and after
 truncation. What did truncation do to entropy?
 E2. A 70B-class MoE has E = 8 experts, top-2 routing, d = 4096,
 expert FFN hidden 14336. Compute active expert parameters per token
 vs a dense model with the same total expert parameters. State the
 active fraction.</p>
+<span id="analytical-exercises-2-end" data-end></span>
 <h2 id="implementationdebug-task-1">Implementation/debug task (1)</h2>
-<p>D1. A chat model ignores the system prompt but follows user
+<p id="implementationdebug-task-1-p01" data-kind="exercise" data-term="chat template">D1. A chat model ignores the system prompt but follows user
 instructions. You may inspect the chat template, tokenization, and
 training config. List the ordered checks, the most likely culprit,
 and the fix. Then write the template assertion that prevents
 regression.</p>
+<span id="implementationdebug-task-1-end" data-end></span>
 <h2 id="changed-constraint-scenarios-2">Changed-constraint scenarios (2)</h2>
-<p>S1. The task needs exact arithmetic on 6-digit numbers but tokens
+<p id="changed-constraint-scenarios-2-p01" data-kind="exercise" data-term="chain-of-thought">S1. The task needs exact arithmetic on 6-digit numbers but tokens
 are limited to 20 per query. Compare CoT, direct answer, and tool
 use (calculator). Which do you choose and why? State the failure
 mode of each.
 S2. A story generator at T = 1.5 produces great variety but drifts
 off-topic. Name two guards, the order to apply them, and how each
 changes the distribution.</p>
+<span id="changed-constraint-scenarios-2-end" data-end></span>
 <h2 id="research-critique-question-1">Research-critique question (1)</h2>
-<p>R1. &ldquo;Chain-of-thought shows the model&rsquo;s reasoning.&rdquo; Present the
+<p id="research-critique-question-1-p01" data-kind="exercise" data-term="faithfulness">R1. &ldquo;Chain-of-thought shows the model&rsquo;s reasoning.&rdquo; Present the
 strongest version of this claim, then the faithfulness
 counterexample, then design an experiment that tests whether the
 steps cause the answer. State the falsification condition.</p>
@@ -159,7 +165,8 @@ steps cause the answer. State the falsification condition.</p>
       <nav class="pager"><a href="../interview/u02_key.html"><span class="lbl">← Previous</span>Interview · U02 keys</a><a href="../interview/u03_key.html"><span class="lbl">Next →</span>Interview · U03 keys</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-question-1-p02" data-kind="exercise" data-term="CoT">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-question-1-end" data-end></span>
     </footer>
   </main>
 </div>

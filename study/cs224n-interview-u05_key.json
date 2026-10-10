@@ -1,0 +1,268 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-interview-u05_key",
+ "itemKind": "lesson",
+ "revision": "b83c7a1492ba26ea3b5b2a5c89f601e156c51dbf38a2ed1d48241df19cc4e754",
+ "sections": [
+  {
+   "anchor": "interview-key-u05",
+   "title": "Interview key , U05",
+   "minutes": 1,
+   "endAnchor": "interview-key-u05-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "interview key",
+     "definition": "The closed-book answer set for the unit.",
+     "anchor": "interview-key-u05"
+    },
+    {
+     "term": "u05",
+     "definition": "The unit this key covers.",
+     "anchor": "interview-key-u05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "interview-key-u05-r1",
+     "question": "What unit does this key cover?",
+     "answer": "U05.",
+     "anchor": "interview-key-u05"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth",
+   "title": "Breadth",
+   "minutes": 1,
+   "endAnchor": "breadth-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "permutation-equivariant",
+     "definition": "'dog bites man' = 'man bites dog' without positions.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "unit variance",
+     "definition": "What the scale restores.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "identity gradient path",
+     "definition": "What the residual gives.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "-inf",
+     "definition": "Becomes 0 weight before softmax.",
+     "anchor": "breadth-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-r1",
+     "question": "Why three projections?",
+     "answer": "So asking, indexing, and carrying use different geometry.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "id": "breadth-r2",
+     "question": "What happens after-softmax?",
+     "answer": "The future already shaped the distribution; renormalizing leaks.",
+     "anchor": "breadth-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders",
+   "title": "Deep ladders",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "convex combination",
+     "definition": "Each output row blends value rows.",
+     "anchor": "deep-ladders-p01"
+    },
+    {
+     "term": "1.974",
+     "definition": "The scaled entropy; 0.571 unscaled.",
+     "anchor": "deep-ladders-p02"
+    },
+    {
+     "term": "leaked future",
+     "definition": "Why the honest score is worse after the mask fix.",
+     "anchor": "deep-ladders-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-r1",
+     "question": "What does L1 ask you to explain?",
+     "answer": "Identical attention weights with different outputs: values carry the content.",
+     "anchor": "deep-ladders-p01"
+    },
+    {
+     "id": "deep-ladders-r2",
+     "question": "What is the L2 mask test?",
+     "answer": "Train with the mask deliberately after softmax; it should look better.",
+     "anchor": "deep-ladders-p02"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical",
+   "title": "Analytical",
+   "minutes": 1,
+   "endAnchor": "analytical-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "unscaled path",
+     "definition": "Post-norm's early-training gradient problem.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "term": "2n^2d",
+     "definition": "The attention term; 4x context = 16x FLOPs.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "term": "flash-style tiling",
+     "definition": "One cut for the attention bill.",
+     "anchor": "analytical-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-r1",
+     "question": "What is the cheapest A7 fix?",
+     "answer": "Learning-rate warmup, or switch to pre-norm.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "id": "analytical-r2",
+     "question": "What two changes cut the A8 term?",
+     "answer": "Shorter context or a linear-attention variant.",
+     "anchor": "analytical-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebugging",
+   "title": "Implementation/debugging",
+   "minutes": 1,
+   "endAnchor": "implementationdebugging-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "stale cache",
+     "definition": "Misaligned KV cache; verify against recompute.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "term": "repetition penalty",
+     "definition": "Add one.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "term": "top-k",
+     "definition": "Too low: raise temperature.",
+     "anchor": "implementationdebugging-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebugging-r1",
+     "question": "What are the five checks?",
+     "answer": "Temperature/top-k, KV cache, causal mask, training data, repetition penalty.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "id": "implementationdebugging-r2",
+     "question": "What does a mask leak point to?",
+     "answer": "Fix the order.",
+     "anchor": "implementationdebugging-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint",
+   "title": "Changed-constraint",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "int8/int4",
+     "definition": "KV cache quantization.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "term": "eviction",
+     "definition": "Keep a window or offload to CPU.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "term": "pooled vector",
+     "definition": "[CLS]-style readout for classification.",
+     "anchor": "changed-constraint-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-r1",
+     "question": "What are the three A10 moves?",
+     "answer": "KV cache quantization, smaller batch/shorter context, eviction or CPU offload.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "id": "changed-constraint-r2",
+     "question": "What three things change in A11?",
+     "answer": "Mask, readout, loss.",
+     "anchor": "changed-constraint-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique",
+   "title": "Research critique",
+   "minutes": 1,
+   "endAnchor": "research-critique-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "input-dependent routing",
+     "definition": "The steelman's core: weights are the only input-dependent routing.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "term": "intervention",
+     "definition": "What faithfulness needs, not inspection.",
+     "anchor": "research-critique-p02"
+    },
+    {
+     "term": "faithfulness",
+     "definition": "Weights are one factor, not the explanation.",
+     "anchor": "research-critique-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1",
+     "question": "What is the steelman?",
+     "answer": "High weight means the output blended that position's value heavily.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "id": "research-critique-r2",
+     "question": "What is the counterexample?",
+     "answer": "Identical weights on different values give different outputs; different weights can give the same output.",
+     "anchor": "research-critique-p01"
+    }
+   ]
+  }
+ ]
+}

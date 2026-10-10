@@ -1,0 +1,622 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-lessons-u09_tools_agents_retrieval",
+ "itemKind": "lesson",
+ "revision": "37fb41eee60a511af12be1382bba59ab84b587f4d173782aa97b5efac55ff985",
+ "sections": [
+  {
+   "anchor": "u09_tools_agents_retrieval-intro-p01",
+   "title": "U09 \u00b7 Tools, agents, and retrieval",
+   "minutes": 1,
+   "endAnchor": "u09_tools_agents_retrieval-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u09_tools_agents_retrieval-intro-p01",
+     "definition": "Instructor.",
+     "term": "Prof. Christopher Manning"
+    },
+    {
+     "anchor": "u09_tools_agents_retrieval-intro-p01",
+     "definition": "Build date of the unit\u2019s figures.",
+     "term": "2026-10-06"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u09_tools_agents_retrieval-intro-p01",
+     "answer": "U09 \u00b7 Tools, agents, and retrieval.",
+     "id": "u09_tools_agents_retrieval-intro-r1",
+     "question": "What unit is this?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation",
+   "title": "local remediation",
+   "minutes": 1,
+   "endAnchor": "local-remediation-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "A tool call is valid only when its arguments match the declared schema.",
+     "term": "R1"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Recall never falls when k grows, precision does.",
+     "term": "R2"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Overlap at least the span length removes the failure class.",
+     "term": "R3"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-p02",
+     "answer": "Name, arity, types: all three must hold for a valid tool call.",
+     "id": "local-remediation-r1",
+     "question": "What is R1?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-react-pattern",
+   "title": "c01: react pattern",
+   "minutes": 3,
+   "endAnchor": "c01-react-pattern-end",
+   "blocks": [
+    {
+     "anchor": "c01-react-pattern-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-react-pattern-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-react-pattern-p02",
+     "definition": "T, A, O: the three step types. The Observation is the only new information.",
+     "term": "Thought / Action / Observation"
+    },
+    {
+     "anchor": "c01-react-pattern-p11",
+     "definition": "Interleaved thought, action, observation. Choose it when observations change the plan.",
+     "term": "ReAct"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-react-pattern-p07",
+     "answer": "7 steps, 92 tokens: T/A/O interleaved; the two Observations carry the 40 new tokens.",
+     "id": "c01-react-pattern-r1",
+     "question": "What was the toy trace?"
+    },
+    {
+     "anchor": "c01-react-pattern-p12",
+     "answer": "A step cap and an answer schema; the loop alone never guarantees termination.",
+     "id": "c01-react-pattern-r2",
+     "question": "What is the stopping rule?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-tool-interfaces",
+   "title": "c02: tool interfaces",
+   "minutes": 3,
+   "endAnchor": "c02-tool-interfaces-end",
+   "blocks": [
+    {
+     "anchor": "c02-tool-interfaces-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-tool-interfaces-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-tool-interfaces-p03",
+     "definition": "The contract: name, argument schema, return schema, side-effect class.",
+     "term": "schema"
+    },
+    {
+     "anchor": "c02-tool-interfaces-p04",
+     "definition": "A call that fails validation never executes.",
+     "term": "The model proposes, the validator disposes"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-tool-interfaces-p07",
+     "answer": "4 of 6 calls valid; the invalid two: missing argument, unknown tool name.",
+     "id": "c02-tool-interfaces-r1",
+     "question": "What was the toy validation?"
+    },
+    {
+     "anchor": "c02-tool-interfaces-p06",
+     "answer": "Name exists, args match the schema, caller\u2019s permissions cover the tool.",
+     "id": "c02-tool-interfaces-r2",
+     "question": "What are the three checks?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-execution-feedback",
+   "title": "c03: execution feedback",
+   "minutes": 3,
+   "endAnchor": "c03-execution-feedback-end",
+   "blocks": [
+    {
+     "anchor": "c03-execution-feedback-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-execution-feedback-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-execution-feedback-p04",
+     "definition": "Treat the error message as an observation, not as a failure.",
+     "term": "The tool talks back"
+    },
+    {
+     "anchor": "c03-execution-feedback-p08",
+     "definition": "Two retries with new information each time, then escalate.",
+     "term": "cap=2"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-execution-feedback-p07",
+     "answer": "calc(\u201c2++2\u201d) fails, error text quoted, calc(\u201c2+2\u201d) succeeds in 2 calls.",
+     "id": "c03-execution-feedback-r1",
+     "question": "What was the toy retry?"
+    },
+    {
+     "anchor": "c03-execution-feedback-p11",
+     "answer": "Permission errors and destructive tools: no retry.",
+     "id": "c03-execution-feedback-r2",
+     "question": "When fail fast?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-rag",
+   "title": "c04: rag",
+   "minutes": 3,
+   "endAnchor": "c04-rag-end",
+   "blocks": [
+    {
+     "anchor": "c04-rag-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-rag-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-rag-p04",
+     "definition": "Retrieval is a lookup, generation is the reader.",
+     "term": "The index is external memory"
+    },
+    {
+     "anchor": "c04-rag-p07",
+     "definition": "k is a recall knob with a precision cost.",
+     "term": "recall at k"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-rag-p07",
+     "answer": "0.000 at k=1, 0.333 at k=3, 0.667 at k=5, 1.000 at k=10.",
+     "id": "c04-rag-r1",
+     "question": "What was the toy recall?"
+    },
+    {
+     "anchor": "c04-rag-p06",
+     "answer": "P(answer|query) = sum over chunks of P(chunk|query) times P(answer|chunk, query).",
+     "id": "c04-rag-r2",
+     "question": "What is the factorization?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-retrievergenerator-separation",
+   "title": "c05: retriever/generator separation",
+   "minutes": 3,
+   "endAnchor": "c05-retrievergenerator-separation-end",
+   "blocks": [
+    {
+     "anchor": "c05-retrievergenerator-separation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-retrievergenerator-separation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-retrievergenerator-separation-p04",
+     "definition": "Retriever: the right chunk is in the top-k. Generator: given the right chunk, the answer is right.",
+     "term": "Two machines, two contracts"
+    },
+    {
+     "anchor": "c05-retrievergenerator-separation-p06",
+     "definition": "Hold the generator fixed, vary the retriever; the delta is the retriever\u2019s contribution.",
+     "term": "swap test"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-retrievergenerator-separation-p03",
+     "answer": "Ranks [2,5,9] vs [1,2,3]: recall at k=5 moves 0.667 to 1.000, generator untouched.",
+     "id": "c05-retrievergenerator-separation-r1",
+     "question": "What was the toy swap?"
+    },
+    {
+     "anchor": "c05-retrievergenerator-separation-p12",
+     "answer": "The generator ignores the new chunks (position bias toward priors).",
+     "id": "c05-retrievergenerator-separation-r2",
+     "question": "What does end-to-end flat with rising recall mean?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-chunking",
+   "title": "c06: chunking",
+   "minutes": 3,
+   "endAnchor": "c06-chunking-end",
+   "blocks": [
+    {
+     "anchor": "c06-chunking-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-chunking-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-chunking-p04",
+     "definition": "Every cut risks slicing an answer in two.",
+     "term": "cookie cutter"
+    },
+    {
+     "anchor": "c06-chunking-p04",
+     "definition": "o >= s: every span fits inside some chunk.",
+     "term": "Overlap is insurance"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-chunking-p07",
+     "answer": "o=0: 5 chunks, split rate 0.15. o=50: 7 chunks, split rate 0.00.",
+     "id": "c06-chunking-r1",
+     "question": "What was the toy chunking?"
+    },
+    {
+     "anchor": "c06-chunking-p06",
+     "answer": "max(0, s - o) / (c - o).",
+     "id": "c06-chunking-r2",
+     "question": "What is the split-rate formula?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-hybridrerank",
+   "title": "c07: hybrid/rerank",
+   "minutes": 3,
+   "endAnchor": "c07-hybridrerank-end",
+   "blocks": [
+    {
+     "anchor": "c07-hybridrerank-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-hybridrerank-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-hybridrerank-p04",
+     "definition": "Sparse catches keywords, dense catches paraphrase.",
+     "term": "Two nets, one pool"
+    },
+    {
+     "anchor": "c07-hybridrerank-p06",
+     "definition": "A convex mix: w=0 pure sparse, w=1 pure dense.",
+     "term": "fused score"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-hybridrerank-p07",
+     "answer": "0.72 sparse, 0.41 dense: w=0 gives 0.720, w=0.5 gives 0.565, w=1.0 gives 0.410.",
+     "id": "c07-hybridrerank-r1",
+     "question": "What was the toy fusion?"
+    },
+    {
+     "anchor": "c07-hybridrerank-p12",
+     "answer": "The answer at rank 200 with m=50: rerank never sees it.",
+     "id": "c07-hybridrerank-r2",
+     "question": "Why can\u2019t rerank rescue bad retrieval?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-evidencecitation",
+   "title": "c08: evidence/citation",
+   "minutes": 3,
+   "endAnchor": "c08-evidencecitation-end",
+   "blocks": [
+    {
+     "anchor": "c08-evidencecitation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-evidencecitation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-evidencecitation-p04",
+     "definition": "It says \u201clook here\u201d; the reader can verify.",
+     "term": "A citation is a pointer, not a proof"
+    },
+    {
+     "anchor": "c08-evidencecitation-p07",
+     "definition": "3 of 4 citations supported.",
+     "term": "citation precision"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-evidencecitation-p07",
+     "answer": "4 claims, 3 supported, precision 0.75. The unsupported one quotes the right document, wrong paragraph.",
+     "id": "c08-evidencecitation-r1",
+     "question": "What was the toy citation result?"
+    },
+    {
+     "anchor": "c08-evidencecitation-p06",
+     "answer": "Dangling pointers, unsupported claims.",
+     "id": "c08-evidencecitation-r2",
+     "question": "What are the two failure classes?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-memory-versus-context",
+   "title": "c09: memory versus context",
+   "minutes": 3,
+   "endAnchor": "c09-memory-versus-context-end",
+   "blocks": [
+    {
+     "anchor": "c09-memory-versus-context-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-memory-versus-context-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-memory-versus-context-p04",
+     "definition": "Summarization moves papers from the desk to the cabinet.",
+     "term": "Context is the desk, memory is the filing cabinet"
+    },
+    {
+     "anchor": "c09-memory-versus-context-p06",
+     "definition": "Pinned facts survive compaction byte-identical.",
+     "term": "anchors"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-memory-versus-context-p07",
+     "answer": "12000 tokens compress to 900, ratio 13.3.",
+     "id": "c09-memory-versus-context-r1",
+     "question": "What was the toy compression?"
+    },
+    {
+     "anchor": "c09-memory-versus-context-p12",
+     "answer": "The summary drops \u201cnever email\u201d, the agent emails.",
+     "id": "c09-memory-versus-context-r2",
+     "question": "What is the anchor failure?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-permissions",
+   "title": "c10: permissions",
+   "minutes": 3,
+   "endAnchor": "c10-permissions-end",
+   "blocks": [
+    {
+     "anchor": "c10-permissions-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-permissions-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-permissions-p04",
+     "definition": "No badge, no call. The human issues the badge, the agent cannot upgrade it.",
+     "term": "Every tool call carries a badge"
+    },
+    {
+     "anchor": "c10-permissions-p09",
+     "definition": "required(tool) subset of granted(run), enforced in code.",
+     "term": "default deny"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-permissions-p07",
+     "answer": "Granted {read}: search passes, delete fails.",
+     "id": "c10-permissions-r1",
+     "question": "What was the toy authorization?"
+    },
+    {
+     "anchor": "c10-permissions-p05",
+     "answer": "In code, not in the prompt.",
+     "id": "c10-permissions-r2",
+     "question": "Where does enforcement live?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-loop-stopping",
+   "title": "c11: loop stopping",
+   "minutes": 3,
+   "endAnchor": "c11-loop-stopping-end",
+   "blocks": [
+    {
+     "anchor": "c11-loop-stopping-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-loop-stopping-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-loop-stopping-p04",
+     "definition": "Success is checked, the cap is counted.",
+     "term": "Two exits"
+    },
+    {
+     "anchor": "c11-loop-stopping-p08",
+     "definition": "The step cap: termination guaranteed by the cap.",
+     "term": "B"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-loop-stopping-p07",
+     "answer": "Stops at 7 steps, 92 tokens, under the cap of 10.",
+     "id": "c11-loop-stopping-r1",
+     "question": "What was the toy stop?"
+    },
+    {
+     "anchor": "c11-loop-stopping-p12",
+     "answer": "The model emits \u201cFinal answer\u201d three times with three different answers.",
+     "id": "c11-loop-stopping-r2",
+     "question": "Why can\u2019t the model declare done?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-error-attribution",
+   "title": "c12: error attribution",
+   "minutes": 3,
+   "endAnchor": "c12-error-attribution-end",
+   "blocks": [
+    {
+     "anchor": "c12-error-attribution-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-error-attribution-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-error-attribution-p04",
+     "definition": "Every failure gets one label: retriever, tool, or policy.",
+     "term": "Autopsy before surgery"
+    },
+    {
+     "anchor": "c12-error-attribution-p06",
+     "definition": "Sort classes by frequency, fix in order, re-measure.",
+     "term": "the taxonomy"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-error-attribution-p07",
+     "answer": "10 failures: R 4, T 3, P 3. The retriever is the biggest class.",
+     "id": "c12-error-attribution-r1",
+     "question": "What was the toy attribution?"
+    },
+    {
+     "anchor": "c12-error-attribution-p04",
+     "answer": "Fix the biggest class first.",
+     "id": "c12-error-attribution-r2",
+     "question": "What is the fix order?"
+    }
+   ]
+  },
+  {
+   "anchor": "unit-visual-map",
+   "title": "unit visual map",
+   "minutes": 1,
+   "endAnchor": "unit-visual-map-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "ReAct trace: 7 steps, 92 tokens.",
+     "term": "ReAct plate"
+    },
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "Recall at k: 0.000, 0.333, 0.667, 1.000.",
+     "term": "recall plate"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "unit-visual-map-end",
+     "answer": "ReAct trace plate, recall-at-k plate, chunking plate.",
+     "id": "unit-visual-map-r1",
+     "question": "What three figures does the unit carry?"
+    }
+   ]
+  }
+ ]
+}

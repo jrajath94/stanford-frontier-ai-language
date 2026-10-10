@@ -1,0 +1,316 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-u02_key",
+ "itemKind": "lesson",
+ "revision": "5848b853fb84dfc1409e310f88bdac3a9bb29d2a71aead3cc86e3969b8c2c9d0",
+ "sections": [
+  {
+   "anchor": "u02-interview-key",
+   "title": "U02 interview key",
+   "minutes": 1,
+   "endAnchor": "u02-interview-key-end",
+   "blocks": [
+    {
+     "anchor": "u02-interview-key-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "strong answer",
+     "definition": "The minimum sufficient explanation that earns full marks.",
+     "anchor": "u02-interview-key-p01"
+    },
+    {
+     "term": "red flag",
+     "definition": "A common wrong answer that signals a misconception.",
+     "anchor": "u02-interview-key-p01"
+    },
+    {
+     "term": "rubric",
+     "definition": "The scoring breakdown per question part.",
+     "anchor": "u02-interview-key-p01"
+    },
+    {
+     "term": "remediation",
+     "definition": "The lesson reference to revisit after a miss.",
+     "anchor": "u02-interview-key-p01"
+    },
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "u02-interview-key-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u02-interview-key-r1",
+     "question": "What five parts does each U02 key entry carry?",
+     "answer": "Minimum sufficient explanation, strong answer, red flags, scoring rubric, and remediation.",
+     "anchor": "u02-interview-key-p01"
+    },
+    {
+     "id": "u02-interview-key-r2",
+     "question": "How should you use the key?",
+     "answer": "Keep it closed-book: attempt first, then check.",
+     "anchor": "u02-interview-key-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth",
+   "title": "Breadth",
+   "minutes": 1,
+   "endAnchor": "breadth-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "MQA",
+     "definition": "K and V heads shared as one; each query head keeps a private Q.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "RoPE property",
+     "definition": "(R(mt)q).(R(nt)k) = q^T R((n-m)t) k.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "sqrt(d_k)",
+     "definition": "q.k has std sqrt(d_k) at init; the scale restores unit variance.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "kv_heads",
+     "definition": "The GQA term: the number of KV heads, G.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "learned positions",
+     "definition": "Stop at T_max; no trained rows beyond.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "transformer layouts",
+     "definition": "Encoder unmasked, decoder causal, encoder-decoder causal self plus full cross.",
+     "anchor": "breadth-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-r1",
+     "question": "What is the B2 red flag?",
+     "answer": "Applying the rotation to V.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "id": "breadth-r2",
+     "question": "What does strong B4 say GQA changes?",
+     "answer": "kv_heads (G).",
+     "anchor": "breadth-list01"
+    },
+    {
+     "id": "breadth-r3",
+     "question": "What is the B6 red flag?",
+     "answer": "Saying BERT is causal.",
+     "anchor": "breadth-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders",
+   "title": "Deep ladders",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "theta_i",
+     "definition": "base^{-2i/d}; the per-dimension RoPE frequency.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "32 MiB",
+     "definition": "The toy KV-cache size for 32 layers, 1 KV head, d_k 128, T 2048, fp16.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "decode_step",
+     "definition": "Appends one step and must match uncached forward to 1e-5.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "crossover",
+     "definition": "Measured latency of cache versus recompute over T.",
+     "anchor": "deep-ladders-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-r1",
+     "question": "What angle formula does the L1 strong path give?",
+     "answer": "angle = m * theta_i, theta_i = base^{-2i/d}.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "id": "deep-ladders-r2",
+     "question": "What are the three cache sizes in the L2 strong path?",
+     "answer": "MHA 1024, GQA-8 256, MQA 32 MiB.",
+     "anchor": "deep-ladders-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-exercises",
+   "title": "Analytical exercises",
+   "minutes": 1,
+   "endAnchor": "analytical-exercises-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "crossover",
+     "definition": "T = 4d = 4096, where score FLOPs equal projection FLOPs.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "term": "cache GiB",
+     "definition": "0.5 GiB for the GQA toy; it fits at B = 1 and B = 4.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "term": "factor 2",
+     "definition": "The K-and-V factor the red flag drops.",
+     "anchor": "analytical-exercises-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-exercises-r1",
+     "question": "What is the E1 crossover?",
+     "answer": "T = 4d = 4096.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "id": "analytical-exercises-r2",
+     "question": "Does the E2 cache fit?",
+     "answer": "Yes at B = 1 (14.5 GB) and B = 4 (16 GB).",
+     "anchor": "analytical-exercises-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebug",
+   "title": "Implementation/debug",
+   "minutes": 1,
+   "endAnchor": "implementationdebug-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "G divisible",
+     "definition": "Verify G matches and divides h.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "term": "canary set",
+     "definition": "Compare converted versus original logits on held-out inputs.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "term": "continued training",
+     "definition": "The fix: short continued training, or train GQA natively.",
+     "anchor": "implementationdebug-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebug-r1",
+     "question": "What is the D1 culprit?",
+     "answer": "Mean-pooling without the recovery continued-training run.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "id": "implementationdebug-r2",
+     "question": "What do the two asserts check?",
+     "answer": "Cache bytes equal the formula; GQA(G=h) reproduces MHA logits.",
+     "anchor": "implementationdebug-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-scenarios",
+   "title": "Changed-constraint scenarios",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-scenarios-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "RoPE base",
+     "definition": "Larger base breaks trained-length angle calibration.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "term": "position interpolation",
+     "definition": "Scale positions by 4k/128k; breaks fine local resolution.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "term": "MQA",
+     "definition": "One KV head = 32 MiB exactly, so MQA (G = 1) fits.",
+     "anchor": "changed-constraint-scenarios-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-scenarios-r1",
+     "question": "What metric detects success for the S1 fixes?",
+     "answer": "Perplexity at 128k versus 4k; passkey retrieval at 128k.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "id": "changed-constraint-scenarios-r2",
+     "question": "What quality risk does S2 accept?",
+     "answer": "Quality drop, worst on retrieval-heavy tasks.",
+     "anchor": "changed-constraint-scenarios-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique",
+   "title": "Research-critique",
+   "minutes": 1,
+   "endAnchor": "research-critique-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "unbiased",
+     "definition": "High variance at small m still diverges in practice.",
+     "anchor": "research-critique-list01"
+    },
+    {
+     "term": "sweep m",
+     "definition": "Fix T and a copy task; sweep m to parity with exact attention.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "term": "parity condition",
+     "definition": "No m below the exact-attention FLOP count reaches parity.",
+     "anchor": "research-critique-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1",
+     "question": "What is the R1 red flag?",
+     "answer": "Saying unbiased means equal.",
+     "anchor": "research-critique-list01"
+    },
+    {
+     "id": "research-critique-r2",
+     "question": "What is the falsification?",
+     "answer": "No m below the exact-attention FLOP count reaches parity.",
+     "anchor": "research-critique-list01"
+    }
+   ]
+  }
+ ]
+}

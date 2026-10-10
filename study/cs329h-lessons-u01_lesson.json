@@ -1,0 +1,962 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs329h-lessons-u01_lesson",
+ "itemKind": "lesson",
+ "revision": "21e31674d81b1abac1859e129c248357cbc6207e4e3a669a0036cf9bd8adfc09",
+ "sections": [
+  {
+   "anchor": "u01_lesson-intro",
+   "title": "U01 \u00b7 Preferences, choices, and generalization",
+   "minutes": 1,
+   "endAnchor": "u01_lesson-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "P06 (probability)",
+     "definition": "Probability prerequisite for U01, covering the Bernoulli and binomial models used in this lesson.",
+     "anchor": "u01_lesson-intro-p01"
+    },
+    {
+     "term": "P07 (estimation)",
+     "definition": "Estimation prerequisite for U01, covering likelihood and maximum likelihood estimation.",
+     "anchor": "u01_lesson-intro-p01"
+    },
+    {
+     "term": "P10 (ML foundations)",
+     "definition": "Machine learning foundations prerequisite for U01, covering generalization and train/test splits.",
+     "anchor": "u01_lesson-intro-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u01_lesson-intro-r1",
+     "question": "What background does U01 assume?",
+     "answer": "P06 probability, P07 estimation, and P10 ML foundations. Local remediation opens the lesson.",
+     "anchor": "u01_lesson-intro-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "provenance",
+   "title": "Provenance",
+   "minutes": 1,
+   "endAnchor": "provenance-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "source-supported",
+     "definition": "Content verified against session S02 materials at title level.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "planned / source attribution pending",
+     "definition": "A requested extension taught as independent theory, not yet verified against a source.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "session S02",
+     "definition": "The lecture 'Choice data, generalization, and Bradley-Terry' from 28 Sep 2026.",
+     "anchor": "provenance-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "provenance-r1",
+     "question": "Which concepts map to session S02?",
+     "answer": "Concepts C01 through C09. They are source-supported at title level.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "id": "provenance-r2",
+     "question": "What is the status of concepts C10 through C12?",
+     "answer": "They are requested extensions. Their source attribution is pending, and the lesson teaches them as independent theory.",
+     "anchor": "provenance-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-the-bernoulli-refresher",
+   "title": "Local remediation: the Bernoulli refresher",
+   "minutes": 1,
+   "endAnchor": "local-remediation-the-bernoulli-refresher-end",
+   "blocks": [
+    {
+     "anchor": "local-remediation-the-bernoulli-refresher-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "Bernoulli trial",
+     "definition": "A two-outcome trial with y = 1 when item a is chosen over b, else y = 0.",
+     "anchor": "local-remediation-the-bernoulli-refresher-p01"
+    },
+    {
+     "term": "PMF",
+     "definition": "The probability mass function, here P(y) = p^y (1-p)^(1-y) for a comparison outcome.",
+     "anchor": "local-remediation-the-bernoulli-refresher-p01"
+    },
+    {
+     "term": "log-likelihood",
+     "definition": "The sum of log probabilities of the outcomes, maximized here by the sample mean.",
+     "anchor": "local-remediation-the-bernoulli-refresher-p01"
+    },
+    {
+     "term": "Binomial(n, p)",
+     "definition": "The distribution of the win count over n independent trials.",
+     "anchor": "local-remediation-the-bernoulli-refresher-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "local-remediation-the-bernoulli-refresher-r1",
+     "question": "What are the expectation and variance of a comparison outcome?",
+     "answer": "Expectation E[y] = p. Variance Var(y) = p(1-p).",
+     "anchor": "local-remediation-the-bernoulli-refresher-p01"
+    },
+    {
+     "id": "local-remediation-the-bernoulli-refresher-r2",
+     "question": "What maximizes the log-likelihood of p?",
+     "answer": "The sample mean of the outcomes.",
+     "anchor": "local-remediation-the-bernoulli-refresher-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "russian-doll-ladder-for-the-major-mechanism-bradley-terry",
+   "title": "Russian-doll ladder for the major mechanism (Bradley-Terry)",
+   "minutes": 1,
+   "endAnchor": "russian-doll-ladder-for-the-major-mechanism-bradley-terry-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "win records",
+     "definition": "Pairwise win records, which shell 0 turns into one score per item.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bradley-terry-list01"
+    },
+    {
+     "term": "gradient ascent",
+     "definition": "The fitting method whose gradient shell 4 derives and implements in NumPy.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bradley-terry-list01"
+    },
+    {
+     "term": "label noise",
+     "definition": "Flipped comparison labels that shell 6 predicts shrink the estimated scores.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bradley-terry-list01"
+    },
+    {
+     "term": "rock-paper-scissors cycles",
+     "definition": "Cyclic wins that break the single-score model, named as the counterexample in shell 7.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bradley-terry-list01"
+    },
+    {
+     "term": "Thurstone",
+     "definition": "The Gaussian-noise alternative to Bradley-Terry, compared under equal budgets in shell 8.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bradley-terry-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-bradley-terry-r1",
+     "question": "What does shell 5 check?",
+     "answer": "With no data the scores stay at the anchor. With infinite gap the probability saturates at 1.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bradley-terry-list01"
+    },
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-bradley-terry-r2",
+     "question": "What breaks the single-score model?",
+     "answer": "Rock-paper-scissors cycles. Shell 7 names them as the counterexample.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-bradley-terry-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood-dependency-list",
+   "title": "Not-yet-understood dependency list",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-dependency-list-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "logistic shape",
+     "definition": "The S-curve link that C05 justifies through the Gumbel derivation in U02.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "score anchor",
+     "definition": "The constraint that fixes the additive constant, chosen as C07 shows.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "not-yet-understood-dependency-list-r1",
+     "question": "Where is the logistic shape justified?",
+     "answer": "In C05, through the Gumbel derivation in U02.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "id": "not-yet-understood-dependency-list-r2",
+     "question": "Where do you learn to pick the score anchor?",
+     "answer": "In C07.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c01-preferences-versus-choices",
+   "title": "cs329h-U01-C01: preferences versus choices",
+   "minutes": 4,
+   "endAnchor": "cs329h-u01-c01-preferences-versus-choices-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c01-preferences-versus-choices-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c01-preferences-versus-choices-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u01-c01-preferences-versus-choices-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "preference",
+     "definition": "A latent ordering that answers what you would want with full information and no pressure.",
+     "anchor": "cs329h-u01-c01-preferences-versus-choices-p01"
+    },
+    {
+     "term": "choice",
+     "definition": "An observed pick that answers what you picked, here, now.",
+     "anchor": "cs329h-u01-c01-preferences-versus-choices-p01"
+    },
+    {
+     "term": "context",
+     "definition": "A recorded factor like time of day or item order that shifts choices.",
+     "anchor": "cs329h-u01-c01-preferences-versus-choices-p01"
+    },
+    {
+     "term": "context effect",
+     "definition": "The term b*c in the model, shifting choice probability without moving the preference.",
+     "anchor": "cs329h-u01-c01-preferences-versus-choices-p05"
+    },
+    {
+     "term": "Bradley-Terry",
+     "definition": "The pairwise choice model with P(a beats b) = sigma(s_a - s_b).",
+     "anchor": "cs329h-u01-c01-preferences-versus-choices-p10"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c01-preferences-versus-choices-r1",
+     "question": "How do preference and choice differ?",
+     "answer": "A preference is what you would want with full information and no pressure. A choice is what you picked, here, now. Choice equals preference plus context plus noise.",
+     "anchor": "cs329h-u01-c01-preferences-versus-choices-p03"
+    },
+    {
+     "id": "cs329h-u01-c01-preferences-versus-choices-r2",
+     "question": "When do choices reveal preference directly?",
+     "answer": "When b = 0. If b is not 0, raw win counts confound preference and context.",
+     "anchor": "cs329h-u01-c01-preferences-versus-choices-p05"
+    },
+    {
+     "id": "cs329h-u01-c01-preferences-versus-choices-r3",
+     "question": "What happens when the annotator's preference genuinely changes over time?",
+     "answer": "No context model recovers one stable s. The data needs a time-varying preference.",
+     "anchor": "cs329h-u01-c01-preferences-versus-choices-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c02-context",
+   "title": "cs329h-U01-C02: context",
+   "minutes": 3,
+   "endAnchor": "cs329h-u01-c02-context-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c02-context-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c02-context-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "context",
+     "definition": "Everything around the comparison that is not the items: wording, order, time pressure, history.",
+     "anchor": "cs329h-u01-c02-context-p01"
+    },
+    {
+     "term": "context features",
+     "definition": "Recorded factors in a vector c, weighted by w in the effective gap.",
+     "anchor": "cs329h-u01-c02-context-p05"
+    },
+    {
+     "term": "effective gap",
+     "definition": "The score gap plus the context term w(c_a - c_b).",
+     "anchor": "cs329h-u01-c02-context-p05"
+    },
+    {
+     "term": "sigma",
+     "definition": "The logistic function that maps a gap to a win probability.",
+     "anchor": "cs329h-u01-c02-context-p06"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c02-context-r1",
+     "question": "Why treat context as data?",
+     "answer": "Context moves choices without moving preferences. Recording it lets the model separate the two.",
+     "anchor": "cs329h-u01-c02-context-p03"
+    },
+    {
+     "id": "cs329h-u01-c02-context-r2",
+     "question": "How does one recorded factor change a close call?",
+     "answer": "With gap 0.3 and a wording factor of 0.5, P(A wins) moves from sigma(0.3) = 0.574 to sigma(0.8) = 0.690.",
+     "anchor": "cs329h-u01-c02-context-p06"
+    },
+    {
+     "id": "cs329h-u01-c02-context-r3",
+     "question": "What breaks when context correlates with the items?",
+     "answer": "The order coefficient absorbs item difficulty. If harder prompts always show A first, the model misattributes the effect.",
+     "anchor": "cs329h-u01-c02-context-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c03-pairwise-data",
+   "title": "cs329h-U01-C03: pairwise data",
+   "minutes": 3,
+   "endAnchor": "cs329h-u01-c03-pairwise-data-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c03-pairwise-data-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c03-pairwise-data-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "pairwise record",
+     "definition": "One contest with one winner, stored as the triple (a, b, y).",
+     "anchor": "cs329h-u01-c03-pairwise-data-p01"
+    },
+    {
+     "term": "win-count matrix",
+     "definition": "The table W of wins per ordered pair, the only input the likelihood uses.",
+     "anchor": "cs329h-u01-c03-pairwise-data-p06"
+    },
+    {
+     "term": "sufficiency",
+     "definition": "Only win counts per ordered pair matter to the likelihood, not the record order.",
+     "anchor": "cs329h-u01-c03-pairwise-data-p13"
+    },
+    {
+     "term": "independence",
+     "definition": "The assumption that records are independent given the scores, tested in C08.",
+     "anchor": "cs329h-u01-c03-pairwise-data-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c03-pairwise-data-r1",
+     "question": "What is the schema of a pairwise record?",
+     "answer": "A triple (a, b, y): two item ids and y = 1 meaning a won.",
+     "anchor": "cs329h-u01-c03-pairwise-data-p04"
+    },
+    {
+     "id": "cs329h-u01-c03-pairwise-data-r2",
+     "question": "Why does the likelihood need only the win counts?",
+     "answer": "The log-likelihood sums over records and regroups by pair. Record order carries no information.",
+     "anchor": "cs329h-u01-c03-pairwise-data-p05"
+    },
+    {
+     "id": "cs329h-u01-c03-pairwise-data-r3",
+     "question": "What breaks the independence assumption?",
+     "answer": "Dependent records, like one annotator judging the same pair ten times. Duplicates inflate confidence without adding information.",
+     "anchor": "cs329h-u01-c03-pairwise-data-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c04-ordinalcardinal-distinction",
+   "title": "cs329h-U01-C04: ordinal/cardinal distinction",
+   "minutes": 3,
+   "endAnchor": "cs329h-u01-c04-ordinalcardinal-distinction-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c04-ordinalcardinal-distinction-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c04-ordinalcardinal-distinction-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u01-c04-ordinalcardinal-distinction-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "ordinal",
+     "definition": "Order information only, as in pairwise win records.",
+     "anchor": "cs329h-u01-c04-ordinalcardinal-distinction-p03"
+    },
+    {
+     "term": "cardinal",
+     "definition": "Order plus strength, as in scores with meaningful gaps.",
+     "anchor": "cs329h-u01-c04-ordinalcardinal-distinction-p03"
+    },
+    {
+     "term": "monotone transform",
+     "definition": "A transform that preserves order, so ordinal data alone leaves every monotone transform of the scores valid.",
+     "anchor": "cs329h-u01-c04-ordinalcardinal-distinction-p05"
+    },
+    {
+     "term": "logistic link",
+     "definition": "The assumption that maps gaps to probabilities through sigma.",
+     "anchor": "cs329h-u01-c04-ordinalcardinal-distinction-p04"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c04-ordinalcardinal-distinction-r1",
+     "question": "What is the difference between ordinal and cardinal data?",
+     "answer": "Ordinal is the ranking. Cardinal is the ranking plus the gaps.",
+     "anchor": "cs329h-u01-c04-ordinalcardinal-distinction-p03"
+    },
+    {
+     "id": "cs329h-u01-c04-ordinalcardinal-distinction-r2",
+     "question": "How can two pairs share an order but differ in confidence?",
+     "answer": "Gap 0.8 gives P = 0.690; gap 3.0 gives P = 0.953. Same order, different confidence.",
+     "anchor": "cs329h-u01-c04-ordinalcardinal-distinction-p06"
+    },
+    {
+     "id": "cs329h-u01-c04-ordinalcardinal-distinction-r3",
+     "question": "When are cardinal gaps pure prior?",
+     "answer": "With one comparison per pair. The data only orders.",
+     "anchor": "cs329h-u01-c04-ordinalcardinal-distinction-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c05-bradley-terry",
+   "title": "cs329h-U01-C05: Bradley-Terry",
+   "minutes": 4,
+   "endAnchor": "cs329h-u01-c05-bradley-terry-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c05-bradley-terry-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c05-bradley-terry-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u01-c05-bradley-terry-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "Bradley-Terry",
+     "definition": "The model where P(a beats b) = sigma(s_a - s_b) for hidden strengths s.",
+     "anchor": "cs329h-u01-c05-bradley-terry-p10"
+    },
+    {
+     "term": "score",
+     "definition": "A hidden strength number per item in utils, with only differences entering the model.",
+     "anchor": "cs329h-u01-c05-bradley-terry-p02"
+    },
+    {
+     "term": "(y - p) update",
+     "definition": "The gradient rule where each comparison nudges the winner up by (1-p) and the loser down by p.",
+     "anchor": "cs329h-u01-c05-bradley-terry-p13"
+    },
+    {
+     "term": "sum-zero anchor",
+     "definition": "The constraint sum(s) = 0 enforced after each gradient step.",
+     "anchor": "cs329h-u01-c05-bradley-terry-p06"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c05-bradley-terry-r1",
+     "question": "How does one Bradley-Terry update work?",
+     "answer": "Each comparison nudges the winner's score up by (1 - p) and the loser's down by p, where p is the predicted probability. Surprising wins move scores more.",
+     "anchor": "cs329h-u01-c05-bradley-terry-p05"
+    },
+    {
+     "id": "cs329h-u01-c05-bradley-terry-r2",
+     "question": "What scores does the three-player toy produce?",
+     "answer": "s = [2.72, 2.03, -4.76] with the sum-zero anchor. C never wins, so its score drops hard.",
+     "anchor": "cs329h-u01-c05-bradley-terry-p06"
+    },
+    {
+     "id": "cs329h-u01-c05-bradley-terry-r3",
+     "question": "What breaks the model in the intransitivity counterexample?",
+     "answer": "Cycles: A beats B, B beats C, C beats A, each strongly. One score per item cannot fit all three.",
+     "anchor": "cs329h-u01-c05-bradley-terry-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c06-logistic-likelihood",
+   "title": "cs329h-U01-C06: logistic likelihood",
+   "minutes": 3,
+   "endAnchor": "cs329h-u01-c06-logistic-likelihood-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c06-logistic-likelihood-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c06-logistic-likelihood-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u01-c06-logistic-likelihood-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "likelihood",
+     "definition": "How probable each candidate gap makes the actual data.",
+     "anchor": "cs329h-u01-c06-logistic-likelihood-p01"
+    },
+    {
+     "term": "log-likelihood",
+     "definition": "The log of the likelihood, turning the product over trials into a sum.",
+     "anchor": "cs329h-u01-c06-logistic-likelihood-p03"
+    },
+    {
+     "term": "MLE gap",
+     "definition": "The maximum likelihood estimate of the gap, equal to log(wins_a / wins_b) for one pair.",
+     "anchor": "cs329h-u01-c06-logistic-likelihood-p05"
+    },
+    {
+     "term": "negative log-likelihood",
+     "definition": "The fitted loss, minimized at d = 1.61 on the toy grid search.",
+     "anchor": "cs329h-u01-c06-logistic-likelihood-p06"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c06-logistic-likelihood-r1",
+     "question": "What is the MLE gap for the 5-1 toy?",
+     "answer": "d = log 5 = 1.609. The MLE gap equals the log odds of the observed win rate.",
+     "anchor": "cs329h-u01-c06-logistic-likelihood-p05"
+    },
+    {
+     "id": "cs329h-u01-c06-logistic-likelihood-r2",
+     "question": "When does the MLE fail to exist?",
+     "answer": "On separable data: six wins and zero losses push the MLE gap to infinity. The fix is a prior or regularization.",
+     "anchor": "cs329h-u01-c06-logistic-likelihood-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c07-parameter-identifiability",
+   "title": "cs329h-U01-C07: parameter identifiability",
+   "minutes": 3,
+   "endAnchor": "cs329h-u01-c07-parameter-identifiability-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c07-parameter-identifiability-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c07-parameter-identifiability-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u01-c07-parameter-identifiability-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "identifiability",
+     "definition": "The question of whether the data pins down one parameter vector, with an additive constant unidentified here.",
+     "anchor": "cs329h-u01-c07-parameter-identifiability-p01"
+    },
+    {
+     "term": "shift invariance",
+     "definition": "Adding a constant c to every score leaves all win probabilities unchanged.",
+     "anchor": "cs329h-u01-c07-parameter-identifiability-p04"
+    },
+    {
+     "term": "anchor",
+     "definition": "A constraint like sum-zero or pin-first that fixes the free constant.",
+     "anchor": "cs329h-u01-c07-parameter-identifiability-p01"
+    },
+    {
+     "term": "connected components",
+     "definition": "Groups of items linked by comparisons, each with its own free constant.",
+     "anchor": "cs329h-u01-c07-parameter-identifiability-p12"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c07-parameter-identifiability-r1",
+     "question": "Why is the absolute score level invisible?",
+     "answer": "Only gaps enter the model. Lifting every score by the same amount changes nothing observable.",
+     "anchor": "cs329h-u01-c07-parameter-identifiability-p03"
+    },
+    {
+     "id": "cs329h-u01-c07-parameter-identifiability-r2",
+     "question": "What does adding 1.0 to all scores change?",
+     "answer": "Nothing. Predicted probabilities stay 0.622, 0.690, 0.574 to three decimals.",
+     "anchor": "cs329h-u01-c07-parameter-identifiability-p06"
+    },
+    {
+     "id": "cs329h-u01-c07-parameter-identifiability-r3",
+     "question": "When is identifiability only partial?",
+     "answer": "When items split into groups with no cross-group comparisons. The gap between blocks is unidentified.",
+     "anchor": "cs329h-u01-c07-parameter-identifiability-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c08-noise",
+   "title": "cs329h-U01-C08: noise",
+   "minutes": 3,
+   "endAnchor": "cs329h-u01-c08-noise-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c08-noise-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c08-noise-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u01-c08-noise-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "label noise",
+     "definition": "Flipped comparison labels, each flipping with probability q.",
+     "anchor": "cs329h-u01-c08-noise-p01"
+    },
+    {
+     "term": "attenuation",
+     "definition": "The shrinkage of estimated gaps under noise, about a factor of 0.4 at q = 0.3.",
+     "anchor": "cs329h-u01-c08-noise-p01"
+    },
+    {
+     "term": "p_obs",
+     "definition": "The observed win rate: p_obs = (1-q) p_true + q (1-p_true).",
+     "anchor": "cs329h-u01-c08-noise-p04"
+    },
+    {
+     "term": "gold pairs",
+     "definition": "Pairs with known answers planted in the queue to estimate q per annotator.",
+     "anchor": "cs329h-u01-c08-noise-p12"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c08-noise-r1",
+     "question": "What does label noise do to the estimated gap?",
+     "answer": "It shrinks it toward zero. On the toy, the gap falls from 1.46 at q = 0 to 0.58 at q = 0.3.",
+     "anchor": "cs329h-u01-c08-noise-p06"
+    },
+    {
+     "id": "cs329h-u01-c08-noise-r2",
+     "question": "Why can you not estimate q without repeats?",
+     "answer": "Without repeat judgments, q and the gap are confounded.",
+     "anchor": "cs329h-u01-c08-noise-p09"
+    },
+    {
+     "id": "cs329h-u01-c08-noise-r3",
+     "question": "What breaks the uniform attenuation story?",
+     "answer": "Adversarial noise. If flips target close pairs, the ranking itself can invert.",
+     "anchor": "cs329h-u01-c08-noise-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c09-traintest-generalization",
+   "title": "cs329h-U01-C09: train/test generalization",
+   "minutes": 3,
+   "endAnchor": "cs329h-u01-c09-traintest-generalization-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c09-traintest-generalization-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c09-traintest-generalization-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u01-c09-traintest-generalization-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "train loss",
+     "definition": "Fit to the past, minimized by the MLE by construction and therefore optimistic.",
+     "anchor": "cs329h-u01-c09-traintest-generalization-p03"
+    },
+    {
+     "term": "test loss",
+     "definition": "Skill on the future, an unbiased estimate of the population risk.",
+     "anchor": "cs329h-u01-c09-traintest-generalization-p03"
+    },
+    {
+     "term": "held-out log-loss",
+     "definition": "Log-loss on fresh comparisons, in nats per comparison.",
+     "anchor": "cs329h-u01-c09-traintest-generalization-p01"
+    },
+    {
+     "term": "distribution shift",
+     "definition": "Test pairs from new items or annotators that break the training distribution.",
+     "anchor": "cs329h-u01-c09-traintest-generalization-p11"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c09-traintest-generalization-r1",
+     "question": "How do train and test loss behave as n grows?",
+     "answer": "With little data they disagree, with train below test. With much data both converge to the entropy of the true outcome distribution.",
+     "anchor": "cs329h-u01-c09-traintest-generalization-p05"
+    },
+    {
+     "id": "cs329h-u01-c09-traintest-generalization-r2",
+     "question": "What are the test log-loss numbers on the toy?",
+     "answer": "At n = 20, 100, 1000: 0.627, 0.588, 0.582. Train log-loss at n = 20 is 0.423, well below test.",
+     "anchor": "cs329h-u01-c09-traintest-generalization-p06"
+    },
+    {
+     "id": "cs329h-u01-c09-traintest-generalization-r3",
+     "question": "What breaks generalization across annotator pools?",
+     "answer": "Distribution shift. A model with great held-out loss on old annotators can fail on a new pool.",
+     "anchor": "cs329h-u01-c09-traintest-generalization-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c10-annotation-protocol",
+   "title": "cs329h-U01-C10: annotation protocol",
+   "minutes": 3,
+   "endAnchor": "cs329h-u01-c10-annotation-protocol-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c10-annotation-protocol-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c10-annotation-protocol-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "protocol",
+     "definition": "A contract with the annotator: what to judge, how to judge it, and how you verify the work.",
+     "anchor": "cs329h-u01-c10-annotation-protocol-p01"
+    },
+    {
+     "term": "gold questions",
+     "definition": "Pairs with obvious answers that estimate annotator attention.",
+     "anchor": "cs329h-u01-c10-annotation-protocol-p04"
+    },
+    {
+     "term": "repeats",
+     "definition": "Re-asked pairs that measure self-consistency and bound the noise q.",
+     "anchor": "cs329h-u01-c10-annotation-protocol-p02"
+    },
+    {
+     "term": "calibration examples",
+     "definition": "Reference pairs with intended verdicts that anchor the scale.",
+     "anchor": "cs329h-u01-c10-annotation-protocol-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c10-annotation-protocol-r1",
+     "question": "What three mechanisms control annotation quality?",
+     "answer": "Calibration examples anchor the scale. Gold questions estimate attention. Repeats estimate noise.",
+     "anchor": "cs329h-u01-c10-annotation-protocol-p05"
+    },
+    {
+     "id": "cs329h-u01-c10-annotation-protocol-r2",
+     "question": "How do you read annotators A and B on the toy?",
+     "answer": "A: gold accuracy 0.98, self-consistency 0.93, keep. B: 0.80 and 0.70, retrain or drop.",
+     "anchor": "cs329h-u01-c10-annotation-protocol-p06"
+    },
+    {
+     "id": "cs329h-u01-c10-annotation-protocol-r3",
+     "question": "What signals gamed gold questions?",
+     "answer": "High gold accuracy with low self-consistency. It means memorized golds, not careful work.",
+     "anchor": "cs329h-u01-c10-annotation-protocol-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c11-social-meaning",
+   "title": "cs329h-U01-C11: social meaning",
+   "minutes": 3,
+   "endAnchor": "cs329h-u01-c11-social-meaning-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c11-social-meaning-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c11-social-meaning-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "social meaning",
+     "definition": "The social content of a choice: politeness, effort, what the annotator thinks you want.",
+     "anchor": "cs329h-u01-c11-social-meaning-p03"
+    },
+    {
+     "term": "demand effects",
+     "definition": "Annotators infer the desired answer from the task framing and comply.",
+     "anchor": "cs329h-u01-c11-social-meaning-p05"
+    },
+    {
+     "term": "effort minimization",
+     "definition": "The easier option wins when attention is scarce.",
+     "anchor": "cs329h-u01-c11-social-meaning-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c11-social-meaning-r1",
+     "question": "Why is a choice not a preference?",
+     "answer": "Choices carry social meaning: politeness, effort, what the annotator thinks you want to hear. A recorded choice is a performance, not a readout of an inner utility meter.",
+     "anchor": "cs329h-u01-c11-social-meaning-p03"
+    },
+    {
+     "id": "cs329h-u01-c11-social-meaning-r2",
+     "question": "How can time pressure invert a preference?",
+     "answer": "Shorter answers win 60% of careful judgments, but longer answers win 65% under pressure because they look more thorough. The model learns 'longer is better'.",
+     "anchor": "cs329h-u01-c11-social-meaning-p06"
+    },
+    {
+     "id": "cs329h-u01-c11-social-meaning-r3",
+     "question": "What is artificial about the careful judgment?",
+     "answer": "Nobody reads that carefully in real use. Optimizing for careful-judgment preference can hurt the actual user experience.",
+     "anchor": "cs329h-u01-c11-social-meaning-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u01-c12-fairness-questions",
+   "title": "cs329h-U01-C12: fairness questions",
+   "minutes": 3,
+   "endAnchor": "cs329h-u01-c12-fairness-questions-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u01-c12-fairness-questions-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u01-c12-fairness-questions-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u01-c12-fairness-questions-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "pooled model",
+     "definition": "One model fit on all groups, serving the majority pattern.",
+     "anchor": "cs329h-u01-c12-fairness-questions-p03"
+    },
+    {
+     "term": "representation",
+     "definition": "Whose judgments trained the model.",
+     "anchor": "cs329h-u01-c12-fairness-questions-p05"
+    },
+    {
+     "term": "per-group accuracy",
+     "definition": "Accuracy scored separately per group, 0.87 versus 0.59 on the toy.",
+     "anchor": "cs329h-u01-c12-fairness-questions-p04"
+    },
+    {
+     "term": "calibration",
+     "definition": "Whether predicted probabilities match observed rates, checked per group.",
+     "anchor": "cs329h-u01-c12-fairness-questions-p04"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u01-c12-fairness-questions-r1",
+     "question": "What three fairness questions must a preference model answer?",
+     "answer": "Representation: whose judgments trained it? Performance: does accuracy or calibration differ by group? Target: whose preference should it reflect?",
+     "anchor": "cs329h-u01-c12-fairness-questions-p05"
+    },
+    {
+     "id": "cs329h-u01-c12-fairness-questions-r2",
+     "question": "What does the pooled accuracy hide on the toy?",
+     "answer": "Overall 0.73 hides 0.87 on group 1 and 0.59 on group 2, a gap of 0.28 far above noise.",
+     "anchor": "cs329h-u01-c12-fairness-questions-p06"
+    },
+    {
+     "id": "cs329h-u01-c12-fairness-questions-r3",
+     "question": "How do you tell noise from genuine disagreement across groups?",
+     "answer": "Fit per-group scores. If the score vectors agree up to noise, the gap is noise, not disagreement.",
+     "anchor": "cs329h-u01-c12-fairness-questions-p12"
+    }
+   ]
+  }
+ ]
+}

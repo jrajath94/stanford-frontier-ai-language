@@ -135,8 +135,9 @@
       <h1>Interview · U08 keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-key-u08">Interview key , U08</h1>
+<span id="interview-key-u08-end" data-end></span>
 <h2 id="breadth">Breadth</h2>
-<p>A1. Zero-shot describes, few-shot shows. Both only steer the model
+<p id="breadth-p01" data-kind="example" data-term="steer">A1. Zero-shot describes, few-shot shows. Both only steer the model
 without weight updates, both are bounded by the window.
 A2. Frozen weights, pattern pickup in the forward pass. Open: the
 true mechanism at scale.
@@ -148,37 +149,42 @@ A5. dW = BA, rank r, train A, B only. Merge into W once: one
 matrix, zero extra latency.
 A6. New training erases old tasks on shared weights. Mitigations:
 replay, freeze (PEFT), multitask.</p>
+<span id="breadth-end" data-end></span>
 <h2 id="deep-ladders">Deep ladders</h2>
-<p>L1. (1) Instruction + 2 examples + query. (2) k examples eat the
+<p id="deep-ladders-p01" data-kind="example" data-term="label priors">L1. (1) Instruction + 2 examples + query. (2) k examples eat the
 window (n^2 attention). (3) No gradient step: the weights are
 unchanged. (4) Format and label priors help regardless. (5)
 Shuffled vs true labels: the gap is the task knowledge.</p>
-<p>L2. (1) W (d,d) frozen, B (d,r), A (r,d). (2) 2dr = 65536,
+<p id="deep-ladders-p02" data-kind="prose" data-term="diminishing returns">L2. (1) W (d,d) frozen, B (d,r), A (r,d). (2) 2dr = 65536,
 4.19M/7B = 0.060%. (3) rank(BA) &lt;= min(rank B, rank A) &lt;= r. (4)
 The true update is high-rank, r = 8 cannot express it. (5) r in
 {2, 8, 32} on a near task, expect diminishing returns.</p>
+<span id="deep-ladders-end" data-end></span>
 <h2 id="analytical">Analytical</h2>
-<p>A7. (i) Distraction: more shots add noise past the useful pattern
+<p id="analytical-p01" data-kind="example" data-term="order effects">A7. (i) Distraction: more shots add noise past the useful pattern
 (C02). (ii) Wrong-pattern reinforcement or order effects (C04).
 Cheapest tests: the ICL curve per task (find the peak), and
 permutation of example order (measure the spread).
 A8. No conclusion about the methods: the comparison varied tuning
 effort (errors.md U08 T2). The honest statement: under these
 unequal budgets they tied, rerun at equal effort.</p>
+<span id="analytical-end" data-end></span>
 <h2 id="implementationdebugging">Implementation/debugging</h2>
-<p>A9. (1) Retry with the parse error appended (cheapest). (2) Add
+<p id="implementationdebugging-p01" data-kind="example" data-term="parse error appended">A9. (1) Retry with the parse error appended (cheapest). (2) Add
 one format example to the prompt. (3) Constrain the schema
 (fewer optional fields). (4) Constrained decoding (strongest,
 most work).</p>
+<span id="implementationdebugging-end" data-end></span>
 <h2 id="changed-constraint">Changed-constraint</h2>
-<p>A10. One base model + 50 LoRA deltas (8 MB each), swap or batch
+<p id="changed-constraint-p01" data-kind="example" data-term="8 MB">A10. One base model + 50 LoRA deltas (8 MB each), swap or batch
 deltas per request. Breaks: batching across different deltas needs
 per-request adapter logic, latency if swapped naively.
 A11. No. A new language needs high-rank changes across the model,
 r = 8 cannot express them (C07&rsquo;s far-task case). Use full
 fine-tuning or continued pretraining.</p>
+<span id="changed-constraint-end" data-end></span>
 <h2 id="research-critique">Research critique</h2>
-<p>A12. Steelman: the steps decompose the problem and often check
+<p id="research-critique-p01" data-kind="example" data-term="audit">A12. Steelman: the steps decompose the problem and often check
 out, they expose the work for audit. Counterexample: intervention
 studies show models produce plausible steps for answers reached
 otherwise, the steps are optimized to look right, not to be the
@@ -187,7 +193,8 @@ causal path. Useful, not faithful.</p>
       <nav class="pager"><a href="../interview/u08_questions.html"><span class="lbl">← Previous</span>Interview · U08 questions</a><a href="../interview/u09_questions.html"><span class="lbl">Next →</span>Interview · U09 questions</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-p02" data-kind="prose" data-term="causal path">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-end" data-end></span>
     </footer>
   </main>
 </div>

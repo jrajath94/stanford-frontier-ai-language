@@ -98,9 +98,10 @@
       <h1>Interview · Oral keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="oral-defense-keys">Oral defense keys</h1>
-<p>Full keys for <code>oral-defenses.md</code>. Two points per rung, 16 per ladder.</p>
+<p id="oral-defense-keys-p01" data-kind="keyIdea" data-reveal="rise" data-term="16 per ladder">Full keys for <code>oral-defenses.md</code>. Two points per rung, 16 per ladder.</p>
+<span id="oral-defense-keys-end" data-end></span>
 <h2 id="d1-attention">D1 , attention</h2>
-<ol>
+<ol id="d1-attention-list01" data-kind="example" data-term="attention formula">
 <li>Strong: softmax(QK^T/sqrt(d))V, weights over values.</li>
 <li>Strong: rows [0.731, 0.269] and [0.269, 0.731].</li>
 <li>Strong: dot products grow as sqrt(d), unscaled softmax
@@ -115,8 +116,9 @@
 <li>Strong: sweep the scale in {1, sqrt(d), d} on a toy copy
    task, measure convergence steps.</li>
 </ol>
+<span id="d1-attention-end" data-end></span>
 <h2 id="d2-rope">D2 , RoPE</h2>
-<ol>
+<ol id="d2-rope-list01" data-kind="example" data-term="rotation pairs">
 <li>Strong: rotate each 2D pair of q/k by an angle
    proportional to position, different frequencies per pair.</li>
 <li>Strong: (1, 0) rotated 90 degrees is (0, 1).</li>
@@ -132,8 +134,9 @@
 <li>Strong: perplexity on 2x-length documents plus a
    distance-sensitive retrieval probe.</li>
 </ol>
+<span id="d2-rope-end" data-end></span>
 <h2 id="d3-temperature">D3 , temperature</h2>
-<ol>
+<ol id="d3-temperature-list01" data-kind="example" data-term="T=0.5">
 <li>Strong: divide logits by T before softmax, T reshapes
    sharpness.</li>
 <li>Strong: T=0.5: [0.867, 0.117, 0.016]. T=2: [0.506,
@@ -150,8 +153,9 @@
 <li>Strong: sweep T in {0.3, 0.7, 1.0, 1.5}, measure quality
    (judge) vs diversity (distinct n-grams), find the knee.</li>
 </ol>
+<span id="d3-temperature-end" data-end></span>
 <h2 id="d4-lora">D4 , LoRA</h2>
-<ol>
+<ol id="d4-lora-list01" data-kind="example" data-term="8 parameters">
 <li>Strong: W + BA with B in R^(dxr), A in R^(rxk), r small.</li>
 <li>Strong: 1 x (4 + 4) = 8 parameters vs 16 full.</li>
 <li>Strong: full needs dk, LoRA needs r(d + k), ratio about
@@ -167,8 +171,9 @@
 <li>Strong: train r in {1, 4, 16, 64} on the task, plot eval
    vs r, find the knee.</li>
 </ol>
+<span id="d4-lora-end" data-end></span>
 <h2 id="d5-ppo-clipping">D5 , PPO clipping</h2>
-<ol>
+<ol id="d5-ppo-clipping-list01" data-kind="example" data-term="1.2">
 <li>Strong: E[min(rho A, clip(rho, 1-eps, 1+eps) A)].</li>
 <li>Strong: min(2.0 x 1.0, 1.2 x 1.0) = 1.2.</li>
 <li>Strong: the trust region bounds the KL per step, the min
@@ -184,8 +189,9 @@
 <li>Strong: sweep eps in {0.1, 0.2, 0.3}, measure stability
    (KL per step) vs speed (reward per step).</li>
 </ol>
+<span id="d5-ppo-clipping-end" data-end></span>
 <h2 id="d6-grpo">D6 , GRPO</h2>
-<ol>
+<ol id="d6-grpo-list01" data-kind="example" data-term="[1, 1, -1, -1]">
 <li>Strong: A_i = (r_i - mu)/sigma over the prompt group.</li>
 <li>Strong: [1, 1, -1, -1].</li>
 <li>Strong: E[(r - b) d log pi] = E[r d log pi] since
@@ -201,8 +207,9 @@
 <li>Strong: sweep G in {4, 16, 64} at fixed rollout budget,
    measure reward per step.</li>
 </ol>
+<span id="d6-grpo-end" data-end></span>
 <h2 id="d7-rag">D7 , RAG</h2>
-<ol>
+<ol id="d7-rag-list01" data-kind="example" data-term="0.75/0.30">
 <li>Strong: recall = H/R, precision = H/K.</li>
 <li>Strong: recall 0.75, precision 0.30.</li>
 <li>Strong: end quality &lt;= recall@N x precision@M, the stages
@@ -219,8 +226,9 @@
 <li>Strong: vary chunk size on a fixed corpus, plot
    recall@20, find the peak.</li>
 </ol>
+<span id="d7-rag-end" data-end></span>
 <h2 id="d8-judge-bias">D8 , judge bias</h2>
-<ol>
+<ol id="d8-judge-bias-list01" data-kind="example" data-term="0.625">
 <li>Strong: position favors the first answer, verbosity
    favors the longer one.</li>
 <li>Strong: (0.70 + 0.55)/2 = 0.625.</li>
@@ -237,8 +245,9 @@
 <li>Strong: vary the length difference, measure the win-rate
    shift, plot the bias curve.</li>
 </ol>
+<span id="d8-judge-bias-end" data-end></span>
 <h2 id="d9-diffusion">D9 , diffusion</h2>
-<ol>
+<ol id="d9-diffusion-list01" data-kind="example" data-term="4 most confident">
 <li>Strong: how many tokens unmask per step, by confidence.</li>
 <li>Strong: the 4 most confident tokens unmask first.</li>
 <li>Strong: mask a random fraction, cross-entropy on masked
@@ -254,8 +263,9 @@
 <li>Strong: vary steps in {1, 2, 4, 8, 16}, measure quality,
    find the knee.</li>
 </ol>
+<span id="d9-diffusion-end" data-end></span>
 <h2 id="d10-dpo">D10 , DPO</h2>
-<ol>
+<ol id="d10-dpo-list01" data-kind="example" data-term="0.14">
 <li>Strong: r = beta log(pi/pi_ref), the policy as reward.</li>
 <li>Strong: margin = 0.1 x 1.4 = 0.14.</li>
 <li>Strong: the KL-regularized optimum is pi* proportional
@@ -275,7 +285,8 @@
       <nav class="pager"><a href="../interview/oral-defenses.html"><span class="lbl">← Previous</span>Interview · Oral defenses</a><a href="../interview/transfer-sets.html"><span class="lbl">Next →</span>Interview · Transfer sets</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="d10-dpo-p01" data-kind="prose" data-term="displacement">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="d10-dpo-end" data-end></span>
     </footer>
   </main>
 </div>

@@ -1,0 +1,632 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-lessons-u02_word_vectors",
+ "itemKind": "lesson",
+ "revision": "363f0ee9bb8fa707f4858fb1457529fb38ff7206af91ebb6653b6babe729f2ff",
+ "sections": [
+  {
+   "anchor": "u02_word_vectors-intro-p01",
+   "title": "U02 \u00b7 Word vectors and cooccurrence",
+   "minutes": 1,
+   "endAnchor": "u02_word_vectors-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u02_word_vectors-intro-p02",
+     "definition": "For the session title and reading list (SRC-02).",
+     "term": "OFFICIAL-SOURCE"
+    },
+    {
+     "anchor": "u02_word_vectors-intro-p02",
+     "definition": "For the concept inventory below.",
+     "term": "REQUESTED-BRANCH"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u02_word_vectors-intro-p02",
+     "answer": "S02 (Winter 2026: Thu Jan 8, Word Vectors, A1 out).",
+     "id": "u02_word_vectors-intro-r1",
+     "question": "What is the session anchor for U02?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-dot-product-softmax-cross-entropy",
+   "title": "local remediation , dot product, softmax, cross-entropy",
+   "minutes": 1,
+   "endAnchor": "local-remediation-dot-product-softmax-cross-entropy-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-dot-product-softmax-cross-entropy-p03",
+     "definition": "Turns scores into probabilities. Always subtract the max first.",
+     "term": "softmax"
+    },
+    {
+     "anchor": "local-remediation-dot-product-softmax-cross-entropy-p04",
+     "definition": "With one-hot p, it is -log q_true. Minimizing it maximizes the data probability.",
+     "term": "cross-entropy"
+    },
+    {
+     "anchor": "local-remediation-dot-product-softmax-cross-entropy-p02",
+     "definition": "u . v = sum_i u_i v_i. Measures alignment.",
+     "term": "dot product"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-dot-product-softmax-cross-entropy-p03",
+     "answer": "(0.090, 0.245, 0.665). Subtract the max first: softmax(-2, -1, 0).",
+     "id": "local-remediation-dot-product-softmax-cross-entropy-r1",
+     "question": "What is softmax(1000, 1001, 1002)?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-one-hot-versus-distributed",
+   "title": "c01: one-hot versus distributed",
+   "minutes": 4,
+   "endAnchor": "c01-one-hot-versus-distributed-end",
+   "blocks": [
+    {
+     "anchor": "c01-one-hot-versus-distributed-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-one-hot-versus-distributed-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-one-hot-versus-distributed-p03",
+     "definition": "A name tag: says which word, nothing else. Pairwise cosine is 0.",
+     "term": "one-hot"
+    },
+    {
+     "anchor": "c01-one-hot-versus-distributed-p03",
+     "definition": "A profile: each dimension a learned feature. Similarity means similarity.",
+     "term": "distributed"
+    },
+    {
+     "anchor": "c01-one-hot-versus-distributed-p05",
+     "definition": "Row w of the embedding matrix. Gradients flow into E during training.",
+     "term": "lookup"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-one-hot-versus-distributed-p04",
+     "answer": "One-hot is a name tag: which word, nothing else. Distributed is a profile: learned features.",
+     "id": "c01-one-hot-versus-distributed-r1",
+     "question": "Name tag vs profile?"
+    },
+    {
+     "anchor": "c01-one-hot-versus-distributed-p07",
+     "answer": "cat/dog 0.816, cat/mat 0.679. One-hot cosine between distinct words is 0.0.",
+     "id": "c01-one-hot-versus-distributed-r2",
+     "question": "What were the toy cosines?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-word2vec-skip-gram-and-cbow",
+   "title": "c02: word2vec skip-gram and cbow",
+   "minutes": 3,
+   "endAnchor": "c02-word2vec-skip-gram-and-cbow-end",
+   "blocks": [
+    {
+     "anchor": "c02-word2vec-skip-gram-and-cbow-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-word2vec-skip-gram-and-cbow-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-word2vec-skip-gram-and-cbow-p03",
+     "definition": "One center, many predictions. Rare words get many updates.",
+     "term": "skip-gram"
+    },
+    {
+     "anchor": "c02-word2vec-skip-gram-and-cbow-p03",
+     "definition": "Many context words averaged, one prediction. Faster, washes out rare words.",
+     "term": "CBOW"
+    },
+    {
+     "anchor": "c02-word2vec-skip-gram-and-cbow-p06",
+     "definition": "Pull the true context toward the center; push the rest away.",
+     "term": "push-pull"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-word2vec-skip-gram-and-cbow-p07",
+     "answer": "66 (center, context) pairs from 18 tokens. Loss fell 0.6940 to 0.6471 over 400 epochs.",
+     "id": "c02-word2vec-skip-gram-and-cbow-r1",
+     "question": "What was the training yield?"
+    },
+    {
+     "anchor": "c02-word2vec-skip-gram-and-cbow-p12",
+     "answer": "The window covers whole sentences, every word pairs with every other, all vectors collapse toward each other.",
+     "id": "c02-word2vec-skip-gram-and-cbow-r2",
+     "question": "Why does window 10 collapse the toy?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-negative-sampling",
+   "title": "c03: negative sampling",
+   "minutes": 4,
+   "endAnchor": "c03-negative-sampling-end",
+   "blocks": [
+    {
+     "anchor": "c03-negative-sampling-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-negative-sampling-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-negative-sampling-p04",
+     "definition": "Replace the softmax sum with k noise words. Same push-pull at O(k d).",
+     "term": "negative sampling"
+    },
+    {
+     "anchor": "c03-negative-sampling-p05",
+     "definition": "Unigram^0.75. Oversamples rare words relative to raw frequency.",
+     "term": "noise distribution"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-negative-sampling-p07",
+     "answer": "v_c moved from (0.30, -0.20) to (0.386, 0.043): toward the positive context. Gradient error 2.76e-10.",
+     "id": "c03-negative-sampling-r1",
+     "question": "What did the explicit step show?"
+    },
+    {
+     "anchor": "c03-negative-sampling-p09",
+     "answer": "No push term, all vectors collapse: cosines all near 1.0.",
+     "id": "c03-negative-sampling-r2",
+     "question": "What happens with k = 0?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-hierarchical-softmax",
+   "title": "c04: hierarchical softmax",
+   "minutes": 4,
+   "endAnchor": "c04-hierarchical-softmax-end",
+   "blocks": [
+    {
+     "anchor": "c04-hierarchical-softmax-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-hierarchical-softmax-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-hierarchical-softmax-p03",
+     "definition": "Factor the softmax over a binary tree. A true distribution at O(log V x d).",
+     "term": "hierarchical softmax"
+    },
+    {
+     "anchor": "c04-hierarchical-softmax-p04",
+     "definition": "Common words get short paths, keeping common predictions cheap.",
+     "term": "Huffman tree"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-hierarchical-softmax-p07",
+     "answer": "0.236 = 0.622 x 0.550 x 0.690 from three sigmoids.",
+     "id": "c04-hierarchical-softmax-r1",
+     "question": "What was the toy path probability?"
+    },
+    {
+     "anchor": "c04-hierarchical-softmax-p12",
+     "answer": "Depth V-1 makes cost O(V d), worse than flat softmax, with vanishing gradients through L sigmoids.",
+     "id": "c04-hierarchical-softmax-r2",
+     "question": "What breaks in a chain tree?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-glove",
+   "title": "c05: glove",
+   "minutes": 4,
+   "endAnchor": "c05-glove-end",
+   "blocks": [
+    {
+     "anchor": "c05-glove-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-glove-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-glove-p04",
+     "definition": "Regression on log-counts: w_i . w~_j + b_i + b~_j approximates log X_{ij}.",
+     "term": "GloVe"
+    },
+    {
+     "anchor": "c05-glove-p05",
+     "definition": "Downweights rare pairs (noisy) and skips zeros (log 0 undefined).",
+     "term": "weighting function"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-glove-p07",
+     "answer": "9.8e-5. Small weight (0.053), small residual (-0.043): the pair barely moves the vectors.",
+     "id": "c05-glove-r1",
+     "question": "What was the toy loss contribution?"
+    },
+    {
+     "anchor": "c05-glove-p06",
+     "answer": "log turns ratios into differences: log X_{ik} - log X_{jk} = (w_i - w_j) . w~_k.",
+     "id": "c05-glove-r2",
+     "question": "Why do vector differences encode ratios?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-pmi-connection",
+   "title": "c06: pmi connection",
+   "minutes": 4,
+   "endAnchor": "c06-pmi-connection-end",
+   "blocks": [
+    {
+     "anchor": "c06-pmi-connection-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-pmi-connection-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-pmi-connection-p04",
+     "definition": "Surprise: positive means the pair cooccurs more than chance. In nats.",
+     "term": "PMI"
+    },
+    {
+     "anchor": "c06-pmi-connection-p07",
+     "definition": "Skip-gram with k negatives implicitly factorizes PMI(w,c) - log k.",
+     "term": "shifted PMI"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-pmi-connection-p07",
+     "answer": "PMI 1.569, k = 2: target 0.876. The trained dot product should land near it.",
+     "id": "c06-pmi-connection-r1",
+     "question": "What is the implicit target for (cat, sat)?"
+    },
+    {
+     "anchor": "c06-pmi-connection-p12",
+     "answer": "Finite data, finite dimensions (d = 8 cannot hold rank 14), finite steps: all three break the equality.",
+     "id": "c06-pmi-connection-r2",
+     "question": "Why is the result an asymptote, not a description?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-analogy-and-cosine",
+   "title": "c07: analogy and cosine",
+   "minutes": 3,
+   "endAnchor": "c07-analogy-and-cosine-end",
+   "blocks": [
+    {
+     "anchor": "c07-analogy-and-cosine-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-analogy-and-cosine-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-analogy-and-cosine-p03",
+     "definition": "The parallelogram query a - b + c, answered by argmax cosine excluding a, b, c.",
+     "term": "analogy"
+    },
+    {
+     "anchor": "c07-analogy-and-cosine-p04",
+     "definition": "The parallelogram\u2019s strong linearity claim. Fails where relations are not linear.",
+     "term": "constant offset"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-analogy-and-cosine-p07",
+     "answer": "king - man + woman = (0.20, 1.40), cosine 0.9992 with queen (0.25, 1.35).",
+     "id": "c07-analogy-and-cosine-r1",
+     "question": "What did the toy analogy show?"
+    },
+    {
+     "anchor": "c07-analogy-and-cosine-p09",
+     "answer": "Without the exclusion, the top answer is often b or c itself.",
+     "id": "c07-analogy-and-cosine-r2",
+     "question": "Why must you exclude a, b, c?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-polysemy",
+   "title": "c08: polysemy",
+   "minutes": 3,
+   "endAnchor": "c08-polysemy-end",
+   "blocks": [
+    {
+     "anchor": "c08-polysemy-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-polysemy-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-polysemy-p03",
+     "definition": "One vector per word form forces all senses into one address.",
+     "term": "polysemy"
+    },
+    {
+     "anchor": "c08-polysemy-p04",
+     "definition": "The dominant sense wins the address; the rare sense is a faint echo.",
+     "term": "mixture"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-polysemy-p07",
+     "answer": "Senses (1,0) and (0,1) at 4:1: mixture (0.8, 0.2), cosines 0.970 and 0.243.",
+     "id": "c08-polysemy-r1",
+     "question": "What was the toy mixture?"
+    },
+    {
+     "anchor": "c08-polysemy-p12",
+     "answer": "Neighbors of \u201cbank\u201d mix {loan, money, river, shore}: no single sense, a confused concept.",
+     "id": "c08-polysemy-r2",
+     "question": "What is wrong with reading neighbor lists as definitions?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-intrinsic-and-extrinsic-evaluation",
+   "title": "c09: intrinsic and extrinsic evaluation",
+   "minutes": 3,
+   "endAnchor": "c09-intrinsic-and-extrinsic-evaluation-end",
+   "blocks": [
+    {
+     "anchor": "c09-intrinsic-and-extrinsic-evaluation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-intrinsic-and-extrinsic-evaluation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-intrinsic-and-extrinsic-evaluation-p04",
+     "definition": "Fast proxy: similarity correlation, analogy accuracy. No downstream system needed.",
+     "term": "intrinsic"
+    },
+    {
+     "anchor": "c09-intrinsic-and-extrinsic-evaluation-p04",
+     "definition": "Slow and honest: does the classifier get better?",
+     "term": "extrinsic"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-intrinsic-and-extrinsic-evaluation-p06",
+     "answer": "Intrinsic rewards one property; a task needs many. Optimizing the proxy is not optimizing the goal.",
+     "id": "c09-intrinsic-and-extrinsic-evaluation-r1",
+     "question": "Why do they disagree?"
+    },
+    {
+     "anchor": "c09-intrinsic-and-extrinsic-evaluation-p10",
+     "answer": "Iterate on intrinsic, decide on extrinsic. Never ship on intrinsic alone.",
+     "id": "c09-intrinsic-and-extrinsic-evaluation-r2",
+     "question": "What is the practical rule?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-vector-derivatives",
+   "title": "c10: vector derivatives",
+   "minutes": 3,
+   "endAnchor": "c10-vector-derivatives-end",
+   "blocks": [
+    {
+     "anchor": "c10-vector-derivatives-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-vector-derivatives-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-vector-derivatives-p04",
+     "definition": "Every word2vec gradient: (1 - sigma) error times the other vector.",
+     "term": "gradient shape"
+    },
+    {
+     "anchor": "c10-vector-derivatives-p07",
+     "definition": "Analytic gradient vs central differences must agree to ~1e-7.",
+     "term": "finite-difference check"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-vector-derivatives-p12",
+     "answer": "The derivative only. Correct gradients with lr = 10.0 diverge anyway.",
+     "id": "c10-vector-derivatives-r1",
+     "question": "What does the gradient check validate?"
+    },
+    {
+     "anchor": "c10-vector-derivatives-p10",
+     "answer": "Too-small eps hits floating-point cancellation; too-large grows truncation error. The error is U-shaped.",
+     "id": "c10-vector-derivatives-r2",
+     "question": "Why is eps = 1e-6 the compromise?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-frequency-bias",
+   "title": "c11: frequency bias",
+   "minutes": 3,
+   "endAnchor": "c11-frequency-bias-end",
+   "blocks": [
+    {
+     "anchor": "c11-frequency-bias-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-frequency-bias-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-frequency-bias-p05",
+     "definition": "Drops frequent words probabilistically. Fixes face 1 of frequency bias.",
+     "term": "subsampling"
+    },
+    {
+     "anchor": "c11-frequency-bias-p05",
+     "definition": "The noise distribution power. Lifts rare words relative to raw frequency.",
+     "term": "0.75 power"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-frequency-bias-p07",
+     "answer": "cat 0.228, sat 0.155, dog 0.115. \u201cthe\u201d 0.0: removed from training tokens.",
+     "id": "c11-frequency-bias-r1",
+     "question": "What were the toy noise probs?"
+    },
+    {
+     "anchor": "c11-frequency-bias-p12",
+     "answer": "Negation: \u201cnot\u201d disappears, \u201cnot good\u201d becomes \u201cgood\u201d, sentiment flips.",
+     "id": "c11-frequency-bias-r2",
+     "question": "What does over-aggressive subsampling destroy?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-visualization-limits",
+   "title": "c12: visualization limits",
+   "minutes": 3,
+   "endAnchor": "c12-visualization-limits-end",
+   "blocks": [
+    {
+     "anchor": "c12-visualization-limits-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-visualization-limits-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-visualization-limits-p06",
+     "definition": "Crowding, perplexity-dependence, cherry-picking. Properties of the method, not the data.",
+     "term": "three lies"
+    },
+    {
+     "anchor": "c12-visualization-limits-p11",
+     "definition": "A plot is a communication device, not evidence.",
+     "term": "the table wins"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-visualization-limits-p07",
+     "answer": "Compressed the cat/mat gap by 0.12: 0.679 toward 0.80. The plot exaggerated the similarity.",
+     "id": "c12-visualization-limits-r1",
+     "question": "What did the toy projection do?"
+    },
+    {
+     "anchor": "c12-visualization-limits-p12",
+     "answer": "t-SNE on random noise with tuned perplexity shows apparent clusters. A cluster needs a stability check.",
+     "id": "c12-visualization-limits-r2",
+     "question": "Why are t-SNE clusters not evidence?"
+    }
+   ]
+  },
+  {
+   "anchor": "unit-visual-map",
+   "title": "unit visual map",
+   "minutes": 1,
+   "endAnchor": "unit-visual-map-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "One-hot becomes a dense vector: index becomes a learned vector.",
+     "term": "embed"
+    },
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "The analogy chapter plate: parallelogram with the computed cosine.",
+     "term": "parallelogram"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "unit-visual-map-end",
+     "answer": "Embed (one-hot to dense), one gradient step moving v_c, analogy parallelogram.",
+     "id": "unit-visual-map-r1",
+     "question": "What three figures does the unit carry?"
+    }
+   ]
+  }
+ ]
+}

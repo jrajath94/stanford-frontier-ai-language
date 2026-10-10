@@ -1,0 +1,622 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-lessons-u06_pretraining_scaling",
+ "itemKind": "lesson",
+ "revision": "4d38ab108f33b0042341da043b8a4a42de84d77959e2711d2fdf3384b95639b4",
+ "sections": [
+  {
+   "anchor": "u06_pretraining_scaling-intro-p01",
+   "title": "U06 \u00b7 Pretraining, scaling, systems, data",
+   "minutes": 1,
+   "endAnchor": "u06_pretraining_scaling-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u06_pretraining_scaling-intro-p01",
+     "definition": "Instructor.",
+     "term": "Prof. Christopher Manning"
+    },
+    {
+     "anchor": "u06_pretraining_scaling-intro-p01",
+     "definition": "Build date of the unit\u2019s figures.",
+     "term": "2026-10-06"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u06_pretraining_scaling-intro-p01",
+     "answer": "U06 \u00b7 Pretraining, scaling, systems, data.",
+     "id": "u06_pretraining_scaling-intro-r1",
+     "question": "What unit is this?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation",
+   "title": "local remediation",
+   "minutes": 1,
+   "endAnchor": "local-remediation-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Cross-entropy on one token. Pretraining losses are means of this number.",
+     "term": "R1"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "About 77 tokens per sequence carry the MLM loss. The rest are context.",
+     "term": "R2"
+    },
+    {
+     "anchor": "local-remediation-p02",
+     "definition": "Byte arithmetic: fp16 = 2 bytes, fp32 = 4 bytes per number.",
+     "term": "R3"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-p02",
+     "answer": "About 77. 15 percent of 512 is 76.8.",
+     "id": "local-remediation-r1",
+     "question": "How many tokens carry the MLM loss per 512-sequence?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-bertmasked-objectives",
+   "title": "c01: bert/masked objectives",
+   "minutes": 3,
+   "endAnchor": "c01-bertmasked-objectives-end",
+   "blocks": [
+    {
+     "anchor": "c01-bertmasked-objectives-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-bertmasked-objectives-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-bertmasked-objectives-p04",
+     "definition": "The masking recipe: the task, plus robustness against trusting the mask.",
+     "term": "80/10/10"
+    },
+    {
+     "anchor": "c01-bertmasked-objectives-p04",
+     "definition": "Predict masked tokens from full bidirectional context.",
+     "term": "fill in the blank"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-bertmasked-objectives-p07",
+     "answer": "0.487 at p(true) = 0.614. One token, one loss.",
+     "id": "c01-bertmasked-objectives-r1",
+     "question": "What was the toy masked loss?"
+    },
+    {
+     "anchor": "c01-bertmasked-objectives-p12",
+     "answer": "Fine-tuning has no masks: a train/test skew. The recipe exists because of this failure.",
+     "id": "c01-bertmasked-objectives-r2",
+     "question": "Why not 100% [MASK]?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-autoregressive-objectives",
+   "title": "c02: autoregressive objectives",
+   "minutes": 3,
+   "endAnchor": "c02-autoregressive-objectives-end",
+   "blocks": [
+    {
+     "anchor": "c02-autoregressive-objectives-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-autoregressive-objectives-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-autoregressive-objectives-p03",
+     "definition": "AR\u2019s signal-per-pass advantage over MLM at n = 512.",
+     "term": "6.74x"
+    },
+    {
+     "anchor": "c02-autoregressive-objectives-p04",
+     "definition": "The AR loss: P(w_t | prefix) for every t. No masks, no recipes.",
+     "term": "read and predict"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-autoregressive-objectives-p05",
+     "answer": "Mean over t of -log P(w_t | w_<t). n predictions per sequence of length n.",
+     "id": "c02-autoregressive-objectives-r1",
+     "question": "What is the AR loss?"
+    },
+    {
+     "anchor": "c02-autoregressive-objectives-p12",
+     "answer": "No. Early AR models underperformed MLM on understanding benchmarks at small scale.",
+     "id": "c02-autoregressive-objectives-r2",
+     "question": "Does more signal mean better models?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-contextual-embeddings",
+   "title": "c03: contextual embeddings",
+   "minutes": 3,
+   "endAnchor": "c03-contextual-embeddings-end",
+   "blocks": [
+    {
+     "anchor": "c03-contextual-embeddings-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-contextual-embeddings-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-contextual-embeddings-p04",
+     "definition": "The layer output at a position: a function of the whole sequence.",
+     "term": "contextual"
+    },
+    {
+     "anchor": "c03-contextual-embeddings-p06",
+     "definition": "Same-sense cos 0.998, cross-sense 0.424 for \u201cbank\u201d.",
+     "term": "disambiguation"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-contextual-embeddings-p07",
+     "answer": "Same-sense 0.998, cross-sense 0.424. Context moves the vector more than word identity.",
+     "id": "c03-contextual-embeddings-r1",
+     "question": "What were the toy cosines?"
+    },
+    {
+     "anchor": "c03-contextual-embeddings-p12",
+     "answer": "On tiny data: fewer parameters, less overfitting. Context is capacity, it needs data.",
+     "id": "c03-contextual-embeddings-r2",
+     "question": "When does static beat contextual?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-corpus-curation",
+   "title": "c04: corpus curation",
+   "minutes": 2,
+   "endAnchor": "c04-corpus-curation-end",
+   "blocks": [
+    {
+     "anchor": "c04-corpus-curation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-corpus-curation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-corpus-curation-p04",
+     "definition": "Filtering, dedup, mixing, decontamination: each a judgment call with measurable effect.",
+     "term": "curriculum"
+    },
+    {
+     "anchor": "c04-corpus-curation-p06",
+     "definition": "Hash the normalized text, keep first occurrence. Duplicates waste capacity and leak.",
+     "term": "dedup"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-corpus-curation-p07",
+     "answer": "6 docs, 3 exact duplicates, 3 unique. Half the toy corpus was waste.",
+     "id": "c04-corpus-curation-r1",
+     "question": "What was the toy dedup result?"
+    },
+    {
+     "anchor": "c04-corpus-curation-p12",
+     "answer": "It displaces good tokens. Quality per FLOP beats bytes.",
+     "id": "c04-corpus-curation-r2",
+     "question": "Why does adding bad data hurt at fixed compute?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-tokendatamodel-compute",
+   "title": "c05: token/data/model compute",
+   "minutes": 3,
+   "endAnchor": "c05-tokendatamodel-compute-end",
+   "blocks": [
+    {
+     "anchor": "c05-tokendatamodel-compute-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-tokendatamodel-compute-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-tokendatamodel-compute-p04",
+     "definition": "The compute budget: 6 FLOPs per param per token.",
+     "term": "C = 6ND"
+    },
+    {
+     "anchor": "c05-tokendatamodel-compute-p04",
+     "definition": "The compute-optimal tokens-per-param ratio from the scaling literature.",
+     "term": "20:1"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-tokendatamodel-compute-p07",
+     "answer": "N = 1e8, D = 2e9: C = 1.20e18 FLOPs, 20.0 tokens/param.",
+     "id": "c05-tokendatamodel-compute-r1",
+     "question": "What was the toy budget?"
+    },
+    {
+     "anchor": "c05-tokendatamodel-compute-p10",
+     "answer": "Inference favors big models on fewer tokens: a deployment tradeoff.",
+     "id": "c05-tokendatamodel-compute-r2",
+     "question": "Why are most published models undertrained by this ratio?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-scaling-assumptions",
+   "title": "c06: scaling assumptions",
+   "minutes": 3,
+   "endAnchor": "c06-scaling-assumptions-end",
+   "blocks": [
+    {
+     "anchor": "c06-scaling-assumptions-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-scaling-assumptions-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-scaling-assumptions-p04",
+     "definition": "A ruler, not a crystal ball. L = a N^{-b}; predicts the next point, not the next paradigm.",
+     "term": "power law"
+    },
+    {
+     "anchor": "c06-scaling-assumptions-p07",
+     "definition": "2^{-b}: a 3.4 percent loss cut per doubling at b = 0.05.",
+     "term": "doubling ratio"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-scaling-assumptions-p07",
+     "answer": "1e8 -> 3.9811, 2e8 -> 3.8455, 4e8 -> 3.7145, 8e8 -> 3.5879.",
+     "id": "c06-scaling-assumptions-r1",
+     "question": "What were the four fitted values?"
+    },
+    {
+     "anchor": "c06-scaling-assumptions-p12",
+     "answer": "Data exhaustion, architecture changes, emergent jumps: the law is about loss, not capabilities.",
+     "id": "c06-scaling-assumptions-r2",
+     "question": "What breaks the law?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-batchdistribution",
+   "title": "c07: batch/distribution",
+   "minutes": 3,
+   "endAnchor": "c07-batchdistribution-end",
+   "blocks": [
+    {
+     "anchor": "c07-batchdistribution-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-batchdistribution-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-batchdistribution-p04",
+     "definition": "Averages gradients across workers. The tax: 2(p-1)/p x size per step.",
+     "term": "allreduce"
+    },
+    {
+     "anchor": "c07-batchdistribution-p07",
+     "definition": "Bounded: approaches 2S as p grows.",
+     "term": "communication tax"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-batchdistribution-p07",
+     "answer": "p = 8, S = 1 GB -> 1.75 GB/step. Noise 1.026 -> 0.0299 at batch 32.",
+     "id": "c07-batchdistribution-r1",
+     "question": "What was the toy tax?"
+    },
+    {
+     "anchor": "c07-batchdistribution-p12",
+     "answer": "Small batches make communication dominate. The speedup stalls.",
+     "id": "c07-batchdistribution-r2",
+     "question": "Why scale the batch with p?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-leakage",
+   "title": "c08: leakage",
+   "minutes": 3,
+   "endAnchor": "c08-leakage-end",
+   "blocks": [
+    {
+     "anchor": "c08-leakage-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-leakage-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-leakage-p04",
+     "definition": "Decide the rule before training, publish it with the model card.",
+     "term": "decontamination"
+    },
+    {
+     "anchor": "c08-leakage-p04",
+     "definition": "A benchmark question appears verbatim in training; the benchmark measures recall.",
+     "term": "the exam leaked"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-leakage-p07",
+     "answer": "2.9 points: reported 45% vs clean 42.1%.",
+     "id": "c08-leakage-r1",
+     "question": "What did the leak buy?"
+    },
+    {
+     "anchor": "c08-leakage-p12",
+     "answer": "Benchmark text is duplicated across the web. Big data contains more copies, not fewer.",
+     "id": "c08-leakage-r2",
+     "question": "Why does scale increase the risk?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-transfer",
+   "title": "c09: transfer",
+   "minutes": 3,
+   "endAnchor": "c09-transfer-end",
+   "blocks": [
+    {
+     "anchor": "c09-transfer-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-transfer-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-transfer-p05",
+     "definition": "Freeze the body, train a linear head. Measures feature quality.",
+     "term": "linear probe"
+    },
+    {
+     "anchor": "c09-transfer-p04",
+     "definition": "Lower layers learn reusable features; the task head learns the decision.",
+     "term": "workshop"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-transfer-p07",
+     "answer": "92% vs 55% baseline. The gap is the transfer, measured.",
+     "id": "c09-transfer-r1",
+     "question": "What was the toy probe gap?"
+    },
+    {
+     "anchor": "c09-transfer-p12",
+     "answer": "Pretraining on the wrong domain can hurt: the body must unlearn.",
+     "id": "c09-transfer-r2",
+     "question": "What does negative transfer mean?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-model-cards",
+   "title": "c10: model cards",
+   "minutes": 3,
+   "endAnchor": "c10-model-cards-end",
+   "blocks": [
+    {
+     "anchor": "c10-model-cards-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-model-cards-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-model-cards-p04",
+     "definition": "Data provenance, training recipe, evaluation scope, known limits, in one place.",
+     "term": "passport"
+    },
+    {
+     "anchor": "c10-model-cards-p05",
+     "definition": "Identity, data, training, evaluation, limitations, use. Facts, not adjectives.",
+     "term": "six sections"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-model-cards-p07",
+     "answer": "toy-1e8: AR, N=1e8, D=2e9, C=1.20e18. Web mix, exact-deduped, decontaminated vs bench-X. Held-out ppl 36.2.",
+     "id": "c10-model-cards-r1",
+     "question": "What was the toy card?"
+    },
+    {
+     "anchor": "c10-model-cards-p12",
+     "answer": "Papers describe the idea; cards describe the artifact. Different documents, both needed.",
+     "id": "c10-model-cards-r2",
+     "question": "Paper vs card?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-pretraining-evaluation",
+   "title": "c11: pretraining evaluation",
+   "minutes": 3,
+   "endAnchor": "c11-pretraining-evaluation-end",
+   "blocks": [
+    {
+     "anchor": "c11-pretraining-evaluation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-pretraining-evaluation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-pretraining-evaluation-p04",
+     "definition": "Did it learn the distribution, what is in the representations, what it can do.",
+     "term": "three levels"
+    },
+    {
+     "anchor": "c11-pretraining-evaluation-p07",
+     "definition": "Leaked held-out NLL 3.10 (ppl 22.2) vs clean 36.2. Report all three or nothing.",
+     "term": "fraud"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-pretraining-evaluation-p07",
+     "answer": "Train 30.0, held-out 36.2, leaked-held-out 22.2.",
+     "id": "c11-pretraining-evaluation-r1",
+     "question": "What were the three perplexities?"
+    },
+    {
+     "anchor": "c11-pretraining-evaluation-p12",
+     "answer": "Perplexity without provenance is a number without meaning.",
+     "id": "c11-pretraining-evaluation-r2",
+     "question": "What does 22.2 < 30.0 prove?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-systems-bridge",
+   "title": "c12: systems bridge",
+   "minutes": 3,
+   "endAnchor": "c12-systems-bridge-end",
+   "blocks": [
+    {
+     "anchor": "c12-systems-bridge-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-systems-bridge-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-systems-bridge-p03",
+     "definition": "The 100B training memory stack. No single GPU holds it.",
+     "term": "1.2 TB"
+    },
+    {
+     "anchor": "c12-systems-bridge-p04",
+     "definition": "Data-parallel + tensor-parallel + pipeline-parallel. FSDP shards all three states.",
+     "term": "3-D parallelism"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-systems-bridge-p07",
+     "answer": "1.2 TB / 32 GPUs = 37.5 GB each (plus activations).",
+     "id": "c12-systems-bridge-r1",
+     "question": "What was the sharded result?"
+    },
+    {
+     "anchor": "c12-systems-bridge-p12",
+     "answer": "At small models: the allgather adds communication per layer. Shard only what does not fit.",
+     "id": "c12-systems-bridge-r2",
+     "question": "When is FSDP slower than data-parallel?"
+    }
+   ]
+  },
+  {
+   "anchor": "unit-visual-map",
+   "title": "unit visual map",
+   "minutes": 1,
+   "endAnchor": "unit-visual-map-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "Mask 15 percent, predict the masked: the MLM plate.",
+     "term": "mask plate"
+    },
+    {
+     "anchor": "unit-visual-map-end",
+     "definition": "Power-law form: doubling cuts loss 3.4 percent.",
+     "term": "power-law plate"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "unit-visual-map-end",
+     "answer": "Mask plate (MLM), power-law plate (doubling cuts 3.4%), memory stack (Adam states dominate).",
+     "id": "unit-visual-map-r1",
+     "question": "What three figures does the unit carry?"
+    }
+   ]
+  }
+ ]
+}

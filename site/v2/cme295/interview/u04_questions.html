@@ -98,12 +98,13 @@
       <h1>Interview · U04 questions</h1>
       <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u04-interview-bank-questions">U04 interview bank , questions</h1>
-<p>Closed-book. Answer keys are in <code>u04_key.md</code>. Do not open the key before
+<p id="u04-interview-bank-questions-p01" data-kind="keyIdea" data-reveal="rise" data-term="closed-book">Closed-book. Answer keys are in <code>u04_key.md</code>. Do not open the key before
 attempting. Quotas per major lesson: 6 breadth, 2 deep ladders of 5
 follow-ups, 2 analytical exercises, 1 implementation/debug task, 2
 changed-constraint scenarios, 1 research-critique question.</p>
+<span id="u04-interview-bank-questions-end" data-end></span>
 <h2 id="breadth-6">Breadth (6)</h2>
-<p>B1. Write the pretraining loss and the SFT loss, state the one
+<p id="breadth-6-p01" data-kind="exercise" data-term="pretraining loss">B1. Write the pretraining loss and the SFT loss, state the one
 difference.
 B2. Why does full fp32 Adam on 7B need ~104 GiB?
 B3. Write the symmetric int8 quantization formulas.
@@ -111,8 +112,9 @@ B4. What is arithmetic intensity, and which side of the ridge does
 decode sit on?
 B5. Write the LoRA forward equation and explain alpha/r.
 B6. Name the four rows of a training budget sheet.</p>
+<span id="breadth-6-end" data-end></span>
 <h2 id="deep-ladders-2-x-5">Deep ladders (2 x 5)</h2>
-<p>L1. LoRA mechanics.
+<p id="deep-ladders-2-x-5-p01" data-kind="exercise" data-term="rank constraint">L1. LoRA mechanics.
 - L1.1 Define B, A, r and the rank constraint.
 - L1.2 Toy: parameter counts for d = 4096, r = 8.
 - L1.3 Justify alpha/r and B = 0 init.
@@ -120,7 +122,7 @@ B6. Name the four rows of a training budget sheet.</p>
 - L1.5 Compare LoRA with full fine-tuning, debug a step-0
   performance jump, critique &ldquo;LoRA never forgets&rdquo;, propose the
   rank-sweep experiment.</p>
-<p>L2. Memory budgets.
+<p id="deep-ladders-2-x-5-p02" data-kind="exercise" data-term="alpha/r">L2. Memory budgets.
 - L2.1 Define the three Adam memory terms.
 - L2.2 Toy: the 104.3 GiB vs 13.1 GiB bills.
 - L2.3 Justify why freezing deletes two terms.
@@ -128,8 +130,9 @@ B6. Name the four rows of a training budget sheet.</p>
 - L2.5 Compare LoRA with 8-bit optimizers, debug a bill that
   underpredicts OOM at long context, critique the three-term bill,
   propose the activation-term measurement.</p>
+<span id="deep-ladders-2-x-5-end" data-end></span>
 <h2 id="analytical-exercises-2">Analytical exercises (2)</h2>
-<p>E1. A 13B model trains with LoRA (r = 16) on all query and value
+<p id="analytical-exercises-2-p01" data-kind="exercise" data-term="trainable fraction">E1. A 13B model trains with LoRA (r = 16) on all query and value
 matrices (2 per layer), d = 5120, L = 40, bf16. Compute trainable
 parameters and their fraction of 13B. Compute the optimizer-state
 bytes for the adapter in fp32.
@@ -137,21 +140,24 @@ E2. Weights 14 GB (fp16), bandwidth 2 TB/s. A decode step does
 2 * 7e9 FLOPs per token. Compute intensity, attainable TFLOP/s,
 and time per token. What batch size makes it compute-bound at peak
 300 TFLOP/s?</p>
+<span id="analytical-exercises-2-end" data-end></span>
 <h2 id="implementationdebug-task-1">Implementation/debug task (1)</h2>
-<p>D1. An SFT run shows falling loss but the model answers in the
+<p id="implementationdebug-task-1-p01" data-kind="exercise" data-term="loss mask">D1. An SFT run shows falling loss but the model answers in the
 wrong format. You may inspect the data, the mask, and the template.
 List the ordered checks, the most likely culprit, and the fix. Then
 write the mask assertion that prevents regression.</p>
+<span id="implementationdebug-task-1-end" data-end></span>
 <h2 id="changed-constraint-scenarios-2">Changed-constraint scenarios (2)</h2>
-<p>S1. Only one 24 GB GPU is available for a 7B LoRA tune at T = 4096.
+<p id="changed-constraint-scenarios-2-p01" data-kind="exercise" data-term="memory rows">S1. Only one 24 GB GPU is available for a 7B LoRA tune at T = 4096.
 Build the memory rows (weights bf16, adapter states, activations
 estimate 15 GB). Does it fit? Name two changes if not.
 S2. The task needs a new language (not in pretraining) with 10M
 tokens of data. LoRA r = 8 or full fine-tune? Defend the choice,
 state the failure mode of the rejected option, and name the eval
 that decides.</p>
+<span id="changed-constraint-scenarios-2-end" data-end></span>
 <h2 id="research-critique-question-1">Research-critique question (1)</h2>
-<p>R1. &ldquo;SFT teaches the model new facts.&rdquo; Present the strongest version
+<p id="research-critique-question-1-p01" data-kind="exercise" data-term="elicitation">R1. &ldquo;SFT teaches the model new facts.&rdquo; Present the strongest version
 of this claim, then the elicitation counterexample, then design an
 experiment that separates format learning from knowledge gain. State
 the falsification condition.</p>
@@ -159,7 +165,8 @@ the falsification condition.</p>
       <nav class="pager"><a href="../interview/u03_key.html"><span class="lbl">← Previous</span>Interview · U03 keys</a><a href="../interview/u04_key.html"><span class="lbl">Next →</span>Interview · U04 keys</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-question-1-p02" data-kind="exercise" data-term="format learning">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-question-1-end" data-end></span>
     </footer>
   </main>
 </div>

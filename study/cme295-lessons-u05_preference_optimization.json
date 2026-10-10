@@ -1,0 +1,662 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-lessons-u05_preference_optimization",
+ "itemKind": "lesson",
+ "revision": "81c78ce07d69310affd6ffb05d810e2b6726a864e7294d8b7f4c7ef80c5b13ca",
+ "sections": [
+  {
+   "anchor": "u05_preference_optimization-intro-p01",
+   "title": "U05 \u00b7 Preference tuning and policy optimization",
+   "minutes": 1,
+   "endAnchor": "u05_preference_optimization-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u05_preference_optimization-intro-p02",
+     "definition": "The claim class for RLHF, DPO, reward design, policy gradients, PPO.",
+     "term": "OFFICIAL-SYLLABUS"
+    },
+    {
+     "anchor": "u05_preference_optimization-intro-p02",
+     "definition": "The claim class for label protocol, ratios, KL estimators, and variants.",
+     "term": "REQUESTED-BRANCH"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u05_preference_optimization-intro-p02",
+     "answer": "L3 (Oct 9, 2026) and L4 (Oct 16, 2026).",
+     "id": "u05_preference_optimization-intro-r1",
+     "question": "What is the lecture anchor for U05?"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood",
+   "title": "not yet understood",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "not-yet-understood-li01",
+     "definition": "Reinforcement learning with verifiable rewards. It arrives in U06.",
+     "term": "RLVR"
+    },
+    {
+     "anchor": "not-yet-understood-li02",
+     "definition": "A reasoning-acting loop for agents. It arrives in U07.",
+     "term": "ReAct"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "not-yet-understood-li03",
+     "answer": "U08. It covers judging, bias, calibration, and intervals.",
+     "id": "not-yet-understood-r1",
+     "question": "Which unit covers LLM evaluation?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-bt-model-kl-policy-gradient",
+   "title": "local remediation , bt model, kl, policy gradient",
+   "minutes": 1,
+   "endAnchor": "local-remediation-bt-model-kl-policy-gradient-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-bt-model-kl-policy-gradient-p02",
+     "definition": "P(w beats l) = sigmoid(r_w - r_l). The gap drives everything.",
+     "term": "Bradley-Terry"
+    },
+    {
+     "anchor": "local-remediation-bt-model-kl-policy-gradient-p03",
+     "definition": "sum P log(P/Q). It measures how far P drifts from Q.",
+     "term": "KL divergence"
+    },
+    {
+     "anchor": "local-remediation-bt-model-kl-policy-gradient-p04",
+     "definition": "It pushes up log-probability of high-return actions.",
+     "term": "policy gradient"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-bt-model-kl-policy-gradient-p04",
+     "answer": "Advantages (return minus baseline). They cut variance without adding bias.",
+     "id": "local-remediation-bt-model-kl-policy-gradient-r1",
+     "question": "What replaces raw return in the policy gradient?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-reward-modelling",
+   "title": "c01: reward modelling",
+   "minutes": 3,
+   "endAnchor": "c01-reward-modelling-end",
+   "blocks": [
+    {
+     "anchor": "c01-reward-modelling-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-reward-modelling-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-reward-modelling-p04",
+     "definition": "A judge with one output: a scalar. Only gaps matter.",
+     "term": "reward model"
+    },
+    {
+     "anchor": "c01-reward-modelling-p02",
+     "definition": "-log sigmoid(r_w - r_l). It widens the gap with force proportional to surprise.",
+     "term": "BT loss"
+    },
+    {
+     "anchor": "c01-reward-modelling-p05",
+     "definition": "The reward function. A scalar score for (prompt, response).",
+     "term": "r_phi"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-reward-modelling-p05",
+     "answer": "-log sigmoid(r_w - r_l). The gradient widens the gap with force proportional to surprise.",
+     "id": "c01-reward-modelling-r1",
+     "question": "Write the BT loss."
+    },
+    {
+     "anchor": "c01-reward-modelling-p04",
+     "answer": "Only gaps matter. The BT model sees choices, not absolute values.",
+     "id": "c01-reward-modelling-r2",
+     "question": "Why are absolute reward scores meaningless?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-pairwise-labels",
+   "title": "c02: pairwise labels",
+   "minutes": 3,
+   "endAnchor": "c02-pairwise-labels-end",
+   "blocks": [
+    {
+     "anchor": "c02-pairwise-labels-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-pairwise-labels-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-pairwise-labels-p04",
+     "definition": "The product spec: dimensions, priority order, tie policy, escalation.",
+     "term": "annotation guideline"
+    },
+    {
+     "anchor": "c02-pairwise-labels-p04",
+     "definition": "Fraction of pairs where two annotators agree. 70%+ is workable.",
+     "term": "agreement"
+    },
+    {
+     "anchor": "c02-pairwise-labels-p08",
+     "definition": "Random A/B order. It removes position bias.",
+     "term": "blinding"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-pairwise-labels-p03",
+     "answer": "Helpfulness, truthfulness, harmlessness, in that order.",
+     "id": "c02-pairwise-labels-r1",
+     "question": "Name the rubric dimensions."
+    },
+    {
+     "anchor": "c02-pairwise-labels-p07",
+     "answer": "10% disagreement on 1000 pairs. The reward model cannot beat it.",
+     "id": "c02-pairwise-labels-r2",
+     "question": "What is the noise floor in the toy?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-rlhf",
+   "title": "c03: rlhf",
+   "minutes": 3,
+   "endAnchor": "c03-rlhf-end",
+   "blocks": [
+    {
+     "anchor": "c03-rlhf-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-rlhf-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-rlhf-p02",
+     "definition": "Three stages: SFT, reward model, PPO with a KL leash.",
+     "term": "RLHF"
+    },
+    {
+     "anchor": "c03-rlhf-p04",
+     "definition": "The KL penalty keeping the policy near the SFT model.",
+     "term": "KL leash"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-rlhf-p04",
+     "answer": "SFT: the format. RM: the judge. RL: the optimized policy.",
+     "id": "c03-rlhf-r1",
+     "question": "Name the stages and their outputs."
+    },
+    {
+     "anchor": "c03-rlhf-p10",
+     "answer": "Policy, reference, reward, value.",
+     "id": "c03-rlhf-r2",
+     "question": "What are the four models in memory?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-policy-ratios",
+   "title": "c04: policy ratios",
+   "minutes": 3,
+   "endAnchor": "c04-policy-ratios-end",
+   "blocks": [
+    {
+     "anchor": "c04-policy-ratios-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-policy-ratios-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-policy-ratios-p03",
+     "definition": "pi_new(a)/pi_old(a). A currency converter between policies.",
+     "term": "rho"
+    },
+    {
+     "anchor": "c04-policy-ratios-p06",
+     "definition": "It estimates new-policy expectations from old data via rho.",
+     "term": "importance sampling"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-policy-ratios-p05",
+     "answer": "rho = pi_theta(a|s) / pi_old(a|s). It weights advantages by how much likelier the action is now.",
+     "id": "c04-policy-ratios-r1",
+     "question": "Write rho and its role."
+    },
+    {
+     "anchor": "c04-policy-ratios-p09",
+     "answer": "The policy moved too fast. The surrogate may explode.",
+     "id": "c04-policy-ratios-r2",
+     "question": "What does mean rho >> 1 signal?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-kl",
+   "title": "c05: kl",
+   "minutes": 3,
+   "endAnchor": "c05-kl-end",
+   "blocks": [
+    {
+     "anchor": "c05-kl-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-kl-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-kl-p03",
+     "definition": "beta * KL(pi||pi_ref). The price per nat of drift.",
+     "term": "KL penalty"
+    },
+    {
+     "anchor": "c05-kl-p05",
+     "definition": "KL(new || old). It is mode-covering.",
+     "term": "forward KL"
+    },
+    {
+     "anchor": "c05-kl-p06",
+     "definition": "The exchange rate between reward and drift.",
+     "term": "beta"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-kl-p05",
+     "answer": "beta * E[log pi - log pi_ref]. Direction: new || old.",
+     "id": "c05-kl-r1",
+     "question": "Write the penalty and its direction."
+    },
+    {
+     "anchor": "c05-kl-p07",
+     "answer": "0.0824 nats. Small drift, small price.",
+     "id": "c05-kl-r2",
+     "question": "What is the KL of [0.7,0.3] vs [0.5,0.5]?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-advantages",
+   "title": "c06: advantages",
+   "minutes": 3,
+   "endAnchor": "c06-advantages-end",
+   "blocks": [
+    {
+     "anchor": "c06-advantages-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-advantages-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-advantages-p03",
+     "definition": "Return minus baseline. Positive: do more; negative: do less.",
+     "term": "advantage"
+    },
+    {
+     "anchor": "c06-advantages-p05",
+     "definition": "Generalized advantage estimation. A_t = sum (gamma lambda)^l delta.",
+     "term": "GAE"
+    },
+    {
+     "anchor": "c06-advantages-p04",
+     "definition": "The expected return (value). Subtracting it cuts variance unbiasedly.",
+     "term": "baseline"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-advantages-p06",
+     "answer": "A(s,a) = Q(s,a) - V(s). The baseline expectation against d log pi is zero.",
+     "id": "c06-advantages-r1",
+     "question": "Write A and the baseline argument."
+    },
+    {
+     "anchor": "c06-advantages-p06",
+     "answer": "GAE(0) is TD: low variance, biased. GAE(1) is Monte Carlo: unbiased, noisy.",
+     "id": "c06-advantages-r2",
+     "question": "What is GAE(0) and GAE(1)?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-ppo-clipping",
+   "title": "c07: ppo clipping",
+   "minutes": 3,
+   "endAnchor": "c07-ppo-clipping-end",
+   "blocks": [
+    {
+     "anchor": "c07-ppo-clipping-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-ppo-clipping-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-ppo-clipping-p05",
+     "definition": "min(rho A, clip(rho,1-eps,1+eps) A). Pessimism as an algorithm.",
+     "term": "clipped surrogate"
+    },
+    {
+     "anchor": "c07-ppo-clipping-p05",
+     "definition": "The clip radius. Improvements beyond 1+eps earn nothing.",
+     "term": "eps"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-ppo-clipping-p05",
+     "answer": "L = E[min(rho A, clip(rho, 1-eps, 1+eps) A)]. We minimize its negative.",
+     "id": "c07-ppo-clipping-r1",
+     "question": "Write the PPO objective."
+    },
+    {
+     "anchor": "c07-ppo-clipping-p03",
+     "answer": "min(2.0, 1.2) = 1.2. The cap binds.",
+     "id": "c07-ppo-clipping-r2",
+     "question": "What is the objective for rho=2.0, A=1, eps=0.2?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-ppo-variants",
+   "title": "c08: ppo variants",
+   "minutes": 2,
+   "endAnchor": "c08-ppo-variants-end",
+   "blocks": [
+    {
+     "anchor": "c08-ppo-variants-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-ppo-variants-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-ppo-variants-p03",
+     "definition": "L = L_ppo + gamma L_pretrain. It keeps pretraining skills alive.",
+     "term": "PPO-ptx"
+    },
+    {
+     "anchor": "c08-ppo-variants-p03",
+     "definition": "It holds KL near target: beta *= 1.5 if KL > 1.5*target.",
+     "term": "KL controller"
+    },
+    {
+     "anchor": "c08-ppo-variants-p03",
+     "definition": "The min-form clip on (v - v_old). It stops the value head chasing noise.",
+     "term": "value clipping"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-ppo-variants-p03",
+     "answer": "PPO-ptx, KL controllers (adaptive beta), value clipping.",
+     "id": "c08-ppo-variants-r1",
+     "question": "Name the three variants."
+    },
+    {
+     "anchor": "c08-ppo-variants-p12",
+     "answer": "With too much pretrain weight it stalls preference learning. Every coefficient is a trade.",
+     "id": "c08-ppo-variants-r2",
+     "question": "When does PPO-ptx hurt?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-dpo-derivation-assumptions",
+   "title": "c09: dpo derivation assumptions",
+   "minutes": 3,
+   "endAnchor": "c09-dpo-derivation-assumptions-end",
+   "blocks": [
+    {
+     "anchor": "c09-dpo-derivation-assumptions-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-dpo-derivation-assumptions-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-dpo-derivation-assumptions-p02",
+     "definition": "Direct preference optimization. The policy becomes its own reward; no RL.",
+     "term": "DPO"
+    },
+    {
+     "anchor": "c09-dpo-derivation-assumptions-p04",
+     "definition": "beta * log(pi/pi_ref). The loss widens its gap between chosen and rejected.",
+     "term": "implicit reward"
+    },
+    {
+     "anchor": "c09-dpo-derivation-assumptions-p12",
+     "definition": "The chosen likelihood falls while the gap rises. A DPO pathology.",
+     "term": "likelihood displacement"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-dpo-derivation-assumptions-p05",
+     "answer": "Loss: -log sigmoid(beta * margin). Assumptions: BT holds, KL-optimum is right, reference is adequate.",
+     "id": "c09-dpo-derivation-assumptions-r1",
+     "question": "Write the loss and the three assumptions."
+    },
+    {
+     "anchor": "c09-dpo-derivation-assumptions-p06",
+     "answer": "The reward. Plugging the optimal policy into BT leaves pure policy terms.",
+     "id": "c09-dpo-derivation-assumptions-r2",
+     "question": "What cancels in the DPO derivation?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-reference-model",
+   "title": "c10: reference model",
+   "minutes": 3,
+   "endAnchor": "c10-reference-model-end",
+   "blocks": [
+    {
+     "anchor": "c10-reference-model-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-reference-model-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-reference-model-p03",
+     "definition": "The frozen SFT model. Home for the KL; never trains.",
+     "term": "pi_ref"
+    },
+    {
+     "anchor": "c10-reference-model-p08",
+     "definition": "The context disabling gradients. The reference only scores.",
+     "term": "no_grad"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-reference-model-p06",
+     "answer": "The SFT model, frozen. It anchors the KL; freezing means no gradients or optimizer states.",
+     "id": "c10-reference-model-r1",
+     "question": "What is pi_ref and why frozen?"
+    },
+    {
+     "anchor": "c10-reference-model-p07",
+     "answer": "28 GB: 14 GB policy + 14 GB reference, before anything trains.",
+     "id": "c10-reference-model-r2",
+     "question": "What is DPO memory bill for 7B?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-optimization-pathologies",
+   "title": "c11: optimization pathologies",
+   "minutes": 3,
+   "endAnchor": "c11-optimization-pathologies-end",
+   "blocks": [
+    {
+     "anchor": "c11-optimization-pathologies-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-optimization-pathologies-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-optimization-pathologies-p03",
+     "definition": "The policy exploits the reward blind spots; reward up, preference flat.",
+     "term": "reward hacking"
+    },
+    {
+     "anchor": "c11-optimization-pathologies-p03",
+     "definition": "Longer outputs score higher. The margin favors verbosity.",
+     "term": "length bias"
+    },
+    {
+     "anchor": "c11-optimization-pathologies-p03",
+     "definition": "Diversity dies. The policy exploits the average.",
+     "term": "mode collapse"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-optimization-pathologies-p05",
+     "answer": "Hacking: reward up, preference flat. Length bias: longer scores higher. Collapse: diversity dies. Displacement: chosen likelihood falls, gap rises.",
+     "id": "c11-optimization-pathologies-r1",
+     "question": "Name the four and their signatures."
+    },
+    {
+     "anchor": "c11-optimization-pathologies-p08",
+     "answer": "Track human spot scores beside reward. If reward rises and humans flatline, it is hacking.",
+     "id": "c11-optimization-pathologies-r2",
+     "question": "How do you tell hacking from genuine improvement?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-evaluation",
+   "title": "c12: evaluation",
+   "minutes": 3,
+   "endAnchor": "c12-evaluation-end",
+   "blocks": [
+    {
+     "anchor": "c12-evaluation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-evaluation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-evaluation-p03",
+     "definition": "Wins / (wins + losses), ties handled explicitly.",
+     "term": "win rate"
+    },
+    {
+     "anchor": "c12-evaluation-p05",
+     "definition": "Pairwise rating aggregation for head-to-head comparisons.",
+     "term": "Elo"
+    },
+    {
+     "anchor": "c12-evaluation-p06",
+     "definition": "Win probability at fixed length. It removes verbosity bias.",
+     "term": "length-controlled win rate"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-evaluation-p07",
+     "answer": "Wins/(wins+losses). Report both excluding ties and counting ties as half.",
+     "id": "c12-evaluation-r1",
+     "question": "Define win rate and the tie policy."
+    },
+    {
+     "anchor": "c12-evaluation-p07",
+     "answer": "2 points in the toy: 68.9% vs 67.0%. The policy must be stated.",
+     "id": "c12-evaluation-r2",
+     "question": "What does the tie policy move?"
+    }
+   ]
+  }
+ ]
+}

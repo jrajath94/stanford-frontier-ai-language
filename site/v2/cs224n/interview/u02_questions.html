@@ -135,9 +135,10 @@
       <h1>Interview · U02 questions</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-bank-u02-word-vectors-and-cooccurrence">Interview bank , U02 Word vectors and cooccurrence</h1>
-<p>Test mode: answer closed-book before opening <code>interview/u02_key.md</code>.</p>
+<p id="interview-bank-u02-word-vectors-and-cooccurrence-p01" data-kind="keyIdea" data-reveal="rise" data-term="test mode">Test mode: answer closed-book before opening <code>interview/u02_key.md</code>.</p>
+<span id="interview-bank-u02-word-vectors-and-cooccurrence-end" data-end></span>
 <h2 id="breadth-b1-b6">Breadth (B1-B6)</h2>
-<p>B1. Contrast one-hot and distributed representations: what each
+<p id="breadth-b1-b6-p01" data-kind="exercise" data-term="one-hot">B1. Contrast one-hot and distributed representations: what each
 stores, and what breaks when you compute similarity with each.
 B2. State the skip-gram and CBOW objectives and the direction each
 predicts.
@@ -149,8 +150,9 @@ B5. State the GloVe objective in words and the role of the weighting
 function f.
 B6. State the Levy-Goldberg result in one sentence: what matrix does
 skip-gram factorize?</p>
+<span id="breadth-b1-b6-end" data-end></span>
 <h2 id="deep-ladder-1-from-counts-to-vectors-d11-d15">Deep ladder 1 , from counts to vectors (D1.1-D1.5)</h2>
-<p>D1.1 Define the distributional hypothesis.
+<p id="deep-ladder-1-from-counts-to-vectors-d11-d15-p01" data-kind="exercise" data-term="distributional hypothesis">D1.1 Define the distributional hypothesis.
 D1.2 Toy: 18 training tokens, window 2. How many (center, context)
 pairs, and why 66?
 D1.3 Derive the negative-sampling gradient wrt the center vector.
@@ -158,8 +160,9 @@ D1.4 Debug: after training on the raw 35 tokens, all pair cosines sit
 near 0.9. Diagnose from the noise distribution.
 D1.5 Compare skip-gram and GloVe on a streaming corpus that never ends.
 Which fits, and what breaks for the other?</p>
+<span id="deep-ladder-1-from-counts-to-vectors-d11-d15-end" data-end></span>
 <h2 id="deep-ladder-2-evaluation-and-limits-d21-d25">Deep ladder 2 , evaluation and limits (D2.1-D2.5)</h2>
-<p>D2.1 Define intrinsic vs extrinsic evaluation.
+<p id="deep-ladder-2-evaluation-and-limits-d21-d25-p01" data-kind="exercise" data-term="intrinsic evaluation">D2.1 Define intrinsic vs extrinsic evaluation.
 D2.2 Toy: the analogy query returns &ldquo;woman&rdquo; at cosine 1.0 without the
 exclusion rule. Explain exactly why.
 D2.3 Derive why F1-style harmonic thinking does not apply to analogy
@@ -168,18 +171,20 @@ D2.4 Debug: a polysemous word&rsquo;s neighbor list mixes two senses. A
 learner reads it as one definition. Explain the mixture mechanism.
 D2.5 Critique: &ldquo;our vectors score 80% on analogies, so they capture
 meaning.&rdquo; State the assumption and the two counterarguments.</p>
+<span id="deep-ladder-2-evaluation-and-limits-d21-d25-end" data-end></span>
 <h2 id="analytical-quantitative-q1-q2">Analytical / quantitative (Q1-Q2)</h2>
-<p>Q1. Vocabulary 14, window 2, 18 training tokens, 66 pairs. The full
+<p id="analytical-quantitative-q1-q2-p01" data-kind="exercise" data-term="multiply-adds">Q1. Vocabulary 14, window 2, 18 training tokens, 66 pairs. The full
 softmax costs O(V d) per pair, negative sampling with k = 2 costs
 O(k d) per pair. With d = 8, how many multiply-adds does each cost
 per pair, and what is the ratio?
 Q2. PMI(cat, sat) = 1.569 nats, k = 2. A trained model reports
 u_sat . v_cat = 0.30. Is the model near the Levy-Goldberg optimum?
 Compute the target and the gap, and name two reasons for the gap.</p>
+<span id="analytical-quantitative-q1-q2-end" data-end></span>
 <h2 id="implementation-debug-i1">Implementation / debug (I1)</h2>
-<p>I1. This negative-sampling step trains, but the loss never falls and
+<p id="implementation-debug-i1-p01" data-kind="exercise" data-term="drift">I1. This negative-sampling step trains, but the loss never falls and
 all vectors drift in one direction. Find the two bugs and fix them.</p>
-<pre><code class="language-python">def step(vc, uo, negs, lr):
+<pre id="implementation-debug-i1-code01" data-kind="prose" data-term="loss never falls"><code class="language-python">def step(vc, uo, negs, lr):
     import numpy as np
     s = 1 / (1 + np.exp(-uo @ vc))
     vc = vc + lr * (1 - s) * uo
@@ -190,15 +195,17 @@ all vectors drift in one direction. Find the two bugs and fix them.</p>
         un = un + lr * (1 - sn) * vc
     return vc, uo
 </code></pre>
+<span id="implementation-debug-i1-end" data-end></span>
 <h2 id="changed-constraint-scenarios-s1-s2">Changed-constraint scenarios (S1-S2)</h2>
-<p>S1. The vocabulary grows to 2 million types but d stays 8. Which part
+<p id="changed-constraint-scenarios-s1-s2-p01" data-kind="exercise" data-term="2 million types">S1. The vocabulary grows to 2 million types but d stays 8. Which part
 of the pipeline breaks first: memory, the softmax, or the analogy
 test? Name the fix for each.
 S2. You must ship embeddings for a language with 500 sentences of
 text and no pretrained vectors. Skip-gram, GloVe, or hand-built
 features? Decide with reasons.</p>
+<span id="changed-constraint-scenarios-s1-s2-end" data-end></span>
 <h2 id="research-critique-r1">Research critique (R1)</h2>
-<p>R1. A preprint claims a new embedding method beats skip-gram on
+<p id="research-critique-r1-p01" data-kind="exercise" data-term="confounds">R1. A preprint claims a new embedding method beats skip-gram on
 analogy accuracy by 3%, trained with 5x more epochs and a larger
 window, evaluated once. List three confounds and the controlled
 experiment that removes each.</p>
@@ -206,7 +213,8 @@ experiment that removes each.</p>
       <nav class="pager"><a href="../labs/u11_lab_key.html"><span class="lbl">← Previous</span>Lab 11 · Keys</a><a href="../labs/u12_lab.html"><span class="lbl">Next →</span>Lab 12 · Tokenization and multilinguality</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-r1-p02" data-kind="exercise" data-term="controlled experiment">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-r1-end" data-end></span>
     </footer>
   </main>
 </div>

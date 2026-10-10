@@ -98,10 +98,11 @@
       <h1>Interview · U04 keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Stanford CME295</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="u04-interview-key">U04 interview key</h1>
-<p>Minimum sufficient explanation, strong answer, common red flags,
+<p id="u04-interview-key-p01" data-kind="keyIdea" data-reveal="rise" data-term="strong answer">Minimum sufficient explanation, strong answer, common red flags,
 scoring rubric, remediation per question. Keep it closed-book.</p>
+<span id="u04-interview-key-end" data-end></span>
 <h2 id="breadth">Breadth</h2>
-<ul>
+<ul id="breadth-list01" data-kind="example" data-term="prompt masked">
 <li>B1. Strong: pretraining = -sum log p over all tokens,
   SFT = same sum over response tokens only (prompt masked). Red
   flag: &ldquo;SFT uses a different loss function&rdquo;. Rubric: both (1),
@@ -120,8 +121,9 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
 <li>B6. Strong: FLOPs, memory, time, money. Red flag: naming two.
   Rubric: four (2). Remediation: C12.</li>
 </ul>
+<span id="breadth-end" data-end></span>
 <h2 id="deep-ladders">Deep ladders</h2>
-<ul>
+<ul id="deep-ladders-list01" data-kind="example" data-term="256x">
 <li>L1. Strong path: B (d,r), A (r,d), rank &lt;= r, 16.8M vs 65,536
   (256x), alpha/r stabilizes scale, B = 0 gives identity init,
   lora_linear + merge with the 1e-5 check, full wins on deep
@@ -136,8 +138,9 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
   peak vs bill over T, fit the activation term. Rubric: 2 per
   rung, 10 total.</li>
 </ul>
+<span id="deep-ladders-end" data-end></span>
 <h2 id="analytical-exercises">Analytical exercises</h2>
-<ul>
+<ul id="analytical-exercises-list01" data-kind="example" data-term="0.10%">
 <li>E1. Strong: per matrix 2<em>5120</em>16 = 163,840, 80 matrices =
   13,107,200 (~0.10% of 13B), optimizer states 13.1M * 12 =
   ~157 MB. Red flag: forgetting grad bytes. Rubric: params (2),
@@ -147,8 +150,9 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
   Red flag: &ldquo;batching does not change intensity&rdquo;. Rubric:
   intensity (1), time (2), batch (2). Remediation: C04.</li>
 </ul>
+<span id="analytical-exercises-end" data-end></span>
 <h2 id="implementationdebug">Implementation/debug</h2>
-<ul>
+<ul id="implementationdebug-list01" data-kind="example" data-term="inverted mask">
 <li>D1. Strong order: (1) render tokenized samples, check the mask
   (prompt 0, response 1), (2) check the template matches training,
   (3) inspect data format. Culprit: inverted or missing mask
@@ -158,8 +162,9 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
   Rubric: checks (3), culprit (2), assert (2). Remediation: C05,
   C06.</li>
 </ul>
+<span id="implementationdebug-end" data-end></span>
 <h2 id="changed-constraint-scenarios">Changed-constraint scenarios</h2>
-<ul>
+<ul id="changed-constraint-scenarios-list01" data-kind="example" data-term="30 GB">
 <li>S1. Strong: weights 14 GB + adapter ~1 GB + activations 15 GB =
   30 GB &gt; 24 GB: does not fit. Changes: (1) shorter T (cuts
   activations), (2) gradient checkpointing (trades compute),
@@ -173,8 +178,9 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
   capacity argument. Rubric: choice + why (2), failure mode (2),
   eval (1).</li>
 </ul>
+<span id="changed-constraint-scenarios-end" data-end></span>
 <h2 id="research-critique">Research-critique</h2>
-<ul>
+<ul id="research-critique-list01" data-kind="example" data-term="false answers">
 <li>R1. Strong: claim = SFT pairs teach facts the base lacks,
   counterexample = SFT on false answers teaches confident
   falsehoods (it elicits style, not knowledge), experiment = SFT
@@ -189,7 +195,8 @@ scoring rubric, remediation per question. Keep it closed-book.</p>
       <nav class="pager"><a href="../interview/u04_questions.html"><span class="lbl">← Previous</span>Interview · U04 questions</a><a href="../interview/u05_questions.html"><span class="lbl">Next →</span>Interview · U05 questions</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-p01" data-kind="prose" data-term="format-only">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-end" data-end></span>
     </footer>
   </main>
 </div>

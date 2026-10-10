@@ -135,46 +135,53 @@
       <h1>Interview · U01 keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-key-u01">Interview key , U01</h1>
-<p>Each answer gives the minimum sufficient explanation, a strong answer,
+<p id="interview-key-u01-p01" data-kind="keyIdea" data-reveal="rise" data-term="minimum sufficient explanation">Each answer gives the minimum sufficient explanation, a strong answer,
 common red flags, a scoring rubric, and remediation.</p>
+<span id="interview-key-u01-end" data-end></span>
 <h2 id="b1">B1</h2>
-<p>Minimum: word (&ldquo;bank&rdquo;), phrase (&ldquo;visiting relatives&rdquo;), discourse or
+<p id="b1-p01" data-kind="example" data-term="word">Minimum: word (&ldquo;bank&rdquo;), phrase (&ldquo;visiting relatives&rdquo;), discourse or
 intent (sarcasm). Strong: adds why each level breaks a different
 pipeline stage. Red flag: only word-level examples. Rubric: 2 marks
 for three levels with examples, 1 for one level. Remediation: C01.</p>
+<span id="b1-end" data-end></span>
 <h2 id="b2">B2</h2>
-<p>Minimum: rules edited by hand, counts recounted on new data, vectors
+<p id="b2-p01" data-kind="example" data-term="rules">Minimum: rules edited by hand, counts recounted on new data, vectors
 moved by gradient steps. Strong: names the generalization mechanism
 of each (intent, smoothing, geometry). Red flag: &ldquo;neural is just
 better&rdquo;. Rubric: 2 for store+update of all three. Remediation: C02.</p>
+<span id="b2-end" data-end></span>
 <h2 id="b3">B3</h2>
-<p>Minimum: a fixed document collection used as evidence. &ldquo;Bigger is
+<p id="b3-p01" data-kind="example" data-term="corpus">Minimum: a fixed document collection used as evidence. &ldquo;Bigger is
 better&rdquo; is false because size without curation adds spam, duplicates,
 and bias, the model learns the sample, not the language. Strong:
 cites the SEO-spam counterexample and dedup. Red flag: &ldquo;more data
 always helps&rdquo;. Rubric: 2 for definition plus a concrete failure.
 Remediation: C03.</p>
+<span id="b3-end" data-end></span>
 <h2 id="b4">B4</h2>
-<p>Minimum: train fits parameters, validation picks settings, test
+<p id="b4-p01" data-kind="example" data-term="train">Minimum: train fits parameters, validation picks settings, test
 reports the claimed number. Strong: adds the leak mechanisms (test
 vocabulary, cross-split duplicates) and the document-level split rule.
 Red flag: &ldquo;validation and test are the same&rdquo;. Rubric: 2 for three
 jobs plus one leak. Remediation: C09.</p>
+<span id="b4-end" data-end></span>
 <h2 id="b5">B5</h2>
-<p>Minimum: precision TP/(TP+FP), recall TP/(TP+FN), F1 harmonic mean.
+<p id="b5-p01" data-kind="example" data-term="precision">Minimum: precision TP/(TP+FP), recall TP/(TP+FN), F1 harmonic mean.
 Accuracy lies under class imbalance: 99% accuracy with 0% minority
 recall. Strong: derives why the harmonic mean refuses partial credit.
 Red flag: &ldquo;F1 is the average of precision and recall&rdquo;. Rubric: 2 for
 formulas plus the 99/1 numbers. Remediation: C11.</p>
+<span id="b5-end" data-end></span>
 <h2 id="b6">B6</h2>
-<p>Minimum: perplexity = exp(mean negative log-likelihood), the effective
+<p id="b6-p01" data-kind="example" data-term="perplexity">Minimum: perplexity = exp(mean negative log-likelihood), the effective
 number of equally likely choices per word. 5.137 means the model is as
 confused as a 5-sided die on the test sentence. Strong: derives it
 from the uniform case and states the same-tokenizer comparison rule.
 Red flag: &ldquo;perplexity is accuracy&rdquo;. Rubric: 2 for definition plus the
 die reading. Remediation: C07.</p>
+<span id="b6-end" data-end></span>
 <h2 id="d1-ladder">D1 ladder</h2>
-<p>D1.1 Reading 1: &ldquo;visiting relatives&rdquo; as one noun phrase (relatives who
+<p id="d1-ladder-p01" data-kind="example" data-term="Catalan">D1.1 Reading 1: &ldquo;visiting relatives&rdquo; as one noun phrase (relatives who
 visit). Reading 2: &ldquo;visiting&rdquo; as verb, &ldquo;relatives&rdquo; as object.
 D1.2 Arcs: chased -&gt; cat (nsubj), chased -&gt; mouse (obj), the -&gt; cat,
 the -&gt; mouse (det). One head per word, no cycles.
@@ -187,8 +194,9 @@ D1.5 Joint parsing degrades less: legal contracts shift both syntax
 and vocabulary, and a syntax-first pipeline compounds its errors,
 while a joint model can lean on the lexical signal. Caveat: with zero
 legal training data both degrade, the claim is relative, not absolute.</p>
+<span id="d1-ladder-end" data-end></span>
 <h2 id="d2-ladder">D2 ladder</h2>
-<p>D2.1 Words in similar contexts have similar meanings (operationally:
+<p id="d2-ladder-p01" data-kind="example" data-term="substitutability">D2.1 Words in similar contexts have similar meanings (operationally:
 similar cooccurrence distributions).
 D2.2 {the:1, sat:1, on:1} at width 2 around the first &ldquo;cat&rdquo;.
 D2.3 cos = u.v/(||u|| ||v||). Raw count vectors live in R^V with V
@@ -202,18 +210,21 @@ D2.5 Assumption needed: context distributions determine meaning.
 Antonym counterexample: &ldquo;hot&rdquo;/&rdquo;cold&rdquo; share contexts and get high
 cosine. The honest claim is &ldquo;captures substitutability&rdquo;, not
 &ldquo;captures meaning&rdquo;.</p>
+<span id="d2-ladder-end" data-end></span>
 <h2 id="q1">Q1</h2>
-<p>Sparsity = 1 - 22/196 = 0.888 (88.8% empty). At 50,000 types the table
+<p id="q1-p01" data-kind="example" data-term="0.888">Sparsity = 1 - 22/196 = 0.888 (88.8% empty). At 50,000 types the table
 has 2.5 x 10^9 cells. The pain: the table grows quadratically while
 real text covers a vanishing fraction, so most probability mass sits
 on unseen events and smoothing dominates. Strong answer names the
 quadratic growth and the smoothing consequence.</p>
+<span id="q1-end" data-end></span>
 <h2 id="q2">Q2</h2>
-<p>Accuracy 0.99, precision 0.0 (0/0 by convention), recall 0.0, F1 0.0.
+<p id="q2-p01" data-kind="example" data-term="0.0">Accuracy 0.99, precision 0.0 (0/0 by convention), recall 0.0, F1 0.0.
 Rebuttal: &ldquo;The 99% comes from never predicting finance, finance recall
 is 0, so the system fails every finance document it was built for.&rdquo;</p>
+<span id="q2-end" data-end></span>
 <h2 id="i1">I1</h2>
-<p>Two bugs. Bug 1: <code>match / sum(cn.values())</code> divides by zero when the
+<p id="i1-p01" data-kind="example" data-term="empty Counter">Two bugs. Bug 1: <code>match / sum(cn.values())</code> divides by zero when the
 candidate is shorter than n (empty Counter), giving ZeroDivisionError
 or NaN downstream. Bug 2: <code>np.log(p)</code> with p = 0 gives -inf with a
 warning, and the brevity penalty <code>np.exp(1 - len(ref)/len(cand))</code>
@@ -221,22 +232,25 @@ divides by zero when the candidate is empty. Fix: guard empty
 candidates (return 0.0), use max(1, sum(cn.values())), and map p = 0
 to -inf explicitly with np.errstate. Red flag: fixing only one bug.
 Rubric: 2 for both bugs plus guards. Remediation: C06 lab.</p>
+<span id="i1-end" data-end></span>
 <h2 id="s1">S1</h2>
-<p>Changes: add aggressive dedup and quality filtering before counting,
+<p id="s1-p01" data-kind="example" data-term="dedup">Changes: add aggressive dedup and quality filtering before counting,
 re-weight or downsample the SEO slice, rebuild the vocabulary from
 the clean slice only. Watch: validation perplexity or F1 on a
 human-curated slice, plus the type-token ratio and duplicate rate from
 the profiler. If the curated metric drops while the full-corpus
 metric holds, the SEO slice poisons the model.</p>
+<span id="s1-end" data-end></span>
 <h2 id="s2">S2</h2>
-<p>What breaks: the output slot (binary vs 5 labels), the metric
+<p id="s2-p01" data-kind="example" data-term="output slot">What breaks: the output slot (binary vs 5 labels), the metric
 (accuracy on 5 classes hides ordinal errors: predicting 1 star for a
 5-star review is worse than predicting 4), and the decision threshold.
 Smallest fix: change the output layer to 5 classes with cross-entropy
 loss and report mean absolute error alongside accuracy, since stars
 are ordered.</p>
+<span id="s2-end" data-end></span>
 <h2 id="r1">R1</h2>
-<p>Gap 1: single test set, no uncertainty , rerun with 5 seeds and report
+<p id="r1-p01" data-kind="example" data-term="5 seeds">Gap 1: single test set, no uncertainty , rerun with 5 seeds and report
 mean and standard deviation. Gap 2: weak baseline , add logistic
 regression and a fixed train-size learning curve. Gap 3: no error
 analysis , slice errors by class and length, and test significance
@@ -245,7 +259,8 @@ analysis , slice errors by class and length, and test significance
       <nav class="pager"><a href="../labs/u11_lab.html"><span class="lbl">← Previous</span>Lab 11 · Reasoning and test-time compute</a><a href="../labs/u11_lab_key.html"><span class="lbl">Next →</span>Lab 11 · Keys</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="r1-p02" data-kind="prose" data-term="learning curve">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="r1-end" data-end></span>
     </footer>
   </main>
 </div>

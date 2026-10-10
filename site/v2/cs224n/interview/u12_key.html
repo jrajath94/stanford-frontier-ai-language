@@ -135,8 +135,9 @@
       <h1>Interview · U12 keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-key-u12">Interview key , U12</h1>
+<span id="interview-key-u12-end" data-end></span>
 <h2 id="breadth">Breadth</h2>
-<p>A1. Byte-pair encoding: merge frequent pairs. Rare words shatter
+<p id="breadth-p01" data-kind="example" data-term="shatter">A1. Byte-pair encoding: merge frequent pairs. Rare words shatter
 into pieces.
 A2. Tokens per word. Differs because BPE merges followed the
 training corpus, which was English-heavy.
@@ -148,44 +149,50 @@ A5. The same ruler per language. Translationese: translated
 tests are easier than the language (toy gap 0.07).
 A6. More languages share fixed capacity: per-language quality
 falls past some count.</p>
+<span id="breadth-end" data-end></span>
 <h2 id="deep-ladders">Deep ladders</h2>
-<p>L1. (1) a+a, aa+a, aaa+b, then three count-1 merges. (2) Merge
+<p id="deep-ladders-p01" data-kind="example" data-term="locally optimal">L1. (1) a+a, aa+a, aaa+b, then three count-1 merges. (2) Merge
 the most frequent adjacent pair. (3) Each step is locally
 optimal, no lookahead. (4) The tail fuses noise: stop merges
 where counts die. (5) Balanced vs English-heavy corpus,
 measure fertility spread per language.</p>
-<p>L2. (1) 1.00, 1.25, 1.71, 2.42. (2) Tokens per word. (3) Merges
+<p id="deep-ladders-p02" data-kind="prose" data-term="count-1">L2. (1) 1.00, 1.25, 1.71, 2.42. (2) Tokens per word. (3) Merges
 follow corpus frequency. (4) Same model, different bill: the
 price is per token, not per meaning. (5) Price 1M chars both
 ways per language, compare the bills.</p>
+<span id="deep-ladders-end" data-end></span>
 <h2 id="analytical">Analytical</h2>
-<p>A7. The 0.765 is irrelevant: your task lives in the 0.235 tail.
+<p id="analytical-p01" data-kind="example" data-term="0.235 tail">A7. The 0.765 is irrelevant: your task lives in the 0.235 tail.
 The names shatter (C04). Change: byte-level handling for names
 or a name-aware tokenizer, and eval on names specifically.
 A8. (i) Language distance: Y is farther from the source. (ii)
 Script/tokenizer: Y&rsquo;s script shatters (fertility). Cheapest
 tests: the fertility ratio per language, and the transfer gap
 vs a distance measure.</p>
+<span id="analytical-end" data-end></span>
 <h2 id="implementationdebugging">Implementation/debugging</h2>
-<p>A9. (1) Normalize to NFC before comparing (cheapest). (2) Audit
+<p id="implementationdebugging-p01" data-kind="example" data-term="NFC">A9. (1) Normalize to NFC before comparing (cheapest). (2) Audit
 where the strings come from (mixed forms). (3) Normalize at
 ingest, not at match time.</p>
+<span id="implementationdebugging-end" data-end></span>
 <h2 id="changed-constraint">Changed-constraint</h2>
-<p>A10. Small languages get few slots and shatter. Mitigations:
+<p id="changed-constraint-p01" data-kind="example" data-term="tempered sampling">A10. Small languages get few slots and shatter. Mitigations:
 tempered corpus sampling for the tokenizer, byte fallback,
 and per-language fertility monitoring.
 A11. Build a code-switched eval: native mixed transcripts with
 human grades. Report monolingual and switched scores
 separately, lead with the switched.</p>
+<span id="changed-constraint-end" data-end></span>
 <h2 id="research-critique">Research critique</h2>
-<p>A12. Steelman: one model, one API, all languages work to some
+<p id="research-critique-p01" data-kind="example" data-term="unequal service">A12. Steelman: one model, one API, all languages work to some
 degree. Counterexample: 2.42x the token bill, shattered rare
 words, translated-test inflation. Equal API, unequal service.</p>
       
       <nav class="pager"><a href="../interview/u12_questions.html"><span class="lbl">← Previous</span>Interview · U12 questions</a><a href="../interview/u13_questions.html"><span class="lbl">Next →</span>Interview · U13 questions</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-p02" data-kind="prose" data-term="equal API">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-end" data-end></span>
     </footer>
   </main>
 </div>

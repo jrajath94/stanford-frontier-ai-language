@@ -1,0 +1,268 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs224n-interview-u08_key",
+ "itemKind": "lesson",
+ "revision": "856165205c7dddf07df1876c9458e3ffa96ac590bea8193cd124562418eac8c5",
+ "sections": [
+  {
+   "anchor": "interview-key-u08",
+   "title": "Interview key , U08",
+   "minutes": 1,
+   "endAnchor": "interview-key-u08-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "interview key",
+     "definition": "The closed-book answer set for the unit.",
+     "anchor": "interview-key-u08"
+    },
+    {
+     "term": "u08",
+     "definition": "The unit this key covers.",
+     "anchor": "interview-key-u08"
+    }
+   ],
+   "recall": [
+    {
+     "id": "interview-key-u08-r1",
+     "question": "What unit does this key cover?",
+     "answer": "U08.",
+     "anchor": "interview-key-u08"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth",
+   "title": "Breadth",
+   "minutes": 1,
+   "endAnchor": "breadth-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "steer",
+     "definition": "Prompts steer without weight updates.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "rationalization",
+     "definition": "What CoT does not rule out.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "zero extra latency",
+     "definition": "Merge BA into W once.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "term": "replay",
+     "definition": "One forgetting mitigation.",
+     "anchor": "breadth-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-r1",
+     "question": "What bounds both zero-shot and few-shot?",
+     "answer": "The window.",
+     "anchor": "breadth-p01"
+    },
+    {
+     "id": "breadth-r2",
+     "question": "What are the three A6 mitigations?",
+     "answer": "Replay, freeze (PEFT), multitask.",
+     "anchor": "breadth-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders",
+   "title": "Deep ladders",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "label priors",
+     "definition": "Why shuffled labels still help.",
+     "anchor": "deep-ladders-p01"
+    },
+    {
+     "term": "diminishing returns",
+     "definition": "Expect them in the rank sweep.",
+     "anchor": "deep-ladders-p02"
+    },
+    {
+     "term": "no gradient step",
+     "definition": "Why conditioning is not learning.",
+     "anchor": "deep-ladders-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-r1",
+     "question": "What is the L1 gap?",
+     "answer": "Shuffled vs true labels: the gap is the task knowledge.",
+     "anchor": "deep-ladders-p01"
+    },
+    {
+     "id": "deep-ladders-r2",
+     "question": "What does L2's r = 8 case show?",
+     "answer": "The true update is high-rank; r = 8 cannot express it.",
+     "anchor": "deep-ladders-p02"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical",
+   "title": "Analytical",
+   "minutes": 1,
+   "endAnchor": "analytical-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "order effects",
+     "definition": "Example order matters.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "term": "unequal budgets",
+     "definition": "The comparison's flaw.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "term": "ICL curve",
+     "definition": "The cheapest test: find the peak.",
+     "anchor": "analytical-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-r1",
+     "question": "What are the two A7 mechanisms?",
+     "answer": "Distraction and wrong-pattern reinforcement or order effects.",
+     "anchor": "analytical-p01"
+    },
+    {
+     "id": "analytical-r2",
+     "question": "What is the honest A8 statement?",
+     "answer": "Under these unequal budgets they tied; rerun at equal effort.",
+     "anchor": "analytical-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebugging",
+   "title": "Implementation/debugging",
+   "minutes": 1,
+   "endAnchor": "implementationdebugging-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "parse error appended",
+     "definition": "The cheapest fix.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "term": "constrained decoding",
+     "definition": "Strongest, most work.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "term": "format example",
+     "definition": "Add one to the prompt.",
+     "anchor": "implementationdebugging-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebugging-r1",
+     "question": "What are the four fixes?",
+     "answer": "Retry with the parse error, format example, constrain the schema, constrained decoding.",
+     "anchor": "implementationdebugging-p01"
+    },
+    {
+     "id": "implementationdebugging-r2",
+     "question": "Which is cheapest?",
+     "answer": "Retry with the parse error appended.",
+     "anchor": "implementationdebugging-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint",
+   "title": "Changed-constraint",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "8 MB",
+     "definition": "Each LoRA delta.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "term": "per-request adapter",
+     "definition": "Batching across deltas needs it.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "term": "far-task",
+     "definition": "r = 8 cannot express it.",
+     "anchor": "changed-constraint-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-r1",
+     "question": "What is the A10 plan?",
+     "answer": "One base model + 50 LoRA deltas, swap or batch per request.",
+     "anchor": "changed-constraint-p01"
+    },
+    {
+     "id": "changed-constraint-r2",
+     "question": "What does A11 recommend?",
+     "answer": "Full fine-tuning or continued pretraining.",
+     "anchor": "changed-constraint-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique",
+   "title": "Research critique",
+   "minutes": 1,
+   "endAnchor": "research-critique-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "audit",
+     "definition": "Steps expose the work for audit.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "term": "causal path",
+     "definition": "Not what the steps are.",
+     "anchor": "research-critique-p02"
+    },
+    {
+     "term": "intervention studies",
+     "definition": "Show plausible steps for otherwise-reached answers.",
+     "anchor": "research-critique-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1",
+     "question": "What is the steelman?",
+     "answer": "Steps decompose the problem and often check out.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "id": "research-critique-r2",
+     "question": "What is the verdict?",
+     "answer": "Useful, not faithful.",
+     "anchor": "research-critique-p01"
+    }
+   ]
+  }
+ ]
+}

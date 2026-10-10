@@ -1,0 +1,758 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cs329h-lessons-u08_lesson",
+ "itemKind": "lesson",
+ "revision": "a2b5ed4400e057cbcadb6ada2eda38636b853ef142268e5b2e5d5f7d1d1ef992",
+ "sections": [
+  {
+   "anchor": "u08_lesson-intro",
+   "title": "U08 \u00b7 Inversion, style, and bounded rationality",
+   "minutes": 1,
+   "endAnchor": "u08_lesson-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "P07 (statistical estimation)",
+     "definition": "Statistical estimation prerequisite for U08, covering estimators used in inversion.",
+     "anchor": "u08_lesson-intro-p01"
+    },
+    {
+     "term": "P08 (information theory)",
+     "definition": "Information theory prerequisite for U08, covering KL divergence.",
+     "anchor": "u08_lesson-intro-p01"
+    },
+    {
+     "term": "P18 (Bayesian)",
+     "definition": "Bayesian prerequisite for U08, covering posteriors over goals.",
+     "anchor": "u08_lesson-intro-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u08_lesson-intro-r1",
+     "question": "What background does U08 assume?",
+     "answer": "P07 statistical estimation, P08 information theory, and P18 Bayesian. Local remediation opens the lesson.",
+     "anchor": "u08_lesson-intro-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "provenance",
+   "title": "Provenance",
+   "minutes": 1,
+   "endAnchor": "provenance-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "S14",
+     "definition": "The planned session 'Style control, surrogates' from 9 Nov 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "S15",
+     "definition": "The planned session 'Bounded rationality: computationally tractable choice' from 11 Nov 2026.",
+     "anchor": "provenance-p01"
+    },
+    {
+     "term": "planned / source attribution pending",
+     "definition": "All twelve concepts are taught as independent theory, not yet verified against a source.",
+     "anchor": "provenance-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "provenance-r1",
+     "question": "What is the status of sessions S14 and S15?",
+     "answer": "Both are planned, for 9 Nov and 11 Nov 2026. All twelve concepts are taught as independent theory.",
+     "anchor": "provenance-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-inverse-problems-reward-shaping-behavioral-biases",
+   "title": "Local remediation: inverse problems, reward shaping, behavioral biases",
+   "minutes": 1,
+   "endAnchor": "local-remediation-inverse-problems-reward-shaping-behavioral-biases-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "inverse problem",
+     "definition": "Observed behavior -> inferred objective; many objectives explain the same behavior.",
+     "anchor": "local-remediation-inverse-problems-reward-shaping-behavioral-biases-p01"
+    },
+    {
+     "term": "reward shaping",
+     "definition": "Add F(s,a,s') to the reward; potential-based shaping preserves the optimal policy.",
+     "anchor": "local-remediation-inverse-problems-reward-shaping-behavioral-biases-p02"
+    },
+    {
+     "term": "behavioral bias",
+     "definition": "Systematic deviation from the rational model; the bias lives in the choice procedure.",
+     "anchor": "local-remediation-inverse-problems-reward-shaping-behavioral-biases-p03"
+    },
+    {
+     "term": "non-identifiability",
+     "definition": "Many objectives explain the same behavior.",
+     "anchor": "local-remediation-inverse-problems-reward-shaping-behavioral-biases-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "local-remediation-inverse-problems-reward-shaping-behavioral-biases-r1",
+     "question": "What does potential-based shaping preserve?",
+     "answer": "The optimal policy; the shaped reward looks different but recommends the same actions.",
+     "anchor": "local-remediation-inverse-problems-reward-shaping-behavioral-biases-p02"
+    },
+    {
+     "id": "local-remediation-inverse-problems-reward-shaping-behavioral-biases-r2",
+     "question": "Where does the bias live?",
+     "answer": "In the choice procedure, but naive inversion reads it as preference.",
+     "anchor": "local-remediation-inverse-problems-reward-shaping-behavioral-biases-p03"
+    }
+   ]
+  },
+  {
+   "anchor": "russian-doll-ladder-for-the-major-mechanism-reward-inversion-under-misspecified-rationality",
+   "title": "Russian-doll ladder for the major mechanism (reward inversion under misspecified rationality)",
+   "minutes": 1,
+   "endAnchor": "russian-doll-ladder-for-the-major-mechanism-reward-inversion-under-misspecified-rationality-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "inversion",
+     "definition": "Find r such that observed choices are likely under the choice model.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-reward-inversion-under-misspecified-rationality-list01"
+    },
+    {
+     "term": "shaping",
+     "definition": "Two different reward functions produce identical choices.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-reward-inversion-under-misspecified-rationality-list01"
+    },
+    {
+     "term": "bias audit",
+     "definition": "Never deploy an inverted reward without one.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-reward-inversion-under-misspecified-rationality-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-reward-inversion-under-misspecified-rationality-r1",
+     "question": "What does shell 5 check?",
+     "answer": "The inverted reward reproduces the observed win rates.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-reward-inversion-under-misspecified-rationality-list01"
+    },
+    {
+     "id": "russian-doll-ladder-for-the-major-mechanism-reward-inversion-under-misspecified-rationality-r2",
+     "question": "What does shell 8 compare?",
+     "answer": "Inverting with the correct bias model versus the naive model.",
+     "anchor": "russian-doll-ladder-for-the-major-mechanism-reward-inversion-under-misspecified-rationality-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood-dependency-list",
+   "title": "Not-yet-understood dependency list",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-dependency-list-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "MaxEnt IRL",
+     "definition": "Named only; full IRL algorithms are not covered.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "cognitive science of bias",
+     "definition": "Toy models here.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    },
+    {
+     "term": "stylistic reward decomposition",
+     "definition": "Conceptual; production LLM decomposition is not covered.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "not-yet-understood-dependency-list-r1",
+     "question": "What IRL content is covered?",
+     "answer": "MaxEnt IRL is named only; full algorithms are not covered.",
+     "anchor": "not-yet-understood-dependency-list-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c01-observed-choice-versus-latent-goal",
+   "title": "cs329h-U08-C01: observed choice versus latent goal",
+   "minutes": 3,
+   "endAnchor": "cs329h-u08-c01-observed-choice-versus-latent-goal-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c01-observed-choice-versus-latent-goal-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c01-observed-choice-versus-latent-goal-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u08-c01-observed-choice-versus-latent-goal-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "goal",
+     "definition": "The latent goal that produced the choice.",
+     "anchor": "cs329h-u08-c01-observed-choice-versus-latent-goal-p01"
+    },
+    {
+     "term": "underdetermines",
+     "definition": "The map from goal to choice is many-to-one, so the choice underdetermines the goal.",
+     "anchor": "cs329h-u08-c01-observed-choice-versus-latent-goal-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c01-observed-choice-versus-latent-goal-r1",
+     "question": "What does the salad toy teach?",
+     "answer": "Goals g1 (health) and g2 (impress) both rank salad first; the posterior stays 0.5/0.5 and the choice teaches nothing.",
+     "anchor": "cs329h-u08-c01-observed-choice-versus-latent-goal-p06"
+    },
+    {
+     "id": "cs329h-u08-c01-observed-choice-versus-latent-goal-r2",
+     "question": "When are both goal hypotheses nonsense?",
+     "answer": "When she picked salad because it was the only option left.",
+     "anchor": "cs329h-u08-c01-observed-choice-versus-latent-goal-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c02-surrogate-objective",
+   "title": "cs329h-U08-C02: surrogate objective",
+   "minutes": 3,
+   "endAnchor": "cs329h-u08-c02-surrogate-objective-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c02-surrogate-objective-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c02-surrogate-objective-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u08-c02-surrogate-objective-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "surrogate",
+     "definition": "A measurable stand-in for the true goal; we optimize it because the goal is hard to measure.",
+     "anchor": "cs329h-u08-c02-surrogate-objective-p01"
+    },
+    {
+     "term": "Goodhart",
+     "definition": "Optimizing S hard moves the policy out of the region where the correlation held.",
+     "anchor": "cs329h-u08-c02-surrogate-objective-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c02-surrogate-objective-r1",
+     "question": "What happens on the toy?",
+     "answer": "Optimizing S picks t = 1: S rises 0.8 -> 2.2 while G falls 0.8 -> 0.2.",
+     "anchor": "cs329h-u08-c02-surrogate-objective-p06"
+    },
+    {
+     "id": "cs329h-u08-c02-surrogate-objective-r2",
+     "question": "When does the surrogate mislead?",
+     "answer": "When S and G correlate 0.8 on random data but -0.3 under optimization.",
+     "anchor": "cs329h-u08-c02-surrogate-objective-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c03-style-versus-content",
+   "title": "cs329h-U08-C03: style versus content",
+   "minutes": 3,
+   "endAnchor": "cs329h-u08-c03-style-versus-content-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c03-style-versus-content-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c03-style-versus-content-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u08-c03-style-versus-content-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "style",
+     "definition": "How it is said.",
+     "anchor": "cs329h-u08-c03-style-versus-content-p01"
+    },
+    {
+     "term": "content",
+     "definition": "What is said.",
+     "anchor": "cs329h-u08-c03-style-versus-content-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c03-style-versus-content-r1",
+     "question": "Why did response 2 win?",
+     "answer": "The style gap beat the content gap: 0.6 > 0.5; style decided.",
+     "anchor": "cs329h-u08-c03-style-versus-content-p05"
+    },
+    {
+     "id": "cs329h-u08-c03-style-versus-content-r2",
+     "question": "When does the additive model misattribute?",
+     "answer": "When style and content are not separable, e.g. the 'style' feature correlates 0.9 with content quality.",
+     "anchor": "cs329h-u08-c03-style-versus-content-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c04-computationally-bounded-choice",
+   "title": "cs329h-U08-C04: computationally bounded choice",
+   "minutes": 2,
+   "endAnchor": "cs329h-u08-c04-computationally-bounded-choice-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c04-computationally-bounded-choice-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c04-computationally-bounded-choice-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u08-c04-computationally-bounded-choice-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "bounded rationality",
+     "definition": "The chooser has a computation budget; they satisfice or use heuristics instead of maximizing.",
+     "anchor": "cs329h-u08-c04-computationally-bounded-choice-p03"
+    },
+    {
+     "term": "satisficing",
+     "definition": "The chosen option is the first above threshold a: good enough, rarely best.",
+     "anchor": "cs329h-u08-c04-computationally-bounded-choice-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c04-computationally-bounded-choice-r1",
+     "question": "What is the mean chosen utility on the toy?",
+     "answer": "0.882 against about 0.990 for a maximizer.",
+     "anchor": "cs329h-u08-c04-computationally-bounded-choice-p06"
+    },
+    {
+     "id": "cs329h-u08-c04-computationally-bounded-choice-r2",
+     "question": "What does inversion encode under misspecification?",
+     "answer": "The search procedure; the agent appears to dislike great options it never evaluated.",
+     "anchor": "cs329h-u08-c04-computationally-bounded-choice-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c05-behavioral-bias",
+   "title": "cs329h-U08-C05: behavioral bias",
+   "minutes": 2,
+   "endAnchor": "cs329h-u08-c05-behavioral-bias-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c05-behavioral-bias-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c05-behavioral-bias-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u08-c05-behavioral-bias-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "behavioral bias",
+     "definition": "A systematic, predictable deviation from the rational model.",
+     "anchor": "cs329h-u08-c05-behavioral-bias-p03"
+    },
+    {
+     "term": "phantom gap",
+     "definition": "A true gap of 0 looks like 0.619 under b = 0.619.",
+     "anchor": "cs329h-u08-c05-behavioral-bias-p06"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c05-behavioral-bias-r1",
+     "question": "What are the anchor numbers?",
+     "answer": "Anchor shifts 0.5 -> 0.65, phantom gap 0.619.",
+     "anchor": "cs329h-u08-c05-behavioral-bias-p06"
+    },
+    {
+     "id": "cs329h-u08-c05-behavioral-bias-r2",
+     "question": "When does 'correction' double the error?",
+     "answer": "When the bias model is wrong; 'anchoring' that was actually information.",
+     "anchor": "cs329h-u08-c05-behavioral-bias-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c06-misspecified-rationality",
+   "title": "cs329h-U08-C06: misspecified rationality",
+   "minutes": 2,
+   "endAnchor": "cs329h-u08-c06-misspecified-rationality-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c06-misspecified-rationality-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c06-misspecified-rationality-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "misspecified rationality",
+     "definition": "The choice model in the inversion does not match the human's actual procedure.",
+     "anchor": "cs329h-u08-c06-misspecified-rationality-p03"
+    },
+    {
+     "term": "never evaluated",
+     "definition": "Options never evaluated look 'disliked' to the maximizer model.",
+     "anchor": "cs329h-u08-c06-misspecified-rationality-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c06-misspecified-rationality-r1",
+     "question": "What do unevaluated options look like?",
+     "answer": "Disliked: their inferred utility sinks, a systematic error.",
+     "anchor": "cs329h-u08-c06-misspecified-rationality-p05"
+    },
+    {
+     "id": "cs329h-u08-c06-misspecified-rationality-r2",
+     "question": "When is the inversion unfixable?",
+     "answer": "With no process data and a wrong model; two procedures can give the same choices but different inferred rewards.",
+     "anchor": "cs329h-u08-c06-misspecified-rationality-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c07-inverse-problem",
+   "title": "cs329h-U08-C07: inverse problem",
+   "minutes": 2,
+   "endAnchor": "cs329h-u08-c07-inverse-problem-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c07-inverse-problem-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c07-inverse-problem-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u08-c07-inverse-problem-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "inverse problem",
+     "definition": "Find r such that the choice model with r makes the observed choices likely.",
+     "anchor": "cs329h-u08-c07-inverse-problem-p01"
+    },
+    {
+     "term": "complete separation",
+     "definition": "A beats B 2-0 gives gap_AB -> +infinity; the MLE is an artifact of the optimizer stopping point.",
+     "anchor": "cs329h-u08-c07-inverse-problem-p05"
+    },
+    {
+     "term": "MAP gap",
+     "definition": "With a Gaussian prior: gap_AB = 0.802, gap_BC = 0.254.",
+     "anchor": "cs329h-u08-c07-inverse-problem-p05"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c07-inverse-problem-r1",
+     "question": "What are the MAP gaps?",
+     "answer": "gap_AB = 0.802, gap_BC = 0.254 with a Gaussian prior.",
+     "anchor": "cs329h-u08-c07-inverse-problem-p05"
+    },
+    {
+     "id": "cs329h-u08-c07-inverse-problem-r2",
+     "question": "Why is the MLE infinite?",
+     "answer": "Complete separation: A beats B 2-0.",
+     "anchor": "cs329h-u08-c07-inverse-problem-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c08-non-identifiability",
+   "title": "cs329h-U08-C08: non-identifiability",
+   "minutes": 2,
+   "endAnchor": "cs329h-u08-c08-non-identifiability-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c08-non-identifiability-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c08-non-identifiability-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u08-c08-non-identifiability-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "non-identifiability",
+     "definition": "Rewards are not identified by optimal behavior.",
+     "anchor": "cs329h-u08-c08-non-identifiability-p01"
+    },
+    {
+     "term": "shaping invariance",
+     "definition": "Potential-based shaping changes the reward without changing the optimal policy.",
+     "anchor": "cs329h-u08-c08-non-identifiability-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c08-non-identifiability-r1",
+     "question": "What do the Q-values show?",
+     "answer": "Under r: [1.0, 0.9], under r': [0.5, 0.40]; same argmax, different values.",
+     "anchor": "cs329h-u08-c08-non-identifiability-p05"
+    },
+    {
+     "id": "cs329h-u08-c08-non-identifiability-r2",
+     "question": "When does the shaped reward mislead?",
+     "answer": "Deployed in a new MDP where the shaping misleads; Phi tuned for one task transfers badly.",
+     "anchor": "cs329h-u08-c08-non-identifiability-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c09-debiasing-assumptions",
+   "title": "cs329h-U08-C09: debiasing assumptions",
+   "minutes": 2,
+   "endAnchor": "cs329h-u08-c09-debiasing-assumptions-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c09-debiasing-assumptions-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c09-debiasing-assumptions-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    },
+    {
+     "anchor": "cs329h-u08-c09-debiasing-assumptions-fig01",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "debiasing",
+     "definition": "Subtracts an estimated bias from the observed margin.",
+     "anchor": "cs329h-u08-c09-debiasing-assumptions-p01"
+    },
+    {
+     "term": "b_hat",
+     "definition": "0.3 gives corrected 0.5, exact; 0.9 gives -0.1, worse than uncorrected.",
+     "anchor": "cs329h-u08-c09-debiasing-assumptions-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c09-debiasing-assumptions-r1",
+     "question": "What are the correction numbers?",
+     "answer": "True 0.5, uncorrected 0.8, corrected-good 0.5, corrected-bad -0.1.",
+     "anchor": "cs329h-u08-c09-debiasing-assumptions-p06"
+    },
+    {
+     "id": "cs329h-u08-c09-debiasing-assumptions-r2",
+     "question": "When does one b_hat fit none?",
+     "answer": "When bias varies by annotator, e.g. b in {0.1, 0.9} with b_hat = 0.5 harming both.",
+     "anchor": "cs329h-u08-c09-debiasing-assumptions-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c10-personalized-policy",
+   "title": "cs329h-U08-C10: personalized policy",
+   "minutes": 2,
+   "endAnchor": "cs329h-u08-c10-personalized-policy-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c10-personalized-policy-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c10-personalized-policy-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "personalized policy",
+     "definition": "Inverts each user's choices separately.",
+     "anchor": "cs329h-u08-c10-personalized-policy-p03"
+    },
+    {
+     "term": "mushy middle",
+     "definition": "Pooling opposite tastes gives a middle that pleases nobody.",
+     "anchor": "cs329h-u08-c10-personalized-policy-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c10-personalized-policy-r1",
+     "question": "Pooled versus per-user on the toy?",
+     "answer": "Pooled MLE gap = 0.0; per-user MAP recovers +0.90 and -0.90; held-out 0.85 personalized vs 0.50 pooled.",
+     "anchor": "cs329h-u08-c10-personalized-policy-p06"
+    },
+    {
+     "id": "cs329h-u08-c10-personalized-policy-r2",
+     "question": "When does personalization overfit?",
+     "answer": "With 2 pairs per user; per-user held-out 0.45 < pooled 0.55.",
+     "anchor": "cs329h-u08-c10-personalized-policy-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c11-uncertainty",
+   "title": "cs329h-U08-C11: uncertainty",
+   "minutes": 2,
+   "endAnchor": "cs329h-u08-c11-uncertainty-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c11-uncertainty-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c11-uncertainty-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "inversion uncertainty",
+     "definition": "Comes from finite choices and model ambiguity.",
+     "anchor": "cs329h-u08-c11-uncertainty-p03"
+    },
+    {
+     "term": "interval",
+     "definition": "[-0.94, 3.31] is wide: with two observations even the sign is unsure.",
+     "anchor": "cs329h-u08-c11-uncertainty-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c11-uncertainty-r1",
+     "question": "How wide is the interval?",
+     "answer": "[-0.94, 3.31]: with two observations even the sign is unsure.",
+     "anchor": "cs329h-u08-c11-uncertainty-p05"
+    },
+    {
+     "id": "cs329h-u08-c11-uncertainty-r2",
+     "question": "What is not in the interval?",
+     "answer": "Misspecification; a tight interval can sit around the wrong sign.",
+     "anchor": "cs329h-u08-c11-uncertainty-p11"
+    }
+   ]
+  },
+  {
+   "anchor": "cs329h-u08-c12-responsible-interpretation",
+   "title": "cs329h-U08-C12: responsible interpretation",
+   "minutes": 2,
+   "endAnchor": "cs329h-u08-c12-responsible-interpretation-end",
+   "blocks": [
+    {
+     "anchor": "cs329h-u08-c12-responsible-interpretation-p03",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "cs329h-u08-c12-responsible-interpretation-p05",
+     "kind": "keyIdea",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "responsible interpretation",
+     "definition": "Report what the data identifies, label the assumptions, refuse unsupported claims.",
+     "anchor": "cs329h-u08-c12-responsible-interpretation-p03"
+    },
+    {
+     "term": "model output",
+     "definition": "An inverted reward is a model output, not a fact about humans.",
+     "anchor": "cs329h-u08-c12-responsible-interpretation-p03"
+    }
+   ],
+   "recall": [
+    {
+     "id": "cs329h-u08-c12-responsible-interpretation-r1",
+     "question": "What does the honest sentence look like?",
+     "answer": "'Under the BT model with length debiased at b_hat 0.3, the MAP content gap is 0.4, 95% interval [0.1, 0.7]; the claim reverses if the bias model is wrong.'",
+     "anchor": "cs329h-u08-c12-responsible-interpretation-p06"
+    },
+    {
+     "id": "cs329h-u08-c12-responsible-interpretation-r2",
+     "question": "What is a fake audit?",
+     "answer": "'Bias audited' with no experiment.",
+     "anchor": "cs329h-u08-c12-responsible-interpretation-p11"
+    }
+   ]
+  }
+ ]
+}

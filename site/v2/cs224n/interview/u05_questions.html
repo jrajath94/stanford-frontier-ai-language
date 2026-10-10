@@ -135,47 +135,54 @@
       <h1>Interview · U05 questions</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-bank-u05-attention-and-transformers">Interview bank , U05 Attention and transformers</h1>
+<span id="interview-bank-u05-attention-and-transformers-end" data-end></span>
 <h2 id="breadth-6">Breadth (6)</h2>
-<p>Q1. What are the query, key, and value, and why three projections?
+<p id="breadth-6-p01" data-kind="exercise" data-term="query">Q1. What are the query, key, and value, and why three projections?
 Q2. Why divide attention scores by sqrt(d_k)?
 Q3. What does multi-head attention add over one wide head?
 Q4. Where does the causal mask go, and why not after softmax?
 Q5. What do the residual connection and layer norm each fix?
 Q6. Why does attention need position encodings at all?</p>
+<span id="breadth-6-end" data-end></span>
 <h2 id="deep-ladders-2-x-5">Deep ladders (2 x 5)</h2>
-<p>L1 (attention). (1) Write the single-head equations with shapes.
+<p id="deep-ladders-2-x-5-p01" data-kind="exercise" data-term="convex blend">L1 (attention). (1) Write the single-head equations with shapes.
 (2) Compute the toy: scores, weights, output. (3) Derive why the
 weights sum to 1 and the output is a convex blend. (4) Two models
 have identical attention weights but different outputs: explain.
 (5) Design the test of whether weights explain predictions.</p>
-<p>L2 (scale and mask). (1) Derive Var(q.k) = d_k. (2) Compute the
+<p id="deep-ladders-2-x-5-p02" data-kind="exercise" data-term="Var(q.k)">L2 (scale and mask). (1) Derive Var(q.k) = d_k. (2) Compute the
 unscaled vs scaled entropy pair. (3) Prove exp(-1e9) = 0 makes the
 mask exact. (4) Validation perplexity drops after you &ldquo;fix&rdquo; the
 mask: diagnose. (5) Design the experiment that catches a leaking
 mask.</p>
+<span id="deep-ladders-2-x-5-end" data-end></span>
 <h2 id="analytical-2">Analytical (2)</h2>
-<p>Q7. A 24-layer post-norm transformer will not train without warmup,
+<p id="analytical-2-p01" data-kind="exercise" data-term="post-norm">Q7. A 24-layer post-norm transformer will not train without warmup,
 but the pre-norm twin trains fine. Which mechanism explains the
 difference, and what is the cheapest fix for the post-norm run?
 Q8. You double the context from 2k to 8k and step time goes up 14x,
 not 4x. Which term explains it, and what two changes cut it?</p>
+<span id="analytical-2-end" data-end></span>
 <h2 id="implementationdebugging-1">Implementation/debugging (1)</h2>
-<p>Q9. Your decoder generates well for 50 tokens then drifts into
+<p id="implementationdebugging-1-p01" data-kind="exercise" data-term="repetition">Q9. Your decoder generates well for 50 tokens then drifts into
 repetition. List the checks in order, with the one-line fix each
 check points to.</p>
+<span id="implementationdebugging-1-end" data-end></span>
 <h2 id="changed-constraint-2">Changed-constraint (2)</h2>
-<p>Q10. Inference must fit a 4GB GPU and the KV cache alone is 6GB.
+<p id="changed-constraint-2-p01" data-kind="exercise" data-term="4GB GPU">Q10. Inference must fit a 4GB GPU and the KV cache alone is 6GB.
 What are the three moves, in order of desperation?
 Q11. The task changes from generation to whole-document
 classification. What changes in the mask, the readout, and the loss?</p>
+<span id="changed-constraint-2-end" data-end></span>
 <h2 id="research-critique-1">Research critique (1)</h2>
-<p>Q12. &ldquo;Attention weights show what the model looks at.&rdquo; Steelman the
+<p id="research-critique-1-p01" data-kind="exercise" data-term="looks at">Q12. &ldquo;Attention weights show what the model looks at.&rdquo; Steelman the
 claim, then give the strongest counterexample from this unit.</p>
       
       <nav class="pager"><a href="../labs/u14_lab_key.html"><span class="lbl">← Previous</span>Lab 14 · Keys</a><a href="../labs/u15_lab.html"><span class="lbl">Next →</span>Lab 15 · Project tutorials and open questions</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-1-p02" data-kind="exercise" data-term="steelman">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-1-end" data-end></span>
     </footer>
   </main>
 </div>

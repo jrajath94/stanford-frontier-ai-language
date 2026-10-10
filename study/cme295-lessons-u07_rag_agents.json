@@ -1,0 +1,657 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-lessons-u07_rag_agents",
+ "itemKind": "lesson",
+ "revision": "6ae36a6275bab4e76a7749e743fd5d6c8154d9424b5310911d2ef6d1b7adac3a",
+ "sections": [
+  {
+   "anchor": "u07_rag_agents-intro-p01",
+   "title": "U07 \u00b7 RAG and agentic systems",
+   "minutes": 1,
+   "endAnchor": "u07_rag_agents-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u07_rag_agents-intro-p02",
+     "definition": "The claim class for retrieval pipeline, context construction, tool calling, agent state.",
+     "term": "OFFICIAL-SYLLABUS"
+    },
+    {
+     "anchor": "u07_rag_agents-intro-p02",
+     "definition": "The claim class for hybrid search, reranking, ReAct, stopping, permissions.",
+     "term": "REQUESTED-BRANCH"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u07_rag_agents-intro-p02",
+     "answer": "L6 (Nov 6, 2026).",
+     "id": "u07_rag_agents-intro-r1",
+     "question": "What is the lecture anchor for U07?"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood",
+   "title": "not yet understood",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "not-yet-understood-li01",
+     "definition": "LLM evaluation. It arrives in U08.",
+     "term": "judging"
+    },
+    {
+     "anchor": "not-yet-understood-li02",
+     "definition": "Masked diffusion models. They arrive in U09.",
+     "term": "diffusion"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "not-yet-understood-li02",
+     "answer": "U09. It covers diffusion, keystone review, and exams.",
+     "id": "not-yet-understood-r1",
+     "question": "Which unit covers trends and synthesis?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-recall-cosine-json-tool-calls",
+   "title": "local remediation , recall, cosine, json tool calls",
+   "minutes": 1,
+   "endAnchor": "local-remediation-recall-cosine-json-tool-calls-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-recall-cosine-json-tool-calls-p02",
+     "definition": "H/R. Share of relevant docs retrieved.",
+     "term": "recall"
+    },
+    {
+     "anchor": "local-remediation-recall-cosine-json-tool-calls-p02",
+     "definition": "H/K. Share of retrieved docs that are relevant.",
+     "term": "precision"
+    },
+    {
+     "anchor": "local-remediation-recall-cosine-json-tool-calls-p03",
+     "definition": "Normalized dot product, range [-1, 1]. Dense retrieval ranks by it.",
+     "term": "cosine similarity"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-recall-cosine-json-tool-calls-p02",
+     "answer": "Recall 0.75, precision 0.30.",
+     "id": "local-remediation-recall-cosine-json-tool-calls-r1",
+     "question": "What are recall and precision for R=8, K=20, H=6?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-retrieval-pipeline",
+   "title": "c01: retrieval pipeline",
+   "minutes": 3,
+   "endAnchor": "c01-retrieval-pipeline-end",
+   "blocks": [
+    {
+     "anchor": "c01-retrieval-pipeline-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-retrieval-pipeline-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-retrieval-pipeline-p02",
+     "definition": "Chunk, embed, index offline; embed query, ANN search, top-k online.",
+     "term": "retrieval pipeline"
+    },
+    {
+     "anchor": "c01-retrieval-pipeline-p05",
+     "definition": "A token span with metadata. The chunker must not split facts.",
+     "term": "chunk"
+    },
+    {
+     "anchor": "c01-retrieval-pipeline-p05",
+     "definition": "Approximate nearest neighbors. Sublinear query over vectors.",
+     "term": "ANN"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-retrieval-pipeline-p03",
+     "answer": "Recall = H/R (relevant retrieved). Precision = H/K (retrieved relevant).",
+     "id": "c01-retrieval-pipeline-r1",
+     "question": "Recall vs precision?"
+    },
+    {
+     "anchor": "c01-retrieval-pipeline-p07",
+     "answer": "Recall 0.75 -> 0.875, precision 0.30 -> 0.175.",
+     "id": "c01-retrieval-pipeline-r2",
+     "question": "What happens doubling k from 20 to 40?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-advanced-retrieval",
+   "title": "c02: advanced retrieval",
+   "minutes": 3,
+   "endAnchor": "c02-advanced-retrieval-end",
+   "blocks": [
+    {
+     "anchor": "c02-advanced-retrieval-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-advanced-retrieval-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-advanced-retrieval-p05",
+     "definition": "Embed a hypothetical answer instead of the query.",
+     "term": "HyDE"
+    },
+    {
+     "anchor": "c02-advanced-retrieval-p06",
+     "definition": "Retrieve, read, re-query, retrieve again. Each hop is a funnel pass.",
+     "term": "multi-hop"
+    },
+    {
+     "anchor": "c02-advanced-retrieval-p03",
+     "definition": "Rewriting a vague query into a retrievable one.",
+     "term": "query rewriting"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-advanced-retrieval-p06",
+     "answer": "A hypothetical answer, not the query. Its neighbors are nearer the truth.",
+     "id": "c02-advanced-retrieval-r1",
+     "question": "What does HyDE embed?"
+    },
+    {
+     "anchor": "c02-advanced-retrieval-p07",
+     "answer": "Recall 0.62 -> 0.81 at 2.1x latency.",
+     "id": "c02-advanced-retrieval-r2",
+     "question": "What did two hops buy in the toy?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-hybrid-search",
+   "title": "c03: hybrid search",
+   "minutes": 3,
+   "endAnchor": "c03-hybrid-search-end",
+   "blocks": [
+    {
+     "anchor": "c03-hybrid-search-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-hybrid-search-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-hybrid-search-p03",
+     "definition": "Keyword scoring from term statistics. Testifies about exact terms.",
+     "term": "BM25"
+    },
+    {
+     "anchor": "c03-hybrid-search-p05",
+     "definition": "Reciprocal rank fusion: sum 1/(k + rank). Needs no normalization.",
+     "term": "RRF"
+    },
+    {
+     "anchor": "c03-hybrid-search-p05",
+     "definition": "alpha in weighted sum. Scores must be normalized first.",
+     "term": "fusion weight"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-hybrid-search-p06",
+     "answer": "s = sum 1/(k + rank_i), k = 60. Ranks only, no normalization.",
+     "id": "c03-hybrid-search-r1",
+     "question": "Write the RRF formula."
+    },
+    {
+     "anchor": "c03-hybrid-search-p07",
+     "answer": "Doc A: 0.65 vs B 0.55. Dense alone ranks B first.",
+     "id": "c03-hybrid-search-r2",
+     "question": "Who wins the toy fusion at alpha 0.5?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-rerank",
+   "title": "c04: rerank",
+   "minutes": 3,
+   "endAnchor": "c04-rerank-end",
+   "blocks": [
+    {
+     "anchor": "c04-rerank-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-rerank-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-rerank-p05",
+     "definition": "Joint (query, doc) encoding. Slow, accurate; the judge.",
+     "term": "cross-encoder"
+    },
+    {
+     "anchor": "c04-rerank-p06",
+     "definition": "One vector per doc, dot product. Fast; the bouncer.",
+     "term": "bi-encoder"
+    },
+    {
+     "anchor": "c04-rerank-p03",
+     "definition": "Share of top-5 that are relevant.",
+     "term": "precision@5"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-rerank-p04",
+     "answer": "The retriever (bi-encoder) admits 50. The reranker (cross-encoder) picks 5.",
+     "id": "c04-rerank-r1",
+     "question": "Bouncer vs judge?"
+    },
+    {
+     "anchor": "c04-rerank-p07",
+     "answer": "0.90 recall@50 * 0.80 precision@5 = 0.72 reach the model.",
+     "id": "c04-rerank-r2",
+     "question": "What is the end-to-end toy math?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-context-construction",
+   "title": "c05: context construction",
+   "minutes": 3,
+   "endAnchor": "c05-context-construction-end",
+   "blocks": [
+    {
+     "anchor": "c05-context-construction-p05",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-context-construction-p17",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-context-construction-p03",
+     "definition": "W - S - R. Docs must fit inside it.",
+     "term": "token budget"
+    },
+    {
+     "anchor": "c05-context-construction-p03",
+     "definition": "It marks where a doc was cut.",
+     "term": "truncation mark"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-context-construction-p05",
+     "answer": "Fold big items, essentials on top, room for the answer. Overstuffed bursts.",
+     "id": "c05-context-construction-r1",
+     "question": "State the suitcase model."
+    },
+    {
+     "anchor": "c05-context-construction-p04",
+     "answer": "3 fit (2400). The 4th is cut at 600 with a mark.",
+     "id": "c05-context-construction-r2",
+     "question": "How many 800-token docs fit in the toy?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-function-calling",
+   "title": "c06: function calling",
+   "minutes": 3,
+   "endAnchor": "c06-function-calling-end",
+   "blocks": [
+    {
+     "anchor": "c06-function-calling-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-function-calling-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-function-calling-p03",
+     "definition": "The menu: name plus JSON argument schema.",
+     "term": "tool schema"
+    },
+    {
+     "anchor": "c06-function-calling-p08",
+     "definition": "Validate against the schema, execute, return the result.",
+     "term": "dispatch"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-function-calling-p04",
+     "answer": "Schema is the menu, the call is the order, the runtime is the kitchen.",
+     "id": "c06-function-calling-r1",
+     "question": "Menu, order, kitchen?"
+    },
+    {
+     "anchor": "c06-function-calling-p07",
+     "answer": "An error: \u201cmissing required argument: q\u201d. Validation is the contract.",
+     "id": "c06-function-calling-r2",
+     "question": "What returns for a call missing \u201cq\u201d?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-toolsresults",
+   "title": "c07: tools/results",
+   "minutes": 3,
+   "endAnchor": "c07-toolsresults-end",
+   "blocks": [
+    {
+     "anchor": "c07-toolsresults-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-toolsresults-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-toolsresults-p03",
+     "definition": "Max tokens entering context. Truncate with a marker past it.",
+     "term": "result cap"
+    },
+    {
+     "anchor": "c07-toolsresults-p06",
+     "definition": "Errors as messages like {\u201cerror\u201d: \u201ctimeout\u201d, \u201cretry\u201d: true}.",
+     "term": "typed errors"
+    },
+    {
+     "anchor": "c07-toolsresults-p05",
+     "definition": "Whether retries are safe. Flag side effects in the schema.",
+     "term": "idempotency"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-toolsresults-p04",
+     "answer": "Tools are senses, results are sensations. A flooding sense is worse than none.",
+     "id": "c07-toolsresults-r1",
+     "question": "Senses and sensations?"
+    },
+    {
+     "anchor": "c07-toolsresults-p12",
+     "answer": "It is not idempotent. A retry sends twice.",
+     "id": "c07-toolsresults-r2",
+     "question": "Why is send_email retry unsafe?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-react",
+   "title": "c08: react",
+   "minutes": 3,
+   "endAnchor": "c08-react-end",
+   "blocks": [
+    {
+     "anchor": "c08-react-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-react-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-react-p02",
+     "definition": "Thought, Action, Observation interleaved. The loop is short-term memory.",
+     "term": "ReAct"
+    },
+    {
+     "anchor": "c08-react-p05",
+     "definition": "The tool result, injected by the runtime.",
+     "term": "Observation"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-react-p05",
+     "answer": "Thought (free text), Action (tool call), Observation (tool result).",
+     "id": "c08-react-r1",
+     "question": "Name the three roles."
+    },
+    {
+     "anchor": "c08-react-p07",
+     "answer": "A broken trace. The loop detector fires.",
+     "id": "c08-react-r2",
+     "question": "What does 6 Thoughts and 0 Actions mean?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-state",
+   "title": "c09: state",
+   "minutes": 3,
+   "endAnchor": "c09-state-end",
+   "blocks": [
+    {
+     "anchor": "c09-state-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-state-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-state-p03",
+     "definition": "The trace. Fast, small: the desk.",
+     "term": "working memory"
+    },
+    {
+     "anchor": "c09-state-p06",
+     "definition": "Summarizing old steps into the notebook, keeping newest verbatim.",
+     "term": "compaction"
+    },
+    {
+     "anchor": "c09-state-p12",
+     "definition": "Codes, IDs, numbers kept exact through summarization.",
+     "term": "verbatim anchors"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-state-p04",
+     "answer": "Trace (fast, small), session summary (cheap, lossy), profile (permanent, curated).",
+     "id": "c09-state-r1",
+     "question": "Desk, notebook, cabinet?"
+    },
+    {
+     "anchor": "c09-state-p07",
+     "answer": "3.75x: 3200 vs 12000 tokens for a 40-step trace.",
+     "id": "c09-state-r2",
+     "question": "What was the toy compression?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-stopping",
+   "title": "c10: stopping",
+   "minutes": 3,
+   "endAnchor": "c10-stopping-end",
+   "blocks": [
+    {
+     "anchor": "c10-stopping-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-stopping-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-stopping-p03",
+     "definition": "Max steps N. The leash on the loop.",
+     "term": "step cap"
+    },
+    {
+     "anchor": "c10-stopping-p04",
+     "definition": "It fires on repeated actions. The collar.",
+     "term": "repeat detector"
+    },
+    {
+     "anchor": "c10-stopping-p03",
+     "definition": "The string whose presence stops the loop. The owner.",
+     "term": "answer trigger"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-stopping-p04",
+     "answer": "Step cap, repeat detector, answer trigger.",
+     "id": "c10-stopping-r1",
+     "question": "Leash, collar, owner?"
+    },
+    {
+     "anchor": "c10-stopping-p07",
+     "answer": "91 by answer, 6 repeat guard, 3 cap. The 3 are tasks to fix.",
+     "id": "c10-stopping-r2",
+     "question": "What did the 100-run batch show?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-permissions",
+   "title": "c11: permissions",
+   "minutes": 2,
+   "endAnchor": "c11-permissions-end",
+   "blocks": [
+    {
+     "anchor": "c11-permissions-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-permissions-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-permissions-p04",
+     "definition": "Always allow. Read tools.",
+     "term": "green"
+    },
+    {
+     "anchor": "c11-permissions-p04",
+     "definition": "Require approval. Irreversible actions.",
+     "term": "red"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-permissions-p04",
+     "answer": "Green (free), yellow (logged), red (approval).",
+     "id": "c11-permissions-r1",
+     "question": "Name the three badges."
+    },
+    {
+     "anchor": "c11-permissions-p10",
+     "answer": "Red (irreversible). Approvals cost human minutes.",
+     "id": "c11-permissions-r2",
+     "question": "What tier is send_email and why batch red actions?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-failure-separation",
+   "title": "c12: failure separation",
+   "minutes": 3,
+   "endAnchor": "c12-failure-separation-end",
+   "blocks": [
+    {
+     "anchor": "c12-failure-separation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-failure-separation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-failure-separation-p02",
+     "definition": "Attributing a wrong answer to retrieval, model, or tool failure.",
+     "term": "failure separation"
+    },
+    {
+     "anchor": "c12-failure-separation-p06",
+     "definition": "Check retrieval, then tool, then model. Fix the earliest break.",
+     "term": "upstream-first"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-failure-separation-p04",
+     "answer": "The pipeline is a relay. Find which handoff dropped the baton.",
+     "id": "c12-failure-separation-r1",
+     "question": "State the relay model."
+    },
+    {
+     "anchor": "c12-failure-separation-p07",
+     "answer": "47 retrieval, 31 model, 22 tool. Fix retrieval first.",
+     "id": "c12-failure-separation-r2",
+     "question": "What did the 100-label histogram say?"
+    }
+   ]
+  }
+ ]
+}

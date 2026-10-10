@@ -1,0 +1,301 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-u04_key",
+ "itemKind": "lesson",
+ "revision": "c4a6070c45ba0fa81e61b9f366adb1dc44361a59eb158a65319c344823349b32",
+ "sections": [
+  {
+   "anchor": "u04-interview-key",
+   "title": "U04 interview key",
+   "minutes": 1,
+   "endAnchor": "u04-interview-key-end",
+   "blocks": [
+    {
+     "anchor": "u04-interview-key-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "strong answer",
+     "definition": "The minimum sufficient explanation that earns full marks.",
+     "anchor": "u04-interview-key-p01"
+    },
+    {
+     "term": "red flag",
+     "definition": "A common wrong answer that signals a misconception.",
+     "anchor": "u04-interview-key-p01"
+    },
+    {
+     "term": "rubric",
+     "definition": "The scoring breakdown per question part.",
+     "anchor": "u04-interview-key-p01"
+    },
+    {
+     "term": "remediation",
+     "definition": "The lesson reference to revisit after a miss.",
+     "anchor": "u04-interview-key-p01"
+    },
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "u04-interview-key-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u04-interview-key-r1",
+     "question": "What five parts does each U04 key entry carry?",
+     "answer": "Minimum sufficient explanation, strong answer, red flags, scoring rubric, and remediation.",
+     "anchor": "u04-interview-key-p01"
+    },
+    {
+     "id": "u04-interview-key-r2",
+     "question": "How should you use the key?",
+     "answer": "Keep it closed-book: attempt first, then check.",
+     "anchor": "u04-interview-key-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth",
+   "title": "Breadth",
+   "minutes": 1,
+   "endAnchor": "breadth-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "prompt masked",
+     "definition": "SFT sums log p over response tokens only.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "int8 scale",
+     "definition": "s = max|w|/127; q = round(w/s); w_hat = q*s.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "ridge",
+     "definition": "Decode sits left of the ridge: memory-bound.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "term": "budget rows",
+     "definition": "FLOPs, memory, time, money.",
+     "anchor": "breadth-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-r1",
+     "question": "What is the B2 red flag?",
+     "answer": "Counting weights alone.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "id": "breadth-r2",
+     "question": "What is the B5 red flag?",
+     "answer": "Calling alpha the learning rate.",
+     "anchor": "breadth-list01"
+    },
+    {
+     "id": "breadth-r3",
+     "question": "What four rows does strong B6 name?",
+     "answer": "FLOPs, memory, time, money.",
+     "anchor": "breadth-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders",
+   "title": "Deep ladders",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "256x",
+     "definition": "16.8M LoRA params versus 65,536: the toy's 256x ratio.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "identity init",
+     "definition": "B = 0 gives the adapter an identity start.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "term": "activation term",
+     "definition": "The memory the three-term bill misses, exposed at long context.",
+     "anchor": "deep-ladders-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-r1",
+     "question": "What causes the L1 step-0 jump?",
+     "answer": "Nonzero init.",
+     "anchor": "deep-ladders-list01"
+    },
+    {
+     "id": "deep-ladders-r2",
+     "question": "What does the L2 experiment measure?",
+     "answer": "Peak versus bill over T, fitting the activation term.",
+     "anchor": "deep-ladders-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-exercises",
+   "title": "Analytical exercises",
+   "minutes": 1,
+   "endAnchor": "analytical-exercises-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "0.10%",
+     "definition": "13.1M trainable of 13B.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "term": "157 MB",
+     "definition": "The fp32 optimizer states for the adapter.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "term": "B ~= 150",
+     "definition": "The batch size that makes decode compute-bound.",
+     "anchor": "analytical-exercises-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-exercises-r1",
+     "question": "What is the E1 red flag?",
+     "answer": "Forgetting grad bytes.",
+     "anchor": "analytical-exercises-list01"
+    },
+    {
+     "id": "analytical-exercises-r2",
+     "question": "What is the E2 red flag?",
+     "answer": "Saying batching does not change intensity.",
+     "anchor": "analytical-exercises-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebug",
+   "title": "Implementation/debug",
+   "minutes": 1,
+   "endAnchor": "implementationdebug-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "inverted mask",
+     "definition": "Prompt tokens trained by mistake; the model answers in the wrong format.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "term": "canary batch",
+     "definition": "A fixed batch where prompt-position loss must equal 0.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "term": "render check",
+     "definition": "Render tokenized samples and check the mask.",
+     "anchor": "implementationdebug-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebug-r1",
+     "question": "What is the D1 culprit?",
+     "answer": "Inverted or missing mask, or template mismatch.",
+     "anchor": "implementationdebug-list01"
+    },
+    {
+     "id": "implementationdebug-r2",
+     "question": "What does the assert check?",
+     "answer": "Loss on prompt positions equals 0 for a canary batch.",
+     "anchor": "implementationdebug-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-scenarios",
+   "title": "Changed-constraint scenarios",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-scenarios-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "30 GB",
+     "definition": "Weights 14 GB plus adapter ~1 GB plus activations 15 GB; over 24 GB.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "term": "gradient checkpointing",
+     "definition": "Trades compute for activation memory.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "term": "saturation",
+     "definition": "LoRA's failure mode on a new language: poor fluency.",
+     "anchor": "changed-constraint-scenarios-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-scenarios-r1",
+     "question": "Does the S1 build fit?",
+     "answer": "No: 30 GB exceeds 24 GB.",
+     "anchor": "changed-constraint-scenarios-list01"
+    },
+    {
+     "id": "changed-constraint-scenarios-r2",
+     "question": "What choice does strong S2 make?",
+     "answer": "Full fine-tune: a new language needs deep change rank 8 cannot hold.",
+     "anchor": "changed-constraint-scenarios-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique",
+   "title": "Research-critique",
+   "minutes": 1,
+   "endAnchor": "research-critique-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "false answers",
+     "definition": "SFT on false answers teaches confident falsehoods.",
+     "anchor": "research-critique-list01"
+    },
+    {
+     "term": "format-only",
+     "definition": "Data that teaches format without new facts.",
+     "anchor": "research-critique-p01"
+    },
+    {
+     "term": "falsification",
+     "definition": "Fact recall does not improve over the base.",
+     "anchor": "research-critique-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-r1",
+     "question": "What is the R1 red flag?",
+     "answer": "Saying more SFT data means more knowledge.",
+     "anchor": "research-critique-list01"
+    },
+    {
+     "id": "research-critique-r2",
+     "question": "What must the experiment test separately?",
+     "answer": "Fact recall versus format adherence.",
+     "anchor": "research-critique-list01"
+    }
+   ]
+  }
+ ]
+}

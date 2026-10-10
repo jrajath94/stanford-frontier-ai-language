@@ -135,8 +135,9 @@
       <h1>Interview · U04 keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-key-u04">Interview key , U04</h1>
+<span id="interview-key-u04-end" data-end></span>
 <h2 id="breadth">Breadth</h2>
-<p>A1. The chain rule factors any joint distribution left to right, the
+<p id="breadth-p01" data-kind="example" data-term="chain rule">A1. The chain rule factors any joint distribution left to right, the
 cost is serial generation and no right-context conditioning.
 A2. Training feeds gold prefixes, inference feeds model outputs. The
 mismatch is exposure bias: errors compound off the training
@@ -152,41 +153,46 @@ contributions. Truncation cuts chains at k: dependencies beyond k are
 unlearnable.
 A6. Jacobian products grow or shrink as rho^T. Fixes: clip (exploding),
 gates/orthogonal init (vanishing), attention (skip the product).</p>
+<span id="breadth-end" data-end></span>
 <h2 id="deep-ladders">Deep ladders</h2>
-<p>L1. (1) P(w_1..n) = prod P(w_t | w_&lt;t), loss = -sum log P. (2)
+<p id="deep-ladders-p01" data-kind="example" data-term="4.38">L1. (1) P(w_1..n) = prod P(w_t | w_&lt;t), loss = -sum log P. (2)
 -4.430, exp(4.430/6) = 4.38. (3) The model definition conditions only
 on the prefix, right context has no path into the prediction. (4)
 Perplexity averages over positions, direction affects which
 dependencies are easy. (5) Controlled completion study, same data,
 both directions, human or task metric.</p>
-<p>L2. (1) dL/dW_h = sum_t sum_{k&lt;=t} (dL_t/dh_t)(prod_{i} J_i)(dh_k/dW_h).
+<p id="deep-ladders-p02" data-kind="prose" data-term="0.0115 and 38.34">L2. (1) dL/dW_h = sum_t sum_{k&lt;=t} (dL_t/dh_t)(prod_{i} J_i)(dh_k/dW_h).
 (2) 0.0115 and 38.34. (3) ||prod J|| &lt;= prod ||J|| &lt;= gamma^T. (4)
 Vanishing: short range learns, long range gets no signal. (5) Sweep
 spectral radius {0.5, 1.0, 2.0} at fixed budget, 1.0 should win on
 long range.</p>
+<span id="deep-ladders-end" data-end></span>
 <h2 id="analytical">Analytical</h2>
-<p>A7. Training perplexity lies (memorization). Experiment: held-out
+<p id="analytical-p01" data-kind="example" data-term="memorization">A7. Training perplexity lies (memorization). Experiment: held-out
 perplexity plus free-run generation quality from held-out seeds, a
 memorizer shows low train ppl, high test ppl, poor generation.
 A8. (i) Vanishing: more capacity, same rho^T decay, longer effective
 paths get no signal, test: gradient norms by time lag. (ii)
 Optimization: bigger model, same data, overfits the six sentences,
 test: train/test ppl gap. Cheapest: measure both.</p>
+<span id="analytical-end" data-end></span>
 <h2 id="implementationdebugging">Implementation/debugging</h2>
-<p>A9. (1) Check loss before nan: sudden spike -&gt; gradient explosion -&gt;
+<p id="implementationdebugging-p01" data-kind="example" data-term="gradient explosion">A9. (1) Check loss before nan: sudden spike -&gt; gradient explosion -&gt;
 add global norm clipping. (2) Check lr: too high -&gt; lower it. (3)
 Check data: nan/inf in inputs -&gt; sanitize. (4) Check softmax: large
 logits -&gt; subtract max. (5) Check init: spectral radius &gt;&gt; 1 -&gt;
 orthogonal init.</p>
+<span id="implementationdebugging-end" data-end></span>
 <h2 id="changed-constraint">Changed-constraint</h2>
-<p>A10. Survives: the recurrence itself (O(d^2) per step, tiny state),
+<p id="changed-constraint-p01" data-kind="example" data-term="O(d^2)">A10. Survives: the recurrence itself (O(d^2) per step, tiny state),
 greedy decoding. Breaks: batching/padding machinery, BPTT training
 (no memory for the unroll), train offline, ship only the step.
 A11. Training: sequence-level loss (e.g. binary CE on a pooled score)
 replaces next-word CE. Decoding: no generation needed, just scoring.
 Evaluation: accuracy/AUC replaces perplexity.</p>
+<span id="changed-constraint-end" data-end></span>
 <h2 id="research-critique">Research critique</h2>
-<p>A12. Steelman: the forget gate near 1 gives dc_t/dc_{t-1} = 1, an
+<p id="research-critique-p01" data-kind="example" data-term="forget-bias trick">A12. Steelman: the forget gate near 1 gives dc_t/dc_{t-1} = 1, an
 explicit constant-error path across arbitrary time. Counterexample:
 the gates are learned through the same products, a forget gate
 initialized near 0 wipes memory every step and gradients still
@@ -195,7 +201,8 @@ vanish. The fix needs the forget-bias trick to work at all.</p>
       <nav class="pager"><a href="../labs/u14_lab.html"><span class="lbl">← Previous</span>Lab 14 · Multimodality and guest research</a><a href="../labs/u14_lab_key.html"><span class="lbl">Next →</span>Lab 14 · Keys</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-p02" data-kind="prose" data-term="dc_t/dc_{t-1} = 1">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-end" data-end></span>
     </footer>
   </main>
 </div>

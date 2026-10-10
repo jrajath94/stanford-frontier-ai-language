@@ -1,0 +1,322 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-u02_questions",
+ "itemKind": "lesson",
+ "revision": "75d6a9aa71a152f5071c91a269b07d5a62a10a2ef61f81caa901ee192e325248",
+ "sections": [
+  {
+   "anchor": "u02-interview-bank-questions",
+   "title": "U02 interview bank , questions",
+   "minutes": 1,
+   "endAnchor": "u02-interview-bank-questions-end",
+   "blocks": [
+    {
+     "anchor": "u02-interview-bank-questions-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "u02-interview-bank-questions-p01"
+    },
+    {
+     "term": "answer keys",
+     "definition": "The companion files with worked answers; open them only after attempting.",
+     "anchor": "u02-interview-bank-questions-p01"
+    },
+    {
+     "term": "deep ladders",
+     "definition": "Follow-up chains that deepen one topic from definition to experiment.",
+     "anchor": "u02-interview-bank-questions-p01"
+    },
+    {
+     "term": "breadth",
+     "definition": "Short questions that test wide coverage across the unit.",
+     "anchor": "u02-interview-bank-questions-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "u02-interview-bank-questions-r1",
+     "question": "How many questions of each type does the U02 bank set?",
+     "answer": "Six breadth, two deep ladders of five follow-ups, two analytical exercises, one implementation/debug task, two changed-constraint scenarios, and one research-critique question.",
+     "anchor": "u02-interview-bank-questions-p01"
+    },
+    {
+     "id": "u02-interview-bank-questions-r2",
+     "question": "When may you open the answer key?",
+     "answer": "Only after attempting every question closed-book.",
+     "anchor": "u02-interview-bank-questions-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "breadth-6",
+   "title": "Breadth (6)",
+   "minutes": 1,
+   "endAnchor": "breadth-6-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "MQA",
+     "definition": "Multi-query attention; all heads share one KV head.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "RoPE",
+     "definition": "Rotary position embeddings; they rotate query and key pairs by position.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "KV cache",
+     "definition": "Stored keys and values that avoid recompute during decoding.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "GQA",
+     "definition": "Grouped-query attention; head groups share KV heads.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "learned absolute positions",
+     "definition": "Position vectors learned in training; they fail past trained length.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "sinusoidal positions",
+     "definition": "Fixed sine and cosine position vectors that extrapolate by formula.",
+     "anchor": "breadth-6-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-6-r1",
+     "question": "What does B1 ask about MQA heads?",
+     "answer": "What is shared across heads and what stays private.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r2",
+     "question": "What one-line property must B2 state for RoPE?",
+     "answer": "That the rotated dot product depends only on the relative distance n - m.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r3",
+     "question": "Which term of the KV-cache byte formula does B4 target?",
+     "answer": "The term GQA changes: the number of KV heads.",
+     "anchor": "breadth-6-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders-2-x-5",
+   "title": "Deep ladders (2 x 5)",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-2-x-5-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "rotation angle",
+     "definition": "The per-pair RoPE angle, theta times position m.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "prefill/decode split",
+     "definition": "Processing the prompt at once, then generating one token at a time.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "term": "cache-vs-recompute crossover",
+     "definition": "The context length where caching beats recomputing.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "term": "RoPE base",
+     "definition": "The frequency base of RoPE; it sets the extrapolation range.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "consistency check",
+     "definition": "A test that cached decode matches an uncached forward pass.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-2-x-5-r1",
+     "question": "What toy does L1.2 ask for?",
+     "answer": "Rotating the pair (1, 0) by 1.0 rad.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r2",
+     "question": "What toy does L2.2 ask for?",
+     "answer": "Cache bytes for 32 layers, 1 KV head, d_k = 128, T = 2048, fp16.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r3",
+     "question": "What experiment does L2.5 propose?",
+     "answer": "Measuring the cache-vs-recompute crossover.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-exercises-2",
+   "title": "Analytical exercises (2)",
+   "minutes": 1,
+   "endAnchor": "analytical-exercises-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "attention FLOPs",
+     "definition": "The QK^T + AV operation count per layer.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "term": "score memory",
+     "definition": "The fp16 bytes of the (B, h, T, T) score matrix.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "term": "crossover point",
+     "definition": "The T where score FLOPs equal projection FLOPs.",
+     "anchor": "analytical-exercises-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-exercises-2-r1",
+     "question": "What must E1 find?",
+     "answer": "The T where attention score FLOPs equal the projection FLOPs.",
+     "anchor": "analytical-exercises-2-p01"
+    },
+    {
+     "id": "analytical-exercises-2-r2",
+     "question": "What does E2 test for B = 1 and B = 4?",
+     "answer": "Whether the GQA cache fits in 40 GB with 14 GB of weights.",
+     "anchor": "analytical-exercises-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebug-task-1",
+   "title": "Implementation/debug task (1)",
+   "minutes": 1,
+   "endAnchor": "implementationdebug-task-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "GQA conversion",
+     "definition": "Turning MHA into GQA by mean-pooling KV heads.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "term": "mean-pool",
+     "definition": "Averaging KV heads within each group.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "term": "conversion asserts",
+     "definition": "Two asserts that guard the GQA conversion.",
+     "anchor": "implementationdebug-task-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebug-task-1-r1",
+     "question": "What symptom does D1 report?",
+     "answer": "A 5-point benchmark drop after GQA conversion with no continued training.",
+     "anchor": "implementationdebug-task-1-p01"
+    },
+    {
+     "id": "implementationdebug-task-1-r2",
+     "question": "What guards must the answer write?",
+     "answer": "Two asserts that guard the conversion.",
+     "anchor": "implementationdebug-task-1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-scenarios-2",
+   "title": "Changed-constraint scenarios (2)",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-scenarios-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "RoPE base",
+     "definition": "The frequency base tuned for 4k; it limits extrapolation.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "term": "128k context",
+     "definition": "The target length, 32x the tuned RoPE range.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "term": "quality risk",
+     "definition": "The accuracy cost accepted when shrinking the KV cache.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-scenarios-2-r1",
+     "question": "What two things must S1 name per fix?",
+     "answer": "The assumption each fix breaks and one metric that detects success.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    },
+    {
+     "id": "changed-constraint-scenarios-2-r2",
+     "question": "What arithmetic does S2 require?",
+     "answer": "Which attention variant fits 32 MiB of KV cache at T = 2048.",
+     "anchor": "changed-constraint-scenarios-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique-question-1",
+   "title": "Research-critique question (1)",
+   "minutes": 1,
+   "endAnchor": "research-critique-question-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "linear attention",
+     "definition": "Attention with a kernel feature map, O(T d^2) time.",
+     "anchor": "research-critique-question-1-p01"
+    },
+    {
+     "term": "variance counterexample",
+     "definition": "The case where linear attention's variance breaks the claim.",
+     "anchor": "research-critique-question-1-p02"
+    },
+    {
+     "term": "feature count m",
+     "definition": "The number of random features where quality matches exact attention.",
+     "anchor": "research-critique-question-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-question-1-r1",
+     "question": "What claim does R1 target?",
+     "answer": "That linear attention is strictly better because it is O(T d^2).",
+     "anchor": "research-critique-question-1-p01"
+    },
+    {
+     "id": "research-critique-question-1-r2",
+     "question": "What must the experiment find?",
+     "answer": "The feature count m where quality matches exact attention on one task.",
+     "anchor": "research-critique-question-1-p01"
+    }
+   ]
+  }
+ ]
+}

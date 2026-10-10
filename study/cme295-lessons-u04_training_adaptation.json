@@ -1,0 +1,663 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-lessons-u04_training_adaptation",
+ "itemKind": "lesson",
+ "revision": "b19bbda299184f98847aa93ee45de4f59f51513c335d7ef2f8608efd58094d60",
+ "sections": [
+  {
+   "anchor": "u04_training_adaptation-intro-p01",
+   "title": "U04 \u00b7 Training and efficient adaptation",
+   "minutes": 1,
+   "endAnchor": "u04_training_adaptation-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u04_training_adaptation-intro-p02",
+     "definition": "The claim class for pretraining, SFT, LoRA, and data/loss.",
+     "term": "OFFICIAL-SYLLABUS"
+    },
+    {
+     "anchor": "u04_training_adaptation-intro-p02",
+     "definition": "The claim class for quantization, hardware efficiency, precision, and budgets.",
+     "term": "REQUESTED-BRANCH"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u04_training_adaptation-intro-p02",
+     "answer": "L3 (Oct 9, 2026), hardware parts L5 (Oct 30, 2026).",
+     "id": "u04_training_adaptation-intro-r1",
+     "question": "What is the lecture anchor for U04?"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood",
+   "title": "not yet understood",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "not-yet-understood-li01",
+     "definition": "A preference tuning method. It arrives in U05.",
+     "term": "DPO"
+    },
+    {
+     "anchor": "not-yet-understood-li02",
+     "definition": "They check reasoning outputs. They arrive in U06.",
+     "term": "verifiers"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "not-yet-understood-li03",
+     "answer": "U07. It covers retrieval pipelines and ReAct loops.",
+     "id": "not-yet-understood-r1",
+     "question": "Which unit covers RAG and agents?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-loss-adam-bytes",
+   "title": "local remediation , loss, adam, bytes",
+   "minutes": 1,
+   "endAnchor": "local-remediation-loss-adam-bytes-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-loss-adam-bytes-p02",
+     "definition": "It only sees the true class probability: -log 0.7 = 0.357 nats.",
+     "term": "cross-entropy"
+    },
+    {
+     "anchor": "local-remediation-loss-adam-bytes-p03",
+     "definition": "Two moving averages per parameter. 8 bytes per param in fp32.",
+     "term": "Adam states"
+    },
+    {
+     "anchor": "local-remediation-loss-adam-bytes-p04",
+     "definition": "2 bytes per value. Halves memory vs fp32.",
+     "term": "fp16"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-loss-adam-bytes-p03",
+     "answer": "112 GB: 7e9 * (4 + 4 + 8) bytes. The optimizer is the memory iceberg.",
+     "id": "local-remediation-loss-adam-bytes-r1",
+     "question": "How much memory does fp32 Adam need for 7B params?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-pretraining",
+   "title": "c01: pretraining",
+   "minutes": 3,
+   "endAnchor": "c01-pretraining-end",
+   "blocks": [
+    {
+     "anchor": "c01-pretraining-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-pretraining-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-pretraining-p02",
+     "definition": "Next-token training at scale. Reading the internet with a test after every word.",
+     "term": "pretraining"
+    },
+    {
+     "anchor": "c01-pretraining-p05",
+     "definition": "Training FLOPs: 6 times params times tokens. The budget rule.",
+     "term": "6ND"
+    },
+    {
+     "anchor": "c01-pretraining-p05",
+     "definition": "The compute-optimal ratio is roughly D ~= 20 N tokens to params.",
+     "term": "Chinchilla"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-pretraining-p06",
+     "answer": "FLOPs = 6 * N * D. Per token: forward ~2N, backward ~4N.",
+     "id": "c01-pretraining-r1",
+     "question": "Write the 6ND rule."
+    },
+    {
+     "anchor": "c01-pretraining-p06",
+     "answer": "Train on ~140B tokens, not 1T. D ~= 20 N at fixed compute.",
+     "id": "c01-pretraining-r2",
+     "question": "What does the Chinchilla ratio say for 7B?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-dataloss",
+   "title": "c02: data/loss",
+   "minutes": 3,
+   "endAnchor": "c02-dataloss-end",
+   "blocks": [
+    {
+     "anchor": "c02-dataloss-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-dataloss-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-dataloss-p03",
+     "definition": "Concatenating documents with separators to fill batches. ~2% waste vs 75%.",
+     "term": "packing"
+    },
+    {
+     "anchor": "c02-dataloss-p03",
+     "definition": "1 on real tokens, 0 on padding. It zeros padding loss.",
+     "term": "loss mask"
+    },
+    {
+     "anchor": "c02-dataloss-p04",
+     "definition": "Removing repeated text. Repeated text gets memorized.",
+     "term": "dedupe"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-dataloss-p06",
+     "answer": "Without masking, padding tokens train the model to predict padding.",
+     "id": "c02-dataloss-r1",
+     "question": "Why mask padding in the loss?"
+    },
+    {
+     "anchor": "c02-dataloss-p07",
+     "answer": "75 points: 3096 padding tokens (75% waste) unpacked vs ~2% packed.",
+     "id": "c02-dataloss-r2",
+     "question": "What was the packing swing in the toy?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-quantization",
+   "title": "c03: quantization",
+   "minutes": 3,
+   "endAnchor": "c03-quantization-end",
+   "blocks": [
+    {
+     "anchor": "c03-quantization-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-quantization-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-quantization-p02",
+     "definition": "A grid snapped over the numbers. Scale sets spacing, rounding snaps values.",
+     "term": "quantization"
+    },
+    {
+     "anchor": "c03-quantization-p04",
+     "definition": "s = max|w| / 127. Error per value <= s/2.",
+     "term": "scale"
+    },
+    {
+     "anchor": "c03-quantization-p05",
+     "definition": "The offset for asymmetric quantization of skewed ranges.",
+     "term": "zero-point"
+    },
+    {
+     "anchor": "c03-quantization-p06",
+     "definition": "One scale per row. It beats per-tensor when rows differ.",
+     "term": "per-channel"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-quantization-p08",
+     "answer": "q = round(w / s), w_hat = q * s, with s = max|w| / 127.",
+     "id": "c03-quantization-r1",
+     "question": "Write the symmetric formulas."
+    },
+    {
+     "anchor": "c03-quantization-p12",
+     "answer": "It stretches s and destroys the small weights. Per-channel scales fix it.",
+     "id": "c03-quantization-r2",
+     "question": "Why does one outlier channel break per-tensor quantization?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-hardware-efficiency",
+   "title": "c04: hardware efficiency",
+   "minutes": 3,
+   "endAnchor": "c04-hardware-efficiency-end",
+   "blocks": [
+    {
+     "anchor": "c04-hardware-efficiency-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-hardware-efficiency-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-hardware-efficiency-p02",
+     "definition": "FLOPs per byte moved. It decides which roofline slope binds.",
+     "term": "arithmetic intensity"
+    },
+    {
+     "anchor": "c04-hardware-efficiency-p02",
+     "definition": "Attainable = min(peak, bandwidth * I). Two slopes, one ridge.",
+     "term": "roofline"
+    },
+    {
+     "anchor": "c04-hardware-efficiency-p05",
+     "definition": "Model FLOPs utilization. Achieved over peak FLOPs.",
+     "term": "MFU"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-hardware-efficiency-p05",
+     "answer": "I = FLOPs / bytes. The ridge is where bandwidth*I = peak; below it memory binds.",
+     "id": "c04-hardware-efficiency-r1",
+     "question": "Define intensity and the ridge."
+    },
+    {
+     "anchor": "c04-hardware-efficiency-p07",
+     "answer": "It loads 14 GB of weights for 1e9 FLOPs: I = 0.07, memory-bound.",
+     "id": "c04-hardware-efficiency-r2",
+     "question": "Why is decode at 0.05% MFU?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-sft",
+   "title": "c05: sft",
+   "minutes": 3,
+   "endAnchor": "c05-sft-end",
+   "blocks": [
+    {
+     "anchor": "c05-sft-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-sft-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-sft-p02",
+     "definition": "Supervised fine-tuning. Apprenticeship on (instruction, response) pairs.",
+     "term": "SFT"
+    },
+    {
+     "anchor": "c05-sft-p02",
+     "definition": "It teaches the format, not new facts. Manners, not knowledge.",
+     "term": "instruction tuning"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-sft-p05",
+     "answer": "Response tokens only. Prompt tokens are masked out of the loss.",
+     "id": "c05-sft-r1",
+     "question": "Which tokens train in SFT?"
+    },
+    {
+     "anchor": "c05-sft-p12",
+     "answer": "SFT on false answers teaches confident falsehoods. The base model knowledge bounds SFT.",
+     "id": "c05-sft-r2",
+     "question": "Why does SFT not teach facts?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-examplestemplates",
+   "title": "c06: examples/templates",
+   "minutes": 3,
+   "endAnchor": "c06-examplestemplates-end",
+   "blocks": [
+    {
+     "anchor": "c06-examplestemplates-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-examplestemplates-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-examplestemplates-p02",
+     "definition": "Punctuation for dialogue. Train and serve must use the identical template.",
+     "term": "chat template"
+    },
+    {
+     "anchor": "c06-examplestemplates-p04",
+     "definition": "Reserved ids like <|user|> with agreed meanings.",
+     "term": "special tokens"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-examplestemplates-p12",
+     "answer": "Mismatched markers are a foreign format the model never saw. Behavior collapses.",
+     "id": "c06-examplestemplates-r1",
+     "question": "Why must train and serve templates match?"
+    },
+    {
+     "anchor": "c06-examplestemplates-p12",
+     "answer": "The markers are unknown strings and behavior collapses.",
+     "id": "c06-examplestemplates-r2",
+     "question": "What happens serving Llama-format to a Mistral-tuned model?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-lora-factors",
+   "title": "c07: lora factors",
+   "minutes": 3,
+   "endAnchor": "c07-lora-factors-end",
+   "blocks": [
+    {
+     "anchor": "c07-lora-factors-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-lora-factors-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-lora-factors-p02",
+     "definition": "The update is dW = BA with B (d,r), A (r,d), r << d.",
+     "term": "LoRA"
+    },
+    {
+     "anchor": "c07-lora-factors-p05",
+     "definition": "The scale keeping update magnitude stable as r changes.",
+     "term": "alpha/r"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-lora-factors-p05",
+     "answer": "h = W0 x + (alpha/r) B A x. B (d,r), A (r,d).",
+     "id": "c07-lora-factors-r1",
+     "question": "Write the forward equation."
+    },
+    {
+     "anchor": "c07-lora-factors-p08",
+     "answer": "So the adapter starts as identity (dW = 0). The model does not jump at step 0.",
+     "id": "c07-lora-factors-r2",
+     "question": "Why B = 0 at init?"
+    },
+    {
+     "anchor": "c07-lora-factors-p07",
+     "answer": "256: 16,777,216 full vs 65,536 LoRA.",
+     "id": "c07-lora-factors-r3",
+     "question": "What is the param ratio at d=4096, r=8?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-parameteroptimizer-savings",
+   "title": "c08: parameter/optimizer savings",
+   "minutes": 3,
+   "endAnchor": "c08-parameteroptimizer-savings-end",
+   "blocks": [
+    {
+     "anchor": "c08-parameteroptimizer-savings-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-parameteroptimizer-savings-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-parameteroptimizer-savings-p08",
+     "definition": "Bytes = params * (b_w + b_g + b_opt). Run it before every launch.",
+     "term": "memory bill"
+    },
+    {
+     "anchor": "c08-parameteroptimizer-savings-p05",
+     "definition": "The flag giving a parameter gradients. Frozen base must not have it.",
+     "term": "requires_grad"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-parameteroptimizer-savings-p05",
+     "answer": "Weights, grads, optimizer states: 4+4+8 = 16 bytes/param in fp32.",
+     "id": "c08-parameteroptimizer-savings-r1",
+     "question": "Name the three terms of the bill."
+    },
+    {
+     "anchor": "c08-parameteroptimizer-savings-p07",
+     "answer": "Full fp32 Adam on 7B: 104.3 GiB. Frozen bf16 + LoRA: 13.4 GiB.",
+     "id": "c08-parameteroptimizer-savings-r2",
+     "question": "What are the two toy bills?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-numerical-precision",
+   "title": "c09: numerical precision",
+   "minutes": 3,
+   "endAnchor": "c09-numerical-precision-end",
+   "blocks": [
+    {
+     "anchor": "c09-numerical-precision-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-numerical-precision-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-numerical-precision-p04",
+     "definition": "Half bits, fp32-like range. The modern training default, no loss scaling.",
+     "term": "bf16"
+    },
+    {
+     "anchor": "c09-numerical-precision-p05",
+     "definition": "It shifts gradients into fp16 range: compute loss*S, divide grads by S.",
+     "term": "loss scaling"
+    },
+    {
+     "anchor": "c09-numerical-precision-p05",
+     "definition": "fp32 optimizer copy. Without it, small updates round to zero.",
+     "term": "master weights"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-numerical-precision-p05",
+     "answer": "fp16: ~6e-5 to 6e4. bf16: ~1e-38 to 3e38, like fp32.",
+     "id": "c09-numerical-precision-r1",
+     "question": "What are the ranges of fp16 and bf16?"
+    },
+    {
+     "anchor": "c09-numerical-precision-p03",
+     "answer": "Gradients like 1e-8 rounded to zero. Loss scaling fixes it; bf16 avoids it.",
+     "id": "c09-numerical-precision-r2",
+     "question": "Why did early fp16 training diverge?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-full-versus-peft",
+   "title": "c10: full versus peft",
+   "minutes": 3,
+   "endAnchor": "c10-full-versus-peft-end",
+   "blocks": [
+    {
+     "anchor": "c10-full-versus-peft-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-full-versus-peft-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-full-versus-peft-p02",
+     "definition": "Parameter-efficient fine-tuning. A thin diff on a frozen base.",
+     "term": "PEFT"
+    },
+    {
+     "anchor": "c10-full-versus-peft-p06",
+     "definition": "W = W0 + BA. Exact, zero-latency deploy; unmerge by subtracting.",
+     "term": "merging"
+    },
+    {
+     "anchor": "c10-full-versus-peft-p06",
+     "definition": "Full tuning overwrites pretraining knowledge. PEFT confines change.",
+     "term": "forgetting"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-full-versus-peft-p04",
+     "answer": "Freedom (all weights vs thin diff), bill (104 vs 13 GiB), forgetting risk.",
+     "id": "c10-full-versus-peft-r1",
+     "question": "Name the three differences between full and PEFT."
+    },
+    {
+     "anchor": "c10-full-versus-peft-p03",
+     "answer": "Deep capability change: new language or modality. Rank 8 cannot hold a language.",
+     "id": "c10-full-versus-peft-r2",
+     "question": "When does full tuning win?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-regression-tests",
+   "title": "c11: regression tests",
+   "minutes": 3,
+   "endAnchor": "c11-regression-tests-end",
+   "blocks": [
+    {
+     "anchor": "c11-regression-tests-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-regression-tests-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-regression-tests-p05",
+     "definition": "Frozen prompts with expected behaviors. Small, fixed, run every tune.",
+     "term": "canary set"
+    },
+    {
+     "anchor": "c11-regression-tests-p03",
+     "definition": "Pass rate with tolerance. Safety canaries are zero-tolerance.",
+     "term": "gate"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-regression-tests-p03",
+     "answer": "Capability, safety, format. The toy uses 20/20/10.",
+     "id": "c11-regression-tests-r1",
+     "question": "What are the three canary classes?"
+    },
+    {
+     "anchor": "c11-regression-tests-p12",
+     "answer": "When regressions outside the set ship silently. Renew from real failures.",
+     "id": "c11-regression-tests-r2",
+     "question": "When do canaries need renewal?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-resource-budget",
+   "title": "c12: resource budget",
+   "minutes": 3,
+   "endAnchor": "c12-resource-budget-end",
+   "blocks": [
+    {
+     "anchor": "c12-resource-budget-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-resource-budget-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-resource-budget-p04",
+     "definition": "FLOPs, memory, time, money. The binding row decides the plan.",
+     "term": "budget sheet"
+    },
+    {
+     "anchor": "c12-resource-budget-p05",
+     "definition": "Model FLOPs utilization. Time = FLOPs / (GPUs * peak * MFU).",
+     "term": "MFU"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-resource-budget-p04",
+     "answer": "FLOPs, memory, time, money.",
+     "id": "c12-resource-budget-r1",
+     "question": "Name the four rows."
+    },
+    {
+     "anchor": "c12-resource-budget-p07",
+     "answer": "Yes: 35 GB < 40 GB, ~1 hour, ~$2-3. Full tune needs 3+ GPUs.",
+     "id": "c12-resource-budget-r2",
+     "question": "Can we LoRA 7B on one A100?"
+    }
+   ]
+  }
+ ]
+}

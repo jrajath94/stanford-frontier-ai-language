@@ -135,8 +135,9 @@
       <h1>Interview · U05 keys</h1>
       <p class="meta-line">2026-10-06 · Instructor: Prof. Christopher Manning</p>
       <div class="progress-row"><button class="mark-done">☐ <span>Mark as complete</span></button><div class="progress-bar"><i></i></div><span class="pct"></span></div><h1 id="interview-key-u05">Interview key , U05</h1>
+<span id="interview-key-u05-end" data-end></span>
 <h2 id="breadth">Breadth</h2>
-<p>A1. Q asks, K indexes, V carries. Three projections let asking,
+<p id="breadth-p01" data-kind="example" data-term="permutation-equivariant">A1. Q asks, K indexes, V carries. Three projections let asking,
 indexing, and carrying use different geometry.
 A2. Raw dot variance = d_k, at d_k = 64 softmax saturates to one-hot
 and gradients vanish. The scale restores unit variance.
@@ -148,21 +149,23 @@ A5. Residual: the identity gradient path across depth. Layer norm:
 per-vector mean 0 var 1, stops scale drift.
 A6. Attention is permutation-equivariant (scores depend on content
 pairs only), without positions &ldquo;dog bites man&rdquo; = &ldquo;man bites dog&rdquo;.</p>
+<span id="breadth-end" data-end></span>
 <h2 id="deep-ladders">Deep ladders</h2>
-<p>L1. (1) S = QK^T/sqrt(d_k) (n,n), P = softmax(S), out = PV (n,d_v).
+<p id="deep-ladders-p01" data-kind="example" data-term="convex combination">L1. (1) S = QK^T/sqrt(d_k) (n,n), P = softmax(S), out = PV (n,d_v).
 (2) (0.707,0,-0.707), (0.576,0.284,0.140), (0.872,0.568). (3) Softmax
 rows sum to 1, so each output row is a convex combination of value
 rows. (4) Values carry the content, same weights on different values
 give different outputs. (5) Freeze values to position codes, swap
 inputs, check whether high-weight positions predict the change.</p>
-<p>L2. (1) Sum of d_k independent unit-variance products. (2) 0.571 -&gt;
+<p id="deep-ladders-p02" data-kind="prose" data-term="1.974">L2. (1) Sum of d_k independent unit-variance products. (2) 0.571 -&gt;
 1.974 entropy. (3) exp(-1e9) underflows to 0, row renormalizes over
 allowed positions. (4) The old mask leaked future context, the fix
 removed the peek, so the honest score is worse. (5) Train with the
 mask deliberately after softmax: it should look better than the
 correct one.</p>
+<span id="deep-ladders-end" data-end></span>
 <h2 id="analytical">Analytical</h2>
-<p>A7. Post-norm puts the norm after the residual add, so early in
+<p id="analytical-p01" data-kind="example" data-term="unscaled path">A7. Post-norm puts the norm after the residual add, so early in
 training the gradient path through 24 layers is unscaled, pre-norm
 keeps the identity path clean. Cheapest fix: learning-rate warmup
 (or switch to pre-norm).
@@ -170,21 +173,24 @@ A8. The 2n^2d attention term: 4x context = 16x attention FLOPs (14x
 observed, rest is overhead). Cuts: KV cache (already assumed? then
 flash-style tiling), shorter context, or a linear-attention
 variant.</p>
+<span id="analytical-end" data-end></span>
 <h2 id="implementationdebugging">Implementation/debugging</h2>
-<p>A9. (1) Check temperature/top-k: too low -&gt; raise temperature. (2)
+<p id="implementationdebugging-p01" data-kind="example" data-term="stale cache">A9. (1) Check temperature/top-k: too low -&gt; raise temperature. (2)
 Check the KV cache: stale or misaligned cache -&gt; verify against
 recompute. (3) Check the causal mask: leak -&gt; fix order. (4) Check
 training data: repetitive data -&gt; dedupe. (5) Check repetition
 penalty: add one.</p>
+<span id="implementationdebugging-end" data-end></span>
 <h2 id="changed-constraint">Changed-constraint</h2>
-<p>A10. (1) KV cache quantization (fp16 -&gt; int8/int4). (2) Smaller
+<p id="changed-constraint-p01" data-kind="example" data-term="int8/int4">A10. (1) KV cache quantization (fp16 -&gt; int8/int4). (2) Smaller
 batch / shorter context. (3) Eviction (keep a window) or offload to
 CPU, accepting the speed hit.
 A11. Mask: none needed (bidirectional ok) or keep padding mask.
 Readout: a [CLS]-style pooled vector instead of last-token logits.
 Loss: classification CE over labels instead of next-token CE.</p>
+<span id="changed-constraint-end" data-end></span>
 <h2 id="research-critique">Research critique</h2>
-<p>A12. Steelman: weights are the only input-dependent routing, high
+<p id="research-critique-p01" data-kind="example" data-term="input-dependent routing">A12. Steelman: weights are the only input-dependent routing, high
 weight means the output blended that position&rsquo;s value heavily.
 Counterexample: identical weights on different values give
 different outputs, and different weights can give the same output,
@@ -194,7 +200,8 @@ intervention, not inspection.</p>
       <nav class="pager"><a href="../labs/u15_lab.html"><span class="lbl">← Previous</span>Lab 15 · Project tutorials and open questions</a><a href="../labs/u15_lab_key.html"><span class="lbl">Next →</span>Lab 15 · Keys</a></nav>
     </article>
     <footer class="pagefoot">
-      <p>Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+      <p id="research-critique-p02" data-kind="prose" data-term="intervention">Reconstructed from official Stanford course material. Sources are listed above. Content is study material, not affiliated with Stanford University.</p>
+<span id="research-critique-end" data-end></span>
     </footer>
   </main>
 </div>

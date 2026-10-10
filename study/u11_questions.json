@@ -1,0 +1,209 @@
+{
+ "schemaVersion": 1,
+ "itemId": "u11_questions",
+ "itemKind": "lesson",
+ "revision": "7d98acceea1cce0bf4b9a7edd0d0dce39c52ed25ff469e4452684f82b695b10a",
+ "sections": [
+  {
+   "anchor": "breadth-6",
+   "title": "Breadth questions",
+   "minutes": 1,
+   "endAnchor": "breadth-6-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "step supervision",
+     "definition": "Labels on reasoning steps, which buy auditability but not faithfulness.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "verifiable reward",
+     "definition": "A reward a program checks, with no learned middle layer.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "self-consistency",
+     "definition": "Majority vote over reasoning paths; it hurts when p is below 0.5.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "term": "speculative decoding",
+     "definition": "Draft with a small model, verify with the big one, keep the big model's output.",
+     "anchor": "breadth-6-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "breadth-6-r1",
+     "question": "What is the difference between supervising steps and supervising answers?",
+     "answer": "Step labels buy auditability; answer labels buy accuracy. Steps can rationalize without being faithful.",
+     "anchor": "breadth-6-p01"
+    },
+    {
+     "id": "breadth-6-r2",
+     "question": "What is a verifiable reward, and what is its main failure mode?",
+     "answer": "A reward a program checks. A buggy verifier teaches exploits.",
+     "anchor": "breadth-6-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "deep-ladders-2-x-5",
+   "title": "Deep ladder drills",
+   "minutes": 1,
+   "endAnchor": "deep-ladders-2-x-5-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "binomial majority",
+     "definition": "Sum of C(n,k) p^k (1-p)^(n-k) over k greater than n/2.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "term": "accept rule",
+     "definition": "Accept the draft prefix while it matches the target distribution; resample at first reject.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    },
+    {
+     "term": "correlated errors",
+     "definition": "Committee members sharing one bias, so votes are not independent.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "deep-ladders-2-x-5-r1",
+     "question": "L1 asks for the binomial majority curve. What happens when p drops below 0.5?",
+     "answer": "The tail shrinks below 0.5: majority vote becomes harmful.",
+     "anchor": "deep-ladders-2-x-5-p01"
+    },
+    {
+     "id": "deep-ladders-2-x-5-r2",
+     "question": "L2 covers speculative decoding. What does the accept rule guarantee?",
+     "answer": "It guarantees the big model's output distribution regardless of draft quality.",
+     "anchor": "deep-ladders-2-x-5-p02"
+    }
+   ]
+  },
+  {
+   "anchor": "analytical-2",
+   "title": "Analytical questions",
+   "minutes": 1,
+   "endAnchor": "analytical-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "compute allocation",
+     "definition": "How to split a fixed sample budget across breadth and depth.",
+     "anchor": "analytical-2-p01"
+    },
+    {
+     "term": "concave gains",
+     "definition": "Diminishing returns that favor spreading samples wide.",
+     "anchor": "analytical-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "analytical-2-r1",
+     "question": "Q7: budget 100 samples, gain 1 minus exp(-n/20). Compare 10x10, 5x20, 1x100. Which wins?",
+     "answer": "10x10 wins. Concave gains favor breadth over depth.",
+     "anchor": "analytical-2-p01"
+    },
+    {
+     "id": "analytical-2-r2",
+     "question": "Q8: outcome verification keeps 4 of 10 traces, process keeps 2, at 5x check cost. Which do you choose?",
+     "answer": "Per dollar, outcome wins. Choose process only when the steps are the product.",
+     "anchor": "analytical-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "implementationdebugging-1",
+   "title": "Implementation and debugging",
+   "minutes": 1,
+   "endAnchor": "implementationdebugging-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "temperature",
+     "definition": "Sampling randomness; 0 gives identical paths.",
+     "anchor": "implementationdebugging-1-p01"
+    },
+    {
+     "term": "path diversity",
+     "definition": "Whether the sampled reasoning paths give distinct answers.",
+     "anchor": "implementationdebugging-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "implementationdebugging-1-r1",
+     "question": "Q9: your self-consistency vote never changes the answer across 5 paths. List the checks, cheapest first.",
+     "answer": "Check temperature, then path diversity, then p, then the answer extractor.",
+     "anchor": "implementationdebugging-1-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "changed-constraint-2",
+   "title": "Changed-constraint questions",
+   "minutes": 1,
+   "endAnchor": "changed-constraint-2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "latency budget",
+     "definition": "The allowed sequential target passes, here exactly 2.",
+     "anchor": "changed-constraint-2-p01"
+    },
+    {
+     "term": "threshold gain",
+     "definition": "Gains that need a minimum sample count before anything clicks.",
+     "anchor": "changed-constraint-2-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "changed-constraint-2-r1",
+     "question": "Q10: latency allows exactly 2 sequential target passes. Can speculative decoding help?",
+     "answer": "Yes. Two passes verify multiple drafts each, beating greedy when the draft is cheap.",
+     "anchor": "changed-constraint-2-p01"
+    },
+    {
+     "id": "changed-constraint-2-r2",
+     "question": "Q11: the task needs 50 samples to click; 10 give nothing. Does the spread rule still hold?",
+     "answer": "No. Threshold gains are not concave, so know the gain shape before spreading.",
+     "anchor": "changed-constraint-2-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "research-critique-1",
+   "title": "Research critique",
+   "minutes": 1,
+   "endAnchor": "research-critique-1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "trace",
+     "definition": "The model's written reasoning steps.",
+     "anchor": "research-critique-1-p01"
+    },
+    {
+     "term": "faithfulness",
+     "definition": "Whether the trace reflects the model's actual reasoning.",
+     "anchor": "research-critique-1-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "research-critique-1-r1",
+     "question": "Q12: 'The trace shows the model's reasoning.' What is the task?",
+     "answer": "Steelman the claim, then give the strongest counterexample from the unit.",
+     "anchor": "research-critique-1-p01"
+    }
+   ]
+  }
+ ]
+}

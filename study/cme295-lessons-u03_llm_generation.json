@@ -1,0 +1,667 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-lessons-u03_llm_generation",
+ "itemKind": "lesson",
+ "revision": "609d8878d2ece48859e717bc7096f2ff2cf6a8186f9e83c1607920f4151023ae",
+ "sections": [
+  {
+   "anchor": "u03_llm_generation-intro-p01",
+   "title": "U03 \u00b7 LLM architecture and generation",
+   "minutes": 1,
+   "endAnchor": "u03_llm_generation-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u03_llm_generation-intro-p02",
+     "definition": "The claim class for LLM definition, MoE, context length, temperature, sampling.",
+     "term": "OFFICIAL-SYLLABUS"
+    },
+    {
+     "anchor": "u03_llm_generation-intro-p02",
+     "definition": "The claim class for prompting, ICL, demonstration selection, and self-consistency.",
+     "term": "REQUESTED-BRANCH"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u03_llm_generation-intro-p02",
+     "answer": "L2 (Oct 2, 2026).",
+     "id": "u03_llm_generation-intro-r1",
+     "question": "What is the lecture anchor for U03?"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood",
+   "title": "not yet understood",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "not-yet-understood-li01",
+     "definition": "Supervised fine-tuning. It arrives with training and adaptation in U04.",
+     "term": "SFT"
+    },
+    {
+     "anchor": "not-yet-understood-li03",
+     "definition": "A reasoning RL method. It arrives in U06 with verifiers and test-time scaling.",
+     "term": "GRPO"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "not-yet-understood-li05",
+     "answer": "U08. It covers judging, bias, calibration, and intervals.",
+     "id": "not-yet-understood-r1",
+     "question": "Which unit covers LLM evaluation?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-distributions-entropy-conditioning",
+   "title": "local remediation , distributions, entropy, conditioning",
+   "minutes": 1,
+   "endAnchor": "local-remediation-distributions-entropy-conditioning-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-distributions-entropy-conditioning-p02",
+     "definition": "It reshapes the distribution before sampling or argmax.",
+     "term": "temperature"
+    },
+    {
+     "anchor": "local-remediation-distributions-entropy-conditioning-p03",
+     "definition": "Expected surprise. Sharp distributions have low entropy, flat ones high.",
+     "term": "entropy"
+    },
+    {
+     "anchor": "local-remediation-distributions-entropy-conditioning-p04",
+     "definition": "Selecting a distribution via a prompt. A prompt is a conditioner.",
+     "term": "conditioning"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-distributions-entropy-conditioning-p03",
+     "answer": "0.802 nats: 0.250 + 0.322 + 0.230.",
+     "id": "local-remediation-distributions-entropy-conditioning-r1",
+     "question": "What is the entropy of [0.7, 0.2, 0.1] in nats?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-llm-definition",
+   "title": "c01: llm definition",
+   "minutes": 3,
+   "endAnchor": "c01-llm-definition-end",
+   "blocks": [
+    {
+     "anchor": "c01-llm-definition-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-llm-definition-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-llm-definition-p02",
+     "definition": "A decoder-only transformer for next-token prediction. The triple plus sampling code.",
+     "term": "LLM"
+    },
+    {
+     "anchor": "c01-llm-definition-p03",
+     "definition": "Weights, tokenizer, and config. The entire runtime is this triple plus the loop.",
+     "term": "triple"
+    },
+    {
+     "anchor": "c01-llm-definition-p03",
+     "definition": "The string-to-id map. The inference tokenizer must match training.",
+     "term": "tokenizer"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-llm-definition-p03",
+     "answer": "Weights W, tokenizer T, config C. Plus the sampling code.",
+     "id": "c01-llm-definition-r1",
+     "question": "Name the three artifacts."
+    },
+    {
+     "anchor": "c01-llm-definition-p12",
+     "answer": "\u201cLLM\u201d names the shape, not the skills. Different data gives different behavior.",
+     "id": "c01-llm-definition-r2",
+     "question": "Why do two same-size architectures behave differently?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-moe",
+   "title": "c02: moe",
+   "minutes": 3,
+   "endAnchor": "c02-moe-end",
+   "blocks": [
+    {
+     "anchor": "c02-moe-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-moe-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-moe-p02",
+     "definition": "Mixture of experts. Each token wakes k of E FFNs.",
+     "term": "MoE"
+    },
+    {
+     "anchor": "c02-moe-p03",
+     "definition": "Each token uses the 2 highest-gated experts, renormalized.",
+     "term": "top-2 routing"
+    },
+    {
+     "anchor": "c02-moe-p04",
+     "definition": "It picks k experts per token via softmax gates.",
+     "term": "router"
+    },
+    {
+     "anchor": "c02-moe-p06",
+     "definition": "It penalizes load imbalance: L_aux = E * sum_i f_i * P_i.",
+     "term": "aux loss"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-moe-p08",
+     "answer": "g = softmax(x W_g), keep top-k gates, renormalize, output sum w_i Expert_i(x).",
+     "id": "c02-moe-r1",
+     "question": "Write the routing equation."
+    },
+    {
+     "anchor": "c02-moe-p12",
+     "answer": "The router collapses: one expert gets everything. Experts stay redundant, a slow dense net.",
+     "id": "c02-moe-r2",
+     "question": "What happens without the aux loss?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-context-length",
+   "title": "c03: context length",
+   "minutes": 3,
+   "endAnchor": "c03-context-length-end",
+   "blocks": [
+    {
+     "anchor": "c03-context-length-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-context-length-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-context-length-p05",
+     "definition": "Trained length. Stretching past it needs interpolation.",
+     "term": "T_max"
+    },
+    {
+     "anchor": "c03-context-length-p05",
+     "definition": "It maps position m to m/s, keeping angles inside the trained range.",
+     "term": "position interpolation"
+    },
+    {
+     "anchor": "c03-context-length-p12",
+     "definition": "Models use the start and end of long contexts better than the middle.",
+     "term": "lost in the middle"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-context-length-p04",
+     "answer": "Memory (T^2 scores, T cache), compute (T^2 d), and position codes (unseen angles).",
+     "id": "c03-context-length-r1",
+     "question": "Name the three costs of longer context."
+    },
+    {
+     "anchor": "c03-context-length-p07",
+     "answer": "1 TB per layer: 32 * 128k^2 * 2 bytes. The memory is the wall.",
+     "id": "c03-context-length-r2",
+     "question": "What is the attention memory at T=128k, d=4096, h=32, fp16?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-temperature",
+   "title": "c04: temperature",
+   "minutes": 3,
+   "endAnchor": "c04-temperature-end",
+   "blocks": [
+    {
+     "anchor": "c04-temperature-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-temperature-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-temperature-p02",
+     "definition": "A volume knob on decisiveness. T<1 sharpens, T>1 flattens.",
+     "term": "temperature"
+    },
+    {
+     "anchor": "c04-temperature-p06",
+     "definition": "The T -> 0 limit. The largest logit takes all mass.",
+     "term": "greedy"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-temperature-p06",
+     "answer": "T -> 0 gives one-hot on argmax. T -> infinity gives uniform.",
+     "id": "c04-temperature-r1",
+     "question": "State both temperature limits."
+    },
+    {
+     "anchor": "c04-temperature-p07",
+     "answer": "0.110, 0.595, 1.110. Entropy rises monotonically with T.",
+     "id": "c04-temperature-r2",
+     "question": "What is the entropy at T=0.5, 1.0, 2.0 for the toy?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-top-ktop-p",
+   "title": "c05: top-k/top-p",
+   "minutes": 3,
+   "endAnchor": "c05-top-ktop-p-end",
+   "blocks": [
+    {
+     "anchor": "c05-top-ktop-p-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-top-ktop-p-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-top-ktop-p-p03",
+     "definition": "It keeps the k highest-probability tokens, then renormalizes.",
+     "term": "top-k"
+    },
+    {
+     "anchor": "c05-top-ktop-p-p03",
+     "definition": "Nucleus sampling. It keeps the smallest set with mass >= p.",
+     "term": "top-p"
+    },
+    {
+     "anchor": "c05-top-ktop-p-p04",
+     "definition": "Divide kept probabilities by their sum, making a distribution again.",
+     "term": "renormalize"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-top-ktop-p-p06",
+     "answer": "Top-k: keep the first k after sorting. Top-p: accumulate until mass >= p, keep those.",
+     "id": "c05-top-ktop-p-r1",
+     "question": "Write both truncation rules."
+    },
+    {
+     "anchor": "c05-top-ktop-p-p12",
+     "answer": "At top-p = 0.5 on a flat distribution, valid continuations are cut and the model repeats.",
+     "id": "c05-top-ktop-p-r2",
+     "question": "When does truncation become a cage?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-sampling-versus-argmax",
+   "title": "c06: sampling versus argmax",
+   "minutes": 3,
+   "endAnchor": "c06-sampling-versus-argmax-end",
+   "blocks": [
+    {
+     "anchor": "c06-sampling-versus-argmax-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-sampling-versus-argmax-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-sampling-versus-argmax-p03",
+     "definition": "x_t = argmax p. Deterministic, highest-probability, dull.",
+     "term": "greedy"
+    },
+    {
+     "anchor": "c06-sampling-versus-argmax-p06",
+     "definition": "It keeps k hypotheses. A middle ground, still quasi-deterministic.",
+     "term": "beam search"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-sampling-versus-argmax-p06",
+     "answer": "Greedy: repetition loops. Sampling: tail junk.",
+     "id": "c06-sampling-versus-argmax-r1",
+     "question": "Name one failure mode each for greedy and sampling."
+    },
+    {
+     "anchor": "c06-sampling-versus-argmax-p12",
+     "answer": "Greedy is locally optimal per token. The globally most likely sequence needs search.",
+     "id": "c06-sampling-versus-argmax-r2",
+     "question": "Why is token-greedy not sequence-optimal?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-prompting",
+   "title": "c07: prompting",
+   "minutes": 3,
+   "endAnchor": "c07-prompting-end",
+   "blocks": [
+    {
+     "anchor": "c07-prompting-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-prompting-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-prompting-p02",
+     "definition": "A steering wheel, not an engine. It conditions P(y | x) without weight changes.",
+     "term": "prompt"
+    },
+    {
+     "anchor": "c07-prompting-p04",
+     "definition": "The role that says who the model is.",
+     "term": "system"
+    },
+    {
+     "anchor": "c07-prompting-p12",
+     "definition": "Untrusted text steering the model against the system instruction.",
+     "term": "prompt injection"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-prompting-p04",
+     "answer": "System: who the model is. User: the task. The model completes the set pattern.",
+     "id": "c07-prompting-r1",
+     "question": "What does each role do?"
+    },
+    {
+     "anchor": "c07-prompting-p09",
+     "answer": "Instruction tuning trains the model to obey common frames. A mismatched template breaks the frame.",
+     "id": "c07-prompting-r2",
+     "question": "Why does the template matter?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-icl",
+   "title": "c08: icl",
+   "minutes": 3,
+   "endAnchor": "c08-icl-end",
+   "blocks": [
+    {
+     "anchor": "c08-icl-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-icl-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-icl-p02",
+     "definition": "In-context learning. Pattern completion at the task level, no weight updates.",
+     "term": "ICL"
+    },
+    {
+     "anchor": "c08-icl-p02",
+     "definition": "k examples in the prompt. The model infers the function.",
+     "term": "few-shot"
+    },
+    {
+     "anchor": "c08-icl-p05",
+     "definition": "Instruction only, no examples.",
+     "term": "zero-shot"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-icl-p07",
+     "answer": "With 0 shots the model guesses the task. With 3 shots the format locks.",
+     "id": "c08-icl-r1",
+     "question": "What changes between 0-shot and 3-shot?"
+    },
+    {
+     "anchor": "c08-icl-p12",
+     "answer": "The model is sensitive to example order and label noise in ways training is not.",
+     "id": "c08-icl-r2",
+     "question": "Why is \u201clearning\u201d an overstatement for ICL?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-demonstration-selection",
+   "title": "c09: demonstration selection",
+   "minutes": 3,
+   "endAnchor": "c09-demonstration-selection-end",
+   "blocks": [
+    {
+     "anchor": "c09-demonstration-selection-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-demonstration-selection-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-demonstration-selection-p02",
+     "definition": "Picking which k examples help a query most. Similarity plus diversity plus order.",
+     "term": "demonstration selection"
+    },
+    {
+     "anchor": "c09-demonstration-selection-p06",
+     "definition": "MMR. It penalizes redundancy when picking diverse examples.",
+     "term": "maximal marginal relevance"
+    },
+    {
+     "anchor": "c09-demonstration-selection-p06",
+     "definition": "Order effects favoring recent examples. Test both orders.",
+     "term": "recency bias"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-demonstration-selection-p05",
+     "answer": "Similarity, diversity, order.",
+     "id": "c09-demonstration-selection-r1",
+     "question": "Name the three levers of demonstration selection."
+    },
+    {
+     "anchor": "c09-demonstration-selection-p12",
+     "answer": "Near duplicates teach nothing new. The model needs label coverage, not clones.",
+     "id": "c09-demonstration-selection-r2",
+     "question": "Why does similarity without diversity fail?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-reasoning-prompting",
+   "title": "c10: reasoning prompting",
+   "minutes": 3,
+   "endAnchor": "c10-reasoning-prompting-end",
+   "blocks": [
+    {
+     "anchor": "c10-reasoning-prompting-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-reasoning-prompting-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-reasoning-prompting-p02",
+     "definition": "It emits intermediate steps as scratch space before the answer.",
+     "term": "chain-of-thought"
+    },
+    {
+     "anchor": "c10-reasoning-prompting-p03",
+     "definition": "Intermediate tokens holding partial results for later tokens.",
+     "term": "scratch space"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-reasoning-prompting-p06",
+     "answer": "Each token is a computation step. Steps hold partial results in context for later tokens.",
+     "id": "c10-reasoning-prompting-r1",
+     "question": "Why do extra tokens help reasoning?"
+    },
+    {
+     "anchor": "c10-reasoning-prompting-p12",
+     "answer": "Models produce plausible steps to wrong answers, or right answers with wrong steps.",
+     "id": "c10-reasoning-prompting-r2",
+     "question": "Why is CoT not a proof?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-self-consistency",
+   "title": "c11: self-consistency",
+   "minutes": 3,
+   "endAnchor": "c11-self-consistency-end",
+   "blocks": [
+    {
+     "anchor": "c11-self-consistency-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-self-consistency-p17",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-self-consistency-p02",
+     "definition": "An election over reasoning paths. Sample N chains, take the majority.",
+     "term": "self-consistency"
+    },
+    {
+     "anchor": "c11-self-consistency-p06",
+     "definition": "If each chain is right with p > 0.5, the majority tends to 1 as N grows.",
+     "term": "Condorcet"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-self-consistency-p04",
+     "answer": "When errors are uncorrelated across samples. The majority filters one-off errors.",
+     "id": "c11-self-consistency-r1",
+     "question": "When does voting help?"
+    },
+    {
+     "anchor": "c11-self-consistency-p08",
+     "answer": "0.683. The math shows the gain and its limit.",
+     "id": "c11-self-consistency-r2",
+     "question": "What is the majority accuracy for p=0.6, N=5?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-evaluation-limits",
+   "title": "c12: evaluation limits",
+   "minutes": 3,
+   "endAnchor": "c12-evaluation-limits-end",
+   "blocks": [
+    {
+     "anchor": "c12-evaluation-limits-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-evaluation-limits-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-evaluation-limits-p05",
+     "definition": "A function of output and reference. Cheap, gameable, a proxy.",
+     "term": "automatic metric"
+    },
+    {
+     "anchor": "c12-evaluation-limits-p05",
+     "definition": "Test data in training. It breaks the train/test split.",
+     "term": "contamination"
+    },
+    {
+     "anchor": "c12-evaluation-limits-p06",
+     "definition": "When a measure becomes a target, it ceases to be a good measure.",
+     "term": "Goodhart's law"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-evaluation-limits-p04",
+     "answer": "They are proxies, gameable, and blind to contamination. Perplexity measures surprise, not truth.",
+     "id": "c12-evaluation-limits-r1",
+     "question": "Name three limits of automatic metrics."
+    },
+    {
+     "anchor": "c12-evaluation-limits-p07",
+     "answer": "20 points: 90% reported vs 70% decontaminated on 100 questions with 30 leaked.",
+     "id": "c12-evaluation-limits-r2",
+     "question": "What is the contamination premium in the toy?"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,642 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-lessons-u06_reasoning_scaling",
+ "itemKind": "lesson",
+ "revision": "08eec6e73dc0bb682eccb8064b36f95be96336de7076d43ef3923d15511adce5",
+ "sections": [
+  {
+   "anchor": "u06_reasoning_scaling-intro-p01",
+   "title": "U06 \u00b7 Reasoning, RL, and scaling",
+   "minutes": 1,
+   "endAnchor": "u06_reasoning_scaling-intro-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "u06_reasoning_scaling-intro-p02",
+     "definition": "The claim class for reasoning models, RLVR, GRPO, and reward-hacking limits.",
+     "term": "OFFICIAL-SYLLABUS"
+    },
+    {
+     "anchor": "u06_reasoning_scaling-intro-p02",
+     "definition": "The claim class for group norm mechanics, diversity, and scaling analysis.",
+     "term": "REQUESTED-BRANCH"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "u06_reasoning_scaling-intro-p02",
+     "answer": "L3 (Oct 9, 2026) and L4 (Oct 16, 2026).",
+     "id": "u06_reasoning_scaling-intro-r1",
+     "question": "What is the lecture anchor for U06?"
+    }
+   ]
+  },
+  {
+   "anchor": "not-yet-understood",
+   "title": "not yet understood",
+   "minutes": 1,
+   "endAnchor": "not-yet-understood-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "not-yet-understood-li01",
+     "definition": "A reasoning-acting loop for agents. It arrives in U07.",
+     "term": "ReAct"
+    },
+    {
+     "anchor": "not-yet-understood-li02",
+     "definition": "Matching confidence to accuracy. It arrives in U08.",
+     "term": "calibration"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "not-yet-understood-li03",
+     "answer": "U09. It covers masked diffusion and exam synthesis.",
+     "id": "not-yet-understood-r1",
+     "question": "Which unit covers diffusion and trends?"
+    }
+   ]
+  },
+  {
+   "anchor": "local-remediation-verifiable-reward-group-statistics-passk",
+   "title": "local remediation , verifiable reward, group statistics, pass@k",
+   "minutes": 1,
+   "endAnchor": "local-remediation-verifiable-reward-group-statistics-passk-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "anchor": "local-remediation-verifiable-reward-group-statistics-passk-p02",
+     "definition": "A machine-checkable reward in {0, 1}. No human in the loop.",
+     "term": "verifiable reward"
+    },
+    {
+     "anchor": "local-remediation-verifiable-reward-group-statistics-passk-p03",
+     "definition": "a_i = (r_i - mu)/sigma. The group gets mean 0, std 1.",
+     "term": "group normalization"
+    },
+    {
+     "anchor": "local-remediation-verifiable-reward-group-statistics-passk-p04",
+     "definition": "Coverage over k attempts. Test-time compute buys coverage, not skill.",
+     "term": "pass@k"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "local-remediation-verifiable-reward-group-statistics-passk-p04",
+     "answer": "0.97. pass@k = 1 - (1-p)^k.",
+     "id": "local-remediation-verifiable-reward-group-statistics-passk-r1",
+     "question": "What is pass@16 for p = 0.2?"
+    }
+   ]
+  },
+  {
+   "anchor": "c01-reasoning-models",
+   "title": "c01: reasoning models",
+   "minutes": 3,
+   "endAnchor": "c01-reasoning-models-end",
+   "blocks": [
+    {
+     "anchor": "c01-reasoning-models-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c01-reasoning-models-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c01-reasoning-models-p02",
+     "definition": "A policy over long episodes. It emits a chain of thought before the answer.",
+     "term": "reasoning model"
+    },
+    {
+     "anchor": "c01-reasoning-models-p02",
+     "definition": "RL with verifiable rewards. Sample chains, score with verifier, policy-gradient step.",
+     "term": "RLVR"
+    },
+    {
+     "anchor": "c01-reasoning-models-p05",
+     "definition": "The full chain plus answer. Each token is an action.",
+     "term": "episode"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c01-reasoning-models-p06",
+     "answer": "RL with verifiable rewards.",
+     "id": "c01-reasoning-models-r1",
+     "question": "What does RLVR stand for?"
+    },
+    {
+     "anchor": "c01-reasoning-models-p07",
+     "answer": "[+1, +1, -1, -1]. The two winning chains get reinforced equally.",
+     "id": "c01-reasoning-models-r2",
+     "question": "What are the normalized advantages for rewards [1,1,0,0]?"
+    }
+   ]
+  },
+  {
+   "anchor": "c02-verifiable-outcomes",
+   "title": "c02: verifiable outcomes",
+   "minutes": 3,
+   "endAnchor": "c02-verifiable-outcomes-end",
+   "blocks": [
+    {
+     "anchor": "c02-verifiable-outcomes-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c02-verifiable-outcomes-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c02-verifiable-outcomes-p02",
+     "definition": "A referee with a rulebook: V(x,y) -> {0,1}. Never tired, never changes mind.",
+     "term": "verifier"
+    },
+    {
+     "anchor": "c02-verifiable-outcomes-p06",
+     "definition": "The loss depends only on the final verdict, not each step.",
+     "term": "outcome supervision"
+    },
+    {
+     "anchor": "c02-verifiable-outcomes-p06",
+     "definition": "Scoring each step. It needs step labels.",
+     "term": "process supervision"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c02-verifiable-outcomes-p06",
+     "answer": "Outcome scores only the final verdict. Process scores each step but needs step labels.",
+     "id": "c02-verifiable-outcomes-r1",
+     "question": "Outcome vs process supervision?"
+    },
+    {
+     "anchor": "c02-verifiable-outcomes-p10",
+     "answer": "Binary rewards carry one bit. Sparse tasks need many samples.",
+     "id": "c02-verifiable-outcomes-r2",
+     "question": "Why is the reward at most 1 bit per sample?"
+    }
+   ]
+  },
+  {
+   "anchor": "c03-grpo",
+   "title": "c03: grpo",
+   "minutes": 3,
+   "endAnchor": "c03-grpo-end",
+   "blocks": [
+    {
+     "anchor": "c03-grpo-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c03-grpo-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c03-grpo-p02",
+     "definition": "Group Relative Policy Optimization. The group is the baseline; no critic.",
+     "term": "GRPO"
+    },
+    {
+     "anchor": "c03-grpo-p04",
+     "definition": "Chains compete within one prompt. Winners rise, losers fall.",
+     "term": "tournament"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c03-grpo-p03",
+     "answer": "The critic. GRPO uses group-relative advantages, no value network.",
+     "id": "c03-grpo-r1",
+     "question": "What does the group replace?"
+    },
+    {
+     "anchor": "c03-grpo-p09",
+     "answer": "Zero. sigma = 0, advantages are all 0; guard with eps.",
+     "id": "c03-grpo-r2",
+     "question": "What is the update when all rewards tie?"
+    }
+   ]
+  },
+  {
+   "anchor": "c04-group-normalization",
+   "title": "c04: group normalization",
+   "minutes": 3,
+   "endAnchor": "c04-group-normalization-end",
+   "blocks": [
+    {
+     "anchor": "c04-group-normalization-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c04-group-normalization-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c04-group-normalization-p02",
+     "definition": "A_i = (r_i - mu)/sigma per prompt group. A currency exchange for rewards.",
+     "term": "group normalization"
+    },
+    {
+     "anchor": "c04-group-normalization-p05",
+     "definition": "sigma + eps with eps ~ 1e-8. It prevents division by zero.",
+     "term": "eps guard"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c04-group-normalization-p05",
+     "answer": "sigma + eps (eps ~ 1e-8), and skip the update when all rewards tie.",
+     "id": "c04-group-normalization-r1",
+     "question": "What are the two guards?"
+    },
+    {
+     "anchor": "c04-group-normalization-p07",
+     "answer": "[1.73, -0.58, -0.58, -0.58]. The lone winner gets the big push.",
+     "id": "c04-group-normalization-r2",
+     "question": "What are the advantages for rewards [3,1,1,1]?"
+    }
+   ]
+  },
+  {
+   "anchor": "c05-sampling-diversity",
+   "title": "c05: sampling diversity",
+   "minutes": 3,
+   "endAnchor": "c05-sampling-diversity-end",
+   "blocks": [
+    {
+     "anchor": "c05-sampling-diversity-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c05-sampling-diversity-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c05-sampling-diversity-p02",
+     "definition": "The fuel of group learning. Identical chains give zero update.",
+     "term": "diversity"
+    },
+    {
+     "anchor": "c05-sampling-diversity-p08",
+     "definition": "Share of distinct chains. If below 0.5, raise T.",
+     "term": "unique chain fraction"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c05-sampling-diversity-p06",
+     "answer": "sigma = 0, so advantages are all 0. No contrast, no learning.",
+     "id": "c05-sampling-diversity-r1",
+     "question": "Why do identical chains give zero update?"
+    },
+    {
+     "anchor": "c05-sampling-diversity-p07",
+     "answer": "At p = 0.5: variance p(1-p) = 0.25, the maximum.",
+     "id": "c05-sampling-diversity-r2",
+     "question": "Where is contrast richest?"
+    }
+   ]
+  },
+  {
+   "anchor": "c06-reward-hacking",
+   "title": "c06: reward hacking",
+   "minutes": 3,
+   "endAnchor": "c06-reward-hacking-end",
+   "blocks": [
+    {
+     "anchor": "c06-reward-hacking-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c06-reward-hacking-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c06-reward-hacking-p02",
+     "definition": "Exploiting the verifier, not the task. Reward maximal, quality zero.",
+     "term": "reward hacking"
+    },
+    {
+     "anchor": "c06-reward-hacking-p04",
+     "definition": "A gap between check and goal that optimization widens.",
+     "term": "keyway"
+    },
+    {
+     "anchor": "c06-reward-hacking-p08",
+     "definition": "It scores samples with verifier and strict grader, reporting the gap.",
+     "term": "hack_audit"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c06-reward-hacking-p04",
+     "answer": "The verifier is a lock, the policy a lockpick. Hacking is the optimizer doing its job on a bad target.",
+     "id": "c06-reward-hacking-r1",
+     "question": "State the lockpick model."
+    },
+    {
+     "anchor": "c06-reward-hacking-p07",
+     "answer": "56 points: 97% verifier pass vs 41% true solves.",
+     "id": "c06-reward-hacking-r2",
+     "question": "What was the measured hack gap?"
+    }
+   ]
+  },
+  {
+   "anchor": "c07-train-time-versus-test-time-scaling",
+   "title": "c07: train-time versus test-time scaling",
+   "minutes": 3,
+   "endAnchor": "c07-train-time-versus-test-time-scaling-end",
+   "blocks": [
+    {
+     "anchor": "c07-train-time-versus-test-time-scaling-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c07-train-time-versus-test-time-scaling-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c07-train-time-versus-test-time-scaling-p02",
+     "definition": "1 - (1-p)^k. Coverage from k independent attempts.",
+     "term": "pass@k"
+    },
+    {
+     "anchor": "c07-train-time-versus-test-time-scaling-p06",
+     "definition": "Sample k answers, keep the verifier favorite. Coverage plus selection.",
+     "term": "best-of-k"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c07-train-time-versus-test-time-scaling-p06",
+     "answer": "pass@k = 1 - (1-p)^k, from independence.",
+     "id": "c07-train-time-versus-test-time-scaling-r1",
+     "question": "Write the pass@k law."
+    },
+    {
+     "anchor": "c07-train-time-versus-test-time-scaling-p07",
+     "answer": "0.200, 0.360, 0.590, 0.832, 0.972. Doubling past 8 buys little.",
+     "id": "c07-train-time-versus-test-time-scaling-r2",
+     "question": "What are pass@k values for p=0.2, k=1,2,4,8,16?"
+    }
+   ]
+  },
+  {
+   "anchor": "c08-scaling-data",
+   "title": "c08: scaling data",
+   "minutes": 3,
+   "endAnchor": "c08-scaling-data-end",
+   "blocks": [
+    {
+     "anchor": "c08-scaling-data-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c08-scaling-data-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c08-scaling-data-p14",
+     "definition": "Train near p = 0.5 where contrast p(1-p) is maximal.",
+     "term": "0.5 rule"
+    },
+    {
+     "anchor": "c08-scaling-data-p06",
+     "definition": "Keeping training mass near the frontier of current ability.",
+     "term": "curriculum"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c08-scaling-data-p06",
+     "answer": "Learning signal scales with p(1-p), maximal at p = 0.5. Train there.",
+     "id": "c08-scaling-data-r1",
+     "question": "State the 0.5 rule."
+    },
+    {
+     "anchor": "c08-scaling-data-p07",
+     "answer": "The p = 0.5 pool: 2.8x the signal of p = 0.9 or 0.1.",
+     "id": "c08-scaling-data-r2",
+     "question": "Which pool teaches most per rollout?"
+    }
+   ]
+  },
+  {
+   "anchor": "c09-verifier-quality",
+   "title": "c09: verifier quality",
+   "minutes": 3,
+   "endAnchor": "c09-verifier-quality-end",
+   "blocks": [
+    {
+     "anchor": "c09-verifier-quality-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c09-verifier-quality-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c09-verifier-quality-p05",
+     "definition": "Share of wrong answers scoring 1. Keep below 0.05 before RL.",
+     "term": "false-positive rate"
+    },
+    {
+     "anchor": "c09-verifier-quality-p08",
+     "definition": "It returns precision, recall, FP rate, and worst patterns.",
+     "term": "audit_verifier"
+    },
+    {
+     "anchor": "c09-verifier-quality-p10",
+     "definition": "Exact match to human review. Hardening steps for verifiers.",
+     "term": "upgrade ladder"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c09-verifier-quality-p05",
+     "answer": "Precision: true passes / all passes. Recall: true passes / all true items.",
+     "id": "c09-verifier-quality-r1",
+     "question": "Precision vs recall for verifiers?"
+    },
+    {
+     "anchor": "c09-verifier-quality-p07",
+     "answer": "FP 0.02: true solve 0.78. FP 0.18: true solve 0.41, verifier pass 0.93.",
+     "id": "c09-verifier-quality-r2",
+     "question": "What did the lab show for FP 0.02 vs 0.18?"
+    }
+   ]
+  },
+  {
+   "anchor": "c10-compute-allocation",
+   "title": "c10: compute allocation",
+   "minutes": 3,
+   "endAnchor": "c10-compute-allocation-end",
+   "blocks": [
+    {
+     "anchor": "c10-compute-allocation-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c10-compute-allocation-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c10-compute-allocation-p04",
+     "definition": "Pour budget until the next drop helps both fields equally.",
+     "term": "marginal drop"
+    },
+    {
+     "anchor": "c10-compute-allocation-p08",
+     "definition": "It evaluates S(T) on a grid and returns argmax and plateau width.",
+     "term": "alloc_sweep"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c10-compute-allocation-p04",
+     "answer": "Pour until the next unit helps training and test-time equally. The interior wins.",
+     "id": "c10-compute-allocation-r1",
+     "question": "State the marginal-drop rule."
+    },
+    {
+     "anchor": "c10-compute-allocation-p07",
+     "answer": "T = 40 (score 0.982); T = 80 gives 0.931. The plateau spans 40-60.",
+     "id": "c10-compute-allocation-r2",
+     "question": "What was the toy optimum?"
+    }
+   ]
+  },
+  {
+   "anchor": "c11-ablations",
+   "title": "c11: ablations",
+   "minutes": 3,
+   "endAnchor": "c11-ablations-end",
+   "blocks": [
+    {
+     "anchor": "c11-ablations-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c11-ablations-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c11-ablations-p02",
+     "definition": "Controlled demolition: remove one wall, see if the house stands.",
+     "term": "ablation"
+    },
+    {
+     "anchor": "c11-ablations-p07",
+     "definition": "Spread across seeds. A delta is real if many sigma.",
+     "term": "seed std"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c11-ablations-p07",
+     "answer": "Group norm: -0.17 (8.5 sigma). KL: -0.04. Small G: -0.09.",
+     "id": "c11-ablations-r1",
+     "question": "Which factor mattered most in the toy?"
+    },
+    {
+     "anchor": "c11-ablations-p04",
+     "answer": "To isolate the factor. Two factors at once teaches nothing about either.",
+     "id": "c11-ablations-r2",
+     "question": "Why match budgets in ablations?"
+    }
+   ]
+  },
+  {
+   "anchor": "c12-generalization",
+   "title": "c12: generalization",
+   "minutes": 3,
+   "endAnchor": "c12-generalization-end",
+   "blocks": [
+    {
+     "anchor": "c12-generalization-p04",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    },
+    {
+     "anchor": "c12-generalization-p16",
+     "kind": "figure",
+     "reveal": "fade"
+    }
+   ],
+   "keyTerms": [
+    {
+     "anchor": "c12-generalization-p06",
+     "definition": "Paraphrase, domain shift, verifier shift. Each isolates one failure class.",
+     "term": "three probes"
+    },
+    {
+     "anchor": "c12-generalization-p06",
+     "definition": "New referee. It hurts most: the policy learned the referee, not the skill.",
+     "term": "verifier shift"
+    }
+   ],
+   "recall": [
+    {
+     "anchor": "c12-generalization-p06",
+     "answer": "Paraphrase, domain shift, verifier shift.",
+     "id": "c12-generalization-r1",
+     "question": "Name the three probes."
+    },
+    {
+     "anchor": "c12-generalization-p07",
+     "answer": "Train 0.78, paraphrase 0.71, domain 0.52, verifier-shift 0.44.",
+     "id": "c12-generalization-r2",
+     "question": "What did the drop table show?"
+    }
+   ]
+  }
+ ]
+}

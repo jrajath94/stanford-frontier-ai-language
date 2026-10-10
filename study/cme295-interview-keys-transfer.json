@@ -1,0 +1,432 @@
+{
+ "schemaVersion": 1,
+ "itemId": "cme295-interview-keys-transfer",
+ "itemKind": "lesson",
+ "revision": "5bae8593a45b3aa5651d25e9d5523d982e564ab9c9f719d99ced204ccc0cc34a",
+ "sections": [
+  {
+   "anchor": "transfer-sets-key",
+   "title": "Transfer sets key",
+   "minutes": 1,
+   "endAnchor": "transfer-sets-key-end",
+   "blocks": [
+    {
+     "anchor": "transfer-sets-key-p01",
+     "kind": "keyIdea",
+     "reveal": "rise"
+    }
+   ],
+   "keyTerms": [
+    {
+     "term": "transfer-sets.md",
+     "definition": "The question file these keys answer.",
+     "anchor": "transfer-sets-key-p01"
+    },
+    {
+     "term": "closed-book",
+     "definition": "Answering from memory with no notes, books, or key open.",
+     "anchor": "transfer-sets-key-p01"
+    },
+    {
+     "term": "strong answer",
+     "definition": "The minimum sufficient explanation that earns full marks.",
+     "anchor": "transfer-sets-key-p01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "transfer-sets-key-r1",
+     "question": "What file do these keys answer?",
+     "answer": "transfer-sets.md.",
+     "anchor": "transfer-sets-key-p01"
+    },
+    {
+     "id": "transfer-sets-key-r2",
+     "question": "How should you use the key?",
+     "answer": "Closed-book: attempt first, then check.",
+     "anchor": "transfer-sets-key-p01"
+    }
+   ]
+  },
+  {
+   "anchor": "t1",
+   "title": "T1",
+   "minutes": 1,
+   "endAnchor": "t1-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "fertility explodes",
+     "definition": "Rare words shatter into many byte tokens.",
+     "anchor": "t1-list01"
+    },
+    {
+     "term": "2k merges",
+     "definition": "A smaller BPE that fits the budget.",
+     "anchor": "t1-list01"
+    },
+    {
+     "term": "linear latency",
+     "definition": "Latency rises linearly with token count.",
+     "anchor": "t1-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t1-r1",
+     "question": "What was the compression?",
+     "answer": "The merge table.",
+     "anchor": "t1-list01"
+    },
+    {
+     "id": "t1-r2",
+     "question": "What do both mitigations trade?",
+     "answer": "Quality for bytes.",
+     "anchor": "t1-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t2",
+   "title": "T2",
+   "minutes": 1,
+   "endAnchor": "t2-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "off-distribution",
+     "definition": "Attention scores past 4k; the model babbles.",
+     "anchor": "t2-list01"
+    },
+    {
+     "term": "NTK-aware scaling",
+     "definition": "Keeps high-frequency detail; needs tuning.",
+     "anchor": "t2-list01"
+    },
+    {
+     "term": "needle-in-haystack",
+     "definition": "The self-built retrieval probe.",
+     "anchor": "t2-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t2-r1",
+     "question": "What are the two fixes?",
+     "answer": "Position interpolation and NTK-aware scaling.",
+     "anchor": "t2-list01"
+    },
+    {
+     "id": "t2-r2",
+     "question": "What does the test compare?",
+     "answer": "Perplexity on 16k documents versus 4k slices.",
+     "anchor": "t2-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t3",
+   "title": "T3",
+   "minutes": 1,
+   "endAnchor": "t3-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "dead expert",
+     "definition": "Tokens hitting it degrade or must redistribute.",
+     "anchor": "t3-list01"
+    },
+    {
+     "term": "redistribute",
+     "definition": "Send tokens to the next-best expert.",
+     "anchor": "t3-list01"
+    },
+    {
+     "term": "balanced routing",
+     "definition": "Spreads the damage evenly.",
+     "anchor": "t3-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t3-r1",
+     "question": "What does naive fallback do?",
+     "answer": "Drops the dead expert's tokens.",
+     "anchor": "t3-list01"
+    },
+    {
+     "id": "t3-r2",
+     "question": "What does imbalanced routing do?",
+     "answer": "Concentrates the damage: some tokens destroyed, most fine.",
+     "anchor": "t3-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t4",
+   "title": "T4",
+   "minutes": 1,
+   "endAnchor": "t4-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "1,048,576 bytes",
+     "definition": "Per rank across 32 layers in fp16.",
+     "anchor": "t4-list01"
+    },
+    {
+     "term": "max rank 20",
+     "definition": "20 MiB / 1,048,576; 19 in decimal MB.",
+     "anchor": "t4-list01"
+    },
+    {
+     "term": "high-rank directions",
+     "definition": "Carry the subtle stuff; lost first.",
+     "anchor": "t4-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t4-r1",
+     "question": "What factor was dropped?",
+     "answer": "The second LoRA matrix: r(d+k), not r(d).",
+     "anchor": "t4-list01"
+    },
+    {
+     "id": "t4-r2",
+     "question": "When switch to full fine-tune?",
+     "answer": "When rank 20 cannot move the needle, or the task needs full-rank changes.",
+     "anchor": "t4-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t5",
+   "title": "T5",
+   "minutes": 1,
+   "endAnchor": "t5-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "5% signal",
+     "definition": "What the BT loss fits amid 95% label noise.",
+     "anchor": "t5-list01"
+    },
+    {
+     "term": "200 pairs",
+     "definition": "The pilot rubric size before re-labeling.",
+     "anchor": "t5-list01"
+    },
+    {
+     "term": "fails cheaper",
+     "definition": "Why DPO beats RLHF here.",
+     "anchor": "t5-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t5-r1",
+     "question": "What does the reward become?",
+     "answer": "A noise amplifier.",
+     "anchor": "t5-list01"
+    },
+    {
+     "id": "t5-r2",
+     "question": "What is the rule?",
+     "answer": "Fix the data first, the algorithm second.",
+     "anchor": "t5-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t6",
+   "title": "T6",
+   "minutes": 1,
+   "endAnchor": "t6-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "32 minutes",
+     "definition": "64 x 30 s of verifier time per step, serial.",
+     "anchor": "t6-list01"
+    },
+    {
+     "term": "cache results",
+     "definition": "Per (prompt, program hash).",
+     "anchor": "t6-list01"
+    },
+    {
+     "term": "0.9 ranking",
+     "definition": "The proxy agreement threshold.",
+     "anchor": "t6-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t6-r1",
+     "question": "What are the two cost cuts?",
+     "answer": "Cache verifier results; verify a subsample with the slow verifier.",
+     "anchor": "t6-list01"
+    },
+    {
+     "id": "t6-r2",
+     "question": "When does the proxy win?",
+     "answer": "Ranking agreement above 0.9 and speed ratio above 10x.",
+     "anchor": "t6-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t7",
+   "title": "T7",
+   "minutes": 1,
+   "endAnchor": "t7-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "delimiters",
+     "definition": "Mark retrieved text as data; cheap.",
+     "anchor": "t7-list01"
+    },
+    {
+     "term": "sandbox",
+     "definition": "Keep injections from side effects; pricey, best.",
+     "anchor": "t7-list01"
+    },
+    {
+     "term": "stop",
+     "definition": "Do not act on the injected instruction.",
+     "anchor": "t7-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t7-r1",
+     "question": "Where does the injection enter?",
+     "answer": "At retrieval, as a trusted-looking document.",
+     "anchor": "t7-list01"
+    },
+    {
+     "id": "t7-r2",
+     "question": "What are the three defenses?",
+     "answer": "Delimiters, instruction-pattern scans, sandboxing.",
+     "anchor": "t7-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t8",
+   "title": "T8",
+   "minutes": 1,
+   "endAnchor": "t8-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "position bias",
+     "definition": "The uncorrected bias; every close call may be an order artifact.",
+     "anchor": "t8-list01"
+    },
+    {
+     "term": "randomize first",
+     "definition": "Halves the systematic bias.",
+     "anchor": "t8-list01"
+    },
+    {
+     "term": "bias margin",
+     "definition": "Refuse to rank models within it.",
+     "anchor": "t8-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t8-r1",
+     "question": "What remains uncorrected?",
+     "answer": "Position bias.",
+     "anchor": "t8-list01"
+    },
+    {
+     "id": "t8-r2",
+     "question": "How to report honestly?",
+     "answer": "'Unswapped pairs, position bias uncorrected', widen the tie band.",
+     "anchor": "t8-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t9",
+   "title": "T9",
+   "minutes": 1,
+   "endAnchor": "t9-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "confidence-thresholded unmasking",
+     "definition": "Fewer, safer steps.",
+     "anchor": "t9-list01"
+    },
+    {
+     "term": "polish pass",
+     "definition": "A final autoregressive pass on uncertain tokens.",
+     "anchor": "t9-list01"
+    },
+    {
+     "term": "knee",
+     "definition": "Where the coherence-vs-steps curve flattens.",
+     "anchor": "t9-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t9-r1",
+     "question": "What are the two coherence buys?",
+     "answer": "Confidence-thresholded unmasking and a final autoregressive polish pass.",
+     "anchor": "t9-list01"
+    },
+    {
+     "id": "t9-r2",
+     "question": "When abandon diffusion?",
+     "answer": "When the knee sits above the latency budget.",
+     "anchor": "t9-list01"
+    }
+   ]
+  },
+  {
+   "anchor": "t10",
+   "title": "T10",
+   "minutes": 1,
+   "endAnchor": "t10-end",
+   "blocks": [],
+   "keyTerms": [
+    {
+     "term": "three sinks",
+     "definition": "Model calls, tool latency, observation round trips.",
+     "anchor": "t10-list01"
+    },
+    {
+     "term": "parallelize",
+     "definition": "Independent tool calls in parallel.",
+     "anchor": "t10-p01"
+    },
+    {
+     "term": "single-shot RAG",
+     "definition": "The last resort; no loop.",
+     "anchor": "t10-list01"
+    }
+   ],
+   "recall": [
+    {
+     "id": "t10-r1",
+     "question": "What are the two latency cuts?",
+     "answer": "Cap the trace and parallelize independent tool calls.",
+     "anchor": "t10-list01"
+    },
+    {
+     "id": "t10-r2",
+     "question": "What does the last resort cost?",
+     "answer": "Multi-step tasks, which then fail or escalate.",
+     "anchor": "t10-list01"
+    }
+   ]
+  }
+ ]
+}
